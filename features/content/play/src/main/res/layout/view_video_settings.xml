@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl2"
-    tools:background="@color/play_video_background"
+    tools:background="@color/play_dms_video_background"
     >
 
     <androidx.appcompat.widget.AppCompatImageView

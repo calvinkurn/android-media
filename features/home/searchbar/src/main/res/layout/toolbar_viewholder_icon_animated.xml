@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_24"
+    android:layout_marginStart="@dimen/dp_2"
+    android:layout_marginTop="@dimen/dp_6"
+    android:layout_marginEnd="@dimen/dp_2"
+    android:layout_marginBottom="@dimen/dp_2"
+    tools:layout_height="50dp">
+
+    <com.tokopedia.iconnotification.IconNotification
+        android:id="@+id/nav_icon_idle"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="50dp"
+        tools:layout_width="50dp" />
+
+    <View
+        android:id="@+id/nav_icon_view"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_32"
+        android:maxWidth="@dimen/dp_50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_height="match_parent"
+        tools:layout_width="50dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

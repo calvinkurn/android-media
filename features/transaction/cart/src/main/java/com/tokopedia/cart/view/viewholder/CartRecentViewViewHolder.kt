@@ -2,18 +2,18 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartRecentViewBinding
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.adapter.CartRecentViewAdapter
+import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
+import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
-import kotlinx.android.synthetic.main.item_cart_recent_view.view.*
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewViewHolder(val view: View, val listener: ActionListener?) : RecyclerView.ViewHolder(view) {
+class CartRecentViewViewHolder(private val binding: ItemCartRecentViewBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     var recentViewAdapter: CartRecentViewAdapter? = null
 
@@ -27,9 +27,14 @@ class CartRecentViewViewHolder(val view: View, val listener: ActionListener?) : 
         }
         recentViewAdapter?.recentViewItemHoldeDataList = element.recentViewList
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
-        itemView.rv_recent_view.layoutManager = layoutManager
-        itemView.rv_recent_view.adapter = recentViewAdapter
-        itemView.rv_recent_view.scrollToPosition(element.lastFocussPosition)
+        binding.rvRecentView.layoutManager = layoutManager
+        binding.rvRecentView.adapter = recentViewAdapter
+        val itemDecorationCount = binding.rvRecentView.itemDecorationCount
+        if (itemDecorationCount > 0) {
+            binding.rvRecentView.removeItemDecorationAt(0)
+        }
+        binding.rvRecentView.addItemDecoration(CartHorizontalItemDecoration())
+        binding.rvRecentView.scrollToPosition(element.lastFocussPosition)
         if (!element.hasSentImpressionAnalytics) {
             listener?.onRecentViewImpression()
             element.hasSentImpressionAnalytics = true

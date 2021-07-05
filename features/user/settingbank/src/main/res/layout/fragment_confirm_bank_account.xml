@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountDataTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sbank_account_data"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_14"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toTopOf="@+id/guidelineTop" />
 
@@ -21,9 +21,9 @@
         android:id="@+id/tvBankNameTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/bank_name_title"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvAccountDataTag"
         app:typographyType="body_3" />
@@ -32,7 +32,7 @@
         android:id="@+id/tvBankName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvBankNameTag"
         app:typographyType="body_1"
@@ -40,10 +40,10 @@
 
     <View
         android:id="@+id/viewDividerBankName"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_3"
-        android:background="@color/Neutral_N50"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:background="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvBankName" />
@@ -52,9 +52,9 @@
         android:id="@+id/tvAccountNumberTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_34"
+        android:layout_marginTop="@dimen/unify_space_32"
         android:text="@string/account_number_title"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewDividerBankName"
         app:typographyType="body_3" />
@@ -63,7 +63,7 @@
         android:id="@+id/tvAccountNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvAccountNumberTag"
         app:typographyType="body_1"
@@ -71,10 +71,10 @@
 
     <View
         android:id="@+id/viewDividerAccountNumber"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_3"
-        android:background="@color/Neutral_N50"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:background="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber" />
@@ -84,9 +84,9 @@
         android:id="@+id/tvAccountHolderNameTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_34"
+        android:layout_marginTop="@dimen/unify_space_32"
         android:text="@string/account_name_title"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewDividerAccountNumber"
         app:typographyType="body_3" />
@@ -95,8 +95,8 @@
         android:id="@+id/tvAccountHolderName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_3"
-        android:textColor="@color/Neutral_N700_96"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvAccountHolderNameTag"
         app:typographyType="body_1"
@@ -104,20 +104,19 @@
 
     <View
         android:id="@+id/viewAccountHolderName"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_3"
-        android:background="@color/Neutral_N50"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:background="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvAccountHolderName" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/viewAccountDetailAndDocDivider"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_39"
-        android:background="@color/Neutral_N50"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_40"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewAccountHolderName" />
@@ -127,9 +126,9 @@
         android:id="@+id/tvDocKTPNameTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewAccountDetailAndDocDivider"
         tools:text="@string/sbank_complete_document" />
@@ -139,9 +138,9 @@
         android:id="@+id/tvDocumentTypeTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/account_name_title"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvDocKTPNameTitle"
         app:typographyType="body_3" />
@@ -151,7 +150,7 @@
         android:id="@+id/tvDocPathOrKTPName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvDocumentTypeTag"
         app:typographyType="body_1"
@@ -160,52 +159,50 @@
 
     <View
         android:id="@+id/viewFilePathOrKTPName"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_3"
-        android:background="@color/Neutral_N50"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:background="@color/Unify_N50"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvDocPathOrKTPName" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivSelectFile"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_width="@dimen/unify_space_16"
+        android:layout_height="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:icon_name="IMAGE"
         app:layout_constraintBottom_toBottomOf="@+id/tvDocPathOrKTPName"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
-        app:srcCompat="@drawable/sbank_ic_image_dark" />
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd" />
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvImageConditionAndType"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:text="@string/sbank_attach_image_constraints"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewFilePathOrKTPName"
         app:typographyType="body_3" />
 
 
-    <TextView
+    <com.tokopedia.unifycomponents.UnifyButton
+        app:unifyButtonType="main"
         android:id="@+id/btn_uploadOrConfirmDocument"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/sbank_bg_button_green"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
         android:enabled="false"
         android:gravity="center"
         tools:text="@string/button_next"
-        android:textColor="@color/sbank_btn_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
 
@@ -215,31 +212,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/dp_16" />
+        app:layout_constraintGuide_begin="@dimen/unify_space_16" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dp_16" />
+        app:layout_constraintGuide_end="@dimen/unify_space_16" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/dp_16" />
+        app:layout_constraintGuide_begin="@dimen/unify_space_16" />
 
-
-    <ProgressBar
+    <RelativeLayout
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

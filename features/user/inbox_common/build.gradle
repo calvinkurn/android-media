@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation rootProject.ext.testDependencies.androidAnnotation
+}
+
+project.ext {
+    artifactId = 'inbox-common'
+    groupId = 'com.tokopedia.inboxcommon'
+    versionName = "0.0.1"
+    artifactName ="inboxcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

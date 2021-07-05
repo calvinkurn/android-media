@@ -65,9 +65,9 @@ class UmrahSearchFilterAdapter : RecyclerView.Adapter<UmrahSearchFilterAdapter.U
                 title.text = item.displayText
                 base_item_filter.isSelected = item.query == selectedOptionQuery
                 if (base_item_filter.isSelected) {
-                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
+                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G400))
                 } else {
-                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.light_secondary))
+                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                 }
             }
         }

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_phone_bell"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_marginTop="@dimen/otp_dp_14"
+            android:adjustViewBounds="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:text="@string/title_push_notif_receiver"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_phone_bell"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_phone"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@+id/text_device"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/text_device_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_device_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_14"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_device_push_notif_receiver"
+            app:layout_constraintLeft_toRightOf="@id/image_phone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_title"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_device"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_14"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintLeft_toRightOf="@id/image_phone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_device_title"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Samsung Galaxy Note 9 (Aplikasi)" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_time"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@+id/text_time"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_time_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_time_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_14"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_time_push_notif_receiver"
+            app:layout_constraintLeft_toRightOf="@id/image_time"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_device"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_time"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_14"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintLeft_toRightOf="@id/image_phone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_time_title"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Senin 4 Februari 2019, 13:03 WIB" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_location"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="@+id/text_location"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_location_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_location_title"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_14"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/title_location_push_notif_receiver"
+            app:layout_constraintLeft_toRightOf="@id/image_location"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_time"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_location"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_14"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/image_location"
+            app:layout_constraintTop_toBottomOf="@id/text_location_title"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Jakarta, ID • 201.141.663.888" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_subtitle_desc"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:text="@string/subtitle_push_notif_receiver"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_location"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_no"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/otp_dp_6"
+            android:text="@string/reject_push_notif_receiver"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/btn_yes"
+            app:layout_constraintTop_toBottomOf="@id/text_subtitle_desc"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_yes"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/otp_dp_6"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/accept_push_notif_receiver"
+            app:layout_constraintLeft_toRightOf="@+id/btn_no"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_subtitle_desc"
+            app:unifyButtonSize="large"
+            app:unifyButtonVariant="ghost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_otp"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/CustomActionBar" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:background="@color/white"
-    app:elevation="@dimen/dp_0"
-    android:layout_height="wrap_content">
+    app:elevation="@dimen/layout_lvl0">
+
     <RelativeLayout
         android:id="@+id/mainView"
         android:layout_width="match_parent"
@@ -31,17 +32,20 @@
                     android:scaleType="fitXY"
                     tools:src="@tools:sample/backgrounds/scenic" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textTitlePromo"
-                    style="@style/TextView.Small.Bold"
-                    android:layout_margin="@dimen/dp_16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/spacing_lvl4"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
                     tools:text="Cashback Hingga Rp.25.000" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
                     android:background="@drawable/background_period_promo_detail"
                     android:orientation="horizontal"
                     android:weightSum="2">
@@ -49,54 +53,70 @@
                     <include layout="@layout/include_period_tnc_promo" />
                 </LinearLayout>
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textCashbackPotention"
-                    style="@style/TextView.Micro.Green.Bold"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/light_green"
-                    android:padding="@dimen/dp_16"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_G100"
+                    android:padding="@dimen/spacing_lvl4"
                     android:textAlignment="center"
+                    android:textColor="@color/Unify_G500"
                     android:visibility="gone"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     tools:text="Potensi Cashback senilai Rp. 9.800"
                     tools:visibility="visible" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
                     android:text="Syarat &amp; Ketentuan"
-                    android:paddingTop="@dimen/dp_16"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    style="@style/TextView.Small.Bold"/>
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
 
                 <WebView
                     android:id="@+id/webviewTnc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16" />
+                    android:layout_margin="@dimen/spacing_lvl4" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/containerButton"
-            android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_height="wrap_content">
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:paddingVertical="@dimen/spacing_lvl3">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/buttonUse"
-                style="@style/Button.Submit.Green"
-                android:text="@string/promo_label_use" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/promo_label_use"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main" />
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/buttonCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/promo_label_cancel_use"
                 android:visibility="gone"
-                android:id="@+id/buttonCancel"
-                style="@style/Button.Submit.White.Border" />
+                app:unifyButtonSize="large"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
 
         </LinearLayout>
     </RelativeLayout>
+
     <ProgressBar
         android:id="@+id/progressBarLoading"
         android:layout_width="wrap_content"

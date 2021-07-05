@@ -5,7 +5,7 @@ import com.tokopedia.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.changephonenumber.data.source.CloudValidateNumberSource;
 import com.tokopedia.changephonenumber.data.source.CloudValidateOtpStatus;
 import com.tokopedia.changephonenumber.domain.ChangePhoneNumberRepository;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class ChangePhoneNumberRepositoryImpl implements ChangePhoneNumberReposit
     }
 
     @Override
-    public Observable<WarningViewModel> getWarning(HashMap<String, Object> parameters) {
+    public Observable<WarningUIModel> getWarning(HashMap<String, Object> parameters) {
         return cloudGetWarningSource
                 .getWarning(parameters);
     }

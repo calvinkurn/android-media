@@ -1,29 +1,72 @@
 {
-  "readme": "#EE1 - View on product thumbnail from attach manual buyer",
+  "readme": "#EE1 - Product thumbnail from attach manual buyer",
   "mode": "subset",
   "query": [
     {
-      "event": "view_item_list",
+      "businessUnit": "communication",
+      "clientId": ".+",
       "eventCategory": "chat detail",
+      "currentSite": "",
       "item_list": "/chat",
+      "screenName": "",
+      "event": "view_item_list",
+      "userId": ".*",
       "eventAction": "view on product thumbnail",
+      "sessionIris": ".+",
+      "eventLabel": ".+",
       "items": [
         {
+          "dimension87": "",
+          "dimension88": "",
+          "item_id": ".+",
+          "price": ".+",
           "dimension40": "/chat",
-          "list": "/chat"
+          "item_name": ".+",
+          "currency": ".+",
+          "list": "/chat",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ""
         }
       ]
     },
     {
-      "event": "select_content",
+      "businessUnit": "",
+      "clientId": ".+",
       "eventCategory": "chat detail",
+      "currentSite": "",
       "item_list": "/chat",
+      "screenName": "",
+      "event": "select_content",
+      "userId": ".*",
       "eventAction": "click on product thumbnail",
+      "sessionIris": ".+",
       "items": [
         {
-          "dimension40": "/chat"
+          "item_id": ".+",
+          "dimension40": "/chat",
+          "item_name": ".+",
+          "currency": ".+",
+          "item_brand": ".+",
+          "item_variant": ".+",
+          "item_category": ""
         }
       ]
+    },
+    {
+      "eventCategory": "chat detail",
+      "event": "clickChatDetail",
+      "userId": ".*",
+      "eventAction": "click atc on product thumbnail",
+      "sessionIris": ".+",
+      "eventLabel": "chat - .*"
+    },
+    {
+      "eventCategory": "chat detail",
+      "event": "clickChatDetail",
+      "eventAction": "click buy on product thumbnail",
+      "sessionIris": ".+",
+      "eventLabel": "chat - .*"
     }
   ]
 }

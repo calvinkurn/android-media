@@ -2,12 +2,21 @@ package com.tokopedia.topads.edit.view.model
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.SingleAdInFo
-import com.tokopedia.topads.edit.data.param.DataSuggestions
-import com.tokopedia.topads.edit.data.response.*
-import com.tokopedia.topads.edit.usecase.*
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.GetAdKeywordUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGroupValidateNameUseCase
+import com.tokopedia.topads.edit.data.response.EditSingleAdResponse
+import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.edit.usecase.EditSingleAdUseCase
+import com.tokopedia.topads.edit.usecase.GetAdsUseCase
+import com.tokopedia.topads.edit.usecase.GroupInfoUseCase
+import com.tokopedia.topads.edit.usecase.TopAdsCreateUseCase
 import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.invoke
@@ -18,8 +27,6 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers
-import org.mockito.Matchers.any
 
 
 @ExperimentalCoroutinesApi
@@ -27,34 +34,41 @@ class EditFormDefaultViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private val validGroupUseCase: ValidGroupUseCase = mockk(relaxed = true)
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
     private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val getAdsUseCase: GetAdsUseCase = mockk(relaxed = true)
     private val getAdKeywordUseCase: GetAdKeywordUseCase = mockk(relaxed = true)
     private val groupInfoUseCase: GroupInfoUseCase = mockk(relaxed = true)
+    private val bidInfoDefaultUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val editSingleAdUseCase: EditSingleAdUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
-    private val singleAdInfoUseCase: GraphqlUseCase<SingleAdInFo> = mockk(relaxed = true)
+    private val singleAdInfoUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
-    private val userSession:UserSession = mockk()
+    private val userSession: UserSession = mockk()
     private var groupId = 123
 
     @Before
     fun setUp() {
         viewModel = EditFormDefaultViewModel(
-                testDispatcher,
-                validGroupUseCase,
-                bidInfoUseCase,
-                getAdsUseCase,
-                getAdKeywordUseCase,
-                groupInfoUseCase, editSingleAdUseCase,singleAdInfoUseCase,userSession, topAdsCreateUseCase
+            testDispatcher,
+            validGroupUseCase,
+            bidInfoUseCase,
+            bidInfoDefaultUseCase,
+            getAdsUseCase,
+            getAdKeywordUseCase,
+            groupInfoUseCase,
+            editSingleAdUseCase,
+            singleAdInfoUseCase,
+            userSession,
+            topAdsCreateUseCase
         )
     }
 
     @Test
     fun validateGroup() {
         val data = ResponseGroupValidateName()
+        every { userSession.shopId } returns "123"
         every {
             validGroupUseCase.execute(captureLambda(), any())
         } answers {
@@ -65,7 +79,7 @@ class EditFormDefaultViewModelTest {
         viewModel.validateGroup("name") {}
 
         verify {
-            validGroupUseCase.executeQuerySafeMode(any(), any())
+            validGroupUseCase.execute(any(), any())
         }
     }
 
@@ -74,7 +88,7 @@ class EditFormDefaultViewModelTest {
         val data = ResponseBidInfo.Result()
         val suggestion: List<DataSuggestions> = mockk()
         every {
-            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+            bidInfoDefaultUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
             val onSuccess = lambda<(ResponseBidInfo.Result) -> Unit>()
             onSuccess.invoke(data)
@@ -83,7 +97,7 @@ class EditFormDefaultViewModelTest {
         viewModel.getBidInfoDefault(suggestion) {}
 
         verify {
-            bidInfoUseCase.executeQuerySafeMode(any(), any())
+            bidInfoDefaultUseCase.executeQuerySafeMode(any(), any())
         }
     }
 
@@ -114,7 +128,9 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAds(groupId) {}
+        viewModel.getAds(
+            1,
+            groupId.toString(), "") { _: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _: Int, _: Int -> }
 
         verify {
             getAdsUseCase.executeQuerySafeMode(any(), any())
@@ -141,6 +157,7 @@ class EditFormDefaultViewModelTest {
     @Test
     fun getAdKeyword() {
         val data = GetKeywordResponse()
+        every { userSession.shopId } returns "123"
         every {
             getAdKeywordUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
@@ -148,7 +165,10 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAdKeyword(groupId,""){ list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
+        viewModel.getAdKeyword(
+            groupId,
+            ""
+        ) { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
 
 
         verify {
@@ -177,27 +197,18 @@ class EditFormDefaultViewModelTest {
 
     @Test
     fun topAdsCreated() {
-        val data = FinalAdResponse()
         val dataProduct: Bundle = mockk()
         val dataKeyword: HashMap<String, Any?> = mockk()
         val dataGroup: HashMap<String, Any?> = mockk()
-        every {
-            topAdsCreateUseCase.executeQuerySafeMode(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(FinalAdResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
-
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup, {}, {})
-
         verify {
-            topAdsCreateUseCase.executeQuerySafeMode(any(), any())
+            topAdsCreateUseCase.execute(any(), any())
         }
     }
 
     @Test
     fun getSingleAdInfo() {
-        val adId = 121
+        val adId = "121"
         val mockThrowable = mockk<Throwable>(relaxed = true)
         every { userSession.shopId } returns "123"
         every {
@@ -219,8 +230,8 @@ class EditFormDefaultViewModelTest {
         verify { getAdsUseCase.cancelJobs() }
         verify { getAdKeywordUseCase.cancelJobs() }
         verify { groupInfoUseCase.cancelJobs() }
-        verify { topAdsCreateUseCase.cancelJobs() }
+        verify { topAdsCreateUseCase.unsubscribe() }
         verify { editSingleAdUseCase.cancelJobs() }
-        verify {singleAdInfoUseCase.cancelJobs()}
+        verify { singleAdInfoUseCase.cancelJobs() }
     }
 }

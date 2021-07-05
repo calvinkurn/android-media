@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:paddingTop="@dimen/dp_80"
     android:paddingLeft="@dimen/dp_45"
     android:paddingRight="@dimen/dp_45"

@@ -4,14 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -22,26 +20,35 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class PopularSearchViewHolder(
         itemView: View,
-        listener: InitialStateItemClickListener
-) : AbstractViewHolder<PopularSearchViewModel>(itemView) {
+        private val listener: InitialStateItemClickListener
+) : AbstractViewHolder<PopularSearchDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_popular_autocomplete
     }
 
-    private val adapter: ItemAdapter
-
-    init {
-        val layoutManager = LinearLayoutManager(itemView.context)
-        itemView.recyclerView?.layoutManager = layoutManager
-        ViewCompat.setLayoutDirection(itemView.recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = ItemAdapter(listener)
-        itemView.recyclerView?.adapter = adapter
+    override fun bind(element: PopularSearchDataView) {
+        bindContent(element)
     }
 
-    override fun bind(element: PopularSearchViewModel) {
-        adapter.setData(element.list)
+    private fun bindContent(element: PopularSearchDataView) {
+        itemView.recyclerView?.let {
+            it.layoutManager = createLayoutManager()
+            it.adapter = createAdapter(element.list)
+        }
+    }
+
+    private fun createLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
+    }
+
+    private fun createAdapter(
+            list: List<BaseItemInitialStateSearch>
+    ): RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+        val adapter = ItemAdapter(listener)
+        adapter.setData(list)
+        return adapter
     }
 
     private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
@@ -49,7 +56,7 @@ class PopularSearchViewHolder(
 
         fun setData(data: List<BaseItemInitialStateSearch>) {
             this.data = data
-            notifyItemRangeInserted(0, data.size)
+            notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -95,15 +102,7 @@ class PopularSearchViewHolder(
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.initialStateDynamicItem?.setOnClickListener {
-                    AutocompleteTracking.eventClickPopularSearch(
-                            String.format(
-                                    "value: %s - po: %s - applink: %s",
-                                    item.title,
-                                    (adapterPosition + 1).toString(),
-                                    item.applink
-                            )
-                    )
-                    clickListener.onItemClicked(item.applink, item.url)
+                    clickListener.onDynamicSectionItemClicked(item)
                 }
             }
         }

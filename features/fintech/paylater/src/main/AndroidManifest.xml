@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.pdpsimulation">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_fintech"
+                    android:path="@string/path_paylater"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

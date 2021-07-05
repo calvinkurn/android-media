@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
+import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.Video
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.view.adapter.YoutubeThumbnailAdapter
 import kotlinx.android.synthetic.main.activity_product_youtube_player.*
 
@@ -42,11 +43,10 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
         youtube_list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         if (videoUrls.size > 1){
-            youtube_list.adapter = YoutubeThumbnailAdapter(videoUrls.map { Video(url = it) }.toMutableList()){
-                _, index -> playVideoAt(index)
+            youtube_list.adapter = YoutubeThumbnailAdapter(videoUrls.map { YoutubeVideo(url = it) }.toMutableList()){ _, index -> playVideoAt(index)
             }
         }
-        youtube_player_main.initialize(getString(R.string.GOOGLE_API_KEY), this)
+        youtube_player_main.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
@@ -64,8 +64,13 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
     }
 
     private fun playVideoAt(selectedIndex: Int) {
-        youtubePlayerScreen.loadVideo(videoUrls[selectedIndex])
-        this.selectedIndex = selectedIndex
+        if (::youtubePlayerScreen.isInitialized) {
+            try {
+                youtubePlayerScreen.loadVideo(videoUrls[selectedIndex])
+                this.selectedIndex = selectedIndex
+            } catch (e: Throwable) {
+            }
+        }
     }
 
     override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {}
@@ -94,7 +99,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
 
     override fun onVideoEnded() {
         if (selectedIndex + 1 < videoUrls.size){
-            playVideoAt(selectedIndex+1)
+            playVideoAt(selectedIndex + 1)
         }
     }
 

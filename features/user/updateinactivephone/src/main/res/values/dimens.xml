@@ -16,12 +16,15 @@
     <dimen name="updateinactivephone_14dp">14dp</dimen>
     <dimen name="updateinactivephone_15dp">15dp</dimen>
     <dimen name="updateinactivephone_18dp">18dp</dimen>
+    <dimen name="updateinactivephone_20dp">20dp</dimen>
     <dimen name="updateinactivephone_30dp">30dp</dimen>
     <dimen name="updateinactivephone_32dp">32dp</dimen>
     <dimen name="updateinactivephone_39dp">39dp</dimen>
     <dimen name="updateinactivephone_40dp">40dp</dimen>
+    <dimen name="updateinactivephone_50dp">50dp</dimen>
     <dimen name="updateinactivephone_112dp">112dp</dimen>
     <dimen name="updateinactivephone_210dp">210dp</dimen>
+    <dimen name="updateinactivephone_280dp">280dp</dimen>
 
     <dimen name="updateinactivephone_6sp">6sp</dimen>
     <dimen name="updateinactivephone_13sp">13sp</dimen>

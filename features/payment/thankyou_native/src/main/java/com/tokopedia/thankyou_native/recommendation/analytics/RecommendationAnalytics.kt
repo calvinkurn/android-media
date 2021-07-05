@@ -2,7 +2,8 @@ package com.tokopedia.thankyou_native.recommendation.analytics
 
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.recommendation.di.qualifier.IODispatcher
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -15,14 +16,15 @@ import javax.inject.Inject
 class RecommendationAnalytics @Inject constructor(
         val userSession: dagger.Lazy<UserSessionInterface>,
         @CoroutineMainDispatcher val mainDispatcher: dagger.Lazy<CoroutineDispatcher>,
-        @CoroutineBackgroundDispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>) {
+        @IODispatcher val backgroundDispatcher: dagger.Lazy<CoroutineDispatcher>) {
 
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
 
-    fun sendRecommendationItemDisplayed(recommendationItem: RecommendationItem,
-                                        position: Int, paymentId: String) {
+    fun sendRecommendationItemDisplayed(thanksPageData: ThanksPageData,
+                                        recommendationItem: RecommendationItem,
+                                        position: Int) {
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
                     withContext(backgroundDispatcher.get()) {
@@ -31,8 +33,9 @@ class RecommendationAnalytics @Inject constructor(
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
                                 KEY_EVENT_LABEL to "",
+                                KEY_PROFILE_ID to thanksPageData.profileCode,
                                 KEY_USER_ID to userSession.get().userId,
-                                KEY_PAYMENT_ID to paymentId,
+                                KEY_PAYMENT_ID to thanksPageData.paymentID.toString(),
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_PHYSICAL,
                                 KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
@@ -43,8 +46,8 @@ class RecommendationAnalytics @Inject constructor(
     }
 
 
-    fun sendRecommendationItemClick(recommendationItem: RecommendationItem,
-                                    position: Int, paymentId: String) {
+    fun sendRecommendationItemClick(thanksPageData: ThanksPageData,
+                                    recommendationItem: RecommendationItem, position: Int) {
 
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
@@ -55,9 +58,10 @@ class RecommendationAnalytics @Inject constructor(
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
                                 KEY_USER_ID to userSession.get().userId,
-                                KEY_PAYMENT_ID to paymentId,
+                                KEY_PAYMENT_ID to thanksPageData.paymentID.toString(),
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_PHYSICAL,
                                 KEY_EVENT_LABEL to "",
+                                KEY_PROFILE_ID to thanksPageData.profileCode,
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }
@@ -116,6 +120,7 @@ class RecommendationAnalytics @Inject constructor(
         const val KEY_EVENT_CATEGORY = "eventCategory"
         const val KEY_EVENT_ACTION = "eventAction"
         const val KEY_EVENT_LABEL = "eventLabel"
+        const val KEY_PROFILE_ID = "profileId"
         const val KEY_E_COMMERCE = "ecommerce"
 
         const val KEY_CLICK = "click"

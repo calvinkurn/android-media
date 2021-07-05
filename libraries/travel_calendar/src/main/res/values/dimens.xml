@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="progress_bar_margin_top">60dp</dimen>
+    <dimen name="progress_bar_width_height">32dp</dimen>
+
+    <dimen name="item_holiday_date_holiday_width">80dp</dimen>
+    <dimen name="item_month_quick_filter_padding">10dp</dimen>
+
+    <dimen name="travel_calendar_28dp">28dp</dimen>
+</resources>

@@ -24,5 +24,5 @@ fun getRecentViewQuery(): String {
           }
         }
 
-    """.trimIndent()
+    """
 }

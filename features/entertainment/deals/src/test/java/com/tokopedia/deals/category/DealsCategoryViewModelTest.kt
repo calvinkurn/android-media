@@ -3,16 +3,13 @@ package com.tokopedia.deals.category
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.deals.category.domain.GetBrandProductCategoryUseCase
 import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.category.utils.MapperCategoryLayout
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
-import com.tokopedia.deals.common.utils.DealsLocationUtils
-import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.search.model.response.CuratedData
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -22,7 +19,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import com.tokopedia.deals.DealsJsonMapper
+import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.location_picker.model.response.Location
 import junit.framework.Assert.assertEquals
 
 @RunWith(JUnit4::class)
@@ -30,10 +29,10 @@ class DealsCategoryViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val dispatcher = DealsTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     private val getChipsCategoryUseCase: GetChipsCategoryUseCase = mockk()
-    private val getBrandProductCategoryUseCase: GetBrandProductCategoryUseCase = mockk()
+    private val dealsSearchUseCase: DealsSearchUseCase = mockk()
     private lateinit var viewModel: DealCategoryViewModel
     val mContextMock = mockk<Context>(relaxed = true)
 
@@ -45,7 +44,7 @@ class DealsCategoryViewModelTest {
         viewModel = DealCategoryViewModel(
                 mapper,
                 getChipsCategoryUseCase,
-                getBrandProductCategoryUseCase,
+                dealsSearchUseCase,
                 dispatcher
         )
     }
@@ -53,7 +52,12 @@ class DealsCategoryViewModelTest {
     @Test
     fun getChipFilter_fetchFailed_shouldShowErrorMessage(){
         //given
-        coEvery { getChipsCategoryUseCase.executeOnBackground() } coAnswers { throw Exception("Fetch chip failed") }
+        val mockThrowable = Throwable("Fetch chip failed")
+        coEvery {
+            getChipsCategoryUseCase.execute(any(), any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
         //when
         viewModel.getChipsData()
         //then
@@ -65,7 +69,11 @@ class DealsCategoryViewModelTest {
         //given
         val mockCuratedData = Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
         val mockFilterChip = mapper.mapCategoryToChips(mockCuratedData.eventChildCategory.categories)
-        coEvery { getChipsCategoryUseCase.executeOnBackground() } returns mockCuratedData
+        coEvery {
+            getChipsCategoryUseCase.execute(any(), any())
+        } coAnswers {
+            firstArg<(CuratedData) -> Unit>().invoke(mockCuratedData)
+        }
         //when
         viewModel.getChipsData()
         //then
@@ -76,8 +84,15 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchChipFailed_shouldShowErrorMessage() {
         // given
-        coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } coAnswers { throw Exception("Fetch chip failed") }
+        val mockThrowable = Throwable("Fetch chip failed")
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
         // when
         viewModel.getCategoryBrandData("", "", "", 1, true)
 
@@ -88,10 +103,13 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchBrandProductCategoryFailed_shouldShowErrorMessage() {
         // given
-        coEvery { getChipsCategoryUseCase.executeOnBackground() } returns CuratedData()
-        coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } coAnswers {
-            throw Exception("Fetch brand product category failed")
+        val mockThrowable = Throwable("Fetch brand product category failed")
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
         // when
@@ -104,10 +122,15 @@ class DealsCategoryViewModelTest {
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryShouldContainsData() {
         val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
-        val mockResult = mapper.mapCategoryLayout(mockEvent, 1)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
         // given
-        coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns mockEvent
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockEvent)
+        }
         // when
         viewModel.getCategoryBrandData("", "", "", 1, true)
 
@@ -120,8 +143,13 @@ class DealsCategoryViewModelTest {
         val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
         val mockResult = mapper.mapProducttoLayout(mockEvent, 2)
         // given
-        coEvery { getBrandProductCategoryUseCase.useParams(any()) } returns mockk()
-        coEvery { getBrandProductCategoryUseCase.executeOnBackground() } returns mockEvent
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockEvent)
+        }
 
         // when
         viewModel.getCategoryBrandData("", "", "", 2, true)
@@ -140,5 +168,24 @@ class DealsCategoryViewModelTest {
         viewModel.shimmeringCategory()
         //then
         assertEquals(viewModel.observableDealsCategoryLayout.value,layouts)
+    }
+
+    @Test
+    fun getCategoryBrandData_fetchSuccessUpdateChips_dealsCategoryShouldContainsData() {
+        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
+        // given
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockEvent)
+        }
+        // when
+        viewModel.updateChips(Location(), "12", true)
+
+        // then
+        assertEquals(viewModel.observableDealsCategoryLayout.value, mockResult)
     }
 }

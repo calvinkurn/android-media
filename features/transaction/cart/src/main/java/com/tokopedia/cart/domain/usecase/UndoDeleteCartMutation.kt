@@ -15,5 +15,5 @@ fun getUndoDeleteCartMutation(): String {
             }
           }
         }
-    """.trimIndent()
+    """
 }

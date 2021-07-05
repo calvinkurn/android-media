@@ -1,0 +1,24 @@
+{
+  "readme": "Tracking Event PDP",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lanjutkan",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "pick date",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    }
+  ]
+}

@@ -5,26 +5,42 @@ import android.os.Handler
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
+import com.tokopedia.additional_check.common.ADD_PIN_PAGE
+import com.tokopedia.additional_check.common.ActivePageListener
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_DOUBLE_TAP
+import com.tokopedia.additional_check.internal.TwoFactorTracker
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import kotlin.system.exitProcess
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-class TwoFactorActivity: BaseSimpleActivity() {
+class TwoFactorActivity: BaseSimpleActivity(), ActivePageListener {
     private var doubleTapExit = false
 
     var enableBackBtn: Boolean? = true
     var remoteConfig: FirebaseRemoteConfigImpl? = null
 
+    private val twoFactorTracker = TwoFactorTracker()
+    private var currentPage = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         remoteConfig = FirebaseRemoteConfigImpl(this)
         enableBackBtn = intent?.extras?.getParcelable<TwoFactorResult>(TwoFactorFragment.RESULT_POJO_KEY)?.showSkipButton
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+    }
+
+    fun onFragmentCreated(){
+        fragment?.run {
+            if(this is TwoFactorFragment){
+                this.setActiveListener(this@TwoFactorActivity)
+            }
+        }
     }
 
     override fun getNewFragment(): Fragment? {
@@ -32,6 +48,11 @@ class TwoFactorActivity: BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
+        when (currentPage) {
+            ADD_PHONE_NUMBER_PAGE -> { }
+            ADD_PIN_PAGE -> { twoFactorTracker.clickCloseButtonPageAddPin() }
+        }
+
         if(enableBackBtn == true) {
             super.onBackPressed()
         }else {
@@ -52,4 +73,7 @@ class TwoFactorActivity: BaseSimpleActivity() {
         }
     }
 
+    override fun currentPage(page: String) {
+        currentPage = page
+    }
 }

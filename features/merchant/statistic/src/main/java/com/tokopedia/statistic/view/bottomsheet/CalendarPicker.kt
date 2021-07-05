@@ -9,7 +9,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
+import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_calendar_picker.view.*
 import timber.log.Timber
@@ -23,21 +25,39 @@ import java.util.concurrent.TimeUnit
 class CalendarPicker : BottomSheetUnify() {
 
     companion object {
-        fun newInstance(): CalendarPicker {
+        private const val KEY_FILTER_ITEM = "key_filter_item"
+
+        fun newInstance(filterItem: DateFilterItem.Pick?): CalendarPicker {
             return CalendarPicker().apply {
                 isFullpage = true
                 clearContentPadding = true
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
+                filterItem?.let {
+                    arguments = Bundle().apply {
+                        putParcelable(KEY_FILTER_ITEM, it)
+                    }
+                }
             }
         }
     }
 
     var selectedDates: List<Date> = emptyList()
 
+    private val filterItem: DateFilterItem.Pick? by lazy {
+        arguments?.getParcelable(KEY_FILTER_ITEM)
+    }
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     private var calendarView: CalendarPickerView? = null
-    private val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(90L))
-    private val maxDate = Date(DateTimeUtil.getNNextDaysTimestamp(1L))
+    private val minDate by lazy {
+        filterItem?.calendarPickerMinDate ?: Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_365.toLong()))
+    }
+    private val maxDate by lazy {
+        filterItem?.calendarPickerMaxDate ?: Date()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setChild(inflater, container)
@@ -46,7 +66,6 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
         val child = inflater.inflate(R.layout.bottomsheet_stc_calendar_picker, container, false)
-        child.calendarPickerStc.calendarPickerView
         setChild(child)
         calendarView = child.calendarPickerStc.calendarPickerView
     }
@@ -56,6 +75,7 @@ class CalendarPicker : BottomSheetUnify() {
 
         setupView()
         setDefaultSelectedDate()
+        dismissBottomSheet()
     }
 
     fun setMode(mode: CalendarPickerView.SelectionMode): CalendarPicker {
@@ -193,6 +213,14 @@ class CalendarPicker : BottomSheetUnify() {
                 } else {
                     DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
                 }
+            }
+        }
+    }
+
+    private fun dismissBottomSheet() {
+        view?.post {
+            if (selectedDates.isNullOrEmpty() && isVisible) {
+                dismiss()
             }
         }
     }

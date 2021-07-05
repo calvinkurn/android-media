@@ -29,7 +29,7 @@ import com.tokopedia.deals.location_picker.mapper.DealsLocationMapper
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.typefactory.DealsSelectLocationTypeFactory
 import com.tokopedia.deals.location_picker.ui.typefactory.DealsSelectLocationTypeFactoryImpl
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layout_deals_search_location_bottomsheet.*
@@ -243,7 +243,7 @@ class DealsSelectLocationFragment(
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 loadData(page)
             }
@@ -320,7 +320,7 @@ class DealsSelectLocationFragment(
     }
 
     private fun getCurrentLocation() {
-        permissionCheckerHelper.checkPermission(this@DealsSelectLocationFragment, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+        permissionCheckerHelper.checkPermission(activity as Activity, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onNeverAskAgain(permissionText: String) {}
                     override fun onPermissionDenied(permissionText: String) {}

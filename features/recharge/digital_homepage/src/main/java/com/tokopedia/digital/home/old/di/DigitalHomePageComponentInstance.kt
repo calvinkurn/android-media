@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.di
+package com.tokopedia.digital.home.old.di
 
 import android.app.Application
 import com.tokopedia.abstraction.base.app.BaseMainApplication

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by fwidjaja on 16/03/20.
  */
-data class UsageSummaries (
+data class UsageSummaries(
         @field:SerializedName("description")
         val desc: String? = null,
 
@@ -16,5 +16,8 @@ data class UsageSummaries (
         val amountStr: String? = null,
 
         @field:SerializedName("amount")
-        val amount: Int? = null
+        val amount: Int? = null,
+
+        @field:SerializedName("currency_details_str")
+        val currencyDetailsStr: String = ""
 )

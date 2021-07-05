@@ -3,29 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/view_divider_1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Neutral_N75"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvObtainedAfterTransaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:text="@string/thank_obtained_after_transaction"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
         app:typographyType="body_3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4"
         app:typographyWeight="bold" />
 
     <LinearLayout

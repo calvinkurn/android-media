@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.domain.model.HotelCheckVoucher
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
@@ -19,8 +20,7 @@ class HotelCheckVoucherUseCase(private val context: Context, private val graphql
     fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         requestParams?.let {
             val variables = mapOf(PARAMNAME_DATA to it.parameters)
-            val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                    R.raw.promo_checkout_hotel_check_voucher),
+            val graphqlRequest = GraphqlRequest(PromoQuery.promoCheckoutHotelCheckVoucher(),
                     HotelCheckVoucher.Response::class.java, variables, false)
             graphqlUseCase.clearRequest()
             graphqlUseCase.addRequest(graphqlRequest)

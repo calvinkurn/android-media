@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.tokopedia.core.MaintenancePage$PlaceholderFragment">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/unify_globalerrors_connection"
+        android:layout_marginBottom="@dimen/margin_small"
+        tools:ignore="contentDescription"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N700"
+        android:gravity="center"
+        android:text="@string/msg_under_maintenance" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/checking"
+        app:loader_type="circular"
+        android:indeterminate="true"
+        android:layout_width="@dimen/unify_space_40"
+        android:layout_height="@dimen/unify_space_40" />
+
+</LinearLayout>

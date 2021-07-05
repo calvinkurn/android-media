@@ -29,14 +29,19 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     testOptions {
         unitTests {
-            includeAndroidResources = true
             returnDefaultValues = true
         }
     }
 
     packagingOptions {
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
         exclude 'META-INF/**'
     }
 
@@ -55,9 +60,12 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
     }
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

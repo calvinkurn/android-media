@@ -1,0 +1,68 @@
+[
+    {
+      "data": {
+        "TravelGetDynamicSubhomepage": [
+          {
+            "id": "574",
+            "product": "SUBHOMEPAGE",
+            "promoCode": "GAJIANSERU",
+            "description": "GAJIANSERU",
+            "cityID": "",
+            "title": "Title",
+            "subtitle": "Subtitle",
+            "prefix": "",
+            "prefixStyle": "",
+            "value": "20.000",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/11/24/66931192/66931192_0b11f218-6c8c-427c-a1d9-41cc1adcee55.jpg",
+            "webURL": "https://www.tokopedia.com/discovery/digital-gajian",
+            "appURL": "tokopedia://discovery/digital-gajian"
+          },
+          {
+            "id": "576",
+            "product": "SUBHOMEPAGE",
+            "promoCode": "",
+            "description": "Promo KFC Buy1Get1",
+            "cityID": "",
+            "title": "Title",
+            "subtitle": "Subtitle",
+            "prefix": "",
+            "prefixStyle": "",
+            "value": "20.000",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/11/24/66931192/66931192_8f96d717-0d06-43e3-bbac-de388046648d.jpg",
+            "webURL": "tokopedia://deals/kfc-buy-1-get-1-bucker-ayam-9-pcs-44387",
+            "appURL": "tokopedia://deals/kfc-buy-1-get-1-bucker-ayam-9-pcs-44387"
+          },
+          {
+            "id": "580",
+            "product": "SUBHOMEPAGE",
+            "promoCode": "",
+            "description": "Online home workout doogether",
+            "cityID": "",
+            "title": "Title",
+            "subtitle": "Subtitle",
+            "prefix": "",
+            "prefixStyle": "",
+            "value": "20.000",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/11/26/66931192/66931192_5ba11dc2-5b0e-489a-bfaf-d2f6fd07e728.jpg",
+            "webURL": "tokopedia://events",
+            "appURL": "tokopedia://events"
+          },
+          {
+            "id": "522",
+            "product": "SUBHOMEPAGE",
+            "promoCode": "KERETAYUK",
+            "description": "KERETAYUK",
+            "cityID": "",
+            "title": "Title",
+            "subtitle": "Subtitle",
+            "prefix": "",
+            "prefixStyle": "",
+            "value": "20.000",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2020/11/10/66931192/66931192_9238d02f-f26b-4a3e-9547-7db1b7bd0c96.jpg",
+            "webURL": "https://www.tokopedia.com/promo/digital-cashback/",
+            "appURL": "tokopedia://promo/digital-cashback/"
+          }
+        ]
+      }
+    }
+]

@@ -8,8 +8,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#00000000">
+        android:layout_height="wrap_content">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -28,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    app:contentScrim="@color/white"
+                    app:contentScrim="@color/Unify_N0"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                     app:title="">
 
@@ -44,10 +43,10 @@
                         android:id="@+id/event_pdp_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:elevation="@dimen/dp_4"
+                        android:elevation="@dimen/spacing_lvl2"
                         android:gravity="top"
-                        app:contentInsetLeft="@dimen/dp_0"
-                        app:contentInsetStart="@dimen/dp_0"
+                        app:contentInsetLeft="@dimen/unify_space_0"
+                        app:contentInsetStart="@dimen/unify_space_0"
                         app:contentInsetStartWithNavigation="@dimen/dp_0"
                         app:elevation="@dimen/dp_4"
                         app:layout_collapseMode="pin"

@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewreply.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -15,30 +16,31 @@ class UpdateSellerResponseUseCase @Inject constructor(
     companion object {
         private const val FEEDBACK_ID = "feedbackID"
         private const val RESPONSE_MESSAGE = "responseMessage"
-
-        private val gqlQuery = """
-            mutation update_review_reply(${'$'}feedbackID: Int!, ${'$'}responseMessage: String!) {
-                productrevUpdateSellerResponse(feedbackID: ${'$'}feedbackID, responseMessage: ${'$'}responseMessage) {
+        const val UPDATE_REVIEW_REPLY_MUTATION_CLASS_NAME = "UpdateReviewReply"
+        const val UPDATE_REVIEW_REPLY_MUTATION = """
+            mutation update_review_reply(${'$'}feedbackID: String!, ${'$'}responseMessage: String!) {
+                productrevUpdateSellerResponseV2(feedbackID: ${'$'}feedbackID, responseMessage: ${'$'}responseMessage) {
                     success
                     data {
-                      shopID
-                      feedbackID
-                      responseBy
+                      shopIDStr
+                      feedbackIDStr
+                      responseByStr
                       responseMessage
                     }
                   }
             }
-        """.trimIndent()
+        """
 
         @JvmStatic
-        fun createParams(productId: Int, responseMessage: String): Map<String, Any> =
-                mapOf(FEEDBACK_ID to productId, RESPONSE_MESSAGE to responseMessage)
+        fun createParams(feedbackID: String, responseMessage: String): Map<String, Any> =
+                mapOf(FEEDBACK_ID to feedbackID, RESPONSE_MESSAGE to responseMessage)
     }
 
     var params = mapOf<String, Any>()
 
+    @GqlQuery(UPDATE_REVIEW_REPLY_MUTATION_CLASS_NAME, UPDATE_REVIEW_REPLY_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse {
-        val gqlRequest = GraphqlRequest(gqlQuery, ReviewReplyUpdateResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(UpdateReviewReply.GQL_QUERY, ReviewReplyUpdateResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {

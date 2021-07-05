@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:id="@+id/tg_chips_form_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N400"
+        app:typographyType="body_3"
+        />
+
+    <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
+        android:id="@+id/chip_event_form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:id="@+id/tg_chips_form_event_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_R600"
+        app:typographyType="body_3"
+        android:visibility="invisible"
+        />
+
+</LinearLayout>

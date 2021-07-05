@@ -1,16 +1,14 @@
 package com.tokopedia.digital.product.view.presenter;
 
-import com.tokopedia.common_digital.product.presentation.model.Operator;
-
-import java.util.List;
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 
 /**
  * @author anggaprasetiyo on 4/26/17.
  */
 
 public interface IProductDigitalPresenter {
-
-    String TAG = IProductDigitalPresenter.class.getSimpleName();
 
     void processGetCategoryAndBannerData(
             String categoryId, String operatorId, String productId, String clientNumber
@@ -20,23 +18,6 @@ public interface IProductDigitalPresenter {
 
     void processStateDataToReRender();
 
-    void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode);
-
-    void processPulsaBalanceUssdResponse(String result,int selectedSim);
-
-    String getDeviceMobileNumber(int selectedSim);
-
-    List<Operator> getSelectedUssdOperatorList(int selectedSim);
-
-    void removeUssdTimerCallback();
-
-    String getUssdPhoneNumberFromCache(int selectedSim);
-
-    void storeUssdPhoneNumber(int selectedSim,String number);
-
-    Operator getSelectedUssdOperator(int selectedSim);
-
-    boolean isCarrierSignalsNotAvailable(String carrierName);
-
-    void renderCheckPulsa();
+    void addToCart(DigitalCheckoutPassData digitalCheckoutPassData, RequestBodyIdentifier digitalIdentifierParam,
+                   DigitalSubscriptionParams digitalSubscriptionParams);
 }

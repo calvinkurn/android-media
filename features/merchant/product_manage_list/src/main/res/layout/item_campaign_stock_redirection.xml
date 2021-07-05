@@ -29,7 +29,7 @@
         android:layout_marginEnd="@dimen/layout_lvl5"
         android:maxLines="@integer/product_manage_campaign_stock_text_max_lines"
         android:text="@string/product_manage_campaign_stock_redirection_title"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:gravity="center"
         app:typographyType="heading_5"
         app:layout_constraintTop_toBottomOf="@id/img_campaign_stock_redirection"/>
@@ -45,7 +45,7 @@
         android:layout_marginEnd="@dimen/product_manage_campaign_stock_redirection_desc_margin"
         android:maxLines="@integer/product_manage_campaign_stock_text_max_lines"
         android:text="@string/product_manage_campaign_stock_redirection_desc"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:gravity="center"
         app:typographyType="body_3"
         app:typographyWeight="reguler"

@@ -11,7 +11,7 @@ public class DeleteChatUiModel {
 
     @SerializedName("msg_id")
     @Expose
-    private int msgId;
+    private long msgId;
     @SerializedName("is_success")
     @Expose
     private int isSuccess;
@@ -19,7 +19,7 @@ public class DeleteChatUiModel {
     @Expose
     private String detailResponse;
 
-    public int getMsgId() {
+    public long getMsgId() {
         return msgId;
     }
 

@@ -29,7 +29,6 @@ import javax.inject.Named
  * Author errysuprayogi on 08,November,2019
  */
 
-@CreateAdsScope
 @Module
 class CreateAdsModule {
 

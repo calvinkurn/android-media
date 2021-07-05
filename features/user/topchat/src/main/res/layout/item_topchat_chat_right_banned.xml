@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_msg_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llRoleUser"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlSymmetry"
+        tools:visibility="visible">
+
+        <include layout="@layout/item_topchat_header_role_user" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_ban_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginEnd="@dimen/dp_topchat_12"
+        android:layout_marginRight="@dimen/dp_topchat_12"
+        android:gravity="right"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/llRoleUser"
+        tools:ignore="RtlHardcoded">
+
+        <ImageView
+            android:id="@+id/iv_block_icon"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/dp_topchat_13"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_topchat_block_grey" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/dp_topchat_6"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:includeFontPadding="false"
+            android:text="@string/title_topchat_sender_chat_banned"
+            android:textColor="@color/Unify_N700_32"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_block_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_1"
+            tools:ignore="RtlHardcoded" />
+
+        <LinearLayout
+            android:id="@+id/llStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/dp_topchat_13"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvMessage">
+
+            <ImageView
+                android:id="@+id/ivCheckMark"
+                android:layout_width="@dimen/dp_topchat_14"
+                android:layout_height="@dimen/dp_topchat_14"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/spacing_lvl1"
+                android:layout_marginRight="@dimen/spacing_lvl1"
+                tools:srcCompat="@drawable/ic_chat_read" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_3"
+                tools:text="11:00" />
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_topchat_6"
+            android:paddingBottom="@dimen/dp_topchat_10"
+            android:text="@string/title_topchat_check_tnc"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintStart_toStartOf="@+id/tvMessage"
+            app:layout_constraintTop_toBottomOf="@+id/tvMessage"
+            app:typographyType="body_3"
+            tools:ignore="RtlHardcoded,RtlSymmetry"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+</androidx.constraintlayout.widget.ConstraintLayout>

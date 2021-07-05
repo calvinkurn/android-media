@@ -1,24 +1,21 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -35,6 +32,11 @@ import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.sessioncommon.constants.SessionConstants;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -52,29 +54,44 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
 
+    private static final String REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF = "android_user_setting_otp_push_notif";
+    private static final String REMOTE_CONFIG_SETTING_BIOMETRIC = "android_user_fingerprint_login_new";
+
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
     private Integer PROJECT_ID = 7;
 
+    private RemoteConfigInstance remoteConfigInstance;
+
     private View personalDataMenu;
     private View addressMenu;
     private View passwordMenu;
+    private View biometricMenu;
     private View pinMenu;
+    private View pushNotifMenu;
     private View kycSeparator;
     private View kycMenu;
     private View sampaiMenu;
     private View bankAccount;
     private View mainView;
     private View sampaiSeparator;
-    private ProgressBar progressBar;
+    private LoaderUnify progressBar;
+
+    private boolean isFromNewAccount = false;
+
+    private LinearLayout accountSection;
+
+    FirebaseRemoteConfigImpl firebaseRemoteConfig;
 
     @Inject
     AccountSetting.Presenter presenter;
 
-    public static Fragment createInstance() {
-        return new AccountSettingFragment();
+    public static Fragment createInstance(Bundle bundle) {
+        Fragment fragment = new AccountSettingFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -82,6 +99,14 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onAttach(context);
         userSession = new UserSession(getActivity());
         accountAnalytics = new AccountAnalytics(getActivity());
+        firebaseRemoteConfig = new FirebaseRemoteConfigImpl(context);
+    }
+
+    private AbTestPlatform getAbTestPlatform() {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = new RemoteConfigInstance(getActivity().getApplication());
+        }
+        return remoteConfigInstance.getABTestPlatform();
     }
 
     @Nullable
@@ -92,7 +117,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         personalDataMenu = view.findViewById(R.id.label_view_identity);
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
+        biometricMenu = view.findViewById(R.id.label_view_biometric);
         pinMenu = view.findViewById(R.id.label_view_pin);
+        pushNotifMenu = view.findViewById(R.id.label_view_push_notif);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
         bankAccount = view.findViewById(R.id.label_view_account_bank);
@@ -100,6 +127,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         mainView = view.findViewById(R.id.main_view);
         progressBar = view.findViewById(R.id.progress_bar);
         kycSeparator = view.findViewById(R.id.separator_kyc);
+        accountSection = view.findViewById(R.id.fragment_account_setting_account_section);
         return view;
     }
 
@@ -108,6 +136,18 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         super.onViewCreated(view, savedInstanceState);
         setMenuClickListener(view);
         getMenuToggle();
+        checkFingerprintStatus();
+        showSignInNotif();
+        checkForNewAccount();
+    }
+
+    private void checkForNewAccount(){
+        if(getArguments() != null){
+            if(getArguments().containsKey(ApplinkConstInternalGlobal.PARAM_NEW_HOME_ACCOUNT)) {
+                isFromNewAccount = true;
+                accountSection.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -166,8 +206,15 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         showError(getString(R.string.error_no_internet_connection));
     }
 
-    private void setMenuClickListener(View view) {
+    private void checkFingerprintStatus() {
+        if(showFingerprintMenu() && rolloutFingerprint()) {
+            biometricMenu.setVisibility(View.VISIBLE);
+        } else {
+            biometricMenu.setVisibility(View.GONE);
+        }
+    }
 
+    private void setMenuClickListener(View view) {
         personalDataMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID));
         addressMenu.setOnClickListener(view1 ->
@@ -176,12 +223,16 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
         pinMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_PIN));
+        pushNotifMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_PUSH_NOTIF));
         kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
         bankAccount.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_BANK_ACCOUNT_ID));
         sampaiMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_SAMPAI_ID));
+        biometricMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_BIOMETRIC));
     }
 
     @Override
@@ -207,6 +258,13 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             case SettingConstant.SETTING_PIN:
                 accountAnalytics.eventClickPinSetting();
                 onPinMenuClicked();
+                break;
+            case SettingConstant.SETTING_PUSH_NOTIF:
+                accountAnalytics.eventClickSignInByPushNotifSetting();
+                onPushNotifClicked();
+                break;
+            case SettingConstant.SETTING_BIOMETRIC:
+                onBiometricSettingClicked();
                 break;
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                 accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -244,20 +302,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         }
     }
 
-    private void intentToAddPassword() {
-        if (getActivity() != null) {
-            startActivityForResult(RouteManager.getIntent(getActivity(),
-                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_ADD_PASSWORD);
-        }
-    }
-
     private void gotoAccountBank() {
         if (getActivity() != null) {
-            if (userSession.hasPassword()) {
-                startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
-            } else {
-                showNoPasswordDialog();
-            }
+            startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
         }
     }
 
@@ -274,27 +321,50 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     @Override
     public void onSuccessGetConfig(AccountSettingConfig accountSettingConfig) {
-        personalDataMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
-        addressMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isAddressEnabled() ? View.VISIBLE : View.GONE);
-        passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isPasswordEnabled() ? View.VISIBLE : View.GONE);
-        kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-        kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-        sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
-                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
-        sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
-                isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+        if(isFromNewAccount){
+            kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+            kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        }
+        else {
+            personalDataMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isPeopleDataEnabled() ? View.VISIBLE : View.GONE);
+            addressMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isAddressEnabled() ? View.VISIBLE : View.GONE);
+            passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isPasswordEnabled() ? View.VISIBLE : View.GONE);
+            kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+            kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                    .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+            sampaiMenu.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                    isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+            sampaiSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig().
+                    isTokopediaCornerEnabled() ? View.VISIBLE : View.GONE);
+
+            showSignInNotif();
+        }
         hideLoading();
+    }
+
+    private void showSignInNotif() {
+        boolean isShowSignInNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF, false);
+        pushNotifMenu.setVisibility(isShowSignInNotif ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean showFingerprintMenu() {
+        return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_BIOMETRIC, true);
+    }
+
+    private boolean rolloutFingerprint() {
+        return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_SETTING_FINGERPRINT).isEmpty();
     }
 
     @Override
     public void logUnknownError(Throwable e) {
         try {
-            if (!BuildConfig.DEBUG) Crashlytics.logException(e);
+            if (!BuildConfig.DEBUG) FirebaseCrashlytics.getInstance().recordException(e);
         } catch (IllegalStateException ex) {
             ex.printStackTrace();
         }
@@ -320,7 +390,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             dialog.setTitle(getString(R.string.account_home_add_phone_title));
             dialog.setDescription(getString(R.string.account_home_add_phone_message));
             dialog.setPrimaryCTAText(getString(R.string.account_home_add_phone_title));
-            dialog.setSecondaryCTAText(getString(R.string.cancel));
+            dialog.setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel));
 
             dialog.setPrimaryCTAClickListener(() -> {
                 goToPinOnboarding();
@@ -337,22 +407,11 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         }
     }
 
-    private void showNoPasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getResources().getString(R.string.error_bank_no_password_title));
-        builder.setMessage(getResources().getString(R.string.error_bank_no_password_content));
-        builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), (DialogInterface dialogInterface, int i) -> {
-            intentToAddPassword();
-            dialogInterface.dismiss();
-        });
-        builder.setNegativeButton(getResources().getString(R.string.error_no_password_no), (DialogInterface dialogInterface, int i) -> {
-            dialogInterface.dismiss();
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.colorSheetTitle));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
+    private void onBiometricSettingClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.BIOMETRIC_SETTING);
+    }
+
+    private void onPushNotifClicked() {
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
     }
 }

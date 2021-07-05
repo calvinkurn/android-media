@@ -31,10 +31,27 @@ query GamiLuckyHome($campaignSlug: String!, $page: String!) {
       imageURL
       text
     }
+    bottomSheetButtonText
+    prizeDetailList {
+      isSpecial
+      imageURL
+      text
+    }
+    prizeDetailListButton {
+      text
+      url
+      applink
+    }
     reminder {
       text
       enableText
       disableText
+      isShow
+      textSet
+      textUnset
+      buttonSet
+      buttonUnset
     }
+    infoURL
   }
 }

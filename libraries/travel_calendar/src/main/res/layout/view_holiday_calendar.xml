@@ -7,9 +7,9 @@
         android:id="@+id/recycler_view_holiday"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_15"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginRight="@dimen/dp_15"
-        android:layout_marginBottom="@dimen/dp_15" />
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4" />
 
 </merge>

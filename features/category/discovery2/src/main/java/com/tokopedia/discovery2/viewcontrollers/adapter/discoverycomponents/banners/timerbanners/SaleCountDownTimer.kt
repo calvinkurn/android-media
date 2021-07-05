@@ -1,38 +1,43 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners
 
 import android.os.CountDownTimer
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 
-class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000) : CountDownTimer(millisInFuture, countDownInterval) {
-
-    val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
+class SaleCountDownTimer(millisInFuture: Long, countDownInterval: Long = 1000,
+                         private val showDays: Boolean = false,
+                         private val isCurrentTimer: Boolean = true,
+                         private val getTimerData: (timerDataModel: TimerDataModel) -> Unit) :
+        CountDownTimer(millisInFuture, countDownInterval) {
     private val timeDiffModel = TimerDataModel()
-    private val secondsInMilli: Long = 1000
-    private val minutesInMilli = secondsInMilli * 60
-    private val hoursInMilli = minutesInMilli * 60
-    private val daysInMilli = hoursInMilli * 24
+    private var days = 0
 
     override fun onTick(millisUntilFinished: Long) {
-        var timeLeftInMillis = millisUntilFinished
+        timeDiffModel.timeFinish = false
+        if (isCurrentTimer) {
+            var seconds = (millisUntilFinished / 1000)
+            var minutes = seconds / 60
+            var hours = minutes / 60
 
-        timeDiffModel.days = timeLeftInMillis / daysInMilli
-        timeLeftInMillis %= daysInMilli
-
-        timeDiffModel.hours = timeLeftInMillis / hoursInMilli
-        timeLeftInMillis %= hoursInMilli
-
-        timeDiffModel.minutes = timeLeftInMillis / minutesInMilli
-        timeLeftInMillis %= minutesInMilli
-
-        timeDiffModel.seconds = timeLeftInMillis / secondsInMilli
-        mutableTimeDiffModel.value = timeDiffModel
+            if (showDays) {
+                days = (hours / 24).toInt()
+                hours %= 24
+            }
+            minutes %= 60
+            seconds %= 60
+            if (showDays) timeDiffModel.days = days
+            timeDiffModel.hours = hours.toInt()
+            timeDiffModel.minutes = minutes.toInt()
+            timeDiffModel.seconds = seconds.toInt()
+            getTimerData.invoke(timeDiffModel)
+        }
     }
 
     override fun onFinish() {
-        timeDiffModel.days = 0L
-        timeDiffModel.hours = 0L
-        timeDiffModel.minutes = 0L
-        timeDiffModel.seconds = 0L
+        timeDiffModel.days = 0
+        timeDiffModel.hours = 0
+        timeDiffModel.minutes = 0
+        timeDiffModel.seconds = 0
+        timeDiffModel.timeFinish = true
+        getTimerData.invoke(timeDiffModel)
     }
 }

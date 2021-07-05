@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
  * A class dagger module for handling viewModel
  */
 @Module
-@WishlistScope
 abstract class ViewModelModule {
     @Binds
     @WishlistScope

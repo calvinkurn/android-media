@@ -31,16 +31,6 @@ class QuickCouponViewModel(val application: Application, private val components:
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    init {
-        initDaggerInject()
-    }
-
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
     fun getCouponStatus() = couponAppliedStatus
     fun getComponentPosition() = componentPosition

@@ -13,7 +13,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
@@ -45,7 +45,7 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.googleServices
@@ -58,6 +58,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.mediaCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
@@ -65,7 +66,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -85,13 +86,17 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerMenuCommon)
+    implementation project(rootProject.ext.features.homeAccountUser)
+    implementation project(rootProject.ext.features.internalReview)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.logger)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.iconNotification
     implementation rootProject.ext.unifyDependencies.global_error
@@ -104,13 +109,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.auth
@@ -120,16 +125,14 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
-    implementation(rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.firebase.crashlytics
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    implementation rootProject.ext.analyticsDependencies.moengage
+    implementation project(rootProject.ext.features.moengageWrapper)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
     } else {
@@ -154,6 +157,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
@@ -168,10 +172,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-
-    debugImplementation (rootProject.ext.testDependencies.fragmentTest, {
-        exclude group: 'androidx.test', module: 'core'
-    })
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

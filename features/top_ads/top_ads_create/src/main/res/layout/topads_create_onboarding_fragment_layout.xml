@@ -5,21 +5,21 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical">
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/slideImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:imageDpiSupportType="singleDpi"
         app:layout_constraintBottom_toTopOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/topads_onboard_slide1" />
+        app:remoteFileName="topads_onboard_slide1.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/autoads_lottie_title1"
         app:layout_constraintBottom_toTopOf="@id/desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,18 +34,19 @@
         android:gravity="center_horizontal"
         android:paddingStart="@dimen/dp_32"
         android:paddingEnd="@dimen/dp_32"
-        android:text="@string/autoads_lottie_desc1"
         app:layout_constraintBottom_toTopOf="@id/dotImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_3" />
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/dotImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image"
         android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

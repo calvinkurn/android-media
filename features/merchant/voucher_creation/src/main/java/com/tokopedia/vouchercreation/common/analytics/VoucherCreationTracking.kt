@@ -150,6 +150,30 @@ object VoucherCreationTracking {
                 label = "",
                 screenName = "",
                 userId = userId,
+                currentSite = when(socmedType) {
+                    SocmedType.COPY_LINK -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.INSTAGRAM -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.FACEBOOK -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.FACEBOOK_MESSENGER -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.WHATSAPP -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.LINE -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.TWITTER -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.LAINNYA -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.BROADCAST -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER_APP
+                    else -> ""
+                },
+                businessUnit = when(socmedType) {
+                    SocmedType.COPY_LINK -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.INSTAGRAM -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.FACEBOOK -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.FACEBOOK_MESSENGER -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.WHATSAPP -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.LINE -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.TWITTER -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.LAINNYA -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.BROADCAST -> VoucherCreationAnalyticConstant.Values.COMMUNICATION
+                    else -> ""
+                },
                 pageSource =
                         when {
                             socmedType != SocmedType.COPY_LINK -> null
@@ -245,12 +269,28 @@ object VoucherCreationTracking {
         )
     }
 
+    fun sendVoucherRecommendationStatus(label: String, shopId: String, userId: String) {
+        val map = mutableMapOf<String, Any>(
+                VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_MERCHANT_VOUCHER,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.CREATE,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to VoucherCreationAnalyticConstant.EventAction.Click.CREATE_VOUCHER,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+                VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId,
+                VoucherCreationAnalyticConstant.Key.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
     private fun sendGeneralTracking(event: String,
                                     category: String,
                                     action: String,
                                     label: String,
                                     screenName: String,
                                     userId: String,
+                                    currentSite: String = VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
+                                    businessUnit: String = VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
                                     pageSource: String? = null) {
         val map = mutableMapOf<String, Any>(
                 VoucherCreationAnalyticConstant.Key.EVENT to event,
@@ -258,9 +298,9 @@ object VoucherCreationTracking {
                 VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
                 VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
                 VoucherCreationAnalyticConstant.Key.SCREEN_NAME to screenName,
-                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to currentSite,
                 VoucherCreationAnalyticConstant.Key.USER_ID to userId,
-                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to businessUnit
         )
         pageSource?.run {
             map.put(VoucherCreationAnalyticConstant.Key.PAGE_SOURCE, this)

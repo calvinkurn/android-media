@@ -4,7 +4,6 @@ import androidx.lifecycle.Observer
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentActivity
 import android.text.Html
@@ -21,24 +20,21 @@ import com.tkpd.library.utils.ImageHandler
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.common.view.DoubleTextView
 import com.tokopedia.buyerorder.detail.data.Color
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.list.common.OrderListContants
-import com.tokopedia.buyerorder.list.data.ActionButton
 import com.tokopedia.buyerorder.list.data.MetaData
 import com.tokopedia.buyerorder.list.data.Order
 import com.tokopedia.buyerorder.list.data.OrderCategory
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListViewModel
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListUiModel
 import com.tokopedia.buyerorder.list.view.viewstate.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
+import com.tokopedia.utils.view.DoubleTextView
 
 class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics,
-                          var menuListener: OnMenuItemListener?, var buttonListener: OnActionButtonListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {
+                          var menuListener: OnMenuItemListener?) : AbstractViewHolder<OrderListUiModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -63,8 +59,6 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var paymentAvatar = itemView?.findViewById<ImageView>(R.id.status_shop_avatar)
     var totalLabel = itemView?.findViewById<TextView>(R.id.total_price_label)
     var total = itemView?.findViewById<TextView>(R.id.total)
-    var leftButton = itemView?.findViewById<TextView>(R.id.left_button)
-    var rightButton = itemView?.findViewById<TextView>(R.id.right_button)
     var parentMetadataLayout = itemView?.findViewById<LinearLayout>(R.id.metadata)
 
     var cornerRadiusValue: Float = 9f
@@ -74,7 +68,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var orderCategory: String = ""
     var appLink: String = ""
 
-    override fun bind(element: OrderListViewModel) {
+    override fun bind(element: OrderListUiModel) {
         setObservers(element)
         orderCategory = element.order.category()
         appLink = element.order.appLink
@@ -88,7 +82,6 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
         parentMetadataLayout?.removeAllViews()
         element.setViewData()
-        element.setActionButtonData()
         element.setDotMenuVisibility()
         if (element.order.items().size > 0) {
             ImageHandler.loadImageThumbs(itemView.context, imgShopAvatar, element.order.items()[0].imageUrl())
@@ -97,16 +90,12 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
 
     }
 
-    private fun setObservers(element: OrderListViewModel) {
+    private fun setObservers(element: OrderListUiModel) {
         element.orderListLiveData.removeObservers(itemView.context as FragmentActivity)
         element.orderListLiveData.observe(itemView.context as FragmentActivity, Observer {
             when (it) {
                 is DotMenuVisibility -> {
                     orderListBtnOverflow?.visibility = it.visibility
-                }
-                is SetActionButtonData -> {
-                    setButtonData(element.order, leftButton, it.leftVisibility, it.leftActionButton)
-                    setButtonData(element.order, rightButton, it.rightVisibility, it.rightActionButton)
                 }
                 is SetCategoryAndTitle -> {
                     setCategoryAndTitle(it.title, it.categoryName)
@@ -307,30 +296,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
     }
 
-    private fun setButtonData(order: Order, button: TextView?, visibility: Int, actionButton: ActionButton?) {
-        button?.visibility = visibility
-        if (!TextUtils.isEmpty(actionButton?.label())) {
-            button?.text = actionButton?.label()
-            if (actionButton?.color() != null) {
-                if (!TextUtils.isEmpty(actionButton.color().background())) {
-                    button?.setBackgroundColor(android.graphics.Color.parseColor(actionButton.color().background()))
-                }
-                if (!TextUtils.isEmpty(actionButton.color().textColor())) {
-                    button?.setTextColor(android.graphics.Color.parseColor(actionButton.color().textColor()))
-                }
-            }
-            button?.setOnClickListener {
-                buttonListener?.handleActionButtonClick(order, actionButton)
-            }
-        }
-    }
-
-
     interface OnMenuItemListener {
         fun startUri(uri: String)
-    }
-
-    interface OnActionButtonListener {
-        fun handleActionButtonClick(order: Order, actionButton: ActionButton?)
     }
 }

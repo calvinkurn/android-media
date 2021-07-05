@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,14 +16,11 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
-import com.tokopedia.home.account.AccountConstants;
-import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.DaggerTkpdPaySettingComponent;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
-import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -49,7 +45,6 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     WalletPref walletPref;
 
     private AccountAnalytics accountAnalytics;
-    private VccUserStatus vccUserStatus;
     private UserSession pvtUserSession;
 
     public static Fragment createInstance() {
@@ -87,14 +82,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
         WalletModel walletModel = walletPref.retrieveWallet();
         if (walletModel != null) {
-            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID,
-                    walletModel.getText()));
-        }
-
-        vccUserStatus = walletPref.retrieveVccUserStatus();
-        if (vccUserStatus != null && vccUserStatus.getTitle() != null && !vccUserStatus.getTitle().isEmpty()) {
-            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_OVO_PAY_LATER_ID,
-                    vccUserStatus.getTitle()));
+            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID, walletModel.getText()));
         }
 
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
@@ -153,21 +141,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                             ApplinkConst.WebViewUrl.SALDO_DETAIL));
                 }
                 break;
-            case SettingConstant.SETTING_OVO_PAY_LATER_ID:
-                accountAnalytics.eventClickOVOPayLater(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
-                        AccountConstants.Analytics.OVO_PAY_LATER_CLICK,
-                        String.format(AccountConstants.Analytics.OVO_PAY_LATER_LABEL, vccUserStatus.getStatus()));
-                String url = vccUserStatus.getRedirectionUrl();
-                if (URLUtil.isValidUrl(url)) {
-                    RouteManager.route(getActivity(), String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW, url));
-                } else {
-                    RouteManager.route(getActivity(), String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,
-                            AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
-                }
 
-                break;
             case SettingConstant.SETTING_DEBIT_INSTANT:
                 String debitInstantUrl = walletPref.retrieveDebitInstantUrl();
                 if (!TextUtils.isEmpty(debitInstantUrl)) {

@@ -12,7 +12,8 @@ abstract class TypedAdapterDelegate<T: ST, ST: Any, VH : RecyclerView.ViewHolder
     @Suppress("UNCHECKED_CAST")
     val itemClass: Class<T> = ((javaClass.genericSuperclass as ParameterizedType).actualTypeArguments.first() as Class<T>)
 
-    override fun isForViewType(itemList: List<ST>, position: Int): Boolean {
-        return itemList[position]::class.java == itemClass
+    override fun isForViewType(itemList: List<ST>, position: Int, isFlexibleType: Boolean): Boolean {
+        return if (isFlexibleType) itemClass.isAssignableFrom(itemList[position]::class.java)
+        else itemList[position]::class.java == itemClass
     }
 }

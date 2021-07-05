@@ -7,7 +7,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.user.session.UserSessionInterface
 
-class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,
+data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,
                              private val partialTopAdsInfo: PartialSettingResponse,
                              private val userSession: UserSessionInterface): SettingSuccess() {
 
@@ -30,7 +30,7 @@ class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse
     }
     val shopStatusUiModel by lazy {
         (partialShopInfo as? PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo)?.let {
-            ShopStatusUiModel(it.shopStatusType, userSession)
+            ShopStatusUiModel(it.userShopInfoWrapper, userSession)
         }
     }
 

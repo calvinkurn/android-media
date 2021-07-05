@@ -53,15 +53,15 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
             voucherAdapter.setData(element?.voucherData ?: listOf())
         }
     }
-
+    
     private fun showLoading() = with(view) {
         rv_merchant_voucher?.hide()
-        item_shimmer_shop_voucher?.show()
+        shimmer_shop_voucher_container?.show()
     }
 
     private fun hideLoading() = with(view) {
         rv_merchant_voucher?.show()
-        item_shimmer_shop_voucher?.hide()
+        shimmer_shop_voucher_container?.hide()
     }
 
     private fun getComponentTrackData(element: ProductMerchantVoucherDataModel?) = ComponentTrackDataModel(element?.type

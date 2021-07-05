@@ -42,12 +42,12 @@ import com.tokopedia.editshipping.ui.customview.CourierView
 import com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
 import com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
 import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
-import com.tokopedia.editshipping.util.ARGUMENT_DATA_TOKEN
-import com.tokopedia.editshipping.util.LABEL_VALIDATION_BO
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.editshipping.util.EditShippingConstant.ARGUMENT_DATA_TOKEN
+import com.tokopedia.editshipping.util.EditShippingConstant.LABEL_VALIDATION_BO
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -71,7 +71,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     var fragmentShippingHeader: ShippingHeaderLayout? = null
     var addressLayout: ShippingAddressLayout? = null
     var submitButtonCreateShop: TextView? = null
-    private var chargeBoTicker: Ticker? = null
     private var editShippingPresenter: EditShippingPresenter? = null
     private var mainProgressDialog: ProgressDialog? = null
     private var progressDialog: ProgressDialog? = null
@@ -112,8 +111,14 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         } else data
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (bottomSheetValidation?.isVisible == true) {
+            bottomSheetValidation?.dismiss()
+        }
+    }
+
     private fun hideAllView() {
-        chargeBoTicker?.visibility = View.GONE
         fragmentShippingHeader?.visibility = View.GONE
         addressLayout?.visibility = View.GONE
         fragmentShipingMainLayout?.visibility = View.GONE
@@ -136,7 +141,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         editShippingPresenter = EditShippingPresenterImpl(this)
         inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         userSession = UserSession(activity)
-        chargeBoTicker = mainView.findViewById(R.id.ticker_charge_bo)
         fragmentShipingMainLayout = mainView.findViewById<View>(R.id.fragment_shipping_main_layout) as LinearLayout
         fragmentShippingHeader = mainView.findViewById<View>(R.id.fragment_shipping_header) as  com.tokopedia.editshipping.ui.customview.ShippingHeaderLayout
         addressLayout = mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
@@ -298,7 +302,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE) submitButtonCreateShop?.visibility = View.VISIBLE else if (arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             submitButtonCreateShop?.visibility = View.VISIBLE
         } else submitButtonCreateShop?.visibility = View.GONE
-        renderTickerChargeBo()
     }
 
     override fun showLoading() {
@@ -467,32 +470,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         } else {
             outState?.putParcelable(CURRENT_COURIER_MODEL,
                     editShippingPresenter?.shopModel)
-        }
-    }
-
-    private fun renderTickerChargeBo() {
-        val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(activity?.applicationContext)
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TICKER_CHARGE_BO, false)) {
-            chargeBoTicker?.visibility = View.VISIBLE
-            chargeBoTicker?.tickerTitle = getString(R.string.charge_bo_ticker_title)
-            chargeBoTicker?.setHtmlDescription(getString(R.string.charge_bo_ticker_content))
-            chargeBoTicker?.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(charSequence: CharSequence) {
-                    userSession?.userId?.let { EditShippingAnalytics.eventClickonTickerShippingEditor(it) }
-                    goToChargeBoWebview()
-                }
-
-                override fun onDismiss() {
-                    //no-op
-                }
-            })
-        }
-    }
-
-    private fun goToChargeBoWebview() {
-        if (activity != null) {
-            val intent = RouteManager.getIntent(activity, EditShippingUrl.APPLINK_BEBAS_ONGKIR)
-            this.startActivity(intent)
         }
     }
 

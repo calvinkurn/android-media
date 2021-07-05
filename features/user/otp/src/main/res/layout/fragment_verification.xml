@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:visibility="visible">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -33,10 +35,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/prefix_miscall_margin_left"
-                android:layout_marginLeft="@dimen/prefix_miscall_margin_left"
                 android:layout_marginTop="@dimen/prefix_miscall_margin_top"
                 android:text="@string/cotp_miscall_verification_phone_code"
-                android:textColor="@color/Neutral_N0"
+                android:textColor="@color/Unify_N0"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/method_icon"
                 app:layout_constraintTop_toTopOf="@+id/method_icon"
@@ -58,8 +59,7 @@
                 app:pin_count="6"
                 app:pin_primary_action_text="@string/button_verify"
                 app:pin_title="@string/enter_verification_code"
-                app:pin_type="shown"/>
-
+                app:pin_type="shown" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
@@ -67,7 +67,13 @@
         android:id="@+id/loader"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
-</RelativeLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_otp"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/CustomActionBar" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

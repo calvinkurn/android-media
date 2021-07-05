@@ -12,7 +12,7 @@
         android:layout_height="@dimen/dp_8"
         tools:visibility="visible"
         android:visibility="gone"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_4"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
             android:layout_marginStart="@dimen/dp_4"
             app:layout_constraintEnd_toStartOf="@+id/custom_arrow"
@@ -59,7 +59,7 @@
             android:id="@+id/custom_desc"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/custom_arrow"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,5 +87,5 @@
         android:layout_height="@dimen/dp_8"
         tools:visibility="visible"
         android:visibility="gone"
-        android:background="@color/grey_separator" />
+        android:background="@color/Unify_N50" />
 </LinearLayout>

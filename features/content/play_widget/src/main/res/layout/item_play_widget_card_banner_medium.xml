@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/play_widget_card_medium_width"
+    android:layout_height="@dimen/play_widget_card_medium_height"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_marginEnd="@dimen/spacing_lvl2"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
+    app:cardElevation="@dimen/spacing_lvl1"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/play_widget_banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        />
+
+</androidx.cardview.widget.CardView>

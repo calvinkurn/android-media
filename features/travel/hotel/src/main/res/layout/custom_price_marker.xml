@@ -1,0 +1,19 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bg_marker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtPriceHotelMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        tools:text="Rp. 100.000" />
+</androidx.constraintlayout.widget.ConstraintLayout>

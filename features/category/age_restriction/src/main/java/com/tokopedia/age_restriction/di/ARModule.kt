@@ -14,7 +14,6 @@ import dagger.Provides
 import javax.inject.Named
 
 
-@ARScope
 @Module
 class ARModule {
 

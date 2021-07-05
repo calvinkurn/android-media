@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_15"
-    android:paddingTop="@dimen/dp_1"
-    android:paddingRight="@dimen/dp_15"
+    android:paddingLeft="@dimen/chatcommon_15dp"
+    android:paddingTop="@dimen/chatcommon_1dp"
+    android:paddingRight="@dimen/chatcommon_15dp"
     android:paddingBottom="@dimen/chatcommon_1dp">
 
     <LinearLayout
@@ -15,24 +16,25 @@
         android:orientation="vertical">
 
         <include layout="@layout/item_chatcommon_chat_header" />
+
     </LinearLayout>
 
     <include
         android:id="@+id/attach_product_chat_container"
         layout="@layout/attach_product_base_layout"
-        android:layout_width="@dimen/dp_240"
+        android:layout_width="@dimen/chatcommon_240dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/llChatHeaderContainer" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="@dimen/dp_24"
+        android:layout_width="@dimen/layout_lvl3"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/attach_product_chat_container"
         android:layout_alignBottom="@id/attach_product_chat_container"
         android:layout_toStartOf="@id/attach_product_chat_container"
-        android:layout_toLeftOf="@id/attach_product_chat_container"
         android:indeterminateDrawable="@drawable/progress"
         android:visibility="visible"
         tools:visibility="gone" />
+
 </RelativeLayout>

@@ -50,7 +50,7 @@ data class DataItem(
 	val statTotalCtr: String = "",
 
 	@field:SerializedName("group_price_daily")
-	val groupPriceDaily: Int = 0,
+	val groupPriceDaily: Long = 0,
 
 	@field:SerializedName("stat_total_sold")
 	val statTotalSold: String = "",
@@ -59,5 +59,15 @@ data class DataItem(
 	val statAvgClick: String = "",
 
 	@field:SerializedName("group_type")
-	val groupType: String = ""
+	val groupType: String = "",
+
+	@field:SerializedName("group_end_date")
+	val groupEndDate: String = "",
+
+	@field:SerializedName("stat_total_income")
+	val groupTotalIncome: String = "",
+
+	@field:SerializedName("strategies")
+	val strategies: List<String> = listOf()
+
 )

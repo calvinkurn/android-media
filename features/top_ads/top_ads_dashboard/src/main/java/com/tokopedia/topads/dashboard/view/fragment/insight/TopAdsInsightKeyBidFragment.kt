@@ -96,6 +96,8 @@ class TopAdsInsightKeyBidFragment : BaseDaggerFragment() {
         val withValue = text?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())?.replace(VALUE, "+" + Utils.convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
         btnTambah.text = data?.bid?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.bid?.size.toString())
+        if (dataInsight?.get(key)?.bid?.size == 0)
+            btnTambah.isEnabled = false
     }
 
     private fun getfromArguments() {

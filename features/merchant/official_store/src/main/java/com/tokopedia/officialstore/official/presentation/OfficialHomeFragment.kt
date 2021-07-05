@@ -11,13 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -30,16 +27,22 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
@@ -51,14 +54,9 @@ import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -67,6 +65,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 class OfficialHomeFragment :
@@ -74,7 +74,7 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler {
+        DynamicChannelEventHandler{
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -96,6 +96,12 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
+    @Inject
+    lateinit var officialHomeMapper: OfficialHomeMapper
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -108,6 +114,7 @@ class OfficialHomeFragment :
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
+    private var localChooseAddress: OSChooseAddressData? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -118,8 +125,8 @@ class OfficialHomeFragment :
         object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
-                    val CATEGORY_CONST: String = category?.slug.orEmpty()
-                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    val categoryConst: String = category?.slug.orEmpty()
+                    val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, categoryConst)
                     val categories = category?.categories.toString()
                     val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
                     val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
@@ -127,12 +134,15 @@ class OfficialHomeFragment :
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
-                    if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
-                        adapter?.showLoading()
-                    }
+                    officialHomeMapper.showLoadingMore(adapter)
+
                 }
             }
         }
+    }
+
+    fun forceLoadData() {
+        reloadDataForDifferentAddressSaved()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +158,11 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            loadData()
+            if (isChooseAddressUpdated() && isLoadedOnce) {
+                reloadDataForDifferentAddressSaved()
+            } else {
+                loadData()
+            }
         }
     }
 
@@ -162,22 +176,16 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
-                this,
                 OfficialStoreHomeComponentCallback(),
-                OfficialStoreLegoBannerComponentCallback(this))
+                OfficialStoreLegoBannerComponentCallback(this),
+                OSMixLeftComponentCallback(this),
+                OSMixTopComponentCallback(this),
+                OSFeaturedBrandCallback(this, tracking),
+                recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-
+        officialHomeMapper.resetState(adapter)
         return view
-    }
-
-    private fun setPerformanceListenerForRecyclerView() {
-        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
-                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -187,6 +195,7 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        initLocalChooseAddressData()
         resetData()
         loadData()
         setListener()
@@ -196,189 +205,6 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
-    }
-
-    private fun resetData() {
-        adapter?.clearAllElements()
-        adapter?.resetState(this)
-        endlessScrollListener.resetState()
-    }
-
-    private fun loadData(isRefresh: Boolean = false) {
-        initFirebasePerformanceMonitoring()
-
-        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
-            if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstData(category)
-                isLoadedOnce = true
-
-                getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
-
-                if (!isRefresh) {
-                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
-                }
-            }
-        }
-    }
-
-    private fun observeBannerData() {
-        viewModel.officialStoreBannersResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    removeLoading()
-                    swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
-                    setLoadMoreListener()
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-            }
-            bannerPerformanceMonitoring.stopTrace()
-        })
-    }
-
-    private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingBenefit(it.data, adapter)
-                    setLoadMoreListener()
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-
-            }
-        })
-    }
-
-    private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
-                    setLoadMoreListener()
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-
-            }
-            shopPerformanceMonitoring.stopTrace()
-        })
-    }
-
-    private fun observeDynamicChannel() {
-        viewModel.officialStoreDynamicChannelResult.observe(this, Observer { result ->
-            when (result) {
-                is Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingDynamicChannel(
-                            result.data,
-                            adapter,
-                            remoteConfig
-                    )
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(result.throwable)
-                }
-            }
-            dynamicChannelPerformanceMonitoring.stopTrace()
-        })
-    }
-
-    private fun observeProductRecommendation() {
-        viewModel.productRecommendation.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
-                    adapter?.hideLoading()
-                    endlessScrollListener.updateStateAfterGetData()
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (counterTitleShouldBeRendered == 1) {
-                        OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
-                    }
-                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
-                }
-                is Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
-                }
-            }
-            productRecommendationPerformanceMonitoring.stopTrace()
-        })
-    }
-
-    private fun observeTopAdsWishlist() {
-        viewModel.topAdsWishlistResult.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                }
-                is Fail -> {
-                    showErrorNetwork(it.throwable)
-                }
-            }
-        })
-    }
-
-    fun showErrorNetwork(t: Throwable) {
-        view?.let {
-            Toaster.showError(it,
-                    ErrorHandler.getErrorMessage(context, t),
-                    Snackbar.LENGTH_LONG)
-        }
-    }
-
-    private fun setListener() {
-        setLoadMoreListener()
-
-        swipeRefreshLayout?.setOnRefreshListener {
-            adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel
-                        || it is ProductRecommendationViewModel
-                        || it is ProductRecommendationTitleViewModel
-                        || it is LoadingMoreModel
-                        || it is DynamicLegoBannerDataModel
-            }
-            counterTitleShouldBeRendered = 0
-            adapter?.notifyDataSetChanged()
-            recyclerView?.removeOnScrollListener(endlessScrollListener)
-            loadData(true)
-        }
-
-        if (parentFragment is RecyclerViewScrollListener) {
-            val scrollListener = parentFragment as RecyclerViewScrollListener
-            layoutManager?.let {
-                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-
-                        if (!isScrolling) {
-                            isScrolling = true
-                            scrollListener.onContentScrolled(dy)
-
-                            Handler().postDelayed({
-                                isScrolling = false
-                            }, 200)
-                        }
-
-                    }
-
-                })
-            }
-        }
-
-    }
-
-    private fun setLoadMoreListener() {
-        recyclerView?.addOnScrollListener(endlessScrollListener)
     }
 
     override fun getScreenName(): String {
@@ -402,7 +228,6 @@ class OfficialHomeFragment :
     override fun onDestroy() {
         viewModel.officialStoreBannersResult.removeObservers(this)
         viewModel.officialStoreBenefitsResult.removeObservers(this)
-        viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
@@ -413,7 +238,6 @@ class OfficialHomeFragment :
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)
@@ -431,85 +255,6 @@ class OfficialHomeFragment :
         )
     }
 
-    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistActionForLoggedInUser(productCardOptionsModel)
-        else
-            RouteManager.route(context, ApplinkConst.LOGIN)
-
-        tracking?.eventClickWishlist(
-                category?.title.toEmptyStringIfNull(),
-                !productCardOptionsModel.isWishlisted,
-                viewModel.isLoggedIn(),
-                productCardOptionsModel.productId.toIntOrZero(),
-                productCardOptionsModel.isTopAds
-        )
-    }
-
-    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess)
-            handleWishlistActionSuccess(productCardOptionsModel)
-        else
-            showErrorWishlist()
-    }
-
-    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isAddWishlist)
-            showSuccessAddWishlist()
-        else
-            showSuccessRemoveWishlist()
-
-        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
-    }
-
-    private fun showSuccessAddWishlist() {
-        activity?.let { activity ->
-            val view = activity.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(R.string.msg_success_add_wishlist)
-
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                    .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
-                    .show()
-
-        }
-    }
-
-    private fun showSuccessRemoveWishlist() {
-        activity?.let {
-            val view = it.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(R.string.msg_success_remove_wishlist)
-
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-    private fun showErrorWishlist() {
-        activity?.let {
-            val view = it.findViewById<View>(android.R.id.content) ?: return
-            Toaster.showError(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG)
-        }
-    }
-
-    private fun goToPDP(item: RecommendationItem, position: Int) {
-        eventTrackerClickListener(item, position)
-        RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
-            putExtra(PDP_EXTRA_UPDATED_POSITION, position)
-            startActivityForResult(this, REQUEST_FROM_PDP)
-        }
-    }
-
-    private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
-        tracking?.eventClickProductRecommendation(
-                item,
-                position.toString(),
-                PRODUCT_RECOMMENDATION_TITLE_SECTION,
-                viewModel.isLoggedIn(),
-                category?.title.toString()
-        )
-    }
-
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         lastClickLayoutType = layoutType
         if (position.size > 1) {
@@ -522,9 +267,7 @@ class OfficialHomeFragment :
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         if (position > -1 && adapter != null) {
-            (adapter?.list?.getOrNull(position) as?
-                    ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
-            adapter?.notifyItemChanged(position, isWishlist)
+            officialHomeMapper.updateWishlist(isWishlist, position, adapter)
         }
     }
 
@@ -532,9 +275,13 @@ class OfficialHomeFragment :
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
         clipboard.setPrimaryClip(clipData)
-        Toaster.make(view.parent as ViewGroup,
+        Toaster.build(view.parent as ViewGroup,
                 getString(R.string.os_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun getLocation(): String {
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
     }
 
     override fun onProductImpression(item: RecommendationItem) {
@@ -582,12 +329,7 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        recyclerView?.post {
-            adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
-            }
-            adapter?.notifyDataSetChanged()
-        }
+        officialHomeMapper.removeFlashSale(adapter)
         loadData(true)
     }
 
@@ -597,12 +339,12 @@ class OfficialHomeFragment :
 
     override fun onClickLegoImage(channelModel: ChannelModel, position: Int) {
         val gridData = channelModel.channelGrids[position]
-        val applink = gridData.applink ?: ""
+        val applink = gridData.applink
 
         gridData.let {
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
-                    channelModel.channelHeader.name ?: "",
+                    channelModel.channelHeader.name,
                     (position + 1).toString(10),
                     it,
                     channelModel
@@ -627,20 +369,19 @@ class OfficialHomeFragment :
 
     override fun onClickLegoImage(channelData: Channel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
+            channelData.grids.getOrNull(position)?.let { gridData ->
+                val applink = gridData.applink
 
-            gridData?.let {
                 tracking?.dynamicChannelImageClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it,
+                        gridData,
                         channelData
                 )
-            }
 
-            RouteManager.route(context, applink)
+                RouteManager.route(context, applink)
+            }
         }
     }
 
@@ -660,23 +401,21 @@ class OfficialHomeFragment :
 
     override fun onClickFlashSaleImage(channelData: Channel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
-            val campaignId = channelData.campaignID
-            val campaignCode = channelData.campaignCode
-
-            gridData?.let {
+            channelData.grids.getOrNull(position)?.let { gridData ->
+                val applink = gridData.applink
+                val campaignId = channelData.campaignID
+                val campaignCode = channelData.campaignCode
                 tracking?.flashSalePDPClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it,
+                        gridData,
                         campaignId,
                         campaignCode
                 )
+                RouteManager.route(context, applink)
             }
 
-            RouteManager.route(context, applink)
         }
     }
 
@@ -696,20 +435,20 @@ class OfficialHomeFragment :
 
     override fun onClickMixImage(channelData: Channel, position: Int): View.OnClickListener {
         return View.OnClickListener {
-            val gridData = channelData.grids?.get(position)
-            val applink = gridData?.applink ?: ""
-
-            gridData?.let {
+            channelData.grids.getOrNull(position)?.let { gridData ->
+                val applink = gridData.applink
                 tracking?.dynamicChannelMixCardClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it,
-                        channelData.campaignCode
+                        gridData,
+                        channelData.campaignCode,
+                        channelData.campaignID.toString()
                 )
+
+                RouteManager.route(context, applink)
             }
 
-            RouteManager.route(context, applink)
         }
     }
 
@@ -784,7 +523,7 @@ class OfficialHomeFragment :
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String) {
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
                 viewModel.currentSlug,
                 cta.text,
@@ -805,49 +544,98 @@ class OfficialHomeFragment :
         }
     }
 
+
+
     override fun onMixLeftBannerImpressed(channel: Channel, position: Int) {
         tracking?.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position)
     }
 
-    private fun removeLoading() {
-        val osPltCallback = getOfficialStorePageLoadTimeCallback()
-        if (osPltCallback != null) {
-            osPltCallback.stopNetworkRequestPerformanceMonitoring()
-            osPltCallback.startRenderPerformanceMonitoring()
+    override fun onClickMixLeftBannerImage(channel: ChannelModel, position: Int) {
+        tracking?.trackerObj?.sendEnhanceEcommerceEvent(
+                OSMixLeftTracking.eventClickMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
+        RouteManager.route(context, channel.channelBanner?.applink.orEmpty())
+    }
+
+    override fun onMixLeftBannerImpressed(channel: ChannelModel, position: Int) {
+        tracking?.trackingQueueObj?.putEETracking(
+                OSMixLeftTracking.eventImpressionMixLeftImageBanner(channel, category?.title.orEmpty(), position) as HashMap<String, Any>)
+    }
+
+    override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
+        tracking?.flashSaleCardImpressionComponent(
+                viewModel.currentSlugDC,
+                channel,
+                grid,
+                position.toString(),
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
+        )
+    }
+
+    override fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String) {
+        tracking?.seeAllMixFlashSaleClickedComponent(
+                viewModel.currentSlugDC,
+                channel
+        )
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(context, applink)
         }
-        setPerformanceListenerForRecyclerView()
-        recyclerView?.post {
-            adapter?.getVisitables()?.removeAll {
-                it is LoadingModel
-            }
-            adapter?.notifyDataSetChanged()
+    }
+
+    override fun getOSCategory(): Category? {
+        return category
+    }
+
+    override fun isLogin(): Boolean {
+        return userSession.isLoggedIn
+    }
+
+    override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
+        tracking?.seeAllBannerFlashSaleClickedComponent(
+                viewModel.currentSlugDC,
+                channel
+        )
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(context, applink)
         }
+    }
+
+    override fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
+        tracking?.flashSaleCardClickedComponent(
+                viewModel.currentSlugDC,
+                channel,
+                grid,
+                position,
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
+        )
+        RouteManager.route(context, applink)
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventImpressionFeatureBrand(
-                categoryName,
-                position,
-                shopData.name.orEmpty(),
-                shopData.imageUrl.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
-                viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.imageUrl.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = viewModel.isLoggedIn(),
+                shopId = shopData.shopId.orEmpty()
         )
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventClickFeaturedBrand(
-                categoryName,
-                position,
-                shopData.name.orEmpty(),
-                shopData.url.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
-                viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty(),
-                shopData.campaignCode.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.url.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = viewModel.isLoggedIn(),
+                shopId = shopData.shopId.orEmpty(),
+                campaignCode = shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }
@@ -865,6 +653,15 @@ class OfficialHomeFragment :
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 
+    private fun removeLoading() {
+        val osPltCallback = getOfficialStorePageLoadTimeCallback()
+        if (osPltCallback != null) {
+            osPltCallback.stopNetworkRequestPerformanceMonitoring()
+            osPltCallback.startRenderPerformanceMonitoring()
+        }
+        setPerformanceListenerForRecyclerView()
+    }
+
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
         return if (context is OfficialStorePerformanceMonitoringListener) {
             context
@@ -873,5 +670,281 @@ class OfficialHomeFragment :
 
     private fun getOfficialStorePageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
         return officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface
+    }
+
+    private fun setPerformanceListenerForRecyclerView() {
+        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
+                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    private fun resetData() {
+        endlessScrollListener.resetState()
+    }
+
+    private fun loadData(isRefresh: Boolean = false) {
+        initFirebasePerformanceMonitoring()
+
+        if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
+            if (!isLoadedOnce || isRefresh) {
+                viewModel.loadFirstData(category, getLocation())
+                isLoadedOnce = true
+
+                getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
+
+                if (!isRefresh) {
+                    tracking?.sendScreen(category?.title.toEmptyStringIfNull())
+                }
+            }
+        }
+    }
+
+    private fun reloadDataForDifferentAddressSaved() {
+        localChooseAddress?.setLocalCacheModel(ChooseAddressUtils.getLocalizingAddressData(requireContext())?.copy())
+        officialHomeMapper.resetState(adapter)
+        viewModel.loadFirstData(category, getLocation())
+    }
+
+    private fun observeBannerData() {
+        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    removeLoading()
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+            }
+            bannerPerformanceMonitoring.stopTrace()
+        })
+    }
+
+    private fun observeBenefit() {
+        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingBenefit(it.data, adapter)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+
+            }
+        })
+    }
+
+    private fun observeFeaturedShop() {
+        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+
+            }
+            shopPerformanceMonitoring.stopTrace()
+        })
+    }
+
+    private fun observeDynamicChannel() {
+        viewModel.officialStoreDynamicChannelResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    officialHomeMapper.mappingDynamicChannel(
+                            result.data,
+                            adapter,
+                            remoteConfig
+                    )
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(result.throwable)
+                }
+            }
+            dynamicChannelPerformanceMonitoring.stopTrace()
+        })
+    }
+
+    private fun observeProductRecommendation() {
+        viewModel.productRecommendation.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
+                    endlessScrollListener.updateStateAfterGetData()
+                    swipeRefreshLayout?.isRefreshing = false
+                    if (counterTitleShouldBeRendered == 1) {
+                        officialHomeMapper.mappingProductRecommendationTitle(it.data.title, adapter)
+                    }
+                    officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
+                }
+                is Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    showErrorNetwork(it.throwable)
+                }
+            }
+            productRecommendationPerformanceMonitoring.stopTrace()
+        })
+    }
+
+    private fun showErrorNetwork(t: Throwable) {
+        view?.let {
+            Toaster.build(it,
+                    ErrorHandler.getErrorMessage(context, t),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    private fun setListener() {
+        setLoadMoreListener()
+        swipeRefreshLayout?.setOnRefreshListener {
+            counterTitleShouldBeRendered = 0
+            officialHomeMapper.removeRecommendation(adapter)
+            loadData(true)
+        }
+
+        if (parentFragment is RecyclerViewScrollListener) {
+            val scrollListener = parentFragment as RecyclerViewScrollListener
+            layoutManager?.let {
+                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+
+                        if (!isScrolling) {
+                            isScrolling = true
+                            scrollListener.onContentScrolled(dy)
+
+                            Handler().postDelayed({
+                                isScrolling = false
+                            }, 200)
+                        }
+
+                    }
+
+                })
+            }
+        }
+
+    }
+
+    private fun setLoadMoreListener() {
+        recyclerView?.addOnScrollListener(endlessScrollListener)
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        val wishlistResult = productCardOptionsModel.wishlistResult
+
+        if (wishlistResult.isUserLoggedIn)
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        else
+            RouteManager.route(context, ApplinkConst.LOGIN)
+
+        tracking?.eventClickWishlist(
+                category?.title.toEmptyStringIfNull(),
+                !productCardOptionsModel.isWishlisted,
+                viewModel.isLoggedIn(),
+                productCardOptionsModel.productId.toIntOrZero(),
+                productCardOptionsModel.isTopAds
+        )
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess)
+            handleWishlistActionSuccess(productCardOptionsModel)
+        else
+            showErrorWishlist()
+    }
+
+    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+            showSuccessAddWishlist()
+        else
+            showSuccessRemoveWishlist()
+
+        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+    }
+
+    private fun showSuccessAddWishlist() {
+        activity?.let { activity ->
+            val view = activity.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(R.string.msg_success_add_wishlist)
+
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                    .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
+                    .show()
+
+        }
+    }
+
+    private fun showSuccessRemoveWishlist() {
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(R.string.msg_success_remove_wishlist)
+
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showErrorWishlist() {
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            Toaster.build(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun goToPDP(item: RecommendationItem, position: Int) {
+        eventTrackerClickListener(item, position)
+        try {
+            RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
+                putExtra(PDP_EXTRA_UPDATED_POSITION, position)
+                startActivityForResult(this, REQUEST_FROM_PDP)
+            }
+        }catch (e: Exception){
+        }
+    }
+
+    private fun eventTrackerClickListener(item: RecommendationItem, position: Int) {
+        tracking?.eventClickProductRecommendation(
+                item,
+                position.toString(),
+                PRODUCT_RECOMMENDATION_TITLE_SECTION,
+                viewModel.isLoggedIn(),
+                category?.title.toString()
+        )
+    }
+
+    private fun initLocalChooseAddressData() {
+        val addressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        addressData?.let {
+            localChooseAddress = OSChooseAddressData()
+            localChooseAddress?.setLocalCacheModel(it.copy())
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun isChooseAddressUpdated(): Boolean {
+        try {
+            localChooseAddress?.let {
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it.toLocalCacheModel())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+        return false
+
     }
 }

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        tools:background="@color/Green_G500"/>
+        tools:background="@color/Unify_G500"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
-        android:background="#cc52565e">
+        android:background="@color/Unify_N500_68">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:letterSpacing="0.1"
             android:text="@string/hotel_room_full_text_view"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 
@@ -42,7 +42,7 @@
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
             app:typographyType="body_2"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             tools:text="ABDFNSJFNSKDFNSKFN SOVNSJDNFsd jsdnfjksnfkjsn dfjnsfn sdjfn" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

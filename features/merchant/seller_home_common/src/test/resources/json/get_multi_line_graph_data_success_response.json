@@ -1,0 +1,254 @@
+{
+  "data": {
+    "fetchMultiTrendlineWidgetData": {
+      "data": [
+        {
+          "dataKey": "productActivity",
+          "error": false,
+          "errorMsg": "",
+          "data": {
+            "metrics": [
+              {
+                "error": false,
+                "errMsg": "",
+                "summary": {
+                  "title": "Pendapatan bersih baru",
+                  "value": "Rp0",
+                  "state": "GOOD",
+                  "description": "<span style=color:#31353B;><b>0%</b></span> dari 8 hari lalu",
+                  "color": "#4FBA68"
+                },
+                "type": "currency",
+                "yAxis": [
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  }
+                ],
+                "line": {
+                  "currentPeriode": [
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "20 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "21 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "22 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "23 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "24 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "25 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "26 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "Rp0",
+                      "XLabel": "27 May"
+                    }
+                  ],
+                  "lastPeriode": []
+                }
+              },
+              {
+                "error": false,
+                "errMsg": "",
+                "summary": {
+                  "title": "Produk dilihat",
+                  "value": "2",
+                  "state": "GOOD",
+                  "description": "<span style=color:#03AC0E;><b>+100%</b></span> dari 8 hari lalu",
+                  "color": "#00B2C6"
+                },
+                "type": "number",
+                "yAxis": [
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 1,
+                    "YLabel": "1"
+                  },
+                  {
+                    "YVal": 1,
+                    "YLabel": "1"
+                  },
+                  {
+                    "YVal": 2,
+                    "YLabel": "2"
+                  }
+                ],
+                "line": {
+                  "currentPeriode": [
+                    {
+                      "YVal": 2,
+                      "YLabel": "2",
+                      "XLabel": "20 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "21 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "22 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "23 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "24 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "25 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "26 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "27 May"
+                    }
+                  ],
+                  "lastPeriode": []
+                }
+              },
+              {
+                "error": false,
+                "errMsg": "",
+                "summary": {
+                  "title": "Produk terjual",
+                  "value": "0",
+                  "state": "GOOD",
+                  "description": "<span style=color:#31353B;><b>0%</b></span> dari 8 hari lalu",
+                  "color": "#E347B4"
+                },
+                "type": "number",
+                "yAxis": [
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  },
+                  {
+                    "YVal": 0,
+                    "YLabel": "0"
+                  }
+                ],
+                "line": {
+                  "currentPeriode": [
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "20 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "21 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "22 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "23 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "24 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "25 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "26 May"
+                    },
+                    {
+                      "YVal": 0,
+                      "YLabel": "0",
+                      "XLabel": "27 May"
+                    }
+                  ],
+                  "lastPeriode": []
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

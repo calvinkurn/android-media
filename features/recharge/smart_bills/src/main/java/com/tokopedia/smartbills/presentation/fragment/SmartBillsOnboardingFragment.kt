@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals
+import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.smartbills.R
 import kotlinx.android.synthetic.main.fragment_smart_bills_onboarding.*
@@ -33,7 +36,7 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
             val bulletSpan: BulletSpan
             val gapWidth = dpToPx(BULLET_GAP_WIDTH_PX)
             val radius = dpToPx(BULLET_RADIUS_PX)
-            val bulletColor = ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Neutral_N700)
+            val bulletColor = ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700)
             bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 BulletSpan(gapWidth, bulletColor, radius)
             } else {
@@ -60,7 +63,9 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         // If user has logged in, redirect to smart bills page
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
-            activity?.finish()
+            context?.let {
+                RouteManager.route(it, ApplinkConsInternalDigital.SMART_BILLS)
+            }
         }
     }
 

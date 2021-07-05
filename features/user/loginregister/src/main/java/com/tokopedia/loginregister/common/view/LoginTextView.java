@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 /**
  * Created by stevenfredian on 6/2/16.
@@ -65,7 +66,7 @@ public class LoginTextView extends LinearLayout {
         shape = new GradientDrawable();
         shape.setColor(Color.TRANSPARENT);
         if (attrs == null) {
-            setDefaultShape();
+            setDefaultShape(context);
         } else {
             setAttrs(context, attrs);
         }
@@ -79,9 +80,9 @@ public class LoginTextView extends LinearLayout {
         try {
 
             customText = a.getString(R.styleable.LoginTextView_customText);
-            textColor = a.getColor(R.styleable.LoginTextView_textColor, Color.WHITE);
+            textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);
-            cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize, 3);
+            cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true);
             resourceId = a.getResourceId(R.styleable.LoginTextView_iconButton, 0);
@@ -117,17 +118,17 @@ public class LoginTextView extends LinearLayout {
         }
     }
 
-    private void setDefaultShape() {
+    private void setDefaultShape(Context context) {
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
         shape.setColor(getBackgroundColor());
-        if (getBackgroundColor() == Color.WHITE) shape.setStroke(1,
-                MethodChecker.getColor(getContext(), R.color.black_38));
+        if (getBackgroundColor() == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape.setStroke(1,
+                MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
     }
 
     public void setText(String name) {
         TextView textView = findViewById(R.id.provider_name);
-        textView.setText(name);
+        TextAndContentDescriptionUtil.setTextAndContentDescription(textView, name, textView.getContext().getString(R.string.content_desc_provider_name));
     }
 
     public void setImage(String image) {

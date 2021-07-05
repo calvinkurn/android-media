@@ -13,12 +13,13 @@
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/iconContainer"
             android:layout_width="@dimen/account_home_seller_shop_bg_width"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:background="@drawable/ic_open_shop_ellipse">
+            android:layout_marginEnd="@dimen/spacing_lvl3">
 
             <ImageView
+                android:id="@+id/iv_seller_card_icon"
                 android:layout_width="@dimen/account_home_ic_seller_shop_size"
                 android:layout_height="@dimen/account_home_ic_seller_shop_size"
                 android:layout_gravity="center"
@@ -33,7 +34,7 @@
             android:layout_weight="1"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:gravity="center_vertical"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             tools:text="Toko Saya: **Kelontong**" />
 

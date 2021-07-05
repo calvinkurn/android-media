@@ -3,14 +3,14 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -40,6 +40,7 @@ dependencies {
     
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
     implementation project(rootProject.ext.libraries.graphql)
@@ -49,24 +50,25 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.exoPlayerCore
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
-    implementation rootProject.ext.miscDependencies.dagger
-    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.rxKotlin
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {
@@ -77,3 +79,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

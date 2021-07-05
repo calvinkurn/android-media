@@ -12,8 +12,8 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductPreviewItemDecora
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
-import com.tokopedia.play.broadcaster.util.extension.doOnPreDraw
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductPreviewAdapter
+import com.tokopedia.play_common.util.extension.doOnPreDraw
 import kotlin.math.max
 import kotlin.math.min
 

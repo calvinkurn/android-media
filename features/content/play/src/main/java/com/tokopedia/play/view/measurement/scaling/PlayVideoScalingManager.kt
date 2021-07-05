@@ -9,7 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play_common.util.extension.globalVisibleRect
 import com.tokopedia.unifycomponents.dpToPx
 
@@ -37,6 +38,8 @@ class PlayVideoScalingManager(
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = true
             flYouTube.isClickable = true
+
+            listener.onAnimationFinish(false)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -45,6 +48,8 @@ class PlayVideoScalingManager(
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
             flYouTube.isClickable = false
+
+            listener.onAnimationStart(false)
         }
     }
     private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
@@ -54,6 +59,8 @@ class PlayVideoScalingManager(
         override fun onAnimationEnd(animation: Animator?) {
             flVideo.isClickable = false
             flYouTube.isClickable = true
+
+            listener.onAnimationFinish(true)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -62,10 +69,12 @@ class PlayVideoScalingManager(
         override fun onAnimationStart(animation: Animator?) {
             flVideo.isClickable = false
             flYouTube.isClickable = false
+
+            listener.onAnimationStart(true)
         }
     }
 
-    override fun onBottomInsetsShown(bottomMostBounds: Int, videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation) {
+    override fun onBottomInsetsShown(bottomMostBounds: Int, videoPlayer: PlayVideoPlayerUiModel, videoOrientation: VideoOrientation) {
         flInteraction.layoutParams = flInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
@@ -81,7 +90,7 @@ class PlayVideoScalingManager(
         videoScaleAnimator.start()
     }
 
-    override fun onBottomInsetsHidden(videoPlayer: VideoPlayerUiModel) {
+    override fun onBottomInsetsHidden(videoPlayer: PlayVideoPlayerUiModel) {
         flInteraction.layoutParams = flInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.MATCH_PARENT
         }
@@ -201,5 +210,7 @@ class PlayVideoScalingManager(
     interface Listener {
 
         fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int)
+        fun onAnimationStart(isHidingInsets: Boolean)
+        fun onAnimationFinish(isHidingInsets: Boolean)
     }
 }

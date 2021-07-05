@@ -47,6 +47,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                             if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
                                 setErrorTextField(context.getString(R.string.cc_error_invalid_number))
                             } else {
+                                listener.onCheckPrefix(inputDigit)
                                 cc_text_input.setError(false)
                                 enableBtnNext()
                             }

@@ -40,7 +40,7 @@ public class TopAdsInfoBottomSheet {
     public void setView(final Context context) {
         dialog.setOnShowListener(dialogInterface -> {
             BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
-            FrameLayout frameLayout = dialog.findViewById(R.id.design_bottom_sheet);
+            FrameLayout frameLayout = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (frameLayout != null) {
                 BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
                 behavior.setHideable(false);

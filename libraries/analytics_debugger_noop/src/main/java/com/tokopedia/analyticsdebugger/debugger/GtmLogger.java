@@ -2,6 +2,8 @@ package com.tokopedia.analyticsdebugger.debugger;
 
 import android.content.Context;
 
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
+
 import java.util.Map;
 
 /**
@@ -15,32 +17,12 @@ public class GtmLogger {
         if (instance == null) {
             instance = new AnalyticsLogger() {
                 @Override
-                public void save(String name, Map<String, Object> data) {
+                public void save(String name, Map<String, Object> data, @AnalyticsSource String source) {
 
                 }
 
                 @Override
                 public void saveError(String errorData) {
-
-                }
-
-                @Override
-                public void wipe() {
-
-                }
-
-                @Override
-                public void openActivity() {
-
-                }
-
-                @Override
-                public void openErrorActivity() {
-
-                }
-
-                @Override
-                public void navigateToValidator() {
 
                 }
 

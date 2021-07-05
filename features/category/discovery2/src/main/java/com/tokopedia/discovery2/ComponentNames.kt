@@ -19,7 +19,6 @@ enum class ComponentNames(val componentName: String) {
     Tokopoints("tokopoints"),
     TokopointsItem("tokopoints_item"),
     LihatSemua("lihat_semua"),
-    CpmTopAds("topads"),
     Video("video"),
     Notifier("notifier"),
     TitleImage("title_image"),
@@ -42,10 +41,12 @@ enum class ComponentNames(val componentName: String) {
     QuickCoupon("quick_coupon"),
     BannerCarousel("banner_carousel"),
     BannerCarouselItemView("banner_carousel_item"),
+    BottomNavigation("bottom_navigation"),
 
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),
     ProductCardRevampItem("product_card_revamp_item"),
+    MasterProductCardItemList("master_product_card_item_list"),
 
     // Product Card Horizontal Carousel
     ProductCardCarousel("product_card_carousel"),
@@ -59,8 +60,30 @@ enum class ComponentNames(val componentName: String) {
     ProductCardSprintSaleCarousel("product_card_sprint_sale_carousel"),
     ProductCardSprintSaleCarouselItem("product_card_sprint_sale_carousel_item"),
     ProductListEmptyState("product_list_empty_state"),
+    SaleEndState("sale_end_state"),
 
     //Quick Filter
     QuickFilter("chips_filter_v2"),
+
+    //Navigation Chips
+    NavigationChips("navigation_chips"),
+    NavigationChipsItem("navigation_chips_item"),
+
+    //Banned View
+    BannedView("banned_view"),
+
+    //Play Widget View
+    DiscoPlayWidgetView("play_widget"),
+
+    DiscoTDNBanner("tdn_banner"),
+
+    CarouselErrorLoad("carousel_error_load"),
+    ProductListErrorLoad("product_list_error_load"),
+
+    //Category Best Seller
+    CategoryBestSeller("product-card-horizontal-scroll"),
+
+    //Topads Headline View
+    TopadsHeadlineView("topads"),
 
 }

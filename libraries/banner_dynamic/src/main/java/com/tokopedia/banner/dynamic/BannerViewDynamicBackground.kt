@@ -77,7 +77,7 @@ class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, at
     }
 
     override fun buildView() {
-        bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green));
+        bannerSeeAll.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
         bannerRoot.visibility = View.VISIBLE

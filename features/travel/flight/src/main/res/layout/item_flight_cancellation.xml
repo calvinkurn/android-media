@@ -3,25 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_10"
-    android:background="@color/background_apps"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/flight_dp_10"
+    android:background="@color/Unify_N50"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_green"
+        android:background="@color/Unify_G100"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8">
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl3">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox"
-            android:layout_width="@dimen/dp_36"
-            android:layout_height="@dimen/dp_36"
+            android:layout_width="@dimen/flight_dp_36"
+            android:layout_height="@dimen/flight_dp_36"
             android:layout_gravity="center"
             android:theme="@style/checkBoxStyle" />
 
@@ -31,34 +32,47 @@
             android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/tv_departure_time_label"
-                style="@style/TextView.Micro.BlackSecondary"
-                android:padding="@dimen/dp_2"
+                android:padding="@dimen/spacing_lvl1"
                 tools:text="@string/flight_label_departure_flight" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
+                app:typographyType="heading_4"
+                android:textColor="@color/Unify_N700_96"
                 android:id="@+id/tv_journey_detail_label"
-                style="@style/TextView.Title.Bold"
-                android:padding="@dimen/dp_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/spacing_lvl1"
                 tools:text="@string/flight_label_departure_flight" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/dp_2">
+                android:padding="@dimen/spacing_lvl1">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
+                    app:typographyWeight="bold"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_96"
                     android:id="@+id/airline_name"
-                    style="@style/TextView.Micro.Bold"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_lvl3"
                     tools:text="Garuda" />
 
-                <TextView
-                    android:id="@+id/duration"
-                    style="@style/TextView.Micro.BlackSecondary" />
+                <com.tokopedia.unifyprinciples.Typography
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_68"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/duration"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -72,9 +86,9 @@
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_passenger"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_weight="1"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
     </com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView>
 

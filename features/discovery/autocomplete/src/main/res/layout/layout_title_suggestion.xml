@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:layout_marginTop="@dimen/dp_8">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -16,7 +15,7 @@
         android:paddingEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:textColor="@color/charcoal_grey_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         tools:text="Title" />
 </RelativeLayout>

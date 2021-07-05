@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,7 +17,7 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorSheetDivider" />
+        android:background="@color/Unify_N400" />
 
     <include layout="@layout/wishlist_partial_shimmering_list"
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorSheetDivider" />
+        android:background="@color/Unify_N400" />
 
     <include layout="@layout/wishlist_partial_shimmering_list"
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorSheetDivider" />
+        android:background="@color/Unify_N400" />
 
     <include layout="@layout/wishlist_partial_shimmering_list"
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorSheetDivider" />
+        android:background="@color/Unify_N400" />
 
     <include layout="@layout/wishlist_partial_shimmering_list"
         android:layout_width="match_parent"
@@ -65,5 +65,5 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/colorSheetDivider" />
+        android:background="@color/Unify_N400" />
 </LinearLayout>

@@ -8,12 +8,11 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
@@ -23,28 +22,30 @@ import java.util.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemModel,
-                                                             onSuccess: (EventItemModel) -> Unit,
-                                                             onError: (Throwable) -> Unit) -> Unit))
-    : HomeEventViewHolder<EventCarouselModel>(itemView) {
+class EventCarouselEventViewHolder(itemView: View,
+                                   val carouselListener: TrackingListener,
+                                   val clickCarouselListener: ClickCarouselListener
+) : AbstractViewHolder<EventCarouselModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(carouselListener, clickCarouselListener)
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_carousel.apply {
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL,
                     false)
             adapter = itemAdapter
         }
         itemView.ent_btn_see_more.setOnClickListener {
-            EventHomePageTracking.getInstance().clickSeeAllTopEventProduct()
+            carouselListener.clickSeeAllTopEventProduct()
         }
     }
 
     override fun bind(element: EventCarouselModel) {
         itemAdapter.items = element.items
-        element.items.forEachIndexed { index, eventItemModel -> itemAdapter.productNames.add(index,
-                eventItemModel.title) }
+        element.items.forEachIndexed { index, eventItemModel ->
+            itemAdapter.productNames.add(index,
+                    eventItemModel.title)
+        }
     }
 
     companion object {
@@ -54,9 +55,9 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter(val action: (data: EventItemModel,
-                                        onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit)
+    class InnerItemAdapter(val carouselListener: TrackingListener,
+                           val clickCarouselListener: ClickCarouselListener
+    )
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -80,32 +81,15 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
             holder.view.event_title.text = item.title
             holder.view.event_date.text = formatedSchedule(item.date)
             holder.view.event_price.text = item.price
-            if (item.isLiked) {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-            } else {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-            }
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickTopEventProduct(item, productNames,
+                carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)
+                clickCarouselListener.redirectCarouselToPDPEvent(item.seoURL)
             }
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionTopEventProduct(item, productNames,
-                        position + 1);
+                carouselListener.impressionTopEventProduct(item, productNames,
+                        position + 1)
             })
-            holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
-            }
-        }
-
-        fun onSuccessPostLiked(data: EventItemModel) {
-            notifyItemChanged(pos)
-        }
-
-        fun onErrorPostLiked(throwable: Throwable) {
-            notifyItemChanged(pos)
-            Log.e(TAG, throwable.localizedMessage)
         }
 
         private fun formatedSchedule(schedule: String): String? {
@@ -128,5 +112,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
     class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-
+    interface ClickCarouselListener{
+        fun redirectCarouselToPDPEvent(applink: String)
+    }
 }

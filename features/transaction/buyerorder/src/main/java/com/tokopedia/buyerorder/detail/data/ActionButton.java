@@ -173,4 +173,7 @@ public class ActionButton implements Serializable {
     public String toString() {
         return "ActionButton [Body = " + Body + ", Value = " + Value + ", weight = " + weight + ", label = " + label + ", uri = " + uri + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + ", method = " + method + ", key = " + key + "]";
     }
+
+    public static final String PRIMARY_BUTTON = "primaryButton";
+    public static final String SECONDARY_BUTTON = "secondaryButton";
 }

@@ -60,7 +60,7 @@
             app:typographyType="heading_6"
             tools:text="Rp 100.000" />
 
-        <CheckBox
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

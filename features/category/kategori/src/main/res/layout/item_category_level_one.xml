@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/category_imageview"
+        android:contentDescription="@string/content_desc_category_imageview"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:gravity="center"
@@ -27,7 +28,7 @@
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_10"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toTopOf="@+id/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +41,7 @@
         android:id="@+id/border"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/category_border"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

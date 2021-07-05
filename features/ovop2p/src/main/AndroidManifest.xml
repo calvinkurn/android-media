@@ -5,8 +5,8 @@
             android:name=".view.activity.OvoP2PFormActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
@@ -18,8 +18,8 @@
             android:name=".view.activity.OVOP2PThankyouActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data

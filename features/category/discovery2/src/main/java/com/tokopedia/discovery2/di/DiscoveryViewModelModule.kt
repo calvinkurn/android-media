@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
 
 
 @Module
-@DiscoveryScope
 abstract class DiscoveryViewModelModule {
 
     @Binds

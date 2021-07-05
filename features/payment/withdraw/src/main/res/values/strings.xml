@@ -46,7 +46,7 @@
     <string name="swd_withdrawal_being_processed">Penarikanmu sedang diproses</string>
 
     <string name="swd_success_page_title">Penarikan Diproses</string>
-    <string name="swd_admin_fee">Dikenai biaya admin %s</string>
+    <string name="swd_admin_fee">Dikenai biaya admin Rp%s</string>
 
     <string name="swd_program_tarik_saldo">Program Tarik Saldo</string>
     <string name="swd_program_tarik_saldo_description">Gabung program dan nikmati berbagai macam keuntungan setiap penarikan</string>

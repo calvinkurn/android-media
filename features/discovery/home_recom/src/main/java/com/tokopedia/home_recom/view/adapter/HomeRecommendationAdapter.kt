@@ -1,18 +1,14 @@
 package com.tokopedia.home_recom.view.adapter
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
-import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.datamodel.TitleDataModel
+import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.view.viewholder.RecommendationShimmeringViewHolder
 
 /**
  * A Class of HomeRecommendationAdapter.
@@ -49,8 +45,8 @@ class HomeRecommendationAdapter(
             RecommendationCarouselDataModel.LAYOUT -> layout.isFullSpan = true
             TitleDataModel.LAYOUT -> layout.isFullSpan = true
             EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
-            ErrorNetworkViewHolder.LAYOUT -> layout.isFullSpan = true
-            LoadingShimmeringGridViewHolder.LAYOUT -> layout.isFullSpan = true
+            RecommendationShimmeringViewHolder.LAYOUT -> layout.isFullSpan = true
+            RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.utils.NFCUtils;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 /**
  * Created by Rizky on 15/05/18.
@@ -20,7 +21,7 @@ import com.tokopedia.digital.utils.NFCUtils;
 public class CheckETollBalanceView extends LinearLayout {
 
     private TextView textLabelNote;
-    private AppCompatButton buttonFeature;
+    private UnifyButton buttonFeature;
 
     private LinearLayout viewRemainingBalance;
     private TextView textCardNumber;

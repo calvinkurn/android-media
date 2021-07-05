@@ -1,0 +1,118 @@
+[{
+  "data": {
+    "GetShopProduct": {
+      "status": "",
+      "errors": "",
+      "data": [{
+        "product_id": "1261038197",
+        "name": "c4rT R4m y44 n0n var 6",
+        "product_url": "https://www.tokopedia.com/tokocampaign07/c4rt-r4m-y44-n0n-var-6?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D369",
+        "stock": 100,
+        "status": 1,
+        "price": {
+          "text_idr": "Rp 1.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": true,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 0,
+          "rating": 0,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "1000.00",
+          "discounted_price_fmt": "100.00",
+          "discounted_percentage": "90",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/cec8615d-238d-44ec-bad0-b5e4117aad6c.jpg",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/cec8615d-238d-44ec-bad0-b5e4117aad6c.jpg",
+          "resize300": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/cec8615d-238d-44ec-bad0-b5e4117aad6c.jpg"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": false,
+          "imgURL": ""
+        },
+        "label_groups": [{
+          "position": "",
+          "type": "#31353b",
+          "title": "Tersedia"
+        }]
+      }, {
+        "product_id": "1261037615",
+        "name": "c4rT R4m y44 n0n var 5",
+        "product_url": "https://www.tokopedia.com/tokocampaign07/c4rt-r4m-y44-n0n-var-5?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D369",
+        "stock": 99,
+        "status": 1,
+        "price": {
+          "text_idr": "Rp 1.000"
+        },
+        "flags": {
+          "isFeatured": false,
+          "isPreorder": false,
+          "isFreereturn": false,
+          "isVariant": false,
+          "isWholesale": false,
+          "isWishlist": false,
+          "isSold": true,
+          "supportFreereturn": false,
+          "mustInsurance": false,
+          "withStock": false
+        },
+        "stats": {
+          "reviewCount": 0,
+          "rating": 0,
+          "viewCount": 0
+        },
+        "campaign": {
+          "hide_gimmick": false,
+          "original_price": "0",
+          "original_price_fmt": "1000.00",
+          "discounted_price_fmt": "100.00",
+          "discounted_percentage": "90",
+          "discounted_price": "0",
+          "is_upcoming": false,
+          "stock_sold_percentage": 0
+        },
+        "primary_image": {
+          "original": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/4e5fd605-d367-4ce0-bbfe-78c31e953f38.jpg",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/4e5fd605-d367-4ce0-bbfe-78c31e953f38.jpg",
+          "resize300": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/16/4e5fd605-d367-4ce0-bbfe-78c31e953f38.jpg"
+        },
+        "cashback": {
+          "cashback": 0,
+          "cashback_amount": 0
+        },
+        "freeOngkir": {
+          "isActive": false,
+          "imgURL": ""
+        },
+        "label_groups": [{
+          "position": "",
+          "type": "#31353b",
+          "title": "Tersedia"
+        }]
+      }],
+      "totalData": 2
+    }
+  }
+}]

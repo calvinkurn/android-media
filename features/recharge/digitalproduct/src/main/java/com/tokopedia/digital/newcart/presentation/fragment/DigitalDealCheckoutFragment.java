@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -38,6 +37,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutCo
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapter;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalDealCheckoutPresenter;
 import com.tokopedia.unifycomponents.Toaster;
 
@@ -89,8 +89,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         void showDim(float procentage, int height);
 
         void hideDim(float procentage);
-
-        boolean isAlreadyShowOnBoard();
     }
 
     @Inject
@@ -135,7 +133,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         presenter.onDealsCheckout();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             containerLayout.setElevation(60);
-            containerLayout.setBackgroundResource(com.tokopedia.design.R.color.white);
+            containerLayout.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0);
         } else {
             containerLayout.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
@@ -286,7 +284,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
                     checkoutHolderView.getCheckoutViewHeight() +
                     containerCategoryLabel.getMeasuredHeight() +
-                    getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_6);
+                    getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1);
         }
 
         final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
@@ -310,7 +308,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         );
-                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8), 0, 0);
+                        layoutParams.setMargins(0, getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1), 0, 0);
                         containerLayout.setLayoutParams(
                                 layoutParams
                         );
@@ -333,7 +331,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToExpand() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_up_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24)
             );
         }
     }
@@ -342,7 +340,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void renderIconToCollapse() {
         if (getContext() != null) {
             expandCollapseView.setImageDrawable(
-                    ContextCompat.getDrawable(getContext(), com.tokopedia.design.R.drawable.ic_arrow_down_grey)
+                    ContextCompat.getDrawable(getContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24)
             );
         }
     }
@@ -418,16 +416,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void showPromoOnlyForTopUpAndBillMessage() {
-        Toaster.make(getView(), getString(R.string.digital_deal_promo_restriction_message),
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.digital_deal_promo_restriction_action_label), v->{});
-    }
-
-    @Override
-    public boolean isAlreadyShowOnBoard() {
-        if (interactionListener != null) {
-            return interactionListener.isAlreadyShowOnBoard();
-        }
-        return true;
+        Toaster.build(getView(), getString(R.string.digital_deal_promo_restriction_message),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.digital_deal_promo_restriction_action_label), v->{}).show();
     }
 
     public void updateSelectedDeal(DealProductViewModel viewModel) {

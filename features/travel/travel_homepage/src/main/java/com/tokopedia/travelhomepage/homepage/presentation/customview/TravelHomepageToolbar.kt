@@ -3,9 +3,9 @@ package com.tokopedia.travelhomepage.homepage.presentation.customview
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import androidx.core.content.ContextCompat
-import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.tokopedia.travelhomepage.R
 
 /**
@@ -19,24 +19,26 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
 
     fun toInitialMode() {
         hideShadow()
-        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.white))
-        setBackgroundColor(resources.getColor(com.tokopedia.design.R.color.transparent))
+        title = context.getString(R.string.travel_title_subhomepage)
+        setTitleTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setBackgroundColor(resources.getColor(R.color.travel_subhome_transparent))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.white))
+            navigationIcon?.setTint(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         } else navigationIcon = resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_white_24)
     }
 
     fun toOnScrolledMode() {
         showShadow()
-        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.grey_800))
+        title = context.getString(R.string.travel_title_subhomepage)
+        setTitleTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N600))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.grey_800))
-        } else navigationIcon =  resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
+            navigationIcon?.setTint(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N600))
+        } else navigationIcon = resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
 
     }
 
     private fun hideShadow() {
-        if(shadowApplied){
+        if (shadowApplied) {
             shadowApplied = false
             val pL = this.paddingLeft
             var pT = 0
@@ -45,13 +47,13 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
             }
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(R.dimen.destination_toolbar_padding)
-            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
+            this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             this.setPadding(pL, pT, pR, pB)
         }
     }
 
     private fun showShadow() {
-        if(!shadowApplied){
+        if (!shadowApplied) {
             shadowApplied = true
             val pL = this.paddingLeft
             var pT = 0

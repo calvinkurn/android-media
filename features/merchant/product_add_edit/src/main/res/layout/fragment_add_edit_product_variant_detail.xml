@@ -5,12 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_add_edit_variant_multi_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerType="information"
+        app:tickerShapeType="full"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/ticker_variant_only_main_location"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/topDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl0"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/ticker_add_edit_variant_multi_location"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewManageAtOnce"
@@ -20,7 +31,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/label_manage_at_once"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/heading_5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/topDivider" />
@@ -33,7 +44,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/dp_10"
         android:text="@string/label_manage_at_once_desc"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewManageAtOnce" />
@@ -65,7 +76,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_20"
         android:text="@string/label_add_sku"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/heading_5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/firstDivider" />
@@ -77,7 +88,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/dp_20"
         android:text="@string/label_optional"
-        android:textColor="@color/light_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="@id/textViewAddSku"
         app:layout_constraintLeft_toRightOf="@id/textViewAddSku" />
@@ -108,7 +119,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:text="@string/label_variant_list"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/heading_5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/secondDivider" />
@@ -121,7 +132,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/action_pick_main_variant"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/body_3"
         app:layout_constraintBottom_toBottomOf="@id/textViewVariantList"
         app:layout_constraintRight_toRightOf="parent" />

@@ -2,14 +2,15 @@ package com.tokopedia.topads.edit.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
-import io.mockk.*
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.unmockkAll
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
 
 class SharedViewModelTest {
 

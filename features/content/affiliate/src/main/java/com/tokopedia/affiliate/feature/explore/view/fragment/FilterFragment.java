@@ -82,7 +82,7 @@ public class FilterFragment extends BaseDaggerFragment {
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                        RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
-                outRect.bottom = (int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_4);
+                outRect.bottom = (int) getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
             }
         });
         adapter.setList(filterList);

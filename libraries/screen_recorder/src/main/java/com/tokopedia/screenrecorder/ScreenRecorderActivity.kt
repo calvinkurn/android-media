@@ -9,20 +9,20 @@ import android.content.pm.PackageManager
 import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.screen_recorder_activity_screen_record.*
 
 class ScreenRecorderActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_PERMISSION_RECORD_SCREEN = 1;
         private val PERMISSIONS = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.RECORD_AUDIO
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
         )
 
         private const val REQUEST_MEDIA_PROJECTION = 123
@@ -31,23 +31,15 @@ class ScreenRecorderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_recorder_activity_screen_record)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            showFeatureNotSupported()
-            finish()
-        }
-        btnActivate.setOnClickListener { v -> activateScreenRecorder() }
-    }
-
-    private fun showFeatureNotSupported() {
-        Toast.makeText(this, getString(R.string.screen_recorder_os_below_lollipop_info), Toast.LENGTH_SHORT).show()
+        findViewById<Button>(R.id.btnActivate).setOnClickListener { v -> activateScreenRecorder() }
     }
 
     private fun activateScreenRecorder() {
         var allPermissionsGranted = true
         for (permission in PERMISSIONS) {
             val granted = ActivityCompat.checkSelfPermission(
-                this,
-                permission
+                    this,
+                    permission
             ) == PackageManager.PERMISSION_GRANTED
             if (!granted) {
                 allPermissionsGranted = false
@@ -57,9 +49,9 @@ class ScreenRecorderActivity : AppCompatActivity() {
 
         if (!allPermissionsGranted) {
             ActivityCompat.requestPermissions(
-                this,
-                PERMISSIONS,
-                REQUEST_PERMISSION_RECORD_SCREEN
+                    this,
+                    PERMISSIONS,
+                    REQUEST_PERMISSION_RECORD_SCREEN
             );
         } else {
             requestProjectScreen()
@@ -67,16 +59,15 @@ class ScreenRecorderActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray) {
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == REQUEST_PERMISSION_RECORD_SCREEN)
-        {
+        if (requestCode == REQUEST_PERMISSION_RECORD_SCREEN) {
             for (result in grantResults) {
-                if(result == PackageManager.PERMISSION_DENIED) {
+                if (result == PackageManager.PERMISSION_DENIED) {
                     showNeedPermissionsInfo()
                     return
                 }
@@ -106,7 +97,7 @@ class ScreenRecorderActivity : AppCompatActivity() {
     private fun startScreenRecordService(resultCode: Int, data: Intent?) {
         val serviceIntent = Intent(this, ScreenRecordService::class.java)
         serviceIntent.setAction(ScreenRecordService.ACTION_INIT)
-            serviceIntent
+        serviceIntent
                 .putExtra(ScreenRecordService.EXTRA_MEDIA_PROEJECTION_RESULT_CODE, resultCode)
                 .putExtra(ScreenRecordService.EXTRA_MEDIA_PROEJECTION_RESULT_DATA, data)
         ContextCompat.startForegroundService(this, serviceIntent)

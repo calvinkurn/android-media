@@ -1,64 +1,65 @@
 [
   {
     "data": {
-      "getLineGraphData": {
+      "fetchLineGraphWidgetData": {
         "data": [
           {
-            "dataKey": "grossIncome",
+            "dataKey": "netRevenueVerified",
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
             "header": "Rp0",
-            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dengan 7 hari sebelumnya",
             "yLabels": [
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "0"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "0"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "0"
               }
             ],
             "list": [
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "5"
+                "xLabel": "4 Oct"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "6"
+                "xLabel": "5 Oct"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "7"
+                "xLabel": "6 Oct"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "8"
+                "xLabel": "7 Oct"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "9"
+                "xLabel": "8 Oct"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "10"
+                "xLabel": "9 Oct"
               },
               {
-                "yVal": 0,
+                "yValPrecise": 0,
                 "yLabel": "Rp0",
-                "xLabel": "11"
+                "xLabel": "10 Oct"
               }
             ],
-            "error": ""
+            "error": "",
+            "showWidget": true
           }
         ]
       }

@@ -35,9 +35,7 @@ class SliderBannerViewModel(val application: Application, components: Components
         return listData
     }
 
-    override fun initDaggerInject() {
 
-    }
 
 
 }

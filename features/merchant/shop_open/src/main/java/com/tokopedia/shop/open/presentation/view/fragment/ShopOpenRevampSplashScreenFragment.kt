@@ -9,14 +9,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.common.EspressoIdlingResource
 import com.tokopedia.shop.open.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.common.PageNameConstant
 import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
 
 class ShopOpenRevampSplashScreenFragment : Fragment() {
@@ -56,6 +59,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupIconImage(view)
 
+        setupToolbarActions(view)
         val fullName = userSession.name
         val firstName = fullName.split(" ")[0]
         val greetingText = getString(R.string.open_shop_revamp_text_horay_name, firstName)
@@ -66,6 +70,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
                 fragmentNavigationInterface
                     ?.navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
             }
+            EspressoIdlingResource.decrement()
         }, 3000)
     }
 
@@ -78,4 +83,13 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         )
     }
 
+    private fun setupToolbarActions(view: View?) {
+        view?.findViewById<HeaderUnify>(R.id.toolbar_splash_screen)?.apply {
+            transparentMode = context.isDarkMode()
+            isShowShadow = false
+            setNavigationOnClickListener {
+                activity?.finish()
+            }
+        }
+    }
 }

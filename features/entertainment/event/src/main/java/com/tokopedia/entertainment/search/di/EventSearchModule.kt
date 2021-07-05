@@ -21,7 +21,6 @@ import okhttp3.logging.HttpLoggingInterceptor
  * Author errysuprayogi on 06,February,2020
  */
 
-@EventSearchScope
 @Module
 class EventSearchModule {
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:padding="@dimen/layout_lvl2">
 
@@ -35,7 +35,7 @@
                 android:layout_marginLeft="@dimen/hotel_3dp"
                 android:text="@string/hotel_homepage_check_in"
                 app:typographyType="body_3"
-                android:textColor="@color/Neutral_N700_44"/>
+                android:textColor="@color/Unify_N700_44"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/tv_hotel_homepage_checkin_date"
@@ -86,7 +86,7 @@
                 android:layout_marginLeft="@dimen/hotel_3dp"
                 android:text="@string/hotel_homepage_check_out"
                 app:typographyType="body_3"
-                android:textColor="@color/Neutral_N700_44"/>
+                android:textColor="@color/Unify_N700_44"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/tv_hotel_homepage_checkout_date"
@@ -126,7 +126,7 @@
                 android:layout_marginLeft="@dimen/hotel_3dp"
                 android:text="@string/hotel_homepage_guest_info"
                 app:typographyType="body_3"
-                android:textColor="@color/Neutral_N700_44"/>
+                android:textColor="@color/Unify_N700_44"/>
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/tv_hotel_homepage_guest_info"

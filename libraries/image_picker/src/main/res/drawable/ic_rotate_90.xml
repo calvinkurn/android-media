@@ -7,18 +7,18 @@
         android:pathData="M2.56,7.719l5.82,-5.82a2,2 0,0 1,2.828 0l3.858,3.858"
         android:strokeLineCap="round"
         android:fillType="evenOdd"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.6"
         android:strokeLineJoin="round"/>
     <path
         android:pathData="M16.906,7.534l-3.708,-0.144a0.2,0.2 0,0 1,-0.134 -0.342l3.563,-3.563a0.2,0.2 0,0 1,0.342 0.134l0.144,3.707a0.2,0.2 0,0 1,-0.207 0.208z"
         android:fillType="evenOdd"
-        android:fillColor="#4C4C4C"/>
+        android:fillColor="@color/Unify_N600"/>
     <path
         android:pathData="M10.277,7.839L16.802,14.364A1,1 99.095,0 1,16.802 15.779L10.277,22.304A1,1 0,0 1,8.863 22.304L2.338,15.779A1,1 92.382,0 1,2.338 14.364L8.863,7.839A1,1 0,0 1,10.277 7.839z"
         android:fillType="evenOdd"
-        android:strokeColor="#000"
+        android:strokeColor="@color/Unify_N700"
         android:fillColor="#00000000"
         android:strokeWidth="1.6"
         android:strokeAlpha=".7"/>

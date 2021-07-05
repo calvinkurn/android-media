@@ -13,16 +13,21 @@ data class Product(
         var productId: Long = 0,
 
         @SerializedName("is_free_shipping")
-        var isFreeShipping: Boolean = false
+        var isFreeShipping: Boolean = false,
+
+        @SerializedName("is_free_shipping_tc")
+        var isFreeShippingTc: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
+            parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(productId)
         parcel.writeByte(if (isFreeShipping) 1 else 0)
+        parcel.writeByte(if (isFreeShippingTc) 1 else 0)
     }
 
     override fun describeContents(): Int {

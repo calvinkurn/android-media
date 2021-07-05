@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
@@ -12,7 +12,7 @@
         android:id="@+id/v_divider_item_cart_error"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/unify_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
             android:id="@+id/img_shop_badge"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
             tools:src="@drawable/ic_badge_shop_official"
             tools:visibility="visible" />
 
@@ -43,19 +43,10 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
             tools:text="Makmur  adalah aaaaaa bbbbb" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_fulfillment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:text="@string/label_fulfilment_wording"
-            app:labelType="general_light_green" />
 
     </com.google.android.flexbox.FlexboxLayout>
 

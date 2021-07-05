@@ -4,13 +4,18 @@ import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
+import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
+import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import junit.framework.TestCase
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
 
 class InitialSearchViewModelTest: InitialSearchViewModelTestFixture() {
@@ -22,9 +27,21 @@ class InitialSearchViewModelTest: InitialSearchViewModelTestFixture() {
             viewModel.getSellerSearch(keyword = anyString(), shopId = anyString())
 
             verifySuccessGetSellerSearchUseCaseCaseCalled()
-            val expectedValue = Success(InitialSearchUiModel())
             assertTrue(viewModel.getSellerSearch.value is Success)
-            viewModel.getSellerSearch.verifyValueEquals(expectedValue)
+            assertNotNull((viewModel.getSellerSearch.value as Success).data)
+        }
+    }
+
+    @Test
+    fun `when insert success search suggestion should return success`() {
+        runBlocking {
+            onInsertSuccessSearch_thenReturn()
+            viewModel.insertSearchSeller(anyString(), anyString(), anyString(), ArgumentMatchers.anyInt())
+
+            verifyInsertSuccessSearchUseCaseCalled()
+            val expectedValue = Success(RegisterSearchUiModel())
+            assertTrue(viewModel.insertSuccessSearch.value is Success)
+            viewModel.insertSuccessSearch.verifyValueEquals(expectedValue)
         }
     }
 
@@ -110,7 +127,15 @@ class InitialSearchViewModelTest: InitialSearchViewModelTestFixture() {
         coVerify { deleteSuggestionHistoryUseCase.executeOnBackground() }
     }
 
+    private fun onInsertSuccessSearch_thenReturn() {
+        coEvery { insertSellerSearchUseCase.executeOnBackground() } returns SuccessSearchResponse.SuccessSearch()
+    }
+
     private fun verifySuccessGetSellerSearchUseCaseCaseCalled() {
         coVerify { getSellerSearchUseCase.executeOnBackground() }
+    }
+
+    private fun verifyInsertSuccessSearchUseCaseCalled() {
+        coVerify { insertSellerSearchUseCase.executeOnBackground() }
     }
 }

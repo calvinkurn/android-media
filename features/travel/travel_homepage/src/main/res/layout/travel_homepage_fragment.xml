@@ -4,7 +4,7 @@
     android:id="@+id/travel_homepage_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/Unify_N0"
     android:fitsSystemWindows="true">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -27,12 +27,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16"
+            android:paddingTop="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl4"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
-            app:elevation="@dimen/dp_4"
+            app:elevation="@dimen/spacing_lvl2"
             app:navigationIcon="@drawable/ic_action_back"
             app:title="@string/title_travel_homepage"
             app:titleTextAppearance="@style/TitleTextAppearance" />

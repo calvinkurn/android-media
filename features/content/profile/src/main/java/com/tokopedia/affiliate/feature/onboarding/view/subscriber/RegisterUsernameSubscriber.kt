@@ -1,13 +1,10 @@
 package com.tokopedia.affiliate.feature.onboarding.view.subscriber
 
-import android.text.TextUtils
-
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.affiliate.feature.onboarding.data.pojo.registerusername.RegisterUsernameData
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract
-
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.utils.ErrorHandler
 import rx.Subscriber
 
 /**
@@ -29,7 +26,7 @@ class RegisterUsernameSubscriber(private val view: UsernameInputContract.View) :
         view.hideLoading()
         val data = graphqlResponse.getData<RegisterUsernameData>(RegisterUsernameData::class.java)
 
-        if (!TextUtils.isEmpty(data.bymeRegisterAffiliateName.error.message)) {
+        if ((data.bymeRegisterAffiliateName.error.message.isNotEmpty())) {
             if (ERROR_VALIDATION.equals(data.bymeRegisterAffiliateName.error.type, ignoreCase = true)) {
                 view.onErrorInputRegisterUsername(
                         data.bymeRegisterAffiliateName.error.message
@@ -50,6 +47,6 @@ class RegisterUsernameSubscriber(private val view: UsernameInputContract.View) :
     }
 
     companion object {
-        private const val ERROR_VALIDATION = "validation"
+        const val ERROR_VALIDATION = "validation"
     }
 }

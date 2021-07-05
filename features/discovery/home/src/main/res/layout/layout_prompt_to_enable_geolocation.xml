@@ -8,12 +8,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/Unify_N50"
     app:cardElevation="@dimen/dp_0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_product_home_geolocation">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/img_geolocation"

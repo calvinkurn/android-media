@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import kotlinx.android.synthetic.main.shop_showcase_item_picker.view.*
@@ -25,8 +25,8 @@ class ShopShowcasePickerAdapter(
 
     private var totalCheckedItem = 0
     private var lastSelectedRadioPosition = -1
-    private var showcaseList: List<ShowcaseItem> = listOf()
-    private var preSelectedShowcaseList: List<ShowcaseItemPicker> = listOf()
+    private var showcaseList: List<ShopEtalaseModel> = listOf()
+    private var preSelectedShowcaseList: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcasePickerViewHolder {
         return ShopShowcasePickerViewHolder(
@@ -44,10 +44,10 @@ class ShopShowcasePickerAdapter(
             holder.btnRadioPicker?.isChecked = (lastSelectedRadioPosition == position)
     }
 
-    fun updateDataSet(newList: List<ShowcaseItem> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf(), totalChecked: Int = 0) {
+    fun updateDataSet(newList: List<ShopEtalaseModel> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf(), totalChecked: Int = 0) {
         if(preSelectedShowcase?.size.isMoreThanZero()) {
             preSelectedShowcase?.let {
-                preSelectedShowcaseList = it
+                preSelectedShowcaseList = it.toMutableList()
             }
         } else {
             showcaseList = newList
@@ -81,7 +81,7 @@ class ShopShowcasePickerAdapter(
             itemView.tv_showcase_name
         }
 
-        fun bind(item: ShowcaseItem) {
+        fun bind(item: ShopEtalaseModel) {
             tvShowcaseName?.text = item.name
 
             if(pickerType == ShowcasePickerType.RADIO) {
@@ -111,7 +111,10 @@ class ShopShowcasePickerAdapter(
                         item.isChecked = !item.isChecked
                         btnCheckboxPicker?.isChecked = item.isChecked
                         if(item.isChecked) totalCheckedItem += 1
-                        else totalCheckedItem -= 1
+                        else {
+                            preSelectedShowcaseList.remove(ShowcaseItemPicker(showcaseId = item.id, showcaseName = item.name))
+                            totalCheckedItem -= 1
+                        }
                         listener.onPickerItemClicked(item, totalCheckedItem)
                         notifyDataSetChanged()
                     }
@@ -125,11 +128,11 @@ class ShopShowcasePickerAdapter(
 
         private fun setDisableState(ctx: Context, state: Boolean) {
             if(state) {
-                tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, R.color.showcase_picker_disable_color))
+                tvShowcaseName?.setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 tvShowcaseName?.alpha = DISABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = false
             } else {
-                tvShowcaseName?.setTextColor(Color.BLACK)
+                tvShowcaseName?.setTextColor(androidx.core.content.ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G900))
                 tvShowcaseName?.alpha = ENABLE_TEXT_OPACITY
                 btnCheckboxPicker?.isEnabled = true
             }
@@ -137,7 +140,7 @@ class ShopShowcasePickerAdapter(
     }
 
     interface PickerClickListener {
-        fun onPickerItemClicked(item: ShowcaseItem, totalCheckedItem: Int)
+        fun onPickerItemClicked(item: ShopEtalaseModel, totalCheckedItem: Int)
         fun onPickerMaxSelectedShowcase()
     }
 }

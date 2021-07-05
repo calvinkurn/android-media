@@ -14,11 +14,13 @@ interface PromoCheckoutActionListener {
 
     fun onClickPromoListHeader(element: PromoListHeaderUiModel)
 
-    fun onClickPromoListItem(element: PromoListItemUiModel)
+    fun onClickPromoListItem(element: PromoListItemUiModel, position: Int)
 
     fun onClickPromoItemDetail(element: PromoListItemUiModel)
 
     fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel)
 
     fun onClickEmptyStateButton(element: PromoEmptyStateUiModel)
+
+    fun onClickErrorStateButton(destination: String)
 }

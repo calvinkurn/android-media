@@ -7,11 +7,10 @@
 
     <androidx.cardview.widget.CardView android:id="@+id/container_product_image"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/dp_6"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
@@ -29,13 +28,12 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_delete"
         android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginRight="@dimen/dp_2"
         android:layout_marginEnd="@dimen/dp_2"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
         android:layout_gravity="top|end"
         android:background="@drawable/circle_light_grey"
-        android:backgroundTint="@color/Neutral_N200"
+        android:backgroundTint="@color/Unify_N200"
         app:srcCompat="@drawable/ic_close_white"
         android:padding="@dimen/dp_2"/>
 

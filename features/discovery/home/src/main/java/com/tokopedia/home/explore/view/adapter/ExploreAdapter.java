@@ -10,10 +10,10 @@ import com.tokopedia.home.explore.view.adapter.viewholder.CategoryFavoriteViewHo
 import com.tokopedia.home.explore.view.adapter.viewholder.CategoryGridListViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewholder.MyShopViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewholder.SellViewHolder;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryFavoriteDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryGridListDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.MyShopDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.SellDataModel;
 
 /**
  * Created by errysuprayogi on 1/26/18.
@@ -30,22 +30,22 @@ public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactor
     }
 
     @Override
-    public int type(CategoryGridListViewModel viewModel) {
+    public int type(CategoryGridListDataModel viewModel) {
         return CategoryGridListViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(SellViewModel viewModel) {
+    public int type(SellDataModel viewModel) {
         return SellViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(CategoryFavoriteViewModel viewModel) {
+    public int type(CategoryFavoriteDataModel viewModel) {
         return CategoryFavoriteViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(MyShopViewModel viewModel) {
+    public int type(MyShopDataModel viewModel) {
         return MyShopViewHolder.LAYOUT;
     }
 

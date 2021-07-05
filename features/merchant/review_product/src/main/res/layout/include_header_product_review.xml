@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/header_product_review"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rect_white_stroke_gray_05"
+    android:divider="@drawable/bg_line_separator_vertical_05"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:showDividers="middle"
+    app:layout_scrollFlags="scroll|enterAlways">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/rating_value"
+                style="@style/TextView.Headline.Bold"
+                android:textColor="@color/Unify_N700_96"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                tools:text="4.0" />
+
+            <TextView
+                style="@style/TextView.Small"
+                android:textColor="@color/Unify_N700_96"
+                android:text="@string/product_review_label_rating_comparison" />
+        </LinearLayout>
+
+        <RatingBar
+            android:id="@+id/product_rating"
+            style="@style/RatingBar.Micro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="3" />
+
+        <TextView
+            android:id="@+id/total_review"
+            android:textColor="@color/Unify_N700_44"
+            style="@style/TextView.Micro.BlackDisabled"
+            tools:text="129 Ulasan" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
+            android:id="@+id/five_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            app:numstars="5"
+            app:rating="5" />
+
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
+            android:id="@+id/four_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            app:numstars="5"
+            app:rating="4" />
+
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
+            android:id="@+id/three_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            app:numstars="5"
+            app:rating="3" />
+
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
+            android:id="@+id/two_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_3"
+            app:numstars="5"
+            app:rating="2" />
+
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
+            android:id="@+id/one_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_5"
+            app:numstars="5"
+            app:rating="1" />
+    </LinearLayout>
+</LinearLayout>

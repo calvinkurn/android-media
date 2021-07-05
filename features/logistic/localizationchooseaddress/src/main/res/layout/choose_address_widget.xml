@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/choose_address_widget"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_location"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginBottom="@dimen/dp_18"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_chosen_address"
+        app:layout_constraintBottom_toBottomOf="@id/text_chosen_address"
+        app:icon_name="LOCATION"
+        tools:ignore="ContentDescription" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_chosen_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/state_dikirim_ke"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_location"
+        app:layout_constraintEnd_toStartOf="@id/btn_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_default="wrap"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_arrow"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_19"
+        android:layout_marginTop="@dimen/dp_2"
+        app:layout_constraintTop_toTopOf="@id/text_chosen_address"
+        app:layout_constraintBottom_toBottomOf="@id/text_chosen_address"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/text_chosen_address"
+        app:icon_name="CHEVRON_DOWN"
+        tools:ignore="ContentDescription" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

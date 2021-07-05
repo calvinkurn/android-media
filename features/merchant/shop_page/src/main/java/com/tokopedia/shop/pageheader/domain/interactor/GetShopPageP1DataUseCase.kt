@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -8,8 +7,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
@@ -20,10 +19,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
-import com.tokopedia.shop.product.data.GQLQueryConstant
-import com.tokopedia.shop.product.data.model.ShopProduct
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -38,29 +33,14 @@ class GetShopPageP1DataUseCase @Inject constructor(
     companion object {
         private const val PARAM_SHOP_ID = "shopId"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
-        private const val PARAM_PAGE = "page"
-        private const val PARAM_ITEM_PER_PAGE = "itemPerPage"
-        private const val PARAM_SORT_ID = "sortId"
-        private const val PARAM_KEYWORD = "keyword"
-        private const val PARAM_ETALASE_ID = "etalaseId"
 
         @JvmStatic
         fun createParams(
                 shopId: Int,
-                shopDomain: String,
-                page: Int,
-                itemPerPage: Int,
-                sortId: Int,
-                keyword: String,
-                etalaseId: String
+                shopDomain: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
-            putObject(PARAM_PAGE, page)
-            putObject(PARAM_ITEM_PER_PAGE, itemPerPage)
-            putObject(PARAM_SORT_ID, sortId)
-            putObject(PARAM_KEYWORD, keyword)
-            putObject(PARAM_ETALASE_ID, etalaseId)
         }
     }
 
@@ -70,11 +50,6 @@ class GetShopPageP1DataUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ShopPageHeaderP1 {
         val shopId: Int = params.getInt(PARAM_SHOP_ID, 0)
         val shopDomain: String = params.getString(PARAM_SHOP_DOMAIN, "")
-        val page = params.getInt(PARAM_PAGE,0)
-        val perPage = params.getInt(PARAM_ITEM_PER_PAGE, 0)
-        val sortId = params.getInt(PARAM_SORT_ID, 0)
-        val keyword = params.getString(PARAM_KEYWORD , "")
-        val etalaseId = params.getString(PARAM_ETALASE_ID, "")
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(getIsShopOfficialRequest(shopId))
             add(getIsShopPowerMerchantRequest(shopId))
@@ -82,14 +57,6 @@ class GetShopPageP1DataUseCase @Inject constructor(
             add(getShopInfoHomeTypeDataRequest(shopId))
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
             add(getFeedWhitelistRequest(shopId))
-            add(getProductListRequest(
-                    shopId.toString(),
-                    page,
-                    perPage,
-                    keyword,
-                    etalaseId,
-                    sortId
-            ))
         }
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(
@@ -105,40 +72,20 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val getShopInfoHomeTypeData = getResponseData<ShopPageGetHomeType.Response>(gqlResponse).shopPageGetHomeType
         val getShopInfoCoreAndAssetsData = getResponseData<ShopInfo.Response>(gqlResponse).result.data.first()
         val getFeedWhitelist = getResponseData<WhitelistQuery>(gqlResponse).whitelist
-        val getProductList = getResponseData<ShopProduct.Response>(gqlResponse).getShopProduct
         return ShopPageHeaderP1(
                 getIsOfficialData,
                 getIsShopPowerMerchant,
                 getShopInfoTopContentData,
                 getShopInfoHomeTypeData,
                 getShopInfoCoreAndAssetsData,
-                getFeedWhitelist,
-                getProductList
-        )
-    }
-
-    private fun getProductListRequest(
-            shopId: String,
-            page: Int,
-            perPage: Int,
-            keyword: String,
-            etalaseId: String,
-            sortId: Int
-    ): GraphqlRequest {
-        val params = GqlGetShopProductUseCase.createParams(
-                shopId,
-                ShopProductFilterInput(page, perPage, keyword, etalaseId, sortId)
-        )
-        return createGraphqlRequest<ShopProduct.Response>(
-                mapQuery[GQLQueryConstant.SHOP_PRODUCT].orEmpty(),
-                params
+                getFeedWhitelist
         )
     }
 
     private fun getIsShopOfficialRequest(shopId: Int): GraphqlRequest {
         val params = GqlGetIsShopOsUseCase.createParams(shopId)
         return createGraphqlRequest<GetIsShopOfficialStore.Response>(
-                mapQuery[GQLQueryNamedConstant.GET_IS_OFFICIAL].orEmpty(),
+                GqlGetIsShopOsUseCase.QUERY,
                 params.parameters
         )
     }
@@ -146,7 +93,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getIsShopPowerMerchantRequest(shopId: Int): GraphqlRequest {
         val params = GqlGetIsShopPmUseCase.createParams(shopId)
         return createGraphqlRequest<GetIsShopPowerMerchant.Response>(
-                mapQuery[GQLQueryNamedConstant.GET_IS_POWER_MERCHANT].orEmpty(),
+                GqlGetIsShopPmUseCase.QUERY,
                 params.parameters
         )
     }
@@ -167,7 +114,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getShopInfoHomeTypeDataRequest(shopId: Int): GraphqlRequest {
         val params = GqlShopPageGetHomeType.createParams(shopId)
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
-                mapQuery[ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE].orEmpty(),
+                GqlShopPageGetHomeType.QUERY,
                 params.parameters
         )
     }

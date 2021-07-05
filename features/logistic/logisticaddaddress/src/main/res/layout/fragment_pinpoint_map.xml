@@ -17,7 +17,7 @@
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <ImageView
                 android:id="@+id/pointer_0"
@@ -44,7 +44,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <include layout="@layout/bottomsheet_getdistrict" />
+            <include
+                android:id="@+id/bottom_sheet_get_district"
+                layout="@layout/bottomsheet_getdistrict" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -52,23 +54,24 @@
             android:id="@+id/ic_current_location"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_above="@+id/cl_bottomsheet_getdistrict"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:contentDescription="@string/lokasi_saat_ini"
             app:srcCompat="@drawable/ic_gps_enable" />
 
     </RelativeLayout>
 
-    <ImageButton
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/back_button"
-        android:layout_width="?actionBarSize"
-        android:layout_height="?actionBarSize"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_gravity="start|top"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/navigate_up"
-        app:srcCompat="@drawable/ic_arrow_back" />
+        app:icon_name="ARROW_BACK"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

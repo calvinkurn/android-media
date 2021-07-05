@@ -1,0 +1,38 @@
+[
+  {
+    "data": {
+      "discussionAggregateByProductID": {
+        "productName": "adbaksbdjab-n0-361T",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/19/2e06b54f-14f8-4bc6-a014-e3b81519f636.png",
+        "url": "https://www.tokopedia.com/qa-k31045/adbaksbdjab-n0-361t",
+        "category": [
+          {
+            "name": "deskripsi_produk",
+            "text": "Detail Produk",
+            "counter": 0
+          },
+          {
+            "name": "pengiriman",
+            "text": "Pengiriman",
+            "counter": 0
+          },
+          {
+            "name": "varian",
+            "text": "Varian",
+            "counter": 0
+          },
+          {
+            "name": "stok",
+            "text": "Stok",
+            "counter": 0
+          },
+          {
+            "name": "lainnya",
+            "text": "Lainnya",
+            "counter": 1
+          }
+        ]
+      }
+    }
+  }
+]

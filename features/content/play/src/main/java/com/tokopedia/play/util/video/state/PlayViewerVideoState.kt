@@ -14,6 +14,12 @@ sealed class PlayViewerVideoState {
     data class Error(val error: Throwable) : PlayViewerVideoState()
 }
 
+val PlayViewerVideoState.hasNoData: Boolean
+    get() = this == PlayViewerVideoState.Waiting ||
+            this == PlayViewerVideoState.Unknown ||
+            this is PlayViewerVideoState.Buffer ||
+            this is PlayViewerVideoState.Error
+
 enum class BufferSource {
 
     Viewer,

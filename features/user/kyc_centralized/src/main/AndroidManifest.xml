@@ -15,14 +15,14 @@
 
         <activity android:name=".view.activity.UserIdentificationCameraActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".view.activity.UserIdentificationFormActivity"
             android:label="@string/title_kyc_form_upload"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -39,8 +39,8 @@
             android:label="@string/title_kyc_info"
             android:theme="@style/Theme.White">
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

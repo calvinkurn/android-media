@@ -12,7 +12,6 @@ import java.util.List;
  * Created by Angga.Prasetiyo on 10/12/2015.
  */
 public class GeneratedHost implements Parcelable {
-    private static final String TAG = GeneratedHost.class.getSimpleName();
 
     @SerializedName("server_id")
     @Expose

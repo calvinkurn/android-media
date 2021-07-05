@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:layout_height="@dimen/waiting_order_product_height">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivProduct"
@@ -22,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_13"
         android:lineSpacingExtra="@dimen/layout_lvl0"
-        android:textColor="@color/Neutral_N700_96"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@id/tvProductQuantityAndPrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivProduct"
@@ -36,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_13"
         android:lineSpacingExtra="@dimen/layout_lvl0"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@id/ivProduct"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivProduct"

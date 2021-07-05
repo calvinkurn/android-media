@@ -22,18 +22,10 @@
             android:layout_height="match_parent"
             android:text="@string/official_store"
             android:gravity="center_vertical"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-            app:srcCompat="@drawable/setting_tip_bar_os"/>
 
         <View
             android:id="@+id/badgeBorder"

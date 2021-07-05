@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/full_page_loading"
@@ -10,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:padding="@dimen/dp_20"
+        android:padding="@dimen/flight_dp_20"
         android:visibility="gone">
 
         <ProgressBar
@@ -25,59 +26,62 @@
         android:id="@+id/sv_review_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_apps"
+        android:background="@color/Unify_N50"
         android:fillViewport="true"
         android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background_apps"
+            android:background="@color/Unify_N50"
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_apps" />
+                android:background="@color/Unify_N50" />
 
             <LinearLayout
                 android:id="@+id/container_additional_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/padding_16"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16">
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/spacing_lvl3"
+                android:paddingRight="@dimen/spacing_lvl4">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_departure_label"
-                    style="@style/TextView.TitleMedium.Bold"
+                    app:typographyType="heading_4"
+                    android:textColor="@color/Unify_N700_96"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:text="@string/flight_label_additional_data" />
 
                 <LinearLayout
                     android:id="@+id/container_additional_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/TextView.Micro.BlackDisabled"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:textColor="@color/Unify_N700_44"
+                        app:typographyType="body_3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/spacing_lvl4"
                         android:text="@string/flight_cancellation_reason_label" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/txt_cancellation_reason"
-                        style="@style/TextView.Title"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="heading_4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/flight_cancellation_reason_label" />
@@ -90,11 +94,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/TextView.Micro.BlackDisabled"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:textColor="@color/Unify_N700_44"
+                        app:typographyType="body_3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/spacing_lvl3"
                         android:text="@string/flight_cancellation_review_passenger_id_label" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -109,17 +114,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_16">
+                android:padding="@dimen/spacing_lvl4">
 
-                <TextView
-                    android:id="@+id/tv_estimate_label"
-                    style="@style/TextView.TitleMedium.Bold"
+                <com.tokopedia.unifyprinciples.Typography
+                    app:typographyType="heading_4"
+                    android:textColor="@color/Unify_N700_96"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:background="@color/white"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_N0"
                     android:text="@string/flight_cancellation_estimate_refund_label" />
 
                 <LinearLayout
@@ -129,9 +134,10 @@
                     android:layout_marginBottom="@dimen/margin_16"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
+                        app:typographyType="body_3"
+                        android:textColor="@color/Unify_N700_96"
                         android:id="@+id/tv_description_refund"
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="" />
@@ -146,29 +152,33 @@
                     android:id="@+id/container_estimate_refund"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/margin_8"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        style="@style/TextView.Small.Bold"
-                        android:layout_width="0dp"
+                    <com.tokopedia.unifyprinciples.Typography
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
+                        android:textColor="@color/Unify_N700_96"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/flight_cancellation_estimate_refund_label" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:textColor="@color/Unify_Y500"
+                        app:typographyType="heading_4"
                         android:id="@+id/tv_total_refund"
-                        style="@style/TextView.Title.OrangeRed.Bold"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
                         tools:text="Rp45.846.900" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_refund_star"
-                        style="@style/TextView.Micro"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="body_3"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="top"
@@ -181,12 +191,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_refund_detail"
-                    style="@style/TextView.Small.Bold"
+                    app:typographyType="body_2"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyWeight="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/margin_8"
                     android:visibility="gone"
                     tools:text="@string/flight_cancellation_review_refund_to_email_detail"
@@ -197,14 +209,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_10">
+                android:paddingTop="@dimen/flight_dp_10"
+                android:paddingBottom="@dimen/flight_dp_10">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <com.tokopedia.unifycomponents.UnifyButton
+                    app:unifyButtonType="transaction"
+                    app:unifyButtonSize="large"
+                    android:layout_marginVertical="@dimen/spacing_lvl3"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:id="@+id/button_submit"
-                    style="@style/Button.Submit.Orange"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
                     android:text="@string/flight_cancellation_review_button" />
             </LinearLayout>
 

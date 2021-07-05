@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_wishlist.model.datamodel.BannerTopAdsDataModel
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -13,7 +14,7 @@ import java.util.*
 /**
  * Created by Lukas 25/05/2019
  *
- * A main class of Recommendation Page is [WishlistTracking]
+ * A main class of Wishlist Page is [WishlistTracking]
  * this class handling a whole tracking data
  * don't delete this!
  */
@@ -65,6 +66,7 @@ object WishlistTracking {
     private const val PROMO_CLICK = "promoClick"
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_WISHLIST = "clickWishlist"
+    private const val EVENT_OPEN_SCREEN = "openScreen"
     private const val EVENT_CLICK_ADD_TO_CART = "addToCart"
     private const val SCREEN_NAME = "screenName"
     private const val BUSINESS_UNIT = "businessUnit"
@@ -88,6 +90,7 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_ADD_WISHLIST = "click add wishlist on product recommendation"
     private const val EVENT_ACTION_IMPRESSION_BANNER_ADS = "impression - banner ads"
     private const val EVENT_ACTION_CLICK_BANNER_ADS = "click - banner ads"
+    private const val EVENT_ACTION_CLICK_CART_ICON = "click cart icon in wishlist page"
 
     private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN = "impression on product recommendation"
     private const val EVENT_ACTION_IMPRESSION_WISHLIST = "product impressions"
@@ -97,8 +100,11 @@ object WishlistTracking {
     private const val EVENT_ACTION_CLICK_BUY = "click - beli on wishlist"
     private const val VALUE_SCREEN_NAME = "/wishlist"
     private const val VALUE_BUSINESS_UNIT = "home & browse"
+    private const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
     private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
     private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+    private const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
@@ -110,14 +116,22 @@ object WishlistTracking {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.id,
-                FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
+                FIELD_PRODUCT_PRICE, item.rawPrice,
                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                FIELD_DIMENSION_83, generateFreeOngkirTrackingValue(item)
         )
+    }
+
+    private fun generateFreeOngkirTrackingValue(item: WishlistItem): String {
+        return when {
+            item.freeOngkirExtra.isActive -> VALUE_BEBAS_ONGKIR_EXTRA
+            item.freeOngkir.isActive -> VALUE_BEBAS_ONGKIR
+            else -> VALUE_NONE_OTHER
+        }
     }
 
     private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
@@ -132,7 +146,7 @@ object WishlistTracking {
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                 FIELD_PRODUCT_LIST, list,
                 FIELD_PRODUCT_POSITION, position,
-                FIELD_DIMENSION_83, if (item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                FIELD_DIMENSION_83, getBebasOngkirValue(item)
         )
     }
     private fun convertBannerTopAdsToDataTrackingObject(item: BannerTopAdsDataModel,
@@ -157,12 +171,12 @@ object WishlistTracking {
                         DataLayer.mapOf(
                                 FIELD_PRODUCT_NAME, item.name,
                                 FIELD_PRODUCT_ID, item.id,
-                                FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
+                                FIELD_PRODUCT_PRICE, item.rawPrice,
                                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                                 FIELD_PRODUCT_POSITION, position,
-                                FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                                FIELD_DIMENSION_83, generateFreeOngkirTrackingValue(item)
                         )
                 )
         )
@@ -201,7 +215,7 @@ object WishlistTracking {
                 DataLayer.mapOf(
                         FIELD_PRODUCT_NAME, item.name,
                         FIELD_PRODUCT_ID, item.id,
-                        FIELD_PRODUCT_PRICE, item.rawPrice.toString(),
+                        FIELD_PRODUCT_PRICE, item.rawPrice,
                         FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumb,
                         FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -212,14 +226,21 @@ object WishlistTracking {
                         FIELD_CATEGORY_ID, VALUE_NONE_OTHER,
                         FIELD_DIMENSION_45, cartId,
                         FIELD_DIMENSION_40, list,
-                        FIELD_DIMENSION_83, if (item.freeOngkir.isActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                        FIELD_DIMENSION_83, generateFreeOngkirTrackingValue(item)
                 )
         )
         )
     }
 
+    private fun getBebasOngkirValue(item: RecommendationItem): String{
+        val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
+        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
+        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
+        else VALUE_NONE_OTHER
+    }
+
     fun clickBuy(wishlistItem: WishlistItem, cartId: String){
-        getTracker().sendGeneralEvent(
+        getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, EVENT_CLICK_ADD_TO_CART,
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
@@ -431,6 +452,18 @@ object WishlistTracking {
         getTracker().sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
     }
 
+    fun openWishlistPage(userId: String){
+        getTracker().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_OPEN_SCREEN,
+                        SCREEN_NAME, VALUE_SCREEN_NAME,
+                        BUSINESS_UNIT, VALUE_BUSINESS_UNIT,
+                        USER_ID, userId,
+                        IS_LOGGED_IN_STATUS, if(userId.isNotEmpty()) "true" else "false",
+                        CURRENT_SITE, VALUE_CURRENT_SITE
+                )
+        )
+    }
 
     fun clickWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendGeneralEvent(
@@ -443,6 +476,7 @@ object WishlistTracking {
         )
     }
 
+
     fun clickEmptyWishlistIconRecommendation(productId: String, isTopAds: Boolean, recomTitle: String, isAdd: Boolean){
         getTracker().sendGeneralEvent(
                 DataLayer.mapOf(
@@ -450,6 +484,20 @@ object WishlistTracking {
                         EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
                         EVENT_LABEL, String.format(EVENT_LABEL_RECOM_WISHLIST_EMPTY_WISHLIST, productId, if(isTopAds) "topads" else "general", recomTitle),
                         EVENT_ACTION, if(isAdd) EVENT_ACTION_CLICK_ADD_WISHLIST else EVENT_ACTION_CLICK_REMOVE_WISHLIST
+                )
+        )
+    }
+
+    fun clickCartIcon(userId: String) {
+        getTracker().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_WISHLIST,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_LABEL, "",
+                        EVENT_ACTION, EVENT_ACTION_CLICK_CART_ICON,
+                        USER_ID, userId,
+                        BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM,
+                        CURRENT_SITE, VALUE_CURRENT_SITE
                 )
         )
     }

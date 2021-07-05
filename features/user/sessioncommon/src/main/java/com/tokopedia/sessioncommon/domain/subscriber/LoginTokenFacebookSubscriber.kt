@@ -1,7 +1,7 @@
 package com.tokopedia.sessioncommon.domain.subscriber
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -11,7 +11,9 @@ import rx.Subscriber
 class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
                                    val onSuccessLoginToken: (pojo: LoginTokenPojo) -> Unit,
                                    val onErrorLoginToken: (e: Throwable) -> Unit,
-                                   val onGoToSecurityQuestion : () -> Unit ) :
+                                   val onShowPopupError: (pojo: LoginTokenPojo)  -> Unit,
+                                   val onGoToSecurityQuestion : () -> Unit,
+                                   val onFinished : () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -26,6 +28,10 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
             }else{
                 onSuccessLoginToken(pojo)
             }
+        } else if (pojo.loginToken.popupError.header.isNotEmpty() &&
+                pojo.loginToken.popupError.body.isNotEmpty() &&
+                pojo.loginToken.popupError.action.isNotEmpty()) {
+            onShowPopupError(pojo)
         } else if (pojo.loginToken.errors.isNotEmpty()) {
             onErrorLoginToken(MessageErrorException(pojo.loginToken.errors[0].message,
                     ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
@@ -47,7 +53,7 @@ class LoginTokenFacebookSubscriber(val userSession: UserSessionInterface,
     }
 
     override fun onCompleted() {
-
+        onFinished()
     }
 
     override fun onError(e: Throwable?) {

@@ -5,7 +5,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTr
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 
 data class ShopFollowersUiModel(
-    val shopFollowers: Int = 0,
+    val shopFollowers: Long = 0,
     override val impressionEventName: String = "",
     override val impressionEventCategory: String = "",
     override val impressionEventAction: String = "",

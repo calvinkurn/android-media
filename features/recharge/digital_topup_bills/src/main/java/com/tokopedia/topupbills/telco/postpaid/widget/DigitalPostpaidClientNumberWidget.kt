@@ -3,11 +3,12 @@ package com.tokopedia.topupbills.telco.postpaid.widget
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.postpaid.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
@@ -45,7 +46,7 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         enquiryResult = view.findViewById(R.id.telco_enquiry_result)
 
         btnEnquiry.setOnClickListener {
-            if (btnEnquiry.isEnabled) {
+            if (btnEnquiry.isClickable) {
                 postpaidListener.enquiryNumber()
             }
         }
@@ -53,13 +54,19 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun resetClientNumberPostpaid() {
         enquiryResult.removeAllViews()
-        btnEnquiry.visibility = View.VISIBLE
-        titleEnquiryResult.visibility = View.GONE
-        setButtonEnquiry(false)
+        btnEnquiry.show()
+        titleEnquiryResult.gone()
+        enquiryResult.gone()
+    }
+
+    fun resetEnquiryResult() {
+        btnEnquiry.show()
+        titleEnquiryResult.gone()
+        enquiryResult.gone()
     }
 
     fun setButtonEnquiry(enable: Boolean) {
-        btnEnquiry.isEnabled = enable
+        btnEnquiry.isClickable = enable
     }
 
     fun setLoadingButtonEnquiry(loading: Boolean) {
@@ -68,16 +75,19 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
         enquiryResult.removeAllViews()
-        for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
-            if (!TextUtils.isEmpty(item.value)) {
-                val billsResult = DigitalTelcoBillsResultWidget(context)
-                billsResult.setLabel(item.label)
-                billsResult.setValue(item.value)
-                enquiryResult.addView(billsResult)
+        if (telcoEnquiryData.enquiry.attributes.mainInfoList != null) {
+            for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
+                if (!TextUtils.isEmpty(item.value)) {
+                    val billsResult = DigitalTelcoBillsResultWidget(context)
+                    billsResult.setLabel(item.label)
+                    billsResult.setValue(item.value)
+                    enquiryResult.addView(billsResult)
+                }
             }
         }
-        btnEnquiry.visibility = View.GONE
-        titleEnquiryResult.visibility = View.VISIBLE
+        btnEnquiry.gone()
+        titleEnquiryResult.show()
+        enquiryResult.show()
     }
 
     fun setPostpaidListener(listener: ClientNumberPostpaidListener) {

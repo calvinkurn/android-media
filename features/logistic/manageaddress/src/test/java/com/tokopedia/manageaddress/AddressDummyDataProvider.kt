@@ -1,9 +1,9 @@
 package com.tokopedia.manageaddress
 
 import com.google.gson.Gson
-import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
-import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
+import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.response.GetPeopleAddressResponse
 
 object AddressDummyDataProvider {
 

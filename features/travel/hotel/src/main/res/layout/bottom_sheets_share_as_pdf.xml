@@ -16,7 +16,7 @@
         android:id="@+id/divider_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@color/hotel_divider_color_gray" />
+        android:background="@color/Unify_N75" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@string/hotel_share_title_email"
             app:typographyType="body_3"
-            android:textColor="@color/hotel_black_disable_38"/>
+            android:textColor="@color/Unify_N700_32"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/ev_email"
@@ -47,7 +47,7 @@
             android:layout_marginLeft="@dimen/hotel_3dp"
             android:visibility="gone"
             app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             tools:visibility="visible"
             tools:text="lalalala"/>
 
@@ -70,7 +70,7 @@
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginLeft="@dimen/layout_lvl1"
                 android:text="@string/hotel_share_add_email"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="body_2" />
 
         </LinearLayout>

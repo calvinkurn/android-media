@@ -39,7 +39,7 @@ public class ClientNumberInputView extends LinearLayout {
 
     private TextView tvLabel;
     private AutoCompleteTextView autoCompleteTextView;
-    private Button btnClear;
+    private ImageView btnClear;
     private ImageView imgOperator;
     private Button btnContactPicker;
     private ImageView btnCameraPicker;

@@ -178,7 +178,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     private fun Fail.onFailedGetLayoutData(layoutType: LayoutType) {
-        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
+        SellerHomeErrorHandler.logException(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
         partialViews[layoutType]?.renderError(this.throwable)
         showErrorToaster()
     }
@@ -217,12 +217,11 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        Toaster.make(this, context.getString(R.string.sah_failed_to_get_information),
-                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload),
-                View.OnClickListener {
-                    refreshLayout()
-                }
-        )
+        Toaster.build(this, context.getString(R.string.sah_failed_to_get_information),
+                TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload)
+        ) {
+            refreshLayout()
+        }.show()
 
         Handler().postDelayed({
             isErrorToastShown = false

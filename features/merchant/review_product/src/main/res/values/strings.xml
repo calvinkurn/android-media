@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">tkpdreputation</string>
+    <string name="title_activity_reputation_review">Ulasan</string>
+    <string name="seller">Penjual</string>
+    <string name="menu_report">Laporkan</string>
+    <string name="more_to_complete">Selengkapnya</string>
+    <string name="see_reply">Lihat Balasan</string>
+    <string name="close_reply">Tutup Balasan</string>
+    <string name="menu_delete">Hapus</string>
+    <string name="product_review_label_rating_comparison">/ 5</string>
+    <string name="product_review_label_helpful_review">Ulasan Paling Membantu</string>
+    <string name="product_review_label_all_review">Semua Ulasan</string>
+    <string name="product_review_counter_review_formatted">%1$d Ulasan</string>
+    <string name="product_review_label_counter_like_1_formatted">Anda dan %1$d orang terbantu</string>
+    <string name="product_review_label_counter_like_2_formatted">Anda terbantu</string>
+    <string name="product_review_label_counter_like_3_formatted">Terbantu?</string>
+    <string name="product_review_label_counter_like_4_formatted">%1$d orang terbantu</string>
+    <string name="product_review_label_by">Oleh</string>
+    <string name="review_label_all">Semua</string>
+    <string name="review_label_with_photo">Dengan Foto</string>
+    <string name="content_description_like">Like</string>
+    <string name="content_description_reply_chevron">Reply Chevron</string>
+    <string name="content_description_reply_overflow">Reply Overflow</string>
+    <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
+</resources>

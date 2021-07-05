@@ -1,6 +1,8 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
@@ -13,9 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
+import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 abstract class AddEditProductVariantViewModelTestFixture {
@@ -24,12 +28,25 @@ abstract class AddEditProductVariantViewModelTestFixture {
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
+    lateinit var isInputValidObserver: Observer<Boolean>
+
+    @RelaxedMockK
     lateinit var getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase
+
+    @Suppress("UNCHECKED_CAST")
+    private val mIsInputValid: MediatorLiveData<Boolean> by lazy {
+        getPrivateField(viewModel, "mIsInputValid") as MediatorLiveData<Boolean>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    val variantDataMap: HashMap<Int, VariantDetail> by lazy {
+        getPrivateField(viewModel, "variantDataMap") as HashMap<Int, VariantDetail>
+    }
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     val variantDetailTest1 = VariantDetail(
-            variantID=54,
+            variantID=1,
             identifier="",
             name="Ukuran Kemasan",
             status=1,
@@ -116,22 +133,41 @@ abstract class AddEditProductVariantViewModelTestFixture {
 
     val variantDetailsTest = listOf(variantDetailTest1, variantDetailTest2)
 
-    protected val viewModel: AddEditProductVariantViewModel by lazy {
+    protected val spiedViewModel: AddEditProductVariantViewModel by lazy {
         spyk(AddEditProductVariantViewModel(
                 testCoroutineDispatcher,
                 getVariantCategoryCombinationUseCase
         ))
     }
 
+    protected val viewModel: AddEditProductVariantViewModel by lazy {
+        AddEditProductVariantViewModel(
+                testCoroutineDispatcher,
+                getVariantCategoryCombinationUseCase)
+    }
+
     @Before
     @Throws(Exception::class)
     fun setup() {
         MockKAnnotations.init(this)
+        mIsInputValid.observeForever(isInputValidObserver)
     }
 
     @AfterEach
     fun tearDown() {
         clearAllMocks()
         Dispatchers.resetMain()
+    }
+
+    @After
+    fun cleanUp() {
+        mIsInputValid.removeObserver(isInputValidObserver)
+    }
+
+    private fun getPrivateField(owner: Any, name: String): Any? {
+        return owner::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(owner)
+        }
     }
 }

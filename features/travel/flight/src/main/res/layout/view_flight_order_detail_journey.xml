@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderJourneyDetailTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_journey_detail_title"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerFlightOrderJourneyETicket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/flight_order_detail_e_ticket_available"
+        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderJourneyDetailTitle"
+        app:tickerShapeType="loose"
+        app:tickerType="warning" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardContainerTicketDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:elevation="@dimen/spacing_lvl2"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintTop_toBottomOf="@id/tickerFlightOrderJourneyETicket">
+
+        <com.tokopedia.common.travel.widget.TicketView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/spacing_lvl2"
+            app:tv_anchor1="@id/ticketTopView"
+            app:tv_circleRadius="@dimen/spacing_lvl3"
+            app:tv_dashColor="@color/Unify_N100">
+
+            <LinearLayout
+                android:id="@+id/ticketTopView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_N50"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/titleFlightOrderDepartureTicket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N50"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/spacing_lvl4"
+                    android:paddingTop="@dimen/spacing_lvl3"
+                    android:paddingEnd="@dimen/spacing_lvl4"
+                    android:paddingBottom="@dimen/spacing_lvl3">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_order_detail_departure_ticket_title"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="heading_6" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerFlightOrderDepartureTicket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:padding="@dimen/spacing_lvl4">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivFlightOrderDepartureAirlineLogo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/layout_lvl3"
+                        android:adjustViewBounds="true"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/ic_flight_multi_airlines" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureAirlineName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintBottom_toBottomOf="@id/ivFlightOrderDepartureAirlineLogo"
+                        app:layout_constraintLeft_toRightOf="@id/ivFlightOrderDepartureAirlineLogo"
+                        app:layout_constraintTop_toTopOf="@id/ivFlightOrderDepartureAirlineLogo"
+                        app:typographyType="body_3"
+                        tools:text="AirAsia" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureTicketRefundableStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_flight_gray_rounded"
+                        android:paddingLeft="@dimen/spacing_lvl3"
+                        android:paddingTop="@dimen/spacing_lvl2"
+                        android:paddingRight="@dimen/spacing_lvl3"
+                        android:paddingBottom="@dimen/spacing_lvl2"
+                        android:text="@string/flight_label_refundable_info"
+                        app:layout_constraintBottom_toBottomOf="@id/ivFlightOrderDepartureAirlineLogo"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/ivFlightOrderDepartureAirlineLogo"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureJourneyTrip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl3"
+                        android:textColor="@color/Unify_N700_96"
+                        app:layout_constraintTop_toBottomOf="@id/ivFlightOrderDepartureAirlineLogo"
+                        app:typographyType="heading_6"
+                        tools:text="Jakarta (CGK) -> Banda Aceh (BTJ)" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureAirport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureJourneyTrip"
+                        app:typographyType="body_3"
+                        tools:text="Soekarno Hatta Intl (Terminal 2)" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureAirport"
+                        app:typographyType="body_3"
+                        tools:text="Sab, 29 Feb 19 . 13:40 - 12:20 . 2 Transit" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureBookingCodeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_order_detail_booking_code_label"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderDepartureBookingCode"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tgFlightOrderDepartureBookingCode"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderDepartureBookingCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:background="@drawable/bg_flight_green_rounded"
+                        android:paddingLeft="@dimen/spacing_lvl3"
+                        android:paddingTop="@dimen/spacing_lvl2"
+                        android:paddingRight="@dimen/spacing_lvl3"
+                        android:paddingBottom="@dimen/spacing_lvl2"
+                        android:textColor="@color/Unify_G500"
+                        app:layout_constraintLeft_toRightOf="@id/tgFlightOrderDepartureBookingCodeLabel"
+                        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderDepartureDetail"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="ABX1248" />
+
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/ivFlightOrderDepartureBookingCodeCopy"
+                        android:layout_width="@dimen/layout_lvl2"
+                        android:layout_height="@dimen/layout_lvl2"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderDepartureBookingCode"
+                        app:layout_constraintLeft_toRightOf="@id/tgFlightOrderDepartureBookingCode"
+                        app:layout_constraintTop_toTopOf="@id/tgFlightOrderDepartureBookingCode"
+                        app:icon_name="COPY" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/titleFlightOrderReturnTicket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N50"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/spacing_lvl4"
+                    android:paddingTop="@dimen/spacing_lvl3"
+                    android:paddingEnd="@dimen/spacing_lvl4"
+                    android:paddingBottom="@dimen/spacing_lvl3">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_order_detail_return_ticket_title"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="heading_6" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerFlightOrderReturnTicket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0"
+                    android:padding="@dimen/spacing_lvl4">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivFlightOrderReturnAirlineLogo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/layout_lvl3"
+                        android:adjustViewBounds="true"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:src="@drawable/ic_flight_multi_airlines" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnAirlineName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintBottom_toBottomOf="@id/ivFlightOrderReturnAirlineLogo"
+                        app:layout_constraintLeft_toRightOf="@id/ivFlightOrderReturnAirlineLogo"
+                        app:layout_constraintTop_toTopOf="@id/ivFlightOrderReturnAirlineLogo"
+                        app:typographyType="body_3"
+                        tools:text="AirAsia" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnTicketRefundableStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_flight_gray_rounded"
+                        android:paddingLeft="@dimen/spacing_lvl3"
+                        android:paddingTop="@dimen/spacing_lvl2"
+                        android:paddingRight="@dimen/spacing_lvl3"
+                        android:paddingBottom="@dimen/spacing_lvl2"
+                        android:text="@string/flight_label_refundable_info"
+                        app:layout_constraintBottom_toBottomOf="@id/ivFlightOrderReturnAirlineLogo"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/ivFlightOrderReturnAirlineLogo"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnJourneyTrip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl3"
+                        android:textColor="@color/Unify_N700_96"
+                        app:layout_constraintTop_toBottomOf="@id/ivFlightOrderReturnAirlineLogo"
+                        app:typographyType="heading_6"
+                        tools:text="Jakarta (CGK) -> Banda Aceh (BTJ)" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnAirport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderReturnJourneyTrip"
+                        app:typographyType="body_3"
+                        tools:text="Soekarno Hatta Intl (Terminal 2)" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderReturnAirport"
+                        app:typographyType="body_3"
+                        tools:text="Sab, 29 Feb 19 \u2022 13:40 - 12:20 \u2022 2 Transit" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnBookingCodeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_order_detail_booking_code_label"
+                        android:textColor="@color/Unify_N700_68"
+                        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderReturnBookingCode"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tgFlightOrderReturnBookingCode"
+                        app:typographyType="body_3" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tgFlightOrderReturnBookingCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        android:background="@drawable/bg_flight_green_rounded"
+                        android:paddingLeft="@dimen/spacing_lvl3"
+                        android:paddingTop="@dimen/spacing_lvl2"
+                        android:paddingRight="@dimen/spacing_lvl3"
+                        android:paddingBottom="@dimen/spacing_lvl2"
+                        android:textColor="@color/Unify_G500"
+                        app:layout_constraintLeft_toRightOf="@id/tgFlightOrderReturnBookingCodeLabel"
+                        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderReturnDetail"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="ABX1248" />
+
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/ivFlightOrderReturnBookingCodeCopy"
+                        android:layout_width="@dimen/layout_lvl2"
+                        android:layout_height="@dimen/layout_lvl2"
+                        android:layout_marginStart="@dimen/spacing_lvl3"
+                        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderReturnBookingCode"
+                        app:layout_constraintLeft_toRightOf="@id/tgFlightOrderReturnBookingCode"
+                        app:layout_constraintTop_toTopOf="@id/tgFlightOrderReturnBookingCode"
+                        app:icon_name="COPY" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ticketTopView"
+                android:background="@color/Unify_N0"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_lvl4">
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnFlightOrderDetailSendEticket"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_weight="1"
+                    android:text="@string/flight_order_detail_send_e_ticket_label"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="ghost" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnFlightOrderDetailViewEticket"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    android:layout_weight="1"
+                    android:text="@string/flight_order_detail_see_e_ticket_label"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled" />
+
+            </LinearLayout>
+
+        </com.tokopedia.common.travel.widget.TicketView>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tgFlightOrderTerminalNote"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/flight_order_detail_terminal_change_warning_label"
+        app:layout_constraintTop_toBottomOf="@id/cardContainerTicketDetails"
+        app:typographyType="body_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

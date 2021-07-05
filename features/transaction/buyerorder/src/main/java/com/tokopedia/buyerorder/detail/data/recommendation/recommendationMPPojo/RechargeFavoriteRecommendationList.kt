@@ -1,12 +1,12 @@
-package com.tokopedia.buyerorder.detail.data.recommendationMPPojo
+package com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo
 
 import com.google.gson.annotations.SerializedName
 
 data class RechargeFavoriteRecommendationList(
 
 	@field:SerializedName("title")
-	val title: String?,
+	val title: String = "",
 
 	@field:SerializedName("recommendations")
-	val recommendations: List<RecommendationsItem?>?
+	val recommendations: List<RecommendationsItem> = listOf()
 )

@@ -24,14 +24,16 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
 
     @Override
     public void checkForValidity(String entity, long currentTime,
-                                 DataProvider dataProvider) {
-        makeRequestForData(entity, currentTime, dataProvider);
+                                 DataProvider dataProvider, int entityHashCode, boolean isActivity) {
+        makeRequestForData(entity, currentTime, dataProvider, entityHashCode, isActivity);
     }
 
     private void makeRequestForData(
             final String entity,
             final long currentTime,
-            final DataProvider dataProvider
+            final DataProvider dataProvider,
+            int entityHashCode,
+            final boolean isActivity
     ){
         Observable.fromCallable(new Callable<ElapsedTime>() {
             @Override
@@ -50,7 +52,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                 }
                 return RepositoryManager.getInstance()
                         .getStorageProvider()
-                        .getDataFromStore(entity);
+                        .getDataFromStore(entity, isActivity);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -74,11 +76,11 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
                                 }
                             }
                         }
-                        dataProvider.notificationsDataResult(inAppList);
+                        dataProvider.notificationsDataResult(inAppList, entityHashCode, entity);
                     }
 
                     @Override public void onError(Throwable e) {
-                        dataProvider.notificationsDataResult(null);
+                        dataProvider.notificationsDataResult(null,entityHashCode, entity);
                     }
 
                     @Override public void onCompleted() {}
@@ -145,8 +147,13 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
         boolean perstOn = inAppData.isPersistentToggle();
         if (!perstOn && checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()))
             return false;
-        else return inAppData.endTime < System.currentTimeMillis() ||
-                (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ));
+        else {
+            if (inAppData.endTime < System.currentTimeMillis() && inAppData.lastShownTime == 0 && inAppData.freq > 0) {
+                RepositoryManager.getInstance().onInappExpired(inAppData);
+            }
+            return inAppData.endTime < System.currentTimeMillis() ||
+                    (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ));
+        }
     }
 
     private boolean checkIfBehaviourRulesAreValid(CMInApp inAppData){

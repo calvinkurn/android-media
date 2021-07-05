@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/hotel_10dp">

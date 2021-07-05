@@ -5,5 +5,5 @@ data class ProductFeedbackDetailUiModel(
         var productFeedbackDetailList: List<FeedbackUiModel> = listOf(),
         var page: Int = 0,
         var hasNext: Boolean = false,
-        var reviewCount:Int = 0
+        var reviewCount: Long = 0
 )

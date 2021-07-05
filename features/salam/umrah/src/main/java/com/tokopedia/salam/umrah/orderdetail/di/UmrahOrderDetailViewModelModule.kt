@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * @author by furqan on 08/10/2019
  */
 @Module
-@UmrahOrderDetailScope
 abstract class UmrahOrderDetailViewModelModule {
 
     @UmrahOrderDetailScope

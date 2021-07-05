@@ -77,6 +77,9 @@ const val CREATE_PREFERENCE_QUERY = "insert_profile_occ"
 
 const val GET_PREFERENCE_LIST_DEFAULT_RESPONSE_PATH = "preference/get_preference_list_default_response.json"
 const val GET_PREFERENCE_LIST_CHANGED_RESPONSE_PATH = "preference/get_preference_list_switched_status_response.json"
+const val GET_PREFERENCE_LIST_WITH_ETA_RESPONSE_PATH = "preference/get_preference_list_with_eta_response.json"
+
+const val GET_PREFERENCE_LIST_REVAMP_HALF_DISABLED_RESPONSE_PATH = "preference/get_preference_list_revamp_half_disabled_response.json"
 
 const val SET_DEFAULT_PROFILE_DEFAULT_RESPONSE_PATH = "preference/set_default_profile_success_response.json"
 

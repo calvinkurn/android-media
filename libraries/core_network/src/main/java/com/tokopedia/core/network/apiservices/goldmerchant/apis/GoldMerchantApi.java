@@ -2,8 +2,6 @@ package com.tokopedia.core.network.apiservices.goldmerchant.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
-import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
-import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

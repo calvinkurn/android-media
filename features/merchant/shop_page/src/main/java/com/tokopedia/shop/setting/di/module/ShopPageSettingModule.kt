@@ -8,7 +8,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@ShopPageSettingScope
 @Module(includes = [ShopPageSettingViewModelModule::class])
 class ShopPageSettingModule {
 

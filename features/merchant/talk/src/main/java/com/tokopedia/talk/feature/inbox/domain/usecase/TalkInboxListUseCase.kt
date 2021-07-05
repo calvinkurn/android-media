@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.inbox.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.common.constants.TalkConstants
@@ -14,8 +15,8 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         const val PARAM_FILTER = "filter"
         const val PARAM_PAGE = "page"
         const val PARAM_LIMIT = "limit"
-
-        private val query by lazy {
+        private const val TALK_INBOX_LIST_QUERY_CLASS_NAME = "TalkInboxList"
+        private const val query =
             """
                 query discussionInbox(${'$'}type: String!, ${'$'}filter: String!, ${'$'}page: Int!, ${'$'}limit: Int!) {
                   discussionInbox(type: ${'$'}type, filter: ${'$'}filter, page: ${'$'}page, limit: ${'$'}limit) {
@@ -23,13 +24,10 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
                     shopID
                     shopName
                     inboxType
-                    hasNext
-                    userName
-                    shopID
-                    shopName
-                    inboxType
                     sellerUnread
                     buyerUnread
+                    problemTotal
+                    unrespondedTotal
                     hasNext
                     inbox {
                       inboxID
@@ -44,15 +42,23 @@ class TalkInboxListUseCase @Inject constructor(graphqlRepository: GraphqlReposit
                       productName
                       productThumbnail
                       productURL
+                      state {
+                        isUnresponded
+                        hasProblem
+                      }
                     }
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_INBOX_LIST_QUERY_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkInboxList.GQL_QUERY)
         setTypeClass(DiscussionInboxResponseWrapper::class.java)
     }
 

@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progressbar"
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"
@@ -21,16 +22,18 @@
         <ImageView
             android:layout_width="@dimen/dp_150"
             android:layout_height="@dimen/dp_150"
+            android:contentDescription="null"
             android:layout_gravity="center_horizontal"
             app:srcCompat="@drawable/status_no_result"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/message_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/error_failed_add_product"
             android:layout_gravity="center"
-            android:gravity="center"/>
+            android:gravity="center"
+            app:typographyType="body_2" />
 
     </LinearLayout>
 

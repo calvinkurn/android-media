@@ -1,0 +1,23 @@
+{
+  "GetUserPageAssetConfig": {
+    "error_message": "",
+    "is_success": true,
+    "config": [
+      {
+        "asset_type": "ovo",
+        "enable": true,
+        "order": 1
+      },
+      {
+        "asset_type": "saldo",
+        "enable": true,
+        "order": 2
+      },
+      {
+        "asset_type": "tokopoints",
+        "enable": false,
+        "order": -1
+      }
+    ]
+  }
+}

@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifyprinciples.Typography
+<com.tokopedia.unifycomponents.ChipsUnify xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/category_chip_event"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/name_category"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginRight="8dp"
-    tools:text = "Taman Bermain"
-    android:background="@drawable/bg_text_category"
-    app:typographyType="body_2"
-    android:textColor="@color/Neutral_N100"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-</com.tokopedia.unifyprinciples.Typography>
+    android:layout_height="@dimen/layout_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl3"
+    app:chipType="normal"
+    />

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.header.HeaderUnify
@@ -36,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyWeight="bold"
                 app:typographyType="heading_2"
-                android:textColor="@color/primary_text_color"
+                android:textColor="@color/Unify_N700_96"
                 android:text="@string/add_showcase_title_header"
                 tools:text="@string/add_showcase_title_header"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -50,6 +49,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
+                android:theme="@style/TextDarkMode"
                 app:layout_constraintTop_toBottomOf="@+id/tv_add_showcase_title"
                 app:text_field_counter="128"
                 app:text_field_input_type="text"
@@ -67,7 +67,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:typographyWeight="bold"
                 app:typographyType="heading_3"
-                android:textColor="@color/primary_text_color"
+                android:textColor="@color/Unify_N700_96"
                 android:text="@string/selected_product_text"
                 tools:text="@string/selected_product_text"
                 android:paddingLeft="@dimen/dp_16"
@@ -86,7 +86,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:typographyWeight="bold"
                 app:typographyType="body_3"
-                android:textColor="@color/text_color_green"
+                android:textColor="@color/Unify_G500"
                 android:text="@string/add_product_text"
                 tools:text="@string/add_product_text"
                 tools:visibility="visible"
@@ -180,7 +180,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 app:typographyType="heading_5"
                 android:layout_marginTop="@dimen/dp_12"
-                android:textColor="@color/primary_text_color"
+                android:textColor="@color/Unify_N700_96"
                 />
 
         </RelativeLayout>

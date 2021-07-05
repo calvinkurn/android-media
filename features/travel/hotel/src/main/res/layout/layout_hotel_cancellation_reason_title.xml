@@ -10,5 +10,5 @@
     android:paddingRight="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/layout_lvl1"
     android:text="@string/hotel_cancellation_reason_page_title"
-    android:textColor="@color/Neutral_N700_96"
+    android:textColor="@color/Unify_N700_96"
     app:typographyType="heading_4" />

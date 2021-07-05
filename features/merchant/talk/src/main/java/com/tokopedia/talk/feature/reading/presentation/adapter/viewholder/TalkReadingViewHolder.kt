@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 

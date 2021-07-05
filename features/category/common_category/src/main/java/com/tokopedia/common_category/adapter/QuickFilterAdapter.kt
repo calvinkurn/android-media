@@ -83,7 +83,11 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
     }
 
     private fun setProductCountData(holder: ProductCountViewHolder, position: Int) {
-        holder.productCountText.text = productCount
+        if(productCount.isNotEmpty()){
+            holder.productCountText.text = productCount
+        }else {
+            holder.productCountText.visibility = View.GONE
+        }
     }
 
     private fun bindFilterNewIcon(holderQuickFilter: QuickFilterViewHolder, option: Option) {

@@ -29,8 +29,9 @@ class GetShippingEditorUseCase @Inject constructor(private val graphqlUseCase: G
         const val PARAM_USER_ID = "userid"
 
         val QUERY = """
+            query kero_get_shipping_editor(${"$"}userid: Int!)
             {
-              kero_get_shipping_editor(userid:12299749) {
+              kero_get_shipping_editor(userid: ${"$"}userid) {
                 status
                 config
                 server_process_time

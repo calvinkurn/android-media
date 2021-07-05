@@ -1,0 +1,438 @@
+{
+  "readme": "Tracking Event Home",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "impression homepage",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click category icon",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression top event",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click top event",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click banner",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression banner",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on section international",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on section international",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on curated Taman Bermain Mancanegara ",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on curated Taman Bermain Mancanegara ",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lihat semua curated Taman Bermain Mancanegara ",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on curated Events",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on curated Events",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lihat semua curated Events",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on curated Festival",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on curated Festival",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lihat semua curated Festival",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on curated Taman Bermain Lokal",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on curated Taman Bermain Lokal",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lihat semua curated Taman Bermain Lokal",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on curated Aktivitas Anak",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on curated Aktivitas Anak",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lihat semua curated Aktivitas Anak",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "impression on curated activity",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    },
+    {
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "creative_url": ".*"
+        }
+      ],
+      "businessUnit": "travel & entertainment",
+      "clientId": ".*",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click on curated activity",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "eventCategory": "digital - event",
+      "currentSite": "tokopediadigitalEvent",
+      "event": "clickDigitalEvent",
+      "eventAction": "click lihat semua curated activity",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

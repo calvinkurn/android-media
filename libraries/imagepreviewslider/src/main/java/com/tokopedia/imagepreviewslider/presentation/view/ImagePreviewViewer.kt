@@ -1,7 +1,6 @@
 package com.tokopedia.imagepreviewslider.presentation.view
 
 import android.content.Context
-import android.graphics.Color
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +50,7 @@ class ImagePreviewViewer {
         overlayView = ImageOverlayView(context).apply {
 
             val overlayBackButton = btn_arrow_back
+            overlayBackButton.setBackgroundResource(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
             overlayBackButton.setOnClickListener {
                 viewer.close()
             }
@@ -77,18 +77,19 @@ class ImagePreviewViewer {
     }
 
     private fun startViewer(imageList: List<String>?, imageViewTransitionFrom: ImageView?, context: Context?, index: Int) {
-
-        viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
-                .withBackgroundColor(Color.BLACK)
-                .withStartPosition(index)
-                .withTransitionFrom(imageViewTransitionFrom)
-                .withImageChangeListener {
-                    overlayView.updateImageIndexPosition(it, imageList)
-                    imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
-                    imagePreviewSliderAdapter.setSelectedImage(it)
-                }
-                .withOverlayView(overlayView)
-                .show()
+        context?.let {
+            viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
+                    .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96))
+                    .withStartPosition(index)
+                    .withTransitionFrom(imageViewTransitionFrom)
+                    .withImageChangeListener {
+                        overlayView.updateImageIndexPosition(it, imageList)
+                        imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
+                        imagePreviewSliderAdapter.setSelectedImage(it)
+                    }
+                    .withOverlayView(overlayView)
+                    .show()
+        }
     }
 
     private fun loadImages(imageView: ImageView?, imageList: String?) {

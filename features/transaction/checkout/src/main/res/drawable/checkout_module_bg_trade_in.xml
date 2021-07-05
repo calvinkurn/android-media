@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/bg_trade_in_label" />
+    <solid android:color="@color/Unify_B200" />
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/bg_trade_in_label" />
+        android:color="@color/Unify_B200" />
     <corners android:radius="@dimen/dp_16" />
     <padding
         android:bottom="0dp"

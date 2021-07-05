@@ -8,6 +8,8 @@ import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.data.ResultOcr
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -44,7 +46,7 @@ class RechargeUploadImageViewModelTest {
     @Test
     fun uploadImage_CropAndUpload_ReturnSuccess() {
         //given
-        coEvery { RechargeCameraUtil.trimBitmap("", "") } returns ""
+        coEvery { RechargeCameraUtil.trimBitmap("") } returns ""
 
         val stringUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
         coEvery { rechargeUploadImageUseCase.execute(any()) } returns RechargeUploadImageResponse(
@@ -60,10 +62,11 @@ class RechargeUploadImageViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         //when
-        rechargeUploadImageViewModel.uploadImageRecharge("", "", "")
+        rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         //then
-        val actualData = rechargeUploadImageViewModel.resultDataOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Success)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Success).data
         assertNotNull(actualData)
         assertEquals(expectedData, actualData)
     }
@@ -72,14 +75,15 @@ class RechargeUploadImageViewModelTest {
     fun uploadImage_takePictureFromOCR_ReturnUploadFailed() {
         //given
         val errorThrowable = Throwable("error upload")
-        coEvery { RechargeCameraUtil.trimBitmap("", "") } returns ""
+        coEvery { RechargeCameraUtil.trimBitmap("") } returns ""
         coEvery { rechargeUploadImageUseCase.execute(any()) } coAnswers { throw errorThrowable }
 
         //when
-        rechargeUploadImageViewModel.uploadImageRecharge("", "", "")
+        rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         //then
-        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
         assertEquals(errorThrowable.message, actualData)
     }
@@ -87,7 +91,7 @@ class RechargeUploadImageViewModelTest {
     @Test
     fun getResultOCR_CropAndUpload_ReturnFailedErrorFromServer() {
         // given
-        coEvery { RechargeCameraUtil.trimBitmap("", "") } returns ""
+        coEvery { RechargeCameraUtil.trimBitmap("") } returns ""
 
         val stringUrl = "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/12/17/image2.jpg"
         coEvery { rechargeUploadImageUseCase.execute(any()) } returns RechargeUploadImageResponse(
@@ -108,10 +112,11 @@ class RechargeUploadImageViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
         // when
-        rechargeUploadImageViewModel.uploadImageRecharge("", "", "")
+        rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         // then the result should be success
-        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
         assertEquals(errorMessage, actualData)
     }

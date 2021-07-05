@@ -206,20 +206,22 @@ class StaticBuyerModelGenerator private constructor() {
         private fun getUohMenu(context: Context, accountDataModel: AccountDataModel?): ArrayList<MenuGridIconNotificationItemViewModel> {
             val gridItems = arrayListOf<MenuGridIconNotificationItemViewModel>()
 
-            gridItems.add(MenuGridIconNotificationItemViewModel(
-                    R.drawable.ic_uoh_menunggu_pembayaran,
-                    AccountConstants.TITLE_UOH_MENUNGGU_PEMBAYARAN,
-                    ApplinkConst.PMS,
-                    accountDataModel?.notifications?.buyerOrder?.paymentStatus?.toInt(10) ?: 0,
-                    AccountConstants.Analytics.PEMBELI,
-                    context.getString(R.string.title_menu_transaction)
-            ))
+            accountDataModel?.notifications?.buyerOrder?.paymentStatus?.toIntOrZero()?.let {
+                MenuGridIconNotificationItemViewModel(
+                        R.drawable.ic_uoh_menunggu_pembayaran,
+                        AccountConstants.TITLE_UOH_MENUNGGU_PEMBAYARAN,
+                        ApplinkConst.PMS,
+                        it,
+                        AccountConstants.Analytics.PEMBELI,
+                        context.getString(R.string.title_menu_transaction)
+                )
+            }?.let { gridItems.add(it) }
 
             gridItems.add(MenuGridIconNotificationItemViewModel(
                     R.drawable.ic_uoh_belanja,
-                    accountDataModel?.uohOrderCount?.onProcessText.toString(),
+                    accountDataModel?.uohOrderCount?.sedangBerlangsungText.toString(),
                     UNIFY_ORDER_STATUS.replace(PARAM_CUSTOM_FILTER, PARAM_DALAM_PROSES),
-                    accountDataModel?.uohOrderCount?.onProcess.toIntOrZero(),
+                    accountDataModel?.uohOrderCount?.sedangBerlangsung.toIntOrZero(),
                     AccountConstants.Analytics.PEMBELI,
                     context.getString(R.string.title_menu_transaction)
             ))

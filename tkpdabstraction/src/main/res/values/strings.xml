@@ -2,6 +2,7 @@
     <string name="app_name">abstraction</string>
 
     <string name="label_next">Selanjutnya</string>
+    <string name="label_next_short">Lanjut</string>
     <string name="label_remove">Hapus</string>
     <string name="label_choose">Pilih</string>
     <string name="label_done">Selesai</string>

@@ -7,17 +7,18 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
+import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -39,6 +40,9 @@ class VoucherDetailViewModelTest {
     lateinit var shopBasicDataUseCase: ShopBasicDataUseCase
 
     @RelaxedMockK
+    lateinit var getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
+
+    @RelaxedMockK
     lateinit var cancelVoucherResultObserver: Observer<Result<Int>>
 
     @RelaxedMockK
@@ -56,7 +60,7 @@ class VoucherDetailViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        mViewModel = VoucherDetailViewModel(TestCoroutineDispatchers, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
+        mViewModel = VoucherDetailViewModel(CoroutineTestDispatchersProvider, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase, getBroadCastMetaDataUseCase)
 
         with(mViewModel) {
             cancelVoucherResultLiveData.observeForever(cancelVoucherResultObserver)
@@ -86,8 +90,6 @@ class VoucherDetailViewModelTest {
 
             getVoucherDetail(anyInt())
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
                 shopBasicDataUseCase.executeOnBackground()
@@ -113,8 +115,6 @@ class VoucherDetailViewModelTest {
 
             getVoucherDetail(anyInt())
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
             }
@@ -137,8 +137,6 @@ class VoucherDetailViewModelTest {
 
             getVoucherDetail(anyInt())
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 voucherDetailUseCase.executeOnBackground()
                 shopBasicDataUseCase.executeOnBackground()
@@ -159,8 +157,6 @@ class VoucherDetailViewModelTest {
 
             cancelVoucher(anyInt(), anyString())
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
@@ -180,13 +176,47 @@ class VoucherDetailViewModelTest {
 
             cancelVoucher(anyInt(), anyString())
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cancelVoucherUseCase.executeOnBackground()
             }
 
             assert(cancelVoucherResultLiveData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `success get getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } returns ChatBlastSellerMetadata()
+
+            getBroadCastMetaData()
+
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Success)
+        }
+    }
+
+    @Test
+    fun `error get getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            val dummyThrowable = MessageErrorException("")
+
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } throws dummyThrowable
+
+            getBroadCastMetaData()
+
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Fail)
         }
     }
 

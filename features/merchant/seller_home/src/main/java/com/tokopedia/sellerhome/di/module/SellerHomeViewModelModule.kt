@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.centralizedpromo.di.CentralizedPromoViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
@@ -17,7 +18,6 @@ import dagger.multibindings.IntoMap
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-@SellerHomeScope
 @Module(includes = [CentralizedPromoViewModelModule::class])
 abstract class SellerHomeViewModelModule {
 
@@ -39,4 +39,9 @@ abstract class SellerHomeViewModelModule {
     @IntoMap
     @ViewModelKey(OtherMenuViewModel::class)
     abstract fun otherSettingViewModel(otherMenuViewModel: OtherMenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MenuSettingViewModel::class)
+    abstract fun provideMenuSettingViewModel(menuSettingViewModel: MenuSettingViewModel): ViewModel
 }

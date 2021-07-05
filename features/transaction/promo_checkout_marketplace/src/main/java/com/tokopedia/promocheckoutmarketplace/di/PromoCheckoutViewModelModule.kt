@@ -10,13 +10,13 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@PromoCheckoutMarketplaceScope
 abstract class PromoCheckoutViewModelModule {
 
     @PromoCheckoutMarketplaceScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
+    @PromoCheckoutMarketplaceScope
     @Binds
     @IntoMap
     @ViewModelKey(PromoCheckoutViewModel::class)

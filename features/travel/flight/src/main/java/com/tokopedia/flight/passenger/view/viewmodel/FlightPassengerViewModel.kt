@@ -2,7 +2,7 @@ package com.tokopedia.flight.passenger.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
@@ -20,8 +20,8 @@ import javax.inject.Inject
 class FlightPassengerViewModel @Inject constructor(private val getContactListUseCase: GetContactListUseCase,
                                                    private val upsertContactListUseCase: UpsertContactListUseCase,
                                                    private val getPhoneCodeByIdUseCase: TravelCountryCodeByIdUseCase,
-                                                   private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+                                                   private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     var nationalityData = MutableLiveData<TravelCountryPhoneCode>()
     var passportIssuerCountryData = MutableLiveData<TravelCountryPhoneCode>()
@@ -53,7 +53,7 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     }
 
     fun getNationalityById(rawQuery: String, paramId: String) {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             when (val result = getPhoneCodeByIdUseCase.execute(rawQuery, paramId)) {
                 is Success -> {
                     nationalityData.postValue(result.data)
@@ -63,7 +63,7 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     }
 
     fun getPassportIssuerCountryById(rawQuery: String, paramId: String) {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             when (val result = getPhoneCodeByIdUseCase.execute(rawQuery, paramId)) {
                 is Success -> {
                     passportIssuerCountryData.postValue(result.data)

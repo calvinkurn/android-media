@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -19,9 +20,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
@@ -31,8 +30,6 @@ import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -40,19 +37,17 @@ import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
-import com.tokopedia.play.broadcaster.view.contract.PlayBroadcastCoordinator
+import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayPermissionFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarPartialView
+import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.awaitResume
-import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
-import com.tokopedia.play_common.view.updatePadding
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -65,7 +60,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by mzennis on 19/05/20.
  */
-class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroadcastComponentProvider {
+class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcastComponentProvider {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -77,19 +72,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     lateinit var analytic: PlayBroadcastAnalytic
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     private val job = SupervisorJob()
     private val scope = object: CoroutineScope {
         override val coroutineContext: CoroutineContext
-            get() = job + dispatcher.mainImmediate
+            get() = job + dispatcher.immediate
     }
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
     private lateinit var containerSetup: FrameLayout
-    private lateinit var viewActionBar: ActionBarPartialView
-    private lateinit var loaderView: LoaderUnify
     private lateinit var globalErrorView: GlobalError
     private lateinit var surfaceView: SurfaceView
 
@@ -129,56 +122,43 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
             requestPermission()
         }
 
-        initPushStream()
-        setupContent()
-        initView()
-        setupView()
-        setupInsets()
-
         if (!DeviceInfoUtil.isDeviceSupported()) {
             showDialogWhenUnSupportedDevices()
             return
         }
 
+        setupContent()
+        initView()
+        setupView()
+
         getConfiguration()
         observeConfiguration()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewActionBar.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.resumePushStream()
+        viewModel.checkShouldContinueLiveStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.pausePushStream()
-    }
-
-    override fun onStop() {
-        viewModel.pausePushStream()
-        super.onStop()
+        viewModel.pauseLiveStream()
     }
 
     override fun onDestroy() {
-        viewModel.destroyPushStream()
         super.onDestroy()
         job.cancelChildren()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         try {
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
         } catch (e: Throwable) {}
+        super.onSaveInstanceState(outState)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -212,19 +192,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         }
     }
 
-    override fun setupTitle(title: String) {
-        viewActionBar.setTitle(title)
-    }
-
-    override fun setupCloseButton(actionTitle: String) {
-        viewActionBar.setupCloseButton(actionTitle)
-    }
-
-    override fun showActionBar(shouldShow: Boolean) {
-        if (!::viewActionBar.isInitialized) return
-        if (shouldShow) viewActionBar.show() else viewActionBar.hide()
-    }
-
     override fun getBroadcastComponent(): PlayBroadcastComponent {
         return playBroadcastComponent
     }
@@ -244,11 +211,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
-    }
-
-    private fun initPushStream() {
-        viewModel.initPushStream()
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     private fun setFragmentFactory() {
@@ -260,23 +223,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
-        loaderView = findViewById(R.id.loader_initial)
-        globalErrorView = findViewById(R.id.error_channel)
+        globalErrorView = findViewById(R.id.global_error)
         surfaceView = findViewById(R.id.surface_view)
     }
 
     private fun setupView() {
-        viewActionBar = ActionBarPartialView(findViewById(android.R.id.content), object : ActionBarPartialView.Listener {
-            override fun onCameraIconClicked() {
-                viewModel.switchCamera()
-                sendClickCameraAnalytic()
-            }
-
-            override fun onCloseIconClicked() {
-                onBackPressed()
-            }
-        })
-
         surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
             override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
                 surfaceStatus = SurfaceStatus.CHANGED
@@ -295,12 +246,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 startPreview()
             }
         })
-    }
-
-    private fun setupInsets() {
-        viewActionBar.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
-            v.updatePadding(top = insets.systemWindowInsetTop)
-        }
     }
 
     private fun getConfiguration() {
@@ -345,15 +290,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         viewModel.observableConfigInfo.observe(this, Observer { result ->
             startRenderMonitoring()
             when(result) {
-                is NetworkResult.Loading -> loaderView.show()
+                is NetworkResult.Loading -> showLoading(true)
                 is NetworkResult.Success -> {
-                    loaderView.hide()
+                    showLoading(false)
                     if (!isRecreated) handleChannelConfiguration(result.data)
                     stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
-                    loaderView.hide()
+                    showLoading(false)
                     showToaster(
                             message = result.error.localizedMessage,
                             actionLabel = getString(R.string.play_broadcast_try_again),
@@ -383,13 +328,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
 
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
-        showActionBar(true)
-        if (channelType == ChannelType.Pause) {
-            showDialogContinueLiveStreaming()
-            openBroadcastActivePage()
-            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-        } else  {
-            openBroadcastSetupPage()
+        when (channelType) {
+            ChannelType.Pause -> openBroadcastActivePage()
+            ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
+            else -> openBroadcastSetupPage()
         }
     }
 
@@ -416,12 +358,12 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
     fun startPreview() {
         if (surfaceStatus != SurfaceStatus.UNINITED &&
                 surfaceStatus != SurfaceStatus.DESTROYED) {
-            viewModel.startPreview(surfaceView)
+            viewModel.startCameraPreview(surfaceView)
         }
     }
 
     fun stopPreview() {
-        viewModel.stopPreview()
+        viewModel.stopCameraPreview()
     }
 
     fun checkAllPermission() {
@@ -434,13 +376,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         analytic.openSetupScreen()
     }
 
+    private fun openBroadcastFinalSetupPage() {
+        navigateToFragment(PlayBeforeLiveFragment::class.java)
+    }
+
     private fun openBroadcastActivePage() {
         navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(viewModel.channelId)
     }
 
     private fun showPermissionPage() {
-        showActionBar(false)
         navigateToFragment(PlayPermissionFragment::class.java)
         analytic.openPermissionScreen()
     }
@@ -453,25 +398,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
                 primaryListener = { dialog ->
                     dialog.dismiss()
                     finish()
-                }
-        ).show()
-    }
-
-    private fun showDialogContinueLiveStreaming() {
-        getDialog(
-                actionType = DialogUnify.HORIZONTAL_ACTION,
-                title = getString(R.string.play_dialog_continue_live_title),
-                desc = getString(R.string.play_dialog_continue_live_desc),
-                primaryCta = getString(R.string.play_next),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel.startPushStream()
-                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.title)
-                },
-                secondaryCta = getString(R.string.play_broadcast_end),
-                secondaryListener = { dialog ->
-                    dialog.dismiss()
-                    viewModel.stopPushStream(shouldNavigate = true)
                 }
         ).show()
     }
@@ -509,14 +435,29 @@ class PlayBroadcastActivity : BaseActivity(), PlayBroadcastCoordinator, PlayBroa
         )
     }
 
-    private fun sendClickCameraAnalytic() {
-        val currentVisibleFragment = getCurrentFragment()
-        if (currentVisibleFragment != null) {
-            when(currentVisibleFragment) {
-                is PlayBroadcastPrepareFragment -> analytic.clickSwitchCameraOnSetupPage()
-                is PlayBeforeLiveFragment -> analytic.clickSwitchCameraOnFinalSetupPage()
-                is PlayBroadcastUserInteractionFragment -> analytic.clickSwitchCameraOnLivePage(viewModel.channelId, viewModel.title)
-            }
+    private fun getLoadingFragment(): LoadingDialogFragment {
+        val loadingFragment = getAddedLoadingDialog()
+        return if (loadingFragment == null) {
+            val setupClass = LoadingDialogFragment::class.java
+            val fragmentFactory = supportFragmentManager.fragmentFactory
+            fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
+        } else loadingFragment
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        val loadingDialog = getAddedLoadingDialog()
+        return loadingDialog != null && loadingDialog.isVisible
+    }
+
+    private fun getAddedLoadingDialog(): LoadingDialogFragment? {
+        return LoadingDialogFragment.get(supportFragmentManager)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading && !isLoadingDialogVisible()) {
+            getLoadingFragment().show(supportFragmentManager)
+        } else if (isLoadingDialogVisible()) {
+            getLoadingFragment().dismiss()
         }
     }
 

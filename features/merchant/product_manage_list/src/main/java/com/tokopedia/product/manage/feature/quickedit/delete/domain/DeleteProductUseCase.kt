@@ -1,13 +1,10 @@
 package com.tokopedia.product.manage.feature.quickedit.delete.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
+import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductParam
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class DeleteProductUseCase @Inject constructor(repository: GraphqlRepository)

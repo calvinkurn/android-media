@@ -16,7 +16,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
         const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     }
 
-    private const val LIST_MIX_LEFT = "dynamic channel left carousel"
+    private const val LIST_MIX_LEFT = "dynamic channel left carousel - product"
     private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
     private const val IMPRESSION_MIX_LEFT_BANNER = "impression on banner dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_BANNER = "click on banner dynamic channel left carousel"
@@ -28,7 +28,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_LOADMORE_CARD = "click view all card on dynamic channel left carousel"
 
-    fun getMixLeftClickLoadMore(channel: ChannelModel, userId: String): HashMap<String, Any> {
+
+    private fun getMixLeftClickLoadMore(channel: ChannelModel, userId: String): HashMap<String, Any> {
         return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
@@ -42,7 +43,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
         ) as HashMap<String, Any>
     }
 
-    fun getMixLeftClickLoadMoreCard(channel: ChannelModel, userId: String): HashMap<String, Any> {
+    private fun getMixLeftClickLoadMoreCard(channel: ChannelModel, userId: String): HashMap<String, Any> {
         return DataLayer.mapOf(
                 Event.KEY, CustomEvent.CLICK_HOMEPAGE,
                 Category.KEY, Category.HOMEPAGE,
@@ -56,7 +57,7 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
         ) as HashMap<String, Any>
     }
 
-    fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
+    fun getMixLeftProductView(channel: ChannelModel, grid: ChannelGrid, position:Int, positionOnHome: Int): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW,
@@ -74,22 +75,24 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         variant = Value.NONE_OTHER,
                         productPosition = (position + 1).toString(),
                         channelId = channel.id,
-                        isFreeOngkir = grid.isFreeOngkirActive,
+                        isFreeOngkir = grid.isFreeOngkirActive && !grid.labelGroup.hasLabelGroupFulfillment(),
+                        isFreeOngkirExtra = grid.isFreeOngkirActive && grid.labelGroup.hasLabelGroupFulfillment(),
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
                         isTopAds = grid.isTopads,
                         recommendationType = grid.recommendationType,
                         headerName = channel.channelHeader.name,
+                        pageName = channel.pageName,
                         isCarousel = true
                 )),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
+                        Value.LIST, positionOnHome, LIST_MIX_LEFT
                 ))
                 .appendChannelId(channel.id)
                 .build()
     }
 
-    fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int): Map<String, Any> {
+    fun getMixLeftIrisProductView(channel: ChannelModel, grid: ChannelGrid, position:Int, positionOnHome: Int): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductView(
                 event = Event.PRODUCT_VIEW_IRIS,
@@ -107,22 +110,27 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         variant = Value.NONE_OTHER,
                         productPosition = (position + 1).toString(),
                         channelId = channel.id,
-                        isFreeOngkir = grid.isFreeOngkirActive,
+                        isFreeOngkir = grid.isFreeOngkirActive && !grid.labelGroup.hasLabelGroupFulfillment(),
+                        isFreeOngkirExtra = grid.isFreeOngkirActive && grid.labelGroup.hasLabelGroupFulfillment(),
                         persoType = channel.trackingAttributionModel.persoType,
                         categoryId = channel.trackingAttributionModel.categoryId,
                         isTopAds = grid.isTopads,
                         recommendationType = grid.recommendationType,
                         headerName = channel.channelHeader.name,
+                        pageName = channel.pageName,
                         isCarousel = true
                 )),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
+                        Value.LIST, positionOnHome, LIST_MIX_LEFT
                 ))
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendChannelId(channel.id)
                 .build()
     }
 
-    fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) : Map<String, Any> {
+    private fun getMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicProductClick(
                 event = Event.PRODUCT_CLICK,
@@ -141,19 +149,24 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.isFreeOngkirActive,
+                                isFreeOngkir = grid.isFreeOngkirActive && !grid.labelGroup.hasLabelGroupFulfillment(),
+                                isFreeOngkirExtra = grid.isFreeOngkirActive && grid.labelGroup.hasLabelGroupFulfillment(),
                                 persoType = channel.trackingAttributionModel.persoType,
                                 categoryId = channel.trackingAttributionModel.categoryId,
                                 isTopAds = grid.isTopads,
                                 recommendationType = grid.recommendationType,
                                 headerName = channel.channelHeader.name,
+                                pageName = channel.pageName,
                                 isCarousel = true
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.channelHeader.name
+                        Value.LIST, positionOnHome, LIST_MIX_LEFT
                 ))
                 .appendChannelId(channel.id)
+                .appendScreen(Screen.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
                 .build()
 
@@ -174,19 +187,20 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                         channel.trackingAttributionModel.persoType,
                                         channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
-                                name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
-                                position = position.toString()
+                                name = PROMOTION_BANNER_NAME.format(position, channel.channelHeader.name),
+                                position = "1"
                         )
                 ))
                 .appendUserId(userId)
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
+
                 .build()
     }
 
 
-    fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
+    private fun getMixLeftBannerClick(channel: ChannelModel, position: Int, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         return trackingBuilder.constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
@@ -201,8 +215,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                         channel.trackingAttributionModel.persoType,
                                         channel.trackingAttributionModel.categoryId),
                                 creative = channel.channelBanner.attribution,
-                                name = PROMOTION_BANNER_NAME.format("1", channel.channelHeader.name),
-                                position = position.toString()
+                                name = PROMOTION_BANNER_NAME.format(position, channel.channelHeader.name),
+                                position = "1"
                         )
                 ))
                 .appendUserId(userId)
@@ -218,8 +232,8 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                 .build()
     }
 
-    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int) {
-        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
+    fun sendMixLeftProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, positionOnHome: Int) {
+        getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position, positionOnHome))
     }
 
     fun sendMixLeftSeeAllCardClick(channel: ChannelModel, userId: String){

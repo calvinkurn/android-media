@@ -15,50 +15,43 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/layout_lvl6"
             android:gravity="center_vertical"
             android:orientation="horizontal">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_close"
+                app:srcCompat="@drawable/changephonenumber_ic_close"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/close_icon"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/close"
-                android:padding="16dp"/>
-            <TextView
+                android:padding="@dimen/spacing_lvl4"/>
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_info"
-                android:textSize="16sp"
-                android:fontFamily="sans-serif"
-                android:textStyle="bold"
-                android:textColor="@color/black_54"
+                app:typographyType="heading_4"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:textAlignment="center"/>
+                android:gravity="center_vertical"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white_two"/>
+            android:layout_height="@dimen/changephonenumber_dp_1"
+            android:background="@color/Unify_N100"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:textColor="@color/black_70"
-            android:lineSpacingExtra="7sp"
+            app:typographyType="body_2"
             android:text="@string/if_you_change_phone_number_then"
-            android:paddingTop="24dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingTop="@dimen/spacing_lvl5"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
             />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -66,11 +59,11 @@
             tools:listitem="@layout/item_change_phone_number_warning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

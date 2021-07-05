@@ -1,56 +1,79 @@
 package com.tokopedia.settingbank.view.widgets
 
-import android.app.Activity
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.analytics.BankSettingAnalytics
-import com.tokopedia.settingbank.domain.BankAccount
-import com.tokopedia.settingbank.domain.KYCInfo
+import com.tokopedia.settingbank.domain.model.BankAccount
+import com.tokopedia.settingbank.domain.model.KYCInfo
 import com.tokopedia.settingbank.util.AccountConfirmationType
 import com.tokopedia.settingbank.view.activity.AccountDocumentActivity
 import com.tokopedia.settingbank.view.activity.SettingBankActivity
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class AccountConfirmationBottomSheet(val activity: Activity,
-                                     val kycInfo: KYCInfo,
-                                     val settingAnalytics: BankSettingAnalytics) : CloseableBottomSheetDialog.CloseClickedListener {
+class AccountConfirmationBottomSheet : BottomSheetUnify() {
 
-    override fun onCloseDialog() {
+    private var bankAccount: BankAccount? = null
+    private var kycInfo: KYCInfo? = null
+
+    private val settingAnalytics: BankSettingAnalytics by lazy {
+        BankSettingAnalytics()
     }
 
-    lateinit var dialog: CloseableBottomSheetDialog
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.run {
 
-    private lateinit var bankAccount: BankAccount
+            if (containsKey(BANK_ACCOUNT))
+                bankAccount = getParcelable(BANK_ACCOUNT)
 
-    fun show(bankAccount: BankAccount) {
-        this.bankAccount = bankAccount
-        val view = createBottomSheetView()
-        if (!::dialog.isInitialized)
-            dialog = CloseableBottomSheetDialog.createInstanceCloseableRounded(activity, this)
-        dialog.setCustomContentView(view, activity.resources.getString(R.string.sbank_confirm_bank_account), true)
-        dialog.show()
+            if (containsKey(KYC_INFO))
+                kycInfo = getParcelable(KYC_INFO)
+        }
     }
 
-    private fun createBottomSheetView(): View {
-        val view = LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_confirm_account, null)
-        view.findViewById<View>(R.id.viewCompanyAccountClickable).setOnClickListener {
-            openConfirmBankAccountActivity(AccountConfirmationType.COMPANY.accountType)
-        }
-        view.findViewById<View>(R.id.viewFamilyAccountClickable).setOnClickListener {
-            openConfirmBankAccountActivity(AccountConfirmationType.FAMILY.accountType)
-        }
-        view.findViewById<View>(R.id.viewOtherAccountClickable).setOnClickListener {
-            openConfirmBankAccountActivity(AccountConfirmationType.OTHER.accountType)
-        }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initializeBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-        if (kycInfo.isVerified)
-            setGroupVisibility(view, View.VISIBLE)
-        else {
-            setGroupVisibility(view, View.GONE)
+    private fun initializeBottomSheet() {
+        context?.run {
+            val child = LayoutInflater.from(this)
+                    .inflate(R.layout.bottom_sheet_confirm_account, ConstraintLayout(this), false)
+            setTitle(TITLE)
+            setChild(child)
         }
+    }
 
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        addDataToUI()
+    }
+
+    private fun addDataToUI() {
+        view?.let { view ->
+            view.findViewById<View>(R.id.viewCompanyAccountClickable).setOnClickListener {
+                openConfirmBankAccountActivity(AccountConfirmationType.COMPANY.accountType)
+            }
+            view.findViewById<View>(R.id.viewFamilyAccountClickable).setOnClickListener {
+                openConfirmBankAccountActivity(AccountConfirmationType.FAMILY.accountType)
+            }
+            view.findViewById<View>(R.id.viewOtherAccountClickable).setOnClickListener {
+                openConfirmBankAccountActivity(AccountConfirmationType.OTHER.accountType)
+            }
+            kycInfo?.let {
+                if (it.isVerified)
+                    setGroupVisibility(view, View.VISIBLE)
+                else {
+                    setGroupVisibility(view, View.GONE)
+                }
+            }
+        }
     }
 
     private fun setGroupVisibility(view: View, visibility: Int) {
@@ -62,10 +85,38 @@ class AccountConfirmationBottomSheet(val activity: Activity,
     }
 
     private fun openConfirmBankAccountActivity(accountType: Int) {
-        settingAnalytics.eventRekeningConfirmationClick()
-        activity.startActivityForResult(AccountDocumentActivity.createIntent(activity, bankAccount, accountType, kycInfo.fullName),
-                SettingBankActivity.REQUEST_ON_DOC_UPLOAD)
-        this.dialog.dismiss()
+        activity?.run {
+            settingAnalytics.eventRekeningConfirmationClick()
+            bankAccount?.let { bankAccount ->
+                kycInfo?.let { kycInfo ->
+                    startActivityForResult(AccountDocumentActivity
+                            .createIntent(this, bankAccount, accountType, kycInfo.fullName),
+                            SettingBankActivity.REQUEST_ON_DOC_UPLOAD)
+                }
+            }
+        }
+        this.dismiss()
+    }
+
+    companion object {
+        private val TITLE = "Konfirmasi rekening bank"
+        private val BANK_ACCOUNT = "bank_account"
+        private val KYC_INFO = "kyc_info"
+        private val TAG = "AccountConfirmationBottomSheet"
+        fun showBottomSheet(bankAccount: BankAccount,
+                            kycInfo: KYCInfo,
+                            activity: FragmentActivity?) {
+            activity?.let {
+                if (!activity.isFinishing) {
+                    val bottomSheet = AccountConfirmationBottomSheet()
+                    val argument = Bundle();
+                    argument.putParcelable(BANK_ACCOUNT, bankAccount)
+                    argument.putParcelable(KYC_INFO, kycInfo)
+                    bottomSheet.arguments = argument
+                    bottomSheet.show(activity.supportFragmentManager, TAG)
+                }
+            }
+        }
     }
 
 }

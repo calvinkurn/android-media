@@ -3,13 +3,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -35,9 +35,9 @@ dependencies {
     // Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
 
     // Internal Dependencies
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -57,11 +57,11 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // Debug tools
     implementation rootProject.ext.debugToolsDependencies.chuck

@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.rechargegeneral.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_recharge_general_widget_checkout_view_bottom_sheet.view.*
 import org.jetbrains.annotations.NotNull
 

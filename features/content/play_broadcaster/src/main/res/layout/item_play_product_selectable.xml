@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
@@ -41,19 +40,6 @@
         app:unify_checkbox_type="type_white"
         />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/lbl_empty_stock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        android:text="@string/play_empty_stock"
-        app:layout_constraintBottom_toBottomOf="@id/fl_image"
-        app:layout_constraintStart_toStartOf="@id/fl_image"
-        tools:visibility="visible"
-        />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
         android:layout_width="wrap_content"
@@ -61,7 +47,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +62,7 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"

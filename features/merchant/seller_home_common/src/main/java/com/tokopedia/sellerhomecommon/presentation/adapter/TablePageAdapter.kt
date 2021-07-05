@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableItemDivider
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlViewHolder
 import kotlinx.android.synthetic.main.shc_item_table_page.view.*
 
 /**
@@ -20,7 +22,8 @@ import kotlinx.android.synthetic.main.shc_item_table_page.view.*
 
 class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHolder>() {
 
-    private var itemImpressionListener: ((position: Int, isEmpty: Boolean) -> Unit)? = null
+    private var itemImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
+    private var itemClickHtmlListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private var items: List<TablePageUiModel> = emptyList()
 
     fun setItems(items: List<TablePageUiModel>) {
@@ -28,8 +31,12 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
         notifyDataSetChanged()
     }
 
-    fun addOnImpressionListener(onView: (position: Int, isEmpty: Boolean) -> Unit) {
+    fun addOnImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
         this.itemImpressionListener = onView
+    }
+
+    fun addOnClickHtmlListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {
+        this.itemClickHtmlListener = onClick
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TablePageViewHolder {
@@ -41,16 +48,21 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
 
     override fun onBindViewHolder(holder: TablePageViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item) {
-            itemImpressionListener?.invoke(position, item.rows.isNullOrEmpty())
-        }
+        holder.bind(item, onView = {
+            itemImpressionListener?.invoke(position, items.size.orZero(), item.rows.isNullOrEmpty())
+        }, onClickHtml = { url ->
+            itemClickHtmlListener?.invoke(url, item.rows.isNullOrEmpty())
+        })
     }
 
-    inner class TablePageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TablePageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TableColumnHtmlViewHolder.Listener {
 
-        private val tableAdapter = TableItemAdapter()
+        private val tableAdapter = TableItemAdapter(this)
+        private var onHtmlClicked: (String) -> Unit = {}
 
-        fun bind(item: TablePageUiModel, onView: () -> Unit) = with(itemView) {
+        fun bind(item: TablePageUiModel,
+                 onView: () -> Unit,
+                 onClickHtml: (String) -> Unit) = with(itemView) {
             val mSpanCount = item.headers.sumBy { it.width }
             val mLayoutManager = object : GridLayoutManager(context, mSpanCount) {
                 override fun canScrollVertically(): Boolean = false
@@ -78,6 +90,7 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
             setTableData(item)
 
             addOnImpressionListener(item.impressHolder, onView)
+            onHtmlClicked = onClickHtml
         }
 
         private fun setTableData(item: TablePageUiModel) {
@@ -93,6 +106,10 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
                 }
             }
             tableAdapter.notifyDataSetChanged()
+        }
+
+        override fun onHyperlinkClicked(url: String) {
+            onHtmlClicked(url)
         }
     }
 }

@@ -47,6 +47,9 @@ class ImageReviewGqlResponse {
         var images: List<Image>? = null
         @SerializedName("imageCountFmt")
         @Expose
+        var imageCountFmt: String = ""
+        @SerializedName("imageCount")
+        @Expose
         var imageCount: String = ""
     }
 

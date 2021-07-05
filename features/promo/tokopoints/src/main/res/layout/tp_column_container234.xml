@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_8"
+    android:background="@color/Unify_N0">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:lineSpacingExtra="6sp"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Huge News!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_see_all"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/tp_label_see_all"
+        android:textColor="@color/Unify_G400"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="heading_6" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:lineSpacingExtra="6sp"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        app:typographyType="body_3"
+        tools:text="Cari tahu sekarang juga" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_column"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_sub_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

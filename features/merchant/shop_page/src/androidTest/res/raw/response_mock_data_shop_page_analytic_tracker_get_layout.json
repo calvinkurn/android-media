@@ -1,0 +1,390 @@
+[
+  {
+    "data": {
+      "shopPageGetLayout": {
+        "layoutID": 44070,
+        "masterLayoutID": 4,
+        "merchantTierID": 3,
+        "status": 3,
+        "maxWidgets": 6,
+        "publishDate": "0001-01-01T00:00:00+07:07",
+        "widgets": [
+          {
+            "widgetID": 1380615,
+            "layoutOrder": 1,
+            "name": "display_single_column",
+            "type": "display",
+            "header": {
+              "title": "",
+              "ctaText": "",
+              "ctaLink": "",
+              "cover": "",
+              "ratio": "1:1",
+              "isATC": 0
+            },
+            "data": [
+              {
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/850/BgtCLw/2020/10/14/07940d9e-a1e4-4909-b2ca-fe21486c39ba.jpg.webp",
+                "videoUrl": "",
+                "appLink": "tokopedia://shop/3418893/etalase/26157453",
+                "webLink": "https://m.tokopedia.com/dettolstore/etalase/flash-deals"
+              }
+            ]
+          },
+          {
+            "widgetID": 688255,
+            "layoutOrder": 3,
+            "name": "product",
+            "type": "product",
+            "header": {
+              "title": "Terlaris",
+              "ctaText": "Lihat Semua",
+              "ctaLink": "tokopedia://shop/603076/etalase/discount",
+              "cover": "",
+              "ratio": "",
+              "isATC": 1
+            },
+            "data": [
+              {
+                "productID": "786548346",
+                "name": "FLOW BLACK TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/30/76365762/76365762_451770b8-c698-46b1-8072-cc45ba892395_2000_2000",
+                "productUrl": "tokopedia://product/786548346",
+                "displayPrice": "Rp75.000",
+                "originalPrice": "Rp150.000",
+                "discountPercentage": "50%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "28",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "819221325",
+                "name": "IMPOSSIBLE GREEN TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/2/76365762/76365762_3fba4d92-a8bc-4294-a845-a1565ca1a8d5_1126_1126",
+                "productUrl": "tokopedia://product/819221325",
+                "displayPrice": "Rp89.000",
+                "originalPrice": "Rp135.000",
+                "discountPercentage": "34%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "17",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "818870280",
+                "name": "CULTURE BLACK TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/2/76365762/76365762_2a8b4edd-65e5-4229-ad2c-4981f211562f_1126_1126",
+                "productUrl": "tokopedia://product/818870280",
+                "displayPrice": "Rp135.000",
+                "originalPrice": "",
+                "discountPercentage": "0%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "14",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "824990116",
+                "name": "THE HEAD BLACK TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/10/76365762/76365762_065bfcf3-7e6f-4b67-a8bb-c53694a4d8d3_1200_1200",
+                "productUrl": "tokopedia://product/824990116",
+                "displayPrice": "Rp75.000",
+                "originalPrice": "Rp175.000",
+                "discountPercentage": "57%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "14",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "863512454",
+                "name": "RONIN NAVY TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/8/6/27260303/27260303_7d4c0451-e95f-40c8-9fbe-249a294b1cf3.jpg",
+                "productUrl": "tokopedia://product/863512454",
+                "displayPrice": "Rp150.000",
+                "originalPrice": "",
+                "discountPercentage": "0%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "14",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "838653915",
+                "name": "IMPOSSIBLE MISTY TSHIRT DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/7/28/76365762/76365762_1f65cb42-cccf-4182-95f7-9173bb2a1a2e_1200_1200",
+                "productUrl": "tokopedia://product/838653915",
+                "displayPrice": "Rp75.000",
+                "originalPrice": "Rp135.000",
+                "discountPercentage": "44%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "9",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "860345688",
+                "name": "GRAFFWALL BLACK TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/20/76365762/76365762_1f23ffd1-71b3-4815-8d55-43cb60b692ac_1200_1200",
+                "productUrl": "tokopedia://product/860345688",
+                "displayPrice": "Rp150.000",
+                "originalPrice": "",
+                "discountPercentage": "0%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "9",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "819115756",
+                "name": "IMPOSSIBLE BLACK TEES",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/10/1/76365762/76365762_3cbe2fd9-19c5-494b-ab0d-804067817841_1200_1200",
+                "productUrl": "tokopedia://product/819115756",
+                "displayPrice": "Rp89.000",
+                "originalPrice": "Rp135.000",
+                "discountPercentage": "34%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "12",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "819214807",
+                "name": "IMPOSSIBLE NAVY TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/2/76365762/76365762_c88e0ca6-e4fe-4f19-874e-0c1e37498b36_1126_1126",
+                "productUrl": "tokopedia://product/819214807",
+                "displayPrice": "Rp75.000",
+                "originalPrice": "Rp135.000",
+                "discountPercentage": "44%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "7",
+                "isPO": false,
+                "cashback": 0
+              },
+              {
+                "productID": "860332035",
+                "name": "HATE CRIME NAVY TEES DOBUJACK TSHIRT",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/20/76365762/76365762_28de8508-4fdf-4838-9ff4-23c0581f5d41_1200_1200",
+                "productUrl": "tokopedia://product/860332035",
+                "displayPrice": "Rp75.000",
+                "originalPrice": "Rp150.000",
+                "discountPercentage": "50%",
+                "isShowFreeOngkir": false,
+                "freeOngkirPromoIcon": "",
+                "isSoldOut": false,
+                "rating": 100,
+                "totalReview": "6",
+                "isPO": false,
+                "cashback": 0
+              }
+            ]
+          },
+          {
+            "widgetID": 1236550,
+            "layoutOrder": 6,
+            "name": "voucher",
+            "type": "promo",
+            "header": {
+              "title": "Voucher Toko",
+              "ctaText": "Lihat Semua",
+              "ctaLink": "",
+              "cover": "",
+              "ratio": "",
+              "isATC": 0
+            },
+            "data": [{}, {}, {}]
+          },
+          {
+            "widgetID": 0,
+            "layoutOrder": 2,
+            "name": "promo_campaign",
+            "type": "campaign",
+            "header": {
+              "title": "Upcoming Lama 1",
+              "ctaText": "Lihat Semua",
+              "ctaLink": "tokopedia://shop/7831129/etalase/cmp_15934",
+              "cover": "",
+              "ratio": "",
+              "isATC": 0
+            },
+            "data": [
+              {
+                "campaignID": "15934",
+                "name": "Upcoming Lama 1",
+                "description": "Upcoming Lama 1",
+                "startDate": "2020-11-07 00:00:00 +0000 +0000",
+                "endDate": "2020-11-07 04:00:00 +0000 +0000",
+                "statusCampaign": "Upcoming",
+                "timeDescription": "Dimulai 07 Nov, 00:00 WIB",
+                "timeCounter": "0",
+                "totalNotify": 2,
+                "totalNotifyWording": "",
+                "dynamicRule": {
+                  "descriptionHeader": "",
+                  "dynamicRoleData": [
+
+                  ]
+                },
+                "banners": [
+                  {
+                    "imageID": "67348",
+                    "imageURL": "https://ecs7.tokopedia.net/img/AoawBM/2020/10/8/bd0c5088-db74-4242-b873-1629e932492f.jpg",
+                    "bannerType": "UPCOMING"
+                  },
+                  {
+                    "imageID": "67349",
+                    "imageURL": "https://ecs7.tokopedia.net/img/AoawBM/2020/10/8/29899152-593a-4bbe-910d-162b227b5f91.jpg",
+                    "bannerType": "LIVE"
+                  },
+                  {
+                    "imageID": "67350",
+                    "imageURL": "https://ecs7.tokopedia.net/img/AoawBM/2020/10/8/7e383159-1267-4f66-967b-ca8be0237d69.jpg",
+                    "bannerType": "FINISHED"
+                  }
+                ],
+                "products": [
+                  {
+                    "id": 1194561834,
+                    "name": "pr0duc7 k4d13s RS v4r 18-09-2020 105 - Kuning, L",
+                    "url": "https://www.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-105-kuning-l?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "urlApps": "tokopedia://product/1194561834",
+                    "urlMobile": "https://m.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-105-kuning-l?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "imageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/10/29/5514972/5514972_6d4662e8-f02d-4a0a-95f1-c3966d55f5c3_600_600.png",
+                    "price": "Rp 1.000",
+                    "countSold": 0,
+                    "stock": 10,
+                    "status": "ready",
+                    "discountedPrice": "Rp 100",
+                    "discountPercentage": 90,
+                    "position": 0,
+                    "stockWording": {
+                      "title": "Tersedia"
+                    },
+                    "hideGimmick": false,
+                    "stockSoldPercentage": 0,
+                    "labelGroups": [
+                      {
+                        "position": "",
+                        "type": "",
+                        "title": ""
+                      }
+                    ]
+                  },
+                  {
+                    "id": 1194561798,
+                    "name": "pr0duc7 k4d13s RS v4r 18-09-2020 104 - Putih, XXS",
+                    "url": "https://www.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-104-putih-xxs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "urlApps": "tokopedia://product/1194561798",
+                    "urlMobile": "https://m.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-104-putih-xxs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "imageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/10/29/5514972/5514972_6d4662e8-f02d-4a0a-95f1-c3966d55f5c3_600_600.png",
+                    "price": "Rp 1.000",
+                    "countSold": 0,
+                    "stock": 10,
+                    "status": "ready",
+                    "discountedPrice": "Rp 100",
+                    "discountPercentage": 90,
+                    "position": 0,
+                    "stockWording": {
+                      "title": "Tersedia"
+                    },
+                    "hideGimmick": false,
+                    "stockSoldPercentage": 0,
+                    "labelGroups": [
+                      {
+                        "position": "",
+                        "type": "",
+                        "title": ""
+                      }
+                    ]
+                  },
+                  {
+                    "id": 1194561763,
+                    "name": "pr0duc7 k4d13s RS v4r 18-09-2020 103 - Kuning, XXS",
+                    "url": "https://www.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-103-kuning-xxs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "urlApps": "tokopedia://product/1194561763",
+                    "urlMobile": "https://m.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-103-kuning-xxs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "imageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/10/29/5514972/5514972_6d4662e8-f02d-4a0a-95f1-c3966d55f5c3_600_600.png",
+                    "price": "Rp 1.000",
+                    "countSold": 0,
+                    "stock": 10,
+                    "status": "ready",
+                    "discountedPrice": "Rp 100",
+                    "discountPercentage": 90,
+                    "position": 0,
+                    "stockWording": {
+                      "title": "Tersedia"
+                    },
+                    "hideGimmick": false,
+                    "stockSoldPercentage": 0,
+                    "labelGroups": [
+                      {
+                        "position": "",
+                        "type": "",
+                        "title": ""
+                      }
+                    ]
+                  },
+                  {
+                    "id": 1194561050,
+                    "name": "pr0duc7 k4d13s RS v4r 18-09-2020 86 - Kuning, XXS",
+                    "url": "https://www.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-86-kuning-xxs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "urlApps": "tokopedia://product/1194561050",
+                    "urlMobile": "https://m.tokopedia.com/kr1s0ff1c14lst0r/pr0duc7-k4d13s-rs-v4r-18-09-2020-86-kuning-xxs?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D28_catid%3D1771",
+                    "imageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/10/29/5514972/5514972_6d4662e8-f02d-4a0a-95f1-c3966d55f5c3_600_600.png",
+                    "price": "Rp 1.000",
+                    "countSold": 0,
+                    "stock": 10,
+                    "status": "ready",
+                    "discountedPrice": "Rp 100",
+                    "discountPercentage": 90,
+                    "position": 0,
+                    "stockWording": {
+                      "title": "Tersedia"
+                    },
+                    "hideGimmick": false,
+                    "stockSoldPercentage": 0,
+                    "labelGroups": [
+                      {
+                        "position": "",
+                        "type": "",
+                        "title": ""
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

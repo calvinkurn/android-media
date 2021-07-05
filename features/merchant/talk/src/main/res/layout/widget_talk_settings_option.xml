@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkSettingsOptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/talkSettingsOptionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_label_seller_app"
+        android:layout_marginStart="@dimen/dp_12"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/talkSettingsOptionText"
+        app:layout_constraintBottom_toBottomOf="@id/talkSettingsOptionText"
+        app:layout_constraintStart_toEndOf="@id/talkSettingsOptionText"
+        app:labelType="general_light_green"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/talkSettingsOptionChevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_name="CHEVRON_RIGHT"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        app:layout_constraintTop_toTopOf="@id/talkSettingsOptionText"
+        app:layout_constraintBottom_toBottomOf="@id/talkSettingsOptionText"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/talk_settings_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/layout_lvl7"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/talkSettingsOptionText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

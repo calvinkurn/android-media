@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="shc_super_large_widget_height">352dp</dimen>
     <dimen name="shc_large_widget_height">320dp</dimen>
     <dimen name="shc_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
@@ -8,6 +9,7 @@
     <dimen name="shc_dimen_7dp">7dp</dimen>
     <dimen name="shc_dimen_10dp">10dp</dimen>
     <dimen name="shc_dimen_12dp">12dp</dimen>
+    <dimen name="shc_dimen_15dp">15dp</dimen>
     <dimen name="shc_dimen_18dp">18dp</dimen>
     <dimen name="shc_dimen_20dp">20dp</dimen>
     <dimen name="shc_dimen_22dp">22dp</dimen>
@@ -19,6 +21,7 @@
     <dimen name="shc_dimen_74dp">74dp</dimen>
     <dimen name="shc_dimen_80dp">80dp</dimen>
     <dimen name="shc_dimen_88dp">88dp</dimen>
+    <dimen name="shc_dimen_93dp">93dp</dimen>
     <dimen name="shc_dimen_110dp">110dp</dimen>
     <dimen name="shc_dimen_120dp">120dp</dimen>
     <dimen name="shc_dimen_136dp">136dp</dimen>

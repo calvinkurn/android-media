@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -24,13 +26,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_header
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listCarouselListener: RecommendationListCarouselListener?,
@@ -60,10 +63,19 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val channelConfig = channel.channelConfig
 
         setViewportImpression(element)
+        setChannelDivider(element)
+
+        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+            override fun onSeeAllClick(link: String) {
+                listCarouselListener?.onRecommendationSeeMoreClick(element.channelModel, link)
+            }
+
+            override fun onChannelExpired(channelModel: ChannelModel) {}
+        })
 
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
-                ContextCompat.getColor(itemView.context, R.color.Neutral_N50) else Color.parseColor(banner.textColor)
+                ContextCompat.getColor(itemView.context, R.color.Unify_N50) else Color.parseColor(banner.textColor)
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
@@ -132,14 +144,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     )
                 }.toMutableList()
                 if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listCarouselListener, adapterPosition))
-                launch {
-                    try {
-                        setHeightBasedOnProductCardMaxHeight(tempDataList)
-                    }
-                    catch (throwable: Throwable) {
-                        throwable.printStackTrace()
-                    }
-                }
                 adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
@@ -150,20 +154,15 @@ class RecommendationListCarouselViewHolder(itemView: View,
         }
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
-
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = productCardHeight
-        this.layoutParams = carouselLayoutParams
+    private fun setChannelDivider(element: RecommendationListCarouselDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
-    suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
-    }
-
-    fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
+    private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
         return ProductCardModel(
                 productImageUrl = grid.imageUrl,
                 productName = grid.name,
@@ -172,7 +171,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 formattedPrice = grid.price,
                 hasAddToCartButton = grid.hasBuyButton,
                 isTopAds = grid.isTopads,
-                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again)
+                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
+                shopLocation = grid.shop.shopLocation,
+                shopBadgeList = grid.badges.map {
+                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                }
         )
     }
 
@@ -203,7 +206,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class HomeRecommendationListViewHolder(
             itemView: View,
             val listCarouselListener: RecommendationListCarouselListener?,
-            val isCacheData: Boolean
+            val isCacheData: Boolean,
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
@@ -229,7 +232,15 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
                                 hasAddToCartButton = recommendation.grid.hasBuyButton,
-                                isTopAds = recommendation.isTopAds
+                                isTopAds = recommendation.isTopAds,
+                                isOutOfStock = recommendation.grid.isOutOfStock,
+                                ratingCount = recommendation.grid.rating,
+                                reviewCount = recommendation.grid.countReview,
+                                countSoldRating = recommendation.grid.ratingFloat,
+                                shopLocation = recommendation.grid.shop.shopLocation,
+                                shopBadgeList = recommendation.grid.badges.map {
+                                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                                }
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
@@ -242,17 +253,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
-                            recommendation.recommendationApplink
-                    )
-                }
-            } else if(recommendation is HomeRecommendationListSeeMoreData) {
-                itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener?.onRecommendationCarouselGridImpression(
-                            recommendation.channel,
-                            null,
-                            adapterPosition,
-                            recommendation.parentPosition,
-                            true
+                            recommendation.recommendationApplink,
+                            recommendation.parentPosition
                     )
                 }
             }

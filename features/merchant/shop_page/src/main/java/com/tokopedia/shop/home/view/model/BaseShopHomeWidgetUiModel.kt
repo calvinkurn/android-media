@@ -15,6 +15,7 @@ interface BaseShopHomeWidgetUiModel: Visitable<ShopHomeAdapterTypeFactory>{
             val ctaLink: String = "",
             val cover: String = "",
             val ratio: String = "",
-            val isATC: Int = 0
+            val isATC: Int = 0,
+            val etalaseId: String = ""
     )
 }

@@ -7,30 +7,30 @@
         android:pathData="M14.28,2.047h4.725a2,2 0,0 1,2 2v1.83"
         android:strokeLineCap="round"
         android:fillType="evenOdd"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.6"
         android:strokeLineJoin="round"/>
     <path
         android:pathData="M20.848,8.7l-2.332,-2.712a0.2,0.2 0,0 1,0.151 -0.33h4.666a0.2,0.2 0,0 1,0.151 0.33l-2.332,2.711a0.2,0.2 0,0 1,-0.304 0z"
         android:fillType="evenOdd"
-        android:fillColor="#4C4C4C"/>
+        android:fillColor="@color/Unify_N600"/>
     <path
         android:pathData="M9.72,21.953H4.994a2,2 0,0 1,-2 -2v-1.83"
         android:strokeLineCap="round"
         android:fillType="evenOdd"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.6"
         android:strokeLineJoin="round"/>
     <path
         android:pathData="M3.152,15.3l2.332,2.712a0.2,0.2 0,0 1,-0.151 0.33H0.667a0.2,0.2 0,0 1,-0.151 -0.33l2.332,-2.711a0.2,0.2 0,0 1,0.304 0z"
         android:fillType="evenOdd"
-        android:fillColor="#4C4C4C"/>
+        android:fillColor="@color/Unify_N600"/>
     <path
         android:pathData="M7.8,6.8L16.2,6.8A1,1 0,0 1,17.2 7.8L17.2,16.2A1,1 0,0 1,16.2 17.2L7.8,17.2A1,1 0,0 1,6.8 16.2L6.8,7.8A1,1 0,0 1,7.8 6.8z"
         android:fillType="evenOdd"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.6"/>
 </vector>

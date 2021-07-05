@@ -34,6 +34,8 @@ class WalletBalanceModel(
         var isShowAnnouncement: Boolean = false,
         var isShowTopup: Boolean = false,
         var topupUrl: String = "",
-        var topupLimit: Long = 0)
+        var topupLimit: Long = 0,
+        var isError: Boolean = false,
+        var errorMessage: String = "")
 
     : Parcelable

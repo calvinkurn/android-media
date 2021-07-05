@@ -7,9 +7,8 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 import com.tokopedia.trackingoptimizer.model.EventModel
-import com.tokopedia.trackingoptimizer.model.ScreenCustomModel
-import com.tokopedia.trackingoptimizer.repository.ITrackingRepository
-import com.tokopedia.trackingoptimizer.repository.TrackingRepository
+import com.tokopedia.trackingoptimizer.repository.TrackRepositoryImpl
+import com.tokopedia.trackingoptimizer.repository.TrackRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -50,9 +49,9 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = TrackingExecutors.executor + TrackingExecutors.handler
 
-    val trackingRepository: ITrackingRepository<TrackingRegularDbModel, TrackingEEDbModel,
-        TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
-        TrackingRepository(context)
+    val newTrackingRepository: TrackRepositoryImpl<TrackingRegularDbModel, TrackingEEDbModel,
+            TrackingEEFullDbModel, TrackingScreenNameDbModel> by lazy {
+        TrackRepository(context)
     }
 
     /**
@@ -65,7 +64,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
             return
         }
         launch {
-            trackingRepository.put(map)
+            newTrackingRepository.put(map)
         }
     }
 
@@ -77,7 +76,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
                       enhanceECommerceMap: HashMap<String, Any>,
                       customDimension: HashMap<String, Any>? = null) {
         launch {
-            trackingRepository.putEE(event, customDimension, enhanceECommerceMap)
+            newTrackingRepository.putEE(event, customDimension, enhanceECommerceMap)
         }
     }
 
@@ -88,7 +87,7 @@ class TrackingQueue(val context: Context) : CoroutineScope {
     fun putEETracking(map: HashMap<String, Any>? = null,
                       enhanceECommerceMap: HashMap<String, Any>?) {
         launch {
-            trackingRepository.putEE(map, enhanceECommerceMap)
+            newTrackingRepository.putEE(map, enhanceECommerceMap)
         }
     }
 

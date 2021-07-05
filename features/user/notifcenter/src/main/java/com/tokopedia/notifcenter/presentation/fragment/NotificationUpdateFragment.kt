@@ -246,7 +246,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
@@ -271,6 +271,13 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         //if product data only one, check product stock
         if (notification.products.isSingleItem()) {
             viewModel.isProductStockHandler(notification.notificationId)
+        }
+    }
+
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {
+        val productData = notification.getAtcProduct()
+        productData?.let {
+            viewModel.isProductStockHandlerMultiple(notification.notificationId, it)
         }
     }
 
@@ -301,11 +308,18 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
             product: ProductData,
             onSuccessAddToCart: (DataModel) -> Unit
     ) {
-        presenter.addProductToCart(product, onSuccessAddToCart)
+        presenter.addProductToCart(userSession.userId, product, onSuccessAddToCart)
     }
 
-    override fun trackOnClickCtaButton(templateKey: String, notificationId: String) {
-        analytics.trackOnClickLongerContentBtn(templateKey, notificationId)
+    override fun trackOnClickCtaButton(
+        templateKey: String,
+        notificationId: String,
+        productId: String,
+        shopId: String
+    ) {
+        analytics.trackOnClickLongerContentBtn(
+            templateKey, notificationId, productId, shopId
+        )
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = view?.findViewById(R.id.swipeToRefresh)
@@ -317,7 +331,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     override fun analytics(): NotificationTracker = getAnalytic()
 
     override fun getAnalytic(): NotificationUpdateAnalytics {
-        return NotificationUpdateAnalytics()
+        return analytics
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

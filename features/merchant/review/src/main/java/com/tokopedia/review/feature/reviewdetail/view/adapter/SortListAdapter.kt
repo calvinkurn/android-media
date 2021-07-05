@@ -3,36 +3,50 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_chips.view.*
 
-class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
+class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort) : RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
-    var sortFilterListUiModel: List<SortItemUiModel>? = null
+    var sortFilterListUiModel = mutableListOf<SortItemUiModel>()
 
     fun setSortFilter(sortFilterListUiModel: List<SortItemUiModel>) {
-        this.sortFilterListUiModel = sortFilterListUiModel
+        this.sortFilterListUiModel = sortFilterListUiModel.toMutableList()
+        val callback = SortListDiffUtil(this.sortFilterListUiModel, sortFilterListUiModel)
+        val diffResult = DiffUtil.calculateDiff(callback)
+        this.sortFilterListUiModel.clear()
+        this.sortFilterListUiModel.addAll(sortFilterListUiModel)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updatedSortFilter(position: Int) {
-        val itemSelected = sortFilterListUiModel?.getOrNull(position)
+        sortFilterListUiModel.mapIndexed { index, sortItemUiModel ->
+            if(sortItemUiModel.isSelected) {
+                sortItemUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
+        }
 
-        sortFilterListUiModel?.filter {
-            it.isSelected
-        }?.filterNot { it == itemSelected }?.onEach { it.isSelected = false }
-
+        val itemSelected = sortFilterListUiModel.getOrNull(position)
         itemSelected?.isSelected = true
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 
     fun resetSortFilter() {
-        sortFilterListUiModel?.mapIndexed { index, sortItemUiModel ->
-            sortItemUiModel.isSelected = index == 0
+        val defaultSortIndex = 0
+        sortFilterListUiModel.mapIndexed { index, sortItemUiModel ->
+            if (index == defaultSortIndex) {
+                sortFilterListUiModel.getOrNull(index)?.isSelected = true
+                notifyItemChanged(index)
+            } else if (sortItemUiModel.isSelected) {
+                sortItemUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
         }
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SortListViewHolder {
@@ -41,21 +55,22 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
     }
 
     override fun getItemCount(): Int {
-        return sortFilterListUiModel?.size ?: 0
+        return sortFilterListUiModel.size
     }
 
     override fun onBindViewHolder(holder: SortListViewHolder, position: Int) {
-        sortFilterListUiModel?.get(position)?.let { holder.bind(it) }
+        val data = sortFilterListUiModel[position]
+        holder.bind(data)
     }
 
-    class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort): RecyclerView.ViewHolder(itemView) {
+    class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: SortItemUiModel) {
             with(itemView) {
                 chipsItem.apply {
                     centerText = true
                     chipText = data.title
                     chipSize = ChipsUnify.SIZE_MEDIUM
-                    chipType = if(data.isSelected) {
+                    chipType = if (data.isSelected) {
                         ChipsUnify.TYPE_SELECTED
                     } else {
                         ChipsUnify.TYPE_NORMAL

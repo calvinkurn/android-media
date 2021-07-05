@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    card_view:cardElevation="@dimen/dp_2"
+    card_view:cardElevation="@dimen/spacing_lvl1"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dp_16"
+        android:padding="@dimen/layout_lvl2"
         tools:ignore="MissingDefaultResource">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,27 +22,25 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_header_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                app:fontSize="title"
+                app:typographyType="heading_3"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintEnd_toStartOf="@+id/ic_more_info"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:textViewTheme="lightPrimary"
-                app:weight="regular"
                 tools:text="Bayar Otomatis" />
 
             <ImageView
                 android:id="@+id/ic_more_info"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
                 app:layout_constraintEnd_toStartOf="@+id/cb_subscription"
                 app:layout_constraintStart_toEndOf="@id/tv_header_title"
                 app:layout_constraintTop_toTopOf="parent"
@@ -50,21 +48,19 @@
 
             <CheckBox
                 android:id="@+id/cb_subscription"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="@dimen/spacing_lvl6"
+                android:layout_height="@dimen/spacing_lvl6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:theme="@style/DigitalCheckboxAndRadioButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
-            app:weight="regular"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:typographyType="body_2"
             tools:text="Pembayaran akan dilakukan secara otomatis pada 2 November 2018 dengan OvoCash." />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

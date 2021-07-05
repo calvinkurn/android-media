@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.constant.ConstantKey;
@@ -19,11 +19,11 @@ import com.tokopedia.home.explore.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.domain.model.ShopData;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryFavoriteDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.CategoryGridListDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.ExploreSectionDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.MyShopDataModel;
+import com.tokopedia.home.explore.view.adapter.datamodel.SellDataModel;
 import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCaseRx;
 import com.tokopedia.usecase.RequestParams;
@@ -73,7 +73,7 @@ public class ExploreDataSource {
         this.gson = gson;
     }
 
-    public Observable<List<ExploreSectionViewModel>> getExploreData(String userId) {
+    public Observable<List<ExploreSectionDataModel>> getExploreData(String userId) {
         if (userId.isEmpty()) {
             return getData("");
         } else {
@@ -93,7 +93,7 @@ public class ExploreDataSource {
     }
 
     @NonNull
-    private Observable<List<ExploreSectionViewModel>> getData(String shopDomain) {
+    private Observable<List<ExploreSectionDataModel>> getData(String shopDomain) {
         return homeDataApi.getExploreData(String.format(getRequestPayload(), shopDomain))
                 .doOnNext(saveToCache())
                 .map(getMapper());
@@ -105,7 +105,7 @@ public class ExploreDataSource {
             public void call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
                     DataResponseModel data = response.body().getData();
-                    cacheManager.save(
+                    cacheManager.put(
                             ConstantKey.TkpdCache.EXPLORE_DATA_CACHE,
                             gson.toJson(data),
                             0
@@ -116,18 +116,18 @@ public class ExploreDataSource {
     }
 
     @NonNull
-    private Func1<Response<GraphqlResponse<DataResponseModel>>, List<ExploreSectionViewModel>> getMapper() {
-        return new Func1<Response<GraphqlResponse<DataResponseModel>>, List<ExploreSectionViewModel>>() {
+    private Func1<Response<GraphqlResponse<DataResponseModel>>, List<ExploreSectionDataModel>> getMapper() {
+        return new Func1<Response<GraphqlResponse<DataResponseModel>>, List<ExploreSectionDataModel>>() {
             @Override
-            public List<ExploreSectionViewModel> call(Response<GraphqlResponse<DataResponseModel>> response) {
+            public List<ExploreSectionDataModel> call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
                     UserSessionInterface userSession = new UserSession(context);
-                    List<ExploreSectionViewModel> models = new ArrayList<>();
+                    List<ExploreSectionDataModel> models = new ArrayList<>();
 
                     DynamicHomeIcon model = response.body().getData().getDynamicHomeIcon();
                     for (int i = 0; i < model.getLayoutSections().size(); i++) {
                         LayoutSections s = model.getLayoutSections().get(i);
-                        ExploreSectionViewModel sectionViewModel = new ExploreSectionViewModel();
+                        ExploreSectionDataModel sectionViewModel = new ExploreSectionDataModel();
                         sectionViewModel.setUseCaseIcon(model.getUseCaseIcons().get(i));
                         sectionViewModel.setTitle(s.getTitle());
                         if (i == 0 && model.getFavCategory() != null) {
@@ -156,7 +156,7 @@ public class ExploreDataSource {
             }
 
             private Visitable mappingOpenShop() {
-                SellViewModel model = new SellViewModel();
+                SellDataModel model = new SellDataModel();
                 model.setTitle(context.getString(R.string.empty_shop_wording_title));
                 model.setSubtitle(context.getString(R.string.empty_shop_wording_subtitle));
                 model.setBtn_title(context.getString(R.string.buka_toko));
@@ -164,19 +164,19 @@ public class ExploreDataSource {
             }
 
             private Visitable mappingManageShop(ShopData data) {
-                MyShopViewModel model = new MyShopViewModel(data);
+                MyShopDataModel model = new MyShopDataModel(data);
                 return model;
             }
 
             private Visitable mappingFavoriteCategory(List<LayoutRows> favCategory) {
-                CategoryFavoriteViewModel viewModel = new CategoryFavoriteViewModel();
+                CategoryFavoriteDataModel viewModel = new CategoryFavoriteDataModel();
                 viewModel.setTitle(context.getString(R.string.kategori_favorit));
                 viewModel.setItemList(favCategory);
                 return viewModel;
             }
 
             private Visitable mappingCategory(LayoutSections s) {
-                CategoryGridListViewModel viewModel = new CategoryGridListViewModel();
+                CategoryGridListDataModel viewModel = new CategoryGridListDataModel();
                 viewModel.setSectionId(s.getId());
                 viewModel.setTitle(s.getTitle());
                 viewModel.setItemList(s.getLayoutRows());
@@ -212,11 +212,11 @@ public class ExploreDataSource {
         return stringBuilder.toString();
     }
 
-    public Observable<List<ExploreSectionViewModel>> getDataCache() {
+    public Observable<List<ExploreSectionDataModel>> getDataCache() {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<DataResponseModel>>>() {
             @Override
             public Response<GraphqlResponse<DataResponseModel>> call(Boolean aBoolean) {
-                String cache = cacheManager.get(ConstantKey.TkpdCache.EXPLORE_DATA_CACHE);
+                String cache = cacheManager.getString(ConstantKey.TkpdCache.EXPLORE_DATA_CACHE);
                 if (cache != null) {
                     DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
                     String cachedShopDomain = data.getShopInfo().getData().getDomain();

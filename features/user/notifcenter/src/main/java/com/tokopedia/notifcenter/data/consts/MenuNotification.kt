@@ -35,17 +35,17 @@ fun Fragment.buyerMenu(): List<BuyerNotificationViewBean> {
             DrawerNotification.ChildDrawerNotification(
                     PESANAN_DIPROSES,
                     R.drawable.ic_ts_order_process,
-                    context?.getString(R.string.pesanan_diproses),
+                    context?.getString(R.string.pesanan_diproses_uoh),
                     ApplinkConst.MARKETPLACE_ORDER_PROCESSED),
             DrawerNotification.ChildDrawerNotification(
                     SEDANG_DIKIRIM,
                     R.drawable.ic_ts_goods_sent_green,
-                    context?.getString(R.string.sedang_dikirim),
+                    context?.getString(R.string.sedang_dikirim_uoh),
                     ApplinkConst.MARKETPLACE_SENT),
             DrawerNotification.ChildDrawerNotification(
                     SAMPAI_TUJUAN,
                     R.drawable.ic_ts_goods_receive_green,
-                    context?.getString(R.string.sampai_tujuan),
+                    context?.getString(R.string.sampai_tujuan_uoh),
                     ApplinkConst.MARKETPLACE_DELIVERED)
     )
 

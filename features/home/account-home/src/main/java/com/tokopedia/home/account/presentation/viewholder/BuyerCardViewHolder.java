@@ -1,8 +1,8 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
-import androidx.annotation.LayoutRes;
-
 import android.view.View;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
@@ -45,6 +45,7 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
                 .couponApplink(element.getCouponApplink())
                 .isAffliate(element.isAffiliate())
                 .isHasShop(element.isHasShop())
+                .roleName(element.getRoleName())
                 .tokomemberTitle(element.getTokomemberTitle())
                 .tokomember(element.getTokomember())
                 .tokomemberImageUrl(element.getTokomemberImageUrl())
@@ -64,5 +65,7 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
         buyerCardView.setOnClickTokoMember(v -> listener.onTokomemberClicked(element.getTokomemberApplink(), element.getTokomemberTitle()));
         buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element.getCouponApplink(), element.getCouponTitle()));
         buyerCardView.setOnClickByMe(v -> listener.onByMeClicked());
+        buyerCardView.setOnClickSellerAccount(v -> listener.onSellerAccountCardClicked());
+        buyerCardView.setOnclickIconWarningName(v -> listener.onIconWarningNameClick(element));
     }
 }

@@ -6,15 +6,16 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.HttpDataSource
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.exoplayer.TestExoPlayer
 import com.tokopedia.play.exoplayer.TestExoPlayerCreator
-import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -22,41 +23,42 @@ import kotlinx.coroutines.test.*
 import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.net.HttpURLConnection
-import kotlin.RuntimeException
 
 /**
  * Created by jegul on 15/09/20
  */
 class PlayViewerVideoStateProcessorTest {
 
-    @get:Rule
     private val appContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     private val testExoPlayerCreator = TestExoPlayerCreator(appContext)
     private val playVideoManager = PlayVideoManager.getInstance(appContext, testExoPlayerCreator)
     private val playbackExceptionParser = ExoPlaybackExceptionParser()
     private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcher = object : CoroutineDispatcherProvider {
+    private val dispatcher = object : CoroutineDispatchers {
         override val main: CoroutineDispatcher
             get() = testDispatcher
         override val immediate: CoroutineDispatcher
             get() = testDispatcher
         override val io: CoroutineDispatcher
             get() = testDispatcher
+        override val computation: CoroutineDispatcher
+            get() = testDispatcher
+        override val default: CoroutineDispatcher
+            get() = testDispatcher
     }
 
     private val scope = TestCoroutineScope(testDispatcher)
 
     private val playVideoProcessor = PlayViewerVideoStateProcessor.Factory(
-            playVideoManager = playVideoManager,
             exoPlaybackExceptionParser = playbackExceptionParser,
             dispatcher = dispatcher
     ).create(
             scope = scope,
-            channelTypeSource = { PlayChannelType.Live }
+            channelTypeSource = { PlayChannelType.Live },
+            playVideoPlayer = PlayVideoWrapper.Builder(appContext).build()
     )
 
     private var theState: PlayViewerVideoState = PlayViewerVideoState.Unknown

@@ -3,35 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/digital_homepage_search_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
-        app:theme="@style/Toolbar.White">
+        app:elevation="@dimen/layout_lvl0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/digital_homepage_search_view_toolbar"
-            style="@style/Toolbar.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:minHeight="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
+            app:contentInsetLeft="@dimen/layout_lvl0"
+            app:contentInsetStart="@dimen/layout_lvl0"
+            app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
             app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/ic_system_action_back_grayscale_24">
 
-            <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
+            <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/digital_homepage_search_view_search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingRight="@dimen/dp_16"
-                app:siv_search_hint="@string/digital_home_search_view_hint" />
+                android:paddingRight="@dimen/spacing_lvl4"
+                app:search_bar_clearable="true"
+                app:search_bar_placeholder="@string/digital_home_search_view_hint"
+                app:search_bar_show_icon="false" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -41,8 +39,8 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

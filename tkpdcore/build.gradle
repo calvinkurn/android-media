@@ -8,7 +8,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -33,12 +33,12 @@ dependencies {
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.analytics)
@@ -50,8 +50,8 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -64,7 +64,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
@@ -76,22 +75,16 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.places
 
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation project(rootProject.ext.libraries.logger)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
-    implementation(rootProject.ext.analyticsDependencies.moengage)
-    implementation rootProject.ext.analyticsDependencies.moengageAmp
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.parcelerApi
-    annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.gson
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -102,7 +95,7 @@ dependencies {
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     

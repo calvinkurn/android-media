@@ -1,6 +1,7 @@
 package com.tokopedia.gallery.customview
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.annotation.AttrRes
 import androidx.annotation.LayoutRes
 import com.google.android.material.bottomsheet.BottomSheetBehavior

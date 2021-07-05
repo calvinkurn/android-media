@@ -5,25 +5,23 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:orientation="vertical">
 
 <androidx.appcompat.widget.Toolbar
-    android:id="@+id/toolbar"
+    android:id="@+id/buyer_order_list_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="?actionBarSize"
-    app:elevation="@dimen/dp_4"
+    android:layout_height="wrap_content"
     android:elevation="@dimen/dp_4"
-    android:theme="?toolbarTheme"
-    app:contentInsetLeft="0dp"
-    app:contentInsetStart="0dp"
-    app:contentInsetStartWithNavigation="0dp"
-    app:subtitleTextAppearance="?subtitleTextAppearance"
-    app:titleTextAppearance="?titleTextAppearance" />
+    android:theme="@style/Toolbar.White"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:subtitleTextAppearance="@style/SubTitleTextAppearance"
+    app:titleTextAppearance="@style/TitleTextAppearance" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_announcement"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:tickerType="announcement"
-        app:tickerShapeType="full"/>
+<com.tokopedia.unifycomponents.ticker.Ticker
+    android:id="@+id/ticker_announcement"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:tickerType="announcement"
+    app:tickerShapeType="full"/>
 
 <include layout="@layout/order_list_layout_tab_indicator"/>
 

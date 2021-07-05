@@ -2,17 +2,19 @@ package com.tokopedia.globalnavwidget
 
 import android.content.Context
 import android.graphics.Color
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
+import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
-import android.graphics.drawable.GradientDrawable
-import com.tokopedia.kotlin.extensions.view.getDimens
 
 class GlobalNavWidget: BaseCustomView {
 
@@ -35,14 +37,14 @@ class GlobalNavWidget: BaseCustomView {
     }
 
     fun setData(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
-        setTitle(globalNavWidgetModel.title)
-        setBackground(globalNavWidgetModel.background)
-        setSeeAllButtonListener(globalNavWidgetModel, globalNavWidgetListener)
-        setContent(globalNavWidgetModel, globalNavWidgetListener)
-    }
-
-    private fun setTitle(title: String) {
-        globalNavTitle?.text = MethodChecker.fromHtml(title)
+        if (globalNavWidgetModel.itemList.size == 1) {
+            hideGlobalNavListContainer()
+            handleSingleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+        }
+        else {
+            hideSingleGlobalNavCard()
+            handleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+        }
     }
 
     private fun setBackground(backgroundImgUrl: String) {
@@ -59,7 +61,7 @@ class GlobalNavWidget: BaseCustomView {
 
         val gd = GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(Color.WHITE, backgroundGradientColorList[backgroundIndex]))
+                intArrayOf(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0), backgroundGradientColorList[backgroundIndex]))
         gd.cornerRadius = 0f
 
         globalNavContainerLayout?.background = gd
@@ -69,6 +71,131 @@ class GlobalNavWidget: BaseCustomView {
         globalNavContainerLayout?.let {
             ImageHandler.loadBackgroundImage(it, backgroundImgUrl)
         }
+    }
+
+    private fun hideGlobalNavListContainer() {
+        globalNavTitleLayout?.visibility = View.GONE
+        globalNavCardRecyclerView?.visibility = View.GONE
+        globalNavPillRecyclerView?.visibility = View.GONE
+    }
+
+    private fun handleSingleGlobalNav(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
+        val item = globalNavWidgetModel.itemList.firstOrNull() ?: return
+
+        setBackgroundRandom()
+        setSingleGlobalNavTitle(item)
+        setSingleGlobalNavListener(globalNavWidgetModel, globalNavWidgetListener)
+
+        if (globalNavWidgetModel.navTemplate == NAV_TEMPLATE_PILL) setSinglePillContent(item)
+        else setSingleCardContent(item)
+    }
+
+    private fun setSingleGlobalNavTitle(item: GlobalNavWidgetModel.Item) {
+        singleGlobalNavTitle?.shouldShowWithAction(item.name.isNotEmpty()) {
+            it.text = item.name
+        }
+    }
+
+    private fun setSingleGlobalNavListener(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
+        val item = globalNavWidgetModel.itemList.firstOrNull() ?: return
+        singleGlobalNavCard?.setOnClickListener {
+            globalNavWidgetListener.onClickItem(item)
+        }
+    }
+
+    private fun setSinglePillContent(item: GlobalNavWidgetModel.Item) {
+        setSinglePillTypography()
+        setSingleGlobalNavIconPill(item)
+        hideContentForPill()
+    }
+
+    private fun setSinglePillTypography() {
+        singleGlobalNavTitle?.setType(Typography.HEADING_5)
+    }
+
+    private fun setSingleGlobalNavIconPill(item: GlobalNavWidgetModel.Item) {
+        if (item.logoUrl.isNotEmpty()) singleGlobalNavIcon?.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
+        else singleGlobalNavIcon?.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavImage)
+    }
+
+    private fun AppCompatImageView.setSingleGlobalNavIconImageWithUrl(url: String, hiddenView: AppCompatImageView?) {
+        shouldShowWithAction(url.isNotEmpty()) {
+            ImageHandler.loadImageFitCenter(context, it, url)
+            hiddenView?.visibility = View.GONE
+        }
+    }
+
+    private fun hideContentForPill() {
+        singleGlobalNavCategory?.visibility = View.GONE
+        singleGlobalNavSubtitleInfoLayout?.visibility = View.GONE
+    }
+
+    private fun setSingleCardContent(item: GlobalNavWidgetModel.Item) {
+        setSingleCardTypography()
+        setSingleGlobalNavIconCard(item)
+        setSingleGlobalNavCategory(item)
+        setSingleGlobalNavSubtitleInfo(item)
+    }
+
+    private fun setSingleCardTypography() {
+        singleGlobalNavTitle?.setType(Typography.BODY_3)
+        singleGlobalNavTitle?.setWeight(Typography.BOLD)
+    }
+
+    private fun setSingleGlobalNavIconCard(item: GlobalNavWidgetModel.Item) {
+        if (item.imageUrl.isNotEmpty()) singleGlobalNavImage?.setSingleGlobalNavIconImageWithUrl(item.imageUrl, singleGlobalNavIcon)
+        else singleGlobalNavIcon?.setSingleGlobalNavIconImageWithUrl(item.logoUrl, singleGlobalNavImage)
+    }
+
+    private fun setSingleGlobalNavCategory(item: GlobalNavWidgetModel.Item) {
+        singleGlobalNavCategory?.shouldShowWithAction(item.categoryName.isNotEmpty()) {
+            it.text = item.categoryName
+        }
+    }
+
+    private fun setSingleGlobalNavSubtitleInfo(item: GlobalNavWidgetModel.Item) {
+        if (isShowSubtitleAndInfo(item)) showSingleGlobalNavSubtitleInfoLayout(item)
+        else hideSubtitleInfoLayout()
+    }
+
+    private fun isShowSubtitleAndInfo(item: GlobalNavWidgetModel.Item): Boolean {
+        return item.subtitle.isNotEmpty() && item.info.isNotEmpty()
+    }
+
+    private fun showSingleGlobalNavSubtitleInfoLayout(item: GlobalNavWidgetModel.Item) {
+        setSingleGlobalNavSubtitle(item)
+        setSingleGlobalNavInfo(item)
+    }
+
+    private fun setSingleGlobalNavSubtitle(item: GlobalNavWidgetModel.Item) {
+        singleGlobalNavSubtitle?.shouldShowWithAction(item.subtitle.isNotEmpty()) {
+            it.text = item.subtitle
+        }
+    }
+
+    private fun setSingleGlobalNavInfo(item: GlobalNavWidgetModel.Item) {
+        singleGlobalNavInfo?.shouldShowWithAction(item.info.isNotEmpty()) {
+            it.text = item.info
+        }
+    }
+
+    private fun hideSubtitleInfoLayout() {
+        singleGlobalNavSubtitleInfoLayout?.visibility = View.GONE
+    }
+
+    private fun hideSingleGlobalNavCard() {
+        singleGlobalNavCard?.visibility = View.GONE
+    }
+
+    private fun handleGlobalNav(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
+        setBackground(globalNavWidgetModel.background)
+        setGlobalNavTitle(globalNavWidgetModel.title)
+        setSeeAllButtonListener(globalNavWidgetModel, globalNavWidgetListener)
+        setGlobalNavContent(globalNavWidgetModel, globalNavWidgetListener)
+    }
+
+    private fun setGlobalNavTitle(title: String) {
+        globalNavTitle?.text = MethodChecker.fromHtml(title)
     }
 
     private fun setSeeAllButtonListener(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
@@ -81,29 +208,29 @@ class GlobalNavWidget: BaseCustomView {
         }
     }
 
-    private fun setContent(
+    private fun setGlobalNavContent(
             globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
         when(globalNavWidgetModel.navTemplate) {
-            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD -> handleCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
-            else -> handleDefaultTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            GlobalNavWidgetConstant.NAV_TEMPLATE_CARD -> handleGlobalNavCardTemplate(globalNavWidgetModel, globalNavWidgetListener)
+            else -> handleGlobalNavDefaultTemplate(globalNavWidgetModel, globalNavWidgetListener)
         }
     }
 
-    private fun handleCardTemplate(
+    private fun handleGlobalNavCardTemplate(
             globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
-        hidePillContent()
-        setCardContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
+        hideListPillContent()
+        setListCardContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
     }
 
-    private fun hidePillContent() {
+    private fun hideListPillContent() {
         globalNavPillRecyclerView?.visibility = View.GONE
     }
 
-    private fun setCardContent(
+    private fun setListCardContent(
             globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
@@ -133,24 +260,25 @@ class GlobalNavWidget: BaseCustomView {
 
     private fun createGlobalNavWidgetCardItemDecoration(): RecyclerView.ItemDecoration {
         return GlobalNavWidgetCardItemDecoration(
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
         )
     }
 
-    private fun handleDefaultTemplate(
+    private fun handleGlobalNavDefaultTemplate(
             globalNavWidgetModel: GlobalNavWidgetModel,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {
-        hideCardContent()
-        setPillContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
+        hideListCardContent()
+        setListPillContent(globalNavWidgetModel.itemList, globalNavWidgetListener)
     }
 
-    private fun hideCardContent() {
+    private fun hideListCardContent() {
         globalNavCardRecyclerView?.visibility = View.GONE
     }
 
-    private fun setPillContent(
+    private fun setListPillContent(
             globalNavWidgetItemList: List<GlobalNavWidgetModel.Item>,
             globalNavWidgetListener: GlobalNavWidgetListener
     ) {

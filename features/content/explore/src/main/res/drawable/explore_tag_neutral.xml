@@ -3,10 +3,10 @@
 
     <corners android:radius="@dimen/dp_20" />
 
-    <solid android:color="@color/white" />
+    <solid android:color="@color/Unify_N0" />
 
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/bg_button_border_outline" />
+        android:color="@color/Unify_N100" />
 
 </shape>

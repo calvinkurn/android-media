@@ -3,12 +3,25 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 android {
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
     androidExtensions {
         experimental = true
     }
@@ -17,7 +30,7 @@ android {
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -30,6 +43,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.graphql)
@@ -51,6 +66,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.pin
@@ -61,11 +77,35 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+
+    androidTestImplementation project(rootProject.ext.libraries.analytics)
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     implementation rootProject.ext.playServicesDependencies.phone
-    api (rootProject.ext.serviceDependencies.crashlytics) {
+    api (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 }

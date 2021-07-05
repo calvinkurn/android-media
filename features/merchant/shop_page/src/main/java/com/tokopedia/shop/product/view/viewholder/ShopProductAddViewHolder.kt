@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
-import com.tokopedia.shop.product.view.datamodel.ShopProductAddViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductAddUiModel
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -14,7 +14,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductAddViewModel
 class ShopProductAddViewHolder(
         itemView: View,
         shopProductAddViewHolderListener: ShopProductAddViewHolderListener?
-) : AbstractViewHolder<ShopProductAddViewModel>(itemView) {
+) : AbstractViewHolder<ShopProductAddUiModel>(itemView) {
 
     interface ShopProductAddViewHolderListener{
         fun onAddProductClicked()
@@ -26,7 +26,7 @@ class ShopProductAddViewHolder(
         }
     }
 
-    override fun bind(element: ShopProductAddViewModel?) {}
+    override fun bind(element: ShopProductAddUiModel?) {}
 
     companion object {
         @LayoutRes

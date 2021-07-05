@@ -25,13 +25,12 @@ import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommenda
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,7 +45,7 @@ class PromoCheckoutViewModelGetPromoListTest {
     private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
     private var analytics: PromoCheckoutAnalytics = mockk()
     private var gson = Gson()
-    private var userSession: UserSessionInterface = mockk()
+    private var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -54,7 +53,7 @@ class PromoCheckoutViewModelGetPromoListTest {
     @Before
     fun setUp() {
         dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, userSession, gson)
+        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson, chosenAddressRequestHelper)
 
         every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
         every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
@@ -63,7 +62,7 @@ class PromoCheckoutViewModelGetPromoListTest {
     }
 
     @Test
-    fun `WHEN get promo list and get complete expanded data THEN fragment ui model should not be null`() {
+    fun `WHEN get promo list and get complete expanded data THEN fragment ui model should not be null and state success`() {
         //given
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
@@ -76,6 +75,7 @@ class PromoCheckoutViewModelGetPromoListTest {
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
@@ -127,7 +127,7 @@ class PromoCheckoutViewModelGetPromoListTest {
     }
 
     @Test
-    fun `WHEN get promo list and get complete collapsed data THEN fragment ui model should not be null`() {
+    fun `WHEN get promo list and get complete collapsed data THEN fragment ui model should not be null and state success`() {
         //given
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
@@ -140,6 +140,7 @@ class PromoCheckoutViewModelGetPromoListTest {
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
@@ -223,7 +224,7 @@ class PromoCheckoutViewModelGetPromoListTest {
     }
 
     @Test
-    fun `WHEN get promo list and all eligible THEN fragment ui model should not be null`() {
+    fun `WHEN get promo list and all eligible THEN fragment ui model should not be null and state success`() {
         //given
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
@@ -236,6 +237,7 @@ class PromoCheckoutViewModelGetPromoListTest {
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
@@ -287,7 +289,7 @@ class PromoCheckoutViewModelGetPromoListTest {
     }
 
     @Test
-    fun `WHEN get promo list and all ineligible THEN fragment ui model should not be null`() {
+    fun `WHEN get promo list and all ineligible THEN fragment ui model should not be null and state success`() {
         //given
         val result = HashMap<Type, Any>()
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
@@ -300,6 +302,7 @@ class PromoCheckoutViewModelGetPromoListTest {
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
     }
 
     @Test
@@ -604,4 +607,28 @@ class PromoCheckoutViewModelGetPromoListTest {
         assert(viewModel.promoEmptyStateUiModel.value?.uiState?.isShowButton == true)
     }
 
+    @Test
+    fun `WHEN get promo list and get response error followed with success THEN fragment state should be success`() {
+        //precondition
+        val result = HashMap<Type, Any>()
+        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseError()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //given
+        val newResult = HashMap<Type, Any>()
+        newResult[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
+        val newGqlResponse = GraphqlResponse(newResult, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns newGqlResponse
+
+        //when
+        viewModel.getPromoList("", PromoRequest(), "")
+
+        //then
+        assert(viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false)
+    }
 }

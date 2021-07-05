@@ -145,7 +145,7 @@ class EventPDPFormViewModelTest {
         assertNull(eventPDPFormViewModel.mFormData.value)
         assertNotNull(eventPDPFormViewModel.error)
 
-        assert(eventPDPFormViewModel.error.value.equals(error.message))
+        assertEquals(eventPDPFormViewModel.error.value, error)
     }
 
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.shop.common.view.ShopPageLabelView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/label_user"
     android:layout_width="match_parent"
@@ -8,9 +8,11 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingTop="@dimen/dp_8"
     android:paddingBottom="@dimen/dp_8"
-    app:lv_image="@drawable/ic_info_email_grey"
-    app:lv_image_width="@dimen/dp_48"
-    app:lv_image_height="@dimen/dp_48"
-    app:lv_title_text_style="normal"
-    app:lv_title_text_size="@dimen/sp_14"
-    app:lv_image_margin_right="@dimen/dp_8"/>
+    app:shop_lv_image="@drawable/ic_info_email_grey"
+    app:shop_lv_image_width="@dimen/dp_48"
+    app:shop_lv_image_height="@dimen/dp_48"
+    app:shop_lv_title_text_style="normal"
+    app:shop_lv_title_text_size="@dimen/sp_14"
+    app:shop_lv_title_color="@color/Unify_N700"
+    app:shop_lv_content_color="@color/Unify_G400"
+    app:shop_lv_image_margin_right="@dimen/dp_8"/>

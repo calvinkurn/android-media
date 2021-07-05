@@ -13,12 +13,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.collections.CollectionsKt;
+
 /**
  * Author errysuprayogi on 15,March,2019
  */
 public class InboxGtmTracker {
     private final String DATA_DIMENSION_83 = "dimension83";
     private final String VALUE_BEBAS_ONGKIR = "bebas ongkir";
+    private final String FULFILLMENT = "fulfillment";
+    private final String VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra";
     private final String VALUE_NONE_OTHER = "none / other";
 
     private List<Object> dataLayerList;
@@ -66,8 +70,16 @@ public class InboxGtmTracker {
                 "category", recommendationItem.getDepartmentId(),
                 "list", "/inbox - rekomendasi untuk anda - " + recommendationItem.getRecommendationType() + (isTopAds ? " - product topads" : ""),
                 "position", String.valueOf(position),
-                DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:VALUE_NONE_OTHER)
-                );
+                DATA_DIMENSION_83, getBebasOngkirValue(recommendationItem)
+                ));
+    }
+
+    private String getBebasOngkirValue(RecommendationItem recommendationItem){
+        if(recommendationItem.isFreeOngkirActive()){
+            return CollectionsKt.any(recommendationItem.getLabelGroupList(), labelGroup -> labelGroup.getPosition().equals(FULFILLMENT)) ? VALUE_BEBAS_ONGKIR_EXTRA : VALUE_NONE_OTHER;
+        } else {
+            return VALUE_NONE_OTHER;
+        }
     }
 
     public void eventClickRecommendationWishlist(Context context, boolean isAdd){
@@ -103,9 +115,26 @@ public class InboxGtmTracker {
                                             "category", recommendationItem.getCategoryBreadcrumbs(),
                                             "varian", "none/other",
                                             "position", String.valueOf(position),
-                                            DATA_DIMENSION_83, recommendationItem.isFreeOngkirActive()?VALUE_BEBAS_ONGKIR:VALUE_NONE_OTHER))))
+                                            DATA_DIMENSION_83, getBebasOngkirValue(recommendationItem)))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
+        }
+    }
+
+    public void sendNewPageInboxTalkTracking(Context context, String userId, String unreadCount) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "clickPDP",
+                    "eventCategory", "inbox page",
+                    "eventAction", "click - Diskusi",
+                    "eventLabel", "unread message:" + unreadCount + ";",
+                    "screenName", "/inbox - talk",
+                    "currentSite", "tokopediamarketplace",
+                    "userId", userId,
+                    "businessUnit", "physical goods"
+            );
+            tracker.sendGeneralEvent(map);
         }
     }
 }

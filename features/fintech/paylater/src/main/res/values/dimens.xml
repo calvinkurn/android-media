@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pay_later_payment_cl_margin_dp_14">14dp</dimen>
+    <dimen name="pay_later_divider_height_dp_1">1dp</dimen>
+    <dimen name="pay_later_right_arrow_margin_dp_22">22dp</dimen>
+    <dimen name="pay_later_benefit_margin_dp_6">6dp</dimen>
+    <dimen name="pay_later_register_title_padding">19dp</dimen>
+    <dimen name="pay_later_margin_dp_10">10dp</dimen>
+    <dimen name="pay_later_dp_36">36dp</dimen>
+    <dimen name="pay_later_dp_18">18dp</dimen>
+    <dimen name="pay_later_application_status_dp_80">80dp</dimen>
+    <dimen name="pay_later_application_status_dp_62">62dp</dimen>
+    <dimen name="pay_later_signup_image_height_dp_72">72dp</dimen>
+    <dimen name="pay_later_shimmer_width_dp_256">256dp</dimen>
+    <dimen name="credit_card_dp_10">10dp</dimen>
+
+    <dimen name="credit_card_offer_label_sp_10">10sp</dimen>
+
+</resources>

@@ -101,9 +101,9 @@ class RekPremBankAccountInfoBottomSheet : BottomSheetUnify() {
     private fun addBulletToTextView(context: Context,
                                     @StringRes stringID: Int, textView: TextView) {
         if (!::bulletPointSpan.isInitialized) {
-            val bulletSpacing = context.resources.getDimension(R.dimen.spacing_lvl3).toInt()
+            val bulletSpacing = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8).toInt()
             val bulletRadius = context.resources.getDimension(R.dimen.swd_corner_radius)
-            val color = ContextCompat.getColor(context, R.color.Neutral_N700_68)
+            val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             bulletPointSpan = BulletPointSpan(bulletSpacing, bulletRadius, color)
         }
         val charSequence = getString(stringID)

@@ -1,17 +1,17 @@
 package com.tokopedia.shop.feed.view.fragment
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,12 +20,14 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -47,7 +49,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -69,8 +71,8 @@ import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,8 +107,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var isForceRefresh = false
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
-
-    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -164,11 +164,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return view!!.findViewById(R.id.recyclerView)
-    }
-
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view!!.findViewById(R.id.swipeToRefresh)
+        return requireView().findViewById(R.id.recyclerView)
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -178,15 +174,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
-        userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
     }
 
     override fun onPause() {
         super.onPause()
         feedAnalytics.sendPendingAnalytics()
+        unregisterBroadcastReceiver()
     }
 
     override fun onDestroy() {
@@ -206,14 +201,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (isSellerMigrationEnabled(context)) {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                        if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
+                            showBottomSheetSellerMigration()
                         } else {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            hideBottomSheetSellerMigration()
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                        hideBottomSheetSellerMigration()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
@@ -282,7 +277,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     loadInitialData()
                 }
                 CREATE_POST -> {
-                    onSwipeRefresh()
                 }
             }
         }
@@ -300,13 +294,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (userVisibleHint && isLoadingInitialData) {
             loadInitialData()
         }
+        registerBroadcastReceiver()
     }
 
     override fun loadData(page: Int) {
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, isForceRefresh)
+                presenter.getFeedFirstPage(
+                    shopId,
+                    isForceRefresh,
+                    whitelistDomain.authors.isEmpty()
+                )
             } else {
                 presenter.getFeed(shopId)
             }
@@ -315,8 +314,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSwipeRefresh() {
         hideSnackBarRetry()
-        swipeToRefresh.isRefreshing = true
-        presenter.getFeedFirstPage(shopId, true)
+        presenter.clearCache()
+        isLoadingInitialData = true
+        presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
+        recyclerView.scrollToPosition(0)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
@@ -334,8 +335,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            if (isSellerMigrationEnabled(context)) {
-                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+            if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
+                hideBottomSheetSellerMigration()
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
@@ -376,7 +377,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onWhitelistClicked(element: WhitelistViewModel) {
+    override fun onWhitelistClicked(element: WhitelistUiModel) {
         goToCreatePost()
     }
 
@@ -408,11 +409,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onErrorFollowKol(errorMessage: String) {
+
     }
 
     override fun onSuccessDeletePost(rowNumber: Int) {
         adapter.list.removeAt(rowNumber)
-        adapter.notifyItemRemoved(rowNumber)
+        if (adapter.list.isEmpty()) {
+            adapter.addElement(getEmptyResultViewModel())
+            adapter.notifyItemChanged(0)
+        } else {
+            adapter.notifyItemRemoved(rowNumber)
+        }
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
@@ -535,7 +542,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         context?.let {
             val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
-                    createDeleteDialog(positionInFeed, postId).show()
+                    createDeleteDialog(positionInFeed, postId)?.show()
                 }
 
                 override fun onReportClick() {
@@ -683,8 +690,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        if (adapter.list[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopViewModel
+        if (adapter.list[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 presenter.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
@@ -710,7 +717,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         if (context != null) {
             RouteManager.route(
-                    context!!,
+                    requireContext(),
                     redirectUrl
             )
         }
@@ -757,6 +764,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 trackingPostModel.activityName,
                 trackingPostModel.mediaType
         )
+    }
+
+    private fun showBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hideBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun hideFAB() {
@@ -815,18 +830,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
-        dialog.setDesc(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
-        dialog.setBtnOk(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
-        dialog.setOnOkClickListener {
-            presenter.deletePost(id, rowNumber)
-            dialog.dismiss()
+    private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
+        return context?.let{
+            val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
+            dialog.setDescription(getString(com.tokopedia.kolcommon.R.string.kol_delete_post_desc))
+            dialog.setPrimaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_delete))
+            dialog.setSecondaryCTAText(getString(com.tokopedia.kolcommon.R.string.kol_title_cancel))
+            dialog.setPrimaryCTAClickListener {
+                presenter.deletePost(id, rowNumber)
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+            dialog
         }
-        dialog.setOnCancelClickListener { dialog.dismiss() }
-        return dialog
     }
 
     private fun goToContentReport(contentId: Int) {
@@ -850,23 +867,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
-        return EmptyFeedShopViewModel()
+    private fun getEmptyResultViewModel(): EmptyFeedShopUiModel {
+        return EmptyFeedShopUiModel()
     }
 
     private fun onSuccessReportContent() {
         view?.let {
             Toaster.make(it, getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+                    getString(R.string.label_close), View.OnClickListener { })
         }
     }
 
-    private fun onErrorReportContent(errorMsg: String) {
+    private fun onErrorReportContent(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMsg,
+            Toaster.make(it, errorMessage,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.design.R.string.label_close), View.OnClickListener { })
+                    getString(R.string.label_close), View.OnClickListener { })
         }
     }
 
@@ -888,9 +905,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         showError(message, null)
     }
 
-    private fun showError(message: String, listener: View.OnClickListener?) {
+    private fun showError(errorMessage: String, listener: View.OnClickListener?) {
         listener?.let {
-            Toaster.make(view!!, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.make(requireView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.abstraction.R.string.title_try_again), it)
         }
     }
@@ -900,7 +917,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun clearCache() {
-        presenter.clearCache()
+        if(::presenter.isInitialized)
+            presenter.clearCache()
     }
 
     private fun trackGotoSellerApp() {
@@ -914,4 +932,39 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
     }
+
+    private val submitPostReceiver: BroadcastReceiver by lazy {
+        object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (context == null || intent == null) {
+                    return
+                }
+
+                if (intent.action == BROADCAST_SUBMIT_POST
+                        && intent.extras?.getBoolean(SUBMIT_POST_SUCCESS) == true) {
+                    onSwipeRefresh()
+                }
+            }
+        }
+    }
+
+    private fun registerBroadcastReceiver() {
+        context?.applicationContext?.let {
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(BROADCAST_SUBMIT_POST)
+
+            LocalBroadcastManager
+                    .getInstance(it)
+                    .registerReceiver(submitPostReceiver, intentFilter)
+        }
+    }
+
+    private fun unregisterBroadcastReceiver() {
+        context?.applicationContext?.let {
+            LocalBroadcastManager
+                    .getInstance(it)
+                    .unregisterReceiver(submitPostReceiver)
+        }
+    }
+
 }

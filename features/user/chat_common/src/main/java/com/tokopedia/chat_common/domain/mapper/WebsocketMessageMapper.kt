@@ -1,7 +1,6 @@
 package com.tokopedia.chat_common.domain.mapper
 
 import androidx.annotation.NonNull
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -21,23 +20,29 @@ import javax.inject.Inject
 open class WebsocketMessageMapper @Inject constructor() {
 
     open fun map(pojo: ChatSocketPojo): Visitable<*> {
-
         return if (hasAttachment(pojo)) {
             val jsonAttributes = pojo.attachment!!.attributes
             mapAttachmentMessage(pojo, jsonAttributes!!)
         } else {
             convertToMessageViewModel(pojo)
         }
-
-
     }
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
         return MessageViewModel(
-                pojo.msgId.toString(),
-                pojo.fromUid, pojo.from, pojo.fromRole, "",
-                "", pojo.message.timeStampUnixNano, pojo.startTime, pojo.message.censoredReply,
-                false, false, !pojo.isOpposite, pojo.source
+                messageId = pojo.msgId.toString(),
+                fromUid = pojo.fromUid,
+                from = pojo.from,
+                fromRole = pojo.fromRole,
+                attachmentId = "",
+                attachmentType = "",
+                replyTime = pojo.message.timeStampUnixNano,
+                startTime = pojo.startTime,
+                message = pojo.message.censoredReply,
+                isRead = false,
+                isDummy = false,
+                isSender = !pojo.isOpposite,
+                source = pojo.source
         )
     }
 
@@ -80,37 +85,37 @@ open class WebsocketMessageMapper @Inject constructor() {
         val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
 
         return ProductAttachmentViewModel(
-                pojo.msgId.toString(),
-                pojo.fromUid,
-                pojo.from,
-                pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
-                pojo.message.timeStampUnixNano,
-                pojoAttribute.productId,
-                pojoAttribute.productProfile.name,
-                pojoAttribute.productProfile.price,
-                pojoAttribute.productProfile.url,
-                pojoAttribute.productProfile.imageUrl,
-                !pojo.isOpposite,
-                pojo.message.censoredReply,
-                pojo.startTime,
-                canShowFooterProductAttachment(pojo.isOpposite,
+                messageId = pojo.msgId.toString(),
+                fromUid = pojo.fromUid,
+                from = pojo.from,
+                fromRole = pojo.fromRole,
+                attachmentId = pojo.attachment!!.id,
+                attachmentType = pojo.attachment!!.type,
+                replyTime = pojo.message.timeStampUnixNano,
+                productId = pojoAttribute.productId,
+                productName = pojoAttribute.productProfile.name,
+                productPrice = pojoAttribute.productProfile.price,
+                productUrl = pojoAttribute.productProfile.url,
+                productImage = pojoAttribute.productProfile.imageUrl,
+                isSender = !pojo.isOpposite,
+                message = pojo.message.censoredReply,
+                startTime = pojo.startTime,
+                canShowFooter = canShowFooterProductAttachment(pojo.isOpposite,
                         pojo.fromRole),
-                pojo.blastId,
-                pojoAttribute.productProfile.priceInt,
-                pojoAttribute.productProfile.category,
-                variant,
-                pojoAttribute.productProfile.dropPercentage,
-                pojoAttribute.productProfile.priceBefore,
-                pojoAttribute.productProfile.shopId,
-                pojoAttribute.productProfile.freeShipping,
-                pojoAttribute.productProfile.categoryId,
-                pojoAttribute.productProfile.playStoreData,
-                pojoAttribute.productProfile.remainingStock,
-                pojoAttribute.productProfile.status,
-                pojo.source,
-                pojoAttribute.productProfile.rating
+                blastId = pojo.blastId,
+                productPriceInt = pojoAttribute.productProfile.priceInt,
+                category = pojoAttribute.productProfile.category,
+                variants = variant,
+                dropPercentage = pojoAttribute.productProfile.dropPercentage,
+                priceBefore = pojoAttribute.productProfile.priceBefore,
+                shopId = pojoAttribute.productProfile.shopId,
+                freeShipping = pojoAttribute.productProfile.freeShipping,
+                categoryId = pojoAttribute.productProfile.categoryId,
+                playStoreData = pojoAttribute.productProfile.playStoreData,
+                remainingStock = pojoAttribute.productProfile.remainingStock,
+                status = pojoAttribute.productProfile.status,
+                source = pojo.source,
+                rating = pojoAttribute.productProfile.rating
         ).apply {
             finishLoading()
         }

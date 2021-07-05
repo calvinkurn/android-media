@@ -32,7 +32,7 @@ internal class ProductCardListActivityTest: AppCompatActivity() {
     }
 
     private fun createItemDecoration(): RecyclerView.ItemDecoration {
-        return ProductCardItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
+        return ProductCardItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16))
     }
 
     class Adapter: RecyclerView.Adapter<ViewHolder>() {

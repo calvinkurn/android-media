@@ -15,8 +15,8 @@ class CampaignStockAllocationUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository): GraphqlUseCase<GetStockAllocationData>(gqlRepository) {
 
     companion object {
-        private const val QUERY = "query getStockAllocation (\$productIds: String!, \$shopId: String!) {\n" +
-                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true) {\n" +
+        private const val QUERY = "query getStockAllocation (\$productIds: String!, \$shopId: String!, \$warehouseID: String) {\n" +
+                "  GetStockAllocation(productIDs: \$productIds, shopID: \$shopId, sellerWh: true, warehouseID: \$warehouseID) {\n" +
                 "    header {\n" +
                 "      process_time\n" +
                 "      messages\n" +
@@ -62,14 +62,18 @@ class CampaignStockAllocationUseCase @Inject constructor(
 
         private const val PRODUCT_IDS_KEY = "productIds"
         private const val SHOP_ID_KEY = "shopId"
+        private const val WAREHOUSE_ID_KEY = "warehouseID"
 
         @JvmStatic
-        fun createRequestParam(productIds: List<String>,
-                               shopId: String): RequestParams =
-                RequestParams.create().apply {
-                    putString(PRODUCT_IDS_KEY, productIds.joinToString())
-                    putString(SHOP_ID_KEY, shopId)
-                }
+        fun createRequestParam(
+            productIds: List<String>,
+            shopId: String,
+            warehouseId: String
+        ): RequestParams = RequestParams.create().apply {
+            putString(PRODUCT_IDS_KEY, productIds.joinToString())
+            putString(SHOP_ID_KEY, shopId)
+            putString(WAREHOUSE_ID_KEY, warehouseId)
+        }
     }
 
     var params: RequestParams = RequestParams.EMPTY

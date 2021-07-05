@@ -1,160 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parentLayout"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/orderDetailNestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/main_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/order_list_header_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
+                android:background="@color/Unify_N0"
+                android:paddingBottom="@dimen/spacing_lvl4"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/status_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
-                    android:orientation="vertical">
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:text="@string/status"
+                    android:textColor="@color/Unify_N700_44"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3" />
 
-                    <TextView
-                        android:id="@+id/status_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/status"
-                        android:textSize="@dimen/sp_11"
-                        android:textColor="@color/font_black_secondary_54"/>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/status_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl1"
+                    app:layout_constraintTop_toBottomOf="@id/status_label"
+                    app:typographyType="body_1"
+                    app:typographyWeight="bold"
+                    tools:text="Transaksi Berhasil" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                <View
+                    android:id="@+id/seperator_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_N50"
+                    app:layout_constraintTop_toBottomOf="@id/status_value" />
 
-                        <TextView
-                            android:id="@+id/status_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textSize="@dimen/font_medium"
-                            android:textStyle="bold" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/conditional_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@drawable/card_condition_info"
+                    app:layout_constraintTop_toBottomOf="@id/seperator_1"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="info"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4" />
 
-                        <TextView
-                            android:id="@+id/lihat_status"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lihat_text"
-                            android:textColor="@color/green_250"
-                            android:visibility="gone" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/grey_300" />
-
-                    <TextView
-                        android:id="@+id/conditional_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@drawable/card_condition_info"
-                        android:gravity="center"
-                        android:visibility="gone" />
-
-                    <LinearLayout
-                        android:id="@+id/status_detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
-                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/status_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/spacing_lvl4"
+                    android:paddingBottom="@dimen/spacing_lvl4"
+                    app:layout_constraintTop_toBottomOf="@id/conditional_info"
+                    tools:layout_height="@dimen/spacing_lvl4" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@color/grey_300" />
+                    android:layout_height="@dimen/order_detail_seperator_1dp"
+                    android:background="@color/Unify_N50"
+                    app:layout_constraintTop_toBottomOf="@id/status_detail" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/invoice"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
-                    android:orientation="horizontal">
+                    android:layout_margin="@dimen/spacing_lvl4"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintEnd_toStartOf="@id/lihat"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/status_detail"
+                    app:typographyType="body_3"
+                    tools:text="IVR/20170713/XVII/VII/16205811 " />
 
-                    <TextView
-                        android:id="@+id/invoice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/font_black_secondary_54"/>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/lihat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:text="@string/lihat_text"
+                    android:textColor="@color/Unify_G500"
+                    app:layout_constraintBottom_toBottomOf="@id/invoice"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/invoice"
+                    app:typographyType="body_3" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/lihat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lihat_text"
-                        android:textColor="@color/green_250" />
-
-                </LinearLayout>
-            </LinearLayout>
+            <View
+                android:id="@+id/orderListSeperator1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl1"
+                android:background="@color/Unify_N50"
+                app:layout_constraintTop_toBottomOf="@id/order_list_header_layout" />
 
             <LinearLayout
+                android:id="@+id/order_detail_ll_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/dp_10"
-                android:background="@color/white"
-                android:orientation="vertical">
+                android:background="@color/Unify_N0"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_lvl4"
+                android:paddingVertical="@dimen/spacing_lvl4"
+                app:layout_constraintTop_toBottomOf="@id/orderListSeperator1">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/detail_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:text="@string/detail_label_digital"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:typographyType="heading_4" />
 
                 <LinearLayout
                     android:id="@+id/detail_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    tools:layout_height="@dimen/spacing_lvl4" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/additional"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:text="@string/lihat_detail"
-                    android:textColor="@color/green_250"
-                    android:textSize="@dimen/font_medium"
-                    android:visibility="gone" />
+                    android:textColor="@color/Unify_G500"
+                    android:visibility="gone"
+                    app:typographyType="body_2"
+                    tools:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/additional_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:orientation="vertical"
                     android:visibility="gone" />
             </LinearLayout>
@@ -163,153 +170,167 @@
                 android:id="@+id/recommend_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@color/Unify_N0"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/order_detail_ll_details"
+                tools:visibility="visible">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/recommend_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    tools:text="top_up"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold"
-                    />
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    app:typographyType="heading_4"
+                    tools:text="top_up" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recommendation_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/gradient_blue"
-                    android:padding="@dimen/dp_8"
-                    />
+                    android:padding="@dimen/spacing_lvl3" />
 
             </LinearLayout>
 
             <View
+                android:id="@+id/orderListSeperator2"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@color/grey_300" />
+                android:layout_height="@dimen/layout_lvl1"
+                android:background="@color/Unify_N50"
+                app:layout_constraintTop_toBottomOf="@id/recommend_items" />
 
             <LinearLayout
+                android:id="@+id/order_detail_payment_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
-                android:background="@color/white"
-                android:orientation="vertical">
+                android:background="@color/Unify_N0"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lvl4"
+                app:layout_constraintTop_toBottomOf="@id/orderListSeperator2">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/info_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
                     android:text="@string/info_label"
-                    android:textSize="@dimen/font_medium"
-                    android:textStyle="bold" />
+                    app:typographyType="heading_4" />
 
                 <LinearLayout
                     android:id="@+id/info_payment_method"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:orientation="vertical" />
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:layout_height="@dimen/spacing_lvl4" />
 
                 <View
+                    android:id="@+id/seperator_info_value"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:background="@color/grey_300" />
+                    android:layout_height="@dimen/order_detail_seperator_1dp"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:id="@+id/info_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:orientation="vertical" />
-
+                    android:orientation="vertical"
+                    tools:layout_height="@dimen/spacing_lvl4" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300" />
+                    android:layout_height="@dimen/order_detail_seperator_1dp"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:id="@+id/total_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    tools:layout_height="@dimen/spacing_lvl4" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/help_label"
+
+            <View
+                android:id="@+id/orderListSeperator3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:gravity="center" />
+                android:layout_height="@dimen/layout_lvl1"
+                android:background="@color/Unify_N50"
+                app:layout_constraintTop_toBottomOf="@id/order_detail_payment_info" />
 
             <LinearLayout
                 android:id="@+id/actionBtnLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_6"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_10"
-                android:background="@color/white"
-                android:orientation="vertical">
+                android:background="@color/Unify_N0"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lvl4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/orderListSeperator3">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/help_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:typographyType="body_3"
+                    tools:text="Butuh bantuan? Hubungi Tokopedia Care" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/langannan"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:background="@drawable/rect_white_stroke_gray"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_16"
-                    android:text="@string/top_btn_text"
-                    android:textStyle="bold" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    app:unifyButtonSize="medium"
+                    tools:text="langganan" />
 
-                <TextView
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/beli_lagi"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_24"
-                    android:background="@color/deep_orange_500"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_16"
-                    android:text="@string/bottom_btn_text"
-                    android:textStyle="bold" />
-
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    app:unifyButtonSize="medium"
+                    tools:text="beli lagi" />
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="gone">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center" />
     </FrameLayout>
-</FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/stickyButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:elevation="@dimen/spacing_lvl3"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:paddingVertical="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/orderDetailStickyButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyButtonSize="medium" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

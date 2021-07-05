@@ -19,8 +19,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity.Companion.getCouponDetail
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import java.util.*
 
 class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -30,8 +30,12 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.setOnClickListener { v: View ->
-                // Do whatever you want on clicking the item
                 RouteManager.route(v.context, ApplinkConstInternalPromo.TOKOPOINTS_COUPON)
+                AnalyticsTrackerUtil.sendEvent(itemView.context,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_COUPON, ""
+                )
             }
         }
     }
@@ -45,6 +49,7 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
         var imgLabel: ImageView
         var ivMinTxn: ImageView
         var isVisited = false
+
         /*This section is exclusively for handling timer*/
         var timer: CountDownTimer? = null
         var progressTimer: ProgressBar
@@ -80,83 +85,89 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     override fun onBindViewHolder(pHolder: RecyclerView.ViewHolder, position: Int) {
-        val item = mItems!![position]
-        if (pHolder is ViewHolder) {
-            val holder = pHolder
-            ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner,
-                    if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile)
-            if (item.usage != null) {
-                holder.label.visibility = View.VISIBLE
-                holder.value.visibility = View.VISIBLE
-                holder.imgLabel.visibility = View.VISIBLE
-                holder.value.text = item.usage.usageStr.trim { it <= ' ' }
-                holder.label.text = item.usage.text
-            }
-            if (TextUtils.isEmpty(item.minimumUsageLabel)) {
-                holder.tvMinTxnLabel.visibility = View.GONE
-                holder.ivMinTxn.visibility = View.GONE
-            } else {
-                holder.ivMinTxn.visibility = View.VISIBLE
-                holder.tvMinTxnLabel.visibility = View.VISIBLE
-                holder.tvMinTxnLabel.text = item.minimumUsageLabel
-            }
-            if (TextUtils.isEmpty(item.minimumUsage)) {
-                holder.tvMinTxnValue.visibility = View.GONE
-            } else {
-                holder.tvMinTxnValue.visibility = View.VISIBLE
-                holder.tvMinTxnValue.text = item.minimumUsage
-            }
-            holder.imgBanner.setOnClickListener { v: View? ->
-                val bundle = Bundle()
-                bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems[position].code)
-                holder.imgBanner.context.startActivity(getCouponDetail(holder.imgBanner.context, bundle), bundle)
-            }
-            /*This section is exclusively for handling flash-sale timer*/if (holder.timer != null) {
-                holder.timer!!.cancel()
-            }
-            if ( item.usage != null && item.usage.activeCountDown < 1) {
-                if (item.usage.expiredCountDown > 0
-                        && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                    holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
-                    holder.progressTimer.visibility = View.VISIBLE
-                    holder.value.visibility = View.VISIBLE
-                    holder.label.hide()
-                    if (holder.timer != null) {
-                        holder.timer!!.cancel()
-                    }
-                    holder.timer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
-                        override fun onTick(l: Long) {
-                            item.usage.expiredCountDown = l / 1000
-                            val seconds = (l / 1000).toInt() % 60
-                            val minutes = (l / (1000 * 60) % 60).toInt()
-                            val hours = (l / (1000 * 60 * 60) % 24).toInt()
-                            holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
-                            holder.value.setTextColor(ContextCompat.getColor(holder.value.context, R.color.tp_coupon_flash_sale_timer_text_color))
-                            holder.progressTimer.progress = l.toInt() / 1000
-                            try {
-                                holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
-                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
-                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
-                            } catch (e: Exception) {
-                            }
-                        }
 
-                        override fun onFinish() {
-                            holder.value.text = "00 : 00 : 00"
+        if (position > 0 && mItems.size > position - 1) {
+            val item = mItems[position - 1]
+            if (pHolder is ViewHolder) {
+                val holder = pHolder
+                ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner,
+                        if (TextUtils.isEmpty(item.thumbnailUrlMobile)) item.imageUrlMobile else item.thumbnailUrlMobile)
+                if (item.usage != null) {
+                    holder.label.visibility = View.VISIBLE
+                    holder.value.visibility = View.VISIBLE
+                    holder.imgLabel.visibility = View.VISIBLE
+                    holder.value.text = item.usage.usageStr.trim { it <= ' ' }
+                    holder.label.text = item.usage.text
+                }
+                if (TextUtils.isEmpty(item.minimumUsageLabel)) {
+                    holder.tvMinTxnLabel.visibility = View.GONE
+                    holder.ivMinTxn.visibility = View.GONE
+                } else {
+                    holder.ivMinTxn.visibility = View.VISIBLE
+                    holder.tvMinTxnLabel.visibility = View.VISIBLE
+                    holder.tvMinTxnLabel.text = item.minimumUsageLabel
+                }
+                if (TextUtils.isEmpty(item.minimumUsage)) {
+                    holder.tvMinTxnValue.visibility = View.GONE
+                } else {
+                    holder.tvMinTxnValue.visibility = View.VISIBLE
+                    holder.tvMinTxnValue.text = item.minimumUsage
+                }
+                holder.imgBanner.setOnClickListener { v: View? ->
+                    val bundle = Bundle()
+                    bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems[position - 1].code)
+                    holder.imgBanner.context.startActivity(getCouponDetail(holder.imgBanner.context, bundle), bundle)
+                }
+                /*This section is exclusively for handling flash-sale timer*/if (holder.timer != null) {
+                    holder.timer!!.cancel()
+                }
+                if (item.usage != null && item.usage.activeCountDown < 1) {
+                    if (item.usage.expiredCountDown > 0
+                            && item.usage.expiredCountDown <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                        holder.progressTimer.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
+                        holder.progressTimer.visibility = View.VISIBLE
+                        holder.value.visibility = View.VISIBLE
+                        holder.label.hide()
+                        if (holder.timer != null) {
+                            holder.timer!!.cancel()
                         }
-                    }.start()
+                        holder.timer = object : CountDownTimer(item.usage.expiredCountDown * 1000, 1000) {
+                            override fun onTick(l: Long) {
+                                item.usage.expiredCountDown = l / 1000
+                                val seconds = (l / 1000).toInt() % 60
+                                val minutes = (l / (1000 * 60) % 60).toInt()
+                                val hours = (l / (1000 * 60 * 60) % 24).toInt()
+                                holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
+                                try {
+                                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                                } catch (e: Exception) {
+                                }
+                                holder.progressTimer.progress = l.toInt() / 1000
+                                try {
+                                    holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
+                                            holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                            holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_small),
+                                            holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
+                                } catch (e: Exception) {
+                                }
+                            }
+
+                            override fun onFinish() {
+                                holder.value.text = "00 : 00 : 00"
+                            }
+                        }.start()
+                    } else {
+                        holder.progressTimer.visibility = View.GONE
+                        holder.value.setPadding(0, 0, 0, 0)
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    }
                 } else {
                     holder.progressTimer.visibility = View.GONE
-                    holder.value.setPadding(0, 0, 0, 0)
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
+                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
-            } else {
-                holder.progressTimer.visibility = View.GONE
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.design.R.color.black_70))
+                enableOrDisableImages(holder, item)
+            } else if (pHolder is HeaderViewHolder) {
             }
-            enableOrDisableImages(holder, item)
-        } else if (pHolder is HeaderViewHolder) {
         }
     }
 
@@ -174,17 +185,17 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     }
 
     private fun disableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, R.color.tp_coupon_disable), PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, R.color.tp_coupon_disable), PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
     }
 
     private fun enableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.design.R.color.medium_green), PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
     }
 
     override fun getItemCount(): Int {
-        return mItems!!.size
+        return mItems?.size + 1
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -222,9 +233,5 @@ class CouponListAdapter(private val mItems: MutableList<CouponValueEntity>) : Re
     companion object {
         private const val VIEW_HEADER = 0
         private const val VIEW_DATA = 1
-    }
-
-    init {
-        mItems.add(0, CouponValueEntity())
     }
 }

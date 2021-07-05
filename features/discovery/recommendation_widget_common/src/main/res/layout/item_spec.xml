@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/holder_specs"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingTop="@dimen/comparison_specs_margin_start"
+    android:paddingStart="@dimen/comparison_specs_margin_start"
+    android:paddingEnd="@dimen/comparison_specs_margin_end"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+<!--Not using unify typography because this view need to be pre-calculated-->
+<!--    before render. And currently typography have some function in onMeasure-->
+<!--    that can impact its height. So for now its not compatible to use -->
+<!--    Typography for this feature-->
+    <TextView
+        android:id="@+id/tv_spec_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/comparison_title_text_height"
+        android:textColor="@color/Unify_N700"
+        android:lines="1"
+        android:textStyle="bold"
+        android:textSize="@dimen/comparison_summary_text_height"/>
+    <TextView
+        android:id="@+id/tv_spec_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        android:textSize="@dimen/comparison_summary_text_height"/>
+</LinearLayout>

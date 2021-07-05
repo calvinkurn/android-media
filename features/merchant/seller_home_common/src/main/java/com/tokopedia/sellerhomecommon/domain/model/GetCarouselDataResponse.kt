@@ -28,7 +28,10 @@ data class CarouselDataModel(
         val items: List<CarouselItemModel>,
         @Expose
         @SerializedName("errorMsg")
-        val errorMsg: String
+        val errorMsg: String,
+        @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean
 )
 
 data class CarouselItemModel(

@@ -8,8 +8,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -21,6 +20,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -162,7 +163,6 @@ class ChatModule {
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
@@ -261,8 +261,14 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    @Named(AtcConstant.MUTATION_ATC_OCC)
-    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
+    fun provideChatReplyUseCase(graphqlRepository: GraphqlRepository)
+            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatReplyPojo> {
+        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideRemoteConfig(@TopchatContext context: Context) : RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

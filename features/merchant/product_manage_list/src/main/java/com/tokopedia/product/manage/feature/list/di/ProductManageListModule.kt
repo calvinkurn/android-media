@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
 import com.tokopedia.gm.common.data.source.GMCommonDataSource
@@ -8,11 +9,11 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
-import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
@@ -30,14 +31,8 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@ProductManageListScope
 @Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
 class ProductManageListModule(private val context: Context) {
-
-    @Provides
-    @ProductManageListScope
-    @ProductManageListContext
-    fun provideContext() = context
 
     @Provides
     @ProductManageListScope
@@ -60,7 +55,7 @@ class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
-    fun provideTopAdsSourceTracking(@ProductManageListContext context: Context?): TopAdsSourceTaggingLocal {
+    fun provideTopAdsSourceTracking(@ApplicationContext context: Context?): TopAdsSourceTaggingLocal {
         return TopAdsSourceTaggingLocal(context)
     }
 
@@ -146,13 +141,13 @@ class ProductManageListModule(private val context: Context) {
 
     @ProductManageListScope
     @Provides
-    fun provideRemoteConfig(@ProductManageListContext context: Context): FirebaseRemoteConfigImpl {
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
         return FirebaseRemoteConfigImpl(context)
     }
 
     @ProductManageListScope
     @Provides
-    fun provideProductDraftDb(@ProductManageListContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
 
     @ProductManageListScope
     @Provides

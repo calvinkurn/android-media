@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">paylater</string>
+
+    <!--Content Switcher Headings -->
+    <string name="pdp_simulation_header_title">PayLater &amp; Cicilan</string>
+    <string name="pay_later_content_switcher_heading">PayLater</string>
+    <string name="pay_later_credit_content_switcher_heading">Kartu Credit</string>
+
+    <!-- Fragment titles -->
+    <string name="pdp_simulation_tab_title">Simulasi</string>
+    <string name="pay_later_offer_details_tab_title">Detail Penawaran</string>
+    <string name="pdp_simulation_credit_card_tnc_title">Syarat &amp; Ketentuan</string>
+
+    <!-- Register Widget -->
+    <string name="pay_later_register">Daftar PayLater</string>
+    <string name="pay_later_widget_more_choices_description">Makin banyak pilihan, makin bebas belanja.</string>
+    <string name="pay_later_btn_text">Daftar PayLater Sekarang</string>
+    <string name="credit_card_widget_title">Mau buat kartu kredit?</string>
+
+    <!-- PayLater Simulation Page -->
+    <string name="pay_later_simulation_header_title">Simulasi pembayaran</string>
+    <string name="pay_later_simulation_header_sub_title">Tersedia bunga 0%</string>
+    <string name="pay_later_simulation_empty_view_title">Yah, harga tidak sesuai ketentuan PayLater</string>
+    <string name="pay_later_simulation_empty_view_description">Untuk menggunakan PayLater, min. total transaksi adalah Rp10 Ribu dan maks. total transaksi adalah Rp30 Juta</string>
+    <string name="pay_later_simulation_ticker_text">Sudah termasuk biaya layanan. Belum termasuk biaya asuransi &amp; ongkir. Harga final dapat dilihat di halaman Pembayaran.</string>
+    <string name="pay_later_not_applicable_ticker_text"><![CDATA[Tenang, kamu bisa coba pakai kartu credit. Ada cicilan bunga 0% juga! <a href=\'https://google.com\'>Lihat Simulasi Kartu Credit</a>]]></string>
+    <string name="pay_later_repayment_text">* Bunga 0% berlaku untuk pilihan pembayaran ini</string>
+    <string name="pay_later_simulation_supervised_text">Semua mitra penyedia terdaftar dan diawasi oleh</string>
+    <string name="pay_later_column_header_one_month">30 hari</string>
+
+    <!-- Credit Card Simulation Page -->
+    <string name="credit_card_simulation_empty_view_title">Yaah, harga tidak sesuai ketentuan kartu kredit</string>
+    <string name="credit_card_simulation_empty_view_description">Untuk menggunakan kartu kredit, min. total transaksi adalah Rp500.000.</string>
+    <string name="credit_card_simulation_installment_sub_header">Durasi cicilan</string>
+    <string name="credit_card_simulation_all_installment">Semua cicilan</string>
+    <string name="credit_card_simulation_card_header">Cicilan %1$s bulan</string>
+    <string name="credit_card_simulation_available_banks"><![CDATA[Berlaku kartu kredit dari: <b>%1$d bank</b>]]></string>
+    <string name="credit_card_simulation_see_all_banks">Lihat Semua (%1$d)</string>
+    <string name="credit_card_simulation_offer">Bunga 0% berlaku di semua cicilan</string>
+    <string name="credit_card_not_applicable_ticker_text"><![CDATA[Tenang, kamu bisa coba pakai payLater. Ada  bunga 0% juga! <a href=\'https://google.com\'>Lihat Simulasi PayLater</a>]]></string>
+    <string name="credit_card_tnc_more_info_text">Info Selengkapnya</string>
+    <string name="credit_card_best_offer_text">Penawaran Terbaik</string>
+    <string name="credit_card_offer_label">PROMO</string>
+    <string name="credit_card_bank_sub_header">Lihat pilihan kartu</string>
+
+
+    <!-- PayLater Products Detail Page -->
+    <string name="pay_later_title_detail">Ketahui lebih banyak soal PayLater</string>
+    <string name="kredivo">Kredivo</string>
+    <string name="pay_later_see_how_to_register">Lihat Cara Daftar</string>
+    <string name="pay_later_see_how_to_use">Lihat Cara Gunakan</string>
+    <string name="pay_later_see_more">Pelajari Lebih Lanjut</string>
+    <string name="pay_later_faq_see_more">Lihat Lebih Banyak</string>
+    <string name="pay_later_action_find_more">Cari Tahu Lebih Lanjut</string>
+
+    <!-- BottomSheet title-->
+    <string name="pay_later_find_out_more_heading">Hal yang sering ditanyakan</string>
+    <string name="pay_later_how_to_register">Cara daftar</string>
+    <string name="pay_later_how_to_use">Cara gunakan</string>
+
+    <!-- Verification Bottom Sheet Description -->
+    <string name="pay_later_verification_description_waiting">Pengajuanmu masih dalam proses verifikasi. Tunggu kabar selanjutnya ya. \n Verifikasi hingga:</string>
+    <string name="pay_later_verification_description_rejected">Pengajuanmu belum disetujui. Yuk coba daftar pilihan PayLater lainnya atau tunggu hingga bisa ajukan ulang \n Ajukan ulang pada:</string>
+
+    <!-- PayLater Signup Bottom Sheet -->
+    <string name="pay_later_registration_submit_subtitle">Ajukan ketika pembayaran</string>
+    <string name="pay_later_create_account_subtitle">Buat akun di aplikasi</string>
+    <string name="pay_later_default_subtitle">Daftar sekarang</string>
+    <string name="pay_later_reapply_on_subtitle">Ajukan ulang pada:</string>
+    <string name="pay_later_reapply_now_subtitle">Ajukan ulang sekarang</string>
+
+    <!-- Credit Card Signup Bottom Sheet -->
+    <string name="credit_card_view_all_cards">Lihat Semua Kartu</string>
+    <string name="credit_card_view_more">Lihat Selengkapnya</string>
+    <!-- Application Status -->
+    <string name="pay_later_status_active">Aktif</string>
+    <string name="pay_later_status_waiting">Menunggu persetujuan</string>
+    <string name="pay_later_status_rejected">Pengajuan ditolak</string>
+    <string name="pay_later_status_cancelled">Pengajuan dibatalkan</string>
+    <string name="pay_later_status_approved">Pengajuan disetujui</string>
+    <string name="pay_later_status_suspended">Akun dinonaktifkan</string>
+    <string name="pay_later_status_failed">Pengajuan gagal</string>
+    <string name="pay_later_status_expired">Pengajuan kedaluwarsa</string>
+
+
+</resources>

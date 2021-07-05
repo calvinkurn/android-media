@@ -1,42 +1,35 @@
 package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
-import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleViewModel
-import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
+import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
+import com.tokopedia.autocomplete.jsonToObject
 import io.mockk.every
 import io.mockk.verify
 import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
+private const val initialStateWith4DataSeeMoreRecentSearch = "autocomplete/initialstate/with-4-data-show-more-recent-search.json"
+private const val initialStateWith5DataSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
+
 internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private val isSuccessful = true
 
-    @Test
-    fun `Test delete recent search data with type keyword`() {
-        val item = BaseItemInitialStateSearch(
-                template = "list_single_line",
-                applink = "tokopedia://search?q=sepatu&source=universe&st=product",
-                url = "/search?q=sepatu&source=universe&st=product",
-                title = "sepatu",
-                label = "keyword",
-                type = "keyword",
-                productId = "0",
-                shortcutImage = "https://shortcut"
-        )
-
-        `Given view already get initial state`(initialStateCommonData)
+    private fun `Test Delete Recent Search Data`(initialStateData: List<InitialStateData>, item: BaseItemInitialStateSearch) {
+        `Given view already get initial state`(initialStateData)
 
         `Given delete recent search API will return data`()
         `When presenter delete recent search`(item)
         `Then verify deleteRecentSearch API is called`()
         `Then verify initial state view called deleteRecentSearch`()
-        `Then verify visitable list doesnt have keyword samsung in recent search`(item)
     }
 
     private fun `Given delete recent search API will return data`() {
@@ -60,12 +53,26 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun `Then verify visitable list doesnt have keyword samsung in recent search`(item: BaseItemInitialStateSearch) {
-        val newList = slotDeletedVisitableList.captured
-        assert(newList[3] is RecentSearchViewModel) {
-            "Should be RecentSearchViewModel"
-        }
-        assert(!(newList[3] as RecentSearchViewModel).list.contains(item)) {
+    @Test
+    fun `Test delete recent search data with type keyword`() {
+        val item = BaseItemInitialStateSearch(
+                template = "list_single_line",
+                applink = "tokopedia://search?q=samsung&source=universe&st=product",
+                url = "/search?q=samsung&source=universe&st=product",
+                title = "samsung",
+                label = "keyword",
+                type = "keyword",
+                productId = "0",
+                shortcutImage = "https://shortcut"
+        )
+
+        `Test Delete Recent Search Data`(initialStateCommonData, item)
+        `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
+    }
+
+    private fun `Then verify visitable list doesnt have the deleted keyword in recent search`(item: BaseItemInitialStateSearch) {
+        val recentSearchDataView = slotDeletedVisitableList.captured.find { it is RecentSearchDataView } as RecentSearchDataView
+        assert(!recentSearchDataView.list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
         }
     }
@@ -82,22 +89,69 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
                 type = "shop"
         )
 
-        `Given view already get initial state`(initialStateCommonData)
-
-        `Given delete recent search API will return data`()
-        `When presenter delete recent search`(item)
-        `Then verify deleteRecentSearch API is called`()
-        `Then verify initial state view called deleteRecentSearch`()
+        `Test Delete Recent Search Data`(initialStateCommonData, item)
         `Then verify visitable list doesnt have shop in recent search`(item)
     }
 
     private fun `Then verify visitable list doesnt have shop in recent search`(item: BaseItemInitialStateSearch) {
         val newList = slotDeletedVisitableList.captured
-        assert(newList[3] is RecentSearchViewModel) {
-            "Should be RecentSearchViewModel"
+        assert(newList[3] is RecentSearchDataView) {
+            "Should be RecentSearchDataView"
         }
-        assert(!(newList[3] as RecentSearchViewModel).list.contains(item)) {
+        assert(!(newList[3] as RecentSearchDataView).list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
+        }
+    }
+
+    @Test
+    fun `Test delete recent search data without removing see more button`() {
+        val initialStateData = initialStateWith5DataSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        val item = BaseItemInitialStateSearch(
+                template = "list_single_line",
+                applink = "tokopedia://search?q=samsung&source=universe&st=product",
+                url = "/search?q=samsung&source=universe&st=product",
+                title = "samsung",
+                label = "keyword",
+                type = "keyword",
+                productId = "0",
+                shortcutImage = "https://shortcut"
+        )
+
+        `Test Delete Recent Search Data`(initialStateData, item)
+        `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
+        `Then verify visitable list still have RecentSearchSeeMoreDataView`()
+    }
+
+    private fun `Then verify visitable list still have RecentSearchSeeMoreDataView`() {
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        assert(recentSearchSeeMoreDataView != null) {
+            "Visitable list should have SeeMoreRecentSearchDataView"
+        }
+    }
+
+    @Test
+    fun `Test delete recent search data and remove see more button`() {
+        val initialStateData = initialStateWith4DataSeeMoreRecentSearch.jsonToObject<InitialStateUniverse>().data
+        val item = BaseItemInitialStateSearch(
+                template = "list_single_line",
+                applink = "tokopedia://search?q=samsung&source=universe&st=product",
+                url = "/search?q=samsung&source=universe&st=product",
+                title = "samsung",
+                label = "keyword",
+                type = "keyword",
+                productId = "0",
+                shortcutImage = "https://shortcut"
+        )
+
+        `Test Delete Recent Search Data`(initialStateData, item)
+        `Then verify visitable list doesnt have the deleted keyword in recent search`(item)
+        `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`()
+    }
+
+    private fun `Then verify visitable list doesnt have RecentSearchSeeMoreDataView`() {
+        val recentSearchSeeMoreDataView = slotDeletedVisitableList.captured.find { it is RecentSearchSeeMoreDataView }
+        assert(recentSearchSeeMoreDataView == null) {
+            "Visitable list should not have SeeMoreRecentSearchDataView"
         }
     }
 
@@ -141,12 +195,12 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify visitable list doesnt have recent search anymore`() {
         val list = slotDeletedVisitableList.captured
-        Assert.assertTrue(list[0] is RecentViewTitleViewModel)
-        Assert.assertTrue(list[1] is RecentViewViewModel)
-        Assert.assertTrue(list[2] is PopularSearchTitleViewModel)
-        Assert.assertTrue(list[3] is PopularSearchViewModel)
-        Assert.assertTrue(list[4] is DynamicInitialStateTitleViewModel)
-        Assert.assertTrue(list[5] is DynamicInitialStateSearchViewModel)
+        Assert.assertTrue(list[0] is RecentViewTitleDataView)
+        Assert.assertTrue(list[1] is RecentViewDataView)
+        Assert.assertTrue(list[2] is PopularSearchTitleDataView)
+        Assert.assertTrue(list[3] is PopularSearchDataView)
+        Assert.assertTrue(list[4] is DynamicInitialStateTitleDataView)
+        Assert.assertTrue(list[5] is DynamicInitialStateSearchDataView)
         Assert.assertTrue(list.size == 6)
     }
 

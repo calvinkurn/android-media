@@ -47,12 +47,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentId = ""
     protected var opponentName = ""
     protected var opponentRole = ""
-    protected var shopId = 0
+    protected var shopId: Long = 0L
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
     protected var amISeller = false
-    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
 
     abstract fun onCreateViewState(view: View): BaseChatViewState
     abstract fun onSendButtonClicked()
@@ -76,14 +75,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return false
     }
 
-    open fun prepareListener() {
-        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
-            onSendButtonClicked()
-        }
-    }
+    open fun prepareListener() { }
 
     private fun prepareView(view: View) {
-        getRecyclerView(view).setHasFixedSize(true)
+        getRecyclerView(view)?.setHasFixedSize(true)
     }
 
     private fun setupViewData(arguments: Bundle?, savedInstanceState: Bundle?) {
@@ -265,8 +260,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
-
-    override fun onClickOccFromProductAttachment(product: ProductAttachmentViewModel, position: Int) { }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 

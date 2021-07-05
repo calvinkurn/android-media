@@ -8,7 +8,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.NonNullLiveData
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.VoucherTargetValidationUseCase
@@ -19,8 +19,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MerchantVoucherTargetViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val voucherTargetValidationUseCase: VoucherTargetValidationUseCase
+    private val dispatchers: CoroutineDispatchers,
+    private val voucherTargetValidationUseCase: VoucherTargetValidationUseCase
 ) : BaseViewModel(dispatchers.main) {
 
         private val mVoucherTargetListData = MutableLiveData<List<VoucherTargetItemUiModel>>()

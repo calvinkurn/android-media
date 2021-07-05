@@ -20,13 +20,14 @@
             app:srcCompat="@drawable/ic_14_google"
             android:layout_weight="0.1"
             android:layout_marginLeft="@dimen/dp_5"
-            android:layout_gravity="left"/>
+            android:layout_gravity="left"
+            android:contentDescription="null"/>
 
         <TextView
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             android:gravity="center_vertical"
@@ -77,7 +78,7 @@
                 android:text="@string/shop_shipping_additional_option"
                 android:textSize="@dimen/dp_16"
                 android:textStyle="bold"
-                android:textColor="@color/tkpd_light_green"/>
+                android:textColor="@color/Unify_G700"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

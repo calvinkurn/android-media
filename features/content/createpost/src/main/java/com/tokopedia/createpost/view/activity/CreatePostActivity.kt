@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.*
 import com.tokopedia.createpost.createpost.R
@@ -126,8 +127,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         dialog.setTitle(getString(R.string.cp_leave_warning))
         dialog.setDesc(getString(R.string.cp_leave_warning_desc))
         dialog.setBtnOk(getString(R.string.cp_leave_title))
-        dialog.setBtnCancel(getString(R.string.cp_continue))
+        dialog.setBtnCancel(getString(com.tokopedia.imagepicker.common.R.string.ip_continue))
         dialog.setOnOkClickListener {
+            KeyboardHandler.hideSoftKeyboard(this)
             (fragment as? AffiliateCreatePostFragment)?.clearCache()
             dialog.dismiss()
             finish()

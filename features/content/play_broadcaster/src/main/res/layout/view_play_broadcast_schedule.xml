@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/Unify_Static_Black"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_schedule_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_header_calendar"
+            android:layout_width="@dimen/play_broadcast_schedule_icon_size"
+            android:layout_height="@dimen/play_broadcast_schedule_icon_size"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="CALENDAR"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/play_dp_12"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/play_broadcast_add_schedule_info"
+            android:textColor="@color/play_dms_broadcast_schedule_info"
+            app:layout_constraintBottom_toBottomOf="@id/icon_header_calendar"
+            app:layout_constraintEnd_toStartOf="@id/icon_header_edit"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/icon_header_calendar"
+            app:layout_constraintTop_toTopOf="@id/icon_header_calendar"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_header_edit"
+            android:layout_width="@dimen/play_broadcast_schedule_icon_size"
+            android:layout_height="@dimen/play_broadcast_schedule_icon_size"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="EDIT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_schedule_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/play_dp_12"
+        android:visibility="gone"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_desc_schedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/play_dms_broadcast_schedule_info"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/icon_desc_edit"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            tools:text="Jumat, 31 Desember 2020 - 23:59"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_desc_edit"
+            android:layout_width="@dimen/play_broadcast_schedule_icon_size"
+            android:layout_height="@dimen/play_broadcast_schedule_icon_size"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="EDIT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/icon_desc_delete"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_desc_delete"
+            android:layout_width="@dimen/play_broadcast_schedule_icon_size"
+            android:layout_height="@dimen/play_broadcast_schedule_icon_size"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_name="DELETE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

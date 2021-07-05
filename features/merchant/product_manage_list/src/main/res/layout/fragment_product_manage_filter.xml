@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_20"
-            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/title_etalase"/>
 
         <com.tokopedia.design.label.LabelView
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_20"
-            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/title_category" />
 
         <com.tokopedia.design.label.LabelView
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_20"
-            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/title_condition" />
 
         <com.tokopedia.design.label.LabelView
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_20"
-            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/title_catalog" />
 
         <com.tokopedia.design.label.LabelView
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_20"
-            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/title_picture_product" />
     </LinearLayout>
 

@@ -8,20 +8,17 @@ import android.text.TextUtils
 import android.webkit.URLUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 object DeepLinkChecker {
 
-    private val APP_EXCLUDED_URL = "app_excluded_url"
-    private val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
+    private const val APP_EXCLUDED_URL = "app_excluded_url"
+    private const val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
     private const val AMP = "amp"
     private const val EXCLUDED_AMP = "excluded_amp"
     private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
-    @JvmField
-    val WEB_HOST = "www.tokopedia.com"
-    @JvmField
-    val MOBILE_HOST = "m.tokopedia.com"
+    const val WEB_HOST = "www.tokopedia.com"
+    const val MOBILE_HOST = "m.tokopedia.com"
 
     const val OTHER = -1
     const val BROWSE = 0
@@ -43,7 +40,6 @@ object DeepLinkChecker {
     const val FLIGHT = 18
     const val REFERRAL = 19
     const val TOKOPOINT = 20
-    const val GROUPCHAT = 21
     const val SALE = 22
     const val WALLET_OVO = 23
     const val PLAY = 24
@@ -60,11 +56,14 @@ object DeepLinkChecker {
     const val PRODUCT_REVIEW = 35
     const val DEALS = 36
     const val TRAVEL_HOMEPAGE = 37
+    const val NATIVE_THANK_YOU = 38
+    const val LOGIN_BY_QR = 39
+    const val POWER_MERCHANT = 40
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
     private fun isExcludedHostUrl(context: Context, uriData: Uri): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val firebaseRemoteConfig = FirebaseRemoteConfigInstance.get(context)
         val excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST_V2)
         if (excludedHost.isNullOrEmpty()) {
             return false
@@ -86,7 +85,7 @@ object DeepLinkChecker {
     }
 
     private fun isExcludedUrl(context: Context, uriData: Uri): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val firebaseRemoteConfig = FirebaseRemoteConfigInstance.get(context)
         val excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL)
         if (excludedUrl.isNullOrEmpty()) {
             return false
@@ -133,9 +132,9 @@ object DeepLinkChecker {
         if (!URLUtil.isNetworkUrl(url)) {
             return APPLINK
         }
-        try {
+        return try {
             val uriData = Uri.parse(url)
-            return if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData))
+            if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData))
                 OTHER
             else if (isHome(uriData)) {
                 HOME
@@ -144,7 +143,7 @@ object DeepLinkChecker {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            return OTHER
+            OTHER
         }
 
     }
@@ -153,13 +152,18 @@ object DeepLinkChecker {
     fun getRemoveAmpLink(context: Context, uriData: Uri): Uri? {
         val path = uriData.pathSegments
         return if (path != null && path.size > 1 && path[0] == AMP &&
-            !isExcludedAmpPath(context, path[1])) {
+                !isExcludedAmpPath(context, path[1])) {
             Uri.parse(uriData.toString().replaceFirst(AMP + "/".toRegex(), ""))
         } else uriData
     }
 
+    @JvmStatic
+    fun isAmpUrl(uriData: Uri): Boolean {
+        return uriData.toString().contains("/$AMP/")
+    }
+
     private fun isExcludedAmpPath(context: Context, path: String): Boolean {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val firebaseRemoteConfig = FirebaseRemoteConfigInstance.get(context)
         val excludedPath = firebaseRemoteConfig.getString(EXCLUDED_AMP, defaultExcludedAmpValue())
         val excludedPathList = excludedPath.split(",".toRegex())
             .filter { it.isNotEmpty() }
@@ -213,11 +217,11 @@ object DeepLinkChecker {
     }
 
     private fun openIfExist(context: Context, intent: Intent): Boolean {
-        if (intent.resolveActivity(context.packageManager) == null) {
-            return false
+        return if (intent.resolveActivity(context.packageManager) == null) {
+            false
         } else {
             context.startActivity(intent)
-            return true
+            true
         }
     }
 

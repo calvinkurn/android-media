@@ -5,27 +5,14 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
-
-        <activity
-            android:name=".imagepicker.view.activity.ImagePickerAddProductActivity"
-            android:label="@string/action_pick_photo"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".imagepicker.view.activity.ImagePickerEditPhotoActivity"
-            android:label="@string/action_edit_photo"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
         <activity
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
             android:label="@string/label_title_add_product"
             android:screenOrientation="portrait"
+            android:configChanges="orientation"
             android:theme="@style/Theme.White">
-
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -35,6 +22,24 @@
                     android:path="@string/path_open_product_preview"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".draft.presentation.activity.AddEditProductDraftActivity"
+            android:label = "@string/label_title_draft_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="@string/path_product_draft"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
 
         </activity>
 
@@ -42,44 +47,42 @@
             android:name=".variant.presentation.activity.AddEditProductVariantActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".variant.presentation.activity.AddEditProductVariantDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".imagepicker.view.activity.SizechartPickerAddProductActivity"
-            android:label="@string/action_pick_photo"
+            android:name=".category.presentation.activity.AddEditProductCategoryActivity"
+            android:label="@string/label_title_category_picker"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_product_category_picker"/>
+            </intent-filter>
+        </activity>
 
         <activity
-            android:name=".imagepicker.view.activity.SizechartPickerEditPhotoActivity"
-            android:label="@string/action_edit_photo"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".imagepicker.view.activity.VariantPhotoPickerActivity"
-            android:label="@string/action_pick_photo"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".imagepicker.view.activity.VariantPhotoEditorActivity"
-            android:label="@string/action_edit_photo"
+            android:name=".specification.presentation.activity.AddEditProductSpecificationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <service
-            android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService"
+            android:name=".preview.presentation.service.AddEditProductAddService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
-            android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService"
+            android:name=".preview.presentation.service.AddEditProductEditService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
+
 </manifest>

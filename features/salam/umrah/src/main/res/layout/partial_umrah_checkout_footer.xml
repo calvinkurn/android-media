@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white_65"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12">
+    android:background="@color/Neutral_N0"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_checkout_agreement_condition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_36"
-        android:lineHeight="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/spacing_lvl6"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:text="@string/umrah_checkout_aggrement_condition"
         app:layout_constraintLeft_toRightOf="@+id/cb_umrah_checkout"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        android:textColorLink="@color/green_500"
+        android:textColorLink="@color/Green_G500"
         />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -38,7 +38,7 @@
         android:text="@string/umrah_checkout_footer_title"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_agreement_condition"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -61,7 +61,7 @@
         android:text="@string/umrah_checkout_footer_choose_payment"
         app:unifyButtonSize="medium"
         app:unifyButtonType="transaction"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:enabled="false"
         />
 

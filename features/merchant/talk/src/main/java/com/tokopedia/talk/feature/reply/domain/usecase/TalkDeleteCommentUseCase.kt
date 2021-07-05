@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
@@ -11,13 +12,11 @@ class TalkDeleteCommentUseCase @Inject constructor(graphqlRepository: GraphqlRep
     companion object {
         const val PARAM_TALK_ID = "talk_id"
         const val PARAM_COMMENT_ID = "comment_id"
-
-        private val query by lazy {
-            val talkId = "\$talk_id"
-            val commentId = "\$comment_id"
+        private const val TALK_DELETE_COMMENT_MUTATION_CLASS_NAME = "TalkDeleteComment"
+        private const val query =
             """
-                mutation talkDeleteComment($talkId: Int,$commentId: Int) {
-                  talkDeleteComment(talk_id:$talkId, comment_id:$commentId) {
+                mutation talkDeleteComment(${'$'}talk_id: Int,${'$'}comment_id: Int) {
+                  talkDeleteComment(talk_id:${'$'}talk_id, comment_id:${'$'}comment_id) {
                     status
                     messageError
                     data {
@@ -27,13 +26,16 @@ class TalkDeleteCommentUseCase @Inject constructor(graphqlRepository: GraphqlRep
                     messageErrorOriginal
                   }
                 }
-
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_DELETE_COMMENT_MUTATION_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkDeleteComment.GQL_QUERY)
         setTypeClass(TalkDeleteCommentResponseWrapper::class.java)
     }
 

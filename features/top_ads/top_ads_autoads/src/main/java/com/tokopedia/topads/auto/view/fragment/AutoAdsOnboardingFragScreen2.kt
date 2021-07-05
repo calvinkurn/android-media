@@ -47,7 +47,7 @@ class AutoAdsOnboardingFragScreen2 : BaseDaggerFragment() {
                 lottie_animation_view?.setComposition(result)
                 lottie_animation_view?.repeatMode = LottieDrawable.RESTART
                 lottie_animation_view?.repeatCount = LottieDrawable.INFINITE
-                lottie_animation_view.playAnimation()
+                lottie_animation_view?.playAnimation()
             }
         }
     }

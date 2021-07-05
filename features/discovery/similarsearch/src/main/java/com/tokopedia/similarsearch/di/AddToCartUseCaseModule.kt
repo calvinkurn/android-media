@@ -8,7 +8,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@SimilarSearchModuleScope
 @Module
 internal class AddToCartUseCaseModule {
 

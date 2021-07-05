@@ -24,7 +24,6 @@
     <string name="text_ticker_action_close">Tutup</string>
     <string name="search_hint_default">Cari</string>
     <string name="search_input_hint">Cari Event/Lokasi</string>
-    <string name="top_ads_range_date_text">%1$s - %2$s</string>
 
     <string name="reputation_shop_point">%1$s point</string>
     <string name="price_range_separator_symbol">-</string>
@@ -82,5 +81,8 @@
 
     //content-desc
     <string name="content_desc_edit_text_search">input search</string>
+
+    <string name="design_kembali">Kembali</string>
+    <string name="design_beri_akses">Beri Akses</string>
 
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N50"
+    android:orientation="vertical"
+    android:padding="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmQuitPmMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="body_2"
+        tools:text="@string/pm_deactivate_power_merchant_message_info" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnPmCancelQuitSubmission"
+        android:layout_width="@dimen/pm_spacing_180dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:gravity="center"
+        android:text="@string/pm_cancel_submission"
+        android:textStyle="bold"
+        app:unifyButtonSize="medium" />
+
+</LinearLayout>

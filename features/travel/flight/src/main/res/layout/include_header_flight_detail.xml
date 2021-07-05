@@ -4,34 +4,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_30"
-    android:paddingRight="@dimen/dp_30"
-    android:paddingTop="@dimen/dp_5"
-    android:paddingBottom="@dimen/dp_5"
+    android:paddingLeft="@dimen/flight_dp_30"
+    android:paddingRight="@dimen/flight_dp_30"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2"
     app:layout_collapseMode="parallax"
     android:gravity="bottom"
     app:layout_collapseParallaxMultiplier="0.6">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="heading_2"
+            android:textColor="@color/Unify_N700_96"
             android:id="@+id/departure_airport_code"
-            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
             tools:text="CGK" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
             android:id="@+id/departure_airport_name"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
             tools:text="Jakarta"
             android:singleLine="true"
@@ -42,25 +48,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"/>
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"/>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/arrival_airport_code"
-            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_2"
+            android:textColor="@color/Unify_N700_96"
             tools:text="DPS" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
             android:id="@+id/arrival_airport_name"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:gravity="center"
             tools:text="Denpasar"
             android:singleLine="true"

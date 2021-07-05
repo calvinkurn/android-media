@@ -18,6 +18,7 @@ import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
 import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
@@ -54,6 +55,14 @@ public class KolModule {
     @Provides
     VideoDetailContract.Presenter provideVideoDetailPresenter(VideoDetailPresenter presenter) {
         return presenter;
+    }
+
+    @KolScope
+    @Provides
+    public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                  UserSessionInterface userSession,
+                                                  NetworkRouter networkRouter) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
     }
 
     @KolScope

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <fragment
+        android:id="@+id/floating_egg_fragment"
+        android:name="com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:tag="floating_egg"
+        app:draggable="true"
+        app:margin_bottom="100dp" />
+</FrameLayout>

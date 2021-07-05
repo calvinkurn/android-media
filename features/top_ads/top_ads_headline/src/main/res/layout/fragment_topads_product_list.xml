@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchInputView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toStartOf="@+id/btnSort"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:search_bar_placeholder="@string/topads_headline_cari_produk"
+        app:search_bar_show_icon="@drawable/topads_ic_search" />
+
+    <com.tokopedia.unifycomponents.UnifyImageButton
+        android:id="@+id/btnSort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:padding="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="@+id/searchInputView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/searchInputView"
+        app:layout_constraintTop_toTopOf="@+id/searchInputView"
+        app:srcCompat="@drawable/topads_ic_sort"
+        app:unifyImageButtonSize="medium"
+        app:unifyImageButtonType="main"
+        app:unifyImageButtonVariant="image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyResultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/shadow_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchInputView"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Kami tidak dapat menemukan produk “Kemeja batik xyzs”" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/quickFilterRecyclerView"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/ticker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchInputView"
+        tools:itemCount="5"
+        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_layout_chip_filter"
+        tools:orientation="horizontal"
+        tools:scrollbars="horizontal" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quickFilterRecyclerView"
+        app:tickerShapeType="loose"
+        app:tickerType="error"
+        app:titleText="@string/topads_headline_promotional_ticker_message"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/selectProductCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
+        android:checked="false"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
+        tools:text="Pilih semua rekomendasi" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productListRecyclerView"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintBottom_toTopOf="@id/shadow_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/selectProductCheckBox"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_layout_product_list" />
+
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/tooltipBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_12"
+        app:fbType="group"
+        app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/shadow_bottom"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:background="@drawable/topads_bg_shader_gray"
+        app:layout_constraintBottom_toTopOf="@+id/btnNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_weight="1"
+        android:enabled="true"
+        android:text="@string/topads_common_save_butt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/selectProductInfo"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/selectProductInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_weight="1"
+        android:padding="@dimen/dp_16"
+        android:text="@string/_0_produk"
+        app:layout_constraintBottom_toBottomOf="@+id/btnNext"
+        app:layout_constraintEnd_toStartOf="@+id/btnNext"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnNext"
+        app:typographyType="heading_6"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

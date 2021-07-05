@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import dagger.Binds
 import dagger.Module
@@ -14,7 +15,6 @@ import dagger.multibindings.IntoMap
  * ade.hadian@tokopedia.com
  */
 
-@ChooseAccountScope
 @Module
 abstract class ChooseAccountViewModelModule{
 
@@ -25,5 +25,11 @@ abstract class ChooseAccountViewModelModule{
     @Binds
     @IntoMap
     @ViewModelKey(ChooseAccountViewModel::class)
-    internal abstract fun registerInitialViewModel(viewModel: ChooseAccountViewModel): ViewModel
+    internal abstract fun chooseAccountViewModel(viewModel: ChooseAccountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChooseAccountFingerprintViewModel::class)
+    internal abstract fun chooseAccountFingerprintViewModel(viewModel: ChooseAccountFingerprintViewModel): ViewModel
+
 }

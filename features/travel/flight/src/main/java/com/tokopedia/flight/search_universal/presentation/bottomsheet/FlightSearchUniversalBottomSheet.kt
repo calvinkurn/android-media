@@ -6,24 +6,27 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.bottom_sheet_flight_search_form.view.*
 import java.util.*
 import javax.inject.Inject
@@ -93,18 +96,21 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                     departureDate,
                     minMaxDate.second,
                     getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
-                    TAG_DEPARTURE_CALENDAR
-            )
-        } else {
-            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
-                    FlightDateUtil.dateToString(minMaxDate.first, FlightDateUtil.DEFAULT_FORMAT),
-                    FlightDateUtil.dateToString(minMaxDate.second, FlightDateUtil.DEFAULT_FORMAT),
-                    FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_FORMAT),
+                    TAG_DEPARTURE_CALENDAR,
                     departureAirport,
                     arrivalAirport,
                     flightClassId
             )
-            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+        } else {
+            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
+                    minMaxDate.first.toString(DateUtil.YYYY_MM_DD),
+                    minMaxDate.second.toString(DateUtil.YYYY_MM_DD),
+                    departureDate.toString(DateUtil.YYYY_MM_DD),
+                    departureAirport,
+                    arrivalAirport,
+                    flightClassId
+            )
+            flightCalendarDialog.setListener(object : SinglePickCalendarWidget.ActionListener {
                 override fun onDateSelected(dateSelected: Date) {
                     val errorResourceId = flightSearchUniversalViewModel.validateDepartureDate(dateSelected)
                     if (errorResourceId == -1) {
@@ -119,13 +125,16 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         }
     }
 
-    override fun onReturnDateClicked(departureDate: Date, returnDate: Date) {
+    override fun onReturnDateClicked(departureDate: Date, returnDate: Date,
+                                     departureAirport: String, arrivalAirport: String, flightClassId: Int) {
         val minMaxDate = flightSearchUniversalViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
         setCalendarDatePicker(null,
                 minMaxDate.first,
                 minMaxDate.second,
                 getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date),
-                TAG_RETURN_CALENDAR)
+                TAG_RETURN_CALENDAR,
+                departureAirport,
+                arrivalAirport, flightClassId)
     }
 
     override fun onPassengerClicked(passengerModel: FlightPassengerModel?) {
@@ -164,19 +173,25 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         mChildView.flightSearchFormView.removeFocus()
     }
 
-    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String) {
-        val minDateStr = FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_FORMAT)
-        val selectedDateStr = if (selectedDate != null) FlightDateUtil.dateToString(selectedDate, FlightDateUtil.DEFAULT_FORMAT) else null
+    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String,
+                                      departureAirport: String, arrivalAirport: String, flightClassId: Int) {
+        val minDateStr = minDate.toString(DateUtil.YYYY_MM_DD)
+        val maxDateStr = maxDate.toString(DateUtil.YYYY_MM_DD)
 
-        val flightCalendarDialog = SelectionRangeCalendarWidget.getInstance(
+        val selectedDateStr = selectedDate?.toString(DateUtil.YYYY_MM_DD)
+
+        val flightCalendarDialog = FlightCalendarRoundTripWidget.getInstance(
                 minDateStr, selectedDateStr,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED.toLong(),
                 getString(R.string.flight_min_date_label),
                 getString(R.string.flight_max_date_label),
                 SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
-                true
+                true,
+                departureAirport, arrivalAirport, flightClassId,
+                maxDateStr
         )
+
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 val departureErrorResourceId = flightSearchUniversalViewModel.validateDepartureDate(dateIn)
@@ -223,7 +238,8 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     }
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
+        Toaster.build(mChildView, getString(resourceId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)).show()
     }
 
     interface Listener {

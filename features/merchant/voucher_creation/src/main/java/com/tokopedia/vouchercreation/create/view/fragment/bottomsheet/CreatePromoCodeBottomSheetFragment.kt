@@ -7,7 +7,10 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +26,7 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreatePromoCodeViewModel
@@ -38,6 +42,10 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
         private const val MIN_TEXTFIELD_LENGTH = 5
         private const val MAX_TEXTFIELD_LENGTH = 10
+
+        private const val ERROR_MESSAGE = "Error validate voucher promo code"
+
+        const val TAG = "CreatePromoCodeBottomSheet"
 
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
@@ -113,6 +121,11 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
         }
     }
 
+    override fun onPause() {
+        context?.hideKeyboard()
+        super.onPause()
+    }
+
     private fun initInjector() {
         DaggerVoucherCreationComponent.builder()
                 .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -137,6 +150,7 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
                 is Fail -> {
                     val error = result.throwable.message.toBlankOrString()
                     showErrorToaster(error)
+                    MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                 }
             }
             isWaitingForValidation = false
@@ -145,6 +159,11 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
 
     private fun setupView() {
         createPromoCodeTextField?.run {
+            // Fix blank color when dark mode activated.
+            textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+            (((textFieldWrapper).getChildAt(1) as ViewGroup?)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+
             getPromoCodePrefix().run {
                 promoCodePrefix = if (isNotBlank()) {
                     this

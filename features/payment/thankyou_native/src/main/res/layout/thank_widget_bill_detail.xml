@@ -4,26 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerTop"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/Neutral_N75"
+        android:layout_height="@dimen/thank_dp_1"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceTotalBill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:text="@string/thank_invoice_total_bill"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerTop"
         app:typographyType="body_3"
@@ -33,9 +32,9 @@
         android:id="@+id/tvInvoiceTotalBillValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvInvoiceTotalBill"
         app:layout_constraintTop_toBottomOf="@id/dividerTop"
@@ -43,55 +42,13 @@
         app:typographyWeight="bold"
         tools:text="RP2323234423" />
 
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceServiceTax"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/thank_invoice_service_fee"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
-        app:typographyType="body_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceServiceTaxValue"
+    <LinearLayout
+        android:id="@+id/llContainerFeeDetail"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:gravity="end"
-        android:textColor="@color/Neutral_N700_68"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvInvoiceServiceTax"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
-        app:typographyType="body_3"
-        tools:text="RP2323234423" />
-
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceUsedTokopoints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/Neutral_N700_68"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceServiceTax"
-        app:typographyType="body_3"
-        tools:text="@string/thank_invoice_used_tokopoint" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceUsedTokopointsValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:gravity="end"
-        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvInvoiceUsedTokopoints"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceServiceTax"
-        app:typographyType="body_3"
-        tools:text="- RP2323234423" />
-
+        app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,20 +7,24 @@ object UohConsts {
     const val ALL_DATE = "Semua Tanggal"
     const val ALL_STATUS = "Semua Status"
     const val SEMUA_TRANSAKSI = "Semua Transaksi"
-    const val ALL_CATEGORIES = "Semua Kategori"
+    const val TRANSAKSI_BERLANGSUNG = "Transaksi Berlangsung"
+    const val DIKIRIM = "Dikirim"
+    const val TIBA_DI_TUJUAN = "Tiba Di Tujuan"
+    const val MENUNGGU_KONFIRMASI = "Menunggu Konfirmasi"
+    const val DIPROSES = "Diproses"
+    const val SEMUA_TRANSAKSI_BERLANGSUNG = "Semua Transaksi Berlangsung"
+    const val ALL_PRODUCTS = "Semua Produk"
     const val CHOOSE_DATE = "Pilih Tanggal"
     const val OTHERS = "Lainnya"
-    const val CHOOSE_FILTERS = "Pilih Status"
-    const val CHOOSE_CATEGORIES = "Pilih Kategori"
+    const val CHOOSE_FILTERS = "Mau lihat status apa?"
+    const val CHOOSE_CATEGORIES = "Mau lihat produk apa?"
     const val TYPE_FILTER_DATE = 0
     const val TYPE_FILTER_STATUS = 1
     const val TYPE_FILTER_CATEGORY = 2
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
     const val CATEGORY_BELANJA = "marketplace"
-
     const val ALL_STATUS_TRANSACTION = "Semua Status Transaksi"
-    const val ALL_CATEGORIES_TRANSACTION = "Semua Kategori Transaksi"
 
     const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
     const val TICKER_TYPE_ERROR = "error"
@@ -77,7 +81,6 @@ object UohConsts {
     const val LS_PRINT_GQL_PARAM_UUID = "uuid"
     const val LS_PRINT_GQL_PARAM_VALUE = "value"
 
-    const val LS_LACAK_MWEB = "m.tokopedia.com/order-details/lsprint/{order_id}?track=1"
     const val WRONG_FORMAT_EMAIL = "Format email salah"
     const val EMAIL_MUST_NOT_BE_EMPTY = "E-mail harus diisi"
     const val CTA_ATC = "Lihat"
@@ -108,11 +111,13 @@ object UohConsts {
 
     const val E_TIKET = "E-tiket & E-voucher Aktif"
     const val DALAM_PROSES = "Dalam Proses"
+    const val VERTICAL_CATEGORY_MP = "mp_pym,marketplace"
     const val VERTICAL_CATEGORY_DIGITAL = "air_pdam,angsuran_kredit,belajar,biaya_pendidikan,bpjs,invoicing,samsat,gas_pgn,internet_tv_kabel,iuran_properti,tagihan_cc,kartu_prakerja,listrik_pln,m_tix,pajak,paket_data,pasca_bayar,penerimaan_negara,premi_asuransi,pulsa,retribusi,roaming,streaming,telkom,uang_elektronik,upgrade_internet_tv,voucher_game,bridestory_pay,ovo"
-    const val VERTICAL_CATEGORY_DEALS = "deals,event,flight,train,hotel"
+    const val VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT = "deals,event,flight,train,hotel"
     const val VERTICAL_CATEGORY_EVENTS = "event"
-    const val VERTICAL_CATEGORY_DEALS_SINGLE = "deals"
+    const val VERTICAL_CATEGORY_DEALS = "deals"
     const val VERTICAL_CATEGORY_FLIGHT = "flight"
+    const val VERTICAL_CATEGORY_TRAIN = "train"
     const val VERTICAL_CATEGORY_KEUANGAN = "mutual_fund,gold,insurance,gift_card,modal_toko"
     const val VERTICAL_CATEGORY_GIFTCARD = "gift_card"
     const val VERTICAL_CATEGORY_INSURANCE = "insurance"
@@ -126,4 +131,16 @@ object UohConsts {
     const val QUANTITY = "quantity"
     const val NOTES = "notes"
     const val SHOP_ID = "shop_id"
+    const val CUSTOMER_ID = "customer_id"
+    const val WAREHOUSE_ID = "warehouse_id"
+    const val PRODUCT_PRICE = "product_price"
+    const val PRODUCT_NAME = "product_name"
+    const val CATEGORY = "category"
+
+    const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
+
+    const val STATUS_MENUNGGU_KONFIRMASI = "menunggu_konfirmasi"
+    const val STATUS_DIPROSES = "diproses"
+    const val STATUS_DIKIRIM = "dikirim"
+    const val STATUS_TIBA_DI_TUJUAN = "tiba_di_tujuan"
 }

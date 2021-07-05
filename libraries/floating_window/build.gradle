@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    implementation project(rootProject.ext.features.pushNotificationCommon)
+    implementation project(rootProject.ext.libraries.pushNotification)
+}
+
+project.ext {
+    artifactId = 'floating-window'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "floating_window-release"
+}
+
+apply from: '../../publish_local.gradle'

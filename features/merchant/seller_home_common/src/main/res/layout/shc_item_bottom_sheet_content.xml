@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/shc_line_spacing_6"
-        android:textColor="@color/shc_description"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 

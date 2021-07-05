@@ -3,18 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:layout_height="wrap_content">
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_topad_title"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/tp_loyalty_color"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        android:visibility="gone"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,13 +23,14 @@
         app:layout_constraintWidth_default="wrap"
         tools:text="Huge News!" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_topads_see_all"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
         android:text="Lihat Semua"
-        android:textColor="@color/medium_green"
-        android:textSize="@dimen/sp_13"
+        android:textColor="@color/Unify_G400"
+        app:typographyType="heading_5"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
@@ -36,14 +38,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="wrap" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_topads_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/tp_subtitle_color_topads"
-        android:textSize="@dimen/sp_12"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="heading_6"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,23 +57,26 @@
         android:id="@+id/container_topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:measureAllChildren="false"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title">
 
-
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
-            android:id="@+id/loader_img_main"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderUnify"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_150"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
-            app:corners="20" />
+            app:loader_corner_radius="@dimen/dp_8"
+            app:loader_type="rect" />
 
         <com.tokopedia.topads.sdk.widget.TopAdsImageView
             android:id="@+id/topads_reward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8" />
+            android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/bg_tierinfo"
+            app:layout_constraintDimensionRatio="H,3:1" />
     </ViewFlipper>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

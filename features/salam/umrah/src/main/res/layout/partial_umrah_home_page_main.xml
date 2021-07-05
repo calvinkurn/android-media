@@ -21,30 +21,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/dp_10"
+            android:elevation="@dimen/spacing_lvl3"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:gravity="center"
                 android:text="@string/umrah_home_page_bg_label"
-                android:textColor="@color/white"
+                android:textColor="@color/Neutral_N0"
                 app:typographyType="heading_1"
                 app:typographyWeight="bold" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/margin_top_umrah_search"
-                app:cardElevation="@dimen/dp_2"
+                app:cardElevation="@dimen/spacing_lvl1"
                 app:cardUseCompatPadding="true"
-                app:cardCornerRadius="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16">
+                app:cardCornerRadius="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl4">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                         android:id="@+id/btn_umrah_home_page_search"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_16"
+                        android:layout_margin="@dimen/spacing_lvl4"
                         android:text="@string/umrah_home_page_search_label"
                         app:unifyButtonSize="large"
                         tools:targetApi="m"

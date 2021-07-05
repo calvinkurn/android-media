@@ -4,33 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.view.adapter.DateFilterAdapter
-import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactoryImpl
+import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_select_date_range.view.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.Listener {
+class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
 
     companion object {
         const val TAG = "DateFilterBottomSheet"
-        private const val DAYS_7 = 7
-        private const val DAYS_30 = 30
+        private const val KEY_DATE_FILTERS = "date_filter_items"
 
-        fun newInstance(): DateFilterBottomSheet {
+        fun newInstance(dateFilters: List<DateFilterItem>): DateFilterBottomSheet {
             return DateFilterBottomSheet().apply {
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
                 clearContentPadding = true
+                arguments = Bundle().apply {
+                    putParcelableArrayList(KEY_DATE_FILTERS, ArrayList(dateFilters))
+                }
             }
         }
     }
@@ -41,17 +44,13 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         DateFilterAdapter(this, fm
                 ?: return@lazy null)
     }
-    private val items: MutableList<DateFilterItem> by lazy {
-        mutableListOf(
-                getDateRangeItemToday(),
-                getDateFilterItemClick(DAYS_7, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                getDateFilterItemClick(DAYS_30, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                DateFilterItem.Divider,
-                getDateFilterPerDay(),
-                getDateFilterPerWeek(),
-                getFilterPerMonth(),
-                DateFilterItem.ApplyButton
-        )
+    private val items: List<DateFilterItem> by lazy {
+        arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,6 +61,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        dismissBottomSheet(view)
     }
 
     override fun onItemDateRangeClick(model: DateFilterItem) {
@@ -77,6 +77,22 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         val selectedItem = items.firstOrNull { it.isSelected } ?: return
         applyChangesCallback?.invoke(selectedItem)
         dismissAllowingStateLoss()
+    }
+
+    override fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String) {
+        if (isActivityResumed()) {
+            fm?.let {
+                bottomSheet.show(it, tag)
+            }
+        }
+    }
+
+    override fun dismissDateFilterBottomSheet() {
+        dismiss()
+    }
+
+    override fun showDateFilterBottomSheet() {
+        show()
     }
 
     fun setFragmentManager(fm: FragmentManager): DateFilterBottomSheet {
@@ -111,43 +127,16 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         setChild(child)
     }
 
-    private fun getFilterPerMonth(): DateFilterItem.MonthPickerItem {
-        val perMonthLabel = context?.getString(R.string.stc_per_month) ?: "Per Bulan"
-        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = Date(), endDate = Date())
-    }
-
-    private fun getDateFilterPerDay(): DateFilterItem.Pick {
-        val label = view?.context?.getString(R.string.stc_per_day).orEmpty()
-        val today = Date()
-        return DateFilterItem.Pick(label, today, today, type = DateFilterItem.TYPE_PER_DAY)
-    }
-
-    private fun getDateFilterPerWeek(): DateFilterItem.Pick {
-        val calendar: Calendar = Calendar.getInstance()
-        with(calendar) {
-            firstDayOfWeek = Calendar.MONDAY
-            set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+    private fun dismissBottomSheet(view: View) {
+        view.post {
+            if (mAdapter == null && isVisible) {
+                dismiss()
+            }
         }
-        val firstDateOfWeek = calendar.time
-        val lastDateOfWeek = Date()
-        val label = context?.getString(R.string.stc_per_week).orEmpty()
-        return DateFilterItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK)
     }
 
-    private fun getDateFilterItemClick(nPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateFilterItem.Click {
-        val label: String = context?.getString(R.string.stc_last_n_days, nPastDays).orEmpty()
-        val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(nPastDays.minus(1).toLong()))
-        val endDate = Date()
-        return DateFilterItem.Click(label, startDate, endDate, isSelected, type, showBottomBorder)
-    }
-
-    private fun getDateRangeItemToday(): DateFilterItem {
-        val label = context?.getString(R.string.stc_today_real_time).orEmpty()
-        val today = Date()
-        return DateFilterItem.Click(label, today, today, false, DateFilterItem.TYPE_TODAY)
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 }

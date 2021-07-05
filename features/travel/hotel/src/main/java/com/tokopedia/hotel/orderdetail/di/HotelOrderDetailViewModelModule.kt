@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@HotelOrderDetailScope
 abstract class HotelOrderDetailViewModelModule {
 
     @HotelOrderDetailScope

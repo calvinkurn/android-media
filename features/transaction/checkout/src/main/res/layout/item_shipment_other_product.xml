@@ -16,18 +16,18 @@
     <View
         android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_height="0.5dp"
         android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_height="0.5dp"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
     <RelativeLayout
         android:id="@+id/rl_expand_other_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:foreground="?selectableItemBackground">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -38,20 +38,19 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:padding="@dimen/dp_16"
-            android:textColor="@color/address_green"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="+3 Produk Lainnya" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_expand_other_product"
-            android:layout_width="@dimen/dp_10"
-            android:layout_height="@dimen/dp_10"
-            android:src="@drawable/checkout_module_ic_down"
-            android:layout_toRightOf="@id/tv_expand_other_product"
-            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dp_5"
-            android:layout_centerVertical="true"/>
+            android:layout_toEndOf="@id/tv_expand_other_product"
+            app:icon_name="CHEVRON_DOWN" />
 
     </RelativeLayout>
 
@@ -59,6 +58,6 @@
         android:id="@+id/v_separator_below_product"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>

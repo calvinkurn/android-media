@@ -1,0 +1,30 @@
+[{
+    "data": {
+        "get_recent_view": {
+            "items": [
+                {
+                    "product_id": "743682923",
+                    "product_name": "Xiaomi Monitor XMMNT238CB 23.8 Inch IPS Monitor",
+                    "product_url": "https://www.tokopedia.com/xiaomi-indonesia/xiaomi-monitor-xmmnt238cb-23-8-inch-ips-monitor?whid=0",
+                    "product_image": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/3/17/11879544/11879544_ba1372b9-7dd0-48b5-8278-80e731e3199e_1080_1080",
+                    "product_price": "Rp2.390.000",
+                    "shop_id": "1409816",
+                    "shop_url": "https://www.tokopedia.com/xiaomi-indonesia",
+                    "shop_location": "Jakarta Timur",
+                    "shop_name": "MI.STORE",
+                    "shop_gold_status": 1,
+                    "product_rating": 5,
+                    "product_review_count": 1,
+                    "wishlist": false,
+                    "badges": [
+                        {
+                            "title": "Power Badge",
+                            "image_url": "https://ecs7-p.tokopedia.net/img/power_merchant_badge.png"
+                        }
+                    ],
+                    "labels": []
+                }
+            ]
+        }
+    }
+}]

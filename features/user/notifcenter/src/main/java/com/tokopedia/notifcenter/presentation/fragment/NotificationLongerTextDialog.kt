@@ -48,11 +48,18 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
     private var appLink = ""
     private var templateKey = ""
     private var notificationId = ""
+    private var productId = ""
+    private var shopId = ""
 
     private var listener: LongerContentListener? = null
 
     interface LongerContentListener {
-        fun trackOnClickCtaButton(templateKey: String, notificationId: String)
+        fun trackOnClickCtaButton(
+            templateKey: String,
+            notificationId: String,
+            productId: String,
+            shopId: String
+        )
     }
 
     override fun onAttach(context: Context) {
@@ -106,7 +113,7 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
         }
 
         ctaButton.setOnClickListener {
-            listener?.trackOnClickCtaButton(templateKey, notificationId)
+            listener?.trackOnClickCtaButton(templateKey, notificationId, productId, shopId)
             RouteManager.route(it.context, appLink)
             dismiss()
         }
@@ -134,10 +141,10 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
             //To Anchor View Bottom
             val bottomSheetDialog = it as BottomSheetDialog
             val bottomSheet = bottomSheetDialog.findViewById<View>(designBottomSheet)
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
             val containerLayout: FrameLayout? = bottomSheetDialog.findViewById(R.id.container)
 
             bottomSheet?.let {
+                val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
                 bottomSheetBehavior.peekHeight = bottomSheet.height
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                 containerLayout?.parent?.requestLayout()
@@ -162,6 +169,8 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
             appLink = getParamString(BaseNotificationFragment.PARAM_CTA_APPLINK, arguments, null, "")
             templateKey = getParamString(BaseNotificationFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
             notificationId = getParamString(BaseNotificationFragment.PARAM_NOTIF_ID, arguments, null, "")
+            productId = getParamString(BaseNotificationFragment.PARAM_PRODUCT_ID, arguments, null, "")
+            shopId = getParamString(BaseNotificationFragment.PARAM_SHOP_ID, arguments, null, "")
         }
     }
 

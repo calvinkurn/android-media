@@ -16,6 +16,8 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
         app:layout_constraintEnd_toStartOf="@+id/holder_coupon"
@@ -43,17 +45,18 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/notif_tokopoint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignTop="@id/image_tokopoint"
                 android:layout_alignEnd="@id/image_tokopoint"
                 android:layout_alignRight="@id/image_tokopoint"
-                android:gravity="center"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_2"
                 android:textSize="@dimen/tp_text_size_xxsmall"
                 android:visibility="gone"
                 app:notificationColor="color_primary"
                 app:notificationTitle="3"
-                app:notificationType="text_type" />
+                app:notificationType="none_type" />
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -65,13 +68,27 @@
             android:focusable="false"
             android:lineSpacingExtra="2sp"
             android:lines="1"
-            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:textColor="@color/Unify_N700_68"
             android:translationY="-1.03sp"
-            app:layout_constraintEnd_toEndOf="@+id/image_tokopoint"
-            app:layout_constraintStart_toStartOf="@+id/image_tokopoint"
-            app:layout_constraintTop_toBottomOf="@+id/image_tokopoint"
             app:typographyType="body_3"
             tools:text="Tokopoint" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_tokopoint2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:lineSpacingExtra="2sp"
+            android:lines="1"
+            tools:text="99 Member"
+            android:textColor="@color/Unify_N700_96"
+            android:translationY="-1.03sp"
+            android:visibility="visible"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -82,6 +99,8 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
         app:layout_constraintEnd_toStartOf="@+id/holder_tokomember"
@@ -108,17 +127,17 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/notif_voucher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignTop="@id/image_voucher"
                 android:layout_alignEnd="@id/image_voucher"
                 android:layout_alignRight="@id/image_voucher"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_2"
                 android:gravity="center"
-                android:textSize="@dimen/tp_text_size_xxsmall"
                 android:visibility="gone"
                 app:notificationColor="color_primary"
-                app:notificationTitle="3"
-                app:notificationType="text_type" />
+                app:notificationType="none_type" />
         </RelativeLayout>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -130,13 +149,26 @@
             android:focusable="false"
             android:lineSpacingExtra="2sp"
             android:lines="1"
-            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:textColor="@color/Unify_N700_68"
             android:translationY="-1.03sp"
-            app:layout_constraintEnd_toEndOf="@+id/image_tokopoint"
-            app:layout_constraintStart_toStartOf="@+id/image_tokopoint"
-            app:layout_constraintTop_toBottomOf="@+id/image_tokopoint"
             app:typographyType="body_3"
             tools:text="Voucher" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_voucher2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:lineSpacingExtra="2sp"
+            android:lines="1"
+            tools:text="2 Quest"
+            android:textColor="@color/Unify_N700_96"
+            android:translationY="-1.03sp"
+            android:visibility="visible"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -147,6 +179,8 @@
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
         app:layout_constraintEnd_toEndOf="@+id/card_dynamic_action"
@@ -173,19 +207,18 @@
 
             <com.tokopedia.unifycomponents.NotificationUnify
                 android:id="@+id/notif_tokomember"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
                 android:layout_alignTop="@id/image_tokomember"
                 android:layout_alignEnd="@id/image_tokomember"
                 android:layout_alignRight="@id/image_tokomember"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_2"
                 android:gravity="center"
-                android:textSize="@dimen/tp_text_size_xxsmall"
                 android:visibility="gone"
                 app:notificationColor="color_primary"
-                app:notificationTitle="3"
-                app:notificationType="text_type" />
+                app:notificationType="none_type" />
         </RelativeLayout>
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_tokomember"
@@ -196,13 +229,26 @@
             android:focusable="false"
             android:lineSpacingExtra="2sp"
             android:lines="1"
-            android:textColor="@color/tp_textcolor_dynamic_action"
+            android:textColor="@color/Unify_N700_68"
             android:translationY="-1.03sp"
-            app:layout_constraintEnd_toEndOf="@+id/image_tokopoint"
-            app:layout_constraintStart_toStartOf="@+id/image_tokopoint"
-            app:layout_constraintTop_toBottomOf="@+id/image_tokopoint"
             app:typographyType="body_3"
             tools:text="Tokomember" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_tokomember2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:lineSpacingExtra="2sp"
+            android:lines="1"
+            tools:text="22 Coupon"
+            android:textColor="@color/Unify_N700_96"
+            android:translationY="-1.03sp"
+            android:visibility="visible"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold" />
     </LinearLayout>
 
     <View
@@ -211,7 +257,7 @@
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
         app:layout_constraintEnd_toStartOf="@+id/holder_coupon"
         app:layout_constraintHorizontal_bias="0.5"
@@ -226,7 +272,7 @@
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         app:layout_constraintBottom_toBottomOf="@+id/card_dynamic_action"
         app:layout_constraintEnd_toStartOf="@+id/holder_tokomember"
         app:layout_constraintHorizontal_bias="0.5"

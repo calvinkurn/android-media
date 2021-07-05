@@ -9,10 +9,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
-import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
@@ -39,12 +40,10 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
-        talkInboxTracking.openScreen(screenName)
-        setUpToolBar()
+        startPerformanceMonitoring()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -128,7 +127,14 @@ class TalkInboxActivity : BaseSimpleActivity(), TalkPerformanceMonitoringListene
         talkInboxTracking.openScreen(screenName)
     }
 
-    private fun setUpToolBar() {
-        supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
+    override fun onBackPressed() {
+        if(isTaskRoot) {
+            goToSellerHome()
+        }
+        super.onBackPressed()
+    }
+
+    private fun goToSellerHome() {
+        RouteManager.route(this, ApplinkConstInternalSellerapp.SELLER_HOME)
     }
 }

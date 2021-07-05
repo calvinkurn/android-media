@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/white">
+  android:background="@color/Unify_N0">
   
   <ScrollView
     android:layout_width="match_parent"
@@ -24,81 +24,40 @@
       android:orientation="vertical"
       android:padding="@dimen/layout_lvl2"
       android:visibility="visible">
-      
-      <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapper_email"
-        style="@style/HintTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/title_email"
-        android:layout_marginBottom="@dimen/layout_lvl3"
-        android:inputType="textCapWords">
-        
-        <AutoCompleteTextView
-          android:id="@+id/register_email"
+
+      <com.tokopedia.unifycomponents.TextFieldUnify
+          android:id="@+id/wrapper_email"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:ems="10"
-          android:imeOptions="actionNext"
-          android:inputType="textEmailAddress"
-          android:maxLines="1"
-          android:textColor="@color/black_70"
-          android:textSize="@dimen/spacing_lvl4"
-          android:enabled="false"/>
-        
-      </com.tokopedia.design.text.TkpdHintTextInputLayout>
-      
-      <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/wrapper_name"
-        style="@style/HintTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl3"
-        android:hint="@string/title_full_name"
-        android:inputType="textCapWords">
-        
-        <EditText
-          android:id="@+id/name"
+          android:layout_marginBottom="@dimen/layout_lvl3"
+          app:text_field_label="@string/title_email"
+          app:text_field_label_static = "true"
+          app:text_field_input_type="textEmailAddress"/>
+
+      <com.tokopedia.unifycomponents.TextFieldUnify
+          android:id="@+id/wrapper_name"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:imeOptions="actionNext"
-          android:inputType="textCapWords"
-          android:maxLines="1"
-          android:textColor="@color/black_70"
-          android:textSize="@dimen/spacing_lvl4"/>
+          android:layout_marginBottom="@dimen/layout_lvl3"
+          app:text_field_label="@string/title_full_name"
+          app:text_field_label_static = "true"
+          app:text_field_input_type="textEmailAddress"/>
       
-      </com.tokopedia.design.text.TkpdHintTextInputLayout>
-      
-      <com.tokopedia.design.text.TkpdHintTextInputLayout
+      <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/wrapper_password"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl3"
-        android:hint="@string/prompt_password"
-        app:passwordToggleDrawable="@drawable/asl_password_visibility"
-        app:passwordToggleEnabled="true">
-        
-        <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/register_password"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:imeActionId="123321"
-          android:imeActionLabel="Lanjut"
-          android:imeOptions="actionUnspecified"
-          android:inputType="textPassword"
-          android:maxLines="1"
-          android:textColor="@color/black_70"
-          android:textSize="@dimen/spacing_lvl4"
-          android:typeface="sans"/>
-        
-      </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        app:text_field_label="@string/prompt_password"
+        app:text_field_label_static = "true"
+        app:text_field_input_type="textPassword"/>
       
       <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/register_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
+        android:contentDescription="@string/content_desc_register_button_register"
         android:enabled="false"
         android:gravity="center"
         android:text="@string/title_register_wo_u"

@@ -4,16 +4,14 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application>
-
         <activity
-            android:name="com.tokopedia.sellerorder.list.presentation.activity.SomListActivity"
-            android:label="@string/title_som_list"
+            android:name=".list.presentation.activities.SomListActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/SomListTheme"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -83,29 +81,28 @@
                     android:path="@string/path_finished"
                     android:scheme="@string/internal_scheme" />
 
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_cancellation_request"
+                    android:scheme="@string/internal_scheme" />
+
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".list.presentation.activity.SomFilterActivity"
-            android:label="@string/title_som_filter"
+            android:name=".filter.presentation.activity.SomSubFilterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity
-            android:name=".list.presentation.activity.SomSubFilterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".detail.presentation.activity.SomDetailActivity"
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity"
             android:label="@string/title_som_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -113,14 +110,14 @@
                 <data
                     android:host="@string/host_seller"
                     android:path="@string/path_order"
-                    android:scheme="@string/internal_scheme"/>
+                    android:scheme="@string/internal_scheme" />
 
             </intent-filter>
 
         </activity>
 
         <activity
-            android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
@@ -144,8 +141,14 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".detail.presentation.activity.SomDetailBookingCodeActivity"
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity"
             android:label="@string/title_som_booking_code"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name="com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity"
+            android:label="@string/title_logistic_info"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
@@ -154,6 +157,12 @@
             android:label="@string/title_som_waiting_payment"
             android:screenOrientation="portrait"
             android:theme="@style/WaitingPaymentOrderTheme" />
+
+        <activity
+            android:name=".common.presenter.activities.SomPrintAwbActivity"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
 
     </application>
 </manifest>

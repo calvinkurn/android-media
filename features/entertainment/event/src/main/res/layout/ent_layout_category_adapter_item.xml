@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="@dimen/spacing_lvl3">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -15,18 +15,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="@dimen/dp_52"
-            android:layout_height="@dimen/dp_52"
+            android:layout_width="@dimen/dimen_dp_52"
+            android:layout_height="@dimen/dimen_dp_52"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ent_ic_squircle" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="@dimen/spacing_lvl6"
+            android:layout_height="@dimen/spacing_lvl6"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_4"
+            android:layout_margin="@dimen/spacing_lvl2"
             tools:ignore="VectorDrawableCompat"
             tools:src="@tools:sample/avatars" />
 
@@ -34,7 +34,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"

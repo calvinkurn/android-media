@@ -3,4 +3,25 @@
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />
     </declare-styleable>
+    <declare-styleable name="RatingBarReview">
+        <attr name="numstars" format="integer" />
+        <attr name="rating" format="integer" />
+        <attr name="progress_bar_percentage" format="float"/>
+        <attr name="total_review" format="integer"/>
+    </declare-styleable>
+    <declare-styleable name="ReviewProductItemFilterView">
+        <attr name="counter_rating" format="integer" />
+        <attr name="isActive" format="boolean"/>
+        <attr name="isAll" format="boolean"/>
+        <attr name="isWithPhoto" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="UserReputationView">
+        <attr name="usv_show_tooltip" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ShopReputationView">
+        <attr name="srv_show_tooltip" format="boolean" />
+        <attr name="srv_medal_width" format="dimension" />
+    </declare-styleable>
 </resources>

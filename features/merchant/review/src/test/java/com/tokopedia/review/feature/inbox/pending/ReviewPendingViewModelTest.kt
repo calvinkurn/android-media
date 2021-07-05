@@ -9,17 +9,17 @@ import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedback
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.utils.verifyCoroutineFailEquals
 import com.tokopedia.review.utils.verifyCoroutineSuccessEquals
-import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
-import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
-import com.tokopedia.review.utils.verifyErrorEquals
-import com.tokopedia.review.utils.verifySuccessEquals
+import com.tokopedia.review.utils.verifyReviewErrorEquals
+import com.tokopedia.review.utils.verifyReviewSuccessEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import java.lang.Exception
+import org.mockito.ArgumentMatchers.anyString
+import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
+import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
 class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
@@ -45,7 +45,7 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
         onGetReviewFail_thenReturn(exception)
 
-        viewModel.getReviewData(page)
+        viewModel.getReviewData(page, isRefresh = true)
 
         verifyGetReviewUseCaseExecuted()
         verifyReviewListErrorEquals(Fail(exception, page))
@@ -104,12 +104,31 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
         Assert.assertTrue(actualUserId.isEmpty())
     }
 
+    @Test
+    fun `when getUserName should return valid userName`() {
+        val actualUserId = viewModel.getUserName()
+        Assert.assertTrue(actualUserId.isEmpty())
+    }
+
+    @Test
+    fun `when markAsSeen should execute expected usecase`() {
+        val inboxReviewId = anyString()
+
+        viewModel.markAsSeen(inboxReviewId)
+
+        verifyMarkAsSeenUseCaseExecuted()
+    }
+
+    private fun verifyMarkAsSeenUseCaseExecuted() {
+        coVerify { markAsSeenUseCase.executeOnBackground() }
+    }
+
     private fun verifyReviewListEquals(response: Success<ProductrevWaitForFeedbackResponse>) {
-        viewModel.reviewList.verifySuccessEquals(response)
+        viewModel.reviewList.verifyReviewSuccessEquals(response)
     }
 
     private fun verifyReviewListErrorEquals(error: Fail<Any>) {
-        viewModel.reviewList.verifyErrorEquals(error)
+        viewModel.reviewList.verifyReviewErrorEquals(error)
     }
 
     private fun verifyGetReviewUseCaseExecuted() {

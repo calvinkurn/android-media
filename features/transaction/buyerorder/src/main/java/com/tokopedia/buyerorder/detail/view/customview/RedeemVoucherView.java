@@ -11,7 +11,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.abstraction.common.utils.HexValidator;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Body;
@@ -33,6 +36,7 @@ public class RedeemVoucherView extends LinearLayout {
     private Body body;
     private int mPos;
     OrderListDetailPresenter presenter;
+    private ItemsAdapter.SetEventDetails setEventDetails;
 
     public RedeemVoucherView(Context context) {
         super(context);
@@ -49,7 +53,7 @@ public class RedeemVoucherView extends LinearLayout {
         initView();
     }
 
-    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals) {
+    public RedeemVoucherView(Context context, int voucherNumber, ActionButton actionButton, Items item, Body body, OrderListDetailPresenter presenter, int position, SetTapActionDeals setTapActionDeals, ItemsAdapter.SetEventDetails setEventDetails) {
         super(context);
         this.context = context;
         this.voucherCount = voucherNumber;
@@ -59,6 +63,7 @@ public class RedeemVoucherView extends LinearLayout {
         this.presenter = presenter;
         this.mPos = position;
         this.setTapActionDeals = setTapActionDeals;
+        this.setEventDetails = setEventDetails;
         initView();
     }
 
@@ -108,20 +113,20 @@ public class RedeemVoucherView extends LinearLayout {
         if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
             shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
         } else {
-            shape.setColor(context.getResources().getColor(R.color.green_nob));
+            shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
         }
         if (HexValidator.validate(actionButton.getActionColor().getBorder())) {
             shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
         } else {
-            shape.setStroke(0, context.getResources().getColor(R.color.green_nob));
+            shape.setStroke(0, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
         }
         if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
             redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
         } else {
-            redeemVoucher.setTextColor(Color.WHITE);
+            redeemVoucher.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
 
-        shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+        shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
     }
 
     private void renderRetryButton(ActionButton actionButton) {
@@ -137,25 +142,25 @@ public class RedeemVoucherView extends LinearLayout {
             if (HexValidator.validate(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
             if (HexValidator.validate(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
             } else {
-                shape.setStroke(0, context.getResources().getColor(R.color.green_nob));
+                shape.setStroke(0, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
             if (HexValidator.validate(actionButton.getActionColor().getTextColor())) {
                 redeemVoucher.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                redeemVoucher.setTextColor(context.getResources().getColor(R.color.green_nob));
+                redeemVoucher.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
-            shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
             redeemVoucher.setBackground(shape);
         } else {
             if (actionButton.getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
                 voucherNumber.setText(context.getResources().getString(R.string.tkpdtransaction_oms_retry_text));
-                redeemVoucher.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey_label));
-                redeemVoucher.setTextColor(context.getResources().getColor(R.color.tkpd_transaction_retry_failed_button));
+                redeemVoucher.setBackground(context.getResources().getDrawable(R.drawable.bg_rounded_grey_label_buyer));
+                redeemVoucher.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
                 redeemVoucher.setEnabled(false);
                 redeemVoucher.postDelayed(new Runnable() {
                     @Override
@@ -166,12 +171,12 @@ public class RedeemVoucherView extends LinearLayout {
                     }
                 }, 30000);
                 if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals)) {
-                    presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_deals));
+                    setEventDetails.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_deals));
                 } else {
-                    presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_event));
+                    setEventDetails.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_failed_event));
                 }
             } else {
-                presenter.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_success));
+                setEventDetails.showRetryButtonToaster(context.getResources().getString(R.string.tkpdtransaction_oms_retry_success));
             }
         }
     }

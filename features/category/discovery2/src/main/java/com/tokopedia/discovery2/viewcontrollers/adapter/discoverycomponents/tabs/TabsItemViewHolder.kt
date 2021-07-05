@@ -32,8 +32,7 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
                 val itemData = it.data?.get(0)
                 positionForParentAdapter = itemData?.positionForParentItem ?: -1
                 itemData?.let { item ->
-                    tabImageView.loadImage(item.backgroundImage
-                            ?: "")
+                    tabImageView.loadImage(item.backgroundImage ?: "")
                     item.name?.let { name ->
                         setTabText(name)
                     }

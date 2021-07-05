@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="product_manage_menu_delete_color">#ef144a</color>
-    <color name="product_manage_title_color">#f531353b</color>
     <color name="product_manage_charcoal_grey">#ae31353b</color>
     <color name="redTransparant">#AAd50000</color>
-    <color name="pm_light_grey_color">#979797</color>
     <color name="product_manage_campaign_stock_event_name_color">#393D43</color>
     <color name="product_manage_campaign_stock_divider_color">#E0E0E0</color>
     <color name="lighter_grey">#1e000000</color>

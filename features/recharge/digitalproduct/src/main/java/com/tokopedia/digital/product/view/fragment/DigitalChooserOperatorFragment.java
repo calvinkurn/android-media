@@ -14,11 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
-import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
@@ -50,7 +50,7 @@ public class DigitalChooserOperatorFragment extends BaseDaggerFragment implement
             "EXTRA_STATE_OPERATOR_STYLE_VIEW";
 
     private RecyclerView rvOperatorList;
-    private EditTextCompat fieldSearch;
+    private EditText fieldSearch;
     private ProgressBar pbMainLoading;
 
     private CompositeSubscription compositeSubscription;

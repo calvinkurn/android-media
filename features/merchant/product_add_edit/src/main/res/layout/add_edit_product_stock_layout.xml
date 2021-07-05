@@ -2,15 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_stock_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_product_stock_header"
-        android:textColor="@android:color/black"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_asterisk"
-        android:textColor="@color/Red_R600_96"
+        android:textColor="@color/Unify_R600_96"
         app:layout_constraintLeft_toRightOf="@id/tv_product_stock_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
@@ -42,6 +41,7 @@
         android:contentDescription="@string/content_desc_tfu_minimum_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tfu_available_stock"
         app:text_field_input_type="number"

@@ -1,5 +1,16 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -10,11 +21,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.graphql)
@@ -25,6 +38,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.akamaiBotLib)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    implementation project(rootProject.ext.libraries.encryption)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -33,4 +49,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 }

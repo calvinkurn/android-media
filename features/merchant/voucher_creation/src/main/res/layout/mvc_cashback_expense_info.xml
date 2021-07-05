@@ -1,86 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/cashbackExpenseTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/layout_lvl3"
-        android:text="@string/mvc_create_promo_type_bottomsheet_subtitle_increase_discount"
-        android:textColor="@color/black"
-        app:typographyType="heading_2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/infoBackground"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/infoBackground"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_dimen_24dp"
         android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
-        app:layout_constraintTop_toTopOf="@id/minimumPurchaseInfo"
-        app:layout_constraintBottom_toBottomOf="@id/infoDiscountValue"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.vouchercreation.create.view.customview.DoubleLineInfoView
-        android:id="@+id/minimumPurchaseInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:infoTitle="@string/mvc_create_promo_type_bottomsheet_minimum_purchase"
-        app:layout_constraintTop_toBottomOf="@id/cashbackExpenseTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/middleGuide"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/minimumPurchaseInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/mvc_create_voucher_cashback_value_margin_top"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
+            android:text="@string/mvc_create_promo_type_bottomsheet_minimum_purchase"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2" />
 
-    <com.tokopedia.vouchercreation.create.view.customview.DoubleLineInfoView
-        android:id="@+id/percentageInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:infoTitle="@string/mvc_create_promo_type_bottomsheet_cashback"
-        app:layout_constraintTop_toBottomOf="@id/cashbackExpenseTitle"
-        app:layout_constraintStart_toStartOf="@id/middleGuide"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/minimumPurchaseInfoValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mvc_create_voucher_cashback_value_margin_top"
+            android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingBottom="@dimen/layout_lvl2"
+            app:layout_constraintBaseline_toBaselineOf="@id/minimumPurchaseInfoTitle"
+            app:layout_constraintStart_toStartOf="@id/middleGuide"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
-    <View
-        android:id="@+id/infoDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_divider_height"
-        android:layout_marginTop="@dimen/mvc_create_voucher_cashback_into_divider_margin_top"
-        android:background="@color/Neutral_N75"
-        app:layout_constraintTop_toBottomOf="@id/percentageInfo"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/percentageInfoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mvc_dimen_12dp"
+            android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
+            android:text="@string/mvc_create_promo_type_bottomsheet_cashback"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/minimumPurchaseInfoTitle"
+            app:typographyType="body_2" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/infoDiscountTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
-        android:layout_marginTop="@dimen/mvc_create_voucher_cashback_discount_title_margin_top"
-        android:text="@string/mvc_create_promo_type_bottomsheet_discount"
-        android:textColor="@color/Neutral_N700_96"
-        android:gravity="center_vertical"
-        app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/infoDivider"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/percentageInfoValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mvc_create_voucher_cashback_value_margin_top"
+            android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingBottom="@dimen/layout_lvl2"
+            app:layout_constraintBaseline_toBaselineOf="@id/percentageInfoTitle"
+            app:layout_constraintStart_toStartOf="@id/middleGuide"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/infoDiscountValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/mvc_create_voucher_cashback_value_margin_top"
-        android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
-        android:paddingBottom="@dimen/layout_lvl2"
-        android:textColor="@color/Red_R500"
-        app:typographyType="body_1"
-        app:typographyWeight="bold"
-        app:layout_constraintStart_toStartOf="@id/middleGuide"
-        app:layout_constraintTop_toBottomOf="@id/infoDivider"/>
+        <View
+            android:id="@+id/infoDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/mvc_divider_height"
+            android:layout_marginTop="@dimen/mvc_dimen_12dp"
+            android:background="@color/Neutral_N75"
+            app:layout_constraintTop_toBottomOf="@id/percentageInfoTitle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/infoDiscountTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mvc_create_voucher_cashback_discount_title_margin_top"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
+            android:text="@string/mvc_create_promo_type_bottomsheet_discount"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/infoDivider"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/infoDiscountValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mvc_create_voucher_cashback_value_margin_top"
+            android:paddingStart="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingLeft="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingEnd="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingRight="@dimen/mvc_double_line_info_padding_horizontal"
+            android:paddingBottom="@dimen/layout_lvl2"
+            android:textColor="@color/Red_R500"
+            app:layout_constraintStart_toStartOf="@id/middleGuide"
+            app:layout_constraintTop_toBottomOf="@id/infoDivider"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middleGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/cashbackExpenseDescription"
@@ -89,8 +128,8 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:maxLines="3"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="body_2"
-        app:layout_constraintTop_toBottomOf="@id/infoBackground"/>
+        app:layout_constraintTop_toBottomOf="@id/infoBackground"
+        app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/cashbackExpenseButton"
@@ -99,17 +138,10 @@
         android:layout_marginTop="@dimen/layout_lvl4"
         android:layout_marginBottom="@dimen/layout_lvl2"
         android:text="@string/mvc_create_promo_type_bottomsheet_change_now"
-        app:unifyButtonVariant="filled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cashbackExpenseDescription"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
-        app:layout_constraintTop_toBottomOf="@id/cashbackExpenseDescription"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/middleGuide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.5"
-        android:orientation="vertical"/>
+        app:unifyButtonVariant="filled" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

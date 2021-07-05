@@ -10,11 +10,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_100"
+        android:layout_height="@dimen/unify_space_96"
         tools:ignore="RtlSymmetry"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"/>
+        android:paddingLeft="@dimen/unify_space_12"
+        android:paddingRight="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_pdp_rv_hotel_name"
@@ -26,9 +26,9 @@
         app:typographyType="heading_6"
         android:textColor="@color/Neutral_N700_96"
         tools:text="Ramada Daar Al-Fazin Hotel"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_pdp_hotel_check_in"
@@ -40,20 +40,20 @@
         app:typographyType="small"
         android:textColor="@color/Neutral_N700_68"
         tools:text="Check-in 20-25 Okt 2019"
-        android:layout_marginTop="@dimen/dp_2" />
+        android:layout_marginTop="@dimen/spacing_lvl1" />
 
     <RatingBar
         android:id="@+id/rb_umrah_pdp_hotel_rating"
         style="@style/RatingBar.Small"
         android:scaleX="0.67"
         android:scaleY="0.67"
-        android:transformPivotX="0dp"
-        android:transformPivotY="6dp"
+        android:transformPivotX="@dimen/unify_space_0"
+        android:transformPivotY="@dimen/spacing_lvl3"
         app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_hotel_check_in"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_hotel_check_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2" />
+        android:layout_marginTop="@dimen/spacing_lvl1" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_pdp_hotel_distance"
@@ -63,14 +63,14 @@
         android:ellipsize="end"
         android:gravity="end"
         android:maxLines="1"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         app:typographyWeight="reguler"
         app:typographyType="small"
         android:textColor="@color/Neutral_N700_68"
         tools:text="200m ke Masjidil Haram"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="21dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginStart="@dimen/dp_16" />
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4" />
 </androidx.constraintlayout.widget.ConstraintLayout>

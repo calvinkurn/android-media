@@ -1,10 +1,7 @@
 package com.tokopedia.loginregister.shopcreation.view.activity
 
 import android.os.Bundle
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.shopcreation.view.fragment.LandingShopCreationFragment
 
 /**
@@ -22,12 +19,5 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
             bundle.putAll(intent.extras)
         }
         return LandingShopCreationFragment.createInstance(bundle)
-    }
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-
-        val baseView = findViewById<View>(R.id.base_view)
-        baseView.background = ContextCompat.getDrawable(baseContext, R.drawable.bg_landing_shop_creation)
     }
 }

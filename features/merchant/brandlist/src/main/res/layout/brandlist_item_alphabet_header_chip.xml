@@ -19,7 +19,7 @@
         android:background="@drawable/unify_chips_bg_img_rounded_corner"
         android:textAlignment="center"
         android:text="Test chips"
-        android:textColor="@color/grey_500"
+        android:textColor="@color/Unify_N200"
         android:textSize="@dimen/sp_14" />
 
 </LinearLayout>

@@ -1,41 +1,59 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
+android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        if (project.hasProperty("benchmark")) {
+            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
+        } else {
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerCommon)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.graphql)
@@ -46,12 +64,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.ucrop){
-        exclude group: 'com.android.support'
-    }
-    implementation (rootProject.ext.miscDependencies.imagecropper){
-        exclude group: "com.android.support"
-    }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
@@ -61,17 +73,32 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.miscDependencies.parcelerApi
     implementation rootProject.ext.miscDependencies.lottie
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    kapt  rootProject.ext.miscDependencies.parceler
+    testImplementation project(rootProject.ext.libraries.unitTest)
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    api (rootProject.ext.serviceDependencies.crashlytics) {
+    api (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
+        exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
+    }
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 }
 
 project.ext {
@@ -83,3 +110,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

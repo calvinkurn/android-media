@@ -5,14 +5,14 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bottomnav_bg">
+    android:background="@color/Unify_N0">
 
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bottomnav_bg">
+        android:background="@color/Unify_N0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/divider_color"
+                android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@+id/card_view_brand" />
 
 
@@ -103,7 +103,7 @@
 
             <TextView
                 android:id="@+id/tv_quantity"
-                style="@style/TextView.Small.BlackPrimary"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -125,7 +125,7 @@
 
             <TextView
                 android:id="@+id/tv_no_quantity"
-                style="@style/TextView.Title.BlackPrimary"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_4"
@@ -141,7 +141,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_2"
                 android:layout_marginTop="@dimen/dp_4"
-                android:background="@color/green_250"
+                android:background="@color/Unify_G400"
                 app:layout_constraintLeft_toLeftOf="@id/tv_no_quantity"
                 app:layout_constraintRight_toRightOf="@+id/tv_no_quantity"
                 app:layout_constraintTop_toBottomOf="@+id/tv_no_quantity" />
@@ -152,7 +152,7 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginRight="@dimen/dp_4"
-                android:tint="@color/grey_400"
+                android:tint="@color/Unify_N150"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_add"
                 app:layout_constraintRight_toLeftOf="@+id/tv_no_quantity"
                 app:layout_constraintTop_toTopOf="@+id/iv_add"
@@ -160,7 +160,7 @@
 
             <TextView
                 android:id="@+id/tv_price"
-                style="@style/TextView.Small.BlackPrimary"
+                android:textColor="@color/Unify_N700_68"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_8"
                 android:gravity="end"
-                android:textColor="@color/black_38"
+                android:textColor="@color/Unify_N700_32"
                 app:layout_constraintBottom_toBottomOf="@id/tv_price"
                 app:layout_constraintRight_toLeftOf="@+id/tv_sales_price"
                 app:layout_constraintTop_toTopOf="@id/tv_price"
@@ -201,7 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/divider_color"
+                android:background="@color/Unify_N75"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sales_price" />
 
 
@@ -224,7 +224,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_2"
                 android:includeFontPadding="false"
-                android:textColor="@color/red_800"
+                android:textColor="@color/Unify_Y500"
                 app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_total_payment"
@@ -240,7 +240,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_view_height"
         android:layout_gravity="bottom"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/dp_0">
 
 
@@ -262,7 +262,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">

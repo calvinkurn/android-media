@@ -23,8 +23,8 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="@drawable/feed_rounded_corners"
-        android:backgroundTint="@color/green_500"
-        android:textColor="@color/white"
+        android:backgroundTint="@color/Unify_G500"
+        android:textColor="@color/Unify_N0"
         android:gravity="center"
         android:padding="@dimen/dp_10"
         android:text="@string/feed_retry_button" />

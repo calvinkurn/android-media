@@ -32,6 +32,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     lateinit var selectionRangeCalendarViewModel: SelectionRangeCalendarViewModel
     lateinit var calendar: CalendarPickerView
 
@@ -192,7 +193,6 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         }
 
         calendar.let {
-
             it.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
                 override fun onNotifyMax() {
                     listenerMaxRange?.onNotifyMax()
@@ -210,6 +210,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                         minDate = date
                         maxDate = null
                         date_out.requestFocus()
+                        minDate?.let { dateIn -> onDateInClicked(dateIn) }
                     } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(minDate)) || (canSelectSameDay && !date.before(minDate)))) {
                         date_out.setText(dateFormat.format(date))
                         maxDate = date
@@ -230,6 +231,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
             })
         }
     }
+
+    open fun onDateInClicked(dateIn: Date) { }
 
     private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()

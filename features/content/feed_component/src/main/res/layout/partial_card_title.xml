@@ -41,7 +41,7 @@
         android:layout_gravity="center_vertical|end"
         android:layout_weight="1"
         android:gravity="center_vertical|end"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/Unify_G400"
         android:textStyle="normal"
         android:visibility="gone"
         app:typographyType="heading_6"

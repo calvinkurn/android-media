@@ -1,25 +1,20 @@
 package com.tokopedia.digital.product.view.presenter;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
+import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams;
+import com.tokopedia.common_digital.atc.data.response.ResponseCartData;
+import com.tokopedia.common_digital.atc.utils.DigitalAtcMapper;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.RechargeAnalytics;
-import com.tokopedia.common_digital.product.presentation.model.Operator;
-import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
-import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -27,10 +22,6 @@ import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseC
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
-import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -38,21 +29,23 @@ import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.product.view.model.PulsaBalance;
-import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
+import java.lang.reflect.Type;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
 import rx.Subscriber;
 
 import static com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter.GUIDE_TAB;
@@ -71,56 +64,26 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
-    private static final String DIGITAL_USSD_MOBILE_NUMBER = "DIGITAL_USSD_MOBILE_NUMBER";
-    private static final String KEY_USSD_SIM1 = "KEY_USSD_SIM1";
-    private static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
-    private static final int MAX_SIM_COUNT = 2;
-    //private String currentMobileNumber;
-    private final static String[] simSlotName = {
-            "extra_asus_dial_use_dualsim",
-            "com.android.phone.extra.slot",
-            "slot",
-            "simslot",
-            "sim_slot",
-            "subscription",
-            "Subscription",
-            "phone",
-            "com.android.phone.DialingMode",
-            "simSlot",
-            "slot_id",
-            "simId",
-            "simnum",
-            "phone_type",
-            "slotId",
-            "slotIdx"
-    };
-    private final static String balance = "balance";
     private final String PARAM_VALUE_SORT = "label";
-    //    private Activity activity;
     private DigitalAnalytics digitalAnalytics;
     private RechargeAnalytics rechargeAnalytics;
-    private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
-    private String slotKey = "com.android.phone.force.slot";
-    private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
-    private Handler ussdHandler;
-    private int ussdTimeOutTime = 30 * 1000;
-    private boolean ussdTimeOut = false;
     private CategoryData categoryData;
-    private UserSession userSession;
+    private DigitalAddToCartUseCase addToCartUseCase;
+    private UserSessionInterface userSession;
 
     @Inject
     public ProductDigitalPresenter(
             DigitalAnalytics digitalAnalytics,
             RechargeAnalytics rechargeAnalytics,
             LocalCacheHandler localCacheHandler,
-            IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
-            UserSession userSession) {
+            com.tokopedia.common_digital.atc.DigitalAddToCartUseCase addToCartUseCase,
+            UserSessionInterface userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
-        this.productDigitalInteractor = productDigitalInteractor;
+        this.addToCartUseCase = addToCartUseCase;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.userSession = userSession;
     }
@@ -177,6 +140,48 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         }
     }
 
+    @Override
+    public void addToCart(DigitalCheckoutPassData digitalCheckoutPassData,
+                          RequestBodyIdentifier digitalIdentifierParam,
+                          DigitalSubscriptionParams digitalSubscriptionParams) {
+
+        getView().onBuyButtonLoading(true);
+        addToCartUseCase.setRequestParams(
+                DigitalAddToCartUseCase.Companion.getRequestBodyAtcDigital(
+                        digitalCheckoutPassData,
+                        Integer.parseInt(userSession.getUserId()),
+                        digitalIdentifierParam,
+                        digitalSubscriptionParams
+                ), digitalCheckoutPassData.getIdemPotencyKey());
+
+        addToCartUseCase.execute(
+                (it) -> {
+                    onSuccess(it, digitalCheckoutPassData);
+                    return Unit.INSTANCE;
+                }
+                , (it) -> {
+                    onError(it);
+                    return Unit.INSTANCE;
+                }, addToCartUseCase.getRequestParams());
+    }
+
+    private void onSuccess(Map<Type, ? extends RestResponse> responseMap, DigitalCheckoutPassData digitalCheckoutPassData) {
+        Type token = new TypeToken<DataResponse<ResponseCartData>>() {
+        }.getType();
+        ResponseCartData responseCartData = ((DataResponse<ResponseCartData>) responseMap.get(token).getData()).getData();
+        if (responseCartData != null && responseCartData.getId() != null) {
+            rechargeAnalytics.eventAddToCart(DigitalAtcMapper.INSTANCE.mapToDigitalAtcTrackingModel(responseCartData,
+                    digitalCheckoutPassData, userSession.getUserId()));
+            getView().navigateToDigitalCart(digitalCheckoutPassData);
+        } else onError(new Throwable());
+        getView().onBuyButtonLoading(false);
+    }
+
+    private void onError(Throwable e) {
+        getView().showSnackBar(handleCategoryToaster(e));
+        getView().onBuyButtonLoading(false);
+    }
+
     @NonNull
     private Subscriber<ProductDigitalData> getSubscriberProductDigitalData() {
         return new Subscriber<ProductDigitalData>() {
@@ -225,6 +230,20 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 getView().sendOpenScreenEventTracking(productDigitalData.getCategoryData());
             }
         };
+    }
+
+    private String handleCategoryToaster(Throwable e) {
+        if (e instanceof UnknownHostException || e instanceof ConnectException) {
+            return ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL;
+        } else if (e instanceof SocketTimeoutException) {
+            return ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+        } else if (e instanceof ResponseErrorException
+                || e instanceof ResponseDataNullException
+                || e instanceof HttpErrorException) {
+            return e.getMessage();
+        } else {
+            return ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        }
     }
 
     private void handleCategoryError(Throwable e) {
@@ -311,285 +330,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         }
         getView().stopTrace();
         renderCheckETollBalance();
-//        renderCheckPulsa();
-    }
-
-    @Override
-    public void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode) {
-        if (checkAccessibilitySettingsOn(getView().getActivity())) {
-            if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
-                getView().registerUssdReciever();
-                dailUssdToCheckBalance(simSlot, ussdCode);
-            } else {
-                getView().showMessageAlert(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
-                        getView().getActivity().getString(R.string.message_ussd_title));
-                renderCheckPulsa();
-                getView().showMessageAlert(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed),
-                        getView().getActivity().getString(R.string.message_ussd_title));
-                digitalAnalytics.eventUssdAttempt(getView().getActivity().getString(R.string.status_failed_label) + getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
-            }
-        } else {
-            getView().showAccessibilityAlertDialog();
-        }
-    }
-
-    private void dailUssdToCheckBalance(int simPosition, String code) {
-        String ussdCode = code.replace("#", Uri.encode("#"));
-        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + ussdCode));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(slotKey, true);
-        intent.putExtra("Cdma_Supp", true);
-        //Add all slots here, according to device.. (different device require different key so put all together)
-        for (String s : simSlotName)
-            intent.putExtra(s, simPosition); //0 or 1 according to sim.......
-
-        //works only for API >= 23
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (DeviceUtil.getPhoneHandle(getView().getActivity(), simPosition) != null) {
-                intent.putExtra(accoutHandleKey, DeviceUtil.getPhoneHandle(getView().getActivity(), simPosition));
-            }
-        }
-        ussdTimeOut = false;
-        startUssdCheckBalanceTimer();
-    }
-
-    @Override
-    public void processPulsaBalanceUssdResponse(String message, int selectedSim) {
-        if (ussdTimeOut) {
-            ussdTimeOut = false;
-        } else {
-            productDigitalInteractor.porcessPulsaUssdResponse(getRequestBodyPulsaBalance(message, selectedSim),
-                    getSubscriberCheckPulsaBalance(selectedSim));
-            removeUssdTimerCallback();
-        }
-    }
-
-    @NonNull
-    private Subscriber<PulsaBalance> getSubscriberCheckPulsaBalance(final int selectedSim) {
-        return new Subscriber<PulsaBalance>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (getView() == null || getView().getActivity() == null) {
-                    return;
-                }
-            }
-
-            @Override
-            public void onNext(PulsaBalance pulsaBalance) {
-                if (getView() != null && getView().getActivity() != null) {
-                    getView().renderPulsaBalance(pulsaBalance, selectedSim);
-                }
-            }
-        };
-    }
-
-    private boolean checkAccessibilitySettingsOn(Context context) {
-        int accessibilityEnabled = 0;
-        final String service = context.getPackageName() + "/" + USSDAccessibilityService.class.getCanonicalName();
-        try {
-            accessibilityEnabled = Settings.Secure.getInt(
-                    context.getApplicationContext().getContentResolver(),
-                    android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
-        } catch (Settings.SettingNotFoundException e) {
-            Log.e(TAG, "accessibility not found: "
-                    + e.getMessage());
-        }
-        TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
-
-        if (accessibilityEnabled == 1) {
-            String settingValue = Settings.Secure.getString(
-                    context.getApplicationContext().getContentResolver(),
-                    Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-            if (settingValue != null) {
-                mStringColonSplitter.setString(settingValue);
-                while (mStringColonSplitter.hasNext()) {
-                    String accessibilityService = mStringColonSplitter.next();
-                    if (accessibilityService.equalsIgnoreCase(service)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private RequestBodyPulsaBalance getRequestBodyPulsaBalance(String message, int selectedSim) {
-        String number = getUssdPhoneNumberFromCache(selectedSim);
-        if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getDeviceMobileNumber(selectedSim);
-        }
-        RequestBodyPulsaBalance requestBodyPulsaBalance = new RequestBodyPulsaBalance();
-        requestBodyPulsaBalance.setType(balance);
-        Attributes attributes = new Attributes();
-        attributes.setOperatorId(parseStringToInt(getSelectedUssdOperator(selectedSim).getOperatorId()));
-        attributes.setMessage(message);
-        attributes.setClientNumber(number);
-        attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
-        attributes.setIdentifier(getView().getDigitalIdentifierParam());
-        requestBodyPulsaBalance.setAttributes(attributes);
-        return requestBodyPulsaBalance;
-    }
-
-    @Override
-    public List<Operator> getSelectedUssdOperatorList(int selectedSim) {
-        List<Operator> selectedOperatorList = new ArrayList<>();
-        String simOperatorName = DeviceUtil.getOperatorName(getView().getActivity(), selectedSim);
-        CategoryData categoryData = getView().getCategoryDataState();
-        if (categoryData != null && categoryData.operatorList != null) {
-            for (Operator operator : categoryData.operatorList) {
-                if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
-                    selectedOperatorList.add(operator);
-                }
-            }
-        }
-        return selectedOperatorList;
-    }
-
-    @Override
-    public Operator getSelectedUssdOperator(int selectedSim) {
-        String number = getUssdPhoneNumberFromCache(selectedSim);
-        if (number == null || "".equalsIgnoreCase(number.trim())) {
-            number = getDeviceMobileNumber(selectedSim);
-        }
-        List<Operator> selectedOperatorList = getSelectedUssdOperatorList(selectedSim);
-        for (Operator operator : selectedOperatorList) {
-            if (DeviceUtil.matchOperatorAndNumber(operator, number)) {
-                return operator;
-            }
-        }
-        if (selectedOperatorList.size() > 0)
-            return selectedOperatorList.get(0);
-        else
-            return new OperatorBuilder().createOperator();
-    }
-
-    @Override
-    public String getDeviceMobileNumber(int selectedSim) {
-        return DeviceUtil.getMobileNumber(getView().getActivity(), selectedSim);
-    }
-
-    private int parseStringToInt(String source) {
-        int result = 0;
-        if (source != null) {
-            try {
-                result = Integer.parseInt(source);
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
-    }
-
-    private void startUssdCheckBalanceTimer() {
-        ussdHandler = new Handler();
-        ussdHandler.postDelayed(() -> {
-            ussdTimeOut = true;
-            if (getView() != null && getView().getActivity() != null) {
-                getView().showPulsaBalanceError(getView().getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
-            }
-        }, ussdTimeOutTime);
-    }
-
-    @Override
-    public void removeUssdTimerCallback() {
-        if (ussdHandler != null) {
-            ussdHandler.removeCallbacksAndMessages(null);
-        }
-    }
-
-    @Override
-    public String getUssdPhoneNumberFromCache(int selectedSim) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
-        if (selectedSim == 0) {
-            return localCacheHandler.getString(KEY_USSD_SIM1);
-        } else if (selectedSim == 1) {
-            return localCacheHandler.getString(KEY_USSD_SIM2);
-        }
-        return null;
-    }
-
-    @Override
-    public void storeUssdPhoneNumber(int selectedSim, String number) {
-        number = DeviceUtil.formatPrefixClientNumber(number);
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), DIGITAL_USSD_MOBILE_NUMBER);
-        if (selectedSim == 0) {
-            localCacheHandler.putString(KEY_USSD_SIM1, number);
-        } else if (selectedSim == 1) {
-            localCacheHandler.putString(KEY_USSD_SIM2, number);
-        }
-        localCacheHandler.applyEditor();
-    }
-
-    @Override
-    public boolean isCarrierSignalsNotAvailable(String carrierName) {
-        final String noSignalStr = getView().getActivity().getString(R.string.label_no_signal);
-        final String noServiceStr = getView().getActivity().getString(R.string.label_no_service);
-        if (carrierName == null) {
-            return false;
-        }
-        carrierName = carrierName.toLowerCase();
-        return (carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()));
-    }
-
-    @Override
-    public void renderCheckPulsa() {
-        if (!GlobalConfig.isSellerApp()
-                && categoryData != null
-                && categoryData.slug.equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
-                && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && getView().isUserLoggedIn()
-                && getView().getActivity() != null) {
-            getView().removeCheckPulsaCards();
-            CategoryData categoryDataState = getView().getCategoryDataState();
-
-            if (isOperatorListAvailable(categoryDataState)) {
-                if (RequestPermissionUtil.checkHasPermission(getView().getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-                    List<Validation> validationList = categoryDataState.clientNumberList.get(0).getValidation();
-                    boolean isCheckUssdButtonActive = true;
-
-                    for (int i = 0; i < MAX_SIM_COUNT; i++) {
-                        String carrierName = DeviceUtil.getOperatorName(getView().getActivity(), i);
-                        Operator operator = getSelectedUssdOperator(i);
-                        String ussdCode = operator.getUssdCode();
-                        if (carrierName != null) {
-
-                            if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
-
-                                //show the card if signal is not available with error message
-                                if (isCarrierSignalsNotAvailable(carrierName)) {
-                                    String operatorErrorMsg = getView().getActivity().getString(R.string.label_no_signal);
-                                    carrierName = operatorErrorMsg;
-                                    getView().renderCheckPulsaBalanceData(i, ussdCode,
-                                            getPhoneNumberForSim(i, operator, validationList),
-                                            operatorErrorMsg, true, carrierName);
-                                    isCheckUssdButtonActive = true;
-                                } else {
-                                    //if check button was not active for previous sim, then do not show another card for inactive case
-                                    if (isCheckUssdButtonActive || i != (MAX_SIM_COUNT - 1)) {
-                                        getView().renderCheckPulsaBalanceData(i, ussdCode,
-                                                getPhoneNumberForSim(i, operator, validationList),
-                                                getView().getActivity().getString(R.string.label_operator_not_support),
-                                                false, carrierName);
-                                        isCheckUssdButtonActive = false;
-                                    }
-                                }
-                            } else {
-                                getView().renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), null, true, carrierName);
-                            }
-                        }
-                    }
-                } else {
-                    getView().renderCheckPulsaBalanceData(0, "", "", null, true, null);
-                }
-            }
-        }
     }
 
     private void renderCheckETollBalance() {
@@ -602,23 +342,6 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             getView().renderCheckETollBalance(categoryData.additionalFeature.getText(),
                     categoryData.additionalFeature.getButtonText());
         }
-    }
-
-    private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList) {
-        String phoneNumber = getUssdPhoneNumberFromCache(simIndex);
-        if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
-            phoneNumber = getDeviceMobileNumber(simIndex);
-            if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
-                phoneNumber = "";
-            }
-        }
-        return phoneNumber;
-    }
-
-    private boolean isOperatorListAvailable(CategoryData categoryDataState) {
-        return (categoryDataState != null &&
-                categoryDataState.operatorList != null &&
-                categoryDataState.operatorList.size() != 0);
     }
 
     @Override
@@ -637,6 +360,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
                 versionInfoApplication,
                 userLoginId);
         passData.setSource(DigitalCheckoutPassData.Companion.getPARAM_NATIVE());
+        passData.setFromPDP(true);
         return passData;
     }
 

@@ -2,35 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@color/Unify_N0"
+    android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/counterCreditCard"
-        android:padding="@dimen/dp_16"
-        tools:text="@string/payment_label_saved_card"
-        style="@style/TextView.Small"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/unify_space_16"
+        app:typographyType="body_2"
+        tools:text="@string/payment_label_saved_card" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:padding="@dimen/dp_16"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:padding="@dimen/unify_space_16" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerListPayment"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_250"/>
+        android:layout_height="1dp" />
 
-    <com.tokopedia.design.label.LabelView
+    <LinearLayout
         android:id="@+id/authenticateCreditCard"
-        android:padding="@dimen/dp_16"
-        app:lv_title="@string/payment_label_auth_credit_card"
-        app:lv_show_arrow="true"
-        app:lv_content_text_size="@dimen/sp_14"
-        app:lv_content_color="@color/black_70"
-        style="@style/LabelLayout"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/unify_space_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/payment_label_auth_credit_card"
+            android:textColor="@color/Unify_N700"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
+            android:layout_gravity="center_vertical"
+            app:icon_name="CHEVRON_RIGHT" />
+
+    </LinearLayout>
 </LinearLayout>

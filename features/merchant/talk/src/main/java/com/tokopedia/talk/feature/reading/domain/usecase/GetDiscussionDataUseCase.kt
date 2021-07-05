@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reading.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
@@ -16,17 +17,11 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
         const val PARAM_LIMIT = "limit"
         const val PARAM_SORT = "sortBy"
         const val PARAM_CATEGORY = "category"
-
-        private val query by lazy {
-            val productID = "\$productID"
-            val shopID = "\$shopID"
-            val page = "\$page"
-            val limit = "\$limit"
-            val sortBy = "\$sortBy"
-            val category = "\$category"
+        private const val TALK_DISCUSSION_DATA_QUERY_CLASS_NAME = "TalkDiscussionData"
+        private const val query =
             """
-            query discussionDataByProductID($productID: String!, $shopID: String, $page: Int!, $limit: Int!, $sortBy: String, $category: String) {
-              discussionDataByProductID(productID: $productID, shopID: $shopID, page: $page, limit: $limit, sortBy: $sortBy, category: $category) {
+            query discussionDataByProductID(${'$'}productID: String!, ${'$'}shopID: String, ${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}sortBy: String, ${'$'}category: String) {
+              discussionDataByProductID(productID: ${'$'}productID, shopID: ${'$'}shopID, page: ${'$'}page, limit: ${'$'}limit, sortBy: ${'$'}sortBy, category: ${'$'}category) {
                 shopID
                 shopURL
                 hasNext
@@ -68,12 +63,16 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                 }
               }
             }
-        """.trimIndent()
-        }
+        """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_DISCUSSION_DATA_QUERY_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkDiscussionData.GQL_QUERY)
         setTypeClass(DiscussionDataResponseWrapper::class.java)
     }
 

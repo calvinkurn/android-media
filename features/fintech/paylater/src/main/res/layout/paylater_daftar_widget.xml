@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/borderDaftar"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_0"
+            android:background="@color/Unify_B400"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/viewGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/viewGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.025" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivPaymentMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintStart_toStartOf="@id/borderDaftar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_paylater_dafter_wallet"
+            app:unify_image_corner_radius="0" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:text="@string/pay_later_register"
+            android:textSize="@dimen/unify_font_16"
+            app:layout_constraintStart_toEndOf="@+id/ivPaymentMode"
+            app:layout_constraintTop_toTopOf="@+id/ivPaymentMode"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:lineSpacingExtra="4sp"
+            android:text="@string/pay_later_widget_more_choices_description"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ivPaymentMode"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ivActionArrow"
+            android:layout_width="@dimen/pay_later_dp_36"
+            android:layout_height="@dimen/pay_later_dp_36"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            app:icon_color_light_disabled="@color/Unify_N400"
+            app:icon_color_light_enable="@color/Unify_N400"
+            app:icon_color_night_disabled="@color/Unify_N400"
+            app:icon_color_night_enable="@color/Unify_N400"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

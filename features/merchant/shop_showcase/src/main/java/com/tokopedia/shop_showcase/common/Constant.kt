@@ -39,12 +39,6 @@ object ShopShowcaseEditParam {
     const val EXTRA_IS_ACTION_EDIT = "IS_ACTION_EDIT"
 }
 
-object ShowcaseType {
-    const val GENERATED: Int = -1
-    const val CAMPAIGN: Int = -2
-    const val CUSTOM: Int = 1
-}
-
 object TextConstant {
     const val TEXT_TITLE_DIALOG_DELETE = "Yakin hapus etalase ini?"
     const val TEXT_DESCRIPTION_DIALOG_DELETE = "Dengan menghapus etalase, produk \nakan tersimpan di Semua Produk"
@@ -65,3 +59,5 @@ object PageType {
 const val TOTAL_GENERATED_ID: Int = 10
 const val MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT = 10
 const val MAX_TOTAL_SHOWCASE_PM_AND_OS = 200
+
+const val AB_TEST_ROLLOUT_ETALASE_REVAMP = "etalase_revamp_new"

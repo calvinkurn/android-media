@@ -3,19 +3,18 @@ package com.tokopedia.cart.view
 import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartResponse
-import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
 import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import java.util.*
 
@@ -36,8 +35,6 @@ interface ICartListView : CustomerView {
     fun getAllSelectedCartDataList(): List<CartItemData>?
 
     fun getCartId(): String
-
-    fun getInsuranceCartShopData(): ArrayList<InsuranceCartDigitalProduct>?
 
     fun showProgressLoading()
 
@@ -62,19 +59,19 @@ interface ICartListView : CustomerView {
 
     fun updateCashback(cashback: Double)
 
-    fun showToastMessageRed(message: String, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
+    fun showToastMessageRed(message: String, actionText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
 
-    fun showToastMessageGreen(message: String, showDefaultAction: Boolean = true)
+    fun showToastMessageRed()
 
-    fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener)
+    fun showToastMessageGreen(message: String, actionText: String = "", onClickListener: View.OnClickListener? = null)
 
     fun renderLoadGetCartData()
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean, isMoveToWishlist: Boolean, isFromGlobalCheckbox: Boolean)
 
     fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
 
@@ -84,7 +81,7 @@ interface ICartListView : CustomerView {
 
     fun stopAllCartPerformanceTrace()
 
-    fun renderRecentView(recentViewList: List<RecentView>?)
+    fun renderRecentView(recommendationWidget: RecommendationWidget?)
 
     fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
@@ -103,14 +100,6 @@ interface ICartListView : CustomerView {
     fun setHasTriedToLoadRecommendation()
 
     fun triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataResponseModel: AddToCartDataModel, productModel: Any)
-
-    fun renderInsuranceCartData(insuranceCartResponse: InsuranceCartResponse?, isRecommendation: Boolean)
-
-    fun removeInsuranceProductItem(productId: List<Long>)
-
-    fun showMessageRemoveInsuranceProductSuccess()
-
-    fun showMessageUpdateInsuranceProductSuccess()
 
     fun getAdsId(): String?
 
@@ -140,5 +129,11 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURL(recommendationItem: RecommendationItem)
 
+    fun sendATCTrackingURL(bannerShopProductViewModel: BannerShopProductViewModel)
+
     fun reCollapseExpandedDeletedUnavailableItems()
+
+    fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
+
+
 }

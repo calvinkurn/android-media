@@ -3,7 +3,8 @@ package com.tokopedia.topads.edit.view.adapter.edit_keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.GetKeywordResponse
+import com.tokopedia.topads.edit.data.KeySharedModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewholder.EditKeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordViewModel
@@ -16,9 +17,9 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
 
 
     var items: MutableList<EditKeywordViewModel> = mutableListOf()
-    var data: MutableList<Int> = mutableListOf()
+    var data: MutableList<String> = mutableListOf()
     var added: MutableList<Boolean> = mutableListOf()
-    var minBid:Int = 0
+    var minBid: String = "0"
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditKeywordViewHolder<EditKeywordViewModel> {
@@ -38,8 +39,8 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         holder.bind(items[position],added,minBid)
     }
 
-    fun getCurrentItems(): List<GetKeywordResponse.KeywordsItem> {
-        val selected: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
+    fun getCurrentItems(): List<KeySharedModel> {
+        val selected: MutableList<KeySharedModel> = mutableListOf()
         items.forEach {
             if (it is EditKeywordItemViewModel) {
                 selected.add(it.data)
@@ -48,13 +49,19 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         return selected
     }
 
-    fun getBidData(list: MutableList<Int>, isnewlyAddded: MutableList<Boolean>) {
+    fun getBidData(list: MutableList<String>, isnewlyAddded: MutableList<Boolean>) {
         this.data = list
         this.added = isnewlyAddded
         notifyDataSetChanged()
     }
 
-    fun setBid(bid: Int) {
+    fun clearList(){
+        this.items.clear()
+        this.added.clear()
+        this.data.clear()
+    }
+
+    fun setBid(bid: String) {
         minBid = bid
         notifyDataSetChanged()
     }

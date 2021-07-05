@@ -6,9 +6,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -16,16 +18,22 @@ import com.tokopedia.contactus.home.view.ContactUsHomeActivity
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
+import com.tokopedia.contactus.inboxticket2.view.customview.ChatWidgetToolTip
+import com.tokopedia.contactus.inboxticket2.view.customview.CustomChatWidgetView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
+import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.webview.KEY_TITLE
 
 private const val RAISE_TICKET_TAG = "raiseTicket"
-class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListener {
+
+class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.ChatWidgetToolTipListener, View.OnClickListener,
+        ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet {
     private var ivNoTicket: DeferredImageView? = null
     private var tvNoTicket: Typography? = null
     private var tvRaiseTicket: Typography? = null
@@ -37,10 +45,14 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private var clearSearch: View? = null
     private var mAdapter: TicketListAdapter? = null
     private var btnFilterTv: TextView? = null
+    private var chatWidget: CustomChatWidgetView? = null
+    private var chatWidgetNotification: View? = null
+    private var bottomFragment: BottomSheetDialogFragment? = null
+    private var servicePrioritiesBottomSheet: ServicePrioritiesBottomSheet? = null
 
     override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
-            mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListPresenter)
+            mAdapter = TicketListAdapter(ticketItemList, mPresenter as InboxListContract.Presenter)
         } else {
             mAdapter?.notifyDataSetChanged()
         }
@@ -96,6 +108,23 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         rvEmailList?.scrollBy(0, 0)
     }
 
+    override fun showChatBotWidget() {
+        chatWidget?.show()
+        val welcomeMessage = (mPresenter as InboxListContract.Presenter).getWelcomeMessage()
+        chatWidget?.setToolTipDescription(welcomeMessage)
+        showChatBotWidgetNotification()
+
+    }
+
+    private fun showChatBotWidgetNotification() {
+        val isShowNotifiaction = (mPresenter as InboxListContract.Presenter).getNotifiactionIndiactor()
+        chatWidgetNotification?.showWithCondition(isShowNotifiaction)
+    }
+
+    override fun hideChatBotWidget() {
+        chatWidget?.hide()
+    }
+
     override fun getLayoutRes(): Int {
         return R.layout.layout_ticket_list_activity
     }
@@ -111,11 +140,12 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun initView() {
         this.findingViewsId()
-        (mPresenter as InboxListPresenter).getTicketList(null)
+        (mPresenter as InboxListContract.Presenter).getTicketList(null)
+        (mPresenter as InboxListContract.Presenter).getTopBotStatus()
         settingOnClickListener()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
         rvEmailList?.addOnScrollListener(rvOnScrollListener)
-        editText?.setListener((mPresenter as InboxListPresenter).getSearchListener())
+        editText?.setListener((mPresenter as InboxListContract.Presenter).getSearchListener())
     }
 
     private fun findingViewsId() {
@@ -129,6 +159,8 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         editText = findViewById(R.id.custom_search)
         clearSearch = findViewById(R.id.close_search)
         btnFilterTv = findViewById(R.id.btn_filter_tv)
+        chatWidget = findViewById(R.id.chat_widget)
+        chatWidgetNotification = findViewById(R.id.chat_widget_notification_indicator)
     }
 
     private fun settingOnClickListener() {
@@ -141,8 +173,19 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         return -1
     }
 
-    override fun getBottomSheetLayoutRes(): Int {
+    override fun showBottomFragment() {
+        val BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment"
+        bottomFragment = supportFragmentManager.findFragmentByTag(BOTTOM_FRAGMENT) as BottomSheetDialogFragment?
+        if (bottomFragment == null) bottomFragment = (mPresenter as InboxListContract.Presenter).getBottomFragment(getBottomSheetLayoutRes())
+        bottomFragment?.show(supportFragmentManager, BOTTOM_FRAGMENT)
+    }
+
+    fun getBottomSheetLayoutRes(): Int {
         return R.layout.layout_bottom_sheet_fragment
+    }
+
+    override fun hideBottomFragment() {
+        bottomFragment?.dismiss()
     }
 
     override fun doNeedReattach(): Boolean {
@@ -151,7 +194,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     private fun onClickFilter(v: View) {
         if (v.id == R.id.btn_filter) {
-            (mPresenter as InboxListPresenter).onClickFilter()
+            (mPresenter as InboxListContract.Presenter).onClickFilter()
         } else if (v.id == R.id.close_search) {
             mPresenter?.clickCloseSearch()
         }
@@ -169,7 +212,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
                     InboxTicketTracking.Label.InboxEmpty)
             finish()
         } else {
-            (mPresenter as InboxListPresenter).getTicketList(null)
+            (mPresenter as InboxListContract.Presenter).getTicketList(null)
         }
     }
 
@@ -188,7 +231,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private val rvOnScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            (mPresenter as InboxListPresenter).onRecyclerViewScrolled(getLayoutManager())
+            (mPresenter as InboxListContract.Presenter).onRecyclerViewScrolled(getLayoutManager())
         }
     }
 
@@ -199,6 +242,23 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         } else if (id == R.id.tv_raise_ticket) {
             raiseTicket()
         }
+    }
+
+
+    override fun onClickToolTipButton() {
+        val presenter = mPresenter as? InboxListContract.Presenter
+        presenter?.sendGTMClickChatButton()
+        val applink = presenter?.getChatbotApplink()
+        RouteManager.route(this, applink)
+    }
+
+    override fun showSerVicePriorityBottomSheet() {
+        servicePrioritiesBottomSheet = ServicePrioritiesBottomSheet(this, this)
+        servicePrioritiesBottomSheet?.show(supportFragmentManager, "servicePrioritiesBottomSheet")
+    }
+
+    override fun onClickClose() {
+        servicePrioritiesBottomSheet?.dismiss()
     }
 
     companion object {

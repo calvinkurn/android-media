@@ -8,22 +8,22 @@ import com.tokopedia.talk.feature.write.data.model.DiscussionSubmitFormResponseW
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteButtonState
 import com.tokopedia.talk.feature.write.presentation.uimodel.TalkWriteCategory
 import com.tokopedia.talk.util.unselectedCategories
-import com.tokopedia.talk.util.verifyErrorEquals
-import com.tokopedia.talk.util.verifySuccessEquals
-import com.tokopedia.talk.util.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
-import java.lang.Exception
 
 class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when getWriteFormData success should execute expected use case and get expected data`() {
-        val productId = 0
+        val productId = "0"
         val expectedResponse = DiscussionGetWritingFormResponseWrapper()
 
         onGetDiscussionWritingForm_shouldReturn(expectedResponse)
@@ -36,7 +36,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when getWriteFormData fail should execute expected use case and fail with expected error`() {
-        val productId = 0
+        val productId = "0"
         val expectedError = NetworkErrorException()
 
         onGetDiscussionWritingFormError_shouldReturn(expectedError)
@@ -49,7 +49,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when toggleCategory should select category if not selected and vice versa`() {
-        val productId = 0
+        val productId = "0"
         val expectedResponse = DiscussionGetWritingFormResponseWrapper(DiscussionGetWritingForm(categories = unselectedCategories))
 
         onGetDiscussionWritingForm_shouldReturn(expectedResponse)
@@ -89,7 +89,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
     @Test
     fun `when getShopId should get expected shopId`() {
         val expectedShopId = "12345"
-        val productId = 0
+        val productId = "0"
         val expectedResponse = DiscussionGetWritingFormResponseWrapper(DiscussionGetWritingForm(shopId = expectedShopId))
 
         onGetDiscussionWritingForm_shouldReturn(expectedResponse)
@@ -102,7 +102,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when getProductId should return expected productId`() {
-        val expectedProductId = 0
+        val expectedProductId = "0"
 
         viewModel.setProductId(expectedProductId)
 
@@ -111,7 +111,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     @Test
     fun `when refresh should trigger load form again`() {
-        viewModel.setProductId(0)
+        viewModel.setProductId("0")
         viewModel.refresh()
 
         verifyDiscussionGetWritingFormUseCaseCalled()
@@ -155,6 +155,33 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
         verifyTalkDeleteTalkErrorEquals(Fail(exception))
     }
 
+    @Test
+    fun `when set isVariantSelected should get expected value`() {
+        val expectedIsVariantSelected = true
+
+        viewModel.isVariantSelected = expectedIsVariantSelected
+
+        Assert.assertEquals(expectedIsVariantSelected, viewModel.isVariantSelected)
+    }
+
+    @Test
+    fun `when set availableVariants should get expected value`() {
+        val availableVariants = "available variants"
+
+        viewModel.availableVariants = availableVariants
+
+        Assert.assertEquals(availableVariants, viewModel.availableVariants)
+    }
+
+    @Test
+    fun `when getUserId should get expected userId`() {
+        val expectedUserId = "102131"
+
+        onGetUserId_thenReturn(expectedUserId)
+
+        Assert.assertEquals(expectedUserId, viewModel.getUserId())
+    }
+
     private fun verifyDiscussionGetWritingFormUseCaseCalled() {
         coVerify { discussionGetWritingFormUseCase.executeOnBackground() }
     }
@@ -179,6 +206,10 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
         coEvery { discussionSubmitFormUseCase.executeOnBackground() } throws exception
     }
 
+    private fun onGetUserId_thenReturn(userId: String) {
+        every { userSession.userId } returns userId
+    }
+
     private fun verifyTalkCreateNewTalkSuccessEquals(expectedResponse: Success<DiscussionSubmitForm>) {
         viewModel.submitFormResult.verifySuccessEquals(expectedResponse)
     }
@@ -195,7 +226,7 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
         viewModel.writeFormData.verifyErrorEquals(expectedError)
     }
 
-    private fun verifyProductIdEquals(expectedProductId: Int) {
+    private fun verifyProductIdEquals(expectedProductId: String) {
         Assert.assertEquals(expectedProductId, viewModel.getProductId())
     }
 

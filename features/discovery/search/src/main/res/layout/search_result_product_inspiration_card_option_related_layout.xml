@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/inspirationCardRelatedContainer"
+    android:background="?android:selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/inspirationCardSeparator"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/inspirationCardRelatedImage"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/inspirationCardRelatedTitle"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintStart_toEndOf="@id/inspirationCardRelatedImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        tools:text="blazer wanita" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

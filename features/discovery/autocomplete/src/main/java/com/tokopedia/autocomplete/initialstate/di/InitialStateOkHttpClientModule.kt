@@ -1,11 +1,9 @@
 package com.tokopedia.autocomplete.initialstate.di
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
-import com.tokopedia.cacheapi.util.CacheApiResponseValidator
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.interceptor.DebugInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 
 import java.util.concurrent.TimeUnit
@@ -14,7 +12,6 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
-@InitialStateScope
 @Module(includes = [InitialStateInterceptorModule::class])
 class InitialStateOkHttpClientModule {
     @InitialStateScope
@@ -23,13 +20,10 @@ class InitialStateOkHttpClientModule {
     fun provideOkHttpClientNoAuth(okHttpRetryPolicy: OkHttpRetryPolicy,
                                   chuckInterceptor: ChuckerInterceptor,
                                   debugInterceptor: DebugInterceptor,
-                                  cacheApiInterceptor: CacheApiInterceptor,
                                   tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
 
-        cacheApiInterceptor.setResponseValidator(CacheApiResponseValidator())
         val clientBuilder = OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(cacheApiInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)

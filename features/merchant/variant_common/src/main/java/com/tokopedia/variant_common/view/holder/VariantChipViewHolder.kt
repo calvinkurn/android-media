@@ -12,6 +12,7 @@ import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_chip_view_holder.view.*
 import android.view.ViewGroup
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -50,19 +51,23 @@ class VariantChipViewHolder(val view: View,
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_disabled)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_32))
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                 view.isEnabled = false
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_SELECTED -> {
-                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.g_500))
+                if (context.isDarkMode()) {
+                    containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected_dark)
+                } else {
+                    containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected_light)
+                }
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 view.isEnabled = true
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_UNSELECTED -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_unselected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 view.isEnabled = true
             }
         }

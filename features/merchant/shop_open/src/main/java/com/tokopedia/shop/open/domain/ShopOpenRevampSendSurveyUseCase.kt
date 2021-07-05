@@ -4,22 +4,19 @@ package com.tokopedia.shop.open.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.open.common.GQLQueryConstant.QUERY_SHOP_OPEN_REVAMP_SEND_SURVEY_DATA
 import com.tokopedia.shop.open.data.model.SendSurveyData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class ShopOpenRevampSendSurveyUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(QUERY_SHOP_OPEN_REVAMP_SEND_SURVEY_DATA) val querySendSurvey: String
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<SendSurveyData>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): SendSurveyData {
-        val sendSurvey = GraphqlRequest(querySendSurvey, SendSurveyData::class.java, params.parameters)
+        val sendSurvey = GraphqlRequest(QUERY, SendSurveyData::class.java, params.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(sendSurvey)
         val gqlResponse = graphqlUseCase.executeOnBackground()
@@ -37,6 +34,12 @@ class ShopOpenRevampSendSurveyUseCase @Inject constructor(
 
     companion object {
         const val INPUT = "input"
+        private const val QUERY = "mutation sendSurveyData(\$input: ParamSendSurveyData!) {\n" +
+                "  sendSurveyData(input: \$input){\n" +
+                "    success\n" +
+                "  \tmessage\n" +
+                "  }\n" +
+                "}"
 
         fun createRequestParams(paramData: Map<String, Any>): RequestParams = RequestParams.create().apply {
             putObject(INPUT, paramData)

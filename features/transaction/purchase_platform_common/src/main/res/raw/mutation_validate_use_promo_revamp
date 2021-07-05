@@ -1,5 +1,5 @@
-mutation validate_use_promo_revamp($params: PromoStackRequest) {
-  validate_use_promo_revamp(params: $params) {
+mutation validate_use_promo_revamp($params: PromoStackRequest, $chosen_address: ChosenAddressParam) {
+  validate_use_promo_revamp(params: $params, chosen_address: $chosen_address) {
      status
      message
      error_code
@@ -174,8 +174,16 @@ mutation validate_use_promo_revamp($params: PromoStackRequest) {
            type
            amount_str
            amount
+           currency_details_str
          }
          sp_ids
+         promo_sp_ids {
+           unique_id
+           mvc_shipping_benefits {
+             benefit_amount
+             sp_id
+           }
+         }
        }
      }
     }

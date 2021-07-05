@@ -13,10 +13,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
-import com.tokopedia.topads.detail_sheet.data.AdData
 import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
@@ -28,6 +30,10 @@ import javax.inject.Inject
 /**
  * Author errysuprayogi on 07,May,2019
  */
+
+const val CLICK_TOGGLE_ADS = "click-toggle ads"
+const val CLICK_ATUR_IKLAN = "click - Atur Iklan"
+const val CLICK_LIHAT_DASHBOARD_TOPADS = "click - Lihat Dashboard TopAds"
 class TopAdsDetailSheet : BottomSheetUnify() {
 
     private var groupId: String = "0"
@@ -121,11 +127,13 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         editAd.setOnClickListener {
             if (category == TYPE_MANUAL) {
                 if (groupId == SINGLE_AD) {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, SINGLE_USER_ADS)
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
-                        putExtra(GROUPID, adId.toInt())
+                        putExtra(GROUPID, adId)
                     }
                     startActivityForResult(intent, EDIT_WITHOUT_GROUP_REQUEST_CODE)
                 } else {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, GROUP_USER_ADS)
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                         putExtra(GROUPID, groupId)
                     }
@@ -134,26 +142,48 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
             } else if (category == TYPE_AUTO) {
                 if (adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, PRODUCT_ADVERTISED)
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
                     startActivity(intent)
                 } else {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, PRODUCT_NOT_ADVERTISED)
                     RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
                 }
             }
         }
 
         btn_switch?.setOnClickListener {
-            when ((it as Switch).isChecked) {
-                true -> viewModel.setProductAction(::onSuccessPost, ACTION_ACTIVATE,
+            if ((it as Switch).isChecked) {
+                sendToggleEvent(TOGGLE_BUTTON_ON)
+                viewModel.setProductAction(::onSuccessPost, ACTION_ACTIVATE,
                         listOf(adId), resources, null)
-                false -> viewModel.setProductAction(::onSuccessPost, ACTION_DEACTIVATE,
+            } else {
+                sendToggleEvent(TOGGLE_BUTTON_OFF)
+                viewModel.setProductAction(::onSuccessPost, ACTION_DEACTIVATE,
                         listOf(adId), resources, null)
             }
+
         }
 
         createAd?.setOnClickListener {
+            if(category == TYPE_MANUAL) {
+                if (groupId == SINGLE_AD) {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, SINGLE_USER_ADS)
+                } else {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, GROUP_USER_ADS)
+                }
+            } else if(category == TYPE_AUTO && adId.toInt() > 0){
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, PRODUCT_ADVERTISED)
+            }
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         }
+    }
+
+    private fun sendToggleEvent(state: String) {
+        if(groupId == SINGLE_AD)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS, "$state-$SINGLE_USER_ADS")
+        else
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS, "$state-$GROUP_USER_ADS")
     }
 
     private fun isInProgress(): Boolean {
@@ -161,18 +191,21 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 currentAutoAdsStatus == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE)
     }
 
-    private fun onSuccessGroupId(data: List<AdData>) {
+    private fun onSuccessGroupId(data: List<SingleAd>) {
         data.firstOrNull().let {
             groupId = it?.groupID ?: SINGLE_AD
             btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
-        viewModel.getGroupProductData(resources, groupId.toInt(), ::onSuccessProductInfo)
+        viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
             singleAd.visibility = View.VISIBLE
             txtBudget.visibility = View.GONE
-            createGroup.setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+            createGroupLayout.setOnClickListener {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent("click-${desc.text}", "")
+                val intent =  RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                intent.putExtra(DIRECTED_FROM_MANAGE_OR_PDP,true)
+                startActivity(intent)
             }
         }
     }
@@ -201,6 +234,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     companion object {
         private const val ACTION_ACTIVATE = "toggle_on"
         private const val ACTION_DEACTIVATE = "toggle_off"
+        private const val TOGGLE_BUTTON_ON = "ON"
+        private const val TOGGLE_BUTTON_OFF= "OFF"
         private const val GROUPID = "groupId"
         private const val STATUS_ACTIVE = "1"
         private const val STATUS_TIDAK_TAMPIL = "2"
@@ -212,6 +247,10 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         private const val PRICEBID = "price_bid"
         private const val TOPADS_BOTTOM_SHEET_TAG = "SORT_FILTER_BOTTOM_SHEET_TAG"
         private const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 47
+        private const val SINGLE_USER_ADS = "manual ads user single ads"
+        private const val GROUP_USER_ADS = "manual ads user group ads"
+        private const val PRODUCT_ADVERTISED = "autoads product advertised"
+        private const val PRODUCT_NOT_ADVERTISED = "autoads product isnot advertised"
         fun newInstance(): TopAdsDetailSheet = TopAdsDetailSheet()
 
     }

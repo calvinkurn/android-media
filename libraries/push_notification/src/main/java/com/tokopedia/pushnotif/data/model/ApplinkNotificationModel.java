@@ -20,6 +20,9 @@ public class ApplinkNotificationModel {
     private String createTime;
     private String targetApp;
     private String transactionId;
+    private String mainAppPriority;
+    private String sellerAppPriority;
+    private Boolean isAdvanceTarget;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     private String[] images;
 
@@ -170,5 +173,29 @@ public class ApplinkNotificationModel {
 
     public String getBigPictureImageUrl() {
         return this.images[0];
+    }
+
+    public String getMainAppPriority() {
+        return mainAppPriority;
+    }
+
+    public void setMainAppPriority(String mainAppPriority) {
+        this.mainAppPriority = mainAppPriority;
+    }
+
+    public String getSellerAppPriority() {
+        return sellerAppPriority;
+    }
+
+    public void setSellerAppPriority(String sellerAppPriority) {
+        this.sellerAppPriority = sellerAppPriority;
+    }
+
+    public Boolean getIsAdvanceTarget() {
+        return isAdvanceTarget;
+    }
+
+    public void setIsAdvanceTarget(Boolean isAdvanceTarget) {
+        this.isAdvanceTarget = isAdvanceTarget;
     }
 }

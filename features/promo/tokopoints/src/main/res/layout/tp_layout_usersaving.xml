@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_layout_saving"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cv_saving"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tp_usersaving_height"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_saving"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:srcCompat="@drawable/ic_saving_arrow_right_grey"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_saving_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                tools:text="Hore! Kamu berhasil hemat:" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_saving_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_2"
+                android:textStyle="bold"
+                android:textColor="@color/Unify_N700"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_saving_title"
+                app:typographyType="heading_3"
+                tools:text="Rp1.500.000" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_saving_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintBottom_toBottomOf="@id/tv_saving_value"
+                app:layout_constraintStart_toEndOf="@id/tv_saving_value"
+                app:typographyType="body_3"
+                tools:text="Kamu bisa lebih hemat!" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>

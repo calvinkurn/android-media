@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/som_sub_filter_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSomSubFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/som_sub_filter_toolbar"
+        android:layout_above="@id/cvSaveSubFilter"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvSaveSubFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/layout_lvl0"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="@color/Unify_N0"
+        android:layout_alignParentBottom="true">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnSaveSubFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:text="@string/simpan"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="main" />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

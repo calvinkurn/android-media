@@ -10,12 +10,9 @@ object GQLQueryNamedConstant {
     const val SHOP_TOP_CONTENT_QUERY_NAME = "getShopInfoTopContent"
     const val SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME = "getShopInfoCoreAndAssets"
     const val SHOP_INFO_FAVORITE_QUERY_NAME = "getShopInfoFavorite"
-    const val GET_IS_OFFICIAL = "getIsOfficial"
-    const val GET_IS_POWER_MERCHANT = "getIsPowerMerchant"
-
+    const val SHOP_INFO_FOR_SHOP_SETTINGS_INFO = "getShopInfoShopSettingInfo"
 
     const val FAVORITE_STATUS_GQL = "favorite_status_gql"
-    const val SHOP_NOTES_BY_SHOP_ID = "shop_notes_by_shop_id"
     const val SHOP_REPUTATION = "shop_reputation"
     const val SHOP_RATING = "shop_rating"
     const val SHOP_SATISFACTION = "shop_satisfaction"
@@ -23,7 +20,6 @@ object GQLQueryNamedConstant {
 
     const val GO_TO_MEMBERSHIP_DETAIL = "membership detail"
     const val GO_TO_MEMBERSHIP_REGISTER = "membership register"
-    const val SHOP_TRANSACTION_STATISTIC = "gql_get_shop_transaction_statistic"
     const val GQL_CHECK_WISHLIST = "gql_check_wishlist"
     const val SHOP_PAGE_P1_QUERIES = "shop_page_p1_queries"
 }

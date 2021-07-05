@@ -65,11 +65,15 @@ class HotelEVoucherActivity : HotelBaseActivity(), HotelMenuShareSheets.HotelSha
     }
 
     override fun onShareAsImageClicked() {
-        if (::fragment.isInitialized) fragment.takeScreenshot()
+        if (::fragment.isInitialized) fragment.takeScreenshot(isShare = true)
     }
 
     override fun onShareAsPdfClicked() {
         if (::fragment.isInitialized) fragment.shareAsPdf()
+    }
+
+    override fun onSaveImageClicked() {
+        if (::fragment.isInitialized) fragment.takeScreenshot(isShare = false)
     }
 
     override fun getComponent(): HotelEVoucherComponent =

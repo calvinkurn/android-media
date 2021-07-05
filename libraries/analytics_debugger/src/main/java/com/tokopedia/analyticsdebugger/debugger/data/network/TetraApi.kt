@@ -11,8 +11,8 @@ import retrofit2.http.POST
  */
 interface TetraApi {
     @POST("api/debug/init")
-    fun init(@Body data: RequestBody) : Deferred<Response<String>>
+    suspend fun init(@Body data: RequestBody) : Response<String>
 
     @POST("api/debug/data")
-    fun send(@Body data: RequestBody) : Deferred<Response<String>>
+    suspend fun send(@Body data: RequestBody) : Response<String>
 }

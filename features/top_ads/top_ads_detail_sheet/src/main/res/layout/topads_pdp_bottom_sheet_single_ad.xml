@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
-        app:cardBackgroundColor="@color/topads_dash_cardview_color"
+        app:cardBackgroundColor="@color/Unify_N50_44"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="@dimen/dp_0"
         app:card_type="shadow_disabled"
@@ -208,7 +208,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/topads_detail_sheet_dashboard"
-                android:textColor="@color/topads_common_select_color_checked"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider"
                 app:typographyType="body_3" />
@@ -230,6 +230,7 @@
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/createGroupLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

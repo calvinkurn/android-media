@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
 data class BenefitDetailsItem(
@@ -25,8 +25,5 @@ data class BenefitDetailsItem(
 	val benefitProductDetails: List<BenefitProductDetailsItem?>? = null,
 
 		@field:SerializedName("type")
-	val type: String? = null,
-
-		@field:SerializedName("order_id")
-	val orderId: Int? = null
+	val type: String? = null
 )

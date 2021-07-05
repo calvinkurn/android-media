@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import kotlinx.android.synthetic.main.topads_insight_bottomsheet_page_1.view.*
-import javax.inject.Inject
 
 
 /**

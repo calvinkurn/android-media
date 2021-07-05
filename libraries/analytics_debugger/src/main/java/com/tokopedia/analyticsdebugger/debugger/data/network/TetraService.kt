@@ -2,7 +2,6 @@ package com.tokopedia.analyticsdebugger.debugger.data.network
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.tokopedia.config.GlobalConfig
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -22,7 +21,6 @@ class TetraService(private val context: Context) {
             tetraApi = Retrofit.Builder()
                 .baseUrl("http://172.31.2.144/")
                 .addConverterFactory(StringResponseConverter())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(createClient())
                 .build().create(TetraApi::class.java)
         return tetraApi!!

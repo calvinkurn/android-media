@@ -23,10 +23,17 @@ class TopAdsDashboardBasePagerAdapter(fm: FragmentManager, behavior: Int) : Frag
         return itemTabList[position].title
     }
 
+    fun getList(): MutableList<FragmentTabItem> = itemTabList
+
     fun setList(item: List<FragmentTabItem>) {
         item.let {
             itemTabList.clear()
             itemTabList.addAll(item)
         }
+    }
+
+    fun setTitle(title: String, position: Int) {
+        itemTabList[position].title = title
+        notifyDataSetChanged()
     }
 }

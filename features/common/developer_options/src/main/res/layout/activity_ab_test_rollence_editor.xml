@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/Neutral_N0"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_text_search_ab_test_key"
+        android:layout_width="match_parent"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:hint="@string/ab_test_rollence_edit_text_search_hint"
+        android:imeOptions="actionDone"
+        android:layout_height="wrap_content"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_ab_test_revision"
+        android:paddingStart="@dimen/dp_2"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/empty_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_lvl4"
+        android:textColor="#273238"
+        android:textSize="@dimen/fontSize_lvl7"
+        android:gravity="center"
+        android:text="@string/remote_config_empty_result_message"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/config_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

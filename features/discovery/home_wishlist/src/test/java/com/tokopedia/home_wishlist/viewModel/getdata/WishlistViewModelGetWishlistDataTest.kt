@@ -1,10 +1,12 @@
 package com.tokopedia.home_wishlist.viewModel.getdata
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
+import com.tokopedia.home_wishlist.util.Status
 import com.tokopedia.home_wishlist.viewModel.*
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -17,6 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -36,6 +39,39 @@ class WishlistViewModelGetWishlistDataTest {
     private val getSingleRecommendationUseCase = mockk<GetSingleRecommendationUseCase>(relaxed = true)
     private val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
+
+    @Test
+    fun `Test Load Initial Page and error`(){
+
+        val observer = mockk<Observer<Status>>(relaxed = true)
+        // Wishlist view model
+        wishlistViewModel = createWishlistViewModel(
+                userSessionInterface= userSessionInterface,
+                getWishlistDataUseCase = getWishlistDataUseCase,
+                topAdsImageViewUseCase = topAdsImageViewUseCase,
+                getRecommendationUseCase = getRecommendationUseCase)
+
+        wishlistViewModel.isWishlistState.observeForever(observer)
+
+
+        // User id
+        every { userSessionInterface.userId } returns mockUserId
+
+        // Get wishlist usecase throws error
+        coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(isSuccess = false, errorMessage = "")
+
+        // Live data is filled by 3 data from getWishlistData
+        wishlistViewModel.getWishlistData(shouldShowInitialPage = true)
+
+        // Expect wishlistLiveData is reset and has error model
+        Assert.assertEquals(1, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(ErrorWishlistDataModel::class.java,
+                wishlistViewModel.wishlistLiveData.value!![0].javaClass)
+
+        verify {
+            observer.onChanged(Status.LOADING)
+        }
+    }
 
     @Test
     fun `Get wishlist data doesn't increase page number when failed`(){
@@ -162,7 +198,7 @@ class WishlistViewModelGetWishlistDataTest {
     }
 
     @Test
-    fun `Recommendation widget is positioned in position 4 in every page request when fetch recom success`(){
+    fun `Recommendation widget is positioned at last position in every page request when fetch recom success`(){
 
         // Wishlist view model
         wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase, topAdsImageViewUseCase = topAdsImageViewUseCase)
@@ -184,7 +220,62 @@ class WishlistViewModelGetWishlistDataTest {
         )
 
         // User id
-        every { userSessionInterface.userId } returns mockUserId
+        every { userSessionInterface.userId } returns mockUserId andThen null
+
+
+        //  Get recommendation usecase return data
+        getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf(
+                RecommendationItem(isWishlist = true)
+        ))
+
+        // View model get wishlist data
+        wishlistViewModel.getWishlistData()
+
+
+        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget + 1 topads item)
+        Assert.assertEquals(22, wishlistViewModel.wishlistLiveData.value!!.size)
+
+        // Expect last product recommendation widget is showed
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
+        Assert.assertEquals(RecommendationCarouselDataModel::class.java,
+                wishlistViewModel.wishlistLiveData.value!![lastIndex].javaClass)
+
+
+        wishlistViewModel.onProductClick(0, wishlistViewModel.wishlistLiveData.value!!.size, 0)
+        Assert.assertTrue(wishlistViewModel.productClickActionData.value != null)
+
+        wishlistViewModel.onPDPActivityResultForWishlist(0, true)
+        Assert.assertTrue((wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
+
+
+        Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
+        Assert.assertEquals(wishlistViewModel.getUserId(), "")
+    }
+
+    @Test
+    fun `Recommendation widget is positioned at last position in every page request when fetch recom success and try click with null position click`(){
+
+        // Wishlist view model
+        wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase, topAdsImageViewUseCase = topAdsImageViewUseCase)
+
+        topAdsImageViewUseCase.givenGetImageData(arrayListOf(TopAdsImageViewModel(imageUrl = "")))
+
+        // Get wishlist usecase returns empty wishlist data
+        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
+
+        // Get wishlist usecase returns 9 wishlist item data in a request
+        coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
+                items = listOf(
+                        WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
+                        WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
+                        WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
+                        WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
+                ),
+                hasNextPage = false
+        )
+
+        // User id
+        every { userSessionInterface.userId } returns mockUserId andThen null
 
 
         //  Get recommendation usecase return data
@@ -195,16 +286,75 @@ class WishlistViewModelGetWishlistDataTest {
         // View model get wishlist data
         wishlistViewModel.getWishlistData()
 
+        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget + 1 topads item)
+        Assert.assertEquals(22, wishlistViewModel.wishlistLiveData.value!!.size)
 
-        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget)
-        Assert.assertEquals(21, wishlistViewModel.wishlistLiveData.value!!.size)
-
-        wishlistViewModel.getNextPageWishlistData()
-
-        // Expect every 4 product recommendation widget is showed
+        // Expect every last row, product recommendation widget is showed
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![25].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![lastIndex].javaClass)
 
+
+        Assert.assertTrue(wishlistViewModel.productClickActionData.value == null)
+
+        wishlistViewModel.onPDPActivityResultForWishlist(0, true)
+
+
+        Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
+        Assert.assertEquals(wishlistViewModel.getUserId(), "")
+    }
+
+    @Test
+    fun `Recommendation widget is positioned in last position in every page request when fetch recom success and try click`(){
+
+        // Wishlist view model
+        wishlistViewModel = createWishlistViewModel(userSessionInterface= userSessionInterface, getWishlistDataUseCase = getWishlistDataUseCase, getRecommendationUseCase = getRecommendationUseCase, topAdsImageViewUseCase = topAdsImageViewUseCase)
+
+        topAdsImageViewUseCase.givenGetImageData(arrayListOf(TopAdsImageViewModel(imageUrl = "")))
+
+        // Get wishlist usecase returns empty wishlist data
+        getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf())
+
+        // Get wishlist usecase returns 9 wishlist item data in a request
+        coEvery { getWishlistDataUseCase.getData(any()) } returns WishlistEntityData(
+                items = listOf(
+                        WishlistItem(id="1"), WishlistItem(id="2"), WishlistItem(id="3"), WishlistItem(id="4"), WishlistItem(id="5"),
+                        WishlistItem(id="6"), WishlistItem(id="7"), WishlistItem(id="8"), WishlistItem(id="9"), WishlistItem(id="10"),
+                        WishlistItem(id="11"), WishlistItem(id="12"), WishlistItem(id="13"), WishlistItem(id="14"), WishlistItem(id="15"),
+                        WishlistItem(id="16"), WishlistItem(id="17"), WishlistItem(id="18"), WishlistItem(id="19"), WishlistItem(id="20")
+                ),
+                hasNextPage = false
+        )
+
+        // User id
+        every { userSessionInterface.userId } returns mockUserId andThen null
+
+
+        //  Get recommendation usecase return data
+        getRecommendationUseCase.givenRepositoryGetRecommendationDataReturnsThis(listOf(
+                RecommendationItem()
+        ))
+
+        // View model get wishlist data
+        wishlistViewModel.getWishlistData()
+
+        // Expect wishlistLiveData has 21 items (20 wishlist data + 1 recommendation widget + 1 topads item)
+        Assert.assertEquals(22, wishlistViewModel.wishlistLiveData.value!!.size)
+
+        // Expect every last row, product recommendation widget is showed
+        val lastIndex = wishlistViewModel.wishlistLiveData.value!!.size-1
+        Assert.assertEquals(RecommendationCarouselDataModel::class.java,
+                wishlistViewModel.wishlistLiveData.value!![lastIndex].javaClass)
+
+
+        Assert.assertTrue(wishlistViewModel.productClickActionData.value == null)
+
+        wishlistViewModel.onPDPActivityResultForWishlist(0, true)
+        Assert.assertTrue(!(wishlistViewModel.wishlistLiveData.value!![lastIndex] as RecommendationCarouselDataModel).list[0].recommendationItem.isWishlist)
+
+
+        Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
+        Assert.assertEquals(wishlistViewModel.getUserId(), "")
     }
 
     @Test
@@ -284,7 +434,7 @@ class WishlistViewModelGetWishlistDataTest {
 
 
         // Expect wishlistLiveData has 3 new wishlist data
-        Assert.assertEquals(3, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(wishlistViewModel.wishlistLiveData.value!!.size, wishlistViewModel.wishlistLiveData.value!!.size)
     }
 
 
@@ -361,6 +511,7 @@ class WishlistViewModelGetWishlistDataTest {
         wishlistViewModel.getWishlistData()
 
         // Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation
+        Assert.assertEquals(wishlistViewModel.getUserId(), mockUserId)
         Assert.assertEquals(6, wishlistViewModel.wishlistLiveData.value!!.size)
         Assert.assertEquals(EmptyWishlistDataModel::class.java,
                 wishlistViewModel.wishlistLiveData.value!![0].javaClass)

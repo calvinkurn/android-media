@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/daily_budget_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_dash_recom_daily_budget_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/daily_budget_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintTop_toBottomOf="@id/daily_budget_title"
+            app:typographyType="body_3" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDailyBudget"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/daily_budget_desc"
+            tools:itemCount="2"
+            tools:listitem="@layout/topads_dash_recon_daily_budget_item" />
+
+        <include
+            android:id="@+id/emptyViewDailyBudgetRecommendation"
+            layout="@layout/topads_dash_insight_empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

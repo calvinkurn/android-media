@@ -1,11 +1,12 @@
 package com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.domain.usecase.DigitalRecommendationUseCase
-import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationResponse
+import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,24 +17,26 @@ class DigitalRecommendationViewModel @Inject constructor(
         private val digitalRecommendationUseCase: DigitalRecommendationUseCase,
          @CoroutineMainDispatcher dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val digitalRecommendationLiveData = MutableLiveData<Result<DigitalRecommendationList>>()
+    private val _digitalRecommendationLiveData = MutableLiveData<Result<RechargeRecommendationDigiPersoItem>>()
+    val digitalRecommendationLiveData: LiveData<Result<RechargeRecommendationDigiPersoItem>> = _digitalRecommendationLiveData
 
-    fun getDigitalRecommendationData(deviceId: Int, categoryId: String) {
+    fun getDigitalRecommendationData(clientNumber: String, pgCategoryIds: List<Int>, pageType: ThankPageType) {
         digitalRecommendationUseCase.cancelJobs()
         digitalRecommendationUseCase.getDigitalRecommendationData(
                 ::onDigitalRecomDataSuccess,
                 ::onDigitalRecomError,
-                deviceId,
-                categoryId
+                clientNumber,
+                pgCategoryIds,
+                pageType
         )
     }
 
-    private fun onDigitalRecomDataSuccess(digitalRecommendationList: DigitalRecommendationList) {
-        digitalRecommendationLiveData.value = Success(digitalRecommendationList)
+    private fun onDigitalRecomDataSuccess(digitalRecommendationList: RechargeRecommendationDigiPersoItem) {
+        _digitalRecommendationLiveData.value = Success(digitalRecommendationList)
     }
 
     private fun onDigitalRecomError(throwable: Throwable) {
-        digitalRecommendationLiveData.value = Fail(throwable)
+        _digitalRecommendationLiveData.value = Fail(throwable)
     }
 
     override fun onCleared() {

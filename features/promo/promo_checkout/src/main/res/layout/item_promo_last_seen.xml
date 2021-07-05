@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_2"
     android:padding="@dimen/dp_4"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="@color/Unify_N0"
     app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="@dimen/dp_4">
 
@@ -21,24 +21,24 @@
             android:id="@+id/descPromo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
             android:layout_marginBottom="@dimen/dp_10"
-            android:textColor="@color/Neutral_N700_68"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
             tools:text="Waktunya Kulineran! Beli Voucher Makannya, Cashback hingga Rp20…" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/descPromoDeals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_68"
             android:layout_marginBottom="@dimen/dp_10"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="Waktunya Kulineran! Beli Voucher Makannya, Cashback hingga Rp20…    " />
 
         <LinearLayout
@@ -54,13 +54,21 @@
                 app:srcCompat="@drawable/ic_voucher_promo_green" />
 
             <com.tokopedia.unifyprinciples.Typography
-                style="@style/TextView.Micro.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_5"
-                android:text="@string/promo_label_promo_code" />
+                android:text="@string/promo_label_promo_code"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/voucherCode"
-                style="@style/TextView.Micro.Orange.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_Y500"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:text="VOUCHER HEMAT" />
         </LinearLayout>
     </LinearLayout>

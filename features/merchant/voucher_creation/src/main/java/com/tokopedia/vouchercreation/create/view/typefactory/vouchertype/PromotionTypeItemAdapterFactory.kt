@@ -14,10 +14,11 @@ import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.item.*
 import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
 import com.tokopedia.vouchercreation.create.view.viewholder.vouchertype.item.*
 
-class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeItemTypeFactory, VoucherCommonTypeFactory, CreateVoucherTypeFactory {
+class PromotionTypeItemAdapterFactory(private val onClickableSpanClickedListener: RecommendationTickerViewHolder.OnClickableSpanClickedListener? = null)
+    : BaseAdapterTypeFactory(), PromotionTypeItemTypeFactory, VoucherCommonTypeFactory, CreateVoucherTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             PromotionTypeTickerViewHolder.LAYOUT -> PromotionTypeTickerViewHolder(parent)
             VoucherTextFieldViewHolder.LAYOUT -> VoucherTextFieldViewHolder(parent)
             PromotionExpenseEstimationViewHolder.LAYOUT -> PromotionExpenseEstimationViewHolder(parent)
@@ -26,6 +27,7 @@ class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeI
             PromotionTypeInputListViewHolder.LAYOUT -> PromotionTypeInputListViewHolder(parent)
             UnavailableTickerViewHolder.LAYOUT -> UnavailableTickerViewHolder(parent)
             VoucherTitleViewHolder.LAYOUT -> VoucherTitleViewHolder(parent)
+            RecommendationTickerViewHolder.LAYOUT -> RecommendationTickerViewHolder(parent, onClickableSpanClickedListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -37,4 +39,5 @@ class PromotionTypeItemAdapterFactory : BaseAdapterTypeFactory(), PromotionTypeI
     override fun type(promotionTypeInputListUiModel: PromotionTypeInputListUiModel): Int = PromotionTypeInputListViewHolder.LAYOUT
     override fun type(unavailableTickerUiModel: UnavailableTickerUiModel): Int = UnavailableTickerViewHolder.LAYOUT
     override fun type(voucherTitleUiModel: VoucherTitleUiModel): Int = VoucherTitleViewHolder.LAYOUT
+    override fun type(recommendationTickerUiModel: RecommendationTickerUiModel): Int = RecommendationTickerViewHolder.LAYOUT
 }

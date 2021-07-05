@@ -25,6 +25,8 @@ import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
 
@@ -64,13 +66,13 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
         initView()
 
-        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        bookingViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
@@ -154,7 +156,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             contactData.phone = til_contact_phone_number.getEditableValue()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
-            bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_upsert_travel_contact_list),
+            bookingViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT,
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                             phoneCountryCode = contactData.phoneCode))
 

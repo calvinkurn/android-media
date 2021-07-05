@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.common.travel.utils.TextHtmlUtils
@@ -36,6 +37,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -44,6 +46,7 @@ import com.tokopedia.hotel.orderdetail.data.model.TitleContent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_CATEGORY
 import com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity.Companion.KEY_ORDER_ID
+import com.tokopedia.hotel.orderdetail.presentation.activity.SeeInvoiceActivity
 import com.tokopedia.hotel.orderdetail.presentation.adapter.ContactAdapter
 import com.tokopedia.hotel.orderdetail.presentation.adapter.TitleTextAdapter
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
@@ -118,7 +121,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        orderDetailViewModel.orderDetailData.observe(this, Observer {
+        orderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderTransactionDetail(it.data)
@@ -140,7 +143,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             stopTrace()
         })
 
-        orderDetailViewModel.crossSellData.observe(this, Observer {
+        orderDetailViewModel.crossSellData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderCrossSelling(it.data)
                 is Fail -> {
@@ -174,12 +177,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (userSessionInterface.isLoggedIn) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL)) {
                 orderDetailViewModel.getOrderDetail(
-                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
-                        GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_cross_selling),
+                        HotelGqlQuery.ORDER_DETAILS,
+                        TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
                         orderId, orderCategory)
             } else {
                 orderDetailViewModel.getOrderDetail(
-                        GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_order_list_detail),
+                        HotelGqlQuery.ORDER_DETAILS,
                         null,
                         orderId, orderCategory)
             }
@@ -224,8 +227,11 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     private fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        if (orderDetail.status.textColor.isNotEmpty())
+        if (orderDetail.status.textColor.isNotEmpty()){
             transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
+        }else{
+            transaction_status.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400_96))
+        }
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -243,7 +249,13 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             invoice_see_button.visibility = if (orderDetail.invoice.invoiceUrl.isNotBlank()) View.VISIBLE else View.GONE
             if (orderDetail.invoice.invoiceUrl.isNotBlank()) {
                 invoice_see_button.setOnClickListener {
-                    RouteManager.route(context, orderDetail.invoice.invoiceUrl)
+                    startActivity(
+                            SeeInvoiceActivity.newInstance(
+                                    requireContext(),
+                                    orderDetail.invoice.invoiceUrl,
+                                    orderDetail.invoice.invoiceRefNum
+                            )
+                    )
                 }
             }
         }
@@ -291,10 +303,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             room_info.text = propertyDetail.room.first().content
 
             for (amenity in propertyDetail.room.first().amenities) {
-                val amenityTextView = TextView(context)
-                amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                amenityTextView.text = amenity.content
-                room_amenities.addView(amenityTextView)
+                if (context != null) {
+                    val amenityTextView = Typography(requireContext())
+                    amenityTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    amenityTextView.text = amenity.content
+                    room_amenities.addView(amenityTextView)
+                }
             }
         }
 
@@ -382,10 +396,10 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        if (orderDetail.contactUs.helpText.isNotBlank()) {
-            val helpLabel = TextView(context)
+        if (orderDetail.contactUs.helpText.isNotBlank() && context != null) {
+            val helpLabel = Typography(requireContext())
             helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
                     orderDetail.contactUs.helpUrl)
@@ -411,7 +425,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
                 if (button.weight == 1) {
                     buttonCompat.background = ContextCompat.getDrawable(it, R.drawable.bg_hotel_rect_rounded_stroke_gray)
-                    buttonCompat.setTextColor(ContextCompat.getColor(it, R.color.hotel_grey_500))
+                    buttonCompat.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N200))
                 } else if (button.weight == 2) {
                     buttonCompat.buttonType = UnifyButton.Type.TRANSACTION
                 }
@@ -444,7 +458,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
                     context?.let {
-                        ds.color = ContextCompat.getColor(it, R.color.hotel_green_250) // specific color for this link
+                        ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400) // specific color for this link
                     }
                 }
             }, hyperlinkIndex, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

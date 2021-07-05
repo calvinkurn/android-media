@@ -1,25 +1,22 @@
 package com.tokopedia.common.topupbills.view.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
 
 /**
  * Created by nabillasabbaha on 09/05/19.
  */
-class TopupBillsProductTabAdapter(val tabList: MutableList<TopupBillsTabItem>, fm: FragmentManager)
-    : FragmentStatePagerAdapter(fm) {
+class TopupBillsProductTabAdapter(
+        fragment: Fragment,
+        private val tabList: MutableList<TopupBillsTabItem>)
+    : FragmentStateAdapter(fragment) {
 
-    override fun getItem(position: Int): Fragment {
-        return tabList[position].fragment
-    }
-
-    override fun getCount(): Int {
+    override fun getItemCount(): Int {
         return tabList.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return tabList[position].title
+    override fun createFragment(position: Int): Fragment {
+        return tabList[position].fragment
     }
 }

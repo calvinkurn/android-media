@@ -6,21 +6,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.TouchDelegate
 import android.view.View
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import android.widget.ImageView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.digital.R
 
-class DigitalCartMyBillsView : BaseCustomView {
+class DigitalCartMyBillsView : FrameLayout {
 
     private lateinit var titleContainer: ConstraintLayout
-    private lateinit var headerTitleTextView: TextViewCompat
+    private lateinit var headerTitleTextView: TextView
     private lateinit var subscriptionCheckbox: CheckBox
-    private lateinit var descriptionTextView: TextViewCompat
+    private lateinit var descriptionTextView: TextView
     private lateinit var moreInfoIcon: ImageView
 
     private var moreInfoClickListener: OnMoreInfoClickListener? = null

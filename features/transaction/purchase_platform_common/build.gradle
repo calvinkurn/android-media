@@ -16,15 +16,19 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+
+    viewBinding {
+        enabled true
+    }
 }
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
     }
     dependencies {
@@ -34,7 +38,6 @@ buildscript {
 }
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
@@ -44,7 +47,9 @@ dependencies {
     implementation rootProject.ext.firebase.core
 
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icons
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -62,7 +67,8 @@ dependencies {
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
+    implementation project(rootProject.ext.features.localizationchooseaddress)
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//

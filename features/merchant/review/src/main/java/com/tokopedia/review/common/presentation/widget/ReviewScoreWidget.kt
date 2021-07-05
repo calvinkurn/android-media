@@ -84,14 +84,14 @@ class ReviewScoreWidget : BaseCustomView {
                 this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_bad_active)
                 this.reviewDetailScoreText.apply {
                     text = context.getString(R.string.review_detail_score_bad)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
                 }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
                 this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_neutral_active)
                 this.reviewDetailScoreText.apply {
                     text = context.getString(R.string.review_detail_score_mediocre)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300))
                 }
             }
             // ReviewConstants.REPUTATION_SCORE_EXCELLENT
@@ -99,7 +99,7 @@ class ReviewScoreWidget : BaseCustomView {
                 this.reviewDetailScoreSmiley.loadImageDrawable(R.drawable.ic_smiley_great_active)
                 this.reviewDetailScoreText.apply {
                     text = context.getString(R.string.review_detail_score_excellent)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 }
             }
         }

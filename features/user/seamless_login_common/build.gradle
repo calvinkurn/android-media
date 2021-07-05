@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    mavenCentral()
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    api (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.sessioncommon)
+
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+
+    implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+
+    implementation rootProject.ext.debugToolsDependencies.chuck
+
+    //test
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
+    testImplementation project(rootProject.ext.libraries.tkpddesign)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+}
+
+project.ext {
+    artifactId = 'seamless-login-common'
+    groupId = 'com.tokopedia.user'
+    versionName = "0.0.2"
+    artifactName ="seamless_login_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

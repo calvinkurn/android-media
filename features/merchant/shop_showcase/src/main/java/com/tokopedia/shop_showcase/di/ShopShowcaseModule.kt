@@ -6,11 +6,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 @Module
-@ShopShowcaseScope
 class ShopShowcaseModule {
 
     @ShopShowcaseScope
@@ -24,9 +21,4 @@ class ShopShowcaseModule {
     @ShopShowcaseScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
-
-    @ShopShowcaseScope
-    @Provides
-    fun provideMainDispatcherProvider(): CoroutineDispatcher = Dispatchers.Main
-
 }

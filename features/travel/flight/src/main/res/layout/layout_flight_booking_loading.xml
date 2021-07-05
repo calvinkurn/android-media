@@ -6,29 +6,29 @@
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:background="@color/Unify_N0"
+    android:padding="@dimen/spacing_lvl4">
 
     <ProgressBar
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48" />
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_loading_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:gravity="center"
         android:text="@string/flight_booking_dialog_loading_title"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_loading_subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:gravity="center"
-        android:lineSpacingExtra="@dimen/dp_2"
+        android:lineSpacingExtra="@dimen/spacing_lvl1"
         app:typographyType="body_2"
         tools:text="Makan roti pakai meses\nPesananmu lagi diproses" />
 

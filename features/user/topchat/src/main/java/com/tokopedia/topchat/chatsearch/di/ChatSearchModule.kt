@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 
 
 @Module
-@ChatSearchScope
 class ChatSearchModule {
 
     @ChatSearchScope
@@ -27,5 +26,4 @@ class ChatSearchModule {
     fun provideGqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetChatSearchResponse> {
         return GraphqlUseCase(graphqlRepository)
     }
-
 }

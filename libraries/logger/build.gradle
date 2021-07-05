@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -13,11 +13,7 @@ buildscript {
 }
 
 dependencies {
-    implementation(rootProject.ext.debugToolsDependencies.timber) {
-        exclude group: 'org.jetbrains', module: 'annotations'
-    }
 
-    implementation project(rootProject.ext.libraries.encryption)
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -25,6 +21,7 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+    testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.kotlinMockito
@@ -38,3 +35,4 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../jacoco_task.gradle'

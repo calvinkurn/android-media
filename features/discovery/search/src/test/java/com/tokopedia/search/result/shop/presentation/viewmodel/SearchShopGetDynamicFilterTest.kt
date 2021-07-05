@@ -8,7 +8,7 @@ import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import org.junit.Test
 
-internal class SearchShopGetDynamicFilterTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopGetDynamicFilterTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Get Dynamic Filter Successful`() {

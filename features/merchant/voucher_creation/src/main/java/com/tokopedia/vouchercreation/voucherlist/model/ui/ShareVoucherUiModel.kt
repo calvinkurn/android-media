@@ -12,7 +12,9 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.So
 data class ShareVoucherUiModel(
         @DrawableRes val icon: Int,
         val socmedName: String,
-        @SocmedType val type: Int
+        @SocmedType val type: Int,
+        val status: Int = 0,
+        val quota: Int = 0
 ) : Visitable<ShareVoucherFactory> {
 
     override fun type(typeFactory: ShareVoucherFactory): Int {

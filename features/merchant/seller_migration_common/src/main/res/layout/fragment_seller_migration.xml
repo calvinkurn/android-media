@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_2"
                 android:text="@string/seller_migration_fragment_header_title" />
 
@@ -42,7 +42,7 @@
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:text="@string/seller_migration_fragment_advantages_title"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_4" />
 
             <include
@@ -66,7 +66,7 @@
                 android:layout_marginLeft="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:text="@string/seller_migration_fragment_body_title"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_4" />
 
             <com.tokopedia.unifycomponents.TabsUnify
@@ -79,8 +79,14 @@
                     android:id="@+id/tabProduct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:text="@string/seller_migration_fragment_tab_product" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabDiscussion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_migration_fragment_tab_discussion" />
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabChat"

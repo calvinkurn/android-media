@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,43 +8,54 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventGridModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
-import com.tokopedia.entertainment.home.analytics.EventHomePageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_grid_adapter_item.view.*
 
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
-                                                         onSuccess: (EventItemModel) -> Unit,
-                                                         onError: (Throwable) -> Unit) -> Unit))
-    : HomeEventViewHolder<EventGridModel>(itemView) {
+class EventGridEventViewHolder(itemView: View,
+                               val gridlistener: TrackingListener,
+                               val clickGridListener: ClickGridListener
+)
+    : AbstractViewHolder<EventGridModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action)
+    var itemAdapter = InnerItemAdapter(gridlistener, clickGridListener)
 
     init {
-        itemView.ent_recycle_view.apply {
+        itemView.ent_recycle_view_grid.apply {
             layoutManager = GridLayoutManager(itemView.context, 2, LinearLayoutManager.VERTICAL, false)
             adapter = itemAdapter
         }
     }
 
     override fun bind(element: EventGridModel) {
+        itemView.ent_title_card.show()
+        itemView.btn_see_all.show()
+        itemView.ent_recycle_view_grid.show()
         itemView.ent_title_card.text = element.title
         itemAdapter.titleGrid = element.title
         itemAdapter.setList(element.items)
         itemView.btn_see_all.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
-                    , element.id,  "", "")
-            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title,
+            gridlistener.clickSeeAllCuratedEventProduct(element.title,
                     adapterPosition + 1)
+            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
+                    , element.id, "", "")
+        }
+        if(element.items.isEmpty()){
+            itemView.ent_title_card.gone()
+            itemView.btn_see_all.gone()
+            itemView.ent_recycle_view_grid.gone()
         }
     }
 
@@ -56,9 +66,9 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         val TAG = EventGridEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter(val action: (data: EventItemModel,
-                                        onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit)
+    class InnerItemAdapter(val gridlistener: TrackingListener,
+                           val clickGridListener: ClickGridListener
+    )
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -79,35 +89,19 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
             holder.view.txt_location.text = item.location
             holder.view.txt_title.text = item.title
             holder.view.txt_price.text = item.price
-            if (item.isLiked) {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-            } else {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-            }
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, item.appUrl)
-                EventHomePageTracking.getInstance().clickSectionEventProduct(item, items, titleGrid,
+                gridlistener.clickSectionEventProduct(item, items, titleGrid,
                         position + 1)
+                //todo navcontroller pdp
+                clickGridListener.redirectToPDPEvent(item.seoURL)
             }
             holder.view.addOnImpressionListener(item, {
-                EventHomePageTracking.getInstance().impressionSectionEventProduct(item, items, titleGrid,
+                gridlistener.impressionSectionEventProduct(item, items, titleGrid,
                         position + 1)
             })
-            holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
-            }
         }
 
-        fun onSuccessPostLiked(data: EventItemModel) {
-            notifyItemChanged(pos)
-        }
-
-        fun onErrorPostLiked(throwable: Throwable) {
-            notifyItemChanged(pos)
-            Log.e(TAG, throwable.localizedMessage)
-        }
-
-        fun setList(list : MutableList<EventItemModel>){
+        fun setList(list: MutableList<EventItemModel>) {
             items = list
             notifyDataSetChanged()
         }
@@ -116,5 +110,9 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
     }
 
     class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+
+    interface ClickGridListener{
+        fun redirectToPDPEvent(applink: String)
+    }
 
 }

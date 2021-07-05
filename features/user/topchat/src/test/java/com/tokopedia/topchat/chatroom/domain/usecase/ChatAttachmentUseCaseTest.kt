@@ -3,12 +3,13 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.FileUtil
-import com.tokopedia.topchat.TopchatTestCoroutineContextDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -27,13 +28,13 @@ class ChatAttachmentUseCaseTest {
     lateinit var onSuccess: (ArrayMap<String, Attachment>) -> Unit
     @RelaxedMockK
     lateinit var onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
-    private val dispatchers: TopchatCoroutineContextProvider = TopchatTestCoroutineContextDispatcher()
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
     private val mapper: ChatAttachmentMapper = ChatAttachmentMapper()
 
     private lateinit var useCase: ChatAttachmentUseCase
 
     object Dummy {
-        const val msgId: Int = 123123
+        const val msgId: Long = 123123L
         const val attachmentId: String = "213213"
 
         val throwable = Throwable()
@@ -54,7 +55,10 @@ class ChatAttachmentUseCaseTest {
         // Given
         coEvery { gqlUseCase.executeOnBackground() } returns Dummy.successResponse
         // When
-        useCase.getAttachments(Dummy.msgId, Dummy.attachmentId, onSuccess, onError)
+        useCase.getAttachments(
+                Dummy.msgId, Dummy.attachmentId, LocalCacheModel(),
+                onSuccess, onError
+        )
         // Then
         verify { onSuccess.invoke(any()) }
     }
@@ -64,7 +68,9 @@ class ChatAttachmentUseCaseTest {
         // Given
         coEvery { gqlUseCase.executeOnBackground() } throws Dummy.throwable
         // When
-        useCase.getAttachments(Dummy.msgId, Dummy.attachmentId, onSuccess, onError)
+        useCase.getAttachments(
+                Dummy.msgId, Dummy.attachmentId, LocalCacheModel(), onSuccess, onError
+        )
         // Then
         verify { onError.invoke(Dummy.throwable, any()) }
     }

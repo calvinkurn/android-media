@@ -146,26 +146,26 @@ public class ButtonCompat extends AppCompatButton {
     private void defineType() {
         switch (mType) {
             case PRIMARY:
-                initDraw(R.color.white, R.drawable.bg_button_green);
+                initDraw(R.color.Unify_N0, R.drawable.bg_button_green);
                 super.setEnabled(true);
                 break;
             case PRIMARY_DISABLED:
-                initDraw(R.color.grey_500, R.drawable.bg_button_green);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N200, R.drawable.bg_button_green);
                 super.setEnabled(false);
                 break;
             case SECONDARY:
-                initDraw(R.color.grey_500, R.drawable.bg_button_white_border);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N200, R.drawable.bg_button_white_border);
                 break;
             case TRANSACTION:
-                initDraw(R.color.white, R.drawable.bg_button_orange);
+                initDraw(R.color.Unify_N0, R.drawable.bg_button_orange);
                 break;
             case WHITE_TRANSPARENT:
-                initDraw(R.color.white, R.drawable.bg_button_white_transparent);
+                initDraw(R.color.Unify_N0, R.drawable.bg_button_white_transparent);
             case GHOST:
-                initDraw(R.color.bg_button_green_border_outline, R.drawable.bg_button_green_border);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_G500, R.drawable.bg_button_green_border);
                 break;
             case WHITE:
-                initDraw(R.color.grey_button_compat, R.drawable.bg_button_white);
+                initDraw(com.tokopedia.unifyprinciples.R.color.Unify_N700_68, R.drawable.bg_button_white);
                 break;
             case DISABLE:
                 break;

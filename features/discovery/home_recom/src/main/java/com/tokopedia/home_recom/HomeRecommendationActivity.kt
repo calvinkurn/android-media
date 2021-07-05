@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -22,9 +24,10 @@ import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragme
  *
  * A activity class for default activity when opening recommendation page from deeplink
  */
+@SuppressLint("GoogleAppIndexingApiWarning")
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
-        const val PRODUCT_ID = "PRODUCT_ID"
+        private const val PRODUCT_ID = "PRODUCT_ID"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -40,6 +43,12 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
     }
 
+    override fun getParentViewResourceID(): Int = com.tokopedia.home_recom.R.id.recom_container
+
+    override fun getLayoutRes(): Int = com.tokopedia.home_recom.R.layout.recommendation_activity
+
+    override fun getToolbarResourceID(): Int = com.tokopedia.home_recom.R.id.recom_toolbar
+
     /**
      * [getNewFragment] is override from [BaseSimpleActivity]
      * @return default fragment it will shown at activity
@@ -51,13 +60,16 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
                         getSimilarRecomPageProductId(),
                         getRef(),
                         getSource(),
-                        getInternalRef())
+                        getInternalRef(),
+                        FragmentInflater.ACTIVITY
+                )
                 else RecommendationFragment
                         .newInstance(
                                 getRecomPageProductId(),
                                 getSource(),
                                 getRef(),
-                                getInternalRef())
+                                getInternalRef(),
+                                FragmentInflater.ACTIVITY)
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)
@@ -130,7 +142,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
-            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber( intent.data?.pathSegments?.get(0) ?: "")){
+            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber(intent.data?.pathSegments?.get(0)
+                            ?: "")){
                 RecommendationPageTracking.eventUserClickBackWithProductId()
             }else{
                 RecommendationPageTracking.eventUserClickBack()

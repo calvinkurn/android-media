@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_shipping"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/iv_location_shipping"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +37,7 @@
         android:layout_marginTop="@dimen/dp_14"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_edit_location"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_location_shipping" />
@@ -50,7 +50,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_action_manage_shipping_service"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_edit_location" />

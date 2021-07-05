@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import dagger.Binds
@@ -15,7 +14,6 @@ import dagger.multibindings.IntoMap
  * A class dagger module for handling viewModel
  */
 @Module
-@HomeRecommendationScope
 abstract class ViewModelModule {
     @Binds
     @HomeRecommendationScope
@@ -25,11 +23,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RecommendationPageViewModel::class)
     internal abstract fun recommendationItemViewModel(viewModel: RecommendationPageViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(PrimaryProductViewModel::class)
-    internal abstract fun primaryItemViewModel(viewModel: PrimaryProductViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -3,8 +3,10 @@ package com.tokopedia.play_common.viewcomponent
 import android.content.res.Resources
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -29,6 +31,8 @@ abstract class ViewComponent(
     protected fun getString(@StringRes stringRes: Int, vararg value: Any): String {
         return rootView.context.getString(stringRes, *value)
     }
+
+    protected fun getColor(@ColorRes colorRes: Int): Int = MethodChecker.getColor(rootView.context, colorRes)
 
     protected val resources: Resources
         get() = rootView.resources

@@ -1,17 +1,17 @@
 package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author normansyahputa on 3/17/17.
  */
 public class ReputationViewHelper {
 
-    private TextView textHeaderReputation;
+    private Typography textHeaderReputation;
     private ReputationView sellerReputationHeaderView;
 
     public ReputationViewHelper(View itemView) {
@@ -22,12 +22,12 @@ public class ReputationViewHelper {
     }
 
     public void renderData(ShopModel shopModel) {
-        ReputationView.ReputationViewModel reputationViewModel = new ReputationView.ReputationViewModel();
-        reputationViewModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
-        reputationViewModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
-        reputationViewModel.reputationPoints = shopModel.stats.shopReputationScore;
-        reputationViewModel.stats = shopModel.stats;
+        ReputationView.ReputationUiModel reputationUiModel = new ReputationView.ReputationUiModel();
+        reputationUiModel.typeMedal = shopModel.stats.shopBadgeLevel.set;
+        reputationUiModel.levelMedal = shopModel.stats.shopBadgeLevel.level;
+        reputationUiModel.reputationPoints = shopModel.stats.shopReputationScore;
+        reputationUiModel.stats = shopModel.stats;
 
-        sellerReputationHeaderView.init(reputationViewModel);
+        sellerReputationHeaderView.init(reputationUiModel);
     }
 }

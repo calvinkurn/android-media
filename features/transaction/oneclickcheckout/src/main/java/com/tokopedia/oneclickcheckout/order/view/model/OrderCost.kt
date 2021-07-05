@@ -8,5 +8,6 @@ data class OrderCost(
         val paymentFee: Double = 0.0,
         val shippingDiscountAmount: Int = 0,
         val productDiscountAmount: Int = 0,
-        val cashbacks: List<Pair<String, String>> = emptyList()
+        val purchaseProtectionPrice: Int = 0,
+        val cashbacks: List<OrderCostCashbackData> = emptyList()
 )

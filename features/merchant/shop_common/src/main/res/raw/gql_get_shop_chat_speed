@@ -1,5 +1,0 @@
-query productShopChatSpeedQuery($shopId: Int){
-  ProductShopChatSpeedQuery(shopId: $shopId){
-    messageResponseTime
-  }
-}

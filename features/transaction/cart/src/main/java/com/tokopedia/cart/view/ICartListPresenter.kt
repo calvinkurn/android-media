@@ -1,16 +1,10 @@
 package com.tokopedia.cart.view
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
-import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -33,7 +27,11 @@ interface ICartListPresenter {
 
     fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean)
 
-    fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, addWishList: Boolean, removeInsurance: Boolean, forceExpandCollapsedUnavailableItems: Boolean = false)
+    fun processDeleteCartItem(allCartItemData: List<CartItemData>,
+                              removedCartItems: List<CartItemData>,
+                              addWishList: Boolean,
+                              forceExpandCollapsedUnavailableItems: Boolean = false,
+                              isFromGlobalCheckbox: Boolean = false)
 
     fun processUndoDeleteCartItem(cartIds: List<String>);
 
@@ -43,7 +41,7 @@ interface ICartListPresenter {
 
     fun processUpdateCartCounter()
 
-    fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
+    fun reCalculateSubTotal(dataList: List<CartShopHolderData>)
 
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
@@ -91,14 +89,6 @@ interface ICartListPresenter {
 
     fun generateAddToCartEnhanceEcommerceDataLayer(cartRecommendationItemHolderData: CartRecommendationItemHolderData, addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any>
 
-    fun getInsuranceTechCart()
-
-    fun processDeleteCartInsurance(insuranceCartShopsArrayList: ArrayList<InsuranceCartDigitalProduct>, showToaster: Boolean)
-
-    fun updateInsuranceProductData(insuranceCartShops: InsuranceCartShops, updateInsuranceProductApplicationDetailsArrayList: ArrayList<UpdateInsuranceProductApplicationDetails>)
-
-    fun setAllInsuranceProductsChecked(insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>, isChecked: Boolean)
-
     fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any>
 
     fun redirectToLite(url: String)
@@ -124,4 +114,10 @@ interface ICartListPresenter {
     fun setLastApplyNotValid()
 
     fun setLastApplyValid()
+
+    fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>)
+
+    fun followShop(shopId: String)
+
+    fun doClearAllPromo()
 }

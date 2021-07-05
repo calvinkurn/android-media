@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_marginTop="@dimen/unify_space_4"
+    android:padding="@dimen/unify_space_16"
+    android:background="@color/Unify_N0"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/include3"
+        layout="@layout/home_account_profile_shimmer"
+   />
+
+    <include
+        android:layout_marginTop="18dp"
+        layout="@layout/home_account_financial_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:layout_marginTop="18dp"
+        layout="@layout/home_account_member_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:layout_marginTop="18dp"
+        layout="@layout/home_account_common_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:layout_marginTop="18dp"
+        layout="@layout/home_account_common_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

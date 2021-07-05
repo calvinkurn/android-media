@@ -15,7 +15,7 @@ class RewardIntroActivity : BaseSimpleActivity() {
         updateTitle(resources.getString(R.string.tp_title_tokopoints))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = resources.getDimension(com.tokopedia.design.R.dimen.dp_0)
+            toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         }
     }
 

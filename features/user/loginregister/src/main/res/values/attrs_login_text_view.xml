@@ -6,7 +6,7 @@
         <attr name="backgroundColor" format="color" />
         <attr name="borderColor" format="color"/>
         <attr name="borderSize" format="integer"/>
-        <attr name="cornerSize" format="integer"/>
+        <attr name="loginTextViewCornerSize" format="integer"/>
         <attr name="iconButton" format="integer"/>
         <attr name="imageEnabled" format="boolean"/>
         <attr name="btn_padding" format="dimension" />

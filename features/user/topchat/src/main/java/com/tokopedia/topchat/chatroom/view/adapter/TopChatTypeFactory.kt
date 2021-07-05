@@ -5,11 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
-import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
-import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -43,5 +42,10 @@ interface TopChatTypeFactory {
     fun type(stickerUiModel: StickerUiModel): Int
 
     fun type(broadcastSpamHandlerUiModel: BroadcastSpamHandlerUiModel): Int
+
+    fun type(broadCastUiModel: BroadCastUiModel): Int
+
+    fun type(reviewUiModel: ReviewUiModel): Int
+    fun type(srwBubbleUiModel: SrwBubbleUiModel): Int
 
 }

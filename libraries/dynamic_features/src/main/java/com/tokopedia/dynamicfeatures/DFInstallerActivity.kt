@@ -28,6 +28,8 @@ import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
 import com.tokopedia.dynamicfeatures.utils.PlayServiceUtils
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
@@ -128,8 +130,13 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun logDownloadPage() {
-        Timber.w("P1#DFM_DOWNLOAD_PAGE#download;mod_name=%s;dl_service=%s;deeplink='%s';fallback_url='%s'",
-                moduleName, allowRunningServiceFromActivity, deeplink, fallbackUrl)
+        ServerLogger.log(Priority.P1, "DFM_DOWNLOAD_PAGE",
+                mapOf("type" to "download",
+                        "mod_name" to moduleName,
+                        "dl_service" to allowRunningServiceFromActivity.toString(),
+                        "deeplink" to deeplink,
+                        "fallback_url" to fallbackUrl
+                ))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -296,14 +303,14 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         errorList.add(errorCodeTemp)
         when (errorCodeTemp) {
             SplitInstallErrorCode.PLAY_STORE_NOT_FOUND.toString() -> {
-                updateInformationView(R.drawable.unify_globalerrors_500,
+                updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                         getString(R.string.download_error_play_store_title),
                         getString(R.string.download_error_play_store_subtitle),
                         getString(R.string.goto_playstore),
                         { PlayServiceUtils.gotoPlayStore(this) },
                         getString(R.string.continue_without_install))
             }
-            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.unify_globalerrors_500,
+            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_os_and_play_store_title),
                     getString(R.string.download_error_os_and_play_store_subtitle),
                     getString(R.string.goto_seting),
@@ -315,7 +322,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                     getString(R.string.goto_seting),
                     { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) },
                     getString(R.string.continue_without_install))
-            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.unify_globalerrors_connection,
+            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
                     getString(R.string.download_error_connection_title),
                     getString(R.string.download_error_connection_subtitle),
                     getString(R.string.df_installer_try_again),
@@ -329,7 +336,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                     getString(R.string.goto_playstore),
                     { PlayServiceUtils.gotoPlayStore(this) },
                     getString(R.string.continue_without_install))
-            else -> updateInformationView(R.drawable.unify_globalerrors_500,
+            else -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again),
@@ -360,7 +367,12 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             button_cta.text = ctaText
             button_cta.setOnClickListener { _ ->
                 RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, fallbackUrl)?.let { it ->
-                    Timber.w("P1#DFM_FALLBACK#click;mod_name=$moduleName;deeplink='$deeplink';url='$fallbackUrl'")
+                    ServerLogger.log(Priority.P1, "DFM_FALLBACK",
+                            mapOf("type" to "click",
+                                    "mod_name" to moduleName,
+                                    "deeplink" to deeplink,
+                                    "url" to fallbackUrl
+                            ))
                     startActivity(it)
                     finish()
                 }

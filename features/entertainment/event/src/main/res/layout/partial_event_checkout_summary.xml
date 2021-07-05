@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -17,7 +17,7 @@
         android:text="@string/ent_event_checkout_summary_title"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         />
 
 
@@ -39,7 +39,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Neutral_N100"
+        android:background="@color/Unify_N100"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tg_event_checkout_summary_price_title"
         android:text="@string/ent_event_checkout_summary_total"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:typographyWeight="bold"
         app:typographyType="body_2"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tg_event_checkout_summary_price_price"
         tools:text="Rp 12,698,400"
-        android:textColor="@color/orange_500"
+        android:textColor="@color/Unify_Y500"
         app:typographyWeight="bold"
         app:typographyType="body_2"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -94,7 +94,7 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/dimen_dp_20"
-        android:textColorLink="@color/green_500"
+        android:textColorLink="@color/Unify_G500"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

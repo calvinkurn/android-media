@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.homepage.presentation.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 

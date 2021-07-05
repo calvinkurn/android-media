@@ -52,7 +52,10 @@ class TravelCollectiveBannerModel(@SerializedName("banners")
                          val appUrl: String = "",
                          @SerializedName("type")
                          @Expose
-                         val type: String = "")
+                         val type: String = "",
+                         @SerializedName("label")
+                         @Expose
+                         val label: String = "")
 
     data class Response(@SerializedName("travelCollectiveBanner")
                         @Expose

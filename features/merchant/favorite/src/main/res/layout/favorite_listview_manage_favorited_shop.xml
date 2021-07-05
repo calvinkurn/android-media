@@ -28,9 +28,7 @@
             android:id="@+id/layout_shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
-            android:layout_toRightOf="@+id/shop_avatar"
             android:layout_toEndOf="@+id/shop_avatar"
             android:gravity="center"
             android:maxLines="1">
@@ -38,15 +36,15 @@
                 android:id="@+id/image_badge"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:layout_marginRight="@dimen/margin_vs"
                 android:layout_marginEnd="@dimen/margin_vs"
+                android:contentDescription="@null"
                 android:visibility="gone">
             </ImageView>
             <TextView
                 android:id="@+id/shop_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/favorite_href_link"
+                android:textColor="@color/favorite_href_link_dms"
                 android:textSize="@dimen/fontvs"
                 tool:text="Shop Name"/>
         </LinearLayout>
@@ -55,9 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/layout_shop_name"
-            android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
-            android:layout_toRightOf="@+id/shop_avatar"
             android:layout_toEndOf="@+id/shop_avatar"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -68,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textColor="@color/label_color"
+                android:textColor="@color/Unify_N300"
                 android:textSize="@dimen/fontvs"/>
 
         </LinearLayout>
@@ -78,7 +74,6 @@
             android:id="@+id/fav_area"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
@@ -87,9 +82,8 @@
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="@dimen/img_thumb_m"
-                android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginEnd="@dimen/margin_small"
-                android:background="@color/label_color" />
+                android:background="@color/Unify_N300" />
 
             <ImageView
                 android:id="@+id/fav_button"

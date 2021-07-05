@@ -11,7 +11,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@ReviewProductListScope
 abstract class ReviewProductListViewModelModule {
 
     @ReviewProductListScope

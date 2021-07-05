@@ -14,7 +14,6 @@ import javax.inject.Named
  */
 
 @Module
-@HotelEVoucherScope
 class HotelEVoucherModule {
 
     @HotelEVoucherScope

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_category_grid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,17 +23,16 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_desc"
-        android:contentDescription="@string/content_desc_text_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:lines="2"
         android:maxWidth="@dimen/dp_64"
+        app:typographyType="body_3"
         android:gravity="top|center_horizontal"
         android:layout_below="@id/image_icon"
-        android:layout_centerHorizontal="true"
-        style="@style/TextView.Micro" />
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

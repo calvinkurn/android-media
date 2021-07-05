@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/dp_25"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -64,7 +64,7 @@
             style="@style/Button.Submit.White.Border"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/cancel"
+            android:text="@string/general_label_cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_confirmation"
             app:layout_constraintStart_toStartOf="parent"

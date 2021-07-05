@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_80"
-    android:background="@color/black">
+    android:background="@color/Unify_N700">
 
     <ImageView
         android:id="@+id/video_thumbnail"
         android:layout_width="@dimen/dp_120"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:tint="@color/cardview_shadow_start_color" />
+        android:contentDescription="@null"
+        android:tint="@color/Unify_N700_20" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_play"

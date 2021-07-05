@@ -139,11 +139,14 @@ class DigitalTopupAnalytics {
     }
 
     fun eventClickDotsMenuTelco(categoryId: String, userId: String) {
+        var category = getTrackingCategoryName(categoryId.toIntOrNull() ?: 0)
+        if (categoryId.isEmpty()) category = categoryId
+
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_DOTS_MENU,
-                "${getTrackingCategoryName(categoryId.toInt())}")
+                category)
         sendGeneralEvent(mapEvent, userId)
     }
 
@@ -232,7 +235,7 @@ class DigitalTopupAnalytics {
             putString(DigitalTopupEventTracking.Additional.CURRENT_SITE, DigitalTopupEventTracking.Additional.CURRENT_SITE_RECHARGE)
             putString(DigitalTopupEventTracking.Additional.USER_ID, userId)
             putString(DigitalTopupEventTracking.Additional.BUSINESS_UNIT, DigitalTopupEventTracking.Additional.BUSINESS_UNIT_RECHARGE)
-            putStringArrayList(DigitalTopupEventTracking.Additional.VALUE_ITEM_LIST, productListName)
+            putString(DigitalTopupEventTracking.Additional.VALUE_ITEM_LIST, productListName.toString())
             putParcelableArrayList(DigitalTopupEventTracking.Additional.VALUE_ITEMS, productTelcoList)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalTopupEventTracking.Event.VIEW_ITEM_LIST, eventDataLayer)

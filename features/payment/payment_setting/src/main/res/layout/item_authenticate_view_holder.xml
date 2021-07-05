@@ -4,45 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingLeft="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_10">
+    android:background="@color/Unify_N0"
+    android:paddingLeft="@dimen/unify_space_4"
+    android:paddingRight="@dimen/unify_space_4">
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_4"
-        app:cardCornerRadius="@dimen/dp_5"
-        app:cardElevation="@dimen/dp_3"
-        app:cardPreventCornerOverlap="false"
-        app:contentPadding="@dimen/dp_16">
+        android:padding="@dimen/unify_space_16"
+        app:card_type="shadow">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/titleAuthenticate"
-                style="@style/TextView.Small.Bold.BlackSecondary"
-                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_toLeftOf="@+id/radioSelectedAuth"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:layout_toStartOf="@+id/radioSelectedAuth"
+                android:textColor="@color/Unify_N700"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold"
                 tools:text="Verifikasi oleh Tokopedia" />
 
-            <androidx.appcompat.widget.AppCompatRadioButton
+            <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
                 android:id="@+id/radioSelectedAuth"
-                style="@style/RadioButton.Big"
-                android:layout_alignParentRight="true" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:padding="@dimen/unify_space_4" />
 
-            <TextView
-                android:layout_toLeftOf="@+id/radioSelectedAuth"
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/descriptionAuthType"
-                style="@style/TextView.Micro.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/titleAuthenticate"
-                android:text="Anda akan diminta memasukkan angka CVV disetiap transaksi. Verifikasi via SMS atau sidik jari hanya diperlukan untuk transaksi tertentu." />
+                android:layout_toStartOf="@+id/radioSelectedAuth"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2"
+                tools:text="Anda akan diminta memasukkan angka CVV disetiap transaksi. Verifikasi via SMS atau sidik jari hanya diperlukan untuk transaksi tertentu." />
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
-
+    </com.tokopedia.unifycomponents.CardUnify>
 </FrameLayout>

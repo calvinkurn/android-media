@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieSirRatingIllustration"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/sah_dimen_280dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btnSirCloseRating"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_name="CLOSE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSirRatingTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/sir_default_title"
+        android:textAlignment="center"
+        android:textColor="@color/light_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lottieSirRatingIllustration"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSirRatingMessage"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:text="@string/sir_default_message"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSirRatingTitle"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
+        android:id="@+id/ratePickerSirRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sah_dimen_20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSirRatingMessage"
+        app:show_description="false" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSirStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_12"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratePickerSirRating"
+        app:layout_goneMarginTop="@dimen/sah_dimen_12dp"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Memuaskan" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSirSubmit"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:enabled="false"
+        android:text="@string/sir_send"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSirStatus" />
+</androidx.constraintlayout.widget.ConstraintLayout>

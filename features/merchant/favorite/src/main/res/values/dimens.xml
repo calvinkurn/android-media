@@ -13,4 +13,6 @@
 
     <dimen name="fontvs">12sp</dimen>
     <dimen name="font_medium">16sp</dimen>
+
+    <dimen name="favorite_button_width">200dp</dimen>
 </resources>

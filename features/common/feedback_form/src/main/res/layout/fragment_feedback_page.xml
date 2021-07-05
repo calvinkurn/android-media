@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_16"
+    android:enabled="false"
+    android:background="@color/Neutral_N0"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/svFeedbackForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/frame_button"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvImageFeedback"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_8"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="visible"
+                tools:listitem="@layout/item_image_chooser_feedback" />
+
+            <RelativeLayout
+                android:id="@+id/email_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rvImageFeedback">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_email_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/tokopedia_separator"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:hint="@string/email">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tokopedia_separator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignBottom="@id/et_email_wrapper"
+                    android:layout_alignTop="@id/et_email_wrapper"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:textSize="@dimen/sp_16"
+                    android:text="@string/tokopedia_email"
+                    app:typographyType="body_3"/>
+
+            </RelativeLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_type_report"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@id/email_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/Neutral_N700_68"
+                android:text="Type of report"
+                app:typographyType="body_3"/>
+
+            <LinearLayout
+                android:id="@+id/filterReport"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_type_report">
+
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/filterBugs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:chipSize="medium"
+                    app:chipText="Bugs"
+                    app:chipType="disabled" />
+
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/filterFeedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    app:chipSize="medium"
+                    app:chipText="Feedback"
+                    app:chipType="disabled" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bugsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/filterReport"
+                app:layout_constraintStart_toStartOf="parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_bug_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:layout_constraintTop_toBottomOf="@id/filterReport"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@string/category"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"/>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_bug_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tv_bug_type"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:hint="@string/category">
+
+                    <Spinner
+                        android:id="@+id/bugType"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:layout_weight="0" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_pages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/page"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_affected_page_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/page"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:focusable="false"
+                        android:hint="Tell us in which page the bug occured*"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_journey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/bugs_detail"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_str_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/journey"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:maxLines="10"
+                        android:hint="Explain how you encountered the bug*"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_journey_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_str_wrapper"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@string/tv_journey"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_expected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/expected_behavior"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_expected_result_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/expectedResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:maxLines="10"
+                        android:hint="Tell us the expected behavior"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/feedbackLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/filterReport"
+                app:layout_constraintStart_toStartOf="parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/feedback"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/et_feedback_wrapper"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/feedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:maxLines="10"
+                        android:hint="Tell us what to improve"
+                        android:overScrollMode="always"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        android:textSize="@dimen/sp_14"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/frame_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/submitButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="Submit"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+</RelativeLayout>

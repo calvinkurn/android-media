@@ -3,6 +3,8 @@ package com.tokopedia.digital.home.analytics
 import android.os.Bundle
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingActionConstant.ALL_BANNERS_CLICK
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingActionConstant.BACK_BUTTON_CLICK
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
@@ -28,11 +30,24 @@ import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameCon
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingEventNameConstant.VIEW_ITEM
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.ORDER_LIST
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingLabelConstant.TOPUP_BILLS
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
 class RechargeHomepageAnalytics {
+
+    fun eventHomepageLaunched(userId: String) {
+        val linkerData = LinkerData().apply {
+            this.userId = userId
+        }
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
+                LinkerConstants.EVENT_DIGITAL_HOMEPAGE, linkerData
+        ))
+    }
 
     fun eventClickOrderList() {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_TOPUP_BILLS, DIGITAL_HOMEPAGE_CATEGORY, DYNAMIC_ICON_CLICK, ORDER_LIST)
@@ -141,6 +156,25 @@ class RechargeHomepageAnalytics {
                 SCREEN_NAME to SCREEN_NAME_TOPUP_BILLS,
                 USER_ID to userId
         )
+    }
+
+    fun sliceOpenApp(userId: String){
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, "clickGAMain",
+                TrackAppUtils.EVENT_CATEGORY, "ga main app",
+                TrackAppUtils.EVENT_ACTION, "click open app button",
+                TrackAppUtils.EVENT_LABEL, "",
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ))
+    }
+
+    fun onOpenPageFromSlice() {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                RechargeAnalytics.EVENT_KEY, "openScreen",
+                RechargeAnalytics.EVENT_SCREEN_NAME, "recharge homepage - from voice search - mainapp"
+        ))
     }
 
     companion object {

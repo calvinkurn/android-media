@@ -3,7 +3,7 @@
     android:id="@+id/cl_select_location"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:orientation="vertical"
@@ -20,7 +20,7 @@
             android:id="@+id/rv_location_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Neutral_N0"/>
+            android:background="@color/Unify_N0"/>
 
     </LinearLayout>
 

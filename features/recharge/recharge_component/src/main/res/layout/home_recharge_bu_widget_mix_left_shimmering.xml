@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="344dp">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/bu_widget_mix_top_header"
+        android:layout_width="180dp"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:corners="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:corners="8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/bu_widget_mix_top_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bu_widget_mix_top_header" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="160dp"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@+id/bu_widget_mix_top_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bu_widget_mix_top_container">
+
+        <include layout="@layout/home_recharge_bu_widget_product_card_shimmering" />
+
+        <include
+            layout="@layout/home_recharge_bu_widget_product_card_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/spacing_lvl4" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

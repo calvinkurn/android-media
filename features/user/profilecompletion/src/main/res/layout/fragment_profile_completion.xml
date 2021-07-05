@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <ProgressBar
         android:id="@+id/loading_layout"
@@ -21,13 +21,13 @@
         android:padding="@dimen/dp_20ium_prof_comp"
         android:orientation="vertical">
         <include
-            android:id="@id/header"
+            android:id="@+id/header"
             layout="@layout/fragment_profile_completion_header"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
 
         <LinearLayout
-            tools:background="@color/colorAccent"
+            tools:background="@color/Unify_G500"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"

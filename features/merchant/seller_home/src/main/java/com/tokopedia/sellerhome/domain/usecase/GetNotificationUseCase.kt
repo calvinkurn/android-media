@@ -38,22 +38,17 @@ class GetNotificationUseCase(
         private const val QUERY = "query getNotifications(\$typeId:Int!) {\n" +
                 "  notifications {\n" +
                 "    chat {\n" +
-                "      unreads\n" +
                 "      unreadsSeller\n" +
-                "      unreadsUser\n" +
                 "    }\n" +
                 "    sellerOrderStatus {\n" +
                 "      newOrder\n" +
                 "      readyToShip\n" +
-                "      shipped\n" +
-                "      arriveAtDestination\n" +
                 "    }\n" +
                 "  }\n" +
                 "  notifcenter_unread(type_id:\$typeId) {\n" +
-                "    notif_unread\n" +
                 "    notif_unread_int\n" +
                 "  }\n" +
-                "  status\n" +
+                "  status\n" + //Don't remove `status` field since it's necessary for refresh token flow
                 "}"
 
         private const val TYPE_ID = "typeId"

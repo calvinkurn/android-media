@@ -14,7 +14,7 @@
         android:text="@string/uoh_finish_order_desc"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
-        android:textColor="@color/light_N700_96"/>
+        android:textColor="@color/Unify_N700_96"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_ls_kembali"

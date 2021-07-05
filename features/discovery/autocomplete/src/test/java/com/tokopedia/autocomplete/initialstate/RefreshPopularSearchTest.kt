@@ -1,13 +1,15 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.shouldBe
 import io.mockk.every
-import org.junit.Assert
 import org.junit.Test
 import rx.Subscriber
 
+private const val multiplePopularResponse = "autocomplete/initialstate/multiple-popular-search.json"
 private const val popularSearchCommonResponse = "autocomplete/initialstate/refresh-popular-search-response.json"
 private const val popularSearchNoExactIdResponse = "autocomplete/initialstate/refresh-with-no-popular-search-id-response.json"
 
@@ -27,20 +29,39 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
 
     @Test
     fun `Test refresh popular search data`() {
+        val multiplePopularSearchData = multiplePopularResponse.jsonToObject<InitialStateUniverse>().data
         val refreshedPopularSearchData = popularSearchCommonResponse.jsonToObject<InitialStateUniverse>().data
-        `Test Refresh Popular Search`(initialStateCommonData, refreshedPopularSearchData)
+        `Test Refresh Popular Search`(multiplePopularSearchData, refreshedPopularSearchData)
 
-        `Then verify refreshPopularSearch view behavior`()
-        `Then verify visitable list after refresh popular search`()
+        `Then verify refreshPopularSearch view behavior`(4)
+        `Then verify visitable list after refresh dynamic initial state data`(multiplePopularSearchData, refreshedPopularSearchData)
     }
 
-    private fun `Then verify visitable list after refresh popular search`() {
-        val refreshVisitableList = slotRefreshVisitableList.captured
+    private fun `Then verify visitable list after refresh dynamic initial state data`(
+            initialStateData: List<InitialStateData>,
+            refreshedInitialStateData: List<InitialStateData>
+    ) {
         val visitableList = slotVisitableList.captured
 
-        Assert.assertTrue(
-                (refreshVisitableList[5] as PopularSearchViewModel).list.size == (visitableList[5] as PopularSearchViewModel).list.size
-        )
+        val refreshedPopularSearchNewSection = refreshedInitialStateData.find { it.featureId == ID_POPULAR_SEARCH }!!
+        val refreshedPopularSearchDataView = visitableList[5] as PopularSearchDataView
+
+        refreshedPopularSearchDataView.verifyPopularSearch(refreshedPopularSearchNewSection)
+
+        val popularSearchTitle = visitableList[6] as PopularSearchTitleDataView
+        val popularSearchDataView = visitableList[7] as PopularSearchDataView
+        val popularSearchData = initialStateData.find { it.featureId == popularSearchTitle.featureId }!!
+
+        popularSearchDataView.verifyPopularSearch(popularSearchData)
+    }
+
+    private fun PopularSearchDataView.verifyPopularSearch(dynamicInitialStateData: InitialStateData) {
+        list.size shouldBe dynamicInitialStateData.items.size
+
+        list.forEachIndexed { index, dynamicInitialStateItemDataView ->
+            dynamicInitialStateItemDataView.title shouldBe dynamicInitialStateData.items[index].title
+            dynamicInitialStateItemDataView.subtitle shouldBe dynamicInitialStateData.items[index].subtitle
+        }
     }
 
     @Test

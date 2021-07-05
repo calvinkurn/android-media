@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Yehezkiel on 29/04/20
  */
 data class ProductFeedbackFilterResponse(
-        @SerializedName("productrevFeedbackDataPerProduct")
+        @SerializedName("productrevFeedbackDataPerProductV2")
         val productrevFeedbackDataPerProduct: ProductFeedbackFilterData = ProductFeedbackFilterData()
 )
 
@@ -28,5 +28,5 @@ data class ProductFeedbackFilterData(
         @SerializedName("topics")
         val topics: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic> = listOf(),
         @SerializedName("reviewCount")
-        val reviewCount: Int = 0
+        val reviewCount: Long = 0
 )

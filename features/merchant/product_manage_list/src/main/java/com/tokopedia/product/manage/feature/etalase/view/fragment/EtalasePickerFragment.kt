@@ -3,12 +3,7 @@ package com.tokopedia.product.manage.feature.etalase.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -250,11 +245,11 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
 
     private fun showErrorToast() {
         view?.let {
-            val message = getString(R.string.product_manage_snack_bar_fail)
-            val actionText = getString(R.string.product_manage_snack_bar_retry)
-            Toaster.make(it, message, Toaster.TYPE_ERROR, Toaster.LENGTH_LONG, actionText, View.OnClickListener {
+            val message = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail)
+            val actionText = getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+            Toaster.build(it, message, Toaster.TYPE_ERROR, Toaster.LENGTH_LONG, actionText, View.OnClickListener {
                 getEtalaseList()
-            })
+            }).show()
         }
     }
 }

@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 // Uoh = Unified Order History
 class UohListActivity: BaseSimpleActivity() {
 
-    override fun getNewFragment(): UohListFragment? {
+    override fun getNewFragment(): UohListFragment {
         val bundle = Bundle()
         scanPathQuery(intent.data)
         if (intent != null && intent.extras != null) {

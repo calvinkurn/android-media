@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPaylaterFaq"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/paylater_card_faq_item" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSeeMore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        android:gravity="center"
+        android:text="@string/pay_later_faq_see_more"
+        android:textSize="@dimen/unify_font_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvPaylaterFaq"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

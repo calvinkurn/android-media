@@ -18,7 +18,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@ProfileCompletionSettingScope
 abstract class ProfileCompletionViewModelsModule {
     @Binds
     @ProfileCompletionSettingScope

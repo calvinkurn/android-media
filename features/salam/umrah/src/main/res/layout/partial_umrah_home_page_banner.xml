@@ -7,7 +7,7 @@
 
     <com.tokopedia.banner.Banner
         android:visibility="gone"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:id="@+id/banner_umrah_home_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

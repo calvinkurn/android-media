@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
-import com.tokopedia.deals.common.utils.DealsDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.search.model.response.CuratedData
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class DealsBrandCategoryActivityViewModel @Inject constructor(
         private val chipsCategoryUseCase: GetChipsCategoryUseCase,
-        dispatcher: DealsDispatcherProvider
-) : BaseViewModel(dispatcher.io()) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val privateCuratedData = MutableLiveData<CuratedData>()
     val curatedData: LiveData<CuratedData>
@@ -27,18 +27,9 @@ class DealsBrandCategoryActivityViewModel @Inject constructor(
         get() = privateErrorMessage
 
     fun getCategoryCombindedData() {
-        launchCatchError(block = {
-            privateCuratedData.postValue(getChipCategory())
-        }){
-            privateErrorMessage.postValue(it)
-        }
+        launch { chipsCategoryUseCase.execute(onGetCategorySuccess(), onErrorGetCategory()) }
     }
 
-    private suspend fun getChipCategory(): CuratedData {
-        return try {
-            return chipsCategoryUseCase.executeOnBackground()
-        } catch (t: Throwable) {
-            throw t
-        }
-    }
+    private fun onGetCategorySuccess(): (CuratedData) -> Unit = { privateCuratedData.value = it }
+    private fun onErrorGetCategory(): (Throwable) -> Unit = { privateErrorMessage.value = it }
 }

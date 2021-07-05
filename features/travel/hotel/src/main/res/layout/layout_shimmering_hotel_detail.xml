@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -41,7 +41,7 @@
         android:layout_marginTop="@dimen/layout_lvl2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="@dimen/hotel_120dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1" />
@@ -50,11 +50,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
         android:layout_marginTop="@dimen/layout_lvl4"
-        android:background="@color/hotel_grey_200" />
+        android:background="@color/Unify_N50" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_100"
+        android:layout_height="@dimen/hotel_100dp"
         android:layout_margin="@dimen/layout_lvl2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -65,7 +65,7 @@
         android:layout_marginRight="@dimen/layout_lvl2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="@dimen/hotel_120dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"

@@ -5,9 +5,10 @@
     android:id="@+id/parentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/parentScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
@@ -21,7 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -48,7 +49,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/grey_300" />
+                        android:background="@color/Unify_N50" />
 
                     <TextView
                         android:id="@+id/conditional_info"
@@ -70,7 +71,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
-                    android:background="@color/grey_300" />
+                    android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -89,7 +90,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/lihat_text"
-                        android:textColor="@color/green_250" />
+                        android:textColor="@color/Unify_G400" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -98,14 +99,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N50" />
 
             <LinearLayout
                 android:id="@+id/details_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical">
 
                 <TextView
@@ -143,7 +144,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dp_10">
 
@@ -154,7 +155,7 @@
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
                         android:text="@string/insurance_policy"
-                        android:textColor="@color/black_70"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/sp_16"
                         android:textStyle="bold" />
 
@@ -196,7 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dp_10">
 
@@ -207,7 +208,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:text="@string/insurance_claim"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
 
@@ -227,7 +228,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="@dimen/dp_14"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:tint="@color/tkpd_transaction_arrow_tint"
+                    android:tint="@color/Unify_N400"
                     app:srcCompat="@drawable/ic_arrow_right_grey" />
 
             </RelativeLayout>
@@ -240,7 +241,7 @@
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:visibility="gone"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N50" />
 
             <TextView
                 android:id="@+id/user_label"
@@ -268,7 +269,7 @@
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:visibility="gone"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N50" />
 
             <RelativeLayout
                 android:id="@+id/actionButton"
@@ -277,7 +278,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"
-                android:background="@color/white">
+                android:background="@color/Unify_N0">
 
                 <ImageView
                     android:id="@+id/iv_event_send_mail"
@@ -294,7 +295,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_event_send_mail"
                     android:gravity="center"
-                    android:textColor="@color/subtitle_gray_color"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_14"
                     android:layout_marginLeft="@dimen/dp_8"
                     tools:text="Kirim ulang e-mail and TopChat" />
@@ -306,23 +307,43 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:tint="@color/subtitle_gray_color"
+                    android:tint="@color/Unify_N700_68"
                     app:srcCompat="@drawable/ic_arrow_right_grey" />
 
             </RelativeLayout>
+
+            <View
+                android:id="@+id/divider_above_banner_deals"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/Unify_N50" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/banner_deals_order_detail"
+                    layout="@layout/partial_order_detail_banner_deals"
+                    android:visibility="gone"
+                    />
+
+            </LinearLayout>
 
             <View
                 android:id="@+id/divider_above_info_label"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N50" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical">
 
                 <TextView
@@ -347,7 +368,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300" />
+                    android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:id="@+id/info_value"
@@ -361,7 +382,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_300" />
+                    android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:id="@+id/total_price"
@@ -384,7 +405,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical">
 
                 <TextView
@@ -408,7 +429,7 @@
                     android:layout_marginTop="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_24"
-                    android:background="@color/deep_orange_500"
+                    android:background="@color/Unify_Y500"
                     android:gravity="center"
                     android:padding="@dimen/dp_16"
                     android:text="@string/bottom_btn_text"
@@ -422,7 +443,7 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_12"
+        android:background="@color/Unify_N700_20"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"

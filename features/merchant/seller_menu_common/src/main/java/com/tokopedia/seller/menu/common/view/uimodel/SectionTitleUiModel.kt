@@ -1,21 +1,16 @@
 package com.tokopedia.seller.menu.common.view.uimodel
 
-import androidx.annotation.StringRes
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 open class SectionTitleUiModel(
-    @StringRes val title: Int,
-    @StringRes val ctaText: Int? = null,
+    val title: String? = null,
+    val ctaText: String? = null,
     val type: SectionTitleType
 ): SettingUiModel {
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
         typeFactory.type(this)
-
-    override val settingUiType: SettingUiType
-        get() = SettingUiType.SECTION_TITLE
 
     override val onClickApplink: String?
         get() = null

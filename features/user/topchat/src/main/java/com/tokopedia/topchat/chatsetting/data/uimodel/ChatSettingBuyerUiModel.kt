@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.chatsetting.data.uimodel
 
+import androidx.annotation.Keep
 
+@Keep
 class ChatSettingBuyerUiModel(
         alias: String = "",
         description: String = "",

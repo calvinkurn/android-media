@@ -1,0 +1,106 @@
+package com.tokopedia.moengage_wrapper.constants
+
+interface Constants {
+
+    object RemoteConfigConstants {
+        const val APP_MOENGAGE_EVENTS = "app_moengage_events"
+        const val APP_MOENGAGE_USER_ATTRIBUTE = "app_moengage_user_attribute"
+    }
+
+    object PackageName {
+        const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
+    }
+
+    object SharedPreference {
+        const val TOKEN_SENT = "isTokenSentToMoeServer"
+    }
+
+    object MOENGAGE {
+        const val PRODUCT = "product"
+        const val PRICE = "price"
+        const val IS_GOLD_MERCHANT = "is_gold_merchant"
+        const val SHOP_ID = "shop_id"
+        const val SHOP_NAME = "shop_name"
+        const val ADDRESS_ADDED = "Address_Added"
+        const val SHOP_URL_SLUG = "url_slug"
+        const val MOBILE_NUM = "Mobile Number"
+        const val USER_ID = "User_ID"
+        const val MEDIUM = "Medium"
+        const val EMAIL = "Email"
+        const val LOGIN_STATUS = "logged_in_status"
+        const val SUBCATEGORY = "subcategory"
+        const val SUBCATEGORY_ID = "subcategory_id"
+        const val CATEGORY = "category"
+        const val CATEGORY_ID = "category_id"
+        const val PRODUCT_ID = "product_id"
+        const val PRODUCT_GROUP_NAME = "product_group_name"
+        const val PRODUCT_GROUP_ID = "product_group_id"
+        const val PRODUCT_NAME = "product_name"
+        const val PRODUCT_URL = "product_url"
+        const val PRODUCT_PRICE = "product_price"
+        const val NAME = "Name"
+        const val DIGITAL_CAT_ID = "digital_category_id"
+        const val HOTLIST_NAME = "hotlist_name"
+        const val PRODUCT_IMAGE_URL = "product_image_url"
+        const val IS_OFFICIAL_STORE = "is_official_store"
+        const val IS_FEED_EMPTY = "is_feed_empty"
+        const val IS_FAVORITE_EMPTY = "is_favorite_empty"
+        const val KEYWORD = "keyword"
+        const val IS_RESULT_FOUND = "is_result_found"
+        const val IS_RECEIVED = "is_received"
+        const val CATEGORY_NAME_MAPPING = "category_name_mapping"
+        const val CATEGORY_ID_MAPPING = "category_id_mapping"
+        const val REFINED_SEARCH = "refined_search"
+        const val TOTAL_SOLD_ITEM = "total_sold_item"
+        const val SHOP_LOCATION = "shop_location"
+        const val TOKOCASH_AMT = "tokocash_amt"
+        const val SALDO_AMT = "saldo_amt"
+        const val TOPADS_AMT = "topads_amt"
+        const val HAS_PURCHASED_TICKET = "has_purchased_ticket"
+        const val HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace"
+        const val HAS_PURCHASED_DIGITAL = "has_purchased_digital"
+        const val LAST_TRANSACT_DATE = "last_transaction_date"
+        const val TOTAL_ACTIVE_PRODUCT = "total_active_product"
+        const val SHOP_SCORE = "shop_score"
+        const val QUALITY_SCORE = "quality_score"
+        const val SCREEN_NAME = "screen_name"
+        const val CHANNEL = "channel"
+        const val SOURCE = "source"
+        const val PDP_SHARE = "pdp_share"
+        const val APP_VERSION = "app version"
+        const val PLATFORM = "platform"
+        const val HOTLIST_ID = "hotlist_id"
+        const val CITY = "city"
+        const val PARTNER_SOURCE = "partner_source"
+    }
+
+
+    object EventMoEngage {
+        const val LOGIN = "Login"
+        const val OPEN_BERANDA = "Beranda_Screen_Launched"
+        const val OPEN_FEED = "Feed_Screen_Launched"
+        const val OPEN_FAVORITE = "Favorite_Screen_Launched"
+        const val OPEN_HOTLIST = "Hotlist_Screen_Launched"
+        const val OPEN_PRODUCTPAGE = "Product_Page_Opened"
+        const val PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace"
+        const val PRODUCT_REMOVED_FROM_CART = "Product_Removed_From_Cart_Marketplace"
+        const val DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched"
+        const val CLICK_HOTLIST = "Clicked_Hotlist_Item"
+        const val CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped"
+        const val CAT_SCREEN_OPEN = "Category_Screen_Launched"
+        const val PRODUCT_REMOVED_FROM_WISHLIST = "Product_Removed_From_Wishlist_Marketplace"
+        const val CLICKED_DISKUSI_PDP = "Clicked_Diskusi_Pdp"
+        const val CLICKED_ULASAN_PDP = "Clicked_Ulasan_Pdp"
+        const val SEARCH_ATTEMPT = "Search_Attempt"
+        const val REG_START = "Registration_Start"
+        const val REG_COMPL = "Registration_Completed"
+        const val SELLER_ADDED_FAVORITE = "Seller_Added_To_Favorite"
+        const val SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite"
+        const val REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched"
+        const val REFERRAL_SHARE_EVENT = "Share_Event"
+        const val OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched"
+        const val PARTNER_REFERRAL = "Partner_Referred"
+        const val PUSH_PREFERENCE = "push_pref_android"
+        const val EMAIL_PREFERENCE = "email_pref"
+    }
+}

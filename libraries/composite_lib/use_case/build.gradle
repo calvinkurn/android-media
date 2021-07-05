@@ -1,10 +1,21 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 project.ext {
     artifactId = 'usecase'
     groupId = 'com.tokopedia.usecase'
-    versionName = "1.0.3"
+    versionName = "1.0.6"
     artifactName ="use_case"
 }
 

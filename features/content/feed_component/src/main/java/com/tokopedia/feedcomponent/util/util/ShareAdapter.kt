@@ -1,14 +1,14 @@
 package com.tokopedia.feedcomponent.util.util
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by yfsx on 17/05/19.
@@ -43,7 +43,7 @@ class ShareAdapter(private val mShareTypes : List<ShareBottomSheets.ShareType>)
     class ShareViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         private val iconView: ImageView = view.findViewById(R.id.icon_view)
-        private val labelView: TextView = view.findViewById(R.id.label_view)
+        private val labelView: Typography = view.findViewById(R.id.label_view)
 
         private val context: Context
             get() = view.context

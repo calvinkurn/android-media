@@ -114,6 +114,8 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
         val withValue = text?.replace(COUNT, dataInsight?.get(key)?.keyword?.size.toString())?.replace(VALUE, "+" + convertToCurrencyString(totalPotential.toLong()))
         insight_desc.text = Html.fromHtml(withValue)
         btnTambah.text = data?.keyword?.box?.button?.title?.replace(COUNT, dataInsight?.get(key)?.keyword?.size.toString())
+        if (dataInsight?.get(key)?.keyword?.size == 0)
+            btnTambah.isEnabled = false
     }
 
 

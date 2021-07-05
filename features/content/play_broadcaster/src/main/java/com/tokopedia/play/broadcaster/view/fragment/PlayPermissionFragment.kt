@@ -75,7 +75,6 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
     }
 
     private fun setupView() {
-        broadcastCoordinator.setupTitle("")
         tvCheckCamera?.setOnClickListener { requestPermission(permission.CAMERA, CAMERA_PERMISSION_CODE) }
         tvCheckMic?.setOnClickListener {requestPermission(permission.RECORD_AUDIO, MICROPHONE_PERMISSION_CODE) }
         ivClose.setOnClickListener { activity?.finish() }

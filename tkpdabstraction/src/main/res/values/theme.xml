@@ -1,9 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.Tokopedia3.Launcher" parent="Theme.AppCompat.Light.NoActionBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Tokopedia3.Launcher" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/launch_screen</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="Theme.WhiteUnify" parent="Base.Theme">
+        <item name="toolbarTheme">@style/Toolbar.White</item>
+        <item name="tabTheme">@style/TabBar.White</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
+    </style>
+
+    <style name="Toolbar.White" parent="Base.Toolbar.Theme">
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_96</item>
+    </style>
+
+    <style name="TabBar.White" parent="BaseTabBar">
+        <item name="android:textSize">@dimen/heading_5</item>
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="tabTextColor">@color/Unify_N700_96</item>
+        <item name="tabTextAppearance">@style/TitlePageWhiteIndicator</item>
+        <item name="tabIndicatorColor">@color/Unify_G500</item>
+        <item name="tabSelectedTextColor">@color/Unify_G500</item>
+    </style>
+
+    <style name="TitlePageWhiteIndicator">
+        <item name="android:textSize">@dimen/heading_5</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TitleTextAppearance.White">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+    </style>
+
+    <style name="Unify" parent="Base.Toolbar.Theme">
+
+    </style>
+
+    <style name="Unify.Light">
+        <item name="android:background">@color/Unify_N0</item>
+        <item name="actionModeBackground">@color/Unify_N0</item>
+        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_68</item>
+    </style>
+
+    <style name="Unify.Dark">
+        <item name="android:background">@color/Unify_N700_96</item>
+        <item name="actionModeBackground">@color/Unify_N700_96</item>
+        <item name="android:actionModeBackground">@color/Unify_N700_96</item>
+        <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
+        <item name="android:textColorSecondary">@color/Unify_N700_68</item>
+    </style>
+
+    <style name="Base.Theme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="Base.Toolbar.Theme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:itemTextAppearance">@style/TextAppearance</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="subtitleTextAppearance">@style/SubTitleTextAppearance</item>
+    </style>
+
+    <style name="TextAppearance">
+        <item name="android:textColor">@color/Unify_N700</item>
+    </style>
+
+    <style name="TitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/unify_font_16</item>
+    </style>
+
+    <style name="SubTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">@dimen/unify_font_12</item>
+    </style>
+
+    <style name="MenuTextAppearance" parent="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textSize">@dimen/unify_font_14</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="BaseTabBar" parent="Widget.Design.TabLayout">
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorHeight">3dp</item>
+        <item name="tabMode">fixed</item>
     </style>
 </resources>

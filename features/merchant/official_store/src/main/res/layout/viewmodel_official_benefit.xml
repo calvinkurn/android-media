@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_benefit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,6 +9,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_official_benefit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="3"/>
 
 </com.tokopedia.unifycomponents.CardUnify>

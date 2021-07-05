@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="@dimen/dp_10"
+    android:layout_marginRight="@dimen/dp_8">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_128"
+            android:layout_height="@dimen/dp_128"
+            app:loader_type="rect"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            app:loader_type="line"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="center_horizontal"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_85"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_10"
+            app:loader_type="line"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="left"/>
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_20"
+            app:loader_type="line"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="left"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -19,13 +19,16 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
@@ -78,8 +81,12 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return BannerViewHolder.LAYOUT
     }
 
-    override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
+    override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
         return TopadsShopViewHolder.LAYOUT
+    }
+
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT
     }
 
     override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
@@ -106,6 +113,10 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return TopAdsBannerViewHolder.LAYOUT
     }
 
+    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return 0
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
@@ -130,6 +141,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            TopAdsHeadlineViewHolder.LAYOUT ->
+                TopAdsHeadlineViewHolder(parent, userSession) as AbstractViewHolder<Visitable<*>>
             EmptyAffiliateViewHolder.LAYOUT ->
                 EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
             NoPostCardViewHolder.LAYOUT ->

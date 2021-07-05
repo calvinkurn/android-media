@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:maxLines="1"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"

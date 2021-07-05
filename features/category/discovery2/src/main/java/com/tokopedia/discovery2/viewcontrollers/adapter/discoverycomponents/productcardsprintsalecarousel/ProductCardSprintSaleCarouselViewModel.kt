@@ -27,9 +27,6 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    init {
-        initDaggerInject()
-    }
 
 
     override fun onAttachToViewHolder() {
@@ -41,12 +38,6 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
         fetchProductCarouselData()
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 
 
     fun getProductCarouselItemsListData() = productCarouselList
@@ -54,7 +45,7 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
+            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
                 productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
                 syncData.value = true
             }

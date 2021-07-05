@@ -1,12 +1,12 @@
 package com.tokopedia.explore.view.adapter
 
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -197,7 +197,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     }
                 }
 
-                creator_img.shouldShowWithAction(!item.userPhoto.isNullOrBlank()){
+                creator_img.shouldShowWithAction(!item.userPhoto.isBlank()){
                     creator_img.loadImageCircle(item.userPhoto)
                     creator_img.setOnClickListener { listener?.onUserImageClick(item) }
                 }
@@ -205,8 +205,8 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                 creator_name.setOnClickListener { listener?.onUserNameClick(item) }
                 val tagHConverter = TagConverter()
                 post_descr.text = tagHConverter.convertToLinkifyHashtag(SpannableString(item.description),
-                        ContextCompat.getColor(context, R.color.tkpd_main_green)){
-                    val encodeHashtag = URLEncoder.encode(it)
+                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)){
+                    val encodeHashtag = URLEncoder.encode(it, "UTF-8")
                     RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
                 }
                 post_descr.movementMethod = LinkMovementMethod.getInstance()

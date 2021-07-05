@@ -1,0 +1,47 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.sellerappwidget">
+
+    <application android:label="@string/app_name">
+
+        <receiver
+            android:name="com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget"
+            android:label="@string/saw_seller_order">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/saw_widget_info_order" />
+        </receiver>
+
+        <receiver
+            android:name="com.tokopedia.sellerappwidget.view.appwidget.ChatAppWidget"
+            android:label="@string/saw_chat">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/saw_widget_info_chat" />
+        </receiver>
+
+        <service
+            android:name=".view.remoteview.OrderWidgetRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name=".view.remoteview.ChatWidgetRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".view.service.AppWidgetBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.sellerappwidget.GET_CHAT_APP_WIDGET_DATA" />
+                <action android:name="com.tokopedia.sellerappwidget.GET_ORDER_APP_WIDGET_DATA" />
+                <action android:name="com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

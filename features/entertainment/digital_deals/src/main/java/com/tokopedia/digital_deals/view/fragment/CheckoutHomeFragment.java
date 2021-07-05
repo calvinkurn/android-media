@@ -136,9 +136,9 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     private void setCardViewElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_8));
+            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8));
         } else {
-            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.design.R.dimen.dp_0));
+            paymentMethod.setCardElevation(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0));
         }
     }
 
@@ -163,7 +163,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         quantity = packageViewModel.getSelectedQuantity();
         ImageHandler.loadImage(getContext(), imageViewBrand,
                 dealDetails.getImageWeb(),
-                com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+                com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
 
         if (dealDetails.getBrand() != null)
             tvBrandName.setText(dealDetails.getBrand().getTitle());
@@ -356,7 +356,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE));
                     showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE)
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE)
-                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT)
+                            , data.getExtras().getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT)
                             , data.getExtras().getBoolean(IS_CANCEL));
                     break;
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
@@ -364,7 +364,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                     mPresenter.updatePromoCode(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE));
                     showPromoSuccessMessage(data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE)
                             , data.getExtras().getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE)
-                            , data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT)
+                            , data.getExtras().getInt(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT)
                             , data.getExtras().getBoolean(IS_CANCEL));
                     break;
                 default:

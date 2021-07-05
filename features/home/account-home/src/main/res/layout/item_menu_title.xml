@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView android:id="@+id/text_category_title"
+<com.tokopedia.unifyprinciples.Typography android:id="@+id/text_category_title"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/TextView.TitleMedium.Bold"
+    app:typographyType="heading_3"
     tools:text="Transaksi"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_20"/>
+    android:layout_marginTop="@dimen/dp_20"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

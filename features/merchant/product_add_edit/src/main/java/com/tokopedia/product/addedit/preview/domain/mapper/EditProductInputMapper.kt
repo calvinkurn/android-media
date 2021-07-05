@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -11,8 +12,10 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
 /**
@@ -47,15 +50,20 @@ class EditProductInputMapper @Inject constructor() {
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
-                        variantInputModel: VariantInputModel): ProductEditParam {
+                        variantInputModel: VariantInputModel,
+                        shouldPutStockOnParam: Boolean = true): ProductEditParam {
+
+        // Put null to stock and status param as we will update product stock separately (related to multilocation)
+        val stock: Int? = if (shouldPutStockOnParam) detailInputModel.stock else null
+        val status: Int? = if (detailInputModel.status != IS_ACTIVE || shouldPutStockOnParam || detailInputModel.stock > 0) detailInputModel.status else null
 
         return ProductEditParam(
                 productId,
                 detailInputModel.productName,
                 detailInputModel.price,
                 PRICE_CURRENCY,
-                detailInputModel.stock,
-                getActiveStatus(detailInputModel.status),
+                stock,
+                status?.let { getActiveStatus(it) },
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
                 mapShipmentUnit(shipmentInputModel.weightUnit),
@@ -66,15 +74,20 @@ class EditProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                null,
+                mapProductShowCases(detailInputModel.productShowCases),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel)
-
+                mapVariantParam(variantInputModel),
+                mapSpecificationParam(detailInputModel.specifications)
         )
     }
+
+    private fun mapProductShowCases(productShowCases: List<ShowcaseItemPicker>): List<ProductEtalase> =
+            productShowCases.map {
+                ProductEtalase(menuID = it.showcaseId, name = it.showcaseName)
+            }
 
     private fun mapVariantParam(variantInputModel: VariantInputModel): Variant? {
         return if (variantInputModel.selections.isEmpty()) {
@@ -223,7 +236,8 @@ class EditProductInputMapper @Inject constructor() {
                     ))
                 }
             } else {
-                data.add(Picture(uploadId = uploadIdList[idxUploadIdList++]))
+                val uploadId = uploadIdList.getOrNull(idxUploadIdList++) ?: ""
+                data.add(Picture(uploadId = uploadId))
             }
         }
         return Pictures(data)
@@ -241,4 +255,7 @@ class EditProductInputMapper @Inject constructor() {
                 preorder.isActive
         )
     }
+
+    private fun mapSpecificationParam(specifications: List<SpecificationInputModel>?): List<String>? =
+            specifications?.map { it.id }
 }

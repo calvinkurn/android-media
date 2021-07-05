@@ -6,19 +6,14 @@
     android:layout_height="wrap_content"
     tools:ignore="RtlSymmetry">
 
-    <LinearLayout
-        android:id="@+id/root_socproof"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mini_social_proof_recycler_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         layout="@layout/shimmering_social_proof"

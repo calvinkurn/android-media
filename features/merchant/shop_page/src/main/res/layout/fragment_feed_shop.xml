@@ -5,34 +5,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeToRefresh"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/spacing_lvl3"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:reverseLayout="false" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:reverseLayout="false" />
 
     <FrameLayout
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:visibility="gone">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 
@@ -40,10 +32,10 @@
         android:id="@+id/fab_feed"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        app:backgroundTint="@color/tkpd_main_green"
+        app:backgroundTint="@color/Unify_G400"
         app:srcCompat="@drawable/ic_feed_post_plus" />
 </RelativeLayout>

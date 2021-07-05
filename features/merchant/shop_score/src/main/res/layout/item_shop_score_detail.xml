@@ -22,30 +22,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/description_shop_score_percent"
-            android:textColor="@color/tkpd_grey_text"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/description_shop_score_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/description_shop_score_percent"
             android:layout_toStartOf="@id/description_shop_score_percent"
             android:textSize="14sp" />
 
     </RelativeLayout>
 
-    <com.tokopedia.shop.score.view.widget.SquareProgressBar
+    <com.tokopedia.shop.score.detail_old.view.widget.SquareProgressBar
         android:id="@+id/progress_bar_shop_score_detail"
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:layout_marginTop="10dp"
-        app:rcBackgroundColor="@color/grey_300"
+        app:rcBackgroundColor="@color/Unify_N100"
         app:rcMax="100"
         app:rcProgress="90"
-        app:rcProgressColor="#f6b323"
+        app:rcProgressColor="@color/Unify_Y300"
         app:rcRadius="20dp" />
 
     <TextView

@@ -1,7 +1,10 @@
 package com.tokopedia.topads.common.data.response.nongroupItem
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class WithoutGroupDataItem(
 
 	@field:SerializedName("stat_total_conversion")
@@ -64,6 +67,9 @@ data class WithoutGroupDataItem(
 	@field:SerializedName("group_id")
 	val groupId: Int = 0,
 
+	@field:SerializedName("group_name")
+	val groupName: String = "",
+
 	@field:SerializedName("stat_total_ctr")
 	val statTotalCtr: String = "",
 
@@ -72,4 +78,4 @@ data class WithoutGroupDataItem(
 
 	@field:SerializedName("stat_avg_click")
 	val statAvgClick: String = ""
-)
+) : Parcelable

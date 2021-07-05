@@ -4,25 +4,32 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 data class OrderPayment(
-        val isEnable: Boolean = false,
-        val isCalculationError: Boolean = false,
-        val gatewayCode: String = "",
-        val gatewayName: String = "",
-        val image: String = "",
-        val description: String = "",
-        val minimumAmount: Long = 0,
-        val maximumAmount: Long = 0,
-        val fee: Double = 0.0,
-        val walletAmount: Long = 0,
-        val metadata: String = "",
-        val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
-        val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
-        val errorTickerMessage: String = "",
-        val isEnableNextButton: Boolean = false,
-        val isDisablePayButton: Boolean = false,
+    val isEnable: Boolean = false,
+    val isCalculationError: Boolean = false,
+    val gatewayCode: String = "",
+    val gatewayName: String = "",
+    val minimumAmount: Long = 0,
+    val maximumAmount: Long = 0,
+    val fee: Double = 0.0,
+    val walletAmount: Long = 0,
+    val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
+    val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
+    val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
+    val errorTickerMessage: String = "",
+    val isEnableNextButton: Boolean = false,
+    val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
-        val isOvoOnlyCampaign: Boolean = false
+    val isOvoOnlyCampaign: Boolean = false,
+    val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
+    val walletErrorData: OrderPaymentWalletErrorData? = null,
+    val errorData: OrderPaymentErrorData? = null,
+    val bid: String = "",
+    val specificGatewayCampaignOnlyType: Int = 0,
+    val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData()
 ) {
+    val isOvo: Boolean
+        get() = gatewayCode.contains("OVO")
+
     fun isError(): Boolean {
         return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
     }
@@ -47,6 +54,27 @@ data class OrderPaymentErrorMessageButton(
         val link: String = ""
 )
 
+data class OrderPaymentRevampErrorMessage(
+        val message: String = "",
+        val button: OrderPaymentRevampErrorMessageButton = OrderPaymentRevampErrorMessageButton()
+)
+
+data class OrderPaymentRevampErrorMessageButton(
+        val text: String = "",
+        val action: String = ""
+)
+
+data class OrderPaymentErrorData(
+        val message: String = "",
+        val buttonText: String = "",
+        val action: String = ""
+) {
+    companion object {
+        internal const val ACTION_CHANGE_CC = "change_cc"
+        internal const val ACTION_CHANGE_PAYMENT = "change_payment"
+    }
+}
+
 data class OrderPaymentCreditCard(
         val numberOfCards: OrderPaymentCreditCardsNumber = OrderPaymentCreditCardsNumber(),
         val availableTerms: List<OrderPaymentInstallmentTerm> = emptyList(),
@@ -55,8 +83,13 @@ data class OrderPaymentCreditCard(
         val isExpired: Boolean = false,
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null,
-        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData()
-)
+        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData(),
+        val isDebit: Boolean = false
+) {
+    companion object {
+        internal const val DEBIT_GATEWAY_CODE = "DEBITONLINE"
+    }
+}
 
 data class OrderPaymentCreditCardsNumber(
         val availableCards: Int = 0,
@@ -88,3 +121,77 @@ data class OrderPaymentInstallmentTerm(
         var fee: Double = 0.0,
         var monthlyAmount: Double = 0.0
 )
+
+data class OrderPaymentOvoAdditionalData(
+        val activation: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val phoneNumber: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val callbackUrl: String = "",
+        val customerData: OrderPaymentOvoCustomerData = OrderPaymentOvoCustomerData()
+) {
+    val isActivationRequired: Boolean
+        get() = activation.isRequired
+
+    val isPhoneNumberMissing: Boolean
+        get() = phoneNumber.isRequired
+}
+
+data class OrderPaymentWalletAdditionalData(
+    val walletType: Int = 0,
+    val enableWalletAmountValidation: Boolean = false,
+    val callbackUrl: String = "",
+    val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+    val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
+    val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData()
+) {
+    val isActivationRequired: Boolean
+        get() = activation.isRequired
+
+    val isTopUpRequired: Boolean
+        get() = topUp.isRequired
+
+    val isPhoneNumberMissing: Boolean
+        get() = phoneNumber.isRequired
+}
+
+@Parcelize
+data class OrderPaymentOvoCustomerData(
+        val name: String = "",
+        val email: String = "",
+        val msisdn: String = ""
+): Parcelable
+
+data class OrderPaymentOvoActionData(
+        val isRequired: Boolean = false,
+        val buttonTitle: String = "",
+        val errorMessage: String = "",
+        val errorTicker: String = "",
+        val isHideDigital: Int = 0
+)
+
+data class OrderPaymentWalletActionData(
+    val isRequired: Boolean = false,
+    val buttonTitle: String = "",
+    val successToaster: String = "",
+    val errorToaster: String = "",
+    val errorMessage: String = "",
+    val isHideDigital: Boolean = false,
+    val headerTitle: String = "",
+    val urlLink: String = ""
+)
+
+data class OrderPaymentWalletErrorData(
+        val isBlockingError: Boolean = false,
+        val message: String = "",
+        val buttonTitle: String = "",
+        val type: Int = 0,
+        val callbackUrl: String = "",
+        val isHideDigital: Int = 0,
+        val isOvo: Boolean = false
+) {
+    companion object {
+        const val TYPE_ACTIVATION = 1
+        const val TYPE_TOP_UP = 2
+        const val TYPE_MISSING_PHONE = 3
+    }
+}

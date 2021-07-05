@@ -7,18 +7,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -52,18 +58,25 @@ import com.tokopedia.home.account.presentation.listener.RedDotGimmickView
 import com.tokopedia.home.account.presentation.listener.SettingOptionsView
 import com.tokopedia.home.account.presentation.presenter.RedDotGimmickPresenter
 import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
+import com.tokopedia.home.account.presentation.view.GeneralSettingMenuLabel
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
+import com.tokopedia.internal_review.factory.createReviewHelper
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
+import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_general_setting.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -79,12 +92,14 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
+    private lateinit var updateButton: UnifyButton
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+    private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,13 +109,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             notifPreference = NotifPreference(it)
         }
 
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(GOOGLE_API_KEY)
-                .requestEmail()
-                .requestProfile()
-                .build()
+        activity?.run {
+            val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getGoogleClientId(this))
+                    .requestEmail()
+                    .requestProfile()
+                    .build()
 
-        googleSignInClient = activity?.let { GoogleSignIn.getClient(it, googleSignInOptions) } as GoogleSignInClient
+            googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions)
+        }
     }
 
     override fun onResume() {
@@ -126,12 +143,30 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                             .baseAppComponent).settingsModule(SettingsModule(activity)).build()
             component.inject(this)
             settingsPresenter.attachView(this)
-            settingsPresenter.verifyUserAge()
-
+            if (savedInstanceState == null) {
+                settingsPresenter.verifyUserAge()
+            } else {
+                setupSafeSearchLocally()
+            }
         }
         presenter.attachView(this)
 
         return inflater.inflate(R.layout.fragment_general_setting, container, false)
+    }
+
+    private fun setupSafeSearchLocally() {
+        val isAdultAge = isItemSelected(
+                SettingsPresenter.PREFERENCE_ADULT_AGE_VERIFIED_KEY, false)
+        settingsPresenter.adultAgeVerified = isAdultAge
+        if(isAdultAge) {
+            refreshSafeSearchOption()
+        }
+    }
+
+    //Request to hide Dark Mode regardless RemoteConfig
+    private fun showDarkModeSetting(): Boolean {
+        val showDarkModeSetting = false
+        return showDarkModeSetting
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -142,13 +177,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
+        updateButton = view.findViewById(R.id.force_update_button)
         appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
+        showForceUpdate()
     }
 
     override fun getSettingItems(): List<SettingItemViewModel> {
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
-                getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)))
+                getString(R.string.general_setting_title_account_setting_item), getString(R.string.subtitle_account_setting)))
 
         val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
@@ -169,11 +206,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
         }
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
-                    getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
-        }
-
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)))
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -181,9 +213,20 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_GEOLOCATION_ID,
                 getString(R.string.title_geolocation_setting), getString(R.string.subtitle_geolocation_setting), true))
 
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_IMAGE_QUALITY,
+                getString(R.string.image_quality_setting_screen), getString(R.string.image_quality_setting_title)))
+
         if (settingsPresenter.adultAgeVerified)
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
+
+        val isShowDarkMode = remoteConfig.getBoolean(
+                RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+        if(isShowDarkMode && showDarkModeSetting()) {
+            settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
+                    getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
+                    GeneralSettingMenuLabel.LABEL_BETA))
+        }
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
                 getString(R.string.title_about_us)))
@@ -197,6 +240,12 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 getString(R.string.title_help_center_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SETTING,
                 getString(R.string.title_app_advanced_setting)))
+
+
+        if (GlobalConfig.APPLICATION_TYPE == 3) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_FEEDBACK_FORM,
+                    getString(R.string.feedback_form)))
+        }
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
@@ -251,7 +300,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
                 accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
-                goToPlaystore()
+                goToReviewApp()
             }
             SettingConstant.SETTING_HELP_CENTER_ID -> {
                 accountAnalytics.eventClickSetting(HELP_CENTER)
@@ -269,11 +318,24 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             }
-            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
+            SettingConstant.SETTING_FEEDBACK_FORM -> {
+                RouteManager.route(context, ApplinkConst.FEEDBACK_FORM)
+            }
+            SettingConstant.SETTING_IMAGE_QUALITY -> {
+                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
             }
             else -> {
             }
+        }
+    }
+
+    private fun goToReviewApp() {
+        if (reviewHelper != null) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                reviewHelper?.checkForCustomerReview(context, childFragmentManager, ::goToPlaystore)
+            }
+        } else {
+            goToPlaystore()
         }
     }
 
@@ -323,6 +385,26 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         }
     }
 
+    private fun showForceUpdate() {
+            val dataAppUpdate = remoteConfig.getString(RemoteConfigKey.CUSTOMER_APP_UPDATE)
+            if (!TextUtils.isEmpty(dataAppUpdate)) {
+                val gson = Gson()
+                val dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp::class.java)
+                if(GlobalConfig.VERSION_CODE < dataUpdateApp.latestVersionForceUpdate) {
+                    updateButton.visibility = View.VISIBLE
+                    updateButton.setOnClickListener {
+                        if (activity != null) {
+                            val intent = RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, dataUpdateApp.link))
+                            this.startActivity(intent)
+                        }
+                    }
+                } else {
+                    updateButton.visibility = View.GONE
+                }
+
+            }
+    }
+
     private fun saveSettingValue(key: String, isChecked: Boolean) {
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
         val editor = settings.edit()
@@ -335,6 +417,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             SettingConstant.SETTING_SHAKE_ID -> return isItemSelected(getString(R.string.pref_receive_shake), true)
             SettingConstant.SETTING_GEOLOCATION_ID -> return hasLocationPermission()
             SettingConstant.SETTING_SAFE_SEARCH_ID -> return isItemSelected(getString(R.string.pref_safe_mode), false)
+            SettingConstant.SETTING_DARK_MODE -> return isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false)
             else -> return false
         }
     }
@@ -346,12 +429,23 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                 saveSettingValue(getString(R.string.pref_receive_shake), value)
             }
             SettingConstant.SETTING_SAFE_SEARCH_ID ->
-                    accountAnalytics.eventClickSetting(SAFE_MODE)
+                accountAnalytics.eventClickSetting(SAFE_MODE)
+            SettingConstant.SETTING_DARK_MODE -> setupDarkMode(value)
             else -> {
             }
         }
     }
 
+    private fun setupDarkMode(isDarkMode: Boolean) {
+        setAppCompatMode(isDarkMode)
+        saveSettingValue(TkpdCache.Key.KEY_DARK_MODE, isDarkMode)
+        accountAnalytics.eventClickThemeSetting(isDarkMode)
+    }
+
+    private fun setAppCompatMode(isDarkMode: Boolean) {
+        val screenMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        AppCompatDelegate.setDefaultNightMode(screenMode)
+    }
 
     override fun onClicked(settingId: Int, currentValue: Boolean) {
         when (settingId) {
@@ -422,7 +516,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accessDialog.setBodyText(dialogBodyMsg)
         accessDialog.setPositiveButton(dialogPositiveButton)
         accessDialog.setNegativeButton(dialogNegativeButton)
-        accessDialog.show(activity!!.supportFragmentManager, AccessRequestDialogFragment.TAG)
+        accessDialog.show(requireActivity().supportFragmentManager, AccessRequestDialogFragment.TAG)
     }
 
     override fun refreshSafeSearchOption() {
@@ -449,12 +543,16 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-            Toaster.showError(view!!, errorMessage, Snackbar.LENGTH_LONG)
+            Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }
 
     private fun setupTickerSellerMigration() {
-        initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
+        if(isSellerMigrationEnabled(context) && userSession.hasShop()) {
+            initializeSellerMigrationAccountSettingTicker(tickerSellerMigrationAccountSetting)
+        } else {
+            tickerSellerMigrationAccountSetting.hide()
+        }
     }
 
     companion object {

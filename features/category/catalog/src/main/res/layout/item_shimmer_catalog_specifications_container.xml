@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/product_specification_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:loader_type="line"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/catalog_specification_rv"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_150"
+        app:layout_constraintTop_toBottomOf="@id/product_specification_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:loader_type="rect"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/view_more_specifications"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/catalog_specification_rv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/catalog_specification_rv"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:loader_type="line"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

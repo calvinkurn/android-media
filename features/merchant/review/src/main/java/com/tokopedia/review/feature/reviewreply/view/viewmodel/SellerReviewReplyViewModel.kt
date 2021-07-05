@@ -3,8 +3,8 @@ package com.tokopedia.review.feature.reviewreply.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
 import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
@@ -23,12 +23,12 @@ import java.util.*
 import javax.inject.Inject
 
 class SellerReviewReplyViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
-        private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
-        private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
-        private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
-    : BaseViewModel(dispatcherProvider.main()) {
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
+    private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
+    private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
+    private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
+    : BaseViewModel(dispatcherProvider.main) {
 
     private val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     val replyTime: String
@@ -50,9 +50,9 @@ class SellerReviewReplyViewModel @Inject constructor(
     val insertTemplateReply: LiveData<Result<InsertTemplateReplyUiModel>>
         get() = _insertTemplateReply
 
-    fun getTemplateListReply(shopId: Int) {
+    fun getTemplateListReply(shopId: Long) {
         launchCatchError(block = {
-            val reviewTemplateList = withContext(dispatcherProvider.io()) {
+            val reviewTemplateList = withContext(dispatcherProvider.io) {
                 getTemplateList(shopId)
             }
             _reviewTemplate.value = Success(reviewTemplateList)
@@ -61,9 +61,9 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun insertReviewReply(reviewId: Int, productId: Int, shopId: Int, responseMessage: String) {
+    fun insertReviewReply(reviewId: Long, productId: Long, shopId: Long, responseMessage: String) {
         launchCatchError(block = {
-            val responseInsertReply = withContext(dispatcherProvider.io()) {
+            val responseInsertReply = withContext(dispatcherProvider.io) {
                 insertSellerResponseUseCase.params = InsertSellerResponseUseCase.createParams(
                         reviewId,
                         productId,
@@ -77,9 +77,9 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun insertTemplateReviewReply(shopID: Int, title: String, message: String) {
+    fun insertTemplateReviewReply(shopID: Long, title: String, message: String) {
         launchCatchError(block = {
-            val responseInsertTemplate = withContext(dispatcherProvider.io()) {
+            val responseInsertTemplate = withContext(dispatcherProvider.io) {
                 insertTemplateReviewReplyUseCase.params = InsertTemplateReviewReplyUseCase.createParams(
                         shopID,
                         title,
@@ -92,9 +92,9 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun updateReviewReply(feedbackId: Int, responseMessage: String) {
+    fun updateReviewReply(feedbackId: String, responseMessage: String) {
         launchCatchError(block = {
-            val responseUpdateReply = withContext(dispatcherProvider.io()) {
+            val responseUpdateReply = withContext(dispatcherProvider.io) {
                 updateSellerResponseUseCase.params = UpdateSellerResponseUseCase.createParams(
                         feedbackId,
                         responseMessage)
@@ -106,7 +106,7 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getTemplateList(shopId: Int): List<ReplyTemplateUiModel> {
+    private suspend fun getTemplateList(shopId: Long): List<ReplyTemplateUiModel> {
         getReviewTemplateListUseCase.params = GetReviewTemplateListUseCase.createParams(shopId)
         return SellerReviewReplyMapper.mapToItemTemplateUiModel(getReviewTemplateListUseCase.executeOnBackground())
     }

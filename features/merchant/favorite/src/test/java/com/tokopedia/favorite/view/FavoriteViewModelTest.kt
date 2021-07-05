@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.favorite.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUseCaseWithCoroutine
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUseCaseWithCoroutine
@@ -15,9 +15,9 @@ import com.tokopedia.favorite.domain.model.TopAdsShop
 import com.tokopedia.favorite.dummyFavoriteShopItemList
 import com.tokopedia.favorite.dummyTopAdsShopItemList
 import com.tokopedia.favorite.randomString
-import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
-import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -56,7 +56,7 @@ class FavoriteViewModelTest {
 
     private val viewModel by lazy {
         FavoriteViewModel(
-                TestDispatcherProvider(),
+                CoroutineTestDispatchersProvider,
                 getInitialDataPageUseCase,
                 toggleFavouriteShopUseCase,
                 getAllDataFavoriteUseCase,
@@ -118,6 +118,8 @@ class FavoriteViewModelTest {
             assertTrue(refreshValues[0])
             assertFalse(refreshValues[1])
 
+            observeIsErrorLoad_return(true)
+
             viewModel.refresh.removeObserver(refreshObserver)
         }
     }
@@ -132,6 +134,8 @@ class FavoriteViewModelTest {
             assertTrue(values.size == 2)
             assertTrue(values[0])
             assertFalse(values[1])
+
+            observeIsErrorLoad_return(true)
 
             viewModel.refresh.removeObserver(observer)
         }
@@ -172,10 +176,10 @@ class FavoriteViewModelTest {
             assertTrue(liveDataUpdates[0].size == 1)
 
             // That 1 item is a TopAdsShopViewModel
-            assertTrue(liveDataUpdates[0][0] is TopAdsShopViewModel)
+            assertTrue(liveDataUpdates[0][0] is TopAdsShopUiModel)
 
             // That 1 item has 2 TopAdsShopItem in it and the data are correct
-            val item = liveDataUpdates[0][0] as TopAdsShopViewModel
+            val item = liveDataUpdates[0][0] as TopAdsShopUiModel
             assertTrue(item.adsShopItems!!.size == numOfItems)
             for ((i, adsShopItem) in item.adsShopItems!!.withIndex()) {
                 val dummyItem = itemList[i]
@@ -250,16 +254,16 @@ class FavoriteViewModelTest {
 
             // That update has correct data
             for ((index, item) in liveDataUpdates[0].withIndex()) {
-                assertTrue(item is FavoriteShopViewModel)
+                assertTrue(item is FavoriteShopUiModel)
 
-                val viewModel = item as FavoriteShopViewModel
+                val uiModel = item as FavoriteShopUiModel
                 val favoriteShopItem = favoriteShopItems[index]
-                assertEquals(favoriteShopItem.id, viewModel.shopId)
-                assertEquals(favoriteShopItem.name, viewModel.shopName)
-                assertEquals(favoriteShopItem.iconUri, viewModel.shopAvatarImageUrl)
-                assertEquals(favoriteShopItem.location, viewModel.shopLocation)
-                assertEquals(favoriteShopItem.isFav, viewModel.isFavoriteShop)
-                assertEquals(favoriteShopItem.badgeUrl, viewModel.badgeUrl)
+                assertEquals(favoriteShopItem.id, uiModel.shopId)
+                assertEquals(favoriteShopItem.name, uiModel.shopName)
+                assertEquals(favoriteShopItem.iconUri, uiModel.shopAvatarImageUrl)
+                assertEquals(favoriteShopItem.location, uiModel.shopLocation)
+                assertEquals(favoriteShopItem.isFav, uiModel.isFavoriteShop)
+                assertEquals(favoriteShopItem.badgeUrl, uiModel.badgeUrl)
             }
 
             viewModel.initialData.removeObserver(observer)
@@ -424,6 +428,9 @@ class FavoriteViewModelTest {
 
             viewModel.loadMoreFavoriteShop()
             verify(exactly = 1) { pagingHandler.page = 1 }
+            viewModel.isErrorLoadMore.observeForever {
+                assertTrue(it)
+            }
         }
     }
 
@@ -524,8 +531,8 @@ class FavoriteViewModelTest {
             assertTrue(updates.size == 1)
             assertTrue(updates[0].size == numOfItems)
             for (item in updates[0]) {
-                assertTrue(item is FavoriteShopViewModel)
-                if (item is FavoriteShopViewModel) {
+                assertTrue(item is FavoriteShopUiModel)
+                if (item is FavoriteShopUiModel) {
                     assertTrue(item.isFavoriteShop)
                 }
             }
@@ -606,9 +613,9 @@ class FavoriteViewModelTest {
 
             assertTrue(updates.size == 1)
             assertTrue(updates[0].size == 1)
-            assertTrue(updates[0][0] is TopAdsShopViewModel)
+            assertTrue(updates[0][0] is TopAdsShopUiModel)
 
-            val adsShopItems = (updates[0][0] as TopAdsShopViewModel).adsShopItems
+            val adsShopItems = (updates[0][0] as TopAdsShopUiModel).adsShopItems
             for ((index, item) in adsShopItems!!.withIndex()) {
                 val dummyItem = itemList[index]
                 assertEquals(item.shopId, dummyItem.shopId)
@@ -642,9 +649,9 @@ class FavoriteViewModelTest {
             assertTrue(updates[0].size == numOfItems)
 
             for ((index, item) in updates[0].withIndex()) {
-                assertTrue(item is FavoriteShopViewModel)
+                assertTrue(item is FavoriteShopUiModel)
                 val dummyItem = dummyList[index]
-                if (item is FavoriteShopViewModel) {
+                if (item is FavoriteShopUiModel) {
                     assertEquals(item.shopId, dummyItem.id)
                     assertEquals(item.shopName, dummyItem.name)
                     assertEquals(item.shopAvatarImageUrl, dummyItem.iconUri)
@@ -656,6 +663,14 @@ class FavoriteViewModelTest {
 
             viewModel.refreshData.removeObserver(observer)
         }
+    }
+
+    @Test
+    fun `when hasNextPage should return true`() {
+        val hasNext = true
+        every { pagingHandler.CheckNextPage() } returns hasNext
+        assertEquals(hasNext, viewModel.hasNextPage())
+        verify { pagingHandler.CheckNextPage() }
     }
 
     private fun initialDataPageUseCase_returnEmptyDataFavorite() {
@@ -683,5 +698,11 @@ class FavoriteViewModelTest {
 
     private fun initialDataPageUseCase_throwException() {
         coEvery { getInitialDataPageUseCase.executeOnBackground() } coAnswers { throw Exception() }
+    }
+
+    private fun observeIsErrorLoad_return(isError:Boolean){
+        viewModel.isErrorLoad.observeForever {
+            assert(it == isError)
+        }
     }
 }

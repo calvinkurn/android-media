@@ -52,6 +52,7 @@
             android:id="@+id/inboxReviewContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -61,7 +62,7 @@
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/dp_64"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -71,5 +72,36 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/Unify_N0"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_4"
+            android:alpha="0.2"
+            android:contentDescription="@string/review_reminder_content_description_top_shadow"
+            android:scaleY="-1"
+            android:src="@drawable/top_bar_shadow"
+            app:layout_constraintBottom_toTopOf="@id/footer_reminder_message" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonReviewReminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:text="@string/review_reminder_button_review_reminder"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

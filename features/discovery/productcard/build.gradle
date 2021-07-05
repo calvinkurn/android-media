@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
 buildscript {
@@ -11,7 +11,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -33,11 +33,13 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.medialoader)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -47,11 +49,15 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.dbDependencies.sqliteFramework
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
     androidTestImplementation rootProject.ext.miscDependencies.multiDex
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics, {
+        exclude group: "com.google.android.gms", module: "play-services-basement"
+        exclude group: "com.google.android.gms", module: "play-services-tasks"
+    }
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)
@@ -60,6 +66,8 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
         exclude group: "com.google.android.gms"
         exclude group: "com.google.firebase", module: "firebase-iid"
+        exclude group: "com.google.code.gson"
+        exclude group: "androidx.lifecycle", module: "lifecycle-livedata"
     }
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

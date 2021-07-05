@@ -1,0 +1,9 @@
+{
+  "readme": "open product preview page",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/addproductpage - stepper"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+mutation UpdateNotification($notificationID: Int,$notificationEntryType: Int, $popUpType:Int, $screenName:String) {
+    updateNotification(notificationID:$notificationID,notificationEntryType:$notificationEntryType,popUpType:$popUpType,screenName:$screenName) {
+        code
+        message
+        reason
+    }
+}

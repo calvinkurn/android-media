@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/autocompleteProductItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/autocompleteProductImage"
+        android:contentDescription="@string/content_desc_dl_iconImage"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginStart="@dimen/dp_16"
+        android:padding="@dimen/dp_1"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autocompleteProductTitle"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toEndOf="@id/autocompleteProductImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginEnd="@dimen/dp_8"
+        app:layout_goneMarginLeft="@dimen/dp_8"
+        app:layout_goneMarginRight="@dimen/dp_8"
+        app:layout_goneMarginStart="@dimen/dp_8"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="@string/dummy_recent_search_two_lines"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/autocompleteProductLabelDiscountPercentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_2"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:labelType="general_light_red"
+        app:layout_constraintStart_toEndOf="@id/autocompleteProductImage"
+        app:layout_constraintTop_toBottomOf="@id/autocompleteProductTitle"
+        tools:visibility="visible"
+        tools:text="20%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autocompleteProductOriginalPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_3"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_32"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/autocompleteProductTitle"
+        app:layout_constraintStart_toEndOf="@id/autocompleteProductLabelDiscountPercentage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginStart="@dimen/dp_8"
+        app:typographyType="small"
+        tools:visibility="visible"
+        tools:text="Rp8.499.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/autocompleteProductPrice"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/autocompleteProductLabelDiscountPercentage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/autocompleteProductImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_goneMarginStart="@dimen/dp_8"
+        app:layout_goneMarginTop="@dimen/dp_2"
+        tools:visibility="visible"
+        tools:text="@string/dummy_recent_search_subtitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

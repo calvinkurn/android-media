@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@OfficialStoreCategoryScope
 abstract class OfficialStoreCategoryViewModelModule {
 
     @OfficialStoreCategoryScope

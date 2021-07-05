@@ -1,5 +1,6 @@
 package com.tokopedia.withdraw
 
+import com.tokopedia.withdraw.auto_withdrawal.presentation.viewModel.AutoWDSettingsViewModelTest
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.JoinRekeningTermsConditionViewModelTest
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.RekeningPremiumViewModelTest
 import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.SaldoWithdrawalViewModelTest
@@ -12,6 +13,7 @@ import org.junit.runners.Suite
         JoinRekeningTermsConditionViewModelTest::class,
         RekeningPremiumViewModelTest::class,
         SaldoWithdrawalViewModelTest::class,
-        SubmitWithdrawalViewModelTest::class)
+        SubmitWithdrawalViewModelTest::class,
+        AutoWDSettingsViewModelTest::class)
 class WithdrawalTestSuite {
 }

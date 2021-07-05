@@ -25,7 +25,7 @@
             android:layout_height="@dimen/dp_0"
             android:layout_marginEnd="@dimen/dp_64"
             android:layout_marginRight="@dimen/dp_64"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             android:layout_weight="1"
@@ -38,7 +38,7 @@
             android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_64"
             android:layout_marginRight="@dimen/dp_64"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             android:layout_weight="1"
             tools:text="Kemas Acil" />

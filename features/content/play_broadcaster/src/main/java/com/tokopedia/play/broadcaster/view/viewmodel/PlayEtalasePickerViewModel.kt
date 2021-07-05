@@ -1,26 +1,23 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetProductsInEtalaseUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSelfEtalaseListUseCase
 import com.tokopedia.play.broadcaster.error.EventException
 import com.tokopedia.play.broadcaster.error.SelectForbiddenException
-import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.EtalaseContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
-import com.tokopedia.play.broadcaster.ui.model.result.map
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.view.state.NotSelectable
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.result.map
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -28,6 +25,7 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -36,18 +34,16 @@ import kotlin.math.min
  */
 class PlayEtalasePickerViewModel @Inject constructor(
         private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore,
         private val getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         private val getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val playBroadcastMapper: PlayBroadcastMapper
 ) : ViewModel() {
 
     private val channelId: String
         get() = hydraConfigStore.getChannelId()
-
-    private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher.main)
 
     val observableEtalase: LiveData<PageResult<List<EtalaseContentUiModel>>>
         get() = _observableEtalase
@@ -65,9 +61,9 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = _observableEtalaseProductState
     private val _observableEtalaseProductState = MutableLiveData<PageResult<String>>()
 
-    val observableSelectedProducts: LiveData<List<ProductContentUiModel>> = Transformations.map(setupDataStore.getObservableSelectedProducts()) { dataList ->
-        dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
-    }
+    val observableSelectedProducts = setupDataStore.getObservableSelectedProducts()
+            .map { dataList -> dataList.map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) } }
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
 
     val observableUploadProductEvent: LiveData<NetworkResult<Event<Unit>>>
         get() = _observableUploadProductEvent
@@ -88,13 +84,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
     private val productPreviewChannel = BroadcastChannel<String>(Channel.BUFFERED)
 
     init {
-        scope.launch { initProductPreviewChannel() }
+        viewModelScope.launch { initProductPreviewChannel() }
         loadEtalaseList()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancelChildren()
     }
 
     fun loadEtalaseProducts(etalaseId: String, page: Int) {
@@ -105,7 +96,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
                 else currentValue
         )
 
-        scope.launch {
+        viewModelScope.launch {
             _observableSelectedEtalase.value = fetchEtalaseProduct(etalaseId, page)
         }
     }
@@ -117,14 +108,14 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     fun loadEtalaseProductPreview(etalaseId: String) {
-        scope.launch {
+        viewModelScope.launch {
             productPreviewChannel.send(etalaseId)
         }
     }
 
     fun uploadProduct() {
         _observableUploadProductEvent.value = NetworkResult.Loading
-        scope.launch {
+        viewModelScope.launch {
             val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }
             _observableUploadProductEvent.value =
                     if (result is NetworkResult.Fail) NetworkResult.Fail(EventException(result.error))
@@ -140,7 +131,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         _observableSearchedProducts.value = PageResult.Loading(
                 if (page == 1) emptyList() else currentValue
         )
-        scope.launch {
+        viewModelScope.launch {
             try {
                 val (searchedProducts, totalData) = getProductsByKeyword(keyword, page)
                 updateProductMap(searchedProducts)
@@ -156,7 +147,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     fun loadEtalaseList() {
         _observableEtalase.value = PageResult.Loading(emptyList())
-        scope.launch {
+        viewModelScope.launch {
             try {
                 val etalaseList = getEtalaseList()
                 val newMap = updateEtalaseMap(etalaseList)
@@ -297,7 +288,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
             }.executeOnBackground()
 
             NetworkResult.Success(Pair(
-                    PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                    playBroadcastMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                     productList.meta.totalHits
             ))
         } catch (e: Throwable) {
@@ -308,7 +299,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
 
     private suspend fun getEtalaseList() = withContext(dispatcher.io) {
         val etalaseList = getSelfEtalaseListUseCase.executeOnBackground()
-        return@withContext PlayBroadcastUiMapper.mapEtalaseList(etalaseList)
+        return@withContext playBroadcastMapper.mapEtalaseList(etalaseList)
     }
 
     private suspend fun getProductsByKeyword(keyword: String, page: Int) = withContext(dispatcher.io) {
@@ -322,7 +313,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }.executeOnBackground()
 
         return@withContext Pair(
-                PlayBroadcastUiMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
+                playBroadcastMapper.mapProductList(productList, ::isProductSelected, ::isSelectable),
                 productList.meta.totalHits
         )
     }

@@ -5,11 +5,11 @@
     android:id="@+id/container_umrah_gallery_three_images"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_12"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/unify_space_12"
+    android:layout_marginRight="@dimen/spacing_lvl4"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,8 +21,8 @@
             android:id="@+id/tg_umrah_gallery_three_image_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:textColor="@color/Neutral_N700"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
             android:id="@+id/tg_umrah_gallery_three_image_sub_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_umrah_gallery_three_image_title"
             app:typographyType="body_3"
@@ -50,20 +50,20 @@
             app:flow_wrapMode="aligned"
             app:flow_verticalAlign="center"
             app:flow_horizontalStyle="spread"
-            app:flow_horizontalGap="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12"
+            app:flow_horizontalGap="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
             />
         <androidx.cardview.widget.CardView
             android:id="@+id/card_umrah_gallery_three_image_first"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_1"
-            android:layout_marginBottom="@dimen/dp_12"
-            app:cardCornerRadius="@dimen/dp_8"
+            android:layout_height="@dimen/unify_space_128"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/spacing_lvl1"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
             app:cardElevation="0dp"
             tools:ignore="MissingConstraints"
             >
@@ -71,20 +71,20 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iw_umrah_gallery_three_image_first"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_120"
+                android:layout_height="@dimen/unify_space_128"
                 android:scaleType="centerCrop"
-              />
+                />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_umrah_gallery_three_image_second"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginLeft="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_1"
-            android:layout_marginBottom="@dimen/dp_12"
-            app:cardCornerRadius="@dimen/dp_8"
+            android:layout_height="@dimen/unify_space_128"
+            android:layout_marginLeft="@dimen/spacing_lvl1"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
             app:cardElevation="0dp"
             tools:ignore="MissingConstraints"
             >
@@ -92,7 +92,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iw_umrah_gallery_three_image_second"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_120"
+                android:layout_height="@dimen/unify_space_128"
                 android:scaleType="centerCrop"
                 />
         </androidx.cardview.widget.CardView>
@@ -100,11 +100,11 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card_umrah_gallery_three_image_third"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginLeft="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
-            app:cardCornerRadius="@dimen/dp_8"
+            android:layout_height="@dimen/unify_space_128"
+            android:layout_marginLeft="@dimen/spacing_lvl1"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
             app:cardElevation="0dp"
             tools:ignore="MissingConstraints"
             >
@@ -117,14 +117,14 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iw_umrah_gallery_three_image_third"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_120"
+                    android:layout_height="@dimen/unify_space_128"
                     android:scaleType="centerCrop"
                     />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tg_umrah_gallery_three_next_label"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_120"
+                    android:layout_height="@dimen/unify_space_128"
                     android:layout_gravity="center"
                     android:background="@drawable/umrah_rounded_gallery_foreground"
                     android:gravity="center"
@@ -141,9 +141,9 @@
             android:id="@+id/tg_umrah_gallery_three_image_desc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:typographyType="body_3"
             app:layout_constraintTop_toBottomOf="@+id/flow_umrah_gallery"
             tools:text="Alhamdulillah ibadah umroh kami berjalan dengan lancar tanpa halangan berarti." />

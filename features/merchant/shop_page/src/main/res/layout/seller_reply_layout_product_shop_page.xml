@@ -13,7 +13,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_8"
@@ -32,12 +31,15 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_5"
-                    android:layout_marginRight="@dimen/dp_5"
-                    app:srcCompat="@drawable/ic_like_normal" />
+                    app:srcCompat="@drawable/ic_like_normal"
+                    android:contentDescription="@null" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_counter_like"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_44"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     tools:text="Anda dan 2 orang terbantu" />
             </LinearLayout>
@@ -53,9 +55,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/see_reply_button"
-                    style="@style/TextView.Micro.BlackSecondary.Bold"
+                    app:typographyWeight="bold"
+                    app:typographyType="body_2"
+                    android:textColor="@color/Unify_N700_44"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/see_reply" />
 
@@ -64,9 +70,9 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginStart="@dimen/dp_5"
-                    app:srcCompat="@drawable/ic_arrow_down_grey" />
+                    app:srcCompat="@drawable/ic_arrow_down_grey"
+                    android:contentDescription="@null" />
             </LinearLayout>
 
         </LinearLayout>
@@ -77,14 +83,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/white"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:visibility="gone"
             tools:visibility="visible">
 
             <LinearLayout
-                android:layout_toLeftOf="@+id/reply_overflow"
+                android:layout_toStartOf="@+id/reply_overflow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -95,14 +100,19 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/TextView.Small.BlackSecondary"
-                        android:layout_marginRight="@dimen/dp_5"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyWeight="reguler"
+                        app:typographyType="body_2"
+                        android:layout_marginEnd="@dimen/dp_5"
                         android:text="@string/product_review_label_by" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_reply_name"
-                        style="@style/TextView.Small.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyWeight="bold"
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Pretty Sugar Shop" />
@@ -116,12 +126,15 @@
                     android:layout_marginTop="@dimen/dp_3"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_label"
-                        style="@style/TextView.Micro.Green.Bold"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/Unify_G500"
+                        android:layout_height="wrap_content"
+                        app:typographyWeight="bold"
+                        app:typographyType="body_3"
                         android:layout_marginEnd="@dimen/dp_5"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:background="@drawable/label_seller"
+                        android:background="@drawable/label_seller_shop_page"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/dp_2"
                         android:paddingLeft="@dimen/dp_10"
@@ -131,21 +144,26 @@
                         android:textSize="@dimen/sp_12" />
 
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_reply_time"
-                        style="@style/TextView.Micro.BlackDisabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Unify_N700_44"
                         android:textSize="@dimen/sp_12"
                         tools:text="31 Jul 2016, pukul 11:48" />
                 </LinearLayout>
 
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/seller_reply"
-                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_2"
                     android:layout_marginTop="@dimen/dp_10"
                     android:enabled="true"
                     android:focusable="true"
-                    android:fontFamily="sans-serif"
+                    app:typographyWeight="reguler"
                     android:longClickable="true"
                     android:textIsSelectable="true"
                     tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami." />
@@ -156,10 +174,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_more_vertical_grey" />
+                app:srcCompat="@drawable/ic_more_vertical_grey"
+                android:contentDescription="@null" />
         </RelativeLayout>
     </LinearLayout>
 </merge>

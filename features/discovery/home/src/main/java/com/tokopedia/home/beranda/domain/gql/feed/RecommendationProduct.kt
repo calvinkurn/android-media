@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class RecommendationProduct (
+        @SerializedName("pageName")
+        @Expose
+        val pageName: String = "",
         @SerializedName("product")
         @Expose
         val product: List<Product> = listOf(),

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="@dimen/dp_4"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/Unify_N200"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+
+
+    <include
+
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/Unify_N200"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+
+    <include
+        layout="@layout/holder_transaction_list_shimmer"/>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <include
+            layout="@layout/holder_transaction_payment_shimmer"/>
+
+        <include
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            layout="@layout/holder_transaction_payment_shimmer"/>
+    </LinearLayout>
+
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/Unify_N200"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+
+
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+    <include
+        layout="@layout/holder_home_nav_menu_shimmer"/>
+
+</LinearLayout>

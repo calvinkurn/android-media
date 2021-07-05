@@ -1,20 +1,14 @@
 package com.tokopedia.loginregister.login.view.listener
 
-import android.content.Context
-import androidx.fragment.app.Fragment
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
-import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
-import com.tokopedia.loginregister.login.domain.StatusFingerprint
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
+import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
 
@@ -36,7 +30,9 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail()
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo? = null)
+
+        fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
         fun showLoadingDiscover()
 
@@ -44,13 +40,9 @@ interface LoginEmailPhoneContract {
 
         fun onErrorDiscoverLogin(throwable: Throwable)
 
-        fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>)
+        fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>)
 
         fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
-
-        fun isFromRegister(): Boolean
-
-        fun setSmartLock()
 
         fun stopTrace()
 
@@ -58,7 +50,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
-        fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
+        fun onErrorReloginAfterSQ(): Function1<Throwable, Unit>
 
         fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
 
@@ -68,11 +60,13 @@ interface LoginEmailPhoneContract {
 
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
-        fun onSuccessGetUserInfo(): Function1<ProfilePojo, Unit>
+        fun onSuccessGetUserInfo(profilePojo: ProfilePojo)
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
 
-        fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
+        fun showPopup(): Function1<PopupError, Unit>
+
+        fun onGoToActivationPage(email: String)
 
         fun onGoToSecurityQuestion(email: String): Function0<Unit>
 
@@ -106,44 +100,38 @@ interface LoginEmailPhoneContract {
 
         fun onGetDynamicBannerError(throwable: Throwable)
 
-        fun onErrorCheckStatusFingerprint(e: Throwable)
-
-        fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
-
         fun goToFingerprintRegisterPage()
 
         fun getFingerprintConfig(): Boolean
-    }
 
-    interface Presenter : CustomerPresenter<View> {
-        fun loginEmail(email: String, password: String, isSmartLock : Boolean = false)
+        fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int)
 
-        fun loginGoogle(accessToken: String, email: String)
+        fun goToChooseAccountPage(accessToken: String, phoneNumber: String)
 
-        fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
+        fun goToChooseAccountPageFacebook(accessToken: String)
 
-        fun getUserInfo()
+        fun goToChooseAccountPageFingerprint(validateToken: String)
 
-        fun getUserInfoFingerprint()
+        fun goToAddPin2FA(enableSkip2FA: Boolean)
 
-        fun discoverLogin(context: Context)
+        fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String)
 
-        fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
+        fun onGoToChangeName()
 
-        fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String)
+        fun goToForgotPassword()
 
-        fun reloginAfterSQ(validateToken: String)
+        fun goToTokopediaCareWebview()
 
-        fun getTickerInfo()
+        fun goToRegisterInitial(source: String)
 
-        fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+        fun openGoogleLoginIntent()
 
-        fun checkStatusFingerprint()
+        fun onSuccessActivateUser(activateUserData: ActivateUserData)
 
-        fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+        fun onFailedActivateUser(throwable: Throwable)
 
-        fun removeFingerprintData()
+        fun showLocationAdminPopUp()
 
-        fun getDynamicBanner(page: String)
+        fun showGetAdminTypeError(throwable: Throwable)
     }
 }

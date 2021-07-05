@@ -18,7 +18,7 @@ class TermsAndConditionBottomSheetFragment : BottomSheetUnify() {
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
-        val TAG = TermsAndConditionBottomSheetFragment::javaClass.name
+        const val TAG = "TermsAndConditionBottomSheet"
     }
 
 }

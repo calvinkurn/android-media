@@ -35,7 +35,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/banner_see_all"
-        android:textColor="#7A08C9"
+        android:textColor="@color/Unify_P600"
         android:textSize="13sp" />
 
 </RelativeLayout>

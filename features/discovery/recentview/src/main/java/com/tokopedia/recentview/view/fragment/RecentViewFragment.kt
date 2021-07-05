@@ -1,6 +1,5 @@
 package com.tokopedia.recentview.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,23 +18,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.recentview.R
 import com.tokopedia.recentview.analytics.RecentViewTracking
 import com.tokopedia.recentview.di.DaggerRecentViewComponent
+import com.tokopedia.recentview.ext.convertRupiahToInt
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl
 import com.tokopedia.recentview.view.listener.RecentView
-import com.tokopedia.recentview.view.presenter.RecentViewPresenter
 import com.tokopedia.recentview.view.presenter.RecentViewViewModel
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel
-import com.tokopedia.recentview.view.viewmodel.RecentViewProductViewModel
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 import javax.inject.Inject
 
@@ -43,13 +38,11 @@ import javax.inject.Inject
  * @author by Lukas on 15/7/2020.
  */
 
-class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListActionListener {
+@ExperimentalCoroutinesApi
+class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
     private var recyclerView: RecyclerView? = null
     private lateinit var adapter: RecentViewDetailAdapter
     private var layoutManager: LinearLayoutManager? = null
-
-    @Inject
-    lateinit var presenter: RecentViewPresenter
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -82,13 +75,13 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
 
         val lifecycleOwner: LifecycleOwner = viewLifecycleOwner
         viewModel.run {
-            recentViewResp.observe(lifecycleOwner, Observer {
+            recentViewDetailProductDataResp.observe(lifecycleOwner, Observer {
                 when (it) {
-                    is Success ->  {
-                        if(it.data.isNotEmpty()) {
+                    is Success -> {
+                        if (it.data.isNotEmpty()) {
                             val visitableList: ArrayList<Visitable<*>> = ArrayList(it.data)
+                            RecentViewTracking.trackEventImpressionOnProductRecentView(activity, it.data)
                             onSuccessGetRecentView(visitableList)
-                            sendRecentViewImpressionTracking(it.data)
                         } else {
                             onEmptyGetRecentView()
                         }
@@ -97,6 +90,16 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
                         onErrorGetRecentView(ErrorHandler.getErrorMessage(context, it.throwable))
                     }
                 }
+            })
+
+            addWishlistResponse.observe(lifecycleOwner, Observer {
+                if(it is Success) onSuccessAddWishlist(it.data)
+                else onErrorAddWishList((it as Fail).throwable.message ?: "")
+            })
+
+            removeWishlistResponse.observe(lifecycleOwner, Observer {
+                if(it is Success) onSuccessRemoveWishlist(it.data)
+                else onErrorRemoveWishlist((it as Fail).throwable.message ?: "")
             })
         }
     }
@@ -112,9 +115,8 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val parentView: View = inflater.inflate(R.layout.fragment_recent_view_detail, container, false)
-        recyclerView = parentView.findViewById<View>(R.id.list) as RecyclerView
+        recyclerView = parentView.findViewById<View>(R.id.rv_recent_view_page) as RecyclerView
         prepareView()
-        presenter?.attachView(this, this)
         return parentView
     }
 
@@ -123,7 +125,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
         recyclerView?.setHasFixedSize(true)
         val dividerItemDecoration = DividerItemDecoration(recyclerView?.context, DividerItemDecoration.VERTICAL)
         context?.let { context ->
-            val drawable = ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.bg_line_separator)
+            val drawable = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.bg_line_separator)
             drawable?.let { dividerItemDecoration.setDrawable(it) }
         }
         recyclerView?.addItemDecoration(dividerItemDecoration)
@@ -133,29 +135,16 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading()
-        viewModel?.getRecentView()
+        viewModel.getRecentView()
+        RecentViewTracking.trackEventOpenScreen(context)
     }
 
-    override fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
+    fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
+        showLoadingProgress()
         if (!isWishlist) {
-            presenter?.addToWishlist(adapterPosition, productId.toString())
+            viewModel.addToWishlist(adapterPosition, productId.toString())
         } else {
-            presenter?.removeFromWishlist(adapterPosition, productId.toString())
-        }
-    }
-
-    override fun onGoToProductDetail(productId: String,
-                                     productName: String,
-                                     productPrice: String,
-                                     productImage: String) {
-        activity?.startActivity(getProductIntent(productId))
-    }
-
-    private fun getProductIntent(productId: String): Intent? {
-        return if (context != null) {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-        } else {
-            null
+            viewModel.removeFromWishlist(adapterPosition, productId.toString())
         }
     }
 
@@ -164,16 +153,17 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
     }
 
     override fun showLoadingProgress() {}
+
     override fun onErrorGetRecentView(errorMessage: String) {
         adapter.dismissLoading()
         if (activity != null && view != null) NetworkErrorHelper.showEmptyState(activity, view,
                 errorMessage) {
             showLoading()
-            viewModel?.getRecentView()
+            viewModel.getRecentView()
         }
     }
 
-    override fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>>) {
+    private fun onSuccessGetRecentView(recentViewProductViewModels: ArrayList<Visitable<*>>) {
         adapter.dismissLoading()
         adapter.addList(recentViewProductViewModels)
         adapter.notifyDataSetChanged()
@@ -184,44 +174,24 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
         adapter.showEmpty()
     }
 
-    override fun sendRecentViewClickTracking(element: RecentViewDetailProductViewModel) {
-        RecentViewTracking.trackEventClickOnProductRecentView(activity,
-                element.recentViewAsObjectDataLayerForClick
-        )
-    }
-
-    override fun sendRecentViewImpressionTracking(recentViewModel: List<RecentViewDetailProductViewModel>) {
-        RecentViewTracking.trackEventImpressionOnProductRecentView(activity,
-                getRecentViewAsDataLayerForImpression(recentViewModel))
-    }
-
-    fun getRecentViewAsDataLayerForImpression(recentViewModel: List<RecentViewDetailProductViewModel>): List<Any> {
-        val objects: MutableList<Any> = ArrayList()
-        for (model in recentViewModel) {
-            objects.add(DataLayer.mapOf(
-                    "name", model.name,
-                    "id", model.productId,
-                    "price", CurrencyFormatHelper.convertRupiahToInt(model.price.toString()).toString(),
-                    "list", "/recent",
-                    "brand", DEFAULT_VALUE_NONE_OTHER,
-                    "category", "",
-                    "position", model.positionForRecentViewTracking.toString()))
+    override fun sendRecentViewClickTracking(element: RecentViewDetailProductDataModel) {
+        activity?.let {
+            RecentViewTracking.trackEventClickOnProductRecentView(it, element)
         }
-        return objects
     }
 
-    override fun onErrorAddWishList(errorMessage: String, productId: String) {
+    private fun onErrorAddWishList(errorMessage: String) {
         dismissLoadingProgress()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessAddWishlist(productID: String) {
+    private fun onSuccessAddWishlist(productID: String) {
         dismissLoadingProgress()
         for (i in adapter.list.indices) {
-            if (adapter.list[i] is RecentViewProductViewModel) {
-                val feedDetailViewModel = adapter.list[i] as RecentViewProductViewModel
-                if (productID == feedDetailViewModel.id.toString()) {
-                    feedDetailViewModel.wishlist = true
+            if (adapter.list[i] is RecentViewDetailProductDataModel) {
+                val feedDetailViewModel = adapter.list[i] as RecentViewDetailProductDataModel
+                if (productID == feedDetailViewModel.productId) {
+                    feedDetailViewModel.isWishlist = true
                     adapter.notifyItemChanged(i)
                     break
                 }
@@ -230,18 +200,18 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View, WishListAction
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.recent_view_msg_success_add_wishlist))
     }
 
-    override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
+    private fun onErrorRemoveWishlist(errorMessage: String) {
         dismissLoadingProgress()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessRemoveWishlist(productID: String) {
+    private fun onSuccessRemoveWishlist(productID: String) {
         dismissLoadingProgress()
         for (i in adapter.list.indices) {
-            if (adapter.list[i] is RecentViewProductViewModel) {
-                val feedDetailViewModel = adapter.list[i] as RecentViewProductViewModel
-                if (productID == feedDetailViewModel.id.toString()) {
-                    feedDetailViewModel.wishlist = true
+            if (adapter.list[i] is RecentViewDetailProductDataModel) {
+                val feedDetailViewModel = adapter.list[i] as RecentViewDetailProductDataModel
+                if (productID == feedDetailViewModel.productId) {
+                    feedDetailViewModel.isWishlist = true
                     adapter.notifyItemChanged(i)
                     break
                 }

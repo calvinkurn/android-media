@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:background="@color/deals_backgroud_color">
+    android:background="@color/Unify_N0">
 
     <TextView
 
@@ -17,7 +17,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="parent"
-        style="@style/TextView.Small.BlackPrimary"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -29,7 +29,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         tools:text="PACIFIC PLACE MALL, 4th Floor…"
         style="@style/TextView.Small"
-        android:textColor="@color/black_38"
+        android:textColor="@color/Unify_N700_32"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="50dp"
         android:textSize="@dimen/sp_14"
@@ -52,7 +52,7 @@
         android:layout_height="@dimen/dp_2"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_location_address" />
 

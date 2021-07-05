@@ -19,6 +19,7 @@ import com.tokopedia.kategori.Constants
 import com.tokopedia.kategori.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.*
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.product_name
@@ -102,7 +103,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
         ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.square_shimmer)
-        productViewHolder.productName.text = item.name
+        with(productViewHolder.productName) {setTextAndContentDescription(item.name, R.string.content_desc_category_product_name)}
         productViewHolder.productRootLayout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
 
@@ -146,12 +147,12 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initProductHeaderViewHolderLayout(productHeaderViewHolder: ProductHeaderViewHolder, position: Int) {
         val item = list[position]
         ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.productHeaderImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
-        productHeaderViewHolder.productHeaderName.text = item.name
+        with(productHeaderViewHolder.productHeaderName) {setTextAndContentDescription(item.name, R.string.content_desc_product_name)}
         item.hexColor?.let {
             if (it.isEmpty()) {
                 val shape = GradientDrawable()
                 shape.cornerRadius = 17.0f
-                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(R.color.category_Blue_B500))
+                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_B500))
                 productHeaderViewHolder.productHeaderRoot.background = shape
             } else {
                 setDrawableRoundedImage(productHeaderViewHolder.productHeaderRoot, it)
@@ -176,7 +177,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         }
         setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
         ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.square_shimmer)
-        yangLagiHitsViewHolder.ylhProductName.text = item.name
+        with(yangLagiHitsViewHolder.ylhProductName) {setTextAndContentDescription(item.name, R.string.content_desc_item_name)}
         yangLagiHitsViewHolder.ylhRootLayout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
             categoryAnalytics.eventYangLagiHitClick(list[position], position)
@@ -185,7 +186,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initTextHeaderViewHolderLayout(textHeaderViewHolder: TextHeaderViewHolder, position: Int) {
         list[position].name?.let {
-            textHeaderViewHolder.headerTitle.text = it
+            with(textHeaderViewHolder.headerTitle) {setTextAndContentDescription(it, R.string.content_desc_header_title)}
             if (it.toLowerCase().contains("sering kamu lihat")) {
                 textHeaderViewHolder.headerTitle.setMargin(0, convertDpToPx(textHeaderViewHolder.itemView.context, 20), 0, 0)
             }

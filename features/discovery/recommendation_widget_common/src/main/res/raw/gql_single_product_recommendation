@@ -1,12 +1,5 @@
 query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam: String!, $productIDs: String!) {
     productRecommendationWidgetSingle(userID: $userID, queryParam: $queryParam, pageNumber: $pageNumber, productIDs: $productIDs){
-        meta {
-            recommendation
-            size
-            failSize
-            processTime
-            experimentVersion
-        }
        data {
            tID
            source
@@ -16,6 +9,9 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
            seeMoreAppLink
            seeMoreUrlLink
            pageName
+           pagination{
+               hasNext
+           }
            recommendation {
                id
                name
@@ -48,6 +44,12 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                   title
                   imageUrl
               }
+              labelgroup{
+                position
+                title
+                type
+                url
+              }
               wholesalePrice {
                   price
                   quantityMax
@@ -59,10 +61,15 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                 imageUrl
               }
               rating
+              ratingAverage
               countReview
               recommendationType
               stock
               isTopads
+              specificationLabels {
+                                              key
+                                              value
+                            }
            }
        }
      }

@@ -1,71 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.TopPayActivity"
-    android:orientation="vertical">
+    tools:context=".activity.TopPayActivity">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/holder_top"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
         android:background="@drawable/bg_toolbar_drop_shadow">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="?android:actionBarSize"
-            android:padding="12dp"
-            app:srcCompat="@drawable/ic_arrow_back_black"
-            tools:ignore="ContentDescription" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="@dimen/spacing_lvl4"
+            app:icon_name="ARROW_BACK"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/btn_back"
-            android:layout_toLeftOf="@+id/btn_close"
-            android:layout_toRightOf="@+id/btn_back"
-            android:layout_toStartOf="@+id/btn_close"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:gravity="center"
             android:maxLines="1"
+            android:paddingStart="?android:actionBarSize"
+            android:paddingEnd="?android:actionBarSize"
             android:text="@string/app_name"
-            android:textColor="@color/tkpd_main_text_color_payment_module"
-            android:textSize="18sp" />
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3"
+            app:typographyWeight="reguler" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/btn_close"
-            android:layout_width="?android:actionBarSize"
-            android:layout_height="?android:actionBarSize"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:padding="12dp"
-            app:srcCompat="@drawable/ic_close_white"
-            android:visibility="invisible"
-            tools:ignore="ContentDescription" />
-    </RelativeLayout>
-
-    <RelativeLayout
+    <WebView
+        android:id="@+id/scrooge_webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/holder_top">
+        android:layout_below="@+id/holder_top" />
 
-        <WebView
-            android:id="@+id/scrooge_webview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ProgressBar
-            android:id="@+id/progressbar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-6dp"
-            android:max="100" />
-
-    </RelativeLayout>
-
-
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/holder_top"
+        android:layout_marginTop="-6dp"
+        android:max="100" />
 </RelativeLayout>

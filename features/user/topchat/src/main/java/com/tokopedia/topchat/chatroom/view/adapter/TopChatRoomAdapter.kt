@@ -1,40 +1,64 @@
 package com.tokopedia.topchat.chatroom.view.adapter
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusActive
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusWarehouse
+import com.tokopedia.reputation.common.constant.ReputationCommonConstants
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.util.ChatRoomDiffUtil
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.BroadcastSpamHandlerViewHolder.Companion.PAYLOAD_UPDATE_STATE
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 /**
  * @author : Steven 02/01/19
  */
-class TopChatRoomAdapter(
-        private val context: Context?,
-        private val adapterTypeFactory: TopChatTypeFactoryImpl
+class TopChatRoomAdapter constructor(
+    private val context: Context?,
+    private val adapterTypeFactory: TopChatTypeFactoryImpl
 ) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener,
-        AdapterListener {
+    AdapterListener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
     private var bottomMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDate: HeaderDateUiModel? = null
     private var topMostHeaderDateIndex: Int? = null
+    private val carouselViewPool = RecyclerView.RecycledViewPool()
+    private val handler = Handler(Looper.getMainLooper())
+    private var offset = 0
+    private var offsetUiModelMap = ArrayMap<Visitable<*>, Int>()
+    private var _srwUiModel: MutableLiveData<SrwBubbleUiModel?> = MutableLiveData()
+    val srwUiModel: LiveData<SrwBubbleUiModel?> get() = _srwUiModel
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -44,7 +68,10 @@ class TopChatRoomAdapter(
         return adapterTypeFactory.getItemViewType(visitables, position, default)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<out Visitable<*>> {
         return adapterTypeFactory.createViewHolder(parent, viewType, this, this)
     }
 
@@ -62,10 +89,35 @@ class TopChatRoomAdapter(
         addTopData(visitables)
     }
 
-    override fun isNextItemSender(adapterPosition: Int, isSender: Boolean): Boolean {
-        val nextItem = visitables.getOrNull(adapterPosition - 1) as? SendableViewModel
-                ?: return true
-        return isSender == nextItem.isSender
+    override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
+        val nextItem = visitables.getOrNull(adapterPosition + 1)
+        val nextItemIsSender: Boolean = when (nextItem) {
+            is SendableViewModel -> nextItem.isSender
+            is ProductCarouselUiModel -> nextItem.isSender
+            is ReviewUiModel -> nextItem.isSender
+            else -> true
+        }
+        return isSender != nextItemIsSender
+    }
+
+    override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
+        return carouselViewPool
+    }
+
+    override fun changeToFallbackUiModel(element: ReviewUiModel, lastKnownPosition: Int) {
+        handler.post {
+            postChangeToFallbackUiModel(lastKnownPosition, element)
+        }
+    }
+
+    private fun postChangeToFallbackUiModel(lastKnownPosition: Int, element: ReviewUiModel) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, element)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        itemPair.second ?: return
+        val message = FallbackAttachmentViewModel(element.reply)
+        visitables[position] = message
+        notifyItemChanged(position)
     }
 
     fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
@@ -114,14 +166,19 @@ class TopChatRoomAdapter(
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
             val previousChatTime = bottomMostHeaderDate?.dateTimestamp ?: return
             if (!sameDay(chatTime, previousChatTime)) {
+                val indexToAdd = getOffsetSafely()
                 bottomMostHeaderDate = HeaderDateUiModel(chatTime)
-                visitables.add(0, bottomMostHeaderDate)
-                notifyItemInserted(0)
+                visitables.add(indexToAdd, bottomMostHeaderDate)
+                notifyItemInserted(indexToAdd)
             }
         }
     }
 
-    fun updateAttachmentView(firstVisible: Int, lastVisible: Int, attachments: ArrayMap<String, Attachment>) {
+    fun updateAttachmentView(
+        firstVisible: Int,
+        lastVisible: Int,
+        attachments: ArrayMap<String, Attachment>
+    ) {
         if (firstVisible > lastVisible) return
         if (firstVisible < 0 || lastVisible >= visitables.size) return
         for (itemPosition in firstVisible..lastVisible) {
@@ -137,7 +194,7 @@ class TopChatRoomAdapter(
                     notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
                 }
             }
-            if (item is ProductCarouselUiModel) {
+            if (item is ProductCarouselUiModel || item is BroadCastUiModel) {
                 notifyItemChanged(itemPosition, DeferredAttachment.PAYLOAD_DEFERRED)
             }
         }
@@ -208,20 +265,32 @@ class TopChatRoomAdapter(
     fun isLastMessageBroadcast(): Boolean {
         if (visitables.isEmpty()) return false
         val latestMessage = visitables.first()
-        return (latestMessage is MessageViewModel && latestMessage.isFromBroadCast()) || latestMessage is BroadcastSpamHandlerUiModel
+        return (latestMessage is MessageViewModel && latestMessage.isFromBroadCast()) ||
+                latestMessage is BroadcastSpamHandlerUiModel ||
+                latestMessage is BroadCastUiModel
     }
 
     fun addBroadcastSpamHandler(): Int {
         var insertedPosition = RecyclerView.NO_POSITION
         if (visitables.isEmpty()) return insertedPosition
         val latestMessage = visitables.first()
-        if (latestMessage is MessageViewModel && latestMessage.isFromBroadCast() && !latestMessage.isSender) {
+        if (isFromBroadcast(latestMessage) || isFromUnifiedBroadcast(latestMessage)) {
             val spamHandlerModel = BroadcastSpamHandlerUiModel()
             insertedPosition = 0
             visitables.add(insertedPosition, spamHandlerModel)
             notifyItemInserted(insertedPosition)
         }
         return insertedPosition
+    }
+
+    private fun isFromUnifiedBroadcast(latestMessage: Visitable<*>?): Boolean {
+        return latestMessage is BroadCastUiModel && latestMessage.isOpposite
+    }
+
+    private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {
+        return latestMessage is MessageViewModel &&
+                latestMessage.isFromBroadCast() &&
+                !latestMessage.isSender
     }
 
     fun removeBroadcastHandler(element: BroadcastSpamHandlerUiModel) {
@@ -250,6 +319,184 @@ class TopChatRoomAdapter(
             return visitables[bcHandlerPost] as BroadcastSpamHandlerUiModel
         }
         return null
+    }
+
+
+    fun updateReviewState(
+        review: ReviewUiModel,
+        lastKnownPosition: Int,
+        reviewClickAt: Int,
+        state: Int
+    ) {
+        handler.post {
+            postUpdateReviewState(lastKnownPosition, review, state, reviewClickAt)
+        }
+    }
+
+    fun updateProductStock(
+        updateProductResult: UpdateProductStockResult, stockCount: Int, status: String
+    ) {
+        val itemPair = getUpToDateUiModelPosition(
+            updateProductResult.lastKnownPosition, updateProductResult.product
+        )
+        val parentPair: Pair<Int, Visitable<*>?>? = updateProductResult.parentMetaData?.let {
+            getUpToDateUiModelPosition(
+                it.lastKnownPosition, it.uiModel
+            )
+        }
+        val position = if (parentPair != null && parentPair.first != RecyclerView.NO_POSITION) {
+            parentPair.first
+        } else {
+            itemPair.first
+        }
+        if (position == RecyclerView.NO_POSITION) return
+        val item = itemPair.second ?: updateProductResult.product
+        when (status) {
+            ProductStatus.ACTIVE.name -> {
+                item.status = statusActive
+                item.remainingStock = stockCount
+            }
+            ProductStatus.INACTIVE.name -> {
+                item.remainingStock = 0
+                item.status = statusWarehouse
+            }
+        }
+        val payload = SingleProductAttachmentContainer.PayloadUpdateStock(item.productId)
+        notifyItemChanged(position, payload)
+    }
+
+    private fun postUpdateReviewState(
+        lastKnownPosition: Int, review: ReviewUiModel,
+        state: Int, reviewClickAt: Int
+    ) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        val item = itemPair.second ?: return
+        when (state) {
+            ReputationCommonConstants.REVIEWED -> {
+                item.reviewCard.apply {
+                    isReviewed = true
+                    rating = reviewClickAt.toFloat()
+                    reviewUrl = UriUtil.buildUri(ApplinkConst.REVIEW_DETAIL, feedBackId)
+                }
+                notifyItemChanged(position, ReviewViewHolder.PAYLOAD_REVIEWED)
+            }
+            else -> {
+                notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
+            }
+        }
+    }
+
+    fun resetReviewState(review: ReviewUiModel, lastKnownPosition: Int) {
+        handler.post {
+            postResetReviewState(lastKnownPosition, review)
+        }
+    }
+
+    fun addSrwBubbleUiModel(
+        srwState: SrwFrameLayout.SrwState?,
+        products: List<SendablePreview>
+    ) {
+        srwState ?: return
+        val srwModel = SrwBubbleUiModel(srwState, products)
+        val indexToAdd = getOffsetSafely()
+        _srwUiModel.value = srwModel
+        visitables.add(indexToAdd, srwModel)
+        notifyItemInserted(indexToAdd)
+        offset++
+        offsetUiModelMap[srwModel] = indexToAdd
+    }
+
+    override fun addElement(item: Visitable<*>) {
+        val indexToAdd = getOffsetSafely()
+        visitables.add(indexToAdd, item)
+        notifyItemInserted(indexToAdd)
+        updateSrwTopMargin()
+    }
+
+    fun hasSrwBubble(): Boolean {
+        return _srwUiModel.value != null
+    }
+
+    fun removeSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        visitables.removeAt(srwModelPosition)
+        notifyItemRemoved(srwModelPosition)
+        offset--
+        offsetUiModelMap.remove(srwModel)
+        _srwUiModel.value = null
+    }
+
+    /**
+     * Remove SRW bubble if [productId] is not relevant with
+     * current visible SRW bubble
+     */
+    fun removeSrwBubble(productId: String) {
+        val srwModel = srwUiModel.value ?: return
+        if (!srwModel.isRelatedTo(productId)) {
+            removeSrwBubble()
+        }
+    }
+
+    fun isLastMsgSrwBubble(): Boolean {
+        return visitables.getOrNull(0) is SrwBubbleUiModel
+    }
+
+    fun setSrwBubbleState(expanded: Boolean) {
+        if (expanded) {
+            expandSrwBubble()
+        } else {
+            collapseSrwBubble()
+        }
+    }
+
+    fun collapseSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        srwModel.isExpanded = false
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.COLLAPSED)
+    }
+
+    fun expandSrwBubble() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        srwModel.isExpanded = true
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.EXPANDED)
+    }
+
+    private fun getUpToDateSrwUiModelPosition(
+        uiModel: SrwBubbleUiModel
+    ): Int? {
+        var lastKnownPosition = offsetUiModelMap[uiModel] ?: return null
+        val upToDateUiModelData = getUpToDateUiModelPosition(lastKnownPosition, uiModel)
+        if (lastKnownPosition != upToDateUiModelData.first) {
+            lastKnownPosition = upToDateUiModelData.first
+        }
+        return lastKnownPosition
+    }
+
+    private fun getOffsetSafely(): Int {
+        return if (visitables.size < offset) {
+            visitables.size
+        } else {
+            offset
+        }
+    }
+
+    private fun updateSrwTopMargin() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.UPDATE_TOP_MARGIN)
+    }
+
+    private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
+        val itemPair = getUpToDateUiModelPosition(lastKnownPosition, review)
+        val position = itemPair.first
+        if (position == RecyclerView.NO_POSITION) return
+        itemPair.second ?: return
+        notifyItemChanged(position, ReviewViewHolder.PAYLOAD_NOT_REVIEWED)
     }
 
     private fun removeBroadcastHandler(index: Int) {
@@ -282,26 +529,19 @@ class TopChatRoomAdapter(
         return visitables.isNotEmpty() && visitables.size >= 2
     }
 
-    fun updateOccLoadingStatus(product: ProductAttachmentViewModel, position: Int) {
-        val occState = getItemPosition(product, position)
-        if (occState.parentPosition == RecyclerView.NO_POSITION) return
-        notifyItemChanged(occState.parentPosition, occState)
-    }
-
-    private fun getItemPosition(product: ProductAttachmentViewModel, position: Int): TopchatProductAttachmentViewHolder.OccState {
-        val item = visitables.getOrNull(position)
-        if (item == product) {
-            return TopchatProductAttachmentViewHolder.OccState(position)
+    /**
+     * return Pair<Int, T?>.
+     * the first Int is the latest / up-to-date ui model position
+     * the second T? is the ui model at the up-to-date position
+     */
+    private inline fun <reified T : Visitable<*>> getUpToDateUiModelPosition(
+        lastKnownPosition: Int, element: T
+    ): Pair<Int, T?> {
+        val item = visitables.getOrNull(lastKnownPosition)
+        if (item == element) {
+            return Pair(lastKnownPosition, item as? T)
         }
-        for ((parentItemIndex, parentItem) in visitables.withIndex()) {
-            if (parentItem == product) return TopchatProductAttachmentViewHolder.OccState(parentItemIndex)
-            if (parentItem is ProductCarouselUiModel) {
-                val carouselPosition = parentItem.products.indexOf(product)
-                if (carouselPosition != RecyclerView.NO_POSITION) {
-                    return TopchatProductAttachmentViewHolder.OccState(parentItemIndex, carouselPosition)
-                }
-            }
-        }
-        return TopchatProductAttachmentViewHolder.OccState(RecyclerView.NO_POSITION)
+        val updatePosition = visitables.indexOf(element)
+        return Pair(updatePosition, visitables.getOrNull(updatePosition) as? T)
     }
 }

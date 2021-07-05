@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl5"
+    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_form_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/cb_form_event"
+        android:id="@+id/tg_cb_form_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N400"
+        tools:text="Hallo"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@+id/cb_form_event"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/tg_cb_form_event_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_R600"
+        app:typographyType="body_3"
+        android:visibility="invisible"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

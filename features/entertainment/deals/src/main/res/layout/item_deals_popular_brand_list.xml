@@ -24,7 +24,7 @@
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toStartOf="@+id/txtDealsPopularBrandSeeAll"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/txtDealsPopularBrandSeeAll"
@@ -42,7 +42,7 @@
         tools:text="Lihat semua"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         />

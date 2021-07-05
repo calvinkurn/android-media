@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sbank_dp_1">1dp</dimen>
+    <dimen name="sbank_dp_240">240dp</dimen>
+    <dimen name="sbank_dp_35">35dp</dimen>
+</resources>

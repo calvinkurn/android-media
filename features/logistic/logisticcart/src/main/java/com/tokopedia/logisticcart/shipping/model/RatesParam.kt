@@ -9,6 +9,7 @@ private const val VALUE_LANG_ID = "id"
 data class RatesParam(
         val spids: String,
         var shop_id: String = "",
+        var shop_tier: Int = 0,
         val origin: String,
         val destination: String,
         val weight: String,
@@ -37,7 +38,10 @@ data class RatesParam(
         var is_express_checkout: Int? = null,
         var val_rates: String? = null,
         var used_otdg: Int? = null,
-        var occ: String = "0"
+        var occ: String = "0",
+        var po_time: Int = 0,
+        var is_fulfillment: Boolean = false,
+        var mvc: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -48,6 +52,7 @@ data class RatesParam(
             trade_in = builder.trade_in,
             is_corner = builder.is_corner,
             shop_id = builder.shop_id,
+            shop_tier = builder.shop_tier,
             token = builder.token,
             ut = builder.ut,
             insurance = builder.insurance,
@@ -61,11 +66,15 @@ data class RatesParam(
             vehicle_leasing = builder.vehicle_leasing,
             psl_code = builder.psl_code,
             products = builder.products,
-            unique_id = builder.unique_id)
+            unique_id = builder.unique_id,
+            is_fulfillment = builder.is_fulfillment,
+            po_time = builder.po_time,
+            mvc = builder.mvc)
 
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
             "shop_id" to shop_id,
+            "shop_tier" to shop_tier,
             "origin" to origin,
             "destination" to destination,
             "weight" to weight,
@@ -88,7 +97,10 @@ data class RatesParam(
             "psl_code" to psl_code,
             "products" to products,
             "unique_id" to unique_id,
-            "occ" to occ
+            "occ" to occ,
+            "mvc" to mvc,
+            "po_time" to po_time,
+            "is_fulfillment" to is_fulfillment
     )
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
@@ -107,6 +119,8 @@ data class RatesParam(
             private set
         var shop_id: String = shipping.shopId
             private set
+        var shop_tier: Int = shipping.shopTier
+            private set
         var token: String = shipping.token
             private set
         var ut: String = shipping.ut
@@ -123,7 +137,7 @@ data class RatesParam(
             private set
         var is_blackbox: Int = if (shipping.isBlackbox) 1 else 0
             private set
-        var address_id: String = shipping.addressId.toString()
+        var address_id: String = shipping.addressId ?: "0"
             private set
         var preorder: Int = if (shipping.isPreorder) 1 else 0
             private set
@@ -135,6 +149,11 @@ data class RatesParam(
             private set
         var unique_id: String = shipping.uniqueId
             private set
+        var is_fulfillment: Boolean = shipping.isFulfillment
+            private set
+        var po_time: Int = shipping.preOrderDuration
+            private set
+        var mvc: String = ""
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
@@ -143,6 +162,8 @@ data class RatesParam(
         fun isLeasing(leasing: Boolean) = apply { this.vehicle_leasing = if (leasing) 1 else 0 }
 
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
+
+        fun mvc(mvc: String?) = apply { this.mvc = mvc ?: "" }
 
         fun build() = RatesParam(this)
 

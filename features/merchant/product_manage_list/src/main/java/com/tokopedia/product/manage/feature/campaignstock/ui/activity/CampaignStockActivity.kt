@@ -50,7 +50,7 @@ class CampaignStockActivity : BaseSimpleActivity() {
     }
 
     private fun setupView() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setupStatusBarTransparent()
     }
 

@@ -1,7 +1,6 @@
 package com.tokopedia.sellerorder.waitingpaymentorder.presentation.fragment
 
 import android.animation.Animator
-import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.ActivityOptions
 import android.os.Build
@@ -18,9 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCheckAndSetStockButton
@@ -28,7 +25,6 @@ import com.tokopedia.sellerorder.waitingpaymentorder.di.DaggerWaitingPaymentOrde
 import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPaymentOrderRequestParam
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewholder.WaitingPaymentOrdersViewHolder
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.bottomsheet.BottomSheetWaitingPaymentOrderTips
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentTickerUiModel
@@ -47,7 +43,7 @@ import javax.inject.Inject
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
-class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>(), WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener {
+class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>() {
 
     companion object {
         private const val TAG_BOTTOM_SHEET = "bottom_sheet"
@@ -80,6 +76,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         observeWaitingPaymentOrderResult()
     }
 
+    override fun onPause() {
+        super.onPause()
+        buttonEnterAnimation?.end()
+        buttonLeaveAnimation?.end()
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory> {
         return WaitingPaymentOrderAdapter(adapterTypeFactory)
     }
@@ -89,7 +91,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     }
 
     override fun getAdapterTypeFactory(): WaitingPaymentOrderAdapterTypeFactory {
-        return WaitingPaymentOrderAdapterTypeFactory(this, this)
+        return WaitingPaymentOrderAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<WaitingPaymentOrderAdapterTypeFactory>?) {
@@ -165,15 +167,10 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         }
     }
 
-    override fun toggleCollapse(position: Int, isExpanded: Boolean) {
-        (adapter as WaitingPaymentOrderAdapter).toggleCollapse(position, isExpanded)
-    }
-
     private fun setupViews() {
         setupRecyclerView()
         setupSwipeRefreshLayout()
         setupCheckAndSetStockButton()
-        waitingPaymentOrderContainer.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
     private fun setupCheckAndSetStockButton() {
@@ -192,7 +189,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
             }
             if (intent != null) {
                 eventClickCheckAndSetStockButton(
-                        adapter.itemCount,
+                        adapter.data.filterIsInstance<WaitingPaymentOrderUiModel>().size,
                         userSession.userId,
                         userSession.shopId
                 )
@@ -243,9 +240,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                             }
                     )
                     if (isLoadingInitialData) {
-                        newItems.add(0, createTicker())
-                        (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
-                        animateCheckAndSetStockButtonEnter()
+                        if (newItems.isNotEmpty()) {
+                            newItems.add(0, createTicker())
+                            (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
+                            animateCheckAndSetStockButtonEnter()
+                        } else {
+                            cardCheckAndSetStock.invisible()
+                            (adapter as WaitingPaymentOrderAdapter).showEmpty()
+                        }
                     } else {
                         hideLoading()
                         adapter.addMoreData(newItems)
@@ -274,14 +276,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
     }
 
     private fun scrollToTopAfterRecyclerViewInflated() {
-        rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
-            (rvWaitingPaymentOrder).smoothScrollToPosition(0)
+        rvWaitingPaymentOrder?.addOneTimeGlobalLayoutListener {
+            rvWaitingPaymentOrder?.smoothScrollToPosition(0)
         }
     }
 
     private fun scrollToBottomAfterLoadMoreViewInflated() {
-        rvWaitingPaymentOrder.addOneTimeGlobalLayoutListener {
-            (rvWaitingPaymentOrder).smoothScrollToPosition(adapter.dataSize - 1)
+        rvWaitingPaymentOrder?.addOneTimeGlobalLayoutListener {
+            rvWaitingPaymentOrder?.smoothScrollToPosition(adapter.dataSize - 1)
         }
     }
 
@@ -289,7 +291,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         val animator = ValueAnimator.ofFloat(from, to)
         animator.duration = BUTTON_ENTER_LEAVE_ANIMATION_DURATION
         animator.addUpdateListener { valueAnimator ->
-            cardCheckAndSetStock.translationY = valueAnimator.animatedValue as Float
+            context?.let {
+                cardCheckAndSetStock?.translationY = (valueAnimator.animatedValue as? Float).orZero()
+            }
         }
         animator.start()
         return animator
@@ -297,8 +301,8 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     private fun animateCheckAndSetStockButtonEnter() {
         if (buttonLeaveAnimation?.isRunning == true) buttonLeaveAnimation?.end()
-        cardCheckAndSetStock.visible()
-        buttonEnterAnimation = animateCheckAndSetStockButton(cardCheckAndSetStock.height.toFloat(), 0f)
+        cardCheckAndSetStock?.visible()
+        buttonEnterAnimation = animateCheckAndSetStockButton(cardCheckAndSetStock?.height?.toFloat() ?: 0f, 0f)
         buttonEnterAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
@@ -320,12 +324,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     private fun animateCheckAndSetStockButtonLeave() {
         if (buttonEnterAnimation?.isRunning == true) buttonEnterAnimation?.end()
-        buttonLeaveAnimation = animateCheckAndSetStockButton(0f, cardCheckAndSetStock.height.toFloat())
+        buttonLeaveAnimation = animateCheckAndSetStockButton(0f, cardCheckAndSetStock?.height?.toFloat() ?: 0f)
         buttonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                cardCheckAndSetStock.gone()
+                cardCheckAndSetStock?.gone()
             }
 
             override fun onAnimationCancel(animation: Animator?) {}

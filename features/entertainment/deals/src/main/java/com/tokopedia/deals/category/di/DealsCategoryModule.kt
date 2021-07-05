@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
 
-@DealsCategoryScope
 @Module
 class DealsCategoryModule{
     @DealsCategoryScope

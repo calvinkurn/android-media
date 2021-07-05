@@ -12,7 +12,6 @@ import dagger.multibindings.IntoMap
  * @author by M on 30/10/19
  */
 @Module
-@UmrahPdpScope
 abstract class UmrahPdpViewModelModule {
 
     @UmrahPdpScope

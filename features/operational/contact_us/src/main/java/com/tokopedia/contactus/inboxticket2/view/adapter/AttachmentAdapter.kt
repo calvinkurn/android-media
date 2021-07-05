@@ -12,7 +12,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.view.adapter.AttachmentAdapter.AttachmentViewHolder
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import java.io.File
 
 private const val HEADER_USER_ID_KEY = "X-TKPD-UserId"
@@ -21,12 +21,12 @@ private const val HEADER_REFERER_KEY = "Referer"
 private const val HEADER_REFERER_VALUE = "tokopedia.com/help/inbox"
 private const val CONTACT_US = "contact-us"
 class AttachmentAdapter constructor(data: List<AttachmentItem>,
-                                    presenter: InboxDetailPresenter,
+                                    presenter: InboxDetailContract.Presenter,
                                     private val userId: String,
                                     private val caseId: String) : RecyclerView.Adapter<AttachmentViewHolder>() {
     private val attachmentList: MutableList<AttachmentItem>
     private val caseIdList: MutableList<String> by lazy { ArrayList<String>() }
-    private val mPresenter: InboxDetailPresenter
+    private val mPresenter: InboxDetailContract.Presenter
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachmentViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_attachment_item, parent, false)
         return AttachmentViewHolder(v)

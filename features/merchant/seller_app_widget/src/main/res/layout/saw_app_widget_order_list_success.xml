@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawOrderListSuccess"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <RelativeLayout
+        android:id="@+id/orderSawSuccessSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgSawSmallOrderAppIcon"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:padding="@dimen/spacing_lvl2"
+            tools:src="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:id="@+id/orderSawSmallHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgSawSmallOrderAppIcon"
+            android:layout_alignBottom="@+id/imgSawSmallOrderAppIcon"
+            android:layout_toStartOf="@+id/btnSawSmallOrderRefresh"
+            android:layout_toEndOf="@+id/imgSawSmallOrderAppIcon"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2">
+
+            <TextView
+                android:id="@+id/tvSawSmallOrderShopName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_N700"
+                android:textSize="@dimen/unify_font_16"
+                android:textStyle="bold"
+                tools:text="Tomodachi Shop" />
+
+            <TextView
+                android:id="@+id/tvSawSmallOrderUpdated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_44"
+                android:textSize="@dimen/unify_font_10"
+                tools:text="Diperbarui 11.00" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnSawSmallOrderRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/orderSawSmallHeader"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:background="@android:color/transparent"
+            tools:src="@drawable/ic_saw_refresh" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/orderSawSmallHeader"
+            android:paddingTop="@dimen/saw_dimen_12dp"
+            android:paddingBottom="@dimen/saw_dimen_12dp">
+
+            <LinearLayout
+                android:id="@+id/containerSawSmallOrderNewOrder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/lineSawOrderDivider"
+                android:layout_centerVertical="true"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2">
+
+                <TextView
+                    android:id="@+id/tvSawLblOrderNewOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/saw_new_order"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="@dimen/unify_font_12"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSawOrderNewOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_G500"
+                    android:textSize="@dimen/unify_font_16"
+                    android:textStyle="bold"
+                    tools:text="0 pesanan" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/lineSawOrderDivider"
+                android:layout_width="@dimen/saw_dimen_1dp"
+                android:layout_height="@dimen/layout_lvl6"
+                android:layout_centerHorizontal="true"
+                android:background="@color/Unify_N75" />
+
+            <LinearLayout
+                android:id="@+id/containerSawSmallOrderReadyToShip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/lineSawOrderDivider"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2">
+
+                <TextView
+                    android:id="@+id/tvSawLblOrderReadyToShip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/saw_ready_to_ship"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="@dimen/unify_font_12"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSawOrderReadyToShip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_G500"
+                    android:textSize="@dimen/unify_font_16"
+                    android:textStyle="bold"
+                    tools:text="0 pesanan" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/orderSawSuccessNormal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/imgSawOrderAppIcon"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:padding="@dimen/spacing_lvl2"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/tvSawOrderShopName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgSawOrderAppIcon"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_toStartOf="@+id/btnSawOrderRefresh"
+            android:layout_toEndOf="@+id/imgSawOrderAppIcon"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700"
+            android:textSize="@dimen/unify_font_16"
+            android:textStyle="bold"
+            tools:text="Tomodachi Shop" />
+
+        <TextView
+            android:id="@+id/tvSawOrderTotalOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvSawOrderShopName"
+            android:layout_alignStart="@+id/tvSawOrderShopName"
+            android:textColor="@color/Unify_G500"
+            android:textSize="@dimen/unify_font_10"
+            android:textStyle="bold"
+            tools:text="5 Pesanan Baru" />
+
+        <ImageView
+            android:id="@+id/icSawOrderMoreOrder"
+            android:layout_width="@dimen/layout_lvl1"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_alignTop="@+id/tvSawOrderTotalOrder"
+            android:layout_alignBottom="@+id/tvSawOrderTotalOrder"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_toEndOf="@+id/tvSawOrderTotalOrder"
+            app:srcCompat="@drawable/ic_saw_chevron_right" />
+
+        <TextView
+            android:id="@+id/tvSawOrderUpdated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnSawOrderRefresh"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N700_44"
+            android:textSize="@dimen/unify_font_10"
+            tools:text="Diperbarui 11.00" />
+
+        <ImageButton
+            android:id="@+id/btnSawOrderRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tvSawOrderShopName"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:background="@color/transparent"
+            tools:src="@drawable/ic_saw_refresh" />
+
+        <ListView
+            android:id="@+id/lvSawOrderList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/containerSawOrderSwitch"
+            android:layout_below="@+id/icSawOrderMoreOrder"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:divider="@null"
+            android:scrollbarThumbVertical="@color/Unify_N700_44"
+            tools:itemCount="4"
+            tools:listitem="@layout/saw_app_widget_order_item" />
+
+        <include
+            layout="@layout/saw_app_widget_order_list_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/containerSawOrderSwitch"
+            android:layout_below="@+id/icSawOrderMoreOrder" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/containerSawOrderSwitch"
+            android:background="@color/Unify_N50" />
+
+        <LinearLayout
+            android:id="@+id/containerSawOrderSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgSawOrderSwitchLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/saw_dimen_6dp"
+                tools:src="@drawable/ic_saw_arrow_left" />
+
+            <TextView
+                android:id="@+id/tvSawOrderSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:text="@string/saw_ready_to_ship"
+                android:textColor="@color/Unify_G500"
+                android:textSize="@dimen/unify_space_12"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgSawOrderSwitchRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/saw_dimen_6dp"
+                tools:src="@drawable/ic_saw_arrow_right" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

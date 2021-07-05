@@ -21,5 +21,5 @@ object CartConstant {
     const val STATE_RED = "red"
     const val PARAM_DEFAULT = "default"
     const val PARAM_CART = "cart"
-    const val REFRESH_CART_AFTER_BACK_FROM_PDP = "refreshCartAfterBackFromPdp"
+    const val IS_TESTING_FLOW = "isTesting"
 }

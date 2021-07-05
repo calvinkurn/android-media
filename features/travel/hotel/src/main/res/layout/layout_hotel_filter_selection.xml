@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
         tools:text="@string/hotel_search_filter_star_title"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/hotel_12dp"
+        android:paddingEnd="@dimen/spacing_lvl1"
         android:clipToPadding="false"/>
 
 </LinearLayout>

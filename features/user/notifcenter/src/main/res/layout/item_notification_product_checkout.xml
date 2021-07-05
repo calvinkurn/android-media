@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:lineSpacingExtra="@dimen/notif_sp_4"
             android:maxLines="2"
-            android:textColor="@color/charcoal_grey_88"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/notif_sp_14"
             android:textStyle="bold"
             tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
@@ -41,7 +41,7 @@
             android:layout_marginTop="@dimen/notif_dp_2"
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/notif_sp_4"
-            android:textColor="@color/charcoal_grey_40"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/notif_sp_14"
             tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
 

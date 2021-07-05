@@ -25,33 +25,10 @@
     <string name="label_title_desc_promo_digital">Keterangan</string>
     <string name="label_title_price_info_digital">Harga</string>
     <string name="error_message_product_out_of_stock_digital_module">Stok product kosong</string>
-    <string name="error_message_ussd_msg_not_parsed">Mohon maaf, pengecekan sisa pulsa anda tidak dapat dilakukan</string>
-    <string name="error_message_ussd_operator_not_matched">Maaf, nomor yang dimasukan tidak sesuai dengan operator SIM anda</string>
-    <string name="message_ussd_title">Cek Sisa Pulsa</string>
-    <string name="dialog_accessibility_service_on">Harap berikan akses untuk membaca nomor Anda.\n Aksesibilitas > Tokopedia > Aktif </string>
-    <string name="msg_ussd_sim_balance">Mohon pastikan nomor Anda sudah terisi dengan benar.</string>
-    <string name="msg_ussd_sim_number">Nomor Anda tidak terdeteksi, mohon masukkan nomor <b>%1$s</b> dalam perangkat ini:</string>
-    <string name="msg_ussd_sim_number_change">Silakan masukkan nomor <b>%1$s</b> Anda dalam perangkat ini:</string>
     <string name="promo_category">Promo %1$s</string>
     <string name="other_promo">lainnya</string>
 
-    <string name="ussd_batal">Batal</string>
-    <string name="ok">Ok</string>
-    <string name="label_ussd_pulsa_anda">Pulsa Anda</string>
-    <string name="label_ussd_no_handphone">No. Handphone</string>
-    <string name="label_ussd_unknown">UNKNOWN</string>
-    <string name="label_ussd_ubah_nomor_anda">Ubah nomor Anda</string>
-    <string name="label_ussd_operator">Operator</string>
-    <string name="msg_ussd_please_wait">Mohon menunggu, pengecekan saldo pulsa sedang berlangsung</string>
-    <string name="label_ussd_cancel">Cancel</string>
-    <string name="title_showcase_ussd">Cek Sisa Pulsa</string>
-    <string name="message_showcase_ussd">Kini Anda bisa mengetahui sisa pulsa Anda sebelum membeli pulsa.</string>
-    <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
-
-    <string name="title_tooltip_instan_payment">Bayar Instan</string>
-    <string name="body_tooltip_instan_payment">Bayar hanya sekali klik, otomatis menggunakan Wallet yang ada di Tokopedia Anda (Ovo Points, Ovo Cash atau Saldo Tokopedia).
-</string>
-    <string name="ussd_batal_label">Batal</string>
+   <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
 
     <string name="input_number">Masukkan nomor</string>
 
@@ -60,8 +37,6 @@
     <string name="label_no_signal">No signal</string>
     <string name="label_no_service">No service</string>
 
-    <string name="ussd_permission_allowed_label">both allowed</string>
-    <string name="ussd_permission_denied_label">failed denied both of them</string>
     <string name="status_success_label">Success</string>
     <string name="status_failed_label">Failed</string>
 
@@ -99,11 +74,15 @@
     <string name="digital_navigate_back_showcase">Kembali</string>
     <string name="digital_navigate_done_showcase">Selesai</string>
     <string name="digital_action_search_with_suffix">Cari %1$s</string>
-    <string name="digital_ussd_phone_number_label">Nomor Handphone</string>
     <string name="digital_action_search">Cari</string>
     <string name="digital_check_remain_balance">Cek Sisa Pulsa</string>
     <string name="digital_check_balance">Cek Pulsa</string>
 
     <string name="digital_success_message_scan_ocr">Nomor kartu berhasil dipindai</string>
     <string name="digital_generate_token_checkout">%1$s_%2$s</string>
+
+    <string name="digital_empty_state_checkout_title">Ada gangguan di rumah Toped</string>
+    <string name="digital_transaction_failed_title">Oops, gagal melanjutkan pembayaran</string>
+    <string name="digital_empty_state_checkout_btn">Coba Lagi</string>
+    <string name="digital_image_url_failed_transaction">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
 </resources>

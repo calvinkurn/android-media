@@ -11,6 +11,7 @@ import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -28,6 +29,7 @@ import kotlinx.android.synthetic.main.item_link_form.view.*
 import kotlinx.android.synthetic.main.item_photo_form.view.*
 import kotlinx.android.synthetic.main.item_submit_form.view.*
 import kotlinx.android.synthetic.main.item_textarea_form.view.*
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 class ReportFormAdapter(private val item: ProductReportReason,
@@ -39,7 +41,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
     private var submitEnabled = false
 
     val trackingReasonLabel: String
-        get() = item.value.toLowerCase()
+        get() = item.value.toLowerCase(Locale.getDefault())
 
     private val items = mutableListOf<Pair<String, Any>>()
     val inputs = mutableMapOf<String, Any>()
@@ -133,7 +135,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     val urlSpan = WebViewURLSpan( it.url).apply {
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
-                                tracking.eventReportLearnMore(item.value.toLowerCase())
+                                tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
                                 RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
@@ -151,7 +153,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     btn_lapor.visible()
                 }
                 btn_lapor.setOnClickListener {
-                    tracking.eventReportClickDetail(item.value.toLowerCase())
+                    tracking.eventReportClickDetail(item.value.toLowerCase(Locale.getDefault()))
                     submitForm.invoke()
                 }
             }
@@ -205,6 +207,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 textInputLayoutReport.counterMaxLength = field.max
                 textInputLayoutReport.helperText = context.getString(R.string.product_helper_product_report,
                         field.min.toString())
+                textInputLayoutReport.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))
                 edit_text_report.setText(input)
                 if (inputs[field.key] != null)
@@ -227,7 +230,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
         init {
             with(itemView.rv_uploaded_foto){
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6),
+                addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_6),
                         LinearLayoutManager.HORIZONTAL))
             }
         }

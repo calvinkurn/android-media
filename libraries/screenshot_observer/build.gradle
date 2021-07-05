@@ -1,0 +1,40 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+}
+
+project.ext {
+    artifactId = 'screnshoot_observer'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName = "screnshoot_observer-release"
+}
+
+apply from: '../../publish_local.gradle'

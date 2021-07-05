@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/layout_lvl2"
     android:layout_marginTop="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent">
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_campaign_stock_active_product"

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic
 
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -8,8 +9,13 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created by mzennis on 13/07/20.
  * https://docs.google.com/spreadsheets/d/1efo8NsCI_ECqvd77pdy6F0J_053drVjmGbAb4hJOKlg/edit#gid=292707357
  * Row 8 - 69
+ * Save Live to VOD https://mynakama.tokopedia.com/datatracker/product/requestdetail/161
+ * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
-class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
+class PlayBroadcastAnalytic(
+        private val userSession: UserSessionInterface,
+        private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
+) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -399,24 +405,6 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     * View Exit Modal on Preparation Page
-     */
-    fun viewExitDialogOnFinalSetupPage() {
-        viewGeneralEvent(
-                action = "popup message exit on preparation page"
-        )
-    }
-
-    /**
-     * Click `Keluar` on Exit Modal Preparation Page
-     */
-    fun clickExitOnDialogFinalSetupPage() {
-        clickGeneralEvent(
-                action = "keluar on preparation page"
-        )
-    }
-
-    /**
      * View Error Message (:Param) on Preparation Page
      */
     fun viewErrorOnFinalSetupPage(errorMessage: String) {
@@ -551,28 +539,128 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     * Click Selesai on Report Page
-     */
-    fun clickDoneOnReportPage(channelId: String, titleChannel: String) {
-        clickGeneralEvent(
-                "selesai on report page",
-                "- $channelId - $titleChannel"
-        )
-    }
-
-    /**
      * View Error Message on Report Page
      */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
                 "error state on report page",
-                "- $errorMessage - $channelId - $titleChannel"
+                "- $channelId - $titleChannel - $errorMessage"
         )
     }
 
     /**
-     *
+     * Click save vod on Report Page
      */
+    fun clickSaveVodOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "save vod",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Click Delete vod on Report Page
+     */
+    fun clickDeleteVodOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "delete vod",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * View confirm on pop up delete on Report Page
+     */
+    fun viewConfirmDeleteOnReportPage(channelId: String) {
+        viewGeneralEvent(
+                "confirm on pop up delete",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Click Delete on pop up delete on Report Page
+     */
+    fun clickDeleteOnPopupOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "delete on pop up delete",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Seller click pencil icon channel schedule
+     */
+    fun clickAddEditScheduleOnFinalSetupPage(isEdit: Boolean) {
+        clickGeneralEvent(
+                "${if (isEdit) "edit" else "add"} schedule"
+        )
+    }
+
+    /**
+     * Seller click save channel schedule
+     */
+    fun clickSaveScheduleOnFinalSetupPage() {
+        clickGeneralEvent(
+                "simpan jadwal"
+        )
+    }
+
+    /**
+     * Seller view bottom sheet channel schedule
+     */
+    fun viewBottomSheetScheduleOnFinalSetupPage() {
+        viewGeneralEvent(
+                "bottom sheet schedule"
+        )
+    }
+
+    /**
+     * Seller click delete (trash icon) channel schedule
+     */
+    fun clickDeleteScheduleOnFinalSetupPage() {
+        clickGeneralEvent(
+                "icon delete schedule"
+        )
+    }
+
+    /**
+     * Seller click delete channel schedule
+     */
+    fun clickDeleteScheduleOnConfirmDeleteDialog() {
+        clickGeneralEvent(
+                "delete on pop up message"
+        )
+    }
+
+    /**
+     * Seller view pop up confirmation delete channel schedule
+     */
+    fun viewDialogConfirmDeleteOnFinalSetupPage() {
+        viewGeneralEvent(
+                "pop up delete confirmation"
+        )
+    }
+
+    /**
+     * Seller click start live on pop up live before scheduled date
+     */
+    fun clickStartLiveOnBeforeScheduledDialog() {
+        clickGeneralEvent(
+                "mulai live streaming"
+        )
+    }
+
+
+    /**
+     * Seller view pop up live before scheduled date
+     */
+    fun viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage() {
+        viewGeneralEvent(
+                "pop up message before start live"
+        )
+    }
+
     private fun viewGeneralEvent(action: String, label: String = "") {
         val eventAction = StringBuilder()
         eventAction.append(KEY_TRACK_VIEW)
@@ -640,29 +728,5 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                 )
         )
-    }
-
-    companion object {
-        private const val KEY_EVENT = "event"
-
-        private const val KEY_EVENT_CATEGORY = "eventCategory"
-        private const val KEY_EVENT_ACTION = "eventAction"
-        private const val KEY_EVENT_LABEL = "eventLabel"
-
-        private const val KEY_USER_ID = "userId"
-        private const val KEY_SHOP_ID = "shopId"
-
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_CURRENT_SITE = "currentSite"
-
-        private const val KEY_TRACK_CURRENT_SITE = "tokopediaseller"
-        private const val KEY_TRACK_BUSINESS_UNIT = "play"
-        private const val KEY_TRACK_CATEGORY = "seller broadcast"
-
-        private const val KEY_TRACK_CLICK_EVENT = "clickSellerBroadcast"
-        private const val KEY_TRACK_VIEW_EVENT = "viewSellerBroadcastIris"
-
-        private const val KEY_TRACK_CLICK = "click"
-        private const val KEY_TRACK_VIEW = "view"
     }
 }

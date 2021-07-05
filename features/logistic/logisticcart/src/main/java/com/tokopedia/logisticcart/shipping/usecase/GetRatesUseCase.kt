@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesGqlResponse
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
@@ -19,8 +19,9 @@ import javax.inject.Inject
 class GetRatesUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val converter: ShippingDurationConverter,
-        private val gql: GraphqlUseCase,
         private val scheduler: SchedulerProvider) {
+
+    private var gql: GraphqlUseCase? = null
 
     fun execute(param: RatesParam): Observable<ShippingRecommendationData> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.ratesv3)
@@ -28,6 +29,10 @@ class GetRatesUseCase @Inject constructor(
                 "param" to param.toMap())
         )
 
+        // Need to init usecase here to prevent request cleared since this usecase will be called multiple time in a very tight interval of each call.
+        // Will consider this as tech debt until find a proper solution
+        val gql = GraphqlUseCase()
+        this.gql = gql
         gql.clearRequest()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
@@ -42,7 +47,7 @@ class GetRatesUseCase @Inject constructor(
     }
 
     fun unsubscribe() {
-        gql.unsubscribe()
+        gql?.unsubscribe()
     }
 
 }

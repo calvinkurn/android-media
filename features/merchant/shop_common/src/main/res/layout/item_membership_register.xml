@@ -17,9 +17,10 @@
             android:id="@+id/bg_image_register"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            tools:background="@color/grey_300"
+            tools:background="@color/Unify_N100"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/register_membership_background_content_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +34,7 @@
             android:gravity="center"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -41,15 +42,15 @@
             android:layout_marginLeft="@dimen/dp_14"
             android:layout_marginRight="@dimen/dp_14"
             app:layout_constraintTop_toTopOf="parent"
-            tools:textColor="@color/black"
             tools:text="Dapatkan Gratis Ongkir , Cashback, dan Diskon Total senilai 1 juta rupiah" />
 
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_register_membership"
-            style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -11,5 +11,5 @@ data class ChannelBanner(
         val imageUrl: String = "",
         val attribution: String = "",
         val cta: ChannelCtaData = ChannelCtaData(),
-        val gradientColor: ArrayList<String> = arrayListOf("#ffffff")
+        val gradientColor: ArrayList<String> = arrayListOf("")
 )

@@ -27,7 +27,7 @@
             android:layout_marginStart="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/dp_topchat_4"
             android:layout_marginEnd="@dimen/dp_topchat_12"
-            android:maxWidth="@dimen/attachment_container_width"
+            android:maxWidth="@dimen/chatcommon_270dp"
             android:padding="@dimen/dp_topchat_12">
 
             <TextView
@@ -40,9 +40,9 @@
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
                 android:lineSpacingExtra="4sp"
-                android:maxWidth="@dimen/attachment_title_max_width"
+                android:maxWidth="@dimen/chatcommon_172dp"
                 android:maxLines="1"
-                android:textColor="@color/black_70"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"
@@ -58,7 +58,7 @@
                 android:alpha="@dimen/opacity_disabled"
                 android:fontFamily="sans-serif-medium"
                 android:includeFontPadding="false"
-                android:textColor="@color/orange_red"
+                android:textColor="@color/Unify_Y500"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/product_image"

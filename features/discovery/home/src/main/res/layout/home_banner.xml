@@ -29,8 +29,7 @@
         app:indicator_type="CIRCLE"
         app:indicator_color="DEFAULT"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"
-        tools:background="@android:color/holo_blue_bright" />
+        app:layout_constraintBottom_toBottomOf="@+id/circular_view_pager"/>
     <com.tokopedia.unifycomponents.Label
         app:cardCornerRadius="@dimen/dp_4"
         app:layout_constraintEnd_toEndOf="parent"

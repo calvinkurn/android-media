@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -13,10 +13,11 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
-    implementation rootProject.ext.supportLibDependencies.mediaV7
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 }

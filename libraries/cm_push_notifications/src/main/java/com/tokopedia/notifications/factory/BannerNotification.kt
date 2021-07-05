@@ -4,9 +4,9 @@ import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import android.text.format.DateUtils
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant.ReceiverAction.ACTION_BANNER_CLICK
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -44,9 +44,13 @@ class BannerNotification(context: Context, baseNotificationModel: BaseNotificati
 
     private fun createCollapsedView(bitmap: Bitmap): RemoteViews {
         val smallView: RemoteViews = if (Build.VERSION.SDK_INT > 23) {
-            RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed)
+            else RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed_pre_dark_mode)
         } else {
-            RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed_marsh)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed_marsh)
+            else RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed_marsh_pre_dark_mode)
         }
         smallView.setImageViewBitmap(R.id.push_small_image, bitmap)
         smallView.setTextViewText(R.id.push_title, baseNotificationModel.title)
@@ -66,7 +70,7 @@ class BannerNotification(context: Context, baseNotificationModel: BaseNotificati
         val headUpView: RemoteViews = if (Build.VERSION.SDK_INT > 23) {
             RemoteViews(context.packageName, R.layout.cm_layout_banner_head)
         } else {
-            RemoteViews(context.packageName, R.layout.cm_layout_banner_collapsed)
+            RemoteViews(context.packageName, R.layout.cm_layout_banner_head_pre_dark_mode)
         }
         headUpView.setImageViewBitmap(R.id.push_small_image, bitmap)
         headUpView.setTextViewText(R.id.push_title, baseNotificationModel.title)

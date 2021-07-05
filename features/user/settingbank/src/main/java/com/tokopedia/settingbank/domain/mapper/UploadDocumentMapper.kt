@@ -1,7 +1,7 @@
 package com.tokopedia.settingbank.domain.mapper
 
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.settingbank.domain.UploadDocumentResponse
+import com.tokopedia.settingbank.domain.model.UploadDocumentResponse
 import retrofit2.Response
 import rx.functions.Func1
 import javax.inject.Inject

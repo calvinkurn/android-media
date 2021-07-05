@@ -1,5 +1,0 @@
-mutation RejectOrder($input:OrderRejectRequest!) {
-    reject_order(input:$input){
-        success,message
-    }
-}

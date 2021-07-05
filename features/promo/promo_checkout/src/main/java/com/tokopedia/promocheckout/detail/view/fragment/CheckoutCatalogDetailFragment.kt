@@ -25,6 +25,7 @@ import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailContract
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailPresenter
+import com.tokopedia.promocheckout.util.ColorUtil
 import com.tokopedia.promocheckout.widget.ImageUtil
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -72,7 +73,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
         if (arguments == null) {
             if (activity != null) {
-                activity!!.finish()
+                requireActivity().finish()
             }
             return
         }
@@ -111,7 +112,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
-                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
     }
@@ -211,16 +212,16 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         titleMinTrans?.text = data.minimumUsageLabel
         textMinTrans?.text = data.minimumUsage
         btnAction2?.text = data.buttonStr
-        btnAction2?.setBackgroundResource(R.drawable.bg_button_orange_enabled)
+        btnAction2?.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_orange_enabled)
 
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
 
-        val tvTnc = view!!.findViewById<WebView>(R.id.tnc_content)
+        val tvTnc = requireView().findViewById<WebView>(R.id.tnc_content)
         if (data.tnc != null) {
             tvTnc.loadData(data.tnc, COUPON_MIME_TYPE, UTF_ENCODING)
         }
 
-        val pointValue = view!!.findViewById<Typography>(R.id.text_point_value_coupon)
+        val pointValue = requireView().findViewById<Typography>(R.id.text_point_value_coupon)
         if (data.pointsStr == null || data.pointsStr.isEmpty()) {
             pointValue.visibility = View.GONE
         } else {
@@ -237,7 +238,9 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             for (i in 0 until data.upperTextDesc.size) {
                 if (i == textColorIndex) {
                     //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
+                    context?.run {
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_Y400)}'>" + data.upperTextDesc[i] + "</font>")
+                    }
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
                 }
@@ -256,10 +259,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled!!) {
             ImageUtil.dimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, R.color.black_54))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
         } else {
             ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, R.color.orange_red))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
         }
 
         if (data.pointsSlash!! <= 0) {

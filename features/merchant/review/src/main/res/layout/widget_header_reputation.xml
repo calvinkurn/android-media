@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_header_reputation_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:layout_height="wrap_content">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
-        android:background="#e0e0e0" />
+        android:background="@color/Unify_N100" />
 
     <LinearLayout
         android:id="@+id/rl_container"
@@ -18,31 +17,31 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingBottom="17dp"
-        android:paddingLeft="17dp"
-        android:paddingRight="11dp"
+        android:paddingStart="17dp"
+        android:paddingEnd="11dp"
         android:paddingTop="17dp">
 
         <ImageView
             android:id="@+id/calendar_icon"
+            android:contentDescription="@null"
             android:layout_width="19.5dp"
-            android:layout_height="19.5dp"
-            app:srcCompat="@mipmap/ic_icon_calendar_02" />
+            android:layout_height="19.5dp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/calendar_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:gravity="end"
-            android:textColor="#42b549"
-            android:textSize="14sp"
+            android:textColor="@color/Unify_G400"
+            app:typographyWeight="reguler"
+            app:typographyType="body_2"
             tools:text="26 Jul 2016 - 25 Des 2016" />
 
     </LinearLayout>
@@ -51,5 +50,5 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/rl_container"
-        android:background="#e0e0e0" />
+        android:background="@color/Unify_N100" />
 </RelativeLayout>

@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/prompt_phone"
-        android:textColor="@color/label_color"
+        android:textColor="@color/Unify_N300"
         android:visibility="gone" />
 
     <TextView
@@ -36,7 +36,7 @@
         android:layout_toRightOf="@id/shop_phone_number"
         android:gravity="end"
         android:text="@string/title_edit"
-        android:textColor="@color/green_500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         android:visibility="gone" />
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/shop_phone_number"
         android:text="@string/title_delivery_location"
-        android:textColor="@color/label_color"
+        android:textColor="@color/Unify_N300"
         android:layout_marginStart="@dimen/dp_5"
         android:textSize="@dimen/sp_14"
         android:layout_marginLeft="@dimen/dp_5" />

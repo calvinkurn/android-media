@@ -2,7 +2,6 @@ package com.tokopedia.core;
 
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,8 +15,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -28,14 +25,18 @@ import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -49,10 +50,10 @@ import timber.log.Timber;
  */
 public class SplashScreen extends AppCompatActivity {
 
+    public static final int DATABASE_VERSION = 7;
     public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
 
     private PasswordGenerator Pgenerator;
-    String id = null;
     protected View decorView;
 
     protected RemoteConfig remoteConfig;
@@ -86,14 +87,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return getBranchDefferedDeeplink();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, getApplicationContext());
+        getBranchDefferedDeeplink();
     }
 
     @Override
@@ -114,7 +108,10 @@ public class SplashScreen extends AppCompatActivity {
     @NotNull
     private boolean executeMoveToHomeFlow(boolean status){
         if(!status){
-            Timber.w("P1#PLAY_SERVICE_ERROR#splash_screen;fingerprint='%s'", Build.FINGERPRINT);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "splash_screen");
+            messageMap.put("fingerprint", Build.FINGERPRINT);
+            ServerLogger.log(Priority.P1, "PLAY_SERVICE_ERROR", messageMap);
         }
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
@@ -151,12 +148,9 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void resetAllDatabaseFlag() {
-        LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
+        LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
             LocalCacheHandler.clearCache(this, SHIPPING_CITY_DURATION_STORAGE);
-            if (getApplication() instanceof TkpdCoreRouter) {
-                ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);
-            }
         }
 
         flagDB.putBoolean("reset_db_flag", true);
@@ -208,7 +202,10 @@ public class SplashScreen extends AppCompatActivity {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
-                            Timber.w("P2#LINKER#splash_screen;deeplink='%s'", tokopediaDeeplink);
+                            Map<String, String> messageMap = new HashMap<>();
+                            messageMap.put("type", "splash_screen");
+                            messageMap.put("deeplink", tokopediaDeeplink);
+                            ServerLogger.log(Priority.P2, "LINKER", messageMap);
                             intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();
@@ -226,13 +223,6 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        WeaveInterface branchDefferedDeeplinkWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return getBranchDefferedDeeplink();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchDefferedDeeplinkWeave, RemoteConfigKey.ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH, SplashScreen.this);
+        getBranchDefferedDeeplink();
     }
 }

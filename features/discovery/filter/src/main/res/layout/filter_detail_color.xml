@@ -5,7 +5,6 @@
     android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/dynamic_filter_item_padding"
     android:paddingRight="@dimen/dynamic_filter_item_padding"
@@ -18,20 +17,21 @@
         android:layout_height="@dimen/color_item_icon_size"
         />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/color_title"
-        style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
         tools:text="White"/>
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/filter_detail_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:buttonTint="@color/checkbox_color_state"
+        app:buttonTint="@color/filter_dms_checkbox_color_state"
         style="@style/CheckBox"/>
 
 </LinearLayout>

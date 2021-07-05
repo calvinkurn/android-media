@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,10 +19,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -50,7 +54,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -93,7 +101,12 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private var parentPool: RecyclerView.RecycledViewPool? = null
     private var homeCategoryListener: HomeCategoryListener? = null
     private var component: BerandaComponent? = null
-
+    private var pmProCoachmarkIsShowing = false
+    private var coachmarkLocalCache: CoachMarkLocalCache? = null
+    private var pmProCoachmark: CoachMark2? = null
+    private var pmProCoachmarkItem: ArrayList<CoachMark2Item> = arrayListOf()
+    private var pmProProductPosition: Int = -1
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_home_feed_fragment, container, false)
@@ -104,6 +117,14 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         initInjector()
         initViewModel()
         viewModel.topAdsBannerNextPageToken = homeCategoryListener?.getTopAdsBannerNextPageToken()?:""
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.coachmarkLocalCache = CoachMarkLocalCache(context = context)
+        activity?.let {
+            this.remoteConfigInstance = RemoteConfigInstance(it.application)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -151,7 +172,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     open fun initBuilderComponent(): DaggerBerandaComponent.Builder {
-        return DaggerBerandaComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+        return DaggerBerandaComponent.builder().baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
     @VisibleForTesting
@@ -215,7 +236,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun createEndlessRecyclerViewListener(){
         endlessRecyclerViewScrollListener = object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, page)
+                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, page, getLocationParamString())
             }
         }
     }
@@ -309,7 +330,35 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     override fun onRetryGetProductRecommendationData() {
-        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
+        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
+    }
+
+    override fun onProductWithPmProImpressed(pmProView: View?, position: Int) {
+        if (shouldShowPmProCoachmark()) {
+            pmProView?.let {
+                setupPMProCoachmark(pmProView)
+                this.pmProProductPosition = position
+            }
+        }
+    }
+
+    private fun shouldShowPmProCoachmark(): Boolean {
+        val pmProAbTestValue =
+                try {
+                    remoteConfigInstance?.abTestPlatform?.getString(
+                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+                } catch (e: Exception) {
+                    false
+                }
+
+        val isPmProRollenceActive =
+                pmProAbTestValue == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP
+
+        return if (pmProCoachmark == null && isPmProRollenceActive) {
+            coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
+        } else {
+            false
+        }
     }
 
     private fun initListeners() {
@@ -323,6 +372,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                 homeEggListener?.hideEggOnScroll()
                 if (homeTabFeedListener != null) {
                     homeTabFeedListener?.onFeedContentScrolled(dy, totalScrollY)
+                }
+
+                val viewsIds: IntArray = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
+                if (pmProProductPosition == viewsIds.getOrNull(0)?:-1 || pmProProductPosition == viewsIds.getOrNull(1)?:-1) {
+                    showPmProCoachmark()
+                } else {
+                    pmProCoachmark?.dismissCoachMark()
                 }
             }
 
@@ -365,7 +421,52 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE)
+            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
+        }
+    }
+
+    private fun isValidToShowCoachMark(): Boolean {
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
+    }
+
+    private fun setupPMProCoachmark(pmProBadgeView: View) {
+        context?.let {
+            pmProCoachmarkItem = arrayListOf(
+                    CoachMark2Item(
+                            title = getString(R.string.home_pmpro_coachmark_title),
+                            description = getString(R.string.home_pmpro_coachmark_description),
+                            anchorView = pmProBadgeView
+                    )
+            )
+            pmProCoachmark = CoachMark2(requireContext())
+            showPmProCoachmark()
+        }
+    }
+
+    private fun showPmProCoachmark() {
+        pmProCoachmark.let {
+            //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+            //will be removed along the coachmark removal in the future
+            try {
+                if (pmProCoachmarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                    if (!pmProCoachmarkIsShowing) {
+                        pmProCoachmark?.showCoachMark(step = pmProCoachmarkItem)
+                        pmProCoachmarkIsShowing = true
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun hidePmProCoachmark() {
+        if (activity?.isFinishing == false && pmProCoachmark?.isShowing == true && pmProCoachmarkIsShowing) {
+            pmProCoachmark?.hideCoachMark()
+            pmProCoachmarkIsShowing = false
         }
     }
 
@@ -416,7 +517,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
+        val view = requireActivity().findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_add_wishlist)
         view?.let {
             Toaster.make(
@@ -436,7 +537,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
+        val view = requireActivity().findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_remove_wishlist)
         Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
@@ -476,5 +577,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             homeFeedFragment.arguments = bundle
             return homeFeedFragment
         }
+    }
+
+    private fun getLocationParamString() : String {
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
     }
 }

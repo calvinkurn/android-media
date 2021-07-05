@@ -11,5 +11,6 @@ mutation redeemCoupon($catalog_id: Int, $is_gift: Int, $gift_user_id: Int, $gift
       cta_desktop
     }
     reward_points
+    redeemMessage
   }
 }

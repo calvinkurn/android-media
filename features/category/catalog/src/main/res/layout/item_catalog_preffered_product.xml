@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        >
+        
+        <ImageView
+            android:id="@+id/product_image"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            tools:ignore="ContentDescription" />
+        
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/product_image"
+            app:layout_constraintStart_toEndOf="@id/product_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:typographyType="body_3"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="iPhone 11 64GB Garansi Resmi \nTAM Indonesia"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/product_name"
+            app:layout_constraintEnd_toEndOf="@id/product_name"
+            app:layout_constraintStart_toStartOf="@id/product_name"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Rp10.500.000"
+            />
+
+        <ImageView
+            android:id="@+id/icon_shop_name"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/product_price"
+            app:layout_constraintStart_toStartOf="@id/product_name"
+            app:layout_constraintEnd_toStartOf="@id/shop_name"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_goneMarginTop="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:src="@tools:sample/avatars"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/product_price"
+            app:layout_constraintStart_toEndOf="@id/icon_shop_name"
+            app:layout_constraintEnd_toEndOf="@id/product_name"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Mango Store"
+            app:typographyType="body_3"
+            />
+
+        <ImageView
+            android:id="@+id/icon_rating"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:layout_constraintStart_toStartOf="@id/product_name"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_goneMarginTop="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:srcCompat="@drawable/ic_rating_apps_active"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/rating_float"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:layout_constraintStart_toEndOf="@id/icon_rating"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            app:typographyType="body_3"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="4.8"
+            />
+
+        <View
+            android:id="@+id/rating_line"
+            android:layout_width="@dimen/dp_1"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="@id/rating_float"
+            app:layout_constraintEnd_toStartOf="@+id/sales_tv"
+            app:layout_constraintStart_toEndOf="@+id/rating_float"
+            app:layout_constraintBottom_toBottomOf="@id/rating_float"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:background="@color/Unify_N700_32"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/sales_tv"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_text_view_integrity_height"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:layout_constraintStart_toEndOf="@id/rating_line"
+            app:layout_constraintEnd_toEndOf="@id/product_name"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3"
+            tools:text="Terjual 1"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:constraint_referenced_ids="rating_float,sales_tv"
+            />
+
+        <ImageView
+            android:id="@+id/image_ongir"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/product_card_free_ongkir_badge_height"
+            app:layout_constraintTop_toBottomOf="@id/barrier"
+            app:layout_constraintStart_toStartOf="@id/product_name"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            tools:layout_width="67dp"
+            tools:visibility="visible"
+            android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
+            />
+
+        <ImageView
+            android:id="@+id/imageThreeDots"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingStart="@dimen/dp_8"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_goneMarginBottom="@dimen/dp_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/product_card_ic_three_dots"
+            tools:visibility="visible"
+            tools:ignore="ContentDescription" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

@@ -5,29 +5,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_32"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_19"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/divider_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:paddingTop="@dimen/dp_13"
+        android:visibility="gone"
+        android:background="@color/icon_product_card_background_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        tools:visibility="visible"/>
+
     <com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
         android:id="@+id/discovery_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintTop_toBottomOf="@+id/divider_view" />
 
-    <!--<com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
+    <com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
         android:id="@+id/fab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_5"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintBottom_toTopOf="@id/toTopImg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1"
         tools:visibility="gone" />
--->
+
     <ImageView
         android:id="@+id/toTopImg"
         android:layout_width="@dimen/dp_50"
@@ -36,12 +58,36 @@
         android:visibility="gone"
         android:padding="@dimen/dp_8"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:background="@drawable/circular_view"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="@string/discovery_top_to_bottom"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visbility="visible" />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/bottomNav"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_50"
+        android:layout_gravity="bottom"
+        app:tabBackground="@color/white"
+        android:visibility="gone"
+        app:tabPaddingEnd="@dimen/dp_0"
+        app:tabMode="fixed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
+import android.text.method.DigitsKeyListener
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -19,12 +21,15 @@ import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity.Companion.EXTRA_INITIAL_CONTACT_DATA
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
+import com.tokopedia.salam.umrah.common.util.DIGIT_EMAIL
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_contact_data.*
+import kotlinx.android.synthetic.main.widget_umrah_autocomplete_edit_text.view.*
 import javax.inject.Inject
 
 /**
@@ -58,7 +63,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
         initView()
 
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -70,12 +75,12 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
             inflater.inflate(R.layout.fragment_umrah_checkout_contact_data, container, false)
 
     override fun getFilterText(): String {
-        return til_umrah_checkout_contact_phone_number.editText.text.toString()
+        return tf_umrah_checkout_contact_phone_number.textFieldInput.text.toString()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahCheckoutPilgrimsViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        umrahCheckoutPilgrimsViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }
@@ -100,19 +105,19 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
 
     fun initView() {
-        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
-
+        ac_umrah_autocomplete_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
+        ac_umrah_autocomplete_contact_name.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
-            (til_umrah_checkout_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+            (ac_umrah_autocomplete_contact_name.ac_umrah_autocomplete as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_umrah_checkout_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { _, _, position, _ ->
+            (ac_umrah_autocomplete_contact_name.ac_umrah_autocomplete as AutoCompleteTextView).setOnItemClickListener { _, _, position, _ ->
                 autofillView(travelContactArrayAdapter.getItem(position))
             }
 
         }
 
-        til_umrah_checkout_contact_name.editText.apply {
+        ac_umrah_autocomplete_contact_name.ac_umrah_autocomplete.apply {
             setText(contactData.name)
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -120,43 +125,48 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    if(count>=0){
-                        til_umrah_checkout_contact_name.error = ""
-                    }
+
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    if(count > MIN_TEXT){
+                        ac_umrah_autocomplete_contact_name.til_umrah_autocomplete.error = ""
+                    } else {
+                        ac_umrah_autocomplete_contact_name.til_umrah_autocomplete.error = getString(R.string.umrah_checkout_contact_name_error)
+                    }
                 }
 
             })
         }
-        til_umrah_checkout_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+        ac_umrah_autocomplete_contact_name.til_umrah_autocomplete.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
 
-        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
-        til_umrah_checkout_contact_email.editText.apply {
+        tf_umrah_checkout_contact_email.textFieldInput.apply {
             setText(contactData.email)
+            setKeyListener(DigitsKeyListener.getInstance(DIGIT_EMAIL));
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
 
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    if(count>=0){
-                        til_umrah_checkout_contact_email.error = ""
-                    }
+
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    if(count > MIN_TEXT){
+                        tf_umrah_checkout_contact_email.setError(false)
+                        tf_umrah_checkout_contact_email.setMessage("")
+                    } else {
+                        tf_umrah_checkout_contact_email.setError(true)
+                        tf_umrah_checkout_contact_email.setMessage(getString(R.string.umrah_checkout_contact_email_error))
+                    }
                 }
 
             })
         }
-        til_umrah_checkout_contact_email.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
-        til_umrah_checkout_contact_phone_number.editText.apply {
+        tf_umrah_checkout_contact_phone_number.textFieldInput.apply {
             setText(contactData.phoneNumber)
             addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -164,18 +174,20 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    if(start>=8){
-                        til_umrah_checkout_contact_phone_number.error = ""
-                    }
+
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
+                    if(start > MIN_PHONE_NUMBER_DIGIT){
+                        tf_umrah_checkout_contact_phone_number.setError(false)
+                        tf_umrah_checkout_contact_phone_number.setMessage("")
+                    } else {
+                        tf_umrah_checkout_contact_phone_number.setError(true)
+                        tf_umrah_checkout_contact_phone_number.setMessage(getString(R.string.umrah_checkout_contact_phone_error))
+                    }
                 }
-
             })
         }
-        til_umrah_checkout_contact_phone_number.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
 
         val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, initialPhoneCode(contactData.phoneCode))
@@ -188,7 +200,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         sp_umrah_checkout_contact_phone_code.setSelection(0)
         sp_umrah_checkout_contact_phone_code.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(context!!), REQUEST_CODE_PHONE_CODE)
+                startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
             }
             true
         }
@@ -200,8 +212,8 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         if (contact != null) {
             selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
 
-            til_umrah_checkout_contact_email.editText.setText(contact.email)
-            til_umrah_checkout_contact_phone_number.editText.setText(contact.phoneNumber)
+            tf_umrah_checkout_contact_email.textFieldInput.setText(contact.email)
+            tf_umrah_checkout_contact_phone_number.textFieldInput.setText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
@@ -212,9 +224,9 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
     private fun onSaveButtonClicked() {
         if (validateData()) {
-            contactData.name = til_umrah_checkout_contact_name.editText.text.toString()
-            contactData.email = til_umrah_checkout_contact_email.editText.text.toString()
-            contactData.phoneNumber = til_umrah_checkout_contact_phone_number.editText.text.toString()
+            contactData.name = ac_umrah_autocomplete_contact_name.ac_umrah_autocomplete.text.toString()
+            contactData.email = tf_umrah_checkout_contact_email.textFieldInput.text.toString()
+            contactData.phoneNumber = tf_umrah_checkout_contact_phone_number.textFieldInput.text.toString()
             contactData.phoneCode = (sp_umrah_checkout_contact_phone_code.selectedItem as String).toInt()
 
 
@@ -230,16 +242,17 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
     private fun validateData(): Boolean {
         var isValid = true
-        if (til_umrah_checkout_contact_name.editText.text.isNullOrBlank()) {
-            til_umrah_checkout_contact_name.error = getString(R.string.umrah_checkout_contact_name_error)
+        if (ac_umrah_autocomplete_contact_name.ac_umrah_autocomplete.text.isNullOrBlank()) {
+            ac_umrah_autocomplete_contact_name.til_umrah_autocomplete.error = getString(R.string.umrah_checkout_contact_name_error)
             isValid = false
         }
-        if (!isValidEmail(til_umrah_checkout_contact_email.editText.text.toString())) {
-            til_umrah_checkout_contact_email.error = getString(R.string.umrah_checkout_contact_email_error)
+        if (!isValidEmail(tf_umrah_checkout_contact_email.textFieldInput.text.toString())) {
+            tf_umrah_checkout_contact_email.setError(true)
+            tf_umrah_checkout_contact_email.setMessage(getString(R.string.umrah_checkout_contact_email_error))
             isValid = false
         }
-        if (til_umrah_checkout_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
-            til_umrah_checkout_contact_phone_number.error = getString(R.string.umrah_checkout_contact_phone_error)
+        if (tf_umrah_checkout_contact_phone_number.textFieldInput.text.length < MIN_PHONE_NUMBER_DIGIT) {
+            tf_umrah_checkout_contact_phone_number.setMessage(getString(R.string.umrah_checkout_contact_phone_error))
             isValid = false
         }
         return isValid
@@ -267,6 +280,8 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         const val MIN_PHONE_NUMBER_DIGIT = 9
         const val PHONE_CODE_NULL = 0
         const val PHONE_CODE_INDONESIA = 62
+
+        private const val MIN_TEXT = 0
 
         fun getInstance(contactData: ContactUser): UmrahCheckoutContactDataFragment =
                 UmrahCheckoutContactDataFragment().also {

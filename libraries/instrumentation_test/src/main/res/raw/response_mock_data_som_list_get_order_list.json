@@ -1,0 +1,296 @@
+[
+  {
+    "data": {
+      "orderList": {
+        "cursor_order_id": 0,
+        "list": [
+          {
+            "order_id": "688060798",
+            "status": "Pesanan Baru",
+            "status_color": "#D6FFDE",
+            "status_indicator_color": "#03AC0E",
+            "order_status_id": 220,
+            "order_resi": "INV/20210118/XXI/I/729621539",
+            "deadline_text": "25 Jam",
+            "deadline_color": "#FF8B00",
+            "cancel_request": 0,
+            "cancel_request_note": "",
+            "cancel_request_time": "",
+            "cancel_request_origin_note": "",
+            "destination_province": "DKI Jakarta",
+            "courier_name": "JNE",
+            "courier_product_name": "Reguler",
+            "preorder_type": 0,
+            "buyer_name": "Try Sugihartoo",
+            "order_product": [
+              {
+                "product_id": "1517876535",
+                "product_name": "testing 1",
+                "picture": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg"
+              }
+            ],
+            "ticker_info": {
+              "text": "",
+              "type": "",
+              "action_text": "",
+              "action_key": "",
+              "action_url": ""
+            },
+            "button": [
+              {
+                "key": "accept_order",
+                "display_name": "Terima Pesanan",
+                "type": "primary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              },
+              {
+                "key": "reject_order",
+                "display_name": "Tolak Pesanan",
+                "type": "secondary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              }
+            ]
+          },
+          {
+            "order_id": "688060802",
+            "status": "Pesanan Baru",
+            "status_color": "#D6FFDE",
+            "status_indicator_color": "#03AC0E",
+            "order_status_id": 220,
+            "order_resi": "INV/20210118/XXI/I/729621539",
+            "deadline_text": "19 Jam",
+            "deadline_color": "#FF8B00",
+            "cancel_request": 0,
+            "cancel_request_note": "",
+            "cancel_request_time": "",
+            "cancel_request_origin_note": "",
+            "destination_province": "DKI Jakarta",
+            "courier_name": "JNE",
+            "courier_product_name": "Reguler",
+            "preorder_type": 0,
+            "buyer_name": "Try Sugihartoo",
+            "order_product": [
+              {
+                "product_id": "1517876535",
+                "product_name": "testing 2",
+                "picture": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg"
+              }
+            ],
+            "ticker_info": {
+              "text": "",
+              "type": "",
+              "action_text": "",
+              "action_key": "",
+              "action_url": ""
+            },
+            "button": [
+              {
+                "key": "accept_order",
+                "display_name": "Terima Pesanan",
+                "type": "primary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              },
+              {
+                "key": "reject_order",
+                "display_name": "Tolak Pesanan",
+                "type": "secondary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              }
+            ]
+          },
+          {
+            "order_id": "688060801",
+            "status": "Pesanan Baru",
+            "status_color": "#D6FFDE",
+            "status_indicator_color": "#03AC0E",
+            "order_status_id": 220,
+            "order_resi": "INV/20210118/XXI/I/729621539",
+            "deadline_text": "19 Jam",
+            "deadline_color": "#FF8B00",
+            "cancel_request": 0,
+            "cancel_request_note": "",
+            "cancel_request_time": "",
+            "cancel_request_origin_note": "",
+            "destination_province": "DKI Jakarta",
+            "courier_name": "JNE",
+            "courier_product_name": "Reguler",
+            "preorder_type": 0,
+            "buyer_name": "Try Sugihartoo",
+            "order_product": [
+              {
+                "product_id": "1517876535",
+                "product_name": "testing 3",
+                "picture": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg"
+              }
+            ],
+            "ticker_info": {
+              "text": "",
+              "type": "",
+              "action_text": "",
+              "action_key": "",
+              "action_url": ""
+            },
+            "button": [
+              {
+                "key": "accept_order",
+                "display_name": "Terima Pesanan",
+                "type": "primary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              },
+              {
+                "key": "reject_order",
+                "display_name": "Tolak Pesanan",
+                "type": "secondary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              }
+            ]
+          },
+          {
+            "order_id": "688060800",
+            "status": "Pesanan Baru",
+            "status_color": "#D6FFDE",
+            "status_indicator_color": "#03AC0E",
+            "order_status_id": 220,
+            "order_resi": "INV/20210118/XXI/I/729621539",
+            "deadline_text": "19 Jam",
+            "deadline_color": "#FF8B00",
+            "cancel_request": 0,
+            "cancel_request_note": "",
+            "cancel_request_time": "",
+            "cancel_request_origin_note": "",
+            "destination_province": "DKI Jakarta",
+            "courier_name": "JNE",
+            "courier_product_name": "Reguler",
+            "preorder_type": 0,
+            "buyer_name": "Try Sugihartoo",
+            "order_product": [
+              {
+                "product_id": "1517876535",
+                "product_name": "testing 1",
+                "picture": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg"
+              }
+            ],
+            "ticker_info": {
+              "text": "",
+              "type": "",
+              "action_text": "",
+              "action_key": "",
+              "action_url": ""
+            },
+            "button": [
+              {
+                "key": "accept_order",
+                "display_name": "Terima Pesanan",
+                "type": "primary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              },
+              {
+                "key": "reject_order",
+                "display_name": "Tolak Pesanan",
+                "type": "secondary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              }
+            ]
+          },
+          {
+            "order_id": "688060799",
+            "status": "Pesanan Baru",
+            "status_color": "#D6FFDE",
+            "status_indicator_color": "#03AC0E",
+            "order_status_id": 220,
+            "order_resi": "INV/20210118/XXI/I/729621539",
+            "deadline_text": "19 Jam",
+            "deadline_color": "#FF8B00",
+            "cancel_request": 0,
+            "cancel_request_note": "",
+            "cancel_request_time": "",
+            "cancel_request_origin_note": "",
+            "destination_province": "DKI Jakarta",
+            "courier_name": "JNE",
+            "courier_product_name": "Reguler",
+            "preorder_type": 0,
+            "buyer_name": "Try Sugihartoo",
+            "order_product": [
+              {
+                "product_id": "1517876535",
+                "product_name": "testing 4",
+                "picture": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/1/12/ee6c686a-a325-4c4a-a6cf-d4c53356d99f.jpg"
+              }
+            ],
+            "ticker_info": {
+              "text": "",
+              "type": "",
+              "action_text": "",
+              "action_key": "",
+              "action_url": ""
+            },
+            "button": [
+              {
+                "key": "accept_order",
+                "display_name": "Terima Pesanan",
+                "type": "primary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              },
+              {
+                "key": "reject_order",
+                "display_name": "Tolak Pesanan",
+                "type": "secondary",
+                "url": "https://ws.tokopedia.com/v4/action/myshop-order/proceed_order.pl",
+                "popup": {
+                  "title": "",
+                  "body": "",
+                  "actionButton": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

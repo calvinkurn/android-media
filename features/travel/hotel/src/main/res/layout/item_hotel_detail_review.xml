@@ -2,8 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_260"
-    android:layout_height="@dimen/dp_140"
+    android:layout_width="@dimen/hotel_260dp"
+    android:layout_height="@dimen/hotel_140dp"
     android:layout_margin="@dimen/layout_lvl1"
     app:cardCornerRadius="@dimen/layout_lvl1">
 
@@ -28,7 +28,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_4"
                 tools:text="Sangat Baik" />
 
@@ -44,7 +44,7 @@
                 android:paddingTop="@dimen/hotel_1dp"
                 android:paddingRight="@dimen/layout_lvl1"
                 android:paddingBottom="@dimen/hotel_1dp"
-                android:textColor="@color/blue_booking"
+                android:textColor="@color/Unify_B600"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="8,6" />
@@ -59,7 +59,7 @@
             android:layout_marginTop="@dimen/layout_lvl1"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_2"
             tools:text="Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. Kami cukup puas dengan fasilitas yang disediakan oleh hotel tersebut. " />
 
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/tv_review_date"
             android:layout_marginTop="@dimen/layout_lvl1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Ignatius Andrew" />
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="8 Sep 2018" />
 

@@ -4,6 +4,10 @@
     <dimen name="thank_success_img_height">144dp</dimen>
     <dimen name="thank_product_card_size">155dp</dimen>
     <dimen name="thank_digital_recom_width">260dp</dimen>
-
-
+    <dimen name="thank_dp_20">20dp</dimen>
+    <dimen name="thank_dp_10">10dp</dimen>
+    <dimen name="thank_dp_1">1dp</dimen>
+    <dimen name="thank_dp_200">200dp</dimen>
+    <dimen name="thank_dp_300">300dp</dimen>
+    <dimen name="thank_dp_148">148dp</dimen>
 </resources>

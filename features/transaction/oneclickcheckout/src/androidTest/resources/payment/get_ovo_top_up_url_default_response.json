@@ -1,0 +1,14 @@
+[
+  {
+    "data": {
+      "fetchInstantTopupURL": {
+        "success": true,
+        "processTime": "",
+        "data": {
+          "redirectURL": "https://www.tokopedia.com"
+        },
+        "errors": []
+      }
+    }
+  }
+]

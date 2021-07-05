@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatsearch.usecase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatsearch.data.GetMultiChatSearchResponse
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchListHeaderUiModel
 import kotlinx.coroutines.CoroutineScope
@@ -12,12 +12,12 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class GetSearchQueryUseCase @Inject constructor(
+open class GetSearchQueryUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetMultiChatSearchResponse>,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     var isSearching: Boolean = false
     var hasNext: Boolean = false
@@ -33,7 +33,7 @@ class GetSearchQueryUseCase @Inject constructor(
             page: Int,
             isReplyOnly: Boolean = false
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     isSearching = true
                     val params = generateSearchParams(keyword, page)
@@ -46,13 +46,13 @@ class GetSearchQueryUseCase @Inject constructor(
                     val replyHeader = createReplyHeader(response, page)
                     isSearching = false
                     hasNext = response.replyHasNext
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response, contactLoadMore, replyHeader)
                     }
                 },
                 {
                     isSearching = false
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }
@@ -152,7 +152,6 @@ class GetSearchQueryUseCase @Inject constructor(
                   msgId
                   oppositeId
                   oppositeType
-                  replyId
                   roomId
                   productId
                 }
@@ -188,7 +187,6 @@ class GetSearchQueryUseCase @Inject constructor(
                   msgId
                   oppositeId
                   oppositeType
-                  replyId
                   roomId
                   productId
                 }

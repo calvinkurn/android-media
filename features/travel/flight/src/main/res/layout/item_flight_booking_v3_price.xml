@@ -5,18 +5,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_6"
-    android:paddingBottom="@dimen/dp_6">
+    android:paddingTop="@dimen/flight_dp_6"
+    android:paddingBottom="@dimen/flight_dp_6">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_price_description"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         tools:text="CGK - SUB (x2 Dewasa)"
         app:layout_constraintEnd_toStartOf="@+id/tv_price_amount"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -29,6 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Rp7.300.000"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_96"/>
+        android:textColor="@color/Unify_N700_96"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

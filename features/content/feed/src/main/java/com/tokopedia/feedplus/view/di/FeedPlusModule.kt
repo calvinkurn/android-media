@@ -21,7 +21,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
@@ -30,7 +33,6 @@ import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.di.VoteModule
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -52,7 +54,7 @@ private const val NET_WRITE_TIMEOUT = 60
 private const val NET_CONNECT_TIMEOUT = 60
 private const val NET_RETRY = 1
 
-@Module(includes = [VoteModule::class])
+@Module
 class FeedPlusModule {
     @FeedPlusScope
     @Provides
@@ -174,7 +176,7 @@ class FeedPlusModule {
     @FeedPlusScope
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @FeedPlusScope
@@ -188,12 +190,6 @@ class FeedPlusModule {
     @FeedPlusScope
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
-    }
-
-    @Provides
-    @FeedPlusScope
-    fun provideFeedDispatcherProvider(): FeedDispatcherProvider {
-        return FeedProductionDispatcherProvider()
     }
 
     @FeedPlusScope
@@ -215,4 +211,22 @@ class FeedPlusModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_feed_detail)
     }
 
+    @FeedPlusScope
+    @Provides
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+        return context as NetworkRouter
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, networkRouter: NetworkRouter, userSession: UserSessionInterface): TkpdAuthInterceptor {
+        return TkpdAuthInterceptor(context, networkRouter, userSession)
+    }
+
+    @FeedPlusScope
+    @Provides
+    fun providePlayWidgetImpressionValidator(): DefaultImpressionValidator {
+        return DefaultImpressionValidator()
+    }
 }

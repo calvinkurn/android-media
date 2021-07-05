@@ -8,21 +8,22 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         style="?tabTheme"
-        footerColor="@color/Green_G500"
+        footerColor="@color/Unify_G500"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:elevation="@dimen/spacing_lvl1"
-        app:tabIndicatorColor="@color/green_all_facility_tab_underlined"
+        app:tabIndicatorColor="@color/Unify_G400"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/Green_G500"
+        app:tabSelectedTextColor="@color/Unify_G500"
         app:tabTextAppearance="@style/TitlePageWhiteIndicator.Hotel"
-        app:tabTextColor="@color/font_black_disabled_38" />
+        app:tabTextColor="@color/Unify_N700_32" />
 
     <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="@color/Unify_N0" />
 
 </LinearLayout>

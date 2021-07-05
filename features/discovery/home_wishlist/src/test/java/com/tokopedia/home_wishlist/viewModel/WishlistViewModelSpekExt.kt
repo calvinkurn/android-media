@@ -1,7 +1,8 @@
 package com.tokopedia.home_wishlist.viewModel
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.home_wishlist.TestDispatcherProvider
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.GetWishlistParameter
 import com.tokopedia.home_wishlist.model.entity.WishlistEntityData
@@ -29,7 +30,8 @@ fun createWishlistViewModel(
         addToCartUseCase: AddToCartUseCase = mockk(relaxed = true),
         bulkRemoveWishlistUseCase: BulkRemoveWishlistUseCase = mockk(relaxed = true),
         addWishListUseCase: AddWishListUseCase = mockk(relaxed = true),
-        topAdsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
+        topAdsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
+        updateCartCounterUseCase: UpdateCartCounterUseCase = mockk(relaxed = true)
 ): WishlistViewModel {
 
     return WishlistViewModel(
@@ -37,12 +39,13 @@ fun createWishlistViewModel(
             getWishlistUseCase = getWishlistDataUseCase,
             getRecommendationUseCase = getRecommendationUseCase,
             getSingleRecommendationUseCase = getSingleRecommendationUseCase,
-            wishlistCoroutineDispatcherProvider = TestDispatcherProvider(),
+            wishlistCoroutineDispatcherProvider = CoroutineTestDispatchersProvider,
             removeWishListUseCase = removeWishlistUseCase,
             addToCartUseCase = addToCartUseCase,
             bulkRemoveWishlistUseCase = bulkRemoveWishlistUseCase,
             addWishListUseCase = addWishListUseCase,
-            topAdsImageViewUseCase = topAdsImageViewUseCase
+            topAdsImageViewUseCase = topAdsImageViewUseCase,
+            updateCartCounterUseCase = updateCartCounterUseCase
     )
 }
 

@@ -8,7 +8,6 @@ package com.tokopedia.core.analytics.appsflyer;
  */
 public class Jordan {
 
-    public static final String AF_SCREEN_HOME_MAIN = "home_beranda";
     public static final String AF_SHIPPING_PRICE = "af_shipping_price";
     public static final String AF_PURCHASE_SITE = "af_purchase_site";
     public static final String AF_KEY_CATEGORY_NAME = "category";

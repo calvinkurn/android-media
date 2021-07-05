@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'io.hansel.preprocessor.module'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.logger)
+}
+
+project.ext {
+    artifactId = 'push-notification-common'
+    groupId = 'com.tokopedia.notification.common'
+    versionName = "0.0.1"
+    artifactName = "push-notification-common-release"
+}
+
+apply from: '../../../publish_local.gradle'

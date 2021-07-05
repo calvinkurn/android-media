@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:elevation="@dimen/dp_4">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -34,13 +34,25 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:textColor="@color/unify_Y500"
+            android:textColor="@color/Unify_Y500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tg_event_pdp_ticket_label"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp.5.000.200" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:visibility="invisible"
+            android:id="@+id/qr_redeem_pdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_product_fintech_qr_normal_24"
+            app:layout_constraintRight_toLeftOf="@+id/btn_event_pdp_cek_tiket"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_event_pdp_cek_tiket"
@@ -69,7 +81,7 @@
         android:layout_height="wrap_content"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:elevation="@dimen/dp_4">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView

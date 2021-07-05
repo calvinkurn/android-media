@@ -8,7 +8,8 @@ import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
 
 /**
  * Created by jegul on 05/08/20
@@ -25,7 +26,7 @@ class PlayVideoBoundsManager(
 
     override fun invalidateVideoBounds(
             videoOrientation: VideoOrientation,
-            videoPlayer: VideoPlayerUiModel,
+            videoPlayer: PlayVideoPlayerUiModel,
             topBounds: Int
     ) {
         val finalTopBounds =

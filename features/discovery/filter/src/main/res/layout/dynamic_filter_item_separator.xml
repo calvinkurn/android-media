@@ -2,6 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dynamic_filter_item_separator_height"
-    android:background="@color/grey_200">
+    android:background="@color/Unify_N50">
 
 </FrameLayout>

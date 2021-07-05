@@ -2,18 +2,17 @@ package com.tokopedia.kol.feature.comment.view.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -41,6 +40,7 @@ import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifycomponents.ProgressBarUnify;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -69,7 +69,7 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     private KolCommentAdapter adapter;
     private MentionableUserAdapter mentionAdapter;
-    private ProgressBar progressBar;
+    private ProgressBarUnify progressBar;
 
     private boolean isFromApplink;
     private int totalNewComment = 0;

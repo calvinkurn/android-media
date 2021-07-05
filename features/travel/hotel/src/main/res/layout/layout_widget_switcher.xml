@@ -8,8 +8,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_button_white_enabled_border"
-        android:orientation="horizontal">
+        android:background="@drawable/bg_hotel_facility_item"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="@dimen/layout_lvl0"
@@ -22,7 +25,7 @@
                 android:id="@+id/tv_switcher_left_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3"
                 tools:text="Check-in" />
 
@@ -30,7 +33,7 @@
                 android:id="@+id/tv_switcher_left_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Mulai 11:00" />
@@ -48,7 +51,7 @@
                 android:id="@+id/tv_switcher_right_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:fontSize="micro"
                 app:typographyType="body_3"
                 tools:text="Check-out" />
@@ -57,8 +60,8 @@
                 android:id="@+id/tv_switcher_right_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
-                android:textColor="@color/Neutral_N700_96"
                 app:typographyWeight="bold"
                 tools:text="Sampai 21:00" />
 
@@ -69,7 +72,7 @@
     <View
         android:layout_width="1dp"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/hotel_grey_300"
+        android:background="@color/Unify_N100"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

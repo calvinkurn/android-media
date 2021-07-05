@@ -1,31 +1,20 @@
 package com.tokopedia.otp.verification.view.activity
 
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
-import com.tokopedia.otp.verification.common.IOnBackPressed
-import com.tokopedia.otp.verification.common.di.VerificationComponent
-import com.tokopedia.otp.verification.common.di.VerificationComponentBuilder
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpActivity
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
 import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
-import com.tokopedia.otp.verification.view.fragment.VerificationFragment
-import com.tokopedia.otp.verification.view.fragment.VerificationMethodFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -44,17 +33,16 @@ import javax.inject.Inject
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD]
  * @param : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD]
  */
-class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComponent> {
+open class VerificationActivity : BaseOtpActivity() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
     var isResetPin2FA = false
-    private var otpData = OtpData()
+    var otpData = OtpData()
+    private var isLoginRegisterFlow = false
 
     override fun getNewFragment(): Fragment? = null
-
-    override fun getComponent(): VerificationComponent = VerificationComponentBuilder.getComponent(application as BaseMainApplication)
 
     override fun setupFragment(savedInstance: Bundle?) {
         component.inject(this)
@@ -81,55 +69,10 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
         }
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        setContentView(layoutRes)
-        toolbar = findViewById(toolbarResourceID)
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setHomeAsUpIndicator(R.drawable.ic_toolbar_back)
-            setDisplayShowTitleEnabled(false)
-            setDisplayHomeAsUpEnabled(true)
-            elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@VerificationActivity, R.color.Neutral_N0)))
-        }
-    }
-
-    @SuppressLint("InlinedApi")
-    override fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT until Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFlag(true)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val decor = window.decorView
-            decor.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun setWindowFlag(on: Boolean) {
-        val winParams = window.attributes
-        if (on) {
-            winParams.flags = winParams.flags or WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-        } else {
-            winParams.flags = winParams.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS.inv()
-        }
-        window.attributes = winParams
-    }
-
     private fun setupParams() {
-        if(isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
+        if (isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
             otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
-        }else {
+        } else {
             otpData.userId = userSession.userId ?: userSession.temporaryUserId
         }
         otpData.otpType = intent?.extras?.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0) ?: 0
@@ -138,20 +81,25 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
         otpData.msisdn = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "").toEmptyStringIfNull()
         otpData.source = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "").toEmptyStringIfNull()
         otpData.userIdEnc = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, "").toEmptyStringIfNull()
-
+        otpData.canUseOtherMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false) ?: false
+        otpData.isShowChooseMethod = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false) ?: false
         otpData.accessToken = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, "").toEmptyStringIfNull()
+        isLoginRegisterFlow = intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, false)
+                ?: false
     }
 
-    private fun createBundle(modeListData: ModeListData? = null): Bundle {
+    private fun createBundle(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
         modeListData?.let {
             bundle.putParcelable(OtpConstant.OTP_MODE_EXTRA, it)
         }
+        bundle.putBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, isMoreThanOne)
         return bundle
     }
 
-    private fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
+    fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
         supportFragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         val fragmentTransactionManager = supportFragmentManager.beginTransaction()
 
@@ -163,14 +111,41 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
         fragmentTransactionManager.commit()
     }
 
-    fun goToVerificationMethodPage() {
+    open fun goToVerificationMethodPage() {
         val fragment = VerificationMethodFragment.createInstance(createBundle())
         doFragmentTransaction(fragment, TAG_OTP_MODE, true)
     }
 
-    fun goToVerificationPage(modeListData: ModeListData) {
-        val fragment = VerificationFragment.createInstance(createBundle(modeListData))
+    fun goToVerificationPage(modeListData: ModeListData, isMoreThanOne: Boolean = true) {
+        val bundle = createBundle(modeListData, isMoreThanOne)
+        val fragment = generateVerificationFragment(modeListData, bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    private fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+        return when (modeListData.modeText) {
+            OtpConstant.OtpMode.EMAIL -> {
+                EmailVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.SMS -> {
+                SmsVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.WA -> {
+                WhatsappVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.GOOGLE_AUTH -> {
+                GoogleAuthVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.PIN -> {
+                PinVerificationFragment.createInstance(bundle)
+            }
+            OtpConstant.OtpMode.MISCALL -> {
+                MisscallVerificationFragment.createInstance(bundle)
+            }
+            else -> {
+                VerificationFragment.createInstance(bundle)
+            }
+        }
     }
 
     fun goToOnboardingMiscallPage(modeListData: ModeListData) {
@@ -190,7 +165,7 @@ class VerificationActivity : BaseSimpleActivity(), HasComponent<VerificationComp
     companion object {
         private const val BACK_STACK_ROOT_TAG = "root_fragment"
 
-        private const val TAG_OTP_MODE = "otpMode"
+        const val TAG_OTP_MODE = "otpMode"
         private const val TAG_OTP_VALIDATOR = "otpValidator"
         private const val TAG_OTP_MISCALL = "otpMiscall"
     }

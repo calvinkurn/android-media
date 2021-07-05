@@ -1,56 +1,79 @@
 [
   {
     "data": {
-      "getCardWidgetData": {
+      "fetchCardWidgetData": {
         "data": [
           {
             "dataKey": "newOrder",
             "value": "0",
-            "description": "",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "readyToShipOrder",
             "value": "0",
-            "description": "",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "complaint",
             "value": "0",
-            "description": "",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "unreadChat",
-            "value": "0",
-            "description": "",
+            "value": "2",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "discussion",
             "value": "0",
-            "description": "",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
+          },
+          {
+            "dataKey": "unrepliedReview",
+            "value": "0",
+            "state": "GOOD",
+            "description": "",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           },
           {
             "dataKey": "productViewStatistic",
-            "value": "44",
-            "description": "\u003cspan style\u003dcolor:#03AC0E;\u003e\u003cb\u003e+62.96%\u003c/b\u003e\u003c/span\u003e dengan 7 hari sebelumnya",
+            "value": "20",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "\u003cspan style\u003dcolor:#EF144A;\u003e\u003cb\u003e-9.09%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           },
           {
-            "dataKey": "productSoldStatistic",
+            "dataKey": "productSoldVerified",
             "value": "0",
-            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dengan 7 hari sebelumnya",
             "state": "GOOD",
-            "errorMsg": ""
+            "description": "\u003cspan style\u003dcolor:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu",
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
           }
         ]
       }

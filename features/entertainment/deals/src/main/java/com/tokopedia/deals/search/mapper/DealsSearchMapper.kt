@@ -106,7 +106,7 @@ object DealsSearchMapper {
                 val brandTitle = SectionTitleModel(BRAND_TITLE)
                 list.add(brandTitle)
 
-                val merchantList = MerchantModelViewModel()
+                val merchantList = MerchantModelModel()
                 merchantList.merchantList = dataList.brands
                 list.add(merchantList)
 

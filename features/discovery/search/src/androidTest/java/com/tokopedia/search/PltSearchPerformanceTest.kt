@@ -12,7 +12,9 @@ import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,6 +38,7 @@ class PltSearchPerformanceTest {
     @Before
     fun setUp() {
         setupGraphqlMockResponseWithCheck(SearchMockModelConfig())
+        setupTotalSizeInterceptor(listOf("SearchProduct"))
         setupActivity()
         setupIdlingResource()
     }
@@ -69,7 +72,8 @@ class PltSearchPerformanceTest {
                     activityRule.activity,
                     TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
                     it,
-                    dataSource
+                    dataSource,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
     }

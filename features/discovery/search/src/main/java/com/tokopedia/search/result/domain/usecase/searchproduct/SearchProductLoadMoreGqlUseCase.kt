@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -15,12 +16,13 @@ class SearchProductLoadMoreGqlUseCase(
 ): UseCase<SearchProductModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
+        val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
+        val params = UrlParamUtils.generateUrlParamString(searchProductParams)
 
-        val graphqlRequestList = listOf(
-                createAceSearchProductRequest(params = params),
-                createTopAdsProductRequest(params = params)
-        )
+        val graphqlRequestList = graphqlRequests {
+            addAceSearchProductRequest(params)
+            addProductAdsRequest(requestParams, params)
+        }
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequests(graphqlRequestList)

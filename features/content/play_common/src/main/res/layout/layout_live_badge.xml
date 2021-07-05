@@ -16,9 +16,10 @@
         android:layout_height="wrap_content"
         android:lineHeight="@dimen/fontSize_lvl3"
         android:layout_gravity="center"
+        android:gravity="center"
         android:text="@string/play_common_live"
         android:textAllCaps="true"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:typographyWeight="bold"
         app:typographyType="small"
         />

@@ -1,0 +1,931 @@
+{
+  "VA": [
+      {
+        "gateway_code": "BNIVA",
+        "gateway_name": "BNI Virtual Account",
+        "channel": [
+          {
+            "payment_channel": "OVO",
+            "channel_steps": [
+              "Buka aplikasi OVO.",
+              "Pilih menu Transfer.",
+              "Pilih \"Rekening Bank\".",
+              "Masukkan kode bank BNI (009) atau pilih bank yang dituju yaitu BNI.",
+              "Masukan 16 Digit Nomor Virtual Account pada kolom rekening tujuan, (contoh: {payment_code}).",
+              "Masukkan nominal transfer sesuai tagihan atau kewajiban Anda.",
+              "Pilih \"Transfer\".",
+              "Konfirmasi rincian Anda akan tampil di layar, cek dan apabila sudah sesuai silahkan pilih \"Konfirmasi\" untuk lanjutkan transaksi sampai dengan selesai.,",
+              "Transaksi Berhasil."
+            ]
+          },
+          {
+            "payment_channel": "Agen46",
+            "channel_steps": [
+              "Kunjungi Agen46 terdekat (warung/toko/kios dengan tulisan Agen46).",
+              "Informasikan kepada Agen46, bahwa ingin melakukan pembayaran \"Virtual Account Billing\".",
+              "Serahkan nomor Virtual Account Anda kepada Agen46.",
+              "Agen46 melakukan konfirmasi kepada Anda.",
+              "Agen46 Proses Transaksi.",
+              "Apabila transaksi Sukses anda akan menerima bukti pembayaran dari Agen46 tersebut."
+            ]
+          },
+          {
+            "payment_channel": "Cabang atau Outlet BNI (Teller)",
+            "channel_steps": [
+              "Kunjungi Kantor Cabang/outlet BNI terdekat.",
+              "Informasikan kepada Teller, bahwa ingin melakukan pembayaran \"Virtual Account Billing\".",
+              "Serahkan nomor Virtual Account Anda kepada Teller.",
+              "Teller melakukan konfirmasi kepada Anda.",
+              "Teller memproses Transaksi.",
+              "Apabila transaksi Sukses anda akan menerima bukti pembayaran dari Teller tersebut."
+            ]
+          },
+          {
+            "payment_channel": "ATM BNI",
+            "channel_steps": [
+              "Masukkan Kartu Anda.",
+              "Pilih Bahasa.",
+              "Masukkan PIN ATM Anda.",
+              "Pilih \"Menu Lainnya\".",
+              "Pilih \"Transfer\".",
+              "Pilih Jenis rekening yang akan Anda gunakan (Contoh: \"Dari Rekening Tabungan\").",
+              "Pilih \"Virtual Account Billing\".",
+              "Masukkan nomor Virtual Account Anda (contoh: {payment_code}).",
+              "Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.",
+              "Konfirmasi, apabila telah sesuai, lanjutkan transaksi.",
+              "Transaksi telah selesai."
+            ]
+          },
+          {
+            "payment_channel": "iBank Personal BNI",
+            "channel_steps": [
+              "Ketik alamat https://ibank.bni.co.id kemudian klik \"Enter\".",
+              "Masukkan User ID dan Password.",
+              "Pilih menu \"Transfer\".",
+              "Pilih \"Virtual Account Billing\".",
+              "Kemudian masukan nomor Virtual Account Anda (contoh: {payment_code}) yang hendak dibayarkan. Lalu pilih rekening debet yang akan digunakan. Kemudian tekan \",lanjut\".",
+              "Kemudian tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.",
+              "Masukkan Kode Otentikasi Token.",
+              "Pembayaran Anda Telah Berhasil."
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking BNI",
+            "channel_steps": [
+              "Akses BNI Mobile Banking dari handphone kemudian masukkan user ID dan password.",
+              "Pilih menu \"Transfer\".",
+              "Pilih menu \"Virtual Account Billing\" kemudian pilih rekening debet.",
+              "Masukkan nomor Virtual Account Anda (contoh: {payment_code}) pada menu \"input baru\".",
+              "Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi.",
+              "Konfirmasi transaksi dan masukkan Password Transaksi.",
+              "Pembayaran Anda Telah Berhasil."
+            ]
+          },
+          {
+            "payment_channel": "SMS Banking",
+            "channel_steps": [
+              "Buka aplikasi SMS Banking BNI",
+              "Pilih menu Transfer",
+              "Pilih menu Trf rekening BNI",
+              "Masukkan nomor rekening tujuan dengan 16 digit Nomor Virtual Account (contoh: {payment_code}).",
+              "Masukkan nominal transfer sesuai tagihan atau kewajiban Anda. Nominal yang berbeda tidak dapat diproses.",
+              "Pilih \"Proses\" kemudian \"Setuju\"",
+              "Reply sms dengan ketik pin sesuai perintah",
+              "Transaksi Berhasil",
+              "Atau Dapat juga langsung mengetik sms dengan format:<br/><b>TRF[SPASI]NomorVA[SPASI]NOMINAL</b><br/>dan kemudian kirim ke 3346 <br/>Contoh : TRF {payment_code} {trn_amount}"
+            ]
+          },
+          {
+            "payment_channel": "ATM Bersama",
+            "channel_steps": [
+              "Masukkan kartu ke mesin ATM Bersama.",
+              "Pilih \"Transaksi Lainnya\".",
+              "Pilih menu \"Transfer\".",
+              "Pilih \"Transfer ke Bank Lain\".",
+              "Masukkan kode bank BNI (009) dan 16 Digit Nomor Virtual Account (contoh: {payment_code}).",
+              "Masukkan nominal transfer sesuai tagihan atau kewajiban Anda. Nominal yang berbeda tidak dapat diproses.",
+              "Konfirmasi rincian Anda akan tampil di layar, cek dan tekan 'Ya' untuk melanjutkan.",
+              "Transaksi Berhasil."
+            ]
+          },
+          {
+            "payment_channel": "Transfer dari Bank Lain",
+            "channel_steps": [
+              "Pilih menu \"Transfer antar bank\" atau \"Transfer online antarbank\".",
+              "Masukkan kode bank BNI (009) atau pilih bank yang dituju yaitu BNI.",
+              "Masukan 16 Digit Nomor Virtual Account pada kolom rekening tujuan, (contoh: {payment_code}).",
+              "Masukkan nominal transfer sesuai tagihan atau kewajiban Anda. Nominal yang berbeda tidak dapat diproses.",
+              "Masukkan jumlah pembayaran : {trn_amount}.",
+              "Konfirmasi rincian Anda akan tampil di layar, cek dan apabila sudah sesuai silahkan lanjutkan transaksi sampai dengan selesai.",
+              "Transaksi Berhasil."
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "016",
+        "channel": [
+          {
+            "payment_channel": "ATM Maybank",
+            "channel_steps": [
+              "Masukkan kartu ATM Maybank & PIN",
+              "Pilih Menu Pembayaran/Top up Pulsa > Pembayaran Lainnya > E-commerce",
+              "Masukkan 4 angka kode perusahaan Tokopedia (0001)",
+              "Masukkan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Validasi pembayaran",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "SMS banking",
+            "channel_steps": [
+              "Klik App Maybank SMS Banking",
+              "Input Passcode (jika ada)",
+              "Pilih media koneksi : SMS atau USSD (lihat indikator koneksi pada pojok kanan atas)",
+              "Menu Utama, klik icon Pembayaran & Isi ulang",
+              "Pilih Pembayaran",
+              "Pada kolom Rekening Sumber, input rekening sumber (Pada media koneksi USSD tidak diperlukan)",
+              "Pada kolom Jenis Pembayaran, pilih e-commerce",
+              "Pada kolom Biller, pilih Tokopedia",
+              "Pada kolom No Pelanggan, input NoPelanggan/IDpelanggan (Pada Toped biasanya no Hp)",
+              "Klik tombol Kirim"
+            ]
+          },
+          {
+            "payment_channel": "Maybank2u (Internet Banking)",
+            "channel_steps": [
+              "Buka https://m2u.maybank.co.id",
+              "Masukkan User ID - Lanjut",
+              "Masukkan Password - Login",
+              "Pilih Pembayaran Tagihan",
+              "Pilih Pembayaran Tagihan Lain",
+              "Pilih e-commerce - Pilih Tokopedia",
+              "Pilih Rekening Asal dan masukkan Kode Bayar dari Tokopedia - Lanjut",
+              "Tampil Query - Request TAC - Input TAC - Lanjut",
+              "Tampilkan hasil transaksi SUKSES",
+              "Print Receipt jika diperlukan"
+            ]
+          },
+          {
+            "payment_channel": "Menu USSD Maybank",
+            "channel_steps": [
+              "Dial *141*3# untuk mengakses Menu USSD Maybank",
+              "Tekan 4. Pembayaran",
+              "Tekan 89. Selanjutnya",
+              "Tekan 11. E-Commerce",
+              "Tekan 1. Tokopedia",
+              "Masukkan No Pelanggan, klik tombol Kirim",
+              "Tampil Popup Query - Masukkan PIN",
+              "Tampil Popup hasil Transaksi Sukses",
+              "Mendapatkan SMS konfirmasi Sukses"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "028",
+        "channel": [
+          {
+            "payment_channel": "ATM OCBC NISP",
+            "channel_steps": [
+              "Masukkan kartu ATM OCBC NISP & PIN",
+              "Pilih menu Pembayaran &rarr; Pembayaran Lainnya",
+              "Masukkan 5 angka kode perusahaan Tokopedia (90230) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: 90230{payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti No VA, Nama, Perusahaan/Produk dan Total Tagihan",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking",
+            "channel_steps": [
+              "Login ke internet banking",
+              "Pilih menu Pembayaran -> Pembayaran Lainnya",
+              "Masukkan 12 angka nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti No VA, Nama, Perusahaan/Produk dan Total Tagihan",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Cetak/simpan struk pembayaran Virtual Account OCBC NISP sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking",
+            "channel_steps": [
+              "Login pada aplikasi mobile banking",
+              "Pilih menu Pembayaran -> Pembayaran Lainnya",
+              "Masukkan 12 angka nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti No VA, Nama, Perusahaan/Produk dan Total Tagihan",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Cetak/simpan struk pembayaran Virtual Account OCBC NISP sebagai bukti pembayaran"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "019",
+        "channel": [
+          {
+            "payment_channel": "ATM Bank Panin",
+            "channel_steps": [
+              "Masukan Kartu ATM",
+              "Pilih Bahasa",
+              "Masukan PIN",
+              "Pilih Menu Pembayaran/Pembelian",
+              "Pilih menu layar lainnya",
+              "Pilih menu e-commerce",
+              "Pilih menu Tokopedia.",
+              "Masukan No Bayar",
+              "Tampil layar Konfirmasi inquiry",
+              "Pilih benar, untuk melakukan pembayaran",
+              "Selesai."
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "426",
+        "channel": [
+          {
+            "payment_channel": "ATM",
+            "channel_steps": [
+              "Masukkan kartu ATM Bank Mega & PIN",
+              "Pilih menu \"Transaksi Lainnya\" > \"E-commerce\" > \"Tokopedia\"",
+              "Masukkan nomor handphone yang terdaftar di Tokopedia",
+              "Di halaman konfirmasi pembayaran, pastikan detail pembayaran sudah sesuai seperti : Nomor handphone, Nama, dan Jumlah Bayar",
+              "Pilih \"Lanjut Transaksi\" jika transaksi sudah sesuai",
+              "Simpan resi / struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking Bank Mega",
+            "channel_steps": [
+              "Login ke aplikasi Mega Mobile",
+              "Pilih menu \"Pembayaran\" -> Pilih \"E-Commerce\" di Daftar Produk ->  Pilih \"Tokopedia\"",
+              "Masukkan nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Pada screen konfirmasi PIN transaksi, pastikan nama, nomor ponsel dan nominal yang akan dibayar sudah benar",
+              "Konfirmasi PIN transaksi -> Transaksi Sukses",
+              "Simpan e-mail notifikasi sebagai bukti pembayaran"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "023",
+        "channel": [
+          {
+            "payment_channel": "Internet Banking",
+            "channel_steps": [
+              "Login ke Personal Internet Banking (PIB)",
+              "Pilih Pembayaran dan Transfer",
+              "Pilih Bayar Tagihan",
+              "Pilih One-Time Transfer/Quick Pay",
+              "Pilih Tokopedia di daftar Merchants dan masukkan Nomor Pelanggan",
+              "Klik ‘Proses’ untuk melanjutkan transaksi",
+              "Pilih Sumber Dana",
+              "Ikuti instruksi selanjutnya untuk menyelesaikan pembayaran tagihan"
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking",
+            "channel_steps": [
+              "Login ke TMRW",
+              "Pilih Bayar atau transfer",
+              "Pilih Rekening Sumber",
+              "Pilih Biller",
+              "Pilih kategori E-Commerce &rarr; Tokopedia atau Cari ‘Tokopedia’ di kolom pencarian",
+              "Masukan Nomor Pembayaran",
+              "Ikuti instruksi selanjutnya untuk menyelesaikan top-up"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "422",
+        "channel": [
+          {
+            "payment_channel": "BRI Syariah Mobile Banking",
+            "channel_steps": [
+              "Lakukan login pada aplikasi BRIS Online",
+              "Pilih Mobile BRIS",
+              "Pilih Menu Pembayaran > Tokopedia",
+              "Pilih rekening yang akan digunakan",
+              "Masukkan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Masukkan pin mobile banking Anda",
+              "Klik tombol kirim",
+              "Ikuti instruksi selanjutnya untuk meyelesaikan transaksi",
+              "Bukti pembayaran akan tersimpan di inbox aplikasi mobile banking Anda"
+            ]
+          },
+          {
+            "payment_channel": "SMS Banking",
+            "channel_steps": [
+              "Ketik: BAYAR(spasi)TOKOPEDIA(spasi) Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Kirim ke 3338 | Contoh: BAYAR TOKOPEDIA {payment_code}",
+              "Ikuti instruksi selanjutnya untuk menyelesaikan transaksi"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "153",
+        "channel": [
+          {
+            "payment_channel": "Sinarmas Internet Banking",
+            "channel_steps": [
+              "Lakukan login pada Sinarmas Internet Banking",
+              "Pilih menu Pembayaran/Pembelian",
+              "Pilih Nama Biller \"Tokopedia\" dari Daftar Transfer",
+              "Masukkan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code}) > Klik lihat tagihan",
+              "Pilih nomor rekening > Klik kirim",
+              "Masukkan pin Token > Klik konfirmasi",
+              "Pembayaran selesai. Simpan notifikasi yang muncul sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking Simobiplus",
+            "channel_steps": [
+              "Masukkan nomor Virtual Account",
+              "Detail Pembayaran akan muncul > pilih akun untuk melakukan pembayaran > pilih lanjut",
+              "Konfirmasi pembayaran akan muncul > Konfirmasi Pemesanan",
+              "Masukkan EasyPin",
+              "Pembayaran berhasil dan simpan bukti pembayaran Anda"
+            ]
+          },
+          {
+            "payment_channel": "ATM",
+            "channel_steps": [
+              "Masukkan Kartu ATM > Pilih Bahasa > Masukkan Pin > Pilih menu Pembayaran",
+              "Pilih Menu ‘E-commerce’",
+              "Input kode bayar kamu > Pilih “Benar”",
+              "Akan tampil layar konfirmasi. Apabila data sudah dipastikan benar > Pilih \"Ya\"",
+              "Transaksi Selesai dan simpan bukti pembayaran Anda"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "118",
+        "channel": [
+          {
+            "payment_channel": "ATM Bank Nagari",
+            "channel_steps": [
+              "Masukan Kartu ATM Bank Nagari",
+              "Tekan tombol Pilihan Bahasa",
+              "Input 6 digit PIN ATM dengan PIN PAD",
+              "Tekan tombol TRANSAKSI LAIN > PEMBAYARAN > MULTIPAYMENT",
+              "Ketikan kode institusi atau tekan tombol DAFTAR KODE, Kode Instansi Untuk TOKOPEDIA adalah : 0018",
+              "Masukkan ID Tagihan anda",
+              "Tekan tombol BENAR untuk melanjutkan transaksi",
+              "Simpan struk sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking",
+            "channel_steps": [
+              "Input ID pengguna, kata sandi, & captcha",
+              "Pilih Masuk > menu PEMBAYARAN > menu E-COMMERCE > TOKOPEDIA",
+              "Muncul Form Pembayaran E-Commerce",
+              "Pilih Sumber Rekening yang bertransaksi",
+              "Input Nomor Tagihan",
+              "Pilih Tombol Lanjutkan",
+              "Pilih Permintaan Token untuk melanjutkan transaksi",
+              "Input Token yang dikirim ke No Hp yang terdaftar",
+              "Klik BAYAR untuk melanjutkan transaksi",
+              "Simpan struk sebagai bukti pembayaran"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "RINTIS",
+        "gateway_name": "Virtual Account Lainnya",
+        "bank_code": "112",
+        "channel": [
+          {
+            "payment_channel": "ATM",
+            "channel_steps": [
+              "Masukkan Kartu ATM dan PIN kamu",
+              "Pilih menu Pembayaran > Selanjutnya > E-Commerce > Tokopedia",
+              "Masukan Nomor Bayar transaksi Tokopedia",
+              "Pada halaman konfirmasi, pastikan detail pembayaran telah sesuai seperti Nomor Bayar, Nama dan Jumlah Pembayaran",
+              "Pilih BAYAR untuk menyelesaikan pembayaran",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Tokopedia Teller",
+            "channel_steps": [
+              "Datang ke kantor pelayanan Bank BPD DIY terdekat",
+              "Sebutkan Nomor Bayar/Nomor transaksi Tokopedia",
+              "Teller akan melakukan transaksi dan kamu akan menerima bukti pembelian"
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking",
+            "channel_steps": [
+              "Login ke aplikasi BPD Mobile kamu",
+              "Pilih menu Pembayaran",
+              "Pilih E-Commerce pada Kategori Pembayaran dan Tokopedia pada jenis Biller",
+              "Masukkan ID Pelanggan/Nomor Bayar Transaksi Tokopedia kamu",
+              "Pada halaman konfirmasi, pastikan detail pembayaran telah sesuai seperti Nomor Bayar, Nama dan Jumlah Pembayaran",
+              "Pilih KIRIM dan ikuti petunjuk selanjutnya untuk menyelesaikan pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "SMS Banking",
+            "channel_steps": [
+              "Kirim SMS to 14112 dan ketik : BAYAR(spasi)No Rekening(spasi)TOPED(spasi)Nomor Bayar",
+              "Ikuti petunjuk selanjutnya untuk menyelesaikan proses pembayaran kamu"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "BRIVA",
+        "gateway_name": "BRIVA",
+        "channel": [
+          {
+            "payment_channel": "ATM BRI",
+            "channel_steps": [
+              "Masukkan Kartu Debit BRI dan PIN Anda",
+              "Pilih menu Transaksi Lain > Pembayaran > Lainnya > BRIVA",
+              "Masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti Nomor BRIVA, Nama Pelanggan dan Jumlah Pembayaran",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Mobile Banking BRI",
+            "channel_steps": [
+              "Login aplikasi BRI Mobile",
+              "Pilih menu Mobile Banking BRI > Pembayaran > BRIVA",
+              "Masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Masukan Jumlah Pembayaran",
+              "Masukkan PIN",
+              "Simpan notifikasi SMS sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking BRI",
+            "channel_steps": [
+              "Login pada alamat Internet Banking BRI (https://ib.bri.co.id/ib-bri/Login.html)",
+              "Pilih menu Pembayaran Tagihan > Pembayaran > BRIVA",
+              "Pada kolom kode bayar, masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti Nomor BRIVA, Nama Pelanggan dan Jumlah Pembayaran",
+              "Masukkan <span class=\"italic\"> password</span> dan mToken",
+              "Cetak/simpan struk pembayaran BRIVA sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Mini ATM/EDC BRI",
+            "channel_steps": [
+              "Pilih menu Mini ATM > Pembayaran > BRIVA",
+              "<span class=\"italic\">Swipe</span> Kartu Debit BRI Anda",
+              "Masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Masukkan PIN",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti Nomor BRIVA, Nama Pelanggan dan Jumlah Pembayaran",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Kantor Bank BRI",
+            "channel_steps": [
+              "Ambil nomor antrian transaksi Teller dan isi slip setoran",
+              "Serahkan slip dan jumlah setoran kepada Teller BRI",
+              "Teller BRI akan melakukan validasi transaksi",
+              "Simpan slip setoran hasil validasi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "ATM Bank Lain",
+            "channel_steps": [
+              "Masukkan Kartu Debit dan PIN Anda",
+              "Pilih menu Transaksi Lainnya > Transfer > Ke Rek Bank Lain",
+              "Masukkan kode bank BRI (002) kemudian diikuti dengan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: 002{payment_code})",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "MANDIRIVA",
+        "gateway_name": "Mandiri Virtual Account",
+        "channel": [
+          {
+            "payment_channel": "ATM Mandiri",
+            "channel_steps": [
+              "Masukkan kartu ATM dan PIN",
+              "Pilih menu \"Bayar/Beli\"",
+              "Pilih menu \"Lainnya\", hingga menemukan menu \"Multipayment\"",
+              "Masukkan Kode Biller Tokopedia (88708), lalu pilih Benar",
+              "Masukkan \"Nomor Virtual Account\" Tokopedia, lalu pilih tombol Benar",
+              "Masukkan Angka \"1\" untuk memilih tagihan, lalu pilih tombol Ya",
+              "Akan muncul konfirmasi pembayaran, lalu pilih tombol Ya",
+              "Simpan struk sebagai bukti pembayaran Anda"
+            ]
+          },
+          {
+            "payment_channel": "Mandiri Internet Banking / Livin’ By Mandiri",
+            "channel_steps": [
+              "Login Livin’ By Mandiri dengan memasukkan Username dan Password",
+              "Pilih menu \"Pembayaran\"",
+              "Pilih menu \"Multipayment\"",
+              "Pilih penyedia jasa \"Tokopedia\"",
+              "Masukkan \"Nomor Virtual Account\" dan \"Nominal\" yang akan dibayarkan, lalu pilih Lanjut",
+              "Setelah muncul tagihan, pilih Konfirmasi",
+              "Masukkan PIN / Challenge Code Token",
+              "Transaksi selesai, simpan bukti bayar Anda",
+              "Jangan gunakan fitur \"Simpan Daftar Transfer\" untuk pembayaran melalui Internet Banking karena dapat mengganggu proses pembayaran berikutnya.<br/><br/>Untuk menghapus daftar transfer tersimpan ikuti langkah berikut:<br/>1. Login Livin’ By Mandiri<br/>2. Pilih ke menu Pembayaran<br/>3. Pilih menu Daftar Pembayaran<br/>4. Pilih pada pembayaran yang tersimpan, lalu pilih menu untuk hapus"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "BTNVA",
+        "gateway_name": "BTN Virtual Account",
+        "channel": [
+          {
+            "payment_channel": "ATM BTN",
+            "channel_steps": [
+              "Masukkan kartu ATM, lalu PIN Anda",
+              "Pilih Menu <b>TRANSAKSI LAIN</b>",
+              "Pilih menu <b>PEMBAYARAN lalu pilih menu <b>VIRTUAL ACCOUNT</b>",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>",
+              "Tekan <b>BAYAR jika setuju dengan informasi pembayaran.",
+              "Tekan <b>BENAR, lalu tekan <b>BAYAR</b>",
+              "Simpan struk ATM sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "BTN Mobile",
+            "channel_steps": [
+              "<b>LOGIN ke Mobile Banking BTN.</b>",
+              "Pilih menu <b>PEMBAYARAN.</b>",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>, klik <b>PROSES.</b>",
+              "Masukkan <i>Kode Verifikasi</i> lalu klik <b>PROSES</b> jika setuju dengan informasi pembayaran.",
+              "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking BTN",
+            "channel_steps": [
+              "<b>LOGIN ke Internet Banking BTN.</b>",
+              "Pilih menu <b>PAYMENT.</b>",
+              "Pilih rekening Anda dan pilih <b>VIRTUAL ACCOUNT</b> pada <i>bill type</i>.",
+              "Masukkan Nomor Virtual Account {payment_code}, klik <b>NEXT.</b>",
+              "Masukkan <i>mPasscode</i> lalu klik <b>SUBMIT</b> jika setuju dengan informasi pembayaran",
+              "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
+            ]
+          },
+          {
+            "payment_channel": "Kantor Bank BTN",
+            "channel_steps": [
+              "Isi Nomor Rekening Penerima dengan <b>Nomor Virtual Account {payment_code}</b>",
+              "Isi <b>Nama Penerima dengan Nama Virtual Account.</b>",
+              "Isi <b>Pemohon dengan nama Penyetor.</b>",
+              "Isi <b>Jumlah yang Dikirim dengan nominal yang akan disetor.</b>",
+              "Pilih tipe <b>Pembayaran jika tipe Pembayaran :<ul class=\"pl-16 list-type-disc\"><li><div>Debet Rekening:<div>Isi No. Rekening Debet<li><div>Kliring Bank:<div>Isi No. Cek/Bilyet Giro</ul>"
+            ]
+          },
+          {
+            "payment_channel": "ATM Bank Lain",
+            "channel_steps": [
+              "Pilih menu <b>TRANSFER ANTAR BANK ONLINE.</b>",
+              "Isi <b>kode Bank BTN (147) diikuti <b>Nomor Virtual Account BTN {payment_code}</b>",
+              "Masukkan jumlah transaksi. Jumlah transaksi yang diinput harus sama persis dengan informasi tagihan di layar ATM.",
+              "Periksa kembali pembayaran Virtual Account."
+            ]
+          },
+          {
+            "payment_channel": "SKN/ LLG/ RTGS",
+            "channel_steps": [
+              "Isi <b>Nama Penerima</b> dengan <b>Nama Virtual Account.</b>",
+              "Isi <b>Bank Tujuan</b> dengan <b>BANK BTN.</b>",
+              "Isi <b>Nomor Rekening Tujuan {payment_code}</b>",
+              "Isi <b>Informasi Pengirim dengan nama dan alamat pengirim dana.</b>",
+              "Isi <b>Jumlah yang Dikirim dengan nominal dana yang akan di-transfer</b>"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "DANAMONVA",
+        "gateway_name": "Danamon Virtual Account",
+        "channel": [
+          {
+            "payment_channel": "ATM Danamon",
+            "channel_steps": [
+              "Masukkan Kartu ATM Danamon & PIN",
+              "Pilih menu Pembayaran > menu Lainnya > menu Virtual Account",
+              "Masukkan 4 angka kode perusahaan untuk Tokopedia (8777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti No VA, Nama, Institusi, dan Total Tagihan",
+              "Pilih Ya untuk memproses transaksi",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "ATM Bank Lain",
+            "channel_steps": [
+              "Masuk ke menu Transfer",
+              "Pilih Transfer ke bank lain dengan tujuan rekening Bank Danamon",
+              "Masukkan Kode Bank Danamon (011), 4 angka kode perusahaan untuk Tokopedia (8777), dan nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: 011{payment_code})",
+              "Masukkan jumlah pembayaran sesuai tagihan",
+              "Akan muncul rincian pembayaran Anda. Jika sudah benar, klik \"Ya\" untuk melanjutkan"
+            ]
+          },
+          {
+            "payment_channel": "Online Transfer dari Bank Lain (yang termasuk dalam jaringan ATM Bersama/ALTO/Prima)*",
+            "channel_steps": [
+              "Masuk ke menu Transfer",
+              "Pilih Transfer ke bank lain dengan tujuan rekening Bank Danamon (Online Transfer)",
+              "Masukkan Kode Bank Danamon (011) dan 4 angka kode perusahaan untuk Tokopedia (8777) dan nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: 011{payment_code})",
+              "Masukkan jumlah pembayaran sesuai tagihan",
+              "Akan muncul rincian pembayaran Anda. Jika sudah benar, klik \"Ya\" untuk melanjutkan"
+            ],
+            "notes": "<small>*ketersediaan channel sesuai kebijakan bank penerbit kartu masing-masing</small>"
+          },
+          {
+            "payment_channel": "D-mobile (Mobile Banking)",
+            "channel_steps": [
+              "Akses D-mobile melalui handphone Anda",
+              "Masukkan User ID dan password",
+              "Pilih menu Pembayaran, lalu pilih Virtual Account kemudian Tambah biller baru pembayaran",
+              "Masukkan 4 angka kode perusahaan untuk Tokopedia (8777) dan nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Akan muncul rincian pembayaran Anda. Jika sudah benar, masukan Pin transaksi Anda"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "BCAVA",
+        "gateway_name": "BCA Virtual Account",
+        "channel": [
+          {
+            "payment_channel": "ATM BCA",
+            "channel_steps": [
+              "Masukkan Kartu ATM BCA & PIN",
+              "Pilih menu Transaksi Lainnya > Transfer > ke Rekening BCA Virtual Account",
+              "Masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti No VA, Nama, Perus/Produk dan Total Tagihan",
+              "Masukkan Jumlah Transfer sesuai dengan Total Tagihan",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Simpan struk transaksi sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "m-BCA (BCA mobile)",
+            "channel_steps": [
+              "Lakukan log in pada aplikasi BCA Mobile",
+              "Pilih menu m-BCA, kemudian masukkan kode akses m-BCA",
+              "Pilih m-Transfer > BCA Virtual Account",
+              "Pilih dari Daftar Transfer, atau masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Masukkan pin m-BCA",
+              "Pembayaran selesai. Simpan notifikasi yang muncul sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking BCA",
+            "channel_steps": [
+              "Login pada alamat Internet Banking BCA (https://klikbca.com)",
+              "Pilih menu Pembayaran Tagihan > Pembayaran > BCA Virtual Account",
+              "Pada kolom kode bayar, masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai seperti Nomor BCA Virtual Account, Nama Pelanggan dan Jumlah Pembayaran",
+              "Masukkan <span class=\"italic\"> password</span> dan mToken",
+              "Cetak/simpan struk pembayaran BCA Virtual Account sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Kantor Bank BCA",
+            "channel_steps": [
+              "Ambil nomor antrian transaksi Teller dan isi slip setoran",
+              "Serahkan slip dan jumlah setoran kepada Teller BCA",
+              "Teller BCA akan melakukan validasi transaksi",
+              "Simpan slip setoran hasil validasi sebagai bukti pembayaran"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "CIMBVA",
+        "gateway_name": "CIMB Virtual Account",
+        "channel": [
+          {
+            "payment_channel": "ATM CIMB",
+            "channel_steps": [
+              "Masukkan Kartu ATM dan PIN CIMB Anda",
+              "Pilih menu Pembayaran > Lanjut > Virtual Account",
+              "Masukkan nomor virtual account {payment_code}",
+              "Pilih rekening debit",
+              "Nomor, nama virtual account dan jumlah billing ditampilkan pada layar",
+              "Pilih OK untuk melakukan pembayaran",
+              "Konfirmasi pembayaran ditampilkan pada layar"
+            ]
+          },
+          {
+            "payment_channel": "ATM Bersama / Prima",
+            "channel_steps": [
+              "Masukkan Kartu ATM dan PIN Anda pada mesin ATM bank tersebut",
+              "Pilih menu TRANSFER > TRANSFER KE BANK LAIN",
+              "Masukkan kode bank CIMB Niaga: 022",
+              "Masukkan jumlah pembayaran sesuai tagihan",
+              "Masukkan nomor virtual account {payment_code}",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Konfirmasi pembayaran ditampilkan pada layar"
+            ]
+          },
+          {
+            "payment_channel": "OCTO Clicks",
+            "channel_steps": [
+              "Login ke OCTO Clicks https://www.octoclicks.co.id",
+              "Pilih menu Bayar Tagihan / Pay Bills",
+              "Pilih Rekening Sumber / Source Account dan Jenis Pembayaran / Payment Type > Virtual Account",
+              "Masukkan nomor virtual account {payment_code}",
+              "Nomor, nama virtual account dan jumlah billing ditampilkan pada layar",
+              "Masukkan 6 digit mPIN dan tekan tombol Submit",
+              "Konfirmasi pembayaran ditampilkan pada layar"
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking Bank Lain",
+            "channel_steps": [
+              "Login ke internet banking",
+              "Pilih menu transfer ke Bank Lain Online",
+              "Pilih bank tujuan Bank CIMB Niaga (kode bank: 022)",
+              "Masukkan nomor virtual account {payment_code}",
+              "Masukkan jumlah pembayaran sesuai tagihan",
+              "Nomor, nama virtual account dan jumlah billing ditampilkan pada layar",
+              "Ikuti instruksi untuk menyelesaikan transaksi",
+              "Konfirmasi pembayaran ditampilkan pada layar"
+            ]
+          },
+          {
+            "payment_channel": "Go Mobile CIMB Niaga",
+            "channel_steps": [
+              "Login ke Go Mobile",
+              "Pilih menu TRANSFER > Other CIMB Niaga Account",
+              "Pilih rekening sumber anda : CASA atau Rekening Ponsel",
+              "Pilih CASA dan masukkan nomor virtual account, {payment_code}",
+              "Masukkan jumlah pembayaran sesuai tagihan",
+              "Masukkan Mobile Banking PIN",
+              "Konfirmasi pembayaran ditampilkan pada layar"
+            ]
+          }
+        ]
+      }
+    ],
+  "SYARIAH":[
+      {
+        "gateway_code": "BMIVA",
+        "gateway_name": "Bank Muamalat",
+        "channel": [
+          {
+            "payment_channel": "ATM Muamalat",
+            "channel_steps": [
+              "Masukkan kartu ATM, lalu PIN Anda",
+              "Pilih Menu <b>TRANSAKSI LAIN</b>",
+              "Pilih menu <b>PEMBAYARAN</b> lalu pilih menu <b>VIRTUAL ACCOUNT</b>",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>",
+              "Tekan <b>BAYAR</b> jika setuju dengan informasi pembayaran.",
+              "Tekan <b>BENAR</b>, lalu tekan <b>BAYAR</b>",
+              "Simpan struk ATM sebagai bukti pembayaran"
+            ]
+          },
+          {
+            "payment_channel": "Muamalat Mobile",
+            "channel_steps": [
+              "<b>LOGIN</b> ke Mobile Banking Muamalat.",
+              "Pilih menu <b>PEMBAYARAN</b>.",
+              "Masukkan Nomor Virtual Account <b>{payment_code}</b>, klik <b>PROSES</b>.",
+              "Masukkan <i>Kode Verifikasi</i> lalu klik <b>PROSES</b> jika setuju dengan informasi pembayaran.",
+              "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
+            ]
+          },
+          {
+            "payment_channel": "Internet Banking Muamalat",
+            "channel_steps": [
+              "<b>LOGIN</b> ke Internet Banking Muamalat.",
+              "Pilih menu <b>PAYMENT</b>.",
+              "Pilih rekening Anda dan pilih <b>VIRTUAL ACCOUNT</b> pada <i>bill type</i>.",
+              "Masukkan Nomor Virtual Account {payment_code}, klik <b>NEXT</b>.",
+              "Masukkan <i>mPasscode</i> lalu klik <b>SUBMIT</b> jika setuju dengan informasi pembayaran",
+              "Transaksi Anda selesai. Simpan struk sebagai bukti transaksi."
+            ]
+          },
+          {
+            "payment_channel": "Kantor Bank Muamalat",
+            "channel_steps": [
+              "Isi Nomor Rekening Penerima dengan <b>Nomor Virtual Account {payment_code}</b>",
+              "Isi <b>Nama Penerima</b> dengan Nama Virtual Account.",
+              "Isi <b>Pemohon</b> dengan nama Penyetor.",
+              "Isi <b>Jumlah yang Dikirim</b> dengan nominal yang akan disetor.",
+              "Pilih tipe <b>Pembayaran</b> jika tipe Pembayaran :<ul class=\"pl-16 list-type-disc\"><li><div>Debet Rekening:<div>Isi No. Rekening Debet<li><div>Kliring Bank:<div>Isi No. Cek/Bilyet Giro</ul>"
+            ]
+          },
+          {
+            "payment_channel": "ATM Bank Lain",
+            "channel_steps": [
+              "Pilih menu <b>TRANSFER ANTAR BANK ONLINE</b>.",
+              "Isi <b>kode Bank Muamalat (147)</b> diikuti <b>Nomor Virtual Account Muamalat {payment_code}</b>",
+              "Masukkan jumlah transaksi. Jumlah transaksi yang diinput harus sama persis dengan informasi tagihan di layar ATM.",
+              "Periksa kembali pembayaran Virtual Account."
+            ]
+          },
+          {
+            "payment_channel": "SKN/ LLG/ RTGS",
+            "channel_steps": [
+              "Isi <b>Nama Penerima</b> dengan <b>Nama Virtual Account</b>.",
+              "Isi <b>Bank Tujuan</b> dengan <b>BANK MUAMALAT</b>.",
+              "Isi <b>Nomor Rekening Tujuan {payment_code}</b>",
+              "Isi <b>Informasi Pengirim</b> dengan nama dan alamat pengirim dana.",
+              "Isi <b>Jumlah yang Dikirim</b> dengan nominal dana yang akan di-transfer",
+              "Pastikan pembayaran Anda sudah BERHASIL dan unggah bukti untuk mempercepat proses verifikasi"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "MANDIRISYARIAHVA",
+        "gateway_name": "Bank Syariah Mandiri",
+        "channel": [
+          {
+            "payment_channel": "Mobile Banking",
+            "channel_steps": [
+              "Lakukan log in pada aplikasi BSM Mobile",
+              "Pilih Menu Pembayaran",
+              "Pilih Menu Jual/Beli Online",
+              "Pilih Nomor Rekening",
+              "Pilih Tokopedia",
+              "Masukkan Nomor Bayar",
+              "Masukkan PIN",
+              "Klik Tombol Selanjutnya",
+              "Ikuti Instruksi Selanjutnya Untuk Menyelesaikan Transaksi"
+            ]
+          }
+        ]
+      },
+      {
+        "gateway_code": "BRISYARIAHVA",
+        "gateway_name": "BRISyariah",
+        "channel": [
+          {
+            "payment_channel": "BRI Syariah Mobile Banking",
+            "channel_steps": [
+              "Lakukan login pada aplikasi BRIS Online",
+              "Pilih Mobile BRIS",
+              "Pilih Menu Pembayaran & Tokopedia",
+              "Pilih rekening yang akan digunakan",
+              "Masukkan Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Masukkan pin mobile banking Anda",
+              "Klik tombol kirim",
+              "Ikuti instruksi selanjutnya untuk meyelesaikan transaksi",
+              "Bukti pembayaran akan tersimpan di inbox aplikasi mobile banking Anda"
+            ]
+          },
+          {
+            "payment_channel": "SMS Banking",
+            "channel_steps": [
+              "Ketik: BAYAR(spasi)TOKOPEDIA(spasi) Nomor HP yang terdaftar di akun Tokopedia Anda (Contoh: {payment_code})",
+              "Kirim ke 3338 | Contoh: BAYAR TOKOPEDIA {payment_code}",
+              "Ikuti instruksi selanjutnya untuk menyelesaikan transaksi"
+            ]
+          }
+        ]
+      }
+    ],
+  "TRANSFER": [
+    "Lakukan pembayaran melalui ATM / mobile banking / internet banking / SMS banking / kantor bank terdekat.",
+    "Isi <b>nomor rekening</b> tujuan sesuai yang ada di halaman, <b>Menunggu, Pembayaran</b> (a.n. Tokopedia).",
+    "Masukan <b>nominal pembayaran</b> sesuai <b>jumlah tagihanmu</b>, termasuk <b>3 digit terakhir.</b>",
+    "Pembayaran akan diverifikasi oleh Tokopedia. Waktu Verifikasi paling lambat 1x24 jam untuk sesama bank, dan 2x24 jam di hari kerja jika antar bank yang berbeda."
+  ],
+  "STORE": [
+    "Datang ke <b>{store_name}.</b>",
+    "Tunjukkan <b>kode pembayaran</b> ke kasir.",
+    "Bayar dengan uang tunai sesuai total pembayaran (sudah termasuk biaya layanan).",
+    "Transaksi selesai, simpan bukti pembayaranmu."
+  ],
+  "KLIKBCA": [
+    "Masuk ke situs <b>www.klikbca.com</b>, masukkan <b>User ID</b> dan <b>Password</b> Anda.",
+    "Pilih menu <b>Pembayaran e-Commerce</b>, lalu pilih kategori Marketplace, pilih pilihan Tokopedia, dan Lanjutkan.",
+    "Pada halaman berikutnya, akan tampil transaksi pembelian yang Anda lakukan di situs Tokopedia. Cek kembali dan pilih transaksi yang ingin Anda bayar, lalu klik <b>Lanjutkan</b>.",
+    "Masukkan <b>kode otorisasi KeyBCA</b> untuk memproses transaksi.",
+    "Apabila transaksi Anda berhasil, sistem Tokopedia akan langsung memverifikasi pembayaran Anda."
+  ]
+}

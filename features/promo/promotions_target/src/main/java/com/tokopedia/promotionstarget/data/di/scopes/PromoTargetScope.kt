@@ -6,3 +6,13 @@ import javax.inject.Scope
 @Scope
 @Retention
 annotation class PromoTargetScope
+
+@MustBeDocumented
+@Scope
+@Retention
+annotation class CmGratificationScope
+
+@MustBeDocumented
+@Scope
+@Retention
+annotation class CmGratifPresnterScope

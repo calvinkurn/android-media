@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
-import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import com.tokopedia.tokopoints.view.util.ValidationError
@@ -17,34 +16,11 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
     val startSaveCouponLiveData = MutableLiveData<Resources<ConfirmRedeemDialog>>()
     val onRedeemCouponLiveData = MutableLiveData<String>()
 
-    override fun startValidateCoupon(item: CatalogsValueEntity) {
+    override fun redeemCoupon(promoCode: String?, cta: String?) {
         launchCatchError(block = {
-            val validateResponseCode: Int
-            val message: String
-            val title: String
-            val validateCoupon = repository.startValidateCoupon(item.id)
-            if (validateCoupon.validateCoupon != null) {
-                validateResponseCode = CommonConstant.CouponRedemptionCode.SUCCESS
-                message = validateCoupon.validateCoupon.messageSuccess
-                title = validateCoupon.validateCoupon.messageTitle
-                startValidateCouponLiveData.value = ValidateMessageDialog(item, title, message, validateResponseCode)
+            if (promoCode != null) {
+                repository.redeemCoupon(promoCode)
             }
-        }) {
-            if (it is MessageErrorException) {
-                val errorsMessage = it.message?.split(",")?.get(0)?.split("|")?.toTypedArray()
-                if (errorsMessage != null && errorsMessage.size >= 3) {
-                    val title = errorsMessage[0]
-                    val message = errorsMessage[1]
-                    val validateResponseCode = errorsMessage[2].toInt()
-                    startValidateCouponLiveData.value = ValidateMessageDialog(item, title, message, validateResponseCode)
-                }
-            }
-        }
-    }
-
-    override fun redeemCoupon(promoCode: String, cta: String) {
-        launchCatchError(block = {
-            repository.redeemCoupon(promoCode)
             onRedeemCouponLiveData.value = cta
         }) {
             onRedeemCouponLiveData.value = cta
@@ -54,11 +30,13 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
     override fun startSaveCoupon(item: CatalogsValueEntity) {
         launchCatchError(block = {
             val redeemCouponBaseEntity = repository.startSaveCoupon(item.id)
-            if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.hachikoRedeem != null) {
-                startSaveCouponLiveData.value = Success(ConfirmRedeemDialog(redeemCouponBaseEntity.hachikoRedeem.coupons[0].cta,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].code,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].title,
-                        redeemCouponBaseEntity.hachikoRedeem.coupons[0].description
+            if (redeemCouponBaseEntity.hachikoRedeem != null) {
+                startSaveCouponLiveData.value = Success(ConfirmRedeemDialog(redeemCouponBaseEntity.hachikoRedeem?.coupons?.get(0)?.cta,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.code,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.title,
+                        redeemCouponBaseEntity.hachikoRedeem.coupons?.get(0)?.description,
+                        redeemCouponBaseEntity.hachikoRedeem.redeemMessage
+
                 ))
             }
         }) {
@@ -74,10 +52,10 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
                             val rawTitle = rawString[0]
                             val rawDesc = rawString[1]
 
-                            if (rawTitle.length > 0) {
+                            if (rawTitle.isNotEmpty()) {
                                 title = rawTitle
                             }
-                            if (rawDesc.length > 0) {
+                            if (rawDesc.isNotEmpty()) {
                                 desc = rawDesc
                             }
                         }
@@ -93,9 +71,7 @@ open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPu
         }
     }
 
-    override fun showRedeemCouponDialog(cta: String?, code: String?, title: String?) {
-    }
 }
 
-data class ValidateMessageDialog(val item: CatalogsValueEntity, val title: String, val desc: String, val messageCode: Int)
-data class ConfirmRedeemDialog(val cta: String, val code: String, val title: String, val description: String)
+data class ValidateMessageDialog(val item: CatalogsValueEntity, val title: String?, val desc: String, val messageCode: Int)
+data class ConfirmRedeemDialog(val cta: String?, val code: String?, val title: String?, val description: String ?, val redeemMessage:String?)

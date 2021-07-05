@@ -55,10 +55,6 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                         getView().showDealsPage();
                         getView().renderCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
                         getView().renderDealsTab(dealCategoryViewModels);
-
-                        if (!getView().isOnboardAlreadyShown()) {
-                            getView().renderOnboarding();
-                        }
                     }
                 });
 

@@ -1,5 +1,8 @@
 package com.tokopedia.product.addedit.tracking
 
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.CAT_EDIT_PRODUCT_PAGE
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.EVENT_CLICK_EDIT_PRODUCT
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
@@ -203,6 +206,78 @@ object ProductVariantTracking {
                 KEY_SCREEN_NAME to screenName
         )
         getTracker().sendGeneralEvent(map)
+    }
+}
+
+object ProductDraftTracking {
+    private const val PAGE_SOURCE = "pageSource"
+    private const val CLICK_DRAFT_PRODUCT = "clickDraftProduct"
+    private const val CLICK = "Click"
+    private const val EVENT_CLICK_ADD_PRODUCT = "clickAddProduct"
+    private const val CAT_DRAFT_PRODUCT_PAGE = "draft product page"
+    private const val KEY_SHOP_ID = "shopId"
+    private const val DRAFT_PRODUCT = "Draft Product"
+    const val CLICK_ADD_PRODUCT_WITHOUT_DRAFT = "click add product without draft"
+    const val CLICK_ADD_PRODUCT = "click add product"
+    const val EDIT_DRAFT = "Edit Draft"
+    const val ADD_PRODUCT = "Add Product"
+    const val DELETE_DRAFT = "Delete Draft"
+
+    fun getTracker(): ContextAnalytics {
+        if (ProductVariantTracking.gtmTracker == null) {
+            ProductVariantTracking.gtmTracker = TrackApp.getInstance().getGTM()
+        }
+        return ProductVariantTracking.gtmTracker!!
+    }
+
+    fun sendProductDraftClick(label: String) {
+        getTracker().sendGeneralEvent(
+                CLICK_DRAFT_PRODUCT,
+                DRAFT_PRODUCT,
+                CLICK,
+                label
+        )
+    }
+
+    fun sendScreenProductDraft(screenName: String, pageSource: String) {
+        val customDimensions = mapOf(
+                PAGE_SOURCE to pageSource
+        )
+        getTracker().sendScreenAuthenticated(
+                screenName,
+                customDimensions
+        )
+    }
+
+    fun sendAddProductClick(shopId: String, action: String) {
+        getTracker().sendGeneralEventCustom(
+                EVENT_CLICK_ADD_PRODUCT,
+                CAT_DRAFT_PRODUCT_PAGE,
+                action,
+                "",
+                mapOf(KEY_SHOP_ID to shopId)
+        )
+    }
+}
+
+object ProductCategoryTracking {
+    private const val ACTION_BACK_CHOOSE_OTHER = "click back choose other categories"
+    var gtmTracker: ContextAnalytics? = null
+
+    fun getTracker(): ContextAnalytics {
+        if (gtmTracker == null) {
+            gtmTracker = TrackApp.getInstance().gtm
+        }
+        return gtmTracker as ContextAnalytics
+    }
+
+    fun clickBackOtherCategory(shopId: String) {
+        getTracker().sendGeneralEventCustom(
+                EVENT_CLICK_EDIT_PRODUCT,
+                CAT_EDIT_PRODUCT_PAGE,
+                ACTION_BACK_CHOOSE_OTHER,
+                "",
+                mapOf(KEY_SHOP_ID to shopId))
     }
 }
 

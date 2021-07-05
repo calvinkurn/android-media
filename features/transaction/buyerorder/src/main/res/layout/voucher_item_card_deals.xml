@@ -24,7 +24,7 @@
                 android:layout_height="0dp"
                 android:layout_alignBottom="@+id/divider1"
                 android:layout_alignParentTop="true"
-                app:borderColor="@color/grey_200"
+                app:borderColor="@color/Unify_N50"
                 app:borderWidth="1dp"
                 app:cornerRadius="4dp"
                 app:cornerType="roundedscallop"
@@ -50,7 +50,7 @@
                 android:layout_height="0dp"
                 android:layout_alignTop="@+id/divider1"
                 android:layout_alignBottom="@+id/progress_bar_layout"
-                app:borderColor="@color/grey_200"
+                app:borderColor="@color/Unify_N50"
                 app:borderWidth="1dp"
                 app:cornerRadius="4dp"
                 app:cornerType="scalloprounded"
@@ -88,7 +88,7 @@
                     android:id="@+id/iv_deal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/grey_1100"
+                    android:background="@color/Unify_N50"
                     android:scaleType="centerCrop" />
             </androidx.cardview.widget.CardView>
 
@@ -106,7 +106,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:lines="2"
                 android:maxLines="2"
-                android:textColor="@color/title_gray_color"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal" />
 
@@ -119,7 +119,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif"
-                android:textColor="@color/subtitle_gray_color"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
 
@@ -136,7 +136,7 @@
                 android:fontFamily="sans-serif"
                 android:maxLines="2"
                 android:visibility="gone"
-                android:textColor="@color/black_40"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/dp_12"
                 android:textStyle="normal" />
 
@@ -168,7 +168,7 @@
                         android:fontFamily="sans-serif"
                         android:gravity="center_horizontal"
                         android:text="@string/text_valid_till"
-                        android:textColor="@color/black_39"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/dp_12" />
 
                     <TextView
@@ -177,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="center_horizontal"
-                        android:textColor="@color/black_39"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/dp_12"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -205,7 +205,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:visibility="visible" />
 
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
-                    android:background="@color/white"
+                    android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:visibility="visible" />
 

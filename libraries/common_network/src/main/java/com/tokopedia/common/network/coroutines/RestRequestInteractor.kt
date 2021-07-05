@@ -16,13 +16,9 @@ class RestRequestInteractor private constructor(){
     val restRepository by lazy { RestRepositoryImpl(restCloudDataStore, restCacheDataStore) }
 
     companion object {
-        @Volatile private var INSTANCE: RestRequestInteractor? = null
-
         @JvmStatic
         fun getInstance(): RestRequestInteractor{
-            return INSTANCE ?: synchronized(this){
-                INSTANCE ?: RestRequestInteractor().also { INSTANCE = it }
-            }
+            return RestRequestInteractor()
         }
     }
 }

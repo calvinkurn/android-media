@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="snapshot_dimen_68dp">68dp</dimen>
+    <dimen name="snapshot_dimen_103dp">103dp</dimen>
+    <dimen name="snapshot_dimen_110dp">110dp</dimen>
+    <dimen name="snapshot_dimen_124dp">124dp</dimen>
+    <dimen name="snapshot_dimen_132dp">132dp</dimen>
+    <dimen name="snapshot_dimen_185dp">185dp</dimen>
+    <dimen name="snapshot_dimen_360dp">360dp</dimen>
+</resources>

@@ -75,7 +75,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun observeLayout() {
-        homeViewModel.observableEventHomeLayout.observe(this, Observer {
+        homeViewModel.observableEventHomeLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
             when (it) {
                 is Success -> {
@@ -86,7 +86,7 @@ class DealsHomeFragment : DealsBaseFragment(),
             }
         })
 
-        baseViewModel.observableCurrentLocation.observe(this, Observer {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
     }
@@ -334,21 +334,7 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun onClickBanner(bannerlink: String) {
-        val deeplink = "tokopedia://"
-        val fullPathWWW = "https://www.tokopedia.com/"
-        val domainWithWWW = "www.tokopedia.com/"
-        val domainWithoutWWW = "tokopedia.com/"
-        var applink = ""
-        if (!TextUtils.isEmpty(bannerlink)) {
-            applink = if (bannerlink.contains(domainWithWWW)) {
-                bannerlink.replace(fullPathWWW, deeplink)
-            } else if (bannerlink.contains(domainWithoutWWW)) {
-                bannerlink.replace(domainWithoutWWW, deeplink)
-            } else {
-                bannerlink
-            }
-            RouteManager.route(context, applink)
-        }
+        RouteManager.route(context, bannerlink)
     }
 
     companion object {

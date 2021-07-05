@@ -1,19 +1,9 @@
 package com.tokopedia.shop.open.common
 
 object PageNameConstant {
-    const val INPUT_SHOP_PAGE = "INPUT_SHOP_PAGE"
     const val SPLASH_SCREEN_PAGE = "GREETING_PAGE"
     const val QUISIONER_PAGE = "QUISIONER_PAGE"
     const val FINISH_SPLASH_SCREEN_PAGE = "FINISH_SPLASH_SCREEN_PAGE"
-}
-
-object GQLQueryConstant {
-    const val QUERY_SHOP_OPEN_REVAMP_GET_SURVEY_DATA = "shop_open_revamp_get_survey_data"
-    const val QUERY_SHOP_OPEN_REVAMP_SEND_SURVEY_DATA = "shop_open_revamp_send_survey_data"
-    const val QUERY_SHOP_OPEN_REVAMP_VALIDATE_DOMAIN_SHOP_NAME = "validate_domain_name_shop"
-    const val QUERY_SHOP_OPEN_REVAMP_DOMAIN_SHOP_SUGGESTION = "shop_open_revamp_domain_suggestion"
-    const val QUERY_SHOP_OPEN_REVAMP_CREATE_SHOP = "shop_open_revamp_create_shop"
-    const val QUERY_SHOP_OPEN_REVAMP_SAVE_SHIPMENT_LOCATION = "shop_open_revamp_saves_hipment_location"
 }
 
 object ExitDialog {
@@ -35,4 +25,14 @@ object ScreenNameTracker {
     const val SCREEN_SHOP_SURVEY = "/shop survey"
     const val SCREEN_CONGRATULATION = "/registration page - shop/congratulation"
     const val SCREEN_HOORAY = "/registration page - shop/hooray"
+}
+
+object ErrorConstant {
+    const val ERROR_SAVE_LOCATION_SHIPPING = "error save location shipping"
+    const val ERROR_SEND_SURVEY = "error send survey"
+    const val ERROR_GET_SURVEY_QUESTIONS = "error get survey questions"
+    const val ERROR_CHECK_SHOP_NAME = "error check shop name"
+    const val ERROR_CHECK_DOMAIN_NAME = "error check domain name"
+    const val ERROR_DOMAIN_NAME_SUGGESTIONS = "error domain name suggestions"
+    const val ERROR_CREATE_SHOP = "error create shop"
 }

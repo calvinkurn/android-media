@@ -1,0 +1,192 @@
+[
+  {
+    "data": {
+      "productrevGetReviewAggregateByProduct": {
+        "period": "15 Mar 2021 - Hari ini",
+        "productName": "PrOduc7 73571n6 6un03n9",
+        "ratingAverage": 4.4,
+        "ratingCount": 5
+      }
+    }
+  },
+  {
+    "data": {
+      "productrevFeedbackDataPerProduct": {
+        "aggregatedRating": [
+          {
+            "rating": 1,
+            "ratingCount": 0
+          },
+          {
+            "rating": 2,
+            "ratingCount": 0
+          },
+          {
+            "rating": 3,
+            "ratingCount": 0
+          },
+          {
+            "rating": 4,
+            "ratingCount": 0
+          },
+          {
+            "rating": 5,
+            "ratingCount": 0
+          }
+        ],
+        "filterBy": "time=7d",
+        "hasNext": false,
+        "limit": 10,
+        "list": [
+          {
+            "attachments": [
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/19/32f03875-c567-4ace-abfb-76e5f2618079.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/19/32f03875-c567-4ace-abfb-76e5f2618079.jpg"
+              }
+            ],
+            "autoReply": false,
+            "feedbackID": 347484360,
+            "rating": 5,
+            "replyText": "",
+            "replyTime": "",
+            "reviewText": "barangnya bagus. qualitasnya oke banget. mantap dah pokoknya",
+            "reviewTime": "2021-03-19T10:36:14Z",
+            "reviewerName": "evydua",
+            "variantName": ""
+          },
+          {
+            "attachments": [
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/16/693b6186-9183-4e06-b9b3-d493993ccfa8.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/16/693b6186-9183-4e06-b9b3-d493993ccfa8.jpg"
+              }
+            ],
+            "autoReply": false,
+            "feedbackID": 345620941,
+            "rating": 4,
+            "replyText": "",
+            "replyTime": "",
+            "reviewText": "barang bagus, packing rapi, response seller cepat",
+            "reviewTime": "2021-03-16T15:41:34Z",
+            "reviewerName": "evy maria",
+            "variantName": ""
+          },
+          {
+            "attachments": [],
+            "autoReply": false,
+            "feedbackID": 345588352,
+            "rating": 4,
+            "replyText": "",
+            "replyTime": "",
+            "reviewText": "test edit",
+            "reviewTime": "2021-03-16T14:48:53Z",
+            "reviewerName": "evy maria",
+            "variantName": ""
+          },
+          {
+            "attachments": [
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/16/31f5aaa4-6cc1-468d-89f5-73bc0d3fecf7.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/16/31f5aaa4-6cc1-468d-89f5-73bc0d3fecf7.jpg"
+              }
+            ],
+            "autoReply": false,
+            "feedbackID": 345579678,
+            "rating": 4,
+            "replyText": "",
+            "replyTime": "",
+            "reviewText": "oke oke mantap 123",
+            "reviewTime": "2021-03-16T14:35:15Z",
+            "reviewerName": "evy maria",
+            "variantName": ""
+          },
+          {
+            "attachments": [
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/15/1c447ed7-b6ef-4b26-824e-ca93e146bd8d.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/15/1c447ed7-b6ef-4b26-824e-ca93e146bd8d.jpg"
+              },
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/15/da5506c8-b604-4da0-90db-73a5cf196333.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/15/da5506c8-b604-4da0-90db-73a5cf196333.jpg"
+              },
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/15/5c8203bc-8461-41ca-bbe3-f49a4425e0ad.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/15/5c8203bc-8461-41ca-bbe3-f49a4425e0ad.jpg"
+              },
+              {
+                "fullsizeURL": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/3/15/1b9fb10c-2024-43cc-81f4-206b5736a9da.jpg",
+                "thumbnailURL": "https://ecs7.tokopedia.net/img/cache/200-square/bjFkPX/2021/3/15/1b9fb10c-2024-43cc-81f4-206b5736a9da.jpg"
+              }
+            ],
+            "autoReply": false,
+            "feedbackID": 345004988,
+            "rating": 5,
+            "replyText": "",
+            "replyTime": "",
+            "reviewText": "Shipping nya cepat. Barangnya bagus bgt. Qualitynya oke banget. Keep up the good work.",
+            "reviewTime": "2021-03-15T12:36:20Z",
+            "reviewerName": "evy maria",
+            "variantName": ""
+          }
+        ],
+        "page": 1,
+        "reviewCount": 5,
+        "sortBy": "create_time DESC",
+        "topics": []
+      }
+    }
+  },
+  {
+    "data": {
+      "productrevFeedbackDataPerProduct": {
+        "aggregatedRating": [
+          {
+            "rating": 1,
+            "ratingCount": 0
+          },
+          {
+            "rating": 2,
+            "ratingCount": 0
+          },
+          {
+            "rating": 3,
+            "ratingCount": 0
+          },
+          {
+            "rating": 4,
+            "ratingCount": 3
+          },
+          {
+            "rating": 5,
+            "ratingCount": 2
+          }
+        ],
+        "reviewCount": 5,
+        "topics": [
+          {
+            "count": 5,
+            "formatted": "kualitas (5)",
+            "title": "kualitas"
+          },
+          {
+            "count": 1,
+            "formatted": "kemasan (1)",
+            "title": "kemasan"
+          },
+          {
+            "count": 1,
+            "formatted": "pelayanan (1)",
+            "title": "pelayanan"
+          },
+          {
+            "count": 1,
+            "formatted": "pengiriman (1)",
+            "title": "pengiriman"
+          }
+        ]
+      }
+    }
+  }
+]

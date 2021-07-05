@@ -3,21 +3,17 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:measureAllChildren="false">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/tp_margin_large" />
+    <include layout="@layout/tp_shimmer_coupon_detail" />
 
     <include layout="@layout/tp_content_coupon_detail" />
 
     <com.tokopedia.tokopoints.view.customview.ServerErrorView
         android:id="@+id/server_error_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <include layout="@layout/tp_coupon_notfound_error" />
 

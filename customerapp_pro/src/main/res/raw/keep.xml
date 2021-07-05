@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:discard="@drawable/xco_ic_ver_nomor_ponsel"
+    tools:keep="@drawable/src_assets*,@drawable/node_modules*"
+    tools:shrinkMode="strict" />

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.TextAreaUnify
+        android:id="@+id/wrapper_imei"
+        style="@style/HintTextInputLayout"
+        app:text_area_label="@string/tradein_imei_label"
+        app:text_area_message="@string/tradein_imei_helper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="false">
+    </com.tokopedia.unifycomponents.TextAreaUnify>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/exchange_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:lineSpacingExtra="4sp"
+        app:layout_constraintTop_toBottomOf="@id/wrapper_imei"
+        android:text="@string/tradein_imei_di_pengaturan"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shipper_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/exchange_text"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/tradein_bs_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700_68"/>
+
+    <View
+        app:layout_constraintTop_toBottomOf="@id/shipper_name"
+        android:id="@+id/guideline"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_continue"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/dp_96"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:text="@string/tradein_lanjut" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

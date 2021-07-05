@@ -5,10 +5,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.*
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
-import io.mockk.verify
 import org.junit.Test
 
-internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopEmptyResultTest: SearchShopDataViewTestFixtures() {
 
     override fun setUp() { /* no setup required */ }
 

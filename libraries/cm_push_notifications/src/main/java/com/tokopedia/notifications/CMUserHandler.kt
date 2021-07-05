@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.launchCatchError
@@ -42,7 +45,8 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         launchCatchError(block = {
             sendFcmTokenToServerGQL(token)
         }, onError = {
-            Log.e(TAG, "CMUserHandler: sendFcmTokenToServer ", it)
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "exception", "err" to Log.getStackTraceString(it)
+                    .take(CMConstant.TimberTags.MAX_LIMIT), "data" to ""))
         })
     }
 
@@ -58,12 +62,21 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 try {
                     adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext)
                 } catch (e: IOException) {
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesNotAvailableException) {
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                     e.printStackTrace()
                     return ""
                 } catch (e: GooglePlayServicesRepairableException) {
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                     e.printStackTrace()
                     return ""
                 }
@@ -98,6 +111,9 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             this.token = token
             handler.postDelayed(runnable, delay)
         } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""))
         }
 
     }
@@ -105,22 +121,29 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
     fun cancelRunnable() {
         try {
             handler.removeCallbacks(runnable)
-            graphQlUseCase?.let {
-                it.unsubscribe()
-            }
+            if (::graphQlUseCase.isInitialized)
+                graphQlUseCase.unsubscribe()
         } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""))
         }
     }
 
     private fun sendFcmTokenToServerGQL(token: String?) {
         try {
-            Log.d("CMUserHandler", Thread.currentThread().name)
             if (tempFcmId.equals(token!!, ignoreCase = true)) {
                 //ignore temporary fcm token
                 return
             }
+
+            if (CMNotificationUtils.checkTokenValidity(token)) return
+
             val gAdId = googleAdId
             val appVersionName = CMNotificationUtils.getCurrentAppVersionName(mContext)
+            val applicationName = CMNotificationUtils.getApplicationName(mContext)
+            if (applicationName == CMNotificationUtils.SELLER_APP_NAME && !CMPushNotificationManager.instance.sellerAppCmAddTokenEnabled)
+                return
 
             if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)) {
                 val requestParams = HashMap<String, Any>()
@@ -135,7 +158,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                 requestParams[USER_STATE] = userIdAndStatus.first
                 requestParams[USER_ID] = userIdAndStatus.second
                 requestParams[REQUEST_TIMESTAMP] = CMNotificationUtils.currentLocalTimeStamp.toString() + ""
-                requestParams[APP_NAME] = CMNotificationUtils.getApplicationName(mContext)
+                requestParams[APP_NAME] = applicationName
 
                 graphQlUseCase = GraphqlUseCase()
 
@@ -149,22 +172,46 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(TAG, "CMPushNotificationManager: sendFcmTokenToServer " + e.message)
+                        ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                                mapOf("type" to "exception", "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
+                                        "data" to ""))
                     }
 
                     override fun onNext(gqlResponse: GraphqlResponse) {
-                        val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
-                        if (tokenResponse?.cmAddToken != null) {
-                            CMNotificationUtils.saveToken(mContext, token)
-                            CMNotificationUtils.saveUserId(mContext, userId)
-                            CMNotificationUtils.saveGAdsIdId(mContext, gAdId)
-                            CMNotificationUtils.saveAppVersion(mContext, appVersionName)
+                        val gqlError = gqlResponse.getError(TokenResponse::class.java)
+                        if (!gqlError.isNullOrEmpty()) {
+                            val errorStr = gqlError[0].message
+                            if (errorStr.isNullOrEmpty())
+                                ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "cm_gql_error_thrown",
+                                        "data" to ""))
+                            else
+                                ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "cm_gql_error_thrown",
+                                        "data" to errorStr.take(CMConstant.TimberTags.MAX_LIMIT)))
+                        } else {
+                            val tokenResponse = gqlResponse.getData<TokenResponse>(TokenResponse::class.java)
+                            if (tokenResponse?.cmAddToken != null && tokenResponse.cmAddToken.error.isNullOrEmpty()) {
+                                CMNotificationUtils.saveToken(mContext, token)
+                                CMNotificationUtils.saveUserId(mContext, userId)
+                                CMNotificationUtils.saveGAdsIdId(mContext, gAdId)
+                                CMNotificationUtils.saveAppVersion(mContext, appVersionName)
+                            } else {
+                                if (tokenResponse == null) {
+                                    ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "no_response_cm_add_token",
+                                            "data" to ""))
+                                } else {
+                                    ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "validation", "reason" to "no_response_cm_add_token",
+                                            "data" to tokenResponse.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
+                                }
+
+                            }
                         }
                     }
                 })
 
             }
         } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", mapOf("type" to "exception", "err" to Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT), "data" to ""))
             e.printStackTrace()
         }
 

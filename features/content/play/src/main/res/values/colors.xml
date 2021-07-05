@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="play_chat_text">#99FFFFFF</color>
-    <color name="play_chat_background">#6631353B</color>
-    <color name="play_pinned_chat_background">#B331353B</color>
-    <color name="play_pinned_action_background">#50BA47</color>
-    <color name="play_loading_overlay_background">#B331353B</color>
+    <color name="play_dms_chat_text">#99FFFFFF</color>
+    <color name="play_dms_chat_background">#6631353B</color>
+    <color name="play_dms_pinned_chat_background">#B331353B</color>
+    <color name="play_dms_pinned_action_background">#50BA47</color>
+    <color name="play_dms_loading_overlay_background">#B331353B</color>
 
     <!--Background-->
-    <color name="play_video_background">#26292E</color>
-    <color name="play_error_background">#26292E</color>
-    <color name="play_error_text_color">#AEFFFFFF</color>
+    <color name="play_dms_background">#26292E</color>
+    <color name="play_dms_video_background">#B8BFCA</color>
+    <color name="play_dms_error_background">#26292E</color>
+    <color name="play_dms_error_text_color">#AEFFFFFF</color>
 
-    <color name="play_live_ended_title">#F5FFFFFF</color>
+    <color name="play_dms_live_ended_title">#F5FFFFFF</color>
 
-    <color name="play_product_sheet_divider">#E0E0E0</color>
-    <color name="play_variant_placeholder_divider">#F3F4F5</color>
+    <color name="play_dms_product_sheet_divider">#E0E0E0</color>
+    <color name="play_dms_variant_sheet_divider">#F3F4F5</color>
 
-    <color name="play_atc_image_disabled">#DBDEE2</color>
-    <color name="play_solid_black">#000000</color>
+    <color name="play_dms_atc_image_disabled">#DBDEE2</color>
+
+    <color name="play_dms_pip_control_bg">#AD31353B</color>
+
+    <color name="play_dms_bottom_sheet_background">#FFFFFF</color>
+    <color name="play_dms_bottom_sheet_action_close">#F531353B</color>
+    <color name="play_dms_bottom_sheet_title">#F531353B</color>
+
+    <color name="play_dms_discount_badge">#FFEAEF</color>
+    <color name="play_dms_discount_price">#FF5C84</color>
+
+    <color name="play_dms_icon_cart">#6C727C</color>
+
+    <color name="play_dms_voucher_bg">#AD31353B</color>
+    <color name="play_dms_voucher_placeholder_bg">#31353B</color>
+
+    <color name="play_dms_out_of_stock_bg">#AD31353B</color>
+
+    <!--General Color-->
+    <color name="play_dms_R100">#FFEAEF</color>
+    <color name="play_dms_G300">#82EF95</color>
+    <color name="play_dms_N600">#40454C</color>
+    <color name="play_dms_N700">#31353B</color>
+    <color name="play_dms_N700_32">#5231353B</color>
+
+    <color name="play_dms_dark_N700_96">#F5FFFFFF</color>
 
 </resources>

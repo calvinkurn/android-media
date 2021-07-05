@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
@@ -24,6 +24,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

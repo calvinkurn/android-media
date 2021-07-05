@@ -16,7 +16,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -33,11 +32,9 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonit
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.model.CatalogBanner
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase
-import com.tokopedia.tokopoints.view.model.CatalogFilterPointRange
 import com.tokopedia.tokopoints.view.model.CatalogSubCategory
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.unifycomponents.PageControl
-import java.util.*
 import javax.inject.Inject
 
 class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
@@ -47,12 +44,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mTextPoints: TextView? = null
     private var mTextPointsBottom: TextView? = null
     private var mViewPagerAdapter: CatalogSortTypePagerAdapter? = null
-    private var mTvFlashTimer: TextView? = null
-    private var mTvFlashTimerLabel: TextView? = null
-    private var mProgressFlash: ProgressBar? = null
-    private var mContainerFlashTimer: ConstraintLayout? = null
-
-    /*This section is exclusively for handling flash-sale timer*/
     var mFlashTimer: CountDownTimer? = null
     private var mAppBarHeader: AppBarLayout? = null
 
@@ -89,11 +80,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mTvFlashTimer = view.findViewById(R.id.tv_flash_time)
-        mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label)
-        mTvFlashTimerLabel?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_tp_flash_green), null, null, null)
-        mProgressFlash = view.findViewById(R.id.progress_timer)
-        mContainerFlashTimer = view.findViewById(R.id.cl_flash_container)
         serverErrorView = view.findViewById(R.id.server_error_view)
 
         stopPreparePagePerformanceMonitoring()
@@ -109,7 +95,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         addPointObserver()
     }
 
-    private fun addPointObserver() = mViewModel.pointLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addPointObserver() = mViewModel.pointLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is ErrorMessage -> onErrorPoint(it.data)
@@ -121,7 +107,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     })
 
-    private fun addFlterObserver() = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addFlterObserver() = mViewModel.filterLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Loading -> showLoader()
@@ -137,7 +123,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     })
 
-    private fun addBannerOberser() = mViewModel.bannerLiveDate.observe(this, androidx.lifecycle.Observer {
+    private fun addBannerOberser() = mViewModel.bannerLiveDate.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let {
             when (it) {
                 is Success -> onSuccessBanners(it.data.banners)
@@ -164,11 +150,11 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun refreshTab() {
-        val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
-        if (fragment != null && fragment.isAdded) {
-            fragment.viewModel.pointRange = mViewModel.pointRangeId
-            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
-        }
+           val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
+           if (fragment != null && fragment.isAdded) {
+               fragment.viewModel.pointRange = mViewModel.pointRangeId
+               fragment.getCatalogList(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId)
+           }
     }
 
     override fun showLoader() {
@@ -248,13 +234,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                         mViewModel.currentCategoryId = filters.categories[0].id
                         mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
                         fragment.viewModel.pointRange = mViewModel.pointRangeId
-                        fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
-                    }
-                    if (filters.categories[0].subCategory[position].timeRemainingSeconds > 0) {
-                        startFlashTimer(filters.categories[0].subCategory[position])
-                        mContainerFlashTimer!!.visibility = View.VISIBLE
-                    } else {
-                        mContainerFlashTimer!!.visibility = View.GONE
+                        fragment.getCatalogList(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId)
                     }
                 }
 
@@ -270,15 +250,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     mViewModel.currentCategoryId = filters.categories[0].id
                     mViewModel.currentSubCategoryId = filters.categories[0].subCategory[0].id
                     refreshTab()
-                    try {
-                        if (filters.categories[0].subCategory[0].timeRemainingSeconds > 0) {
-                            startFlashTimer(filters.categories[0].subCategory[0])
-                            mContainerFlashTimer!!.visibility = View.VISIBLE
-                        } else {
-                            mContainerFlashTimer!!.visibility = View.GONE
-                        }
-                    } catch (e: Exception) {
-                    }
                 } else {
                     mPagerSortType!!.setCurrentItem(selectedTabIndex, false)
                 }
@@ -382,39 +353,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun openWebView(url: String) {
         if (context != null) context!!.startActivity(RouteManager.getIntent(activityContext, url))
-    }
-
-    private fun startFlashTimer(subCategory: CatalogSubCategory) {
-        if (arguments == null) {
-            return
-        }
-        if (subCategory.timeRemainingSeconds < 1) {
-            mContainerFlashTimer!!.visibility = View.GONE
-            return
-        }
-        if (mFlashTimer != null) {
-            mFlashTimer!!.cancel()
-            mFlashTimer = null
-        }
-        if (subCategory.timerLabel != null) {
-            mTvFlashTimerLabel!!.text = subCategory.timerLabel
-        }
-        /*This section is exclusively for handling flash-sale timer*/
-        mProgressFlash!!.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
-        mFlashTimer = object : CountDownTimer(subCategory.timeRemainingSeconds * 1000, 1000) {
-            override fun onTick(l: Long) {
-                subCategory.timeRemainingSeconds = l / 1000
-                val seconds = (l / 1000).toInt() % 60
-                val minutes = (l / (1000 * 60) % 60).toInt()
-                val hours = (l / (1000 * 60 * 60) % 24).toInt()
-                mTvFlashTimer!!.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
-                mProgressFlash!!.progress = l.toInt() / 1000
-            }
-
-            override fun onFinish() {
-                requestHomePageData()
-            }
-        }.start()
     }
 
     private fun updateToolbarTitle(title: String?) {

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomListBulkPrintDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        tools:text="@string/som_list_bulk_print_dialog_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomListBulkPrintDialogDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        android:gravity="center"
+        android:text="@string/som_list_bulk_print_dialog_description"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbMarkAsPrinted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/Unify_N700_68"
+        android:checked="true"
+        android:text="@string/som_list_bulk_print_dialog_mark_as_printed" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSomListBulkPrintDialogPrimaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/som_list_bulk_print_dialog_print_button"
+        android:layout_marginTop="@dimen/spacing_lvl6" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSomListBulkPrintDialogSecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/som_list_bulk_print_dialog_cancel_print_button"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:unifyButtonVariant="text" />
+
+</LinearLayout>

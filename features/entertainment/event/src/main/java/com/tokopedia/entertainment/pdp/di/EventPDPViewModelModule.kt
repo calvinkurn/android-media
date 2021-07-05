@@ -11,7 +11,6 @@ import dagger.multibindings.IntoMap
  * Author firman on 06-04-20
  */
 
-@EventPDPScope
 @Module
 abstract class EventPDPViewModelModule {
 

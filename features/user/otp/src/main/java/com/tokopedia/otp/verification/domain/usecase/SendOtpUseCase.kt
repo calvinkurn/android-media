@@ -1,18 +1,14 @@
 package com.tokopedia.otp.verification.domain.usecase
 
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.otp.verification.common.DispatcherProvider
-import com.tokopedia.otp.verification.domain.data.OtpModeListPojo
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.otp.common.abstraction.BaseOtpUseCase
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
-import com.tokopedia.otp.verification.domain.query.OtpModeListQuery
 import com.tokopedia.otp.verification.domain.query.OtpRequestQuery
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,8 +18,8 @@ import javax.inject.Inject
 
 class SendOtpUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: DispatcherProvider
-) : BaseVerificationUseCase<OtpRequestPojo>(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseOtpUseCase<OtpRequestPojo>(dispatcher) {
 
     @JvmOverloads
     fun getParams(
@@ -31,7 +27,7 @@ class SendOtpUseCase @Inject constructor(
             mode: String,
             msisdn: String = "",
             email: String = "",
-            otpDigit: Int = 6
+            otpDigit: Int = 4
     ): Map<String, Any> = mapOf(
         PARAM_OTP_TYPE to otpType,
         PARAM_MODE to mode,

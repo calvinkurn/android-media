@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,8 +10,8 @@
 
     <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
         tools:srcCompat="@drawable/ic_close_default" />
@@ -19,11 +20,12 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/chatcommon_8dp"
         android:gravity="bottom|center"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Invoice" />
+
 </LinearLayout>

@@ -4,17 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderView"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -49,9 +48,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tickerShapeType="full"
-        app:tickerType="warning"/>
+        app:tickerType="warning" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivAutoWDBannerBackground"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
@@ -60,26 +59,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/swd_fg_awd_ticker" />
+        app:srcCompat="@drawable/swd_fg_awd_ticker"
+        app:unify_image_corner_radius="0" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivAWBannerClose"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="CLOSE"
         app:layout_constraintEnd_toEndOf="@+id/right_guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/unify_bottomsheet_close" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAutoWDBannerTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:text="@string/swd_withdrawal_your_balance_according_schedule"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/ivAWBannerClose"
         app:layout_constraintLeft_toLeftOf="@+id/left_guideline"
         app:layout_constraintStart_toStartOf="@+id/left_guideline"
@@ -91,11 +92,11 @@
         android:id="@+id/tvAutoWDBannerBody"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/layout_lvl3"
         android:text="@string/swd_exclusive_for_premium_acc"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toStartOf="@+id/ivAWBannerClose"
         app:layout_constraintLeft_toLeftOf="@+id/left_guideline"
         app:layout_constraintStart_toStartOf="@+id/left_guideline"
@@ -114,7 +115,7 @@
         android:id="@+id/scrollViewAutoWDContent"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:orientation="vertical"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/dividerAutoWDTermsAndCond"
@@ -125,8 +126,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -135,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/swd_automatic_withdrawal"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -146,9 +147,9 @@
                 android:id="@+id/tvAutoWDAllBalanceAccording"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_with_all_balance_according_schedule"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDTitle"
@@ -161,24 +162,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivAutoWDSchedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginTop="@dimen/unify_space_24"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDAllBalanceAccording"
-                app:srcCompat="@drawable/swd_ic_time" />
+                app:srcCompat="@drawable/swd_ic_time"
+                app:unify_image_corner_radius="0" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAutoWDScheduleTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toTopOf="@+id/ivAutoWDSchedule"
@@ -188,10 +190,10 @@
                 android:id="@+id/tvChangeAutoWDSchedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginRight="@dimen/unify_space_8"
                 android:text="@string/swd_change"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAutoWDScheduleTitle"
                 app:typographyType="body_2" />
@@ -200,11 +202,11 @@
                 android:id="@+id/tvAutoWDScheduleType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDScheduleTitle"
@@ -215,35 +217,36 @@
                 android:id="@+id/tvScheduleTiming"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="#AD31353B"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toBottomOf="@+id/tvAutoWDScheduleType"
                 app:typographyType="body_2"
                 tools:text="Tiap jam 17:00" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivDestinationAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginTop="@dimen/unify_space_24"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvScheduleTiming"
-                app:srcCompat="@drawable/swd_ic_transaction" />
+                app:srcCompat="@drawable/swd_ic_transaction"
+                app:unify_image_corner_radius="0" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvDestinationAccountTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
                 android:text="@string/swd_destination_account"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
                 app:layout_constraintTop_toTopOf="@+id/ivDestinationAccount"
@@ -253,11 +256,11 @@
                 android:id="@+id/tvAutoWDBankName"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivDestinationAccount"
@@ -269,11 +272,11 @@
                 android:id="@+id/tvAutoWdBankAccountDetail"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
@@ -285,11 +288,11 @@
                 android:id="@+id/tvAutoWdBankNote"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginLeft="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_4"
                 android:text="@string/swd_withdrawal_schedule"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/ivAutoWDSchedule"
@@ -302,18 +305,18 @@
                 android:id="@+id/btnAutoWDAddBankAccount"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_8"
                 android:layout_marginBottom="@dimen/layout_lvl1"
                 android:text="@string/swd_add_bank_account"
                 android:visibility="gone"
-                tools:visibility="visible"
-                android:layout_marginTop="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvDestinationAccountTitle"
                 app:layout_constraintTop_toBottomOf="@id/tvAutoWdBankNote"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="alternate"
-                app:unifyButtonVariant="ghost" />
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -337,22 +340,21 @@
         android:id="@+id/tvAutoWDTermsAndCond"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:text="@string/swd_awd_terms_and_condition"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toTopOf="@+id/btnAutoWDSaveSettings"
         app:layout_constraintEnd_toEndOf="@+id/right_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/left_guideline"
         app:layout_constraintStart_toStartOf="@+id/left_guideline"
         app:typographyType="body_3" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerAutoWDTermsAndCond"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/spacing_lvl2"
+        android:layout_height="@dimen/unify_space_4"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        android:background="@drawable/swd_top_shadow"
         app:layout_constraintBottom_toTopOf="@+id/tvAutoWDTermsAndCond"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

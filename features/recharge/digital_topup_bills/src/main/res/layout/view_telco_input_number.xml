@@ -9,7 +9,8 @@
         android:id="@+id/telco_input_number_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/layout_lvl1">
+        android:layout_marginHorizontal="@dimen/spacing_lvl2"
+        android:layout_marginVertical="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/telco_input_number_label"
@@ -19,7 +20,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/layout_lvl1"
             android:text="@string/digital_title_input_number"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +34,7 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/layout_lvl1"
-            android:textColor="@color/Neutral_N700_20"
+            android:textColor="@color/Unify_N700_44"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/telco_ac_input_number"
             app:layout_constraintEnd_toStartOf="@+id/telco_img_operator"
@@ -66,9 +67,9 @@
             android:hint="@string/digital_hint_input_numbers"
             android:inputType="numberDecimal"
             android:maxLines="1"
-            android:popupBackground="@color/Neutral_N0"
-            android:textColor="@color/Neutral_N700_96"
-            android:textColorHint="@color/Neutral_N700_20"
+            android:popupBackground="@color/Unify_N0"
+            android:textColor="@color/Unify_N700_96"
+            android:textColorHint="@color/Unify_N700_44"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintHorizontal_weight="9"
@@ -94,12 +95,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="@dimen/layout_lvl1"
+                android:contentDescription="@null"
                 app:srcCompat="@drawable/ic_system_action_close_grayscale_16" />
 
             <ImageView
                 android:id="@+id/telco_contact_picker_btn"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
+                android:contentDescription="@null"
                 app:srcCompat="@drawable/digital_topup_ic_contact" />
 
         </LinearLayout>
@@ -110,9 +113,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
             android:paddingBottom="@dimen/spacing_lvl2"
-            android:textColor="@color/red_600"
+            android:textColor="@color/Unify_R600"
             android:textSize="@dimen/fontSize_lvl3"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/telco_ac_input_number"

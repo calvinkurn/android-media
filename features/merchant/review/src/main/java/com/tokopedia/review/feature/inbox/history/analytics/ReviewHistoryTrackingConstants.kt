@@ -12,5 +12,4 @@ object ReviewHistoryTrackingConstants {
     const val CLICK_SEARCH = "${ReviewTrackingConstant.ACTION_CLICK} - search keyword"
     const val CLICK_REVIEW_IMAGE_GALLERY = "${ReviewTrackingConstant.ACTION_CLICK} - review image gallery"
     const val CLICK_REVIEW_CARD = "${ReviewTrackingConstant.ACTION_CLICK} - review card"
-    const val CLICK_PENDING_TAB = "${ReviewTrackingConstant.ACTION_CLICK} - menunggu diulas tab"
 }

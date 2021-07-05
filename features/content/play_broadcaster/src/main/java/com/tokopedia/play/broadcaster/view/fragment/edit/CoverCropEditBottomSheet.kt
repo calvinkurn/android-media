@@ -19,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import javax.inject.Inject
 
@@ -132,10 +132,12 @@ class CoverCropEditBottomSheet @Inject constructor(
                 height = ViewGroup.LayoutParams.MATCH_PARENT
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = false
-            bottomSheetBehavior.peekHeight = maxHeight()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.isHideable = false
+                bottomSheetBehavior.peekHeight = maxHeight()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = false
         }

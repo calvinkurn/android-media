@@ -3,7 +3,7 @@ package com.tokopedia.atc_common.data.model.response.atcexternal
 import com.google.gson.annotations.SerializedName
 
 data class AddToCartExternalGqlResponse(
-        @SerializedName("add_to_cart_external")
+        @SerializedName("add_to_cart_external_v2")
         val response: AddToCartExternalResponse = AddToCartExternalResponse()
 )
 
@@ -25,7 +25,7 @@ data class DataResponse(
 
 data class AddToCartExternalDataResponse(
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: Long = 0,
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("quantity")
@@ -35,7 +35,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("category")
         val category: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
         @SerializedName("shop_type")
         val shopType: String = "",
         @SerializedName("shop_name")
@@ -45,7 +45,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("url")
         val url: String = "",
         @SerializedName("cart_id")
-        val cartId: Int = 0,
+        val cartId: Long = 0,
         @SerializedName("brand")
         val brand: String = "",
         @SerializedName("category_id")
@@ -57,5 +57,7 @@ data class AddToCartExternalDataResponse(
         @SerializedName("is_multi_origin")
         val isMultiOrigin: Boolean = false,
         @SerializedName("is_free_ongkir")
-        val isFreeOngkir: Boolean = false
+        val isFreeOngkir: Boolean = false,
+        @SerializedName("is_free_ongkir_extra")
+        val isFreeOngkirExtra: Boolean = false
 )

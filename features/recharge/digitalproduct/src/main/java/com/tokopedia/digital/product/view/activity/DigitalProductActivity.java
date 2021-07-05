@@ -29,9 +29,11 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
     private static final String KEY_IS_COUPON_APPLIED_APPLINK = "is_coupon_applied";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
+    private static final String EXTRA_RECHARGE_SLICE = "RECHARGE_PRODUCT_EXTRA";
 
     private String titleToolbar;
     private DigitalCategoryDetailPassData passData;
+    private String rechargeParamFromSlice = "";
 
     public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData) {
         return new Intent(context, DigitalProductActivity.class)
@@ -63,8 +65,10 @@ public class DigitalProductActivity extends BaseSimpleActivity
                     .build();
             this.passData = passData;
         }
+        if(getIntent().getData() != null) {
+            rechargeParamFromSlice = getIntent().getStringExtra(EXTRA_RECHARGE_SLICE);
+        }
         super.onCreate(savedInstanceState);
-        handleIntentSlice(getIntent());
     }
 
     @Override
@@ -114,17 +118,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 passData.isCouponApplied(),
                 passData.getAdditionalETollBalance(),
                 passData.getAdditionalETollLastUpdatedDate(),
-                passData.getAdditionalETollOperatorName());
-    }
-
-    /* This Method is use to tracking action click when user click product DigitalProduct
-     */
-
-    private void handleIntentSlice(Intent intent){
-        if(intent.getData() != null) {
-            String trackingSliceClick = intent.getStringExtra("RECHARGE_PRODUCT_EXTRA");
-            if(trackingSliceClick!=null)
-            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#"+trackingSliceClick);
-        }
+                passData.getAdditionalETollOperatorName(),
+                rechargeParamFromSlice);
     }
 }

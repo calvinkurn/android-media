@@ -7,14 +7,14 @@
         android:pathData="M6,2v14.642C6,17.392 6.608,18 7.358,18H22"
         android:strokeLineCap="round"
         android:fillType="evenOdd"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.697"/>
     <path
         android:pathData="M18,22V7.018C18,6.456 17.544,6 16.982,6H2"
         android:strokeLineCap="round"
         android:fillType="evenOdd"
-        android:strokeColor="#4C4C4C"
+        android:strokeColor="@color/Unify_N600"
         android:fillColor="#00000000"
         android:strokeWidth="1.697"/>
 </vector>

@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inboxreview.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
@@ -21,7 +22,7 @@ class InboxReviewFeedbackImageViewHolder(
     private var productId = ""
 
     fun bind(data: FeedbackInboxUiModel.Attachment) {
-        ivItemFeedback.setImageUrl(data.thumbnailURL)
+        ivItemFeedback.loadImage(data.thumbnailURL)
 
         val imageUrls = InboxReviewMapper.mapToItemImageSlider(attachmentUiModel)
 

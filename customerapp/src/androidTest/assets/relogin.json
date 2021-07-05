@@ -1,5 +1,0 @@
-{
-  "status": "request_denied",
-  "error": "INVALID_REQUEST",
-  "error_description": "The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed."
-}

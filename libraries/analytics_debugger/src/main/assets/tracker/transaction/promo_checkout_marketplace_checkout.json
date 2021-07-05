@@ -1,0 +1,102 @@
+{
+  "readme": "Promo Checkout Marketplace - Checkout Funnel",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "view available promo list",
+      "eventCategory": "courier selection",
+      "event": "view_item",
+      "sessionIris": ".*",
+      "eventLabel": "eligible promo",
+      "promotions": [
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": "",
+          "item_name": "",
+          "promo_code": "",
+          "promo_id": "",
+          "category": "",
+          "creative_url": ""
+        }
+      ]
+    },
+    {
+      "eventAction": "view available promo list",
+      "eventCategory": "courier selection",
+      "event": "view_item",
+      "sessionIris": ".*",
+      "eventLabel": "ineligible product",
+      "promotions": [
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": "",
+          "item_name": "",
+          "promo_code": "",
+          "promo_id": "",
+          "category": "",
+          "creative_url": ""
+        }
+      ]
+    },
+    {
+      "eventAction": "view available promo list",
+      "eventCategory": "courier selection",
+      "event": "viewCourierIris",
+      "sessionIris": ".*",
+      "eventLabel": "no promo"
+    },
+    {
+      "eventAction": "select kupon",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "eventAction": "deselect kupon",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "eventAction": "select promo",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "eventAction": "deselect promo",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "eventAction": "click terapkan promo",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "eventAction": "click pilih promo recommendation",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": "",
+      "promoCode": ".+"
+    },
+    {
+      "eventAction": "click pakai promo",
+      "eventCategory": "courier selection",
+      "event": "clickCourier",
+      "sessionIris": ".*",
+      "eventLabel": "success - (?:0|1)",
+      "promoCode": ".+"
+    }
+  ]
+}

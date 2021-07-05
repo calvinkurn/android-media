@@ -51,16 +51,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/dp_11"
-                            android:layout_marginLeft="@dimen/dp_11"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <RelativeLayout
+                            android:id="@+id/creditLayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/dp_7"
-                            android:layout_marginLeft="@dimen/dp_7"
                             android:gravity="center_vertical"
                             app:layout_constraintBottom_toBottomOf="@id/image"
                             app:layout_constraintStart_toEndOf="@id/image"
@@ -84,33 +83,47 @@
                                 app:typographyWeight="bold"
                                 tools:text="Rp 10.000.0000" />
 
-                            <com.tokopedia.unifycomponents.ImageUnify
-                                android:id="@+id/img_auto_debit"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignTop="@id/credits"
-                                android:layout_alignBottom="@id/credits"
-                                android:layout_marginStart="@dimen/dp_2"
-                                android:layout_marginLeft="@dimen/dp_2"
-                                android:layout_toEndOf="@id/credits"
-                                android:layout_toRightOf="@id/credits"
-                                android:visibility="gone"
-                                tools:visibility="visible" />
                         </RelativeLayout>
+
+                        <com.tokopedia.unifycomponents.ImageUnify
+                            android:id="@+id/img_auto_debit"
+                            android:layout_width="@dimen/dp_12"
+                            android:layout_height="@dimen/dp_12"
+                            android:layout_marginEnd="@dimen/dp_2"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@id/autoTopUp"
+                            app:layout_constraintEnd_toStartOf="@id/autoTopUp"
+                            app:layout_constraintTop_toTopOf="@id/autoTopUp"
+                            tools:visibility="visible" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/autoTopUp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_8"
+                            android:text="@string/topads_dash_auto_topup_on"
+                            android:textColor="@color/black"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@id/creditLayout"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:typographyType="body_3"
+                            app:typographyWeight="bold"
+                            tools:text="Rp 10.000.0000"
+                            tools:visibility="visible" />
 
                         <com.tokopedia.unifycomponents.UnifyButton
                             android:id="@+id/addCredit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/dp_8"
-                            android:layout_marginRight="@dimen/dp_8"
                             android:text="@string/label_add_credit"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:unifyButtonSize="small"
                             app:unifyButtonType="transaction"
-                            app:unifyButtonVariant="filled" />
+                            app:unifyButtonVariant="ghost" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.tokopedia.unifycomponents.CardUnify>
 
@@ -183,8 +196,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/dp_12"
                             android:text="@string/topads_dash_go_to_insights"
-                            app:layout_constraintStart_toStartOf="parent"
                             android:textColor="@color/tkpd_main_green"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/viewPagerInsight" />
 
                         <com.tokopedia.unifycomponents.ImageUnify
@@ -199,9 +212,9 @@
                             android:id="@+id/viewPagerInsight"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_150"
-                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/rvTabInsight"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rvTabInsight" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.tokopedia.unifycomponents.CardUnify>

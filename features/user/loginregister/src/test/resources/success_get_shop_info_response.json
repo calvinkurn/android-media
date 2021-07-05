@@ -1,0 +1,11 @@
+{
+  "shopInfoByID": {
+    "result": [
+      {
+        "shippingLoc": {
+          "provinceID": 1
+        }
+      }
+    ]
+  }
+}

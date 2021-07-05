@@ -7,9 +7,10 @@ import com.tokopedia.product.detail.test.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 
-class InstrumentTestProductDetailActivity : AppCompatActivity() {
+class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestTopAdsCounter {
 
     private var shouldShowCartAnimation = false
+    private var topAdsCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,16 +18,21 @@ class InstrumentTestProductDetailActivity : AppCompatActivity() {
         showAddToCartDoneBottomSheet()
     }
 
+    override fun onTopAdsUrlHit() {
+        topAdsCount++
+    }
+
     private fun showAddToCartDoneBottomSheet() {
-        val addToCartDoneBottomSheet = InstrumentTestAddToCartBottomSheet()
-        val productName = "Bunga 3"
-        val productImageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/11/7/77816542/77816542_a7945d31-95c8-4795-ac94-2d4a63d4ebff_1024_1024"
+        val addToCartDoneBottomSheet = InstrumentTestAddToCartBottomSheet(this)
+        val productName = "Paket HDMI Dongle + HDMI To AV Alat Konverter Dari Hp ke TV Tabung"
+        val productImageUrl = "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/10/26/13988587/13988587_26632e2e-cb31-4729-8471-f56de2375c4b_806_806"
         val addedProductDataModel = AddToCartDoneAddedProductDataModel(
-                "604161938",
+                "596843822",
                 productName,
                 productImageUrl,
                 false,
-                6996572
+                333311,
+                ""
         )
         val bundleData = Bundle()
         bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
@@ -39,5 +45,10 @@ class InstrumentTestProductDetailActivity : AppCompatActivity() {
                     it, "ADD_TO_CART"
             )
         }
+    }
+
+
+    fun getTopAdsCount(): Int {
+        return topAdsCount
     }
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/box_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_112"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintCircleRadius="@dimen/dp_8"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintCircleRadius="@dimen/dp_5"
+        app:loader_type="rect" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintCircleRadius="@dimen/dp_5"
+        app:loader_type="circle" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintCircleRadius="@dimen/dp_5"
+        app:loader_type="rect" />
+    </LinearLayout>
+</LinearLayout>

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Unify_N700"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             android:text="@string/ent_event_checkout_pessanger_set_now"

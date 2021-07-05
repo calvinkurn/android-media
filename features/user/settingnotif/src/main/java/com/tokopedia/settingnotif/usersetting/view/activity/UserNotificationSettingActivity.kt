@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
+import com.tokopedia.settingnotif.usersetting.const.Unify.Unify_N0
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.SellerFieldFragment
@@ -32,9 +32,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
         intent?.data?.let {
             if (it.getQueryParameter(PUSH_NOTIFICATION_PAGE) != null) {
-                val isSellerApp = GlobalConfig.isSellerApp()
-                openPushNotificationFiled(isSellerApp)
-
+                openPushNotificationFiled(GlobalConfig.isSellerApp())
                 isHasPushNotificationParam = true
             }
         }
@@ -43,10 +41,9 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     override fun onBackPressed() {
         if (isHasPushNotificationParam) {
             finish()
-            return
+        } else {
+            super.onBackPressed()
         }
-
-        super.onBackPressed()
     }
 
     private fun bindView() {
@@ -54,7 +51,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, Neutral_N0)
+        val color = ContextCompat.getColor(this, Unify_N0)
         fragmentContainer?.setBackgroundColor(color)
     }
 
@@ -92,13 +89,12 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
             )
             dataView.createNewFragmentInstance()
         } else {
-            SettingTypeFragment()
+            SettingTypeFragment.createInstance()
         }
     }
 
     companion object {
-        private const val PUSH_NOTIFICATION_PAGE = "push_notification"
-
+        const val PUSH_NOTIFICATION_PAGE = "push_notification"
         private const val EXTRA_OPEN_SELLER_NOTIF = "extra_open_seller_notif"
     }
 }

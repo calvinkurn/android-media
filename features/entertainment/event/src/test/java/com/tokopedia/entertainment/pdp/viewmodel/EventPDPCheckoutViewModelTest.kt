@@ -7,13 +7,10 @@ import com.tokopedia.entertainment.pdp.data.EventContentByIdEntity
 import com.tokopedia.entertainment.pdp.data.EventPDPContentCombined
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.*
-import com.tokopedia.entertainment.pdp.network_api.EventCheckoutRepository
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.model.event.*
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -126,6 +123,38 @@ class EventPDPCheckoutViewModelTest {
 
         //when
         eventCheckoutViewModel.checkoutEvent("",CheckoutGeneralV2Params())
+
+        //then
+        val actual = eventCheckoutViewModel.errorGeneralValue.value
+        assert(actual?.message.equals(error.message))
+
+    }
+
+    @Test
+    fun `CheckoutInstantEvent_SuccessCheckout_ShouldSuccessCheckoutInstant`(){
+
+        val checkoutMock = Gson().fromJson(getJson("checkout_instant_mock.json"), EventCheckoutInstantResponse::class.java)
+
+        val result = HashMap<Type, Any>()
+        result[EventCheckoutInstantResponse::class.java] = checkoutMock
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
+
+        eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
+
+        val actual = eventCheckoutViewModel.eventCheckoutInstantResponse.value
+        assertEquals(actual, checkoutMock)
+    }
+
+    @Test
+    fun `CheckoutInstantEvent_FailCheckout_ShouldFailCheckout`(){
+        //given
+        val error = Throwable("Error Checkout")
+        coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
+
+        //when
+        eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
 
         //then
         val actual = eventCheckoutViewModel.errorGeneralValue.value

@@ -51,13 +51,13 @@ public class ProductPriceInfoView extends RelativeLayout {
         if (product.getPromo() == null) {
             tvPriceOrigin.setVisibility(GONE);
             tvPriceNew.setText(product.getPrice());
-            tvPriceNew.setTextColor(ContextCompat.getColor(context, R.color.digital_voucher));
+            tvPriceNew.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         } else {
             tvPriceOrigin.setVisibility(VISIBLE);
             tvPriceOrigin.setText(product.getPrice());
             tvPriceNew.setText(product.getPromo().getNewPrice());
             strikeOriginPrice();
-            tvPriceNew.setTextColor(ContextCompat.getColor(context, R.color.price_new_promo));
+            tvPriceNew.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500));
         }
     }
 

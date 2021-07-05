@@ -1,126 +1,13 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
+    >
 
     <FrameLayout
-        android:id="@+id/frame_layout"
+        android:id="@+id/catalog_detail_parent_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/catalog_layout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <com.tokopedia.common_category.customview.SearchNavigationView
-        android:id="@+id/search_nav_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:layout_gravity="bottom|center_horizontal">
-
-    </com.tokopedia.common_category.customview.SearchNavigationView>
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:orientation="vertical">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/white"
-                app:titleTextColor="@color/black_70">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageButton
-                        android:id="@+id/img_display_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_12"
-                        android:layout_marginRight="@dimen/dp_12"
-                        android:background="@android:color/transparent"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:paddingLeft="@dimen/dp_4"
-                        android:paddingRight="@dimen/dp_4"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_grid_display" />
-
-                    <ImageButton
-                        android:id="@+id/img_share_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:paddingLeft="@dimen/dp_4"
-                        android:paddingRight="@dimen/dp_4"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/img_display_button"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_share_unify" />
-
-                    <ImageView
-                        android:id="@+id/action_up_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:layout_marginBottom="@dimen/dp_10"
-                        android:padding="@dimen/dp_5"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/discovery_ic_back" />
-
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/title_toolbar"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:paddingLeft="@dimen/dp_10"
-                        android:paddingRight="@dimen/dp_10"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/sp_16"
-                        app:layout_constraintLeft_toRightOf="@+id/action_up_btn"
-                        app:layout_constraintRight_toLeftOf="@+id/img_share_button"
-                        app:typographyType="heading_4"
-                        tools:text="Iphone X - 64GB" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.appcompat.widget.Toolbar>
-
-            <FrameLayout
-                android:id="@+id/parent_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.tokopedia.filter.widget.BottomSheetFilterView
-        android:id="@+id/bottomSheetFilter"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        app:behavior_hideable="true"
-        android:elevation="@dimen/dp_10"
-        app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior"
-        tools:visibility="gone"/>
+        android:animateLayoutChanges="true"
+        />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

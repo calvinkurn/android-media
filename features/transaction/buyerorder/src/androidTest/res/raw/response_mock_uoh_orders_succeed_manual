@@ -1,0 +1,1881 @@
+[
+  {
+    "data": {
+      "uohOrders": {
+        "orders": [
+          {
+            "orderUUID": "4fba6a45-706b-4cb3-8527-af981b167230",
+            "verticalID": "630948306",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Berhasil",
+            "verticalStatus": "700",
+            "searchableText": "lyL8F91C+M7LlBwy+t/p4A0fNANTxNkOodYV4xfWfTJZmRAtTUj4oKWBvgpp4EvZu5y0F3lIjuSBxMAHnFKzh10Q4FVQAKXryBjK",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/630948306",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/630948306?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-11T10:35:05.283668397+07:00",
+              "paymentDateStr": "11 Nov 2020",
+              "status": {
+                "label": "Selesai",
+                "textColor": "#03AC0E",
+                "bgColor": "#D6FFDE"
+              },
+              "products": [
+                {
+                  "title": "product 17",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 19.000",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Beri Ulasan",
+                  "variantColor": "main",
+                  "type": "filled",
+                  "actionType": "link",
+                  "appURL": "tokopedia://review",
+                  "webURL": "https://m.tokopedia.com/inbox-reputation"
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-atc",
+                  "appURL": "",
+                  "webURL": "",
+                  "label": "Beli Lagi",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/180459",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630948306\u0026refnum\u003dINV/20201111/XX/XI/672508199\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630948306\u0026refnum\u003dINV/20201111/XX/XI/672508199\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201111/XX/XI/672508199\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d630948306\\u0026pdf\u003dInvoice-3660643-180459-20201111103505-cXFxcXFxcXE3\",\"order_id\":\"630948306\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"180459\",\"status\":\"700\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":180459,\"customer_id\":3660643,\"product_id\":851499643,\"product_name\":\"product 17\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":251959}]"
+            },
+            "createTime": "2020-11-11T03:35:05.404755Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-11T10:39:58.19865Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "ba8fe72c-57c1-4dcb-b26b-8c1f16ee7386",
+            "verticalID": "630946779",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "600",
+            "searchableText": "bvNd5X1kXy/S8TMySFuDhkBUheVP1iU7Ml9kWlSNJg3kNhW1rW9v1DuRktCzZFouWcbj+VofPR2JCpDKGfg0ukpJ1jOfogaiBwWO",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/630946779",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/630946779?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-11T10:33:48.127187696+07:00",
+              "paymentDateStr": "11 Nov 2020",
+              "status": {
+                "label": "Tiba di Tujuan",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "product 17",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
+                  "inline1": {
+                    "label": "2 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 29.000",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Selesai",
+                  "variantColor": "main",
+                  "type": "filled",
+                  "actionType": "gql-mp-finish",
+                  "appURL": "",
+                  "webURL": ""
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/resolution-center/create/630946779",
+                  "webURL": "https://tokopedia.com/resolution-center/create/630946779",
+                  "label": "Ajukan Komplain",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-track",
+                  "appURL": "",
+                  "webURL": "",
+                  "label": "Lacak",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/180459",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630946779\u0026refnum\u003dINV/20201111/XX/XI/672506672\u0026order_status\u003d600\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630946779\u0026refnum\u003dINV/20201111/XX/XI/672506672\u0026order_status\u003d600\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201111/XX/XI/672506672\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d630946779\\u0026pdf\u003dInvoice-3660643-180459-20201111103348-bGxsbGxsbGwy\",\"order_id\":\"630946779\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"180459\",\"status\":\"600\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":180459,\"customer_id\":3660643,\"product_id\":851499643,\"product_name\":\"product 17\",\"product_price\":10000,\"notes\":\"\",\"quantity\":2,\"warehouse_id\":251959}]"
+            },
+            "createTime": "2020-11-11T03:33:48.240053Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-11T10:34:22.812971Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "2857b249-354b-4866-b73f-4ac785039d99",
+            "verticalID": "630530026",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "220",
+            "searchableText": "Ucg2tVC88b4i7beyA1LzZirsL4vG65WMTUdDvbjUSv2ibwAUlR5C3n6ITmX2al+G2xhK1yy/9MlUxwSnAL5KVEfnWgQ/0+GJall4LFyWhYaYFQ\u003d\u003d",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/630530026",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/630530026?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-10T20:36:46.048790034+07:00",
+              "paymentDateStr": "10 Nov 2020",
+              "status": {
+                "label": "Menunggu Konfirmasi",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "Produk 1 (Karpet)",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 15.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/1962185",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630530026\u0026refnum\u003dINV/20201110/XX/XI/672089919\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630530026\u0026refnum\u003dINV/20201110/XX/XI/672089919\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201110/XX/XI/672089919\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d630530026\\u0026pdf\u003dInvoice-3660643-1962185-20201110203646-bm5ubm5ubm42\",\"order_id\":\"630530026\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"1962185\",\"status\":\"220\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":1962185,\"customer_id\":3660643,\"product_id\":155389293,\"product_name\":\"Produk 1 (Karpet)\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":1563951}]"
+            },
+            "createTime": "2020-11-10T13:36:46.143253Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T20:36:52.437585Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "c20daab8-519c-4157-9cfc-94288fd9785b",
+            "verticalID": "630512700",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "220",
+            "searchableText": "DGYO2N4wmGVua7nwku6C+xL/i3nJJlI+j4rBLltJ7xdtaqk5lYk2vcbXpuYd+ueKC9VSNSOFOptEZ+hu9Jzh91HsJDh6ICsY/dGkk6nvaZ+LEA\u003d\u003d",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/630512700",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/630512700?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-10T20:11:04.76931309+07:00",
+              "paymentDateStr": "10 Nov 2020",
+              "status": {
+                "label": "Menunggu Konfirmasi",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "Produk 1 (Karpet)",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 15.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/1962185",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630512700\u0026refnum\u003dINV/20201110/XX/XI/672072593\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630512700\u0026refnum\u003dINV/20201110/XX/XI/672072593\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201110/XX/XI/672072593\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d630512700\\u0026pdf\u003dInvoice-3660643-1962185-20201110201104-bW1tbW1tbW03\",\"order_id\":\"630512700\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"1962185\",\"status\":\"220\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":1962185,\"customer_id\":3660643,\"product_id\":155389293,\"product_name\":\"Produk 1 (Karpet)\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":1563951}]"
+            },
+            "createTime": "2020-11-10T13:11:04.874179Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T20:11:09.608712Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "06501bf8-f0c7-474a-b955-4b54387dc84f",
+            "verticalID": "630316776",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "220",
+            "searchableText": "fqNGBPFQsGFplByRMM9QgAQEk1/tOnYKavNpoqvKmolRHEXpfmItYp9kepkK6z7x+2ugQKqhz6yDbXDAYpARMy3vckw7fGbRFE55raObe4scPQ\u003d\u003d",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/630316776",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/630316776?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-10T15:06:26.064611473+07:00",
+              "paymentDateStr": "10 Nov 2020",
+              "status": {
+                "label": "Menunggu Konfirmasi",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "Produk 1 (Karpet)",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 15.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/1962185",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630316776\u0026refnum\u003dINV/20201110/XX/XI/671876670\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630316776\u0026refnum\u003dINV/20201110/XX/XI/671876670\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201110/XX/XI/671876670\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d630316776\\u0026pdf\u003dInvoice-3660643-1962185-20201110150626-bW1tbW1tbW0y\",\"order_id\":\"630316776\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"1962185\",\"status\":\"220\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":1962185,\"customer_id\":3660643,\"product_id\":155389293,\"product_name\":\"Produk 1 (Karpet)\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":1563951}]"
+            },
+            "createTime": "2020-11-10T08:06:26.172403Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T15:06:30.900329Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "b549a07b-8e45-4561-9ad9-f0a30fcc54fd",
+            "verticalID": "630278285",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "220",
+            "searchableText": "afynyg/HaBGN5GbQ57Koo3SUhwWZfFF8dhXAMEPmFCniKeMwdgcRrQKvVQhgXh6pAcjD5UW5RqasDwnNzMZnuS2cU1Q+LhuBmcjsFhmDksaM7g\u003d\u003d",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/630278285",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/630278285?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-10T14:20:48.903370753+07:00",
+              "paymentDateStr": "10 Nov 2020",
+              "status": {
+                "label": "Menunggu Konfirmasi",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "Produk 1 (Karpet)",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 15.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/1962185",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630278285\u0026refnum\u003dINV/20201110/XX/XI/671838178\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d630278285\u0026refnum\u003dINV/20201110/XX/XI/671838178\u0026order_status\u003d220\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201110/XX/XI/671838178\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d630278285\\u0026pdf\u003dInvoice-3660643-1962185-20201110142048-ZGRkZGRkZGQz\",\"order_id\":\"630278285\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"1962185\",\"status\":\"220\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":1962185,\"customer_id\":3660643,\"product_id\":155389293,\"product_name\":\"Produk 1 (Karpet)\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":1563951}]"
+            },
+            "createTime": "2020-11-10T07:20:49.071634Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T14:20:54.40204Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "2b5335c6-5257-4e9c-95dc-34851bc437bc",
+            "verticalID": "629881495",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "0",
+            "searchableText": "eA1hX/8i3qX023RX6PhHWG7nLh8yAdD1otttDnszPDRonM78v8FzQgZMR10VFOMNk+ygpHBItPk0geSbPgVggGVnLrDBNEhFSgnHLpEg3SS88g\u003d\u003d",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/629881495",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/629881495?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-10T02:59:28.080842408+07:00",
+              "paymentDateStr": "10 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "Produk 1 (Karpet)",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/3/9/17213019/17213019_0baa8bbf-8af6-4cfa-8d26-0436ed618157_1280_1024.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 15.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/1962185",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629881495\u0026refnum\u003dINV/20201110/XX/XI/671441388\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629881495\u0026refnum\u003dINV/20201110/XX/XI/671441388\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201110/XX/XI/671441388\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d629881495\\u0026pdf\u003dInvoice-3660643-1962185-20201110025928-cHBwcHBwcHAy\",\"order_id\":\"629881495\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"1962185\",\"status\":\"0\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":1962185,\"customer_id\":3660643,\"product_id\":155389293,\"product_name\":\"Produk 1 (Karpet)\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":1563951}]"
+            },
+            "createTime": "2020-11-09T19:59:28.282126Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-11T03:06:01.122832Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "dec8343a-2c02-417f-b784-5a07278a2d74",
+            "verticalID": "629862445",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "0",
+            "searchableText": "BGhoTfWsuhug1VuwjYgka6559okym49Ly//0IDtJufluz09iK398u5anVRQ4Rs3/piMC+fVS7mOmKb9gytR0k/uvuCtAhYP2at4Fvm3fi1idbKKufNpCrZ61lj7iwVy2lZepuX/SR7jNM3cebLZOn1SdepEvGFnorrkR0jvUWifvmNMIndL7vtRmmSa+2UgxxpSM",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/629862445",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/629862445?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-10T00:26:06.035480225+07:00",
+              "paymentDateStr": "10 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "barang variant wholesale cashback - Hitam",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2018/9/10/20203036/20203036_b7c88010-f957-479b-88f0-a8d614096f9b_800_800.jpg",
+                  "inline1": {
+                    "label": "3 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "+1 produk lainnya",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 47.065",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/2251484",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629862445\u0026refnum\u003dINV/20201110/XX/XI/671422338\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629862445\u0026refnum\u003dINV/20201110/XX/XI/671422338\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201110/XX/XI/671422338\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d629862445\\u0026pdf\u003dInvoice-3660643-2251484-20201110002606-aWlpaWlpaWky\",\"order_id\":\"629862445\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"2251484\",\"status\":\"0\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":2251484,\"customer_id\":3660643,\"product_id\":329195920,\"product_name\":\"barang variant wholesale cashback - Hitam\",\"product_price\":4500,\"notes\":\"Hkkkkk\",\"quantity\":3,\"warehouse_id\":74422},{\"shop_id\":2251484,\"customer_id\":3660643,\"product_id\":329195902,\"product_name\":\"barang variant wholesale cashback - Navy\",\"product_price\":4500,\"notes\":\"Hhbbh\",\"quantity\":2,\"warehouse_id\":74422}]"
+            },
+            "createTime": "2020-11-09T17:26:06.267422Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-11T00:31:01.562536Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "2eeae87e-a2d9-4169-a239-3fc1e633dffd",
+            "verticalID": "629471740",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "501",
+            "searchableText": "snml4pqXtsTTdxOM2VtubB/MsDPelLyT0D370ghM7pqA7d+jiidT11rCweHvGOTR9WRFYtRagGjjqt46jqgVEKilGZ4WX0zyYxnzEKDdvIN8rZ6B",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/629471740",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/629471740?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
+              "paymentDateStr": "9 Nov 2020",
+              "status": {
+                "label": "Sedang Dikirim",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Lacak",
+                  "variantColor": "main",
+                  "type": "ghost",
+                  "actionType": "gql-mp-track",
+                  "appURL": "",
+                  "webURL": ""
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/resolution-center/create/629471740",
+                  "webURL": "https://tokopedia.com/resolution-center/create/629471740",
+                  "label": "Ajukan Komplain",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471740\u0026refnum\u003dINV/20201109/XX/XI/671031633\u0026order_status\u003d501\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471740\u0026refnum\u003dINV/20201109/XX/XI/671031633\u0026order_status\u003d501\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201109/XX/XI/671031633\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d629471740\\u0026pdf\u003dInvoice-3660643-463441-20201109142000-Z2dnZ2dnZ2c5\",\"order_id\":\"629471740\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"501\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-09T07:20:01.074116Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T14:31:55.043603Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "7fe50e88-b6d8-4bc8-b667-bf12ba6cf82c",
+            "verticalID": "629471741",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "400",
+            "searchableText": "UU3O3SFHjBJw8h1b7f22RDRAkO7CsUlGmdAByemydOdnFocJhubVbpHr9B4P1GqCxSiA/nZghgyVdMToJHGdVhOUumamqkqlr56VCRNBs4Ls5QZX",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/629471741",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/629471741?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
+              "paymentDateStr": "9 Nov 2020",
+              "status": {
+                "label": "Diproses",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471741\u0026refnum\u003dINV/20201109/XX/XI/671031634\u0026order_status\u003d400\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471741\u0026refnum\u003dINV/20201109/XX/XI/671031634\u0026order_status\u003d400\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201109/XX/XI/671031634\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d629471741\\u0026pdf\u003dInvoice-3660643-463441-20201109142000-Z2dnZ2dnZ2c5\",\"order_id\":\"629471741\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"400\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-09T07:20:01.071149Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-09T14:22:45.754012Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "cb40cb6f-eeca-4472-8edd-2f52faeefe8e",
+            "verticalID": "629471739",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Dalam Proses",
+            "verticalStatus": "501",
+            "searchableText": "aleJx5jdqioWvznKbV4mWxJPjGx6vKzFGZXSkQNIw5qEtvUOU93w7CrXjpO1Nx67HhjezrefIya+wIQdsZgHZAJQaAtEWSYh8XSH15Q3bA9T17fX",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/629471739",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/629471739?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
+              "paymentDateStr": "9 Nov 2020",
+              "status": {
+                "label": "Sedang Dikirim",
+                "textColor": "#FA591D",
+                "bgColor": "#FFF0B3"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Lacak",
+                  "variantColor": "main",
+                  "type": "ghost",
+                  "actionType": "gql-mp-track",
+                  "appURL": "",
+                  "webURL": ""
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/resolution-center/create/629471739",
+                  "webURL": "https://tokopedia.com/resolution-center/create/629471739",
+                  "label": "Ajukan Komplain",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471739\u0026refnum\u003dINV/20201109/XX/XI/671031631\u0026order_status\u003d501\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471739\u0026refnum\u003dINV/20201109/XX/XI/671031631\u0026order_status\u003d501\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201109/XX/XI/671031631\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d629471739\\u0026pdf\u003dInvoice-3660643-463441-20201109142000-Z2dnZ2dnZ2c5\",\"order_id\":\"629471739\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"501\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-09T07:20:01.071382Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T15:16:44.04886Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "e9c5db2a-895e-4fc2-8170-84dfbe7aed51",
+            "verticalID": "629471742",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "0",
+            "searchableText": "txK37cqMxKbC6/aqnGHGQhGFWQ8Fs7v0lMqB2UPiM/Sg/UUC/XGsBCb7MgYatH6TleJCAkadANakq+I5gR+vGjJgeMWluho9AytEd+yacRDROJAo",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/629471742",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/629471742?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-09T14:20:00.800763865+07:00",
+              "paymentDateStr": "9 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471742\u0026refnum\u003dINV/20201109/XX/XI/671031635\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d629471742\u0026refnum\u003dINV/20201109/XX/XI/671031635\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201109/XX/XI/671031635\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d629471742\\u0026pdf\u003dInvoice-3660643-463441-20201109142000-Z2dnZ2dnZ2c5\",\"order_id\":\"629471742\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"0\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-09T07:20:01.077573Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-10T14:26:03.068885Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "83e8f7fd-e5c7-47ee-a1d9-364a1a911a38",
+            "verticalID": "627044952",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "10",
+            "searchableText": "q8JwSuigwOoVNjLlC6THd04YxtZdzH8aC6f5w2YP8wpbfReIiq9OZ2OWobVz58mHU7sV3czIUOlONTbmOHdqvO5u0YFcI3IOJ2cT",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/627044952",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/627044952?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T19:02:34.667329629+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "product 17",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/5/15/1056613/1056613_c5a03986-b2e2-4420-82d0-68613df94b0f_315_315",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 20.000",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/180459",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d627044952\u0026refnum\u003dINV/20201105/XX/XI/668604845\u0026order_status\u003d10\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d627044952\u0026refnum\u003dINV/20201105/XX/XI/668604845\u0026order_status\u003d10\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668604845\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d627044952\\u0026pdf\u003dInvoice-3660643-180459-20201105190234-eHh4eHh4eHg5\",\"order_id\":\"627044952\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"180459\",\"status\":\"10\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":180459,\"customer_id\":3660643,\"product_id\":851499643,\"product_name\":\"product 17\",\"product_price\":10000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":251959}]"
+            },
+            "createTime": "2020-11-05T12:02:34.771326Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-06T00:39:33.718677Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "c0698b16-77bd-4c8f-b112-c50ed54a1416",
+            "verticalID": "626826617",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "15",
+            "searchableText": "8IROAkcPzEd6R3pKt2+UetBBTt4gctsYOVuSnfYKn0LXjTQzUkjJcD8LzvsExZDKVAAR2EvWlTlfjD/Fho2CQmMOAGiXWhRk+fZfh4vbN5CMvhCH",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826617",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826617?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826617\u0026refnum\u003dINV/20201105/XX/XI/668386510\u0026order_status\u003d15\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826617\u0026refnum\u003dINV/20201105/XX/XI/668386510\u0026order_status\u003d15\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386510\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826617\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826617\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"15\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.127691Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-05T13:31:33.359967Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "a9cac3f2-5a8c-4270-b93d-2d1451908404",
+            "verticalID": "626826619",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "10",
+            "searchableText": "iJ0gh27F8/EC5ACvfYtd5vvap9355JqWutKeS5yxon67YbjBoeugzKbDWcFSLOt86ACpUh0dUyNtJ1zhBTIrWpemYMf9Tmk9qtgKwOxwqIk6vYTA",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826619",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826619?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826619\u0026refnum\u003dINV/20201105/XX/XI/668386512\u0026order_status\u003d10\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826619\u0026refnum\u003dINV/20201105/XX/XI/668386512\u0026order_status\u003d10\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386512\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826619\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826619\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"10\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.119422Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-05T13:39:36.763431Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "f4b93869-f916-433c-b1a4-74a80f9142a8",
+            "verticalID": "626826615",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Berhasil",
+            "verticalStatus": "700",
+            "searchableText": "mCyAQn5Xvnc79nCqHEC/S4PI2wmd4do8i3DPGX1c5wvmqZ+X1YE1be4twOSI1+GVX/uS5CZdq6i5IpSR/aRiOboeKEb7HQfnzcRgnj3MBzHoEnxN",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826615",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826615?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Selesai",
+                "textColor": "#03AC0E",
+                "bgColor": "#D6FFDE"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Beri Ulasan",
+                  "variantColor": "main",
+                  "type": "filled",
+                  "actionType": "link",
+                  "appURL": "tokopedia://review",
+                  "webURL": "https://m.tokopedia.com/inbox-reputation"
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-atc",
+                  "appURL": "",
+                  "webURL": "",
+                  "label": "Beli Lagi",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826615\u0026refnum\u003dINV/20201105/XX/XI/668386508\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826615\u0026refnum\u003dINV/20201105/XX/XI/668386508\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386508\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826615\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826615\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"700\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.108519Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-05T14:14:57.561533Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "099d9a3c-90c4-46b8-bdbe-e9a9ac7b4602",
+            "verticalID": "626826618",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "10",
+            "searchableText": "+BLYuyGh1dSxYzlMVeO9geY2Z69n7ORALSURam1FLiQBM+mYWSE30waWUlZqsIsn8JoJtCdN7ir2tFUCaL4oSN7wv695Y49eJrZiEv876XhTDaH8",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826618",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826618?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826618\u0026refnum\u003dINV/20201105/XX/XI/668386511\u0026order_status\u003d10\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826618\u0026refnum\u003dINV/20201105/XX/XI/668386511\u0026order_status\u003d10\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386511\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826618\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826618\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"10\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.130779Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-05T13:36:07.096859Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "3d85b789-9474-4758-a795-a72c86ad70f8",
+            "verticalID": "626826622",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Berhasil",
+            "verticalStatus": "700",
+            "searchableText": "AdRir5TZQlDCxquI/7suL+X/O5XMyiICD0pffnHqoN6A7OO/u3DyDz1Upe/u57JWJ76h1YTP9vd7oVW0pjKL8Au2VmyUFb2QAfBP1KaiR6vo1s1M",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826622",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826622?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Selesai",
+                "textColor": "#03AC0E",
+                "bgColor": "#D6FFDE"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Beri Ulasan",
+                  "variantColor": "main",
+                  "type": "filled",
+                  "actionType": "link",
+                  "appURL": "tokopedia://review",
+                  "webURL": "https://m.tokopedia.com/inbox-reputation"
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-atc",
+                  "appURL": "",
+                  "webURL": "",
+                  "label": "Beli Lagi",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826622\u0026refnum\u003dINV/20201105/XX/XI/668386515\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826622\u0026refnum\u003dINV/20201105/XX/XI/668386515\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386515\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826622\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826622\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"700\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.13475Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-07T11:14:44.453301Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "036671d1-c9cd-4354-a4a2-3a50fbc96c26",
+            "verticalID": "626826621",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Berhasil",
+            "verticalStatus": "700",
+            "searchableText": "HdesBB3HkQ9EVclywFvzb4tttMj10hkPiKuNRxVzwMrCZAIm9ajoN3XnysjRFppuFiHj66qTR7w8OUIr/22VpD26Cz5QBNvw2Y3VAfQrPvYCnntZ",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826621",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826621?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Selesai",
+                "textColor": "#03AC0E",
+                "bgColor": "#D6FFDE"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [
+                {
+                  "Label": "Beri Ulasan",
+                  "variantColor": "main",
+                  "type": "filled",
+                  "actionType": "link",
+                  "appURL": "tokopedia://review",
+                  "webURL": "https://m.tokopedia.com/inbox-reputation"
+                }
+              ],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-atc",
+                  "appURL": "",
+                  "webURL": "",
+                  "label": "Beli Lagi",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826621\u0026refnum\u003dINV/20201105/XX/XI/668386514\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826621\u0026refnum\u003dINV/20201105/XX/XI/668386514\u0026order_status\u003d700\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386514\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826621\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826621\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"700\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.138325Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-07T11:16:30.028047Z",
+            "updateBy": "orderapp"
+          },
+          {
+            "orderUUID": "589713eb-da3c-4f58-9ab9-1b21dd4cb47b",
+            "verticalID": "626826620",
+            "verticalCategory": "marketplace",
+            "userID": "3660643",
+            "status": "Tidak Berhasil",
+            "verticalStatus": "0",
+            "searchableText": "n3nvvNBqbrjgzadAPNkUINympmIrOgq3rRKCM4IZCqSKgR7CUo8cuz9S8xhDo3GbjgAZHHVaft2ttIXkL7UhCzV1Jzv9IIEe+MW51Py4rmcxgsr6",
+            "metadata": {
+              "detailURL": {
+                "appURL": "tokopedia://marketplace/order/626826620",
+                "appTypeLink": "APP_LINK",
+                "webURL": "/order-details/marketplace/626826620?backBtn\u003dtrue\u0026upstream\u003dMARKETPLACE",
+                "webTypeLink": "ROUTER_LINK"
+              },
+              "upstream": "MARKETPLACE",
+              "verticalLogo": "https://ecs7.tokopedia.net/img/email-footer-190118/new/icon-marketplace.png",
+              "verticalLabel": "Belanja",
+              "paymentDate": "2020-11-05T13:28:33.780550673+07:00",
+              "paymentDateStr": "5 Nov 2020",
+              "status": {
+                "label": "Dibatalkan",
+                "textColor": "#EF144A",
+                "bgColor": "#FFEAEF"
+              },
+              "products": [
+                {
+                  "title": "action figure jinbe",
+                  "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/21/b3071db5-cead-4a94-b4ce-03285c6bc129.jpg",
+                  "inline1": {
+                    "label": "1 barang",
+                    "textColor": "",
+                    "bgColor": ""
+                  },
+                  "inline2": {
+                    "label": "",
+                    "textColor": "",
+                    "bgColor": ""
+                  }
+                }
+              ],
+              "otherInfo": {
+                "actionType": "",
+                "appURL": "",
+                "webURL": "",
+                "label": "",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "totalPrice": {
+                "value": "Rp 10.100",
+                "label": "Total Belanja",
+                "textColor": "",
+                "bgColor": ""
+              },
+              "tickers": [],
+              "buttons": [],
+              "dotMenus": [
+                {
+                  "actionType": "gql-mp-chat",
+                  "appURL": "tokopedia://topchat/askseller/463441",
+                  "webURL": "",
+                  "label": "Tanya Penjual",
+                  "textColor": "",
+                  "bgColor": ""
+                },
+                {
+                  "actionType": "link",
+                  "appURL": "tokopedia://webview?url\u003dhttps://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826620\u0026refnum\u003dINV/20201105/XX/XI/668386513\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "webURL": "https://m.tokopedia.com/help/reference-article?transaction_type_id\u003d2\u0026product_type_id\u003d0\u0026refnum_id\u003d626826620\u0026refnum\u003dINV/20201105/XX/XI/668386513\u0026order_status\u003d0\u0026invoice_type_id\u003d1\u0026payment_status_id\u003d2\u0026payment_gateway_id\u003d3",
+                  "label": "Bantuan",
+                  "textColor": "",
+                  "bgColor": ""
+                }
+              ],
+              "queryParams": "{\"invoice\":\"INV/20201105/XX/XI/668386513\",\"invoice_url\":\"https://www.tokopedia.com/invoice.pl?id\u003d626826620\\u0026pdf\u003dInvoice-3660643-463441-20201105132833-Z2dnZ2dnZ2cx\",\"order_id\":\"626826620\",\"payment_gateway_id\":\"3\",\"payment_status_id\":\"2\",\"role\":\"buyer\",\"shop_id\":\"463441\",\"status\":\"0\",\"user_id\":\"3660643\"}",
+              "listProducts": "[{\"shop_id\":463441,\"customer_id\":3660643,\"product_id\":1274681881,\"product_name\":\"action figure jinbe\",\"product_price\":1000,\"notes\":\"\",\"quantity\":1,\"warehouse_id\":53000}]"
+            },
+            "createTime": "2020-11-05T06:28:34.116777Z",
+            "createBy": "orderapp",
+            "updateTime": "2020-11-09T14:31:50.278381Z",
+            "updateBy": "orderapp"
+          }
+        ],
+        "filters": [
+          "Semua Transaksi",
+          "Dalam Proses",
+          "Berhasil",
+          "Tidak Berhasil",
+          "E-tiket \u0026 E-voucher Aktif"
+        ],
+        "filtersV2": [
+            {
+              "label": "Semua Status Transaksi",
+              "value": "",
+              "isPrimary": true
+            },
+            {
+              "label": "Transaksi Berlangsung",
+              "value": "Dalam Proses",
+              "isPrimary": true
+            },
+            {
+              "label": "Menunggu Konfirmasi",
+              "value": "menunggu_konfirmasi",
+              "isPrimary": false
+            },
+            {
+              "label": "Diproses",
+              "value": "diproses",
+              "isPrimary": false
+            },
+            {
+              "label": "Dikirim",
+              "value": "dikirim",
+              "isPrimary": false
+            },
+            {
+              "label": "Tiba di Tujuan",
+              "value": "tiba_di_tujuan",
+              "isPrimary": false
+            },
+            {
+              "label": "Dikomplain",
+              "value": "dikomplain",
+              "isPrimary": false
+            },
+            {
+              "label": "Berhasil",
+              "value": "Berhasil",
+              "isPrimary": true
+            },
+            {
+              "label": "Tidak Berhasil",
+              "value": "Tidak Berhasil",
+              "isPrimary": true
+            },
+            {
+              "label": "E-tiket & E-voucher Aktif",
+              "value": "E-tiket & E-voucher Aktif",
+              "isPrimary": true
+            }
+          ],
+        "categories": [
+          {
+            "value": "marketplace",
+            "label": "Belanja"
+          },
+          {
+            "value": "air_pdam,angsuran_kredit,belajar,biaya_pendidikan,bpjs,invoicing,samsat,gas_pgn,internet_tv_kabel,iuran_properti,tagihan_cc,kartu_prakerja,listrik_pln,m_tix,pajak,paket_data,pasca_bayar,penerimaan_negara,premi_asuransi,pulsa,retribusi,roaming,streaming,telkom,uang_elektronik,upgrade_internet_tv,voucher_game,bridestory_pay,ovo",
+            "label": "Top-up \u0026 Tagihan"
+          },
+          {
+            "value": "deals,event,flight,train,hotel",
+            "label": "Travel \u0026 Entertainment"
+          },
+          {
+            "value": "mutual_fund,gold,insurance,gift_card,modal_toko",
+            "label": "Keuangan"
+          },
+          {
+            "value": "umrah,donasi,zakat_mal,zakat_fitrah",
+            "label": "Halal Corner"
+          },
+          {
+            "value": "money_in",
+            "label": "Langsung Laku"
+          },
+          {
+            "value": "ls_print",
+            "label": "Tokopedia Print"
+          }
+        ],
+        "next": "create_time_start\u003d2018-09-01\u0026limit\u003d20\u0026page\u003d2\u0026sort_by\u003dcreate_time\u0026status\u003d\u0026user_id\u003d3660643\u0026vertical_category\u003dmarketplace",
+        "dateLimit": "2018-09-01",
+        "tickers": []
+      }
+    }
+  }
+]

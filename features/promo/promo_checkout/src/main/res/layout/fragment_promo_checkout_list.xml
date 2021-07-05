@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_parent_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -17,61 +17,52 @@
             android:id="@+id/header_product_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/dp_4"
+                android:layout_margin="@dimen/spacing_lvl4"
+                app:cardBackgroundColor="@color/Unify_N0"
+                app:cardCornerRadius="@dimen/spacing_lvl2"
                 app:cardElevation="@dimen/dp_3">
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:background="@color/white">
+                    android:layout_margin="@dimen/spacing_lvl4">
 
-                    <com.tokopedia.design.text.TkpdHintTextInputLayout
-                        android:id="@+id/textInputLayoutCoupon"
-                        style="@style/HintTextInputLayout"
-                        android:layout_width="match_parent"
+                    <com.tokopedia.unifycomponents.TextFieldUnify
+                        android:id="@+id/textInputCoupon"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/buttonUse"
-                        android:hint="@string/promo_label_hint_promo_code"
-                        app:hintEnabled="true">
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/buttonUse"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:text_field_label="@string/promo_label_hint_promo_code"
+                        app:text_field_label_static="true"
+                        app:text_field_placeholder="@string/promo_label_input_promo_code" />
 
-                        <EditText
-                            android:id="@+id/textInputCoupon"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/promo_label_input_promo_code"
-                            android:inputType="text"
-                            android:textColor="#ae31353b" />
-
-                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/buttonUse"
-                        style="@style/TextView.Micro.WhitePrimary"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/green_button_rounded"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_16"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:text="@string/promo_label_button_use" />
+                        android:paddingLeft="@dimen/spacing_lvl4"
+                        android:paddingTop="@dimen/spacing_lvl3"
+                        android:paddingRight="@dimen/spacing_lvl4"
+                        android:paddingBottom="@dimen/spacing_lvl3"
+                        android:text="@string/promo_label_button_use"
+                        android:textColor="@color/Unify_N0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="body_3" />
 
-                </RelativeLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -86,12 +77,12 @@
                     android:id="@+id/promo_checkout_list_last_seen_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@string/promo_title_category"
-                    android:textColor="@color/promo_checkout_catalogtitle_color"
+                    android:textColor="@color/Unify_N700_96"
                     android:visibility="visible"
                     app:typographyType="body_3" />
 
@@ -99,11 +90,11 @@
                     android:id="@+id/recyclerViewLastSeenPromo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/spacing_lvl3"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
+                    android:paddingLeft="@dimen/spacing_lvl4"
+                    android:paddingRight="@dimen/spacing_lvl4"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_last_seen_promo_history" />
             </LinearLayout>
@@ -118,10 +109,10 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:text="@string/promo_label_my_coupon"
-                android:textColor="@color/promo_checkout_catalogtitle_color"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3" />
 
         </LinearLayout>
@@ -134,7 +125,7 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingBottom="@dimen/spacing_lvl4"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_list_promo_checkout"

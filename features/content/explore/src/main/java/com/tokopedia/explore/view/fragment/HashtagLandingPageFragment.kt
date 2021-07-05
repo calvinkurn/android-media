@@ -1,19 +1,16 @@
 package com.tokopedia.explore.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.explore.R
@@ -24,6 +21,7 @@ import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -67,7 +65,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)[HashtagLandingPageViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory).get(HashtagLandingPageViewModel::class.java)
         arguments?.let {
             searchTag = it.getString(ARG_HASHTAG, "")
             viewModel.hashtag = searchTag
@@ -76,7 +74,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.postResponse.observe(this, Observer {
+        viewModel.getPostResponse().observe(viewLifecycleOwner, Observer {
             hideLoading()
             endlessScrollListener.setHasNextPage(viewModel.canLoadMore)
             endlessScrollListener.updateStateAfterGetData()
@@ -100,8 +98,8 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         if (isInitialLoad){
             adapter.showError(message){ loadData(true) }
         } else {
-            view?.let { Toaster.showErrorWithAction(it, message, Snackbar.LENGTH_LONG,
-                    getString(R.string.retry_label), View.OnClickListener { loadData(false) }) }
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.retry_label), View.OnClickListener { loadData(false) }) }?.show()
         }
     }
 
@@ -173,12 +171,6 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     override fun onPause() {
         super.onPause()
         feedAnalytics.sendPendingAnalytics()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.postResponse.removeObservers(this)
-        viewModel.flush()
     }
 
     private fun loadData(isForceRefresh: Boolean = false){

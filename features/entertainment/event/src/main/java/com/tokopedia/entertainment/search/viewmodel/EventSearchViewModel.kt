@@ -85,7 +85,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
 
     fun cancelRequest(){
         if(::job.isInitialized) job.cancel()
-        if(job.isCancelled) Timber.tag("Cancel").w("CANCEL")
+        if(::job.isInitialized && job.isCancelled) Timber.tag("Cancel").w("CANCEL")
     }
 
     suspend fun getLocationSuggestionData(text: String, cacheType: CacheType, query: String) : EventSearchLocationResponse.Data{

@@ -1,12 +1,16 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.shouldBe
 import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 
 private const val initialStateEmptyDataResponse = "autocomplete/initialstate/empty-response.json"
-private const val initialStateWithShowMoreResponse = "autocomplete/initialstate/with-show-more-recent-search.json"
+private const val initialStateWithShowMoreResponse = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
@@ -19,25 +23,36 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `Then verify initial state impression is called without see more recent search`() {
-        verify {
+        verifyOrder {
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
         }
     }
 
     private fun `Then verify list impression data`() {
         val recentViewItemList = slotRecentViewItemList.captured
         val recentSearchItemList = slotRecentSearchItemList.captured
-        val popularSearchItemList = slotPopularSearchItemList.captured
+        val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
+        val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
 
         val recentViewListResponse = getDataLayerForRecentView(initialStateCommonData[0].items)
         val recentSearchListResponse = getDataLayerForPromo(initialStateCommonData[1].items)
         val popularSearchListResponse = getDataLayerForPromo(initialStateCommonData[2].items)
+        val dynamicSectionResponse = getDataLayerForPromo(initialStateCommonData[3].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
-        assert(popularSearchItemList.containsAll(popularSearchListResponse))
+        popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateCommonData[2])
+        dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateCommonData[3])
+    }
+
+    private fun DynamicInitialStateItemTrackingModel.assertTrackerModel(list: MutableList<Any>, initialStateData: InitialStateData) {
+        this.list shouldBe list
+        this.title shouldBe initialStateData.header
+        this.type shouldBe initialStateData.featureId
+        this.userId shouldBe "0"
     }
 
     private fun getDataLayerForRecentView(list: List<InitialStateItem>): MutableList<Any> {
@@ -65,7 +80,14 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val initialStateData = initialStateWithShowMoreResponse.jsonToObject<InitialStateUniverse>().data
         `Given view already get initial state`(initialStateData)
 
-        `Then verify initial state impression is called`()
+        val item = CuratedCampaignDataView(
+                imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/8/24/4814934/4814934_8de36a7f-e5e3-4053-8089-1f42cdb17030_1414_1414",
+                applink = "tokopedia://product/20100686",
+                url = "/bgsport/bola-sepak-3",
+                title = "Waktu Indonesia Belanja",
+                subtitle = "Flashsale Rp50 rb & Cashback 90%"
+        )
+        `Then verify initial state impression is called`(item)
         `Then verify list impression data`(initialStateData)
 
         `When see more recent search is clicked`()
@@ -73,27 +95,38 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Then verify recent search impressed the hidden item`(initialStateData)
     }
 
-    private fun `Then verify initial state impression is called`() {
-        verify {
+    private fun `Then verify initial state impression is called`(curatedCampaignDataView: CuratedCampaignDataView) {
+        verifyOrder {
+            initialStateView.onCuratedCampaignCardImpressed(curatedCampaignDataView)
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onSeeMoreRecentSearchImpressed(any())
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
         }
+    }
+
+    private fun InitialStateContract.View.onCuratedCampaignCardImpressed(curatedCampaignDataView: CuratedCampaignDataView) {
+        val expectedLabel = "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
+        val userId = "0"
+        onCuratedCampaignCardImpressed(userId, expectedLabel, curatedCampaignDataView.type)
     }
 
     private fun `Then verify list impression data`(initialStateData: List<InitialStateData>) {
         val recentViewItemList = slotRecentViewItemList.captured
         val recentSearchItemList = slotRecentSearchItemList.captured
-        val popularSearchItemList = slotPopularSearchItemList.captured
+        val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
+        val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
 
-        val recentViewListResponse = getDataLayerForRecentView(initialStateData[0].items)
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[1].items.take(3))
-        val popularSearchListResponse = getDataLayerForPromo(initialStateData[2].items)
+        val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
+        val popularSearchListResponse = getDataLayerForPromo(initialStateData[3].items)
+        val dynamicSectionResponse = getDataLayerForPromo(initialStateData[4].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
-        assert(popularSearchItemList.containsAll(popularSearchListResponse))
+        popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateData[3])
+        dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateData[4])
     }
 
     private fun `When see more recent search is clicked`() {
@@ -109,7 +142,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     private fun `Then verify recent search impressed the hidden item`(initialStateData: List<InitialStateData>) {
         val recentSearchItemList = slotRecentSearchItemList.captured
 
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[1].items).takeLast(2)
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items).takeLast(2)
 
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
     }

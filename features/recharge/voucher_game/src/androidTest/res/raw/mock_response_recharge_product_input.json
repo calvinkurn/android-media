@@ -1,0 +1,104 @@
+{
+  "data": {
+    "rechargeCatalogProductInput": {
+      "needEnquiry": false,
+      "isShowingProduct": true,
+      "enquiryFields": [],
+      "product": {
+        "name": "product_id",
+        "text": "Pilih Voucher Game",
+        "dataCollections": [
+          {
+            "name": "",
+            "products": [
+              {
+                "id": "8035",
+                "attributes": {
+                  "desc": "14500 Pokecoins",
+                  "price": "Rp 1.648.900",
+                  "price_plain": 1648900,
+                  "promo": null,
+                  "product_labels": [],
+                  "detail": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_compact": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_url": "https://www.tokopedia.com/help/article/a-1083",
+                  "detail_url_text": "[link berikut]"
+                }
+              },
+              {
+                "id": "8034",
+                "attributes": {
+                  "desc": "5200 Pokecoins",
+                  "price": "Rp 647.900",
+                  "price_plain": 647900,
+                  "promo": null,
+                  "product_labels": [],
+                  "detail": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_compact": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_url": "https://www.tokopedia.com/help/article/a-1083",
+                  "detail_url_text": "[link berikut]"
+                }
+              },
+              {
+                "id": "8033",
+                "attributes": {
+                  "desc": "2500 Pokecoins",
+                  "price": "Rp 328.900",
+                  "price_plain": 328900,
+                  "promo": null,
+                  "product_labels": [],
+                  "detail": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_compact": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_url": "https://www.tokopedia.com/help/article/a-1083",
+                  "detail_url_text": "[link berikut]"
+                }
+              },
+              {
+                "id": "8032",
+                "attributes": {
+                  "desc": "1200 Pokecoins",
+                  "price": "Rp 163.900",
+                  "price_plain": 163900,
+                  "promo": null,
+                  "product_labels": [],
+                  "detail": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_compact": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_url": "https://www.tokopedia.com/help/article/a-1083",
+                  "detail_url_text": "[link berikut]"
+                }
+              },
+              {
+                "id": "8031",
+                "attributes": {
+                  "desc": "550 Pokecoins",
+                  "price": "Rp 82.500",
+                  "price_plain": 82500,
+                  "promo": null,
+                  "product_labels": [],
+                  "detail": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_compact": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_url": "https://www.tokopedia.com/help/article/a-1083",
+                  "detail_url_text": "[link berikut]"
+                }
+              },
+              {
+                "id": "8030",
+                "attributes": {
+                  "desc": "100 Pokecoins",
+                  "price": "Rp 5.500",
+                  "price_plain": 5500,
+                  "promo": null,
+                  "product_labels": [],
+                  "detail": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_compact": "<b> Pokemon Go powered by Google Play </b> <br> Pembelian ini dapat digunakan di Google Play Store, app store resmi Android untuk membeli item dalam game di Pokemon Go, serta lebih dari satu juta game dan aplikasi lainnya, dan banyak lagi. Untuk menukarkan, masukkan kode di aplikasi Play Store atau play.google.com. Untuk persyaratan lengkap silahkan lihat",
+                  "detail_url": "https://www.tokopedia.com/help/article/a-1083",
+                  "detail_url_text": "[link berikut]"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -2,14 +2,13 @@ package com.tokopedia.navigation_common.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
 public class WalletPref {
     private static final String WALLET_PREF = "wallet.pref";
-    public static final String VCC_PREF = "vcc.pref";
     private static final String DEBIT_INSTANT_URL = "debit_instant_url";
-    private static final String TOKOSWIPE_URL = "tokoswipe_url";
 
     private SharedPreferences preferences;
     private Gson gson;
@@ -25,12 +24,6 @@ public class WalletPref {
         editor.putString(WALLET_PREF, jsonWallet).apply();
     }
 
-    public void saveVccUserStatus(VccUserStatus vccUserStatus) {
-        SharedPreferences.Editor editor = preferences.edit();
-        String jsonVccStatus = gson.toJson(vccUserStatus);
-        editor.putString(VCC_PREF, jsonVccStatus).apply();
-    }
-
     public void saveDebitInstantUrl(String url) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(DEBIT_INSTANT_URL, url).apply();
@@ -41,22 +34,16 @@ public class WalletPref {
     }
 
     public WalletModel retrieveWallet() {
-        String jsonWallet = preferences.getString(WALLET_PREF, null);
-        return gson.fromJson(jsonWallet, WalletModel.class);
-    }
-
-    public VccUserStatus retrieveVccUserStatus() {
-        String jsonWallet = preferences.getString(VCC_PREF, null);
-        return gson.fromJson(jsonWallet, VccUserStatus.class);
-    }
-
-    public void setTokoSwipeUrl(String url) {
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(TOKOSWIPE_URL, url).apply();
-    }
-
-    public String getTokoSwipeUrl() {
-        return preferences.getString(TOKOSWIPE_URL, null);
+        try {
+            String jsonWallet = preferences.getString(WALLET_PREF, null);
+            if(TextUtils.isEmpty(jsonWallet)) {
+                return null;
+            } else {
+                return gson.fromJson(jsonWallet, WalletModel.class);
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void clear() {

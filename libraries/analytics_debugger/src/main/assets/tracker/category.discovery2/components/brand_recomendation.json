@@ -1,0 +1,41 @@
+{
+  "readme": "Discovery Brand Recommendation impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "eventCategory": ".*",
+      "eventAction": "dynamic banner impression",
+      "event": "view_item",
+      "eventLabel": ".*",
+      "promotions": [
+        {
+          "item_id": ".*",
+          "creative_name": ".*",
+          "item_name": ".*",
+          "creative_slot": ".*"
+        }
+      ]
+    },
+    {
+      "attribution": ".*",
+      "eventAction": "dynamic banner click",
+      "eventCategory": ".*",
+      "event": "select_content",
+      "categoryId": ".*",
+      "campaignCode": ".*",
+      "promotions": [
+        {
+          "item_id": ".*",
+          "creative_name": ".*",
+          "item_name": ".*",
+          "creative_slot": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "affinityLabel": ".*",
+      "shopId": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

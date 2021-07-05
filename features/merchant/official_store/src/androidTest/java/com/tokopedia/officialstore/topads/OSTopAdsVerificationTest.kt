@@ -8,27 +8,31 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.visitable.MixLeftDataModel
+import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
+import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
-import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
-import com.tokopedia.test.application.util.setupTopAdsDetector
-
-import org.junit.*
-
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixLeftViewHolder
-import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * Created by DevAra
@@ -38,7 +42,6 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class OSTopAdsVerificationTest {
-    private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -48,26 +51,21 @@ class OSTopAdsVerificationTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             loginInstrumentationTestTopAdsUser()
-            setupTopAdsDetector()
         }
     }
+
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private var topAdsCount = 0
+    private val topAdsAssertion = TopAdsAssertion(context, TopAdsVerificatorInterface { topAdsCount })
 
     @Before
     fun setUp() {
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    @Before
-    fun setTopAdsAssertion() {
-        topAdsAssertion = TopAdsAssertion(
-                activityRule.activity,
-                activityRule.activity.application as TopAdsVerificatorInterface
-        )
-    }
-
     @After
     fun deleteDatabase() {
-        topAdsAssertion?.after()
+        topAdsAssertion.after()
     }
 
     @Test
@@ -80,12 +78,43 @@ class OSTopAdsVerificationTest {
 
         waitForData()
 
-        val itemCount = itemAdapter.getVisitables().size
+        val itemList = itemAdapter.currentList
+        topAdsCount = calculateTopAdsCount(itemList)
+
+        val itemCount = itemList.size
+
         for (i in 0 until itemCount) {
             scrollHomeRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
-        topAdsAssertion?.assert()
+        topAdsAssertion.assert()
+    }
+
+    private fun calculateTopAdsCount(itemList: List<Visitable<*>>) : Int {
+        var count = 0
+        for (item in itemList) {
+            count += countTopAdsInItem(item)
+        }
+        return count
+    }
+
+    private fun countTopAdsInItem(item: Visitable<*>) : Int {
+        var count = 0
+
+        when (item) {
+            is MixTopDataModel -> {
+                for (grid in item.channelModel.channelGrids)
+                    if (grid.isTopads) count++
+            }
+            is MixLeftDataModel -> {
+                for (grid in item.channelModel.channelGrids)
+                    if (grid.isTopads) count++
+            }
+            is ProductRecommendationDataModel -> {
+                if (item.productItem.isTopAds) count++
+            }
+        }
+        return count
     }
 
     private fun checkProductOnDynamicChannel(homeRecyclerView: RecyclerView, i: Int) {
@@ -94,9 +123,6 @@ class OSTopAdsVerificationTest {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_banner_rv, 0)
             }
             is MixLeftComponentViewHolder -> {
-                clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
-            }
-            is DynamicChannelMixLeftViewHolder -> {
                 clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_product, 0)
             }
             is DynamicChannelMixTopViewHolder -> {

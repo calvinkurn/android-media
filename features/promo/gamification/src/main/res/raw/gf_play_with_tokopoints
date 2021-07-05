@@ -1,7 +1,0 @@
-query{
-  gamiPlayWithPoints(){
-    code
-    message
-    status
-  }
-}

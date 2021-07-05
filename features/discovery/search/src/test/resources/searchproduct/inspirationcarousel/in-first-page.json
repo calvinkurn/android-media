@@ -957,7 +957,7 @@
       }
     ]
   },
-  "searchInspirationCarousel": {
+  "searchInspirationCarouselV2": {
     "data": [
       {
         "title": "Cek kategori berikut - should not be shown (position error)",
@@ -1137,61 +1137,59 @@
       },
       {
         "title": "Cek kategori berikut",
-        "type": "category",
+        "type": "campaign",
         "position": 12,
-        "layout": "list",
+        "layout": "grid",
         "options": [
           {
-            "title": "Android OS",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
+            "title": "Promo Brand Pilihan",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "banner_image_url": "",
+            "banner_link_url": "https://staging.tokopedia.com/discovery/test-data-search",
+            "banner_applink_url": "tokopedia://discovery/test-data-search",
             "product": [
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
-              }
-            ]
-          },
-          {
-            "title": "Handphone",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
-            "product": [
+                "id": 294464499,
+                "name": "Testing csp 1",
+                "price": 195000,
+                "price_str": "Rp 195.000",
+                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/1/25/1369488/1369488_abf6b521-d1d1-4ceb-a55a-0ffbcfdcfbf8_700_700.jpg",
+                "rating": 5,
+                "count_review": 885,
+                "url": "https://staging.tokopedia.com/DeKloud/authentic-coil-master-diy-kit-mini-tool-tang-tweezer-obeng-tas-vape",
+                "applink": "tokopedia://product/294464499",
+                "description": [],
+                "original_price": "Rp 215.000",
+                "discount_percentage": 9
+              },
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
-              }
-            ]
-          },
-          {
-            "title": "Handphone 2",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
-            "product": [
+                "id": 294464495,
+                "name": "Testing csp 2",
+                "price": 195000,
+                "price_str": "Rp 195.000",
+                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/1/25/1369488/1369488_abf6b521-d1d1-4ceb-a55a-0ffbcfdcfbf8_700_700.jpg",
+                "rating": 5,
+                "count_review": 885,
+                "url": "https://staging.tokopedia.com/DeKloud/authentic-coil-master-diy-kit-mini-tool-tang-tweezer-obeng-tas-vape",
+                "applink": "tokopedia://product/294464495",
+                "description": [],
+                "original_price": "Rp 215.000",
+                "discount_percentage": 9
+              },
               {
-                "id": "12345",
-                "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
-                "price": 8000000,
-                "price_str": "Rp8.000.000",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/9/28/569641896/569641896_3a21ae42-10ee-45e6-b7ad-14c7a461de3b_1800_1800.jpg",
-                "rating": 4,
-                "count_review": 100,
-                "url": "",
-                "applink": "tokopedia://product/12345"
+                "id": 13179536,
+                "name": "Alquran Alwasim sedang, Al-Quran Tajwid Arab-Latin-Terjemah Murah",
+                "price": 52500,
+                "price_str": "Rp 52.500",
+                "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/3/29/13179536/13179536_c190a5eb-9c92-4c59-ac43-dd0c85cb7a89_2048_2048.jpg",
+                "rating": 5,
+                "count_review": 1115,
+                "url": "https://staging.tokopedia.com/alida/alquran-alwasim-sedang-al-quran-tajwid-arab-latin-terjemah-murah",
+                "applink": "tokopedia://product/13179536",
+                "description": [],
+                "original_price": "",
+                "discount_percentage": 0
               }
             ]
           }
@@ -1199,14 +1197,17 @@
       },
       {
         "title": "Cek kategori berikut",
-        "type": "category",
+        "type": "campaign",
         "position": 16,
-        "layout": "list",
+        "layout": "grid",
         "options": [
           {
-            "title": "Android OS",
+            "title": "",
             "url": "tokopedia://search?q=samsung",
             "applink": "tokopedia://search?q=samsung",
+            "banner_image_url": "",
+            "banner_link_url": "https://staging.tokopedia.com/discovery/test-data-search",
+            "banner_applink_url": "tokopedia://discovery/test-data-search",
             "product": [
               {
                 "id": "12345",
@@ -1218,14 +1219,7 @@
                 "count_review": 100,
                 "url": "",
                 "applink": "tokopedia://product/12345"
-              }
-            ]
-          },
-          {
-            "title": "Handphone",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
-            "product": [
+              },
               {
                 "id": "12345",
                 "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",
@@ -1236,14 +1230,7 @@
                 "count_review": 100,
                 "url": "",
                 "applink": "tokopedia://product/12345"
-              }
-            ]
-          },
-          {
-            "title": "Handphone 2",
-            "url": "tokopedia://search?q=samsung",
-            "applink": "tokopedia://search?q=samsung",
-            "product": [
+              },
               {
                 "id": "12345",
                 "name": "Samsung Galaxy A50S 4/64 Ram 4gb Rom 64gb Garansi Resmi",

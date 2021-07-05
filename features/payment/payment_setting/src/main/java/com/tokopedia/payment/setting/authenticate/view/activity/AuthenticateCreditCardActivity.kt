@@ -2,16 +2,32 @@ package com.tokopedia.payment.setting.authenticate.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardComponent
-import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
-import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.payment.setting.authenticate.view.fragment.AuthenticateCreditCardFragment
+import com.tokopedia.payment.setting.di.DaggerSettingPaymentComponent
+import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.di.SettingPaymentModule
 
-class AuthenticateCreditCardActivity : BaseSimpleActivity(), HasComponent<AuthenticateCreditCardComponent> {
+class AuthenticateCreditCardActivity : BaseSimpleActivity(), HasComponent<SettingPaymentComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
+    }
+
+    private fun setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE== GlobalConfig.CONSUMER_APPLICATION|| GlobalConfig.APPLICATION_TYPE== GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
 
     override fun getNewFragment(): Fragment {
         return AuthenticateCreditCardFragment.createInstance()
@@ -23,10 +39,10 @@ class AuthenticateCreditCardActivity : BaseSimpleActivity(), HasComponent<Authen
         }
     }
 
-    override fun getComponent(): AuthenticateCreditCardComponent {
-        return DaggerAuthenticateCreditCardComponent.builder()
-                .baseAppComponent((this.application as BaseMainApplication).baseAppComponent)
-                .authenticateCreditCardModule(AuthenticateCreditCardModule(this))
+    override fun getComponent(): SettingPaymentComponent {
+        return DaggerSettingPaymentComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .settingPaymentModule(SettingPaymentModule(this))
                 .build()
     }
 }

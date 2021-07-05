@@ -8,18 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
+import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.detail.model.*
 import com.tokopedia.vouchercreation.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
-import java.text.SimpleDateFormat
 
 /**
  * Created By @ilhamsuaib on 09/05/20
@@ -34,10 +33,6 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         const val PERIOD_DATA_KEY = "period"
         const val DATA_KEY_VOUCHER_PERIOD = "periodeVoucher"
         const val PROMO_CODE_KEY = "promo_code"
-
-        private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
-        private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,6 +43,13 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         super.onViewCreated(view, savedInstanceState)
 
         setupActionBar()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        childFragmentManager.dismissBottomSheetWithTags(
+                DescriptionBottomSheet.TAG
+        )
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherDetail
@@ -104,13 +106,6 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
         }
-    }
-
-    private val rawDateFormatter by lazy {
-        SimpleDateFormat(RAW_DATE_FORMAT, LocaleUtils.getIDLocale())
-    }
-    private val displayedDateFormatter by lazy {
-        SimpleDateFormat(DISPLAYED_DATE_FORMAT, LocaleUtils.getIDLocale())
     }
 
     protected fun getVoucherInfoSection(@VoucherTargetType targetType: Int,
@@ -203,30 +198,4 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         return WarningPeriodUiModel(DATA_KEY_VOUCHER_PERIOD)
     }
 
-    protected fun getDisplayedDateString(startDate: String,
-                                       startHour: String,
-                                       endDate: String,
-                                       endHour: String): String {
-        val formattedStartDate = startDate.formatToDisplayedDate()
-        val formattedEndDate = endDate.formatToDisplayedDate()
-        return String.format(context?.getString(R.string.mvc_displayed_date_format).toBlankOrString(),
-                formattedStartDate, startHour, formattedEndDate, endHour)
-    }
-
-    protected fun getDisplayedDateString(startDate: String,
-                                       endDate: String): String {
-        val formattedStartDate = startDate.formatToDisplayedDate()
-        val formattedEndDate = endDate.formatToDisplayedDate()
-        return String.format(context?.getString(R.string.mvc_displayed_date_post_format).toBlankOrString(),
-                formattedStartDate, formattedEndDate)
-    }
-
-    private fun String.formatToDisplayedDate(): String {
-        try {
-            return displayedDateFormatter.format(rawDateFormatter.parse(this))
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-        return ""
-    }
 }

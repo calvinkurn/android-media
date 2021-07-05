@@ -4,6 +4,7 @@ import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import rx.Subscriber
+import timber.log.Timber
 
 /**
  * Created by Irfan Khoirul on 2019-12-18.
@@ -12,10 +13,11 @@ import rx.Subscriber
 class GetCartListDataSubscriber(val view: ICartListView?,
                                 val presenter: ICartListPresenter?,
                                 val initialLoad: Boolean) : Subscriber<CartListData>() {
-    override fun onCompleted() {}
+    override fun onCompleted() {
+    }
 
     override fun onError(e: Throwable) {
-        e.printStackTrace()
+        Timber.e(e)
         view?.let {
             if (!initialLoad) {
                 it.hideProgressLoading()
@@ -34,6 +36,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
             if (!initialLoad) {
                 it.hideProgressLoading()
             }
+            presenter?.processUpdateCartCounter()
             presenter?.setCartListData(cartListData)
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartListData)

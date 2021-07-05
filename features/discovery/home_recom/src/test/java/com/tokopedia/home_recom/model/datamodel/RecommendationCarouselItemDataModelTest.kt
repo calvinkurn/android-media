@@ -11,8 +11,8 @@ import org.junit.Test
  * Created by Lukas on 2019-07-15
  */
 class RecommendationCarouselItemDataModelTest{
-    private val visitor = HomeRecommendationTypeFactoryImpl()
-    private fun recommendationCarouselItemDataModelFactory(recommendationItem: RecommendationItem, parentPosition: Int, listener: RecommendationListener) = RecommendationCarouselItemDataModel(recommendationItem, parentPosition, listener)
+    private val visitor = HomeRecommendationTypeFactoryImpl(mockk(), mockk(), mockk(), mockk())
+    private fun recommendationCarouselItemDataModelFactory(recommendationItem: RecommendationItem, parentPosition: Int, listener: RecommendationListener) = RecommendationCarouselItemDataModel(recommendationItem, parentPosition)
 
     @Test
     fun test(){

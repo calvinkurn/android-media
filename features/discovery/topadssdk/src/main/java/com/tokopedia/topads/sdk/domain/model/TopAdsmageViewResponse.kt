@@ -31,7 +31,9 @@ data class TopAdsmageViewResponse(
             @SerializedName("name")
             val name: String?,
             @SerializedName("shop")
-            val shop: Shop?
+            val shop: Shop?,
+            @SerializedName("position")
+            val position: Int = 0
         ) {
             data class Image(
                 @SerializedName("full_ecs")

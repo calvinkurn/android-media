@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder.NonGroupItemsEmptyViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder.NonGroupItemsItemViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder.NonGroupItemsViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemModel
 
 /**
  * Created by Pika on 2/6/20.
@@ -16,9 +16,9 @@ class NonGroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> 
                                           var actionStatusChange: ((pos: Int, status: Int) -> Unit),
                                           var onEditGroup: ((groupId: Int, priceBid: Int) -> Unit)) : NonGroupItemsAdapterTypeFactory {
 
-    override fun type(model: NonGroupItemsEmptyViewModel): Int = NonGroupItemsEmptyViewHolder.LAYOUT
+    override fun type(model: NonGroupItemsEmptyModel): Int = NonGroupItemsEmptyViewHolder.LAYOUT
 
-    override fun type(model: NonGroupItemsItemViewModel): Int = NonGroupItemsItemViewHolder.LAYOUT
+    override fun type(model: NonGroupItemsItemModel): Int = NonGroupItemsItemViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): NonGroupItemsViewHolder<*> {
         return when (type) {

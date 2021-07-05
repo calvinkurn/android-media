@@ -6,7 +6,7 @@
         android:id="@+id/v_bottom_overlay"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/Neutral_N700_20"
+        android:background="@color/Unify_N700_20"
         android:elevation="@dimen/play_navigation_overlay_elevation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

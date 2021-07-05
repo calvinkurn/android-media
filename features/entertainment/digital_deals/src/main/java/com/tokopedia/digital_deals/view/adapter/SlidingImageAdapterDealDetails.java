@@ -52,7 +52,7 @@ public class SlidingImageAdapterDealDetails extends PagerAdapter {
         assert imageLayout != null;
         final ImageView imageView = imageLayout.findViewById(com.tokopedia.digital_deals.R.id.deal_image);
 
-        ImageHandler.loadImage(context, imageView, images.get(position), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
+        ImageHandler.loadImage(context, imageView, images.get(position), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
 
         view.addView(imageLayout, 0);
 

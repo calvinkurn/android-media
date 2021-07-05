@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_discussion_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        tools:text="Ada hal lain yang ingin ditanyakan?" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/product_detail_discussion_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:gravity="center"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:text="Cek diskusi" />
+</LinearLayout>

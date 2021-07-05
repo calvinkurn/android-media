@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.historydetails
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.review.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +30,7 @@ abstract class ReviewDetailViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewDetailViewModel(TestCoroutineDispatchers, userSession, productrevGetReviewDetailUseCase, inboxReviewInsertReputationUseCase)
+        viewModel = ReviewDetailViewModel(CoroutineTestDispatchersProvider, userSession, productrevGetReviewDetailUseCase, inboxReviewInsertReputationUseCase)
         viewModel.reviewDetails.observeForever {  }
     }
 }

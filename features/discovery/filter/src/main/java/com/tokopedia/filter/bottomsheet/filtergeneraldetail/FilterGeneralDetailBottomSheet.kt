@@ -160,7 +160,7 @@ internal class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneral
         searchBarFilterDetail?.searchBarPlaceholder = filter?.search?.placeholder ?: ""
         searchBarFilterDetail?.showIcon = false
         context?.let{
-            searchBarFilterDetail?.searchBarTextField?.setTextColor(ContextCompat.getColor(it, R.color.filter_general_detail_search_bar_text))
+            searchBarFilterDetail?.searchBarTextField?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
         searchBarFilterDetail?.searchBarTextField?.setOnFocusChangeListener { _, _ ->
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED

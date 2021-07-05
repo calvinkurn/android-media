@@ -1104,6 +1104,27 @@
     "process_time": 34.087486,
     "data": [
       {
+        "title": "Unknown type should not be shown",
+        "type": "unknown_random_type",
+        "position": 4,
+        "options": [
+          {
+            "text": "Kemeja Pria",
+            "img": "",
+            "url": "https://www.tokopedia.com/search?q=baju&sc=3579&source=search&st=product",
+            "color": "",
+            "applink": "tokopedia://search?q=baju&sc=3579&source=search&st=product"
+          },
+          {
+            "text": "Kaos Pria",
+            "img": "",
+            "url": "https://www.tokopedia.com/search?q=baju&sc=1808&source=search&st=product",
+            "color": "",
+            "applink": "tokopedia://search?q=baju&sc=1808&source=search&st=product"
+          }
+        ]
+      },
+      {
         "title": "Coba produk dengan kategori ini :",
         "type": "category",
         "position": 8,

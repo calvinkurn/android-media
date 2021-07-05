@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -22,25 +23,25 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_CURRENT_ATTACHMENT_URL = "currentAttachmentURLs"
         const val PARAM_NEW_ATTACHMENT_ID = "newAttachmentIDs"
-        private val query by lazy {
+        const val EDIT_REVIEW_QUERY_CLASS_NAME = "EditReview"
+        const val EDIT_REVIEW_MUTATION =
             """
                 mutation productrevEditReview(${'$'}feedbackID: String!, ${'$'}reputationID: String!, ${'$'}productID : String!, ${'$'}shopID: String!, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}currentAttachmentURLs: [String],${'$'}newAttachmentIDs: [String]) {
                   productrevEditReview(feedbackID: ${'$'}feedbackID, reputationID: ${'$'}reputationID, productID: ${'$'}productID, shopID: ${'$'}shopID, rating: ${'$'}rating, reviewText: ${'$'}reviewText, isAnonymous: ${'$'}isAnonymous , currentAttachmentURLs: ${'$'}currentAttachmentURLs, newAttachmentIDs: ${'$'}newAttachmentIDs) {
                     success
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     private var requestParams = RequestParams.EMPTY
 
-    fun setParams(feedbackId: Int, reputationId: Int, productId: Int, shopId: Int, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, oldAttachmentUrls: List<String> = emptyList(), attachmentIds: List<String> = emptyList()) {
+    fun setParams(feedbackId: String, reputationId: String, productId: String, shopId: String, reputationScore: Int = 0, rating: Int, reviewText: String, isAnonymous: Boolean, oldAttachmentUrls: List<String> = emptyList(), attachmentIds: List<String> = emptyList()) {
         requestParams = RequestParams.create().apply {
-            putString(PARAM_FEEDBACK_ID, feedbackId.toString())
-            putString(PARAM_REPUTATION_ID, reputationId.toString())
-            putString(PARAM_PRODUCT_ID, productId.toString())
-            putString(PARAM_SHOP_ID, shopId.toString())
+            putString(PARAM_FEEDBACK_ID, feedbackId)
+            putString(PARAM_REPUTATION_ID, reputationId)
+            putString(PARAM_PRODUCT_ID, productId)
+            putString(PARAM_SHOP_ID, shopId)
             if(reputationScore != 0) {
                 putInt(PARAM_REPUTATION_SCORE, reputationScore)
             }
@@ -60,9 +61,10 @@ class ProductrevEditReviewUseCase @Inject constructor(private val gqlUseCase: Mu
         }
     }
 
+    @GqlQuery(EDIT_REVIEW_QUERY_CLASS_NAME, EDIT_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ProductRevEditReviewResponseWrapper {
         gqlUseCase.clearRequest()
-        gqlUseCase.addRequest(GraphqlRequest(query, ProductRevEditReviewResponseWrapper::class.java, requestParams.parameters))
+        gqlUseCase.addRequest(GraphqlRequest(EditReview.GQL_QUERY, ProductRevEditReviewResponseWrapper::class.java, requestParams.parameters))
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductRevEditReviewResponseWrapper::class.java)
         if (error != null && error.isNotEmpty()) {

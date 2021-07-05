@@ -1,7 +1,7 @@
 package com.tokopedia.discovery2.repository.quickFilter
 
-import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 
 interface QuickFilterRepository {
-    suspend fun getQuickFilterData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): DynamicFilterModel?
+    suspend fun getQuickFilterData(componentId: String, pageEndPoint: String): ArrayList<Filter>?
 }

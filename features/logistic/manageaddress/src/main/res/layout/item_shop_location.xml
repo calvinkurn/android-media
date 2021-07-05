@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/dp_15"
+    android:layout_marginLeft="@dimen/dp_15"
+    android:layout_marginRight="@dimen/dp_15"
+    android:layout_marginStart="@dimen/dp_15"
+    android:layout_marginTop="@dimen/dp_8"
+    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16"
+        android:background="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/TextView.Title"
+                android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:layout_marginRight="@dimen/dp_32"
+                android:layout_weight="1"
+                android:lineSpacingExtra="@dimen/sp_8"
+                tools:text="MyShop" />
+
+            <ImageView
+                android:id="@+id/menu_more"
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_36"
+                android:padding="@dimen/dp_6"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/ic_three_dots_more_menu" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/address_line_1"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_marginEnd="@dimen/dp_56"
+            android:layout_marginRight="@dimen/dp_56"
+            android:layout_marginTop="@dimen/dp_4"
+            android:lineSpacingExtra="@dimen/sp_6"
+            tools:text="Jl. Prof. DR. Satrio No.Kav 11, RT.3/RW.3, Karet Semanggi, Setia Budi" />
+
+        <TextView
+            android:id="@+id/address_line_2"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_marginEnd="@dimen/dp_56"
+            android:layout_marginRight="@dimen/dp_56"
+            android:layout_marginTop="@dimen/dp_2"
+            android:lineSpacingExtra="@dimen/sp_6"
+            tools:text="Setiabudi, Jakarta Selatan, DKI Jakarta, Indonesia 12345" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/bg_line_separator_thin"
+            android:orientation="vertical"
+            android:showDividers="beginning|middle"
+            android:layout_marginTop="@dimen/dp_8">
+
+            <com.tokopedia.design.label.LabelView
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                app:lv_content_text_size="@dimen/sp_13"
+                app:lv_image="@drawable/ic_shop_icon_phone"
+                app:lv_image_margin_right="@dimen/dp_16"
+                app:lv_image_width="@dimen/dp_20"
+                app:lv_title="@string/app_name"
+                app:lv_title_color="@color/Unify_N700_32"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"/>
+
+            <com.tokopedia.design.label.LabelView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                app:lv_content_text_size="@dimen/sp_13"
+                app:lv_image="@drawable/ic_shop_setting_email"
+                app:lv_image_margin_right="@dimen/dp_16"
+                app:lv_image_width="@dimen/dp_20"
+                app:lv_title="@string/app_name"
+                app:lv_title_color="@color/Unify_N700_32"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"/>
+
+            <com.tokopedia.design.label.LabelView
+                android:id="@+id/fax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                app:lv_content_text_size="@dimen/sp_13"
+                app:lv_image="@drawable/ic_shop_setting_fax"
+                app:lv_image_margin_right="@dimen/dp_16"
+                app:lv_image_width="@dimen/dp_20"
+                app:lv_title="@string/app_name"
+                app:lv_title_color="@color/Unify_N700_32"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

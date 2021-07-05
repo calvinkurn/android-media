@@ -27,5 +27,14 @@ data class DiscussionDataByQuestionID(
         val url: String = "",
         @SerializedName("productID")
         @Expose
-        val productId: String = ""
+        val productId: String = "",
+        @SerializedName("productStock")
+        @Expose
+        val productStock: Int = 0,
+        @SerializedName("productStockMessage")
+        @Expose
+        val productStockMessage: String = "",
+        @SerializedName("isSellerView")
+        @Expose
+        val isSellerView: Boolean = false
 )

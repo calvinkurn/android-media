@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/topads_common_select_color_checked" android:state_checked="true" />
-    <item android:color="@color/topads_common_select_color_unchecked" android:state_checked="false" />
-    <item android:color="@color/topads_common_select_color_unchecked" />
+    <item android:color="@color/Unify_G500" android:state_checked="true" />
+    <item android:color="@color/Unify_N700_68" android:state_checked="false" />
+    <item android:color="@color/Unify_N700_68" />
 </selector>

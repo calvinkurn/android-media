@@ -5,4 +5,11 @@
 
     <dimen name="dashboard_icon_shop_height">64dp</dimen>
     <dimen name="dashboard_widget_height">100dp</dimen>
+
+    <dimen name="margin_small_sm">12dp</dimen>
+    <dimen name="fontm">16sp</dimen>
+    <dimen name="notification_circle_size">22dp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="icon_prod_size">18dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
 </resources>

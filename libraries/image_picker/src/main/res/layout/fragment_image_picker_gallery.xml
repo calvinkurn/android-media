@@ -16,7 +16,7 @@
             android:id="@+id/label_view_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:foreground="?attr/selectableItemBackground"
             android:paddingLeft="@dimen/dp_20"
             android:paddingStart="@dimen/dp_20"
@@ -24,7 +24,9 @@
             android:paddingBottom="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
             tools:lv_content="@string/default_all_album"
-            app:lv_content_color="@color/tkpd_main_green"
+            app:lv_title_color="@color/Unify_N700"
+            app:lv_sub_title_color="@color/Unify_N700"
+            app:lv_content_color="@color/Unify_G400"
             app:lv_title="@string/album"
             app:layout_scrollFlags="enterAlways|scroll" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -36,7 +38,7 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:paddingBottom="@dimen/dp_4"/>
 
     <ProgressBar

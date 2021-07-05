@@ -2,96 +2,113 @@ package com.tokopedia.user.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Pair;
 
 import com.tokopedia.user.session.util.EncoderDecoder;
 
 public class MigratedUserSession {
-    public static final boolean IS_ENABLE = false;
-
+    public static final String suffix = "_v2";
     protected Context context;
 
     public MigratedUserSession(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
-    protected String internalGetString(String prefName, String keyName, String defValue) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
-    }
 
     protected long getLong(String prefName, String keyName, long defValue) {
-        if (!IS_ENABLE) {
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        String newPrefName = String.format("%s%s", prefName, suffix);
+        String newKeyName = String.format("%s%s", keyName, suffix);
+
+        // look up from cache
+        Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
+        if (UserSessionMap.map.containsKey(key)) {
+            try {
+                Object value = UserSessionMap.map.get(key);
+                if (value == null) {
+                    return defValue;
+                } else {
+                    return (long) value;
+                }
+            } catch (Exception ignored) {
+            }
         }
 
-        return internalGetLong(prefName, keyName, defValue);
+        long oldValue = internalGetLong(prefName, keyName, defValue);
+
+        if (oldValue != defValue) {
+            internalCleanKey(prefName, keyName);
+            internalSetLong(newPrefName, newKeyName, oldValue);
+            UserSessionMap.map.put(key, oldValue);
+            return oldValue;
+        }
+
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        long value = sharedPrefs.getLong(newKeyName, defValue);
+        UserSessionMap.map.put(key, value);
+        return value;
     }
 
-    protected long internalGetLong(String prefName, String keyName, long defValue) {
+    private long internalGetLong(String prefName, String keyName, long defValue) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getLong(keyName, defValue);
     }
 
-    protected void setLong(String prefName, String keyName, long value) {
-        if (!IS_ENABLE) {
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-        }
-
-        internalSetLong(prefName, keyName, value);
-    }
-
-    protected void internalSetLong(String prefName, String keyName, long value) {
+    private void internalSetLong(String prefName, String keyName, long value) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putLong(keyName, value);
         editor.apply();
     }
 
-    protected String getString(String prefName, String keyName, String defValue) {
-        if (!IS_ENABLE) {
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-        }
-
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
+    Pair<String, String> convertToNewKey(String prefName, String keyName){
+        return new Pair<>(String.format("%s%s", prefName, suffix), String.format("%s%s", keyName, suffix));
     }
 
-    protected void cleanKey(String prefName, String keyName){
-        if(!IS_ENABLE){
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-        }
+    protected void setLong(String prefName, String keyName, long value) {
+        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
+        prefName = newKeys.first;
+        keyName = newKeys.second;
+        UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
+        internalSetLong(prefName, keyName, value);
+    }
 
+    protected void cleanKey(String prefName, String keyName) {
+        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
+        prefName = newKeys.first;
+        keyName = newKeys.second;
+        UserSessionMap.map.remove(new Pair<>(prefName, keyName));
         internalCleanKey(prefName, keyName);
     }
 
-    private void internalCleanKey(String prefName, String keyName){
+    private void internalCleanKey(String prefName, String keyName) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.remove(keyName).apply();
     }
 
     protected void nullString(String prefName, String keyName) {
-        if(!IS_ENABLE){
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-        }
-
+        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
+        prefName = newKeys.first;
+        keyName = newKeys.second;
+        UserSessionMap.map.put(new Pair<>(prefName, keyName), null);
         internalSetString(prefName, keyName, null);
     }
 
+    private String internalGetString(String prefName, String keyName, String defValue) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(keyName, defValue);
+    }
+
     protected void setString(String prefName, String keyName, String value) {
-        if(!IS_ENABLE){
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-        }
+        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
+        prefName = newKeys.first;
+        keyName = newKeys.second;
+        UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
+        value = EncoderDecoder.Encrypt(value, UserSession.KEY_IV);// encrypt string here
         internalSetString(prefName, keyName, value);
     }
 
-    protected void internalSetString(String prefName, String keyName, String value) {
+    private void internalSetString(String prefName, String keyName, String value) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(keyName, value);
@@ -99,44 +116,55 @@ public class MigratedUserSession {
     }
 
     protected String getAndTrimOldString(String prefName, String keyName, String defValue) {
+        String newPrefName = String.format("%s%s", prefName, suffix);
+        String newKeyName = String.format("%s%s", keyName, suffix);
+        String debug = "";
+        boolean isGettingFromMap = false;
 
-        String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-        String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
-        String oldValue = internalGetString(oldprefName, oldKeyName, defValue);
+        Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
+        if (UserSessionMap.map.containsKey(key)) {
+            try {
+                Object value = UserSessionMap.map.get(key);
+                if (value == null) {
+                    isGettingFromMap = true;
+                    return defValue;
+                } else {
+                    isGettingFromMap = true;
+                    return (String) value;
+                }
+            } catch (Exception ignored) {
+            }
+        }
 
-        if(!IS_ENABLE)
-            return oldValue;
+        String oldValue = internalGetString(prefName, keyName, defValue);
 
-        if(oldValue != null && !oldValue.equals(defValue)){
-            internalCleanKey(oldprefName, oldKeyName);
-            internalSetString(prefName, keyName, oldValue);
+        if (oldValue != null && !oldValue.equals(defValue)) {
+            internalCleanKey(prefName, keyName);
+            internalSetString(newPrefName, newKeyName, EncoderDecoder.Encrypt(oldValue, UserSession.KEY_IV));
+            UserSessionMap.map.put(key, oldValue);
             return oldValue;
         }
 
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(keyName, defValue);
-    }
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        String value = sharedPrefs.getString(newKeyName, defValue);
 
-    protected boolean getBoolean(String prefName, String keyName, boolean defValue) {
-        if(!IS_ENABLE){
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        if (value != null) {
+            if(value.equals(defValue)) {// if value same with def value\
+                return value;
+            }else{
+                value = EncoderDecoder.Decrypt(value, UserSession.KEY_IV);// decrypt here
+                UserSessionMap.map.put(key, value);
+                return value;
+            }
+        }else{
+            return value;
         }
-        return internalGetBoolean(prefName, keyName, defValue);
     }
 
     private boolean internalGetBoolean(String prefName, String keyName, boolean defValue) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(keyName, defValue);
-    }
-
-    protected void setBoolean(String prefName, String keyName, boolean value) {
-        if(!IS_ENABLE){
-            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
-        }
-        internalSetBoolean(prefName, keyName, value);
     }
 
     private void internalSetBoolean(String prefName, String keyName, boolean value) {
@@ -146,24 +174,43 @@ public class MigratedUserSession {
         editor.apply();
     }
 
+    protected void setBoolean(String prefName, String keyName, boolean value) {
+        Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
+        prefName = newKeys.first;
+        keyName = newKeys.second;
+        UserSessionMap.map.put(new Pair<>(prefName, keyName), value);
+        internalSetBoolean(prefName, keyName, value);
+    }
+
     protected boolean getAndTrimOldBoolean(String prefName, String keyName, boolean defValue) {
+        String newPrefName = String.format("%s%s", prefName, suffix);
+        String newKeyName = String.format("%s%s", keyName, suffix);
 
-        String oldprefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
-        String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        Pair<String, String> key = new Pair<>(newPrefName, newKeyName);
+        if (UserSessionMap.map.containsKey(key)) {
+            try {
+                Object value = UserSessionMap.map.get(key);
+                if (value == null) {
+                    return defValue;
+                } else {
+                    return (boolean) value;
+                }
+            } catch (Exception ignored) {
+            }
+        }
 
-        boolean oldValue = internalGetBoolean(oldprefName, oldKeyName, defValue);
+        boolean oldValue = internalGetBoolean(prefName, keyName, defValue);
 
-        if(!IS_ENABLE)
-            return oldValue;
-
-        if( oldValue != defValue){
-            internalCleanKey(oldprefName, oldKeyName);
-            internalSetBoolean(prefName, keyName, oldValue);
-
+        if (oldValue != defValue) {
+            internalCleanKey(prefName, keyName);
+            internalSetBoolean(newPrefName, newKeyName, oldValue);
+            UserSessionMap.map.put(key, oldValue);
             return oldValue;
         }
 
-        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        return sharedPrefs.getBoolean(keyName, defValue);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(newPrefName, Context.MODE_PRIVATE);
+        boolean value = sharedPrefs.getBoolean(newKeyName, defValue);
+        UserSessionMap.map.put(key, value);
+        return value;
     }
 }

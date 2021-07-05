@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
@@ -29,7 +28,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -58,20 +56,15 @@ import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahP
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.*
-import com.tokopedia.salam.umrah.common.util.CommonParam
+import com.tokopedia.salam.umrah.common.util.*
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
-import com.tokopedia.salam.umrah.common.util.UmrahHotelRating
-import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_error.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_error.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_checkout_term_condition.view.*
-import kotlinx.android.synthetic.main.bottom_sheet_umrah_mandatory_document.*
 import kotlinx.android.synthetic.main.bottom_sheet_umrah_mandatory_document.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_checkout.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_content_order.*
@@ -80,6 +73,7 @@ import kotlinx.android.synthetic.main.partial_umrah_checkout_footer.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_header.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_installment_list.*
 import kotlinx.android.synthetic.main.partial_umrah_checkout_promo.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 /**
@@ -132,7 +126,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahCheckoutViewModel.checkoutMapped.observe(this, Observer {
+        umrahCheckoutViewModel.checkoutMapped.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderView(it.data)
@@ -142,9 +136,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     performanceMonitoring.stopTrace()
                     val data = it.throwable
                     view?.let {
-                        Toaster.showErrorWithAction(it, data.message
-                                ?: "", Snackbar.LENGTH_LONG, getString(R.string.umrah_checkout_error_confirmation)
-                                , View.OnClickListener { })
+                        Toaster.build(it, data.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                                View.OnClickListener { })
                     }
                     hideLoadingBar()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
@@ -156,7 +149,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         })
 
-        umrahCheckoutViewModel.checkoutResult.observe(this, Observer {
+        umrahCheckoutViewModel.checkoutResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.checkoutGeneral.data.success == 0) {
@@ -191,9 +184,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     hideLoadingBar()
                     val data = it.throwable
                     view?.let {
-                        Toaster.showErrorWithAction(it, data.message
-                                ?: "", Snackbar.LENGTH_LONG, getString(R.string.umrah_checkout_error_confirmation)
-                                , View.OnClickListener { })
+                        Toaster.build(it, data.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                                View.OnClickListener { })
                     }
                 }
             }
@@ -215,14 +207,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun requestData(){
         umrahCheckoutViewModel.getDataCheckout(
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_pdp),
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_checkout_summary),
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_checkout_payment_option),
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_checkout_tnc),
+                UmrahQuery.UMRAH_PDP_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_SUMMARY_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_PAYMENT_OPTION_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_TNC_QUERY,
                 slugName,
                 variantId,
                 pilgrimCount,
@@ -308,13 +296,12 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     )
             )
 
-            umrahCheckoutViewModel.executeCheckout(GraphqlHelper.loadRawString(resources,
-                    R.raw.gql_mutation_umrah_checkout_general), checkoutResultParams)
+            umrahCheckoutViewModel.executeCheckout(UmrahQuery.UMRAH_CHECKOUT_GENERAL_QUERY, checkoutResultParams)
         } else {
             progressDialog.dismiss()
             view?.let {
-                Toaster.showErrorWithAction(it, getString(R.string.umrah_checkout_validation_error), Snackbar.LENGTH_LONG, getString(R.string.umrah_checkout_error_confirmation)
-                        , View.OnClickListener { })
+                Toaster.build(it, getString(R.string.umrah_checkout_validation_error) ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.umrah_checkout_error_confirmation),
+                        View.OnClickListener { })
             }
         }
 
@@ -593,71 +580,63 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
 
     private fun showBottomSheetCheckoutError(error: String) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
-            if (!error.isNullOrEmpty())
-            setCustomContentView(inflatingViewError(context,R.layout.bottom_sheet_umrah_checkout_error,error),"",false)
-            img_umrah_checkout_error_bottom_sheet_closed.setOnClickListener { dismiss() }
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_umrah_checkout_error, null)
+        val bottomSheets = BottomSheetUnify()
+        bottomSheets.apply {
+            setChild(view)
+            context?.let{
+                setTitle(it.getString(R.string.umrah_checkout_mandatory_document_bottom_sheet_title))
+            }
+            setCloseClickListener { bottomSheets.dismiss() }
         }
-        bottomSheet.show()
-    }
-
-    fun showMandatoryDocument(context: Context, listBottomSheet: List<UmrahCheckoutMandatoryDocument>) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
-            setCustomContentView(inflatingViewMandatoryDocument(context, R.layout.bottom_sheet_umrah_mandatory_document,
-                    listBottomSheet), "", false)
-            img_umrah_checkout_bottom_sheet_closed.setOnClickListener { dismiss() }
-        }
-        bottomSheet.show()
-
-    }
-
-    fun showBottomSheetTermCondition(context: Context, listBottomSheet: List<UmrahTermCondition>) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
-            setCustomContentView(inflatingViewTermCondition(context, R.layout.bottom_sheet_umrah_checkout_term_condition,
-                    listBottomSheet), "", false)
-            img_umrah_checkout_bottom_sheet_closed.setOnClickListener { dismiss() }
-
-        }
-        bottomSheet.show()
-
-    }
-
-    private fun inflatingViewError(context: Context, id: Int, error:String): View? {
-        var errorMessage = error
-        if(error.isNullOrEmpty()) errorMessage = getString(R.string.umrah_empty_state_desc)
-        val view = LayoutInflater.from(context).inflate(id, null)
         view.es_checkout.apply {
             ContextCompat.getDrawable(context,R.drawable.umrah_img_error_checkout)?.let { setImageDrawable(it) }
             setTitle(getString(R.string.umrah_checkout_error_title))
-            setDescription(errorMessage)
+            setDescription(error)
             setPrimaryCTAText(getString(R.string.umrah_checkout_error_btn))
             setPrimaryCTAClickListener {
                 activity?.finish()
             }
         }
-        return view
-    }
-
-    private fun inflatingViewTermCondition(context: Context, id: Int,
-                                           listBottomSheet: List<UmrahTermCondition>): View? {
-        return LayoutInflater.from(context).inflate(id, null).apply {
-            umrahCheckoutTermConditionAdapter.setList(listBottomSheet)
-            rv_umrah_checkout_term_condition.adapter = umrahCheckoutTermConditionAdapter
-            rv_umrah_checkout_term_condition.layoutManager = LinearLayoutManager(
-                    context,
-                    RecyclerView.VERTICAL, false
-            )
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
         }
     }
 
-    private fun inflatingViewMandatoryDocument(context: Context, id: Int, listBottomSheet: List<UmrahCheckoutMandatoryDocument>): View? {
-       return LayoutInflater.from(context).inflate(id, null).apply {
+    fun showMandatoryDocument(context: Context, listBottomSheet: List<UmrahCheckoutMandatoryDocument>) {
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_umrah_mandatory_document, null)
+        val bottomSheets = BottomSheetUnify()
+        bottomSheets.apply {
+            setChild(view)
+            setTitle(context.getString(R.string.umrah_checkout_mandatory_document_bottom_sheet_title))
+            setCloseClickListener { bottomSheets.dismiss() }
+        }
+        view.rv_umrah_checkout_mandatory_document.apply {
             umrahCheckoutMandatoryDocumentAdapter.setList(listBottomSheet)
-            rv_umrah_checkout_mandatory_document.adapter = umrahCheckoutMandatoryDocumentAdapter
-            rv_umrah_checkout_mandatory_document.layoutManager = LinearLayoutManager(
-                    context,
-                    RecyclerView.VERTICAL, false
-            )
+            this.adapter = umrahCheckoutMandatoryDocumentAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+        }
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
+        }
+
+    }
+
+    fun showBottomSheetTermCondition(context: Context, listBottomSheet: List<UmrahTermCondition>) {
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_umrah_checkout_term_condition, null)
+        val bottomSheets = BottomSheetUnify()
+        bottomSheets.apply {
+            setChild(view)
+            setTitle(context.getString(R.string.umrah_checkout_term_condition_bottom_sheet_title))
+            setCloseClickListener { bottomSheets.dismiss() }
+        }
+        view.rv_umrah_checkout_term_condition.apply {
+            umrahCheckoutTermConditionAdapter.setList(listBottomSheet)
+            this.adapter = umrahCheckoutTermConditionAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
+        }
+        fragmentManager?.let {
+            bottomSheets.show(it, "")
         }
     }
 

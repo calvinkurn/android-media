@@ -11,11 +11,7 @@ import java.util.*
 class UserIdentificationStepperModel : StepperModel {
     var ktpFile: String = ""
     var faceFile: String = ""
-    var listRetake: ArrayList<Int> = arrayListOf()
-    var listMessage: ArrayList<String> = arrayListOf()
-    var titleText: String = ""
-    var subtitleText: String = ""
-    var buttonText: String = ""
+    var isLiveness: Boolean = true
 
     constructor()
 

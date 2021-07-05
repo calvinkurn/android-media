@@ -17,7 +17,6 @@ import dagger.multibindings.StringKey
  * @author : Steven 2019-08-08
  */
 
-@ChatListScope
 @Module
 class ChatNotificationsQueryModule {
     @Provides

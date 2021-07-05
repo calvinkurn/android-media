@@ -13,18 +13,10 @@ import javax.inject.Named
  * @author okasurya on 5/17/18.
  */
 @Module
-@AnalyticsDebuggerScope
 class AnalyticsDebuggerModule {
     @Provides
     fun provideContext(@ApplicationContext context: Context): Context {
         return context
-    }
-
-    @Provides
-    @Named(NAMED_GTM_ANALYTICS)
-    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase,
-                         deleteGtmLogUseCase: DeleteGtmLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase)
     }
 
     @Provides
@@ -47,13 +39,6 @@ class AnalyticsDebuggerModule {
     fun provideTopAdsPresenter(getTopAdsLogUseCase: GetTopAdsLogUseCase,
                                 deleteTopAdsLogUseCase: DeleteTopAdsLogUseCase): TopAdsDebugger.Presenter {
         return TopAdsDebuggerPresenter(getTopAdsLogUseCase, deleteTopAdsLogUseCase)
-    }
-
-    @Provides
-    @Named(NAMED_GTM_ERROR_ANALYTICS)
-    fun provideGtmErrorPresenter(getGtmErrorLogUseCase: GetGtmErrorLogUseCase,
-                                 deleteGtmErrorLogUseCase: DeleteGtmErrorLogUseCase): AnalyticsDebugger.Presenter {
-        return AnalyticsGtmErrorDebuggerPresenter(getGtmErrorLogUseCase, deleteGtmErrorLogUseCase)
     }
 
     @Provides

@@ -51,7 +51,7 @@ public class SnackbarManager {
             @ColorRes int actionColorRes,
             @ColorRes int backGroundColor
     ) {
-        return make(view, text, duration, R.color.white, actionColorRes, backGroundColor, 0);
+        return make(view, text, duration, R.color.Unify_N0, actionColorRes, backGroundColor, 0);
     }
 
     public static View getContentView (Activity activity) {
@@ -84,7 +84,7 @@ public class SnackbarManager {
             @Snackbar.Duration int duration) {
 
         return make(view, text, duration,
-                R.color.tkpd_main_green, R.color.font_black_primary_70);
+                com.tokopedia.unifyprinciples.R.color.Unify_G400, com.tokopedia.unifyprinciples.R.color.Unify_N700_68);
     }
 
     public static Snackbar make(
@@ -98,7 +98,7 @@ public class SnackbarManager {
             View view,
             String text,
             @Snackbar.Duration int duration) {
-        return make(view, text, duration, R.color.red_500, R.color.black, R.color.red_50, R.drawable.bg_red_snackbar);
+        return make(view, text, duration, com.tokopedia.unifyprinciples.R.color.Unify_R600, com.tokopedia.unifyprinciples.R.color.Unify_N700, com.tokopedia.unifyprinciples.R.color.Unify_R100, R.drawable.bg_red_snackbar);
     }
 
     /**
@@ -119,7 +119,7 @@ public class SnackbarManager {
         return make(view,
                 text,
                 duration,
-                R.color.font_black_disabled_38, R.color.green_500, R.color.light_green,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_32, com.tokopedia.unifyprinciples.R.color.Unify_G500, com.tokopedia.unifyprinciples.R.color.Unify_G100,
                 R.drawable.bg_green_snackbar);
     }
 

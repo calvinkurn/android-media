@@ -1,0 +1,13 @@
+{
+  "readme": "click failed product upload notification",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickAddProduct",
+      "eventCategory" : "add product page",
+      "eventAction" : "click failed add product notification",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
+    }
+  ]
+}

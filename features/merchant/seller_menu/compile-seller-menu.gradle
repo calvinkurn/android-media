@@ -1,0 +1,64 @@
+//include "libraries:analytics"
+include "libraries:applink"
+//include "libraries:banner"
+//include "libraries:base_adapter"
+//include "libraries:base_list_seller"
+//include "libraries:bottom_sheet_builder"
+//include "libraries:cm_push_notifications"
+include "libraries:common_network"
+include "libraries:remoteresourcerequest"
+//include "libraries:core_legacy"
+//include "libraries:core_network"
+//include 'libraries:date_picker_range'
+//include "libraries:fingerprint"
+include "libraries:global_config"
+include "libraries:graphql"
+include "libraries:cache_manager"
+//include "libraries:image_picker"
+//include "libraries:image_preview"
+//include 'libraries:imageuploader'
+include "libraries:kotlin_extensions"
+//include 'libraries:locationmanager'
+include "libraries:logger"
+//include 'libraries:iris'
+//include 'libraries:iris_no_op'
+include "libraries:network"
+//include "libraries:oms"
+//include "libraries:push_notification"
+//include 'libraries:permissionchecker'
+include "libraries:remote_config"
+//include "libraries:travel_calendar"
+//include "libraries:tracking_optimizer"
+//include "libraries:use_case"
+include "libraries:user_session"
+//include "libraries:videoplayer"
+//include "libraries:websocket"
+//include "libraries:YouTubeAndroidPlayerApi"
+//include "libraries:youtubeutil"
+//include "libraries:sharecontent"
+include "libraries:track"
+//include "libraries:graph_view"
+//include "libraries:linker"
+//include "libraries:webview"
+//include "libraries:collapsing_tab_layout"
+
+//include "libraries:videouploader"
+
+//include "libraries:unify:unify_compositions:banner"
+include 'libraries:promotions_target'
+include 'libraries:inappupdate'
+
+include 'tkpddesign'
+include 'tkpdabstraction'
+include "features:user:sessioncommon"
+include "features:common:resources_common"
+
+
+// digital home
+//include ":features:digital:digital_homepage"
+
+include 'libraries:play_core'
+include 'libraries:analytics_debugger'
+include 'libraries:analytics_debugger_noop'
+include 'libraries:base_list'
+include 'testapp'

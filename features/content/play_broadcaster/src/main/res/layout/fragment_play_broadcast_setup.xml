@@ -5,6 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <include
+        android:id="@+id/action_bar"
+        layout="@layout/layout_play_action_bar"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
         android:id="@+id/follower_view"
         android:layout_width="@dimen/layout_lvl0"
@@ -48,7 +58,7 @@
         android:paddingTop="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/play_dp_12"
         android:paddingBottom="@dimen/spacing_lvl3"
-        android:textColor="@color/dark_N700_68"
+        android:textColor="@color/play_dms_white_68"
         app:layout_constraintBottom_toTopOf="@id/barrier_top_action_bottom_info"
         app:layout_constraintEnd_toEndOf="@id/btn_setup"
         app:layout_constraintStart_toStartOf="@id/follower_view"

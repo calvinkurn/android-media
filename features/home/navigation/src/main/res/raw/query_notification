@@ -15,6 +15,14 @@ query Notification($cursor: String) {
     }
     chat {
       unreads
+      unreadsSeller
+      unreadsUser
+    }
+    inbox_counter{
+      all{
+        total_int
+        notifcenter_int
+      }
     }
     resolutionAs {
       buyer

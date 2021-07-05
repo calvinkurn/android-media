@@ -2,14 +2,16 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCarouselCardDataModel
-import com.tokopedia.play_common.widget.playBannerCarousel.model.PlayBannerCarouselItemDataModel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
-
-import java.util.HashMap
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -83,10 +85,6 @@ interface HomeCategoryListener {
 
     fun onTokopointCheckNowClicked(applink: String)
 
-    fun launchPermissionChecker()
-
-    fun onCloseGeolocationView()
-
     fun sendEETracking(data: HashMap<String, Any>)
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
@@ -95,7 +93,7 @@ interface HomeCategoryListener {
 
     fun getWindowWidth(): Int
 
-    fun refreshHomeData()
+    fun refreshHomeData(forceRefresh: Boolean = false)
 
     fun isShowSeeAllCard(): Boolean
 
@@ -109,13 +107,33 @@ interface HomeCategoryListener {
 
     fun removeViewHolderAtPosition(position: Int)
 
-    fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
-
-    fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
-
-    fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
-
     fun onDynamicChannelRetryClicked()
 
     fun getTopAdsBannerNextPageToken(): String
+
+    fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int)
+
+    fun getUserIdFromViewModel(): String
+
+    fun recommendationListOnCloseBuyAgain(id : String, position: Int)
+
+    fun getOneClickCheckoutHomeComponent(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int)
+
+    fun declineRechargeRecommendationItem(requestParams: Map<String, String>)
+
+    fun getRechargeRecommendation()
+
+    fun declineSalamItem(requestParams: Map<String, Int>)
+
+    fun getSalamWidget()
+
+    fun getRechargeBUWidget(source: WidgetSource)
+
+    fun isNewNavigation(): Boolean
+
+    fun onChooseAddressUpdated()
+
+    fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
+
+    fun onChooseAddressServerDown()
 }

@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -16,6 +15,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -37,7 +36,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
@@ -532,6 +530,17 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+
+    public static void loadImageFromUriFitCenter(Context context, ImageView imageView, Uri uri) {
+
+        Glide.with(context)
+                .asBitmap() // some .jpeg files are actually gif
+                .load(uri)
+                .centerCrop()
+                .into(imageView);
+    }
+
+
     public static void LoadImageResize(Context context, ImageView imageView, String url, int width, int height) {
         Glide.with(context)
                 .load(url)
@@ -632,8 +641,8 @@ public class ImageHandler {
     }
 
     public static void loadImageBlurWithViewTarget(final Context context,
-                                     String imageUrl,
-                                     CustomTarget<Bitmap> simpleTarget) {
+                                                   String imageUrl,
+                                                   CustomTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .asBitmap()

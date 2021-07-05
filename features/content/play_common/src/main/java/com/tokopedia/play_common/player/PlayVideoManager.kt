@@ -27,11 +27,9 @@ import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
-import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.properties.Delegates
 
 /**
@@ -41,9 +39,6 @@ class PlayVideoManager private constructor(
         private val applicationContext: Context,
         private val exoPlayerCreator: ExoPlayerCreator
 ) {
-
-    private val perMediaJob = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.Main.immediate)
 
     /**
      * VideoPlayer shared state
@@ -60,7 +55,7 @@ class PlayVideoManager private constructor(
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
     private val playerStateProcessor = ExoPlayerStateProcessorImpl()
-    private val listeners: MutableList<Listener> = mutableListOf()
+    private val listeners: ConcurrentLinkedQueue<Listener> = ConcurrentLinkedQueue()
 
     private val listenerPlayerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -143,9 +138,11 @@ class PlayVideoManager private constructor(
                     val currentWindow = timeline.getWindow(0, Timeline.Window())
                     val prepareState = currentPrepareState
                     if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is PlayVideoPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
-                        currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
                         val lastPosition = prepareState.positionHandle.lastPosition
-                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) videoPlayer.seekTo(lastPosition)
+                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) {
+                            videoPlayer.seekTo(lastPosition)
+                            currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
+                        }
                     }
                 }
             } catch (e: Exception) {}
@@ -174,14 +171,13 @@ class PlayVideoManager private constructor(
     fun getVideoStateFlow() = callbackFlow<PlayVideoState> {
         val listener = object : Listener {
             override fun onPlayerStateChanged(state: PlayVideoState) {
-                offer(state)
+                try { offer(state) } catch (e: Throwable) {}
             }
         }
 
         addListener(listener)
 
         awaitClose { removeListener(listener) }
-
     }
 
     fun addListener(listener: Listener) {
@@ -192,7 +188,7 @@ class PlayVideoManager private constructor(
         listeners.remove(listener)
     }
 
-    fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
+    fun playUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl, startPosition: Long? = null) {
         if (uri.toString().isEmpty()) {
             release()
             return
@@ -201,7 +197,9 @@ class PlayVideoManager private constructor(
         val prepareState = currentPrepareState
         if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
-            val lastPosition = if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
+
+            val lastPosition = startPosition ?: if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
+
             val resetState = if (prepareState is PlayVideoPrepareState.Unprepared && currentUri == uri) prepareState.resetState else true
             playVideoWithUri(uri, autoPlay, lastPosition, resetState)
             currentPrepareState = PlayVideoPrepareState.Prepared(uri, if (prepareState is PlayVideoPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
@@ -210,8 +208,6 @@ class PlayVideoManager private constructor(
     }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
-        doPerMediaPreparation()
-
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
         videoPlayer.prepare(mediaSource, resetState, resetState)
@@ -244,13 +240,11 @@ class PlayVideoManager private constructor(
     }
 
     fun release() {
-        perMediaJob.cancelChildren()
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
     }
 
     fun stop(resetState: Boolean = true) {
-        perMediaJob.cancelChildren()
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
@@ -266,10 +260,6 @@ class PlayVideoManager private constructor(
         videoPlayer.stop()
     }
 
-    fun destroy() {
-        scope.cancel()
-    }
-
     private fun getDefaultPrepareState() = PlayVideoPrepareState.Unprepared(
             previousUri = null,
             previousType = PlayVideoType.Unknown,
@@ -277,22 +267,6 @@ class PlayVideoManager private constructor(
             resetState = true
     )
     //endregion
-
-    private fun initBufferingValidation() = scope.launch(perMediaJob) {
-        getVideoStateFlow()
-                .distinctUntilChanged()
-                .collectLatest { state ->
-                    if (state == PlayVideoState.Buffering) {
-                        delay(MAX_BUFFERING_DURATION_IN_MS)
-
-                        val prepareState = currentPrepareState
-                        if (prepareState is PlayVideoPrepareState.Prepared) {
-                            if (isVideoLive()) release() else stop(resetState = false)
-                            playUri(prepareState.uri, videoPlayer.playWhenReady)
-                        }
-                    }
-                }
-    }
 
     //region video state
     @Deprecated(message = "Use listener instead")
@@ -338,12 +312,6 @@ class PlayVideoManager private constructor(
 
     fun getVideoState(): PlayVideoState = _observablePlayVideoState.value ?: PlayVideoState.NoMedia
     //endregion
-
-    //region private method
-    private fun doPerMediaPreparation() {
-        perMediaJob.cancelChildren()
-        initBufferingValidation()
-    }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
@@ -417,7 +385,6 @@ class PlayVideoManager private constructor(
     }
 
     companion object {
-        private const val MAX_BUFFERING_DURATION_IN_MS = 12 * 1000L
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
 
@@ -449,8 +416,6 @@ class PlayVideoManager private constructor(
         @JvmStatic
         fun deleteInstance() = synchronized(this) {
             if (INSTANCE != null) {
-                INSTANCE!!.destroy()
-
                 playProcessLifecycleObserver?.let { ProcessLifecycleOwner.get()
                         .lifecycle.removeObserver(it) }
 

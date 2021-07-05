@@ -1,0 +1,135 @@
+{
+  "data": {
+    "type": "cart",
+    "id": "17211378-3-afb82ef86c4746cf53cd307a03cbc184",
+    "attributes": {
+      "user_id": 17211378,
+      "client_number": "102111106111",
+      "title": "Detail Pembayaran",
+      "category_name": "Listrik PLN",
+      "operator_name": "Tagihan Listrik",
+      "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/11/15/21181130/21181130_d593aa6d-5f53-4674-b1da-5988041541f4.png",
+      "price": "Rp 2.510",
+      "price_plain": 2510,
+      "instant_checkout": false,
+      "need_otp": false,
+      "sms_state": "",
+      "voucher_autocode": "",
+      "user_input_price": null,
+      "main_info": [
+        {
+          "label": "ID Pelanggan",
+          "value": "102111106111"
+        },
+        {
+          "label": "Nama",
+          "value": "Tokopedia User Default"
+        },
+        {
+          "label": "Total Bayar",
+          "value": "Rp 2.510"
+        }
+      ],
+      "additional_info": [
+        {
+          "title": "Detail Tagihan",
+          "detail": [
+            {
+              "label": "Admin Bank",
+              "value": "Rp 2.500"
+            },
+            {
+              "label": "Total Lembar Tagihan",
+              "value": "0 Bulan"
+            }
+          ]
+        }
+      ],
+      "enable_voucher": true,
+      "is_coupon_active": 1,
+      "autoapply": {
+        "success": false,
+        "Message": {
+          "state": "",
+          "color": "",
+          "text": ""
+        },
+        "code": "",
+        "is_coupon": 0,
+        "discount_amount": 0,
+        "discount_price": "Rp 0",
+        "discounted_amount": 2510,
+        "discounted_price": "Rp 2.510",
+        "title_description": "",
+        "promo_code_id": 0,
+        "promo_id": 0,
+        "message_success": ""
+      },
+      "default_promo_dialog_tab": "voucher",
+      "cross_selling_type": 3,
+      "cross_selling_config": {
+        "is_skipable": true,
+        "is_checked": false,
+        "wording": {
+          "header_title": "Checkout",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        },
+        "wording_is_subscribed": {
+          "header_title": "Checkout",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        }
+      },
+      "pop_up": null,
+      "fintech_product": [
+        {
+          "transaction_type": "purchase-protection",
+          "tier_id": 763,
+          "opt_in": false,
+          "check_box_disabled": false,
+          "allow_ovo_points": true,
+          "fintech_amount": 3250,
+          "fintech_partner_amount": 3250,
+          "info": {
+            "title": "Proteksi Tagihan",
+            "subtitle": "Tambahkan proteksi untuk mendapatkan kompensasi hingga Rp500rb jika layanan terputus",
+            "link_text": "Pelajari",
+            "link_url": "https://www.tokopedia.com/asuransi/proteksi/tagihan/",
+            "tooltip_text": ""
+          },
+          "ServiceID": 1
+        }
+      ],
+      "atc_source": "",
+      "admin_fee": "Rp 2.500",
+      "admin_fee_plain": 2500,
+      "back_url": "",
+      "promo_service_id": "819380128012836"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "type": "category",
+          "id": "3"
+        }
+      },
+      "operator": {
+        "data": {
+          "type": "operator",
+          "id": "18"
+        }
+      },
+      "product": {
+        "data": {
+          "type": "product",
+          "id": "291"
+        }
+      }
+    }
+  }
+}

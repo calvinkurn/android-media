@@ -7,22 +7,27 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.layout_title_popular_search.view.*
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
-class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleViewModel>(itemView) {
+class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleDataView>(itemView) {
 
-    override fun bind(element: PopularSearchTitleViewModel) {
+    override fun bind(element: PopularSearchTitleDataView) {
         bindTitle(element)
         bindActionRefreshButton(element)
     }
 
-    private fun bindTitle(item: PopularSearchTitleViewModel) {
-        itemView.titleTextView?.text = item.title
+    private fun bindTitle(item: PopularSearchTitleDataView) {
+        itemView.titleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, item.title, getString(R.string.content_desc_titleTextView)) }
     }
 
-    private fun bindActionRefreshButton(item: PopularSearchTitleViewModel) {
+    private fun bindActionRefreshButton(item: PopularSearchTitleDataView) {
         itemView.actionRefreshButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.actionRefreshButton?.text = item.labelAction
-            itemView.actionRefreshButton?.setOnClickListener { clickListener.onRefreshPopularSearch(item.featureId) }
+            itemView.actionRefreshButton?.isEnabled = true
+            itemView.actionRefreshButton?.setOnClickListener {
+                itemView.actionRefreshButton?.isEnabled = false
+                clickListener.onRefreshPopularSearch(item.featureId)
+            }
         }
     }
 

@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_digital_homepage_favorites_title"

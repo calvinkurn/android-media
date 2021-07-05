@@ -8,7 +8,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_featured_shop"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -22,8 +22,9 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/link_featured_shop"
-        android:textColor="#7A08C9"
+        android:textColor="@color/Unify_P600"
         android:textSize="13sp"
+        android:text="@string/os_featured_shop_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -40,6 +41,8 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_featured_shop" />

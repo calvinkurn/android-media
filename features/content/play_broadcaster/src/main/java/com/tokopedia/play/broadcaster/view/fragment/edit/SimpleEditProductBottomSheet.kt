@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -23,16 +23,16 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.result.NetworkResult
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.broadcaster.util.extension.showToaster
-import com.tokopedia.play.broadcaster.util.scroll.StopFlingScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
@@ -43,7 +43,7 @@ import javax.inject.Inject
  */
 class SimpleEditProductBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetDialogFragment() {
 
@@ -86,9 +86,9 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayEditProductViewModel::class.java)
-        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayEditProductViewModel::class.java)
+        dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -101,13 +101,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeSelectedProducts()
-        observeUploadProduct()
+        setupObserve()
     }
 
     override fun onDestroyView() {
@@ -145,9 +139,14 @@ class SimpleEditProductBottomSheet @Inject constructor(
             if (btnAction.isLoading) return@setOnClickListener
             viewModel.uploadProduct()
         }
-        tvChooseOver.setOnClickListener { mListener?.onChooseOver() }
+        tvChooseOver.setOnClickListener { mListener?.onChooseOver(this@SimpleEditProductBottomSheet) }
 
         setSelectedProductList(viewModel.selectedProducts)
+    }
+
+    private fun setupObserve() {
+        observeSelectedProducts()
+        observeUploadProduct()
     }
 
     private fun setSelectedProductList(productList: List<ProductContentUiModel>) {
@@ -168,11 +167,13 @@ class SimpleEditProductBottomSheet @Inject constructor(
                 height = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.skipCollapsed = true
-            bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                bottomSheetBehavior.isHideable = true
+                bottomSheetBehavior.skipCollapsed = true
+                bottomSheetBehavior.peekHeight = (MAX_HEIGHT_MULTIPLIER * maxHeight()).toInt()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = true
         }
@@ -182,7 +183,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun onUploadSuccess() {
         scope.launch {
-            val error = mListener?.onSaveEditedProductList(dataStoreViewModel.getDataStore())
+            val error = mListener?.onSaveEditedProductList(this@SimpleEditProductBottomSheet, dataStoreViewModel.getDataStore())
             if (error != null) {
                 yield()
                 onUploadFailed(error)
@@ -243,7 +244,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     interface Listener {
 
-        fun onChooseOver()
-        suspend fun onSaveEditedProductList(dataStore: PlayBroadcastSetupDataStore): Throwable?
+        fun onChooseOver(bottomSheet: BottomSheetDialogFragment)
+        suspend fun onSaveEditedProductList(bottomSheet: BottomSheetDialogFragment, dataStore: PlayBroadcastSetupDataStore): Throwable?
     }
 }

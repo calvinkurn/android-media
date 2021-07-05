@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
+import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 class PostMessageUseCaseTest {

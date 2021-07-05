@@ -1,6 +1,6 @@
 package com.tokopedia.changephonenumber.domain;
 
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import rx.Observable;
 
 public interface ChangePhoneNumberRepository {
 
-    Observable<WarningViewModel> getWarning(HashMap<String, Object> parameters);
+    Observable<WarningUIModel> getWarning(HashMap<String, Object> parameters);
 
     Observable<Boolean> validateNumber(HashMap<String, Object> parameters);
 

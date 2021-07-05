@@ -4,16 +4,16 @@
         android:left="@dimen/dp_2"
         android:top="@dimen/dp_2">
         <shape>
-            <solid android:color="@color/grey_300" />
+            <solid android:color="@color/Unify_N100" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/white" />
+            <solid android:color="@color/Unify_N0" />
 
             <stroke
                 android:width="@dimen/dp_1"
-                android:color="@color/grey_400" />
+                android:color="@color/Unify_N150" />
         </shape>
     </item>
 

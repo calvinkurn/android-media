@@ -1,6 +1,16 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -25,12 +35,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
 }
 
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
-    testImplementation rootProject.ext.testDependencies.junit
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
+    androidTestImplementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation project(rootProject.ext.libraries.logger)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.supportLibDependencies.exifinterface
+
+    implementation rootProject.ext.miscDependencies.lifeCycleCommon
+    implementation rootProject.ext.miscDependencies.sliceCore
+    implementation rootProject.ext.miscDependencies.workManager
 }
 
 project.ext {

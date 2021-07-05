@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.di
+package com.tokopedia.digital.home.old.di
 
 import javax.inject.Scope
 

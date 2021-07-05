@@ -11,28 +11,22 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.library.baseadapter.BaseAdapter
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.Companion.getCatalogDetail
-import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedemptionPresenter
-import com.tokopedia.tokopoints.view.model.CatalogListingOuter
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.ImageUtil
-import rx.Subscriber
+import com.tokopedia.tokopoints.view.model.section.CountDownInfo
+import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.HASH
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
+import kotlin.collections.HashMap
 
-class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresenter, private val mContext: Context?, callback: AdapterCallback?, private val categoryId: Int, private val subCategoryId: Int, private val pointsRange: Int, private val mIsLimitEnable: Boolean) : BaseAdapter<CatalogsValueEntity?>(callback) {
-
-    inner class ViewHolder(view: View) : BaseVH(view) {
+class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var quota: TextView
         var description: TextView
         var pointValue: TextView
@@ -46,9 +40,6 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         var imgTime: ImageView
         var pbQuota: ProgressBar
         var isVisited = false
-        override fun bindView(item: CatalogsValueEntity?, position: Int) {
-            setData(this, item, position)
-        }
 
         init {
             quota = view.findViewById(R.id.text_quota_count)
@@ -66,21 +57,30 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         }
     }
 
-    private fun setData(holder: ViewHolder, item: CatalogsValueEntity?, position: Int) {
-        if (item == null) return
+    inner class TimerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var timerUnifySingle : TimerUnifySingle = view.findViewById(R.id.timerunify_catalog)
+
+        fun onDetach() {
+            timerUnifySingle.timer?.cancel()
+            timerUnifySingle.timer = null
+        }
+    }
+
+    private fun setData(holder: ViewHolder, rawItem: Any?, position: Int) {
+        val item = rawItem as CatalogsValueEntity
         holder.btnContinue.isEnabled = !item.isDisabledButton
         holder.description.text = item.title
         holder.btnContinue.setText(R.string.tp_label_exchange) //TODO asked for server driven value
         ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.thumbnailUrlMobile)
         //setting points info if exist in response
-        if (item.pointsStr == null || item.pointsStr.isEmpty()) {
+        if (item.pointsStr.isNullOrEmpty()) {
             holder.pointValue.visibility = View.GONE
         } else {
             holder.pointValue.visibility = View.VISIBLE
             holder.pointValue.text = item.pointsStr
         }
         //setting expiry time info if exist in response
-        if (item.expiredLabel == null || item.expiredLabel.isEmpty()) {
+        if (item.expiredLabel.isNullOrEmpty()) {
             holder.timeLabel.visibility = View.GONE
             holder.timeValue.visibility = View.GONE
             holder.imgTime.visibility = View.GONE
@@ -92,7 +92,7 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             holder.timeValue.text = item.expiredStr
         }
         //Quota text handling
-        if (item.upperTextDesc == null || item.upperTextDesc.isEmpty()) {
+        if (item.upperTextDesc.isNullOrEmpty()) {
             holder.quota.visibility = View.GONE
             holder.pbQuota.visibility = View.GONE
         } else {
@@ -101,26 +101,26 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             holder.pbQuota.progress = 0
             val upperText = StringBuilder()
             if (item.catalogType == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.red_150))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_Y600))
             } else {
-                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.design.R.color.black_38))
+                holder.quota.setTextColor(ContextCompat.getColor(holder.quota.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
-            for (i in item.upperTextDesc.indices) {
+            for (i in item.upperTextDesc!!.indices) {
                 if (i == 1) {
                     if (item.catalogType == CommonConstant.CATALOG_TYPE_FLASH_SALE) { //for flash sale progress bar handling
                         holder.pbQuota.progress = item.quota
-                        upperText.append(item.upperTextDesc[i])
+                        upperText.append(item.upperTextDesc!![i])
                     } else { //exclusive case for handling font color of second index.
-                        upperText.append("<font color='#ff5722'>" + item.upperTextDesc[i] + "</font>")
+                        upperText.append("<font color='${ColorUtil.getColorFromResToString(holder.quota.context,com.tokopedia.unifyprinciples.R.color.Unify_Y400)}>" + item?.upperTextDesc?.get(i) + "</font>")
                     }
                 } else {
-                    upperText.append(item.upperTextDesc[i]).append(" ")
+                    upperText.append(item.upperTextDesc!![i]).append(" ")
                 }
             }
             holder.quota.text = MethodChecker.fromHtml(upperText.toString())
         }
         //Quota text handling
-        if (item.disableErrorMessage == null || item.disableErrorMessage.isEmpty()) {
+        if (item.disableErrorMessage.isNullOrEmpty()) {
             holder.disabledError.visibility = View.GONE
         } else {
             holder.disabledError.visibility = View.VISIBLE
@@ -129,15 +129,15 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         //disabling the coupons if not eligible for current membership
         if (item.isDisabled) {
             ImageUtil.dimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         } else {
             ImageUtil.unDimImage(holder.imgBanner)
-            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.tokopoints.R.color.clr_31353b))
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
         }
         if (item.isDisabledButton) {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.abstraction.R.color.black_12))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
         } else {
-            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.design.R.color.white))
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         if (item.pointsSlash <= 0) {
@@ -154,15 +154,6 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
             holder.textDiscount.text = item.discountPercentageStr
         }
 
-        holder.btnContinue.setOnClickListener { v: View? ->
-            //call validate api the show dialog
-            mPresenter.startValidateCoupon(item)
-            AnalyticsTrackerUtil.sendEvent(holder.btnContinue.context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                    item.baseCode)
-        }
         holder.imgBanner.setOnClickListener { v: View? ->
             val bundle = Bundle()
             bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, item.slug)
@@ -172,98 +163,141 @@ class CatalogListAdapter(private val mPresenter: CatalogPurchaseRedemptionPresen
         holder.btnContinue.visibility = if (item.isShowTukarButton) View.VISIBLE else View.GONE
     }
 
-    override fun getItemViewHolder(parent: ViewGroup, inflater: LayoutInflater, viewType: Int): BaseVH {
-        val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.tp_item_coupon, parent, false)
-        return ViewHolder(itemView)
-    }
 
-    override fun loadData(currentPageIndex: Int) {
-        if (mIsLimitEnable) {
-            return
+    private fun setDataTimer(holder: TimerViewHolder, countDownInfo: CountDownInfo) {
+        if (holder.timerUnifySingle.timer != null) {
+            holder.timerUnifySingle.timer!!.cancel()
         }
-        super.loadData(currentPageIndex)
-        val mGetHomePageData = GraphqlUseCase()
-        mGetHomePageData.clearRequest()
-        //Adding request for main query
-        val variablesMain: MutableMap<String, Any> = HashMap()
-        variablesMain[CommonConstant.GraphqlVariableKeys.PAGE] = currentPageIndex
-        variablesMain[CommonConstant.GraphqlVariableKeys.PAGE_SIZE] = CommonConstant.PAGE_SIZE
-        //Default page sort id
-        variablesMain[CommonConstant.GraphqlVariableKeys.SORT_ID] = sortId
-        variablesMain[CommonConstant.GraphqlVariableKeys.CATEGORY_ID] = categoryId
-        variablesMain[CommonConstant.GraphqlVariableKeys.SUB_CATEGORY_ID] = subCategoryId
-        //Point range will be zero for all catalog
-        variablesMain[CommonConstant.GraphqlVariableKeys.POINTS_RANGE] = pointsRange
-        val graphqlRequestMain = GraphqlRequest(GraphqlHelper.loadRawString(mContext?.resources, R.raw.tp_gql_catalog_listing),
-                CatalogListingOuter::class.java,
-                variablesMain, false)
-        mGetHomePageData.addRequest(graphqlRequestMain)
-        mGetHomePageData.execute(object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                loadCompletedWithError()
+        var timerValue = countDownInfo.countdownUnix
+        val timerFlagType = countDownInfo.backgroundColor
+        if (timerFlagType == HASH + TIMER_RED_BACKGROUND_HEX) {
+            holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        } else {
+            holder.timerUnifySingle.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
+        }
+        holder.timerUnifySingle.timerText = countDownInfo.label
+        if (countDownInfo.type == 1) {
+            if (timerValue != null) {
+                val timeToExpire = convertSecondsToHrMmSs(timerValue)
+                holder.timerUnifySingle.targetDate = timeToExpire
             }
+        } else {
+            holder.timerUnifySingle.timerFormat = TimerUnifySingle.FORMAT_DAY
+            val timerString = countDownInfo.countdownStr
+            val noOfDay = timerString?.replace("[^0-9]".toRegex(), "")
 
-            override fun onNext(graphqlResponse: GraphqlResponse) { //handling the catalog listing and tabs
-                val catalogListingOuter = graphqlResponse.getData<CatalogListingOuter>(CatalogListingOuter::class.java)
-                if (catalogListingOuter != null) {
-                    loadCompleted(catalogListingOuter.catalog.catalogs, catalogListingOuter)
-                    isLastPage = !catalogListingOuter.catalog.paging.isHasNext
-                } else {
-                    loadCompletedWithError()
-                }
+            val cal = Calendar.getInstance()
+            noOfDay?.toInt()?.let { cal.add(Calendar.DAY_OF_MONTH, it + 1) }
+
+            holder.timerUnifySingle.targetDate = cal
+        }
+
+        holder.timerUnifySingle.apply {
+            onFinish = {
+                holder.timerUnifySingle.hide()
             }
-        })
+            onTick = {
+                countDownInfo.countdownUnix = it / 1000
+            }
+        }
     }
 
-    private val sortId: Int
-        private get() = 1
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_CATALOG) {
+            val itemView = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.tp_item_coupon, parent, false)
+            ViewHolder(itemView)
+        } else {
+            val timerView = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.tp_catalog_timer_item, parent, false)
+            TimerViewHolder(timerView)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0 && list[0] is CountDownInfo) {
+            VIEW_TYPE_TIMER
+        } else VIEW_TYPE_CATALOG
+    }
 
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(vh)
         if (vh is ViewHolder) {
-            val holder = vh
-            val data = items[vh.getAdapterPosition()] ?: return
-            if (!holder.isVisited) {
-                val item: MutableMap<String, String> = HashMap()
+            val data = list[vh.getAdapterPosition()] ?: return
+            if (!vh.isVisited && vh.adapterPosition > 0) {
+                val item: MutableMap<String, String?> = HashMap()
+                data as CatalogsValueEntity
                 item["id"] = data.id.toString()
                 item["name"] = data.title
-                item["position"] = holder.adapterPosition.toString()
+                item["position"] = vh.adapterPosition.toString()
                 item["creative"] = data.title
                 item["creative_url"] = data.imageUrlMobile
                 item["promo_code"] = data.baseCode
-                val promotions: MutableMap<String, List<Map<String, String>>> = HashMap()
-                promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
-                val promoView: MutableMap<String, Map<String, List<Map<String, String>>>> = HashMap()
+                val promotions: HashMap<String, List<Map<String, String?>>> = HashMap()
+                promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
+                val promoView: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
                 promoView["promoView"] = promotions
-                AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                        data.title, promoView)
-                holder.isVisited = true
+                data.title?.let {
+                    AnalyticsTrackerUtil.sendECommerceEvent(vh.btnContinue.context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                            AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                            it, promoView)
+                }
+                vh.isVisited = true
             }
         }
     }
 
     private fun sendClickEvent(context: Context, data: CatalogsValueEntity, position: Int) {
-        val item: MutableMap<String, String> = HashMap()
+        val item: MutableMap<String, String?> = HashMap()
         item["id"] = data.id.toString()
         item["name"] = data.title
         item["position"] = position.toString()
         item["creative"] = data.title
         item["creative_url"] = data.imageUrlMobile
         item["promo_code"] = data.baseCode
-        val promotions: MutableMap<String, List<Map<String, String>>> = HashMap()
-        promotions["promotions"] = Arrays.asList<Map<String, String>>(item)
-        val promoClick: MutableMap<String, Map<String, List<Map<String, String>>>> = HashMap()
+        val promotions: HashMap<String, List<Map<String, String?>>> = HashMap()
+        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
         promoClick["promoClick"] = promotions
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.title, promoClick)
+        data.title?.let {
+            AnalyticsTrackerUtil.sendECommerceEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                    it, promoClick)
+        }
+    }
+
+    override fun getItemCount() = list.size
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is ViewHolder) {
+            setData(holder, list[position], position)
+        } else if (holder is TimerViewHolder) {
+            setDataTimer(holder, list[VIEW_TYPE_TIMER] as CountDownInfo)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is TimerViewHolder) {
+            holder.onDetach()
+        }
+    }
+
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        if (holder is TimerViewHolder){
+            holder.onDetach()
+        }
+    }
+
+    companion object {
+        const val VIEW_TYPE_TIMER = 0
+        const val VIEW_TYPE_CATALOG = 1
     }
 
 }

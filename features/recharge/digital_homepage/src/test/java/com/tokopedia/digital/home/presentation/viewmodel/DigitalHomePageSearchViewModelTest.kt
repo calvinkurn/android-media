@@ -1,9 +1,10 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
-import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
+import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -23,6 +24,9 @@ class DigitalHomePageSearchViewModelTest {
     @RelaxedMockK
     lateinit var searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase
 
+    @RelaxedMockK
+    lateinit var searchCategoryByDynamicIconUseCase: DigitalHomepageSearchByDynamicIconUseCase
+
     lateinit var digitalHomePageSearchViewModel: DigitalHomePageSearchViewModel
 
     @Before
@@ -30,7 +34,8 @@ class DigitalHomePageSearchViewModelTest {
         MockKAnnotations.init(this)
 
         digitalHomePageSearchViewModel =
-                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, RechargeHomepageTestDispatchersProvider())
+                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, searchCategoryByDynamicIconUseCase,
+                        CoroutineTestDispatchersProvider)
     }
 
     @Test
@@ -55,4 +60,37 @@ class DigitalHomePageSearchViewModelTest {
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
         assert(actualData is Fail)
     }
+
+    @Test
+    fun getSearchCategoryByDynamicIcons_Success() {
+        //given
+        coEvery {
+            searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any())
+        } returns listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test"))
+
+        //when
+        digitalHomePageSearchViewModel.searchByDynamicIconsCategory("", 0, listOf())
+
+        //then
+        val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
+        assert(actualData is Success)
+        val response = actualData as Success
+        assert(response.data.isNotEmpty())
+        assertEquals(response.data[0].searchQuery, "test")
+    }
+
+    @Test
+    fun getSearchCategoryByDynamicIcons_Fail() {
+        //given
+        coEvery{ searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any()) } throws
+                MessageErrorException()
+
+        //when
+        digitalHomePageSearchViewModel.searchCategoryList("", "test")
+
+        //then
+        val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
+        assert(actualData is Fail)
+    }
+
 }

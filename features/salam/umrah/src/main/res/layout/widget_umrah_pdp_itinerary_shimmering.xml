@@ -6,8 +6,8 @@
 
     <View
         android:id="@+id/ic_umrah_pdp_itinerary_bullet"
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_8"
+        android:layout_width="@dimen/spacing_lvl3"
+        android:layout_height="@dimen/spacing_lvl3"
         android:background="@drawable/umrah_ic_pdp_itinerary_bullet"
         app:layout_constraintBottom_toBottomOf="@+id/ic_umrah_pdp_itinerary_title_1_loader"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -15,18 +15,18 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/ic_umrah_pdp_itinerary_title_1_loader"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_width="@dimen/spacing_lvl7"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
         app:corners="4"
         app:layout_constraintLeft_toRightOf="@+id/ic_umrah_pdp_itinerary_bullet"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_umrah_pdp_itinerary_line"
-        android:layout_width="@dimen/dp_1"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/unify_space_0"
         android:background="@drawable/umrah_img_pdp_itinerary_line"
         app:layout_constraintBottom_toTopOf="@+id/ic_umrah_pdp_itinerary_title_2_loader"
         app:layout_constraintLeft_toLeftOf="@+id/ic_umrah_pdp_itinerary_bullet"
@@ -35,9 +35,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_itinerary_desc_1_loader"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/ic_umrah_pdp_itinerary_title_1_loader"
         app:layout_constraintRight_toRightOf="parent"
@@ -45,9 +45,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_itinerary_desc_2_loader"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/ic_umrah_pdp_itinerary_title_1_loader"
         app:layout_constraintRight_toRightOf="parent"
@@ -55,8 +55,8 @@
 
     <View
         android:id="@+id/ic_umrah_pdp_itinerary_bullet_1"
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_8"
+        android:layout_width="@dimen/spacing_lvl3"
+        android:layout_height="@dimen/spacing_lvl3"
         android:background="@drawable/umrah_ic_pdp_itinerary_bullet"
         app:layout_constraintBottom_toBottomOf="@+id/ic_umrah_pdp_itinerary_title_2_loader"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -64,20 +64,20 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/ic_umrah_pdp_itinerary_title_2_loader"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="@dimen/spacing_lvl7"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:corners="4"
         app:layout_constraintLeft_toRightOf="@+id/ic_umrah_pdp_itinerary_bullet"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_pdp_itinerary_desc_2_loader" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_itinerary_desc_3_loader"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/ic_umrah_pdp_itinerary_title_2_loader"
         app:layout_constraintRight_toRightOf="parent"
@@ -85,9 +85,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_umrah_pdp_itinerary_desc_4_loader"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:corners="4"
         app:layout_constraintLeft_toLeftOf="@+id/ic_umrah_pdp_itinerary_title_1_loader"
         app:layout_constraintRight_toRightOf="parent"

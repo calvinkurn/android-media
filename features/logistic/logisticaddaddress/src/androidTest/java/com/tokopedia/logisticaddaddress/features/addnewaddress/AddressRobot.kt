@@ -6,15 +6,14 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 
 fun addAddress(func: AddressRobot.() -> Unit) = AddressRobot().apply(func)
@@ -25,14 +24,15 @@ class AddressRobot {
         val i = Intent()
         i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
         rule.launchActivity(i)
+        waitForData()
     }
 
     fun searchWithKeyword(keyword: String) {
-        onView(withId(R.id.et_search))
+        onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
                 .check(matches(isDisplayed()))
-                .perform (typeText(keyword), closeSoftKeyboard())
+                .perform(typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
-        Thread.sleep(500L)
+        waitForData()
     }
 
     fun selectFirstItem() {
@@ -54,7 +54,7 @@ class AddressRobot {
         onView(withId(R.id.et_search_district_recommendation))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
-        Thread.sleep(750L)
+        waitForData()
     }
 
     fun selectFirstCityItem() {
@@ -73,16 +73,21 @@ class AddressRobot {
 
     fun address(address: String) {
         onView(withId(R.id.et_alamat_mismatch))
-                .perform(typeText(address), closeSoftKeyboard())
+                .perform(click(), typeText(address), closeSoftKeyboard())
     }
 
     fun receiver(receiver: String) {
         onView(withId(R.id.et_receiver_name))
-                .perform(typeText(receiver), closeSoftKeyboard())
+                .perform(click(), typeText(receiver), closeSoftKeyboard())
     }
 
     fun phoneNumber(phone: String) {
-        onView(withId(R.id.et_phone)).perform(typeText(phone), closeSoftKeyboard())
+        onView(withId(R.id.et_phone))
+                .perform(scrollTo(), click(), typeText(phone), closeSoftKeyboard())
+    }
+
+    private fun waitForData() {
+        Thread.sleep(1000L)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
@@ -93,7 +98,7 @@ class AddressRobot {
 }
 
 class ResultRobot {
-    fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
-        assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
+    fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
+        assertThat(rule.validate(path), hasAllSuccess())
     }
 }

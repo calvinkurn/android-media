@@ -17,9 +17,10 @@ import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.view.*
 class UohBottomSheetKebabMenuAdapter(private var listener: ActionListener): RecyclerView.Adapter<UohBottomSheetKebabMenuAdapter.ViewHolder>()  {
     var uohKebabMenuList = mutableListOf<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>()
     var _orderData: UohListOrder.Data.UohOrders.Order? = null
+    var _orderIndex: Int = -1
 
     interface ActionListener {
-        fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order)
+        fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,7 +34,7 @@ class UohBottomSheetKebabMenuAdapter(private var listener: ActionListener): Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.label_kebab_option?.text = uohKebabMenuList[position].label
         holder.itemView.rl_kebab_item?.setOnClickListener {
-            _orderData?.let { it1 -> listener.onKebabItemClick(position, orderData = it1) }
+            _orderData?.let { it1 -> listener.onKebabItemClick(index = position, orderData = it1, orderIndex = _orderIndex) }
         }
     }
 

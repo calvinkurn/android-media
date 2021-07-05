@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_info_courier"
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="@dimen/dp_180"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_gravity="center_horizontal"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info_courier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@id/img_info_courier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_info_courier_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_32"
+        app:layout_constraintTop_toBottomOf="@id/tv_info_courier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_48"
+        android:layout_marginEnd="@dimen/unify_space_48"
+        android:layout_weight="1"
+        android:text="@string/tutup"
+        android:textStyle="bold"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_info_courier_detail"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

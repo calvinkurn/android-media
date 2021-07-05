@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_status_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderStatus"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderStatus"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_flight_gray_rounded"
+        android:paddingLeft="@dimen/spacing_lvl3"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingRight="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        tools:text="Berhasil" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_invoice_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderInvoice"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderInvoice"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderInvoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@id/ivFlightOrderInvoiceCopy"
+        app:layout_constraintRight_toLeftOf="@id/ivFlightOrderInvoiceCopy"
+        app:layout_constraintTop_toTopOf="@id/ivFlightOrderInvoiceCopy"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="IVR/20170713/XVII/VII" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ivFlightOrderInvoiceCopy"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderStatus"
+        app:icon_name="COPY"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_category_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderCategory"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderCategory"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/flight_order_detail_category_value"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivFlightOrderInvoiceCopy"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_create_time_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderCreateTime"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderCreateTime"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderCreateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderCategory"
+        app:typographyType="body_3"
+        tools:text="11 Nov 2020, 05:00 WIB" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_payment_method_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderPaymentMethod"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderPaymentMethod"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderPaymentMethod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderCreateTime"
+        app:typographyType="body_3"
+        tools:text="BCA Virtual Account" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderLabelTotalPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_order_detail_total_payment_label"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderTotalPayment"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderTotalPayment"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderTotalPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_Y500"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderPaymentMethod"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Rp205.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgFlightOrderLabelDetailPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/flight_order_detail_detail_payment_label"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgFlightOrderLabelTotalPayment"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ivFlightOrderLabelDetailPayment"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderLabelDetailPayment"
+        app:layout_constraintLeft_toRightOf="@id/tgFlightOrderLabelDetailPayment"
+        app:layout_constraintTop_toTopOf="@id/tgFlightOrderLabelDetailPayment"
+        app:icon_name="CHEVRON_DOWN"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

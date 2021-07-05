@@ -38,7 +38,7 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
         }) {}
     }
 
-    override fun startSendGift(id: Int, title: String, pointStr: String, banner: String) {
+    override fun startSendGift(id: Int, title: String?, pointStr: String?, banner: String?) {
         launchCatchError(block = {
             val data = repository.startSendGift(id)
             if (data.preValidateRedeem != null && data.preValidateRedeem.isValid == 1) {
@@ -66,5 +66,5 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
 
 }
 
-data class SendGiftPage(val id: Int, val title: String, val pointStr: String, val banner: String)
+data class SendGiftPage(val id: Int, val title: String?, val pointStr: String?, val banner: String?)
 data class PreValidateError(val title: String, val message: String)

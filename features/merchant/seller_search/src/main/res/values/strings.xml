@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">seller_search</string>
     <string name="title_global_search_seller">Seller Search</string>
     <string name="title_no_history_label">Cari produk, pesanan, atau fitur gampang!</string>
     <string name="desc_no_history_label">Ketik kata kunci yang kamu cari dengan min. 3 huruf.</string>
@@ -7,6 +6,7 @@
     <string name="message_initial_search_no_result">Oops, pencarian tidak ditemukan</string>
     <string name="message_initial_search_try_another_keyword">Coba kata kunci lain</string>
     <string name="latest_search_label">Terakhir dicari</string>
+    <string name="highlight_search_label">Rekomendasi Pencarian</string>
     <string name="clear_all_label">Hapus Semua</string>
     <string name="placeholder_search_seller">Ketik nama produk, pesanan, atau fitur</string>
     <string name="search">Search</string>

@@ -33,6 +33,7 @@
             android:layout_above="@+id/footer"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
+            android:clipToPadding="false"
             android:descendantFocusability="beforeDescendants"
             android:scrollbars="vertical" />
 
@@ -62,7 +63,7 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/topchat_header_chat"
+        android:background="@color/Unify_N700"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/spacing_lvl4"
@@ -79,7 +80,7 @@
             android:layout_marginEnd="@dimen/dp_topchat_85"
             android:layout_marginRight="@dimen/dp_topchat_85"
             android:layout_weight="1"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:typographyType="body_3"
             tools:text="@string/error_no_connection_retrying" />
 
@@ -87,7 +88,7 @@
             android:id="@+id/action"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             app:loader_type="circular_white" />
 
     </LinearLayout>
@@ -97,7 +98,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/desc_chat_blocked"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -128,7 +128,7 @@
                 android:layout_below="@+id/blocked_text"
                 android:gravity="center_horizontal"
                 android:text="@string/enable_chat_settings"
-                android:textColor="@color/light_G500"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
@@ -149,40 +149,76 @@
                 android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:paddingStart="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/dp_topchat_12"
+                android:paddingTop="@dimen/unify_space_8"
                 android:paddingEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
                 tools:scrollbars="horizontal"
                 tools:visibility="visible" />
 
-            <include layout="@layout/layout_product_preview" />
+            <LinearLayout
+                android:id="@+id/cl_attachment_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="@color/Unify_N50"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_attachment_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/chatcommon_12dp"
+                    android:paddingEnd="@dimen/dp_topchat_14"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <com.tokopedia.topchat.chatroom.view.custom.SrwFrameLayout
+                    android:id="@+id/rv_srw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/unify_space_12"
+                    android:visibility="gone"
+                    tools:layout_height="50dp"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_lvl4"
-                android:paddingTop="@dimen/dp_topchat_12"
-                android:paddingEnd="@dimen/spacing_lvl4">
+                android:paddingTop="@dimen/unify_space_8"
+                android:paddingEnd="@dimen/unify_space_12">
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/send_but"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:background="@drawable/bg_topchat_send_btn_disabled"
+                    android:paddingStart="@dimen/dp_topchat_10"
+                    android:paddingTop="@dimen/dp_topchat_10"
+                    android:paddingEnd="@dimen/dp_topchat_9"
+                    android:paddingBottom="@dimen/dp_topchat_10"
+                    app:icon_color_light_enable="@color/Unify_Static_White"
+                    app:icon_color_night_enable="@color/Unify_Static_White"
+                    app:icon_name="SEND_TEXT"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/ic_send_grey_chat_common" />
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <EditText
                     android:id="@+id/new_comment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginEnd="@dimen/dp_topchat_6"
                     android:layout_marginBottom="@dimen/dp_topchat_14"
                     android:hint="@string/chat_edit_text"
                     android:inputType="textMultiLine"
@@ -192,32 +228,36 @@
                     android:paddingTop="@dimen/dp_topchat_10"
                     android:paddingEnd="@dimen/spacing_lvl8"
                     android:paddingBottom="@dimen/dp_topchat_10"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textColorHint="@color/Unify_N700_32"
                     android:textSize="@dimen/fontSize_lvl4"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/send_but"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:text="@tools:sample/lorem/random" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_chat_sticker"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
+                    app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+                    app:icon_name="STICKER"
                     app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-                    app:layout_constraintStart_toStartOf="@+id/new_comment"
-                    app:srcCompat="@drawable/ic_topchat_sticker" />
+                    app:layout_constraintStart_toStartOf="@+id/new_comment" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_chat_menu"
                     android:layout_width="@dimen/spacing_lvl7"
                     android:layout_height="@dimen/spacing_lvl7"
                     android:layout_marginEnd="@dimen/spacing_lvl1"
                     android:layout_marginBottom="@dimen/dp_topchat_1"
                     android:padding="@dimen/spacing_lvl3"
+                    app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+                    app:icon_name="ADD_CIRCLE"
                     app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-                    app:layout_constraintEnd_toEndOf="@+id/new_comment"
-                    app:srcCompat="@drawable/ic_add_grey_chat_common" />
+                    app:layout_constraintEnd_toEndOf="@+id/new_comment" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -19,8 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -34,6 +32,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity.Companion.ROOM_DETAIL_SCREEN_NAME
@@ -45,6 +44,8 @@ import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -103,15 +104,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomDetailViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
+        roomDetailViewModel.addCartResponseResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     val cartId = it.data.response.cartId
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
-                                addToCartParam.destinationType, addToCartParam.destinationName,
-                                addToCartParam.roomCount, addToCartParam.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId))
                     }
                 }
                 is Fail -> {
@@ -121,7 +120,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                             showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                         }
                         ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
-                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                        else -> view?.let { v ->
+                            Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
                     }
                 }
             }
@@ -175,7 +177,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         (activity as HotelRoomDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = room_detail_detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelRoomDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         room_detail_collapsing_toolbar.title = ""
@@ -189,11 +191,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 }
                 if (scrollRange + verticalOffset == 0) {
                     room_detail_collapsing_toolbar.title = hotelRoom.roomInfo.name
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     room_detail_collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
             }
@@ -262,7 +264,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)
+            pay_at_hotel_title.text = hotelRoom.isDirectPaymentString
             pay_at_hotel_desc.text = spannableString
         }
     }
@@ -369,7 +371,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 room_detail_button.isEnabled = false
                 trackingHotelUtil.hotelChooseRoomDetails(context, hotelRoom, roomIndex, addToCartParam,
                         ROOM_DETAIL_SCREEN_NAME)
-                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+                roomDetailViewModel.addToCart(HotelGqlMutation.ADD_TO_CART, addToCartParam)
             } else {
                 navigateToLoginPage()
             }

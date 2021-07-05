@@ -2,8 +2,10 @@ package com.tokopedia.core.analytics.container;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -12,6 +14,8 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -23,6 +27,9 @@ import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -80,12 +87,15 @@ public class GTMAnalytics extends ContextAnalytics {
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
     private TetraDebugger tetraDebugger;
     private String clientIdString = "";
-    private UserSessionInterface userSession;
+    private final UserSessionInterface userSession;
+    private final SharedPreferences sharedPreferences;
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
     private String mGclid = "";
 
-    private final String REMOTE_CONFIG_SEND_TRACK_BG = "android_send_track_background";
+    private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
+    private static long gtmSizeThresholdLog = 0;
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -95,6 +105,7 @@ public class GTMAnalytics extends ContextAnalytics {
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         userSession = new UserSession(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public static String bruteForceCastToString(Object object) {
@@ -240,16 +251,11 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         // https://tokopedia.atlassian.net/browse/AN-19138
 
-        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.just(value)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .map(this::sendEnhanceECommerceEventOrigin)
-                    .subscribe(getDefaultSubscriber());
-        } else {
-            sendEnhanceECommerceEventOrigin(value);
-        }
-
+        Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(this::sendEnhanceECommerceEventOrigin)
+                .subscribe(getDefaultSubscriber());
     }
 
     private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
@@ -270,7 +276,10 @@ public class GTMAnalytics extends ContextAnalytics {
             }
             GtmLogger.getInstance(context).saveError(stacktrace.toString());
             if (!TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
+                Map<String, String> map = new HashMap<>();
+                map.put("msg", e.getMessage());
+                map.put("err", e.toString());
+                ServerLogger.log(Priority.P2, "GTM_ANALYTIC_ERROR", map);
             }
         }
         return true;
@@ -286,10 +295,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        Bundle bundle =  addWrapperValue(value);
+        Bundle bundle = addWrapperValue(value);
         bundle = addGclIdIfNeeded(eventName, bundle);
         pushEventV5(eventName, bundle, context);
-        logV5(getContext(), eventName, bundle);
         pushIris(eventName, bundle);
     }
 
@@ -799,6 +807,7 @@ public class GTMAnalytics extends ContextAnalytics {
         } else {
             bundle.putString("shopId", "");
         }
+        putDarkModeValue(bundle);
         putNetworkSpeed(bundle);
 
         if (customDimension != null) {
@@ -811,6 +820,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
         pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
         iris.saveEvent(bundleToMap(bundle));
+    }
+
+    private void putDarkModeValue(Bundle bundle) {
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        if(isDarkMode) {
+            bundle.putString("theme", "dark");
+        } else {
+            bundle.putString("theme", "light");
+        }
     }
 
     public void putNetworkSpeed(Bundle bundle) {
@@ -862,32 +880,68 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
-        String name = eventName == null ? (String) values.get("event") : eventName;
-        if (isGtmV5) name += " (v5)";
-        GtmLogger.getInstance(context).save(name, values);
-        logEventSize(eventName, values);
-        if (tetraDebugger != null) {
-            tetraDebugger.send(values);
+        // fix Caused by java.lang.NoSuchMethodError
+        try {
+            String name = eventName == null ? (String) values.get("event") : eventName;
+            if (isGtmV5) name += " (v5)";
+            GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
+            logEventSize(eventName, values);
+            if (tetraDebugger != null) {
+                tetraDebugger.send(values);
+            }
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
+    private long getGTMSizeLogThreshold(){
+        if (gtmSizeThresholdLog == 0){
+            gtmSizeThresholdLog = remoteConfig.getLong(GTM_SIZE_LOG_REMOTE_CONFIG_KEY,
+                    GTM_SIZE_LOG_THRESHOLD_DEFAULT);
+        }
+        return gtmSizeThresholdLog;
+    }
+
     private void logEventSize(String eventName, Map<String, Object> values) {
+        int size = values.toString().length();
+        if (size < getGTMSizeLogThreshold()) {
+            return;
+        }
         String eventCategory = (String) values.get("eventCategory");
         if (!TextUtils.isEmpty(eventCategory)) {
-            Timber.w("P1#GTM_SIZE#event_cat;name='%s';size=%s;value='%s'", eventName, values.toString().length(), eventCategory);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_cat");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", eventCategory);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         String screenName = (String) values.get("screenName");
         if (!TextUtils.isEmpty(screenName)) {
-            Timber.w("P1#GTM_SIZE#event_screen;name='%s';size=%s;value='%s'", eventName, values.toString().length(), screenName);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_screen");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", screenName);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
         String pageType = (String) values.get("pageType");
         if (!TextUtils.isEmpty(pageType)) {
-            Timber.w("P1#GTM_SIZE#event_page;name='%s';size=%s;value='%s'", eventName, values.toString().length(), pageType);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_screen");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", pageType);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
             return;
         }
-        Timber.w("P1#GTM_SIZE#event_others;name='%s';size=%s", eventName, values.toString().length());
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "event_others");
+        messageMap.put("name", eventName);
+        messageMap.put("size", String.valueOf(size));
+        ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
     }
 
     public void sendScreenAuthenticated(String screenName) {
@@ -990,6 +1044,15 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 
+
+        // AN-23730
+        Object xClid = param.get(AppEventTracking.GTM.X_CLID);
+        if (xClid != null && xClid instanceof String) {
+            String xClid_  = (String)xClid;
+            bundle.putString(AppEventTracking.GTM.X_CLID,xClid_);
+        }
+
+
         String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
         if (!TextUtils.isEmpty(gclid)) {
             bundle.putString("gclid", gclid);
@@ -1005,14 +1068,10 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
-        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .subscribe(getDefaultSubscriber());
-        } else {
-            pushGeneralGtmV5InternalOrigin(params);
-        }
+        Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
@@ -1053,10 +1112,28 @@ public class GTMAnalytics extends ContextAnalytics {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
+            publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void publishNewRelic(String eventName, Bundle bundle) {
+        Map<String, Object> map = bundleToMap(bundle);
+        for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<String, Object> entry = it.next();
+            Object value = entry.getValue();
+            if (value != null & value instanceof String){
+                String value2 = (String)value;
+                if(TextUtils.isEmpty(value2)) {
+                    it.remove();
+                }
+            }
+        }
+        if(GlobalConfig.isSellerApp()){
+            NewRelicUtil.sendTrack(eventName, map);
         }
     }
 

@@ -11,7 +11,7 @@ class StickerUiModel : SendableViewModel, Visitable<TopChatTypeFactory> {
     val sticker: StickerProfile
 
     /**
-     * Constructor when message received from WebSocket
+     * Constructor when message received from WebSocket and GQL
      */
     constructor(
             messageId: String, fromUid: String, from: String, fromRole: String,

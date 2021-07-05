@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Network
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
@@ -28,27 +32,30 @@ import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.searchHashMap
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setListBottomSheetString
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
-        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener {
+        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener{
 
     private var urlPDP = ""
     private var keyActiveBottomSheet = ""
     private var positionActiveForm = 0
+    private var selectedCalendar: Calendar? = null
     var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
     var listBottomSheetTemp : LinkedHashMap<String, String> = linkedMapOf()
     val bottomSheets = BottomSheetUnify()
+
 
     @Inject
     lateinit var viewModel: EventPDPFormViewModel
@@ -105,13 +112,15 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     private fun setupSimpanButton() {
         simpanBtn.setOnClickListener {
-            if (formAdapter.getError().first.isNotBlank()) {
+            if (formAdapter.getError(resources).isNotEmpty()) {
                 view?.let {
-                    if (formAdapter.getError().second == EMPTY_TYPE) {
-                        Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_empty_value_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
-                    } else if (formAdapter.getError().second == REGEX_TYPE) {
-                        Toaster.make(it, String.format(resources.getString(R.string.ent_pdp_form_error_regex_msg), formAdapter.getError().first), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg)))
+                    val typeTitle = when (eventCheckoutAdditionalData.additionalType) {
+                        AdditionalType.ITEM_UNFILL, AdditionalType.ITEM_FILLED -> resources.getString(R.string.ent_checkout_data_pengunjung_title)
+                        AdditionalType.PACKAGE_UNFILL, AdditionalType.PACKAGE_FILLED -> resources.getString(R.string.ent_checkout_data_tambahan_title)
+                        else -> resources.getString(R.string.ent_pdp_title_form)
                     }
+                    val errorForm = String.format(resources.getString(R.string.ent_pdp_form_error_all_msg_fragment), typeTitle.toLowerCase().capitalize())
+                    Toaster.build(it, errorForm, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, String.format(resources.getString(R.string.ent_pdp_form_toaster_click_msg))).show()
                 }
             } else {
                 activity?.run {
@@ -141,6 +150,15 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             hideProgressBar()
             renderList(it)
             showData()
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, Observer { throwable ->
+            context?.let { context ->
+                view?.let { view ->
+                    Toaster.build(view, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            getString(R.string.ent_checkout_error)).show()
+                }
+            }
         })
     }
 
@@ -207,6 +225,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             val searchTextField = view.event_search_list_form?.searchBarTextField
             val searchClearButton = view.event_search_list_form?.searchBarIcon
 
+            view.event_search_list_form.searchBarPlaceholder = resources.getString(R.string.ent_bottomsheet_placeholder, title)
             searchTextField?.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {}
 
@@ -262,6 +281,10 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         return keyActiveBottomSheet
     }
 
+    override fun resetActiveKey() {
+        keyActiveBottomSheet = ""
+    }
+
     override fun getAdditionalType(): AdditionalType {
         return eventCheckoutAdditionalData.additionalType
     }
@@ -270,6 +293,46 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         keyActiveBottomSheet = listBottomSheetTemp.getKeyByPosition(position)
         formAdapter.notifyItemChanged(positionActiveForm)
         bottomSheets.dismiss()
+    }
+
+    override fun clickDatePicker(title: String, helpText: String,  position: Int) {
+        context?.let{
+            val calMax = Calendar.getInstance()
+            calMax.add(Calendar.YEAR, MAX_YEAR);
+            val yearMax = calMax.get(Calendar.YEAR)
+            val monthMax = calMax.get(Calendar.MONTH)
+            val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
+
+            val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
+            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+
+            val calMin = Calendar.getInstance()
+            calMin.add(Calendar.YEAR, MIN_YEAR);
+            val yearMin = calMin.get(Calendar.YEAR)
+            val monthMin = calMin.get(Calendar.MONTH)
+            val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
+
+            val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
+            var datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
+                 setTitle(title)
+                 setInfo(helpText)
+                 setInfoVisible(true)
+                 datePickerButton.let { button ->
+                    button.setOnClickListener {
+                        selectedCalendar = getDate()
+                        formAdapter.notifyItemChanged(position)
+                        dismiss()
+                    }
+                }
+            }
+            fragmentManager?.let {
+                datepickerObject.show(it, "")
+            }
+        }
+    }
+
+    override fun getDate(): Calendar? {
+       return selectedCalendar
     }
 
     companion object {
@@ -283,6 +346,9 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         val REQUEST_CODE = 100
         const val SEARCH_PAGE_LIMIT = 10
         const val DELAY_CONST: Long = 100
+
+        const val MAX_YEAR = 10
+        const val MIN_YEAR = -90
     }
 
     fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =

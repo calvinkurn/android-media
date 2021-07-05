@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.item_campaign_stock_active_product_switch.view.*
 
 class ActiveProductSwitchViewHolder(itemView: View?,
@@ -23,6 +23,7 @@ class ActiveProductSwitchViewHolder(itemView: View?,
                 onActiveStockChanged(isChecked)
                 ProductManageTracking.eventClickAllocationProductStatus(isVariant = false, isOn = isChecked)
             }
+            isEnabled = element.access?.editProduct == true
         }
     }
 }

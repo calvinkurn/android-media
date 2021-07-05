@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +16,6 @@ import java.util.List;
 
 public interface RecentView {
     interface View extends CustomerView {
-        void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
-
-        void onGoToProductDetail(String productId, String productname, String  productPrice, String productImage);
-
         void showLoading();
 
         void showLoadingProgress();
@@ -28,22 +24,11 @@ public interface RecentView {
 
         void onErrorGetRecentView(String errorMessage);
 
-        void onSuccessGetRecentView(ArrayList<Visitable> listProduct);
-
         void onEmptyGetRecentView();
 
-        void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel);
-
-        void sendRecentViewClickTracking(RecentViewDetailProductViewModel element);
+        void sendRecentViewClickTracking(RecentViewDetailProductDataModel element);
 
 
         Context getContext();
-    }
-
-    interface Presenter extends CustomerPresenter<View> {
-
-        void addToWishlist(int adapterPosition, String productId);
-
-        void removeFromWishlist(int adapterPosition, String productId);
     }
 }

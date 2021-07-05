@@ -2,48 +2,42 @@ package com.tokopedia.applink.digital
 
 import android.content.Context
 import android.net.Uri
-import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_ELECTRONIC_MONEY
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_POSTPAID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import tokopedia.applink.R
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 
 object DeeplinkMapperDigital {
 
-    /**
-     * Cache to variable to speed up performance
-     */
-    var whiteList: Whitelist? = null
-
     const val TEMPLATE_PARAM = "template"
+    const val TEMPLATE_CATEGORY_ID = "category_id"
     const val PLATFORM_ID_PARAM = "platform_id"
-
-    private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
-        if (whiteList == null) {
-            val inputStream = context.getResources().openRawResource(R.raw.whitelist)
-            val reader = BufferedReader(InputStreamReader(inputStream))
-
-            val gson = Gson()
-            whiteList = gson.fromJson(reader, Whitelist::class.java)
-        }
-        return whiteList?.data ?: listOf()
-    }
+    const val IS_FROM_WIDGET_PARAM = "is_from_widget"
+    const val REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT = "android_customer_enable_digital_checkout"
+    const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
-        return readWhitelistFromFile(context).firstOrNull { it.path.equals(path, false) }?.applink
-                ?: ""
+        val applink = DeeplinkConstDigital.MAP[path] ?: ""
+        if (applink.isNotEmpty()) {
+            val internalApplink = getRegisteredNavigationDigital(context, applink)
+            val stringBuilder = StringBuilder(internalApplink)
+            stringBuilder.append("?")
+            stringBuilder.append(Uri.parse(applink).query)
+            return stringBuilder.toString()
+        }
+        return ""
     }
 
     fun getRegisteredNavigationDigital(context: Context, deeplink: String): String {
@@ -51,7 +45,12 @@ object DeeplinkMapperDigital {
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
                 if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getDigitalTemplateNavigation(context, deeplink)
+                else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) getDigitalCheckoutNavigation(context, deeplink)
+                else if (isEmoneyApplink(uri)) handleEmoneyPdpApplink(context, deeplink)
                 else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_CART) -> {
+                getDigitalCheckoutNavigation(context, deeplink)
             }
             deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD) -> {
                 getDigitalSmartcardNavigation(deeplink)
@@ -63,18 +62,30 @@ object DeeplinkMapperDigital {
                 if (!uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
                 else ApplinkConsInternalDigital.SUBHOMEPAGE
             }
+            deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME)
+                    && !uri.getQueryParameter(PLATFORM_ID_PARAM).isNullOrEmpty() -> {
+                ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE
+            }
+            deeplink.startsWith(ApplinkConst.DIGITAL_ORDER) -> {
+                getRegisteredNavigationUohOrder(context, deeplink)
+            }
             else -> deeplink
         }
     }
 
-    fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {
+    private fun getDigitalCheckoutNavigation(context: Context, deeplink: String): String {
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+        val getDigitalCart = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_RECHARGE_CHECKOUT, true)
+        return if (getDigitalCart) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
+                else ApplinkConsInternalDigital.CART_DIGITAL
+    }
+
+    private fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
         return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
             when (it) {
                 TEMPLATE_ID_VOUCHER -> {
-                    if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP))
-                        ApplinkConsInternalDigital.VOUCHER_GAME else deeplink
+                    ApplinkConsInternalDigital.VOUCHER_GAME
                 }
                 TEMPLATE_ID_GENERAL -> {
                     ApplinkConsInternalDigital.GENERAL_TEMPLATE
@@ -88,19 +99,36 @@ object DeeplinkMapperDigital {
                 TEMPLATE_POSTPAID_TELCO -> {
                     ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL
                 }
+                TEMPLATE_ID_ELECTRONIC_MONEY -> {
+                    handleEmoneyPdpApplink(context, deeplink)
+                }
                 else -> deeplink
             }
         } ?: deeplink
     }
 
+    private fun handleEmoneyPdpApplink(context: Context, deeplink: String): String {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val getNewEmoneyPage = remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP, true)
+        return if (getNewEmoneyPage) {
+            ApplinkConsInternalDigital.ELECTRONIC_MONEY_PDP
+        } else {
+            deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
+        }
+    }
+
     private fun getDigitalSmartcardNavigation(deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
-        var statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI)?: "false"
+        val paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
+        val statusBrizzi = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_BRIZZI) ?: "false"
 
         return if (statusBrizzi == "true")
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_BRIZZI, paramValue)
         else
             UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD_EMONEY, paramValue)
+    }
+
+    private fun isEmoneyApplink(uri: Uri): Boolean {
+        return (!uri.getQueryParameter(TEMPLATE_CATEGORY_ID).isNullOrEmpty() && uri.getQueryParameter(TEMPLATE_CATEGORY_ID).equals(CATEGORY_ID_ELECTRONIC_MONEY))
     }
 }

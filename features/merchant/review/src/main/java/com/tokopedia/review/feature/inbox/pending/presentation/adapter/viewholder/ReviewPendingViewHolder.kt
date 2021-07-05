@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.item_review_pending.view.*
 
 class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener: ReviewPendingItemListener) : AbstractViewHolder<ReviewPendingUiModel>(view) {
@@ -22,16 +24,17 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
                 showProductImage(productImageUrl)
                 showProductName(productName)
                 showProductVariantName(productVariantName)
-                setListener(reputationId, productId, inboxReviewId, status.seen)
-                setupStars(reputationId, productId, inboxReviewId, status.seen)
+                setListener(reputationIDStr, productIDStr, inboxReviewIDStr, status.seen, status.isEligible)
+                setupStars(reputationIDStr, productIDStr, inboxReviewIDStr, status.seen, status.isEligible)
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
+            showIncentive(status.isEligible)
         }
     }
 
     private fun showProductImage(productImageUrl: String) {
-        if(productImageUrl.isEmpty()) {
+        if (productImageUrl.isEmpty()) {
             showBrokenProductImage()
             return
         }
@@ -50,7 +53,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showProductVariantName(productVariantName: String) {
-        if(productVariantName.isEmpty()) {
+        if (productVariantName.isEmpty()) {
             itemView.reviewPendingProductVariant.hide()
             return
         }
@@ -60,21 +63,21 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun setListener(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean) {
+    private fun setListener(reputationId: String, productId: String, inboxReviewId: String, seen: Boolean, isEligible: Boolean) {
         itemView.setOnClickListener {
-            reviewPendingItemListener.trackCardClicked(reputationId, productId)
+            reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
             itemView.reviewPendingStars.renderInitialReviewWithData(5)
-            Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, 5, inboxReviewId, seen)}, 200)
+            Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, 5, inboxReviewId, seen) } }, 200)
         }
     }
 
-    private fun setupStars(reputationId: Int, productId: Int, inboxReviewId: Int, seen: Boolean) {
+    private fun setupStars(reputationId: String, productId: String, inboxReviewId: String, seen: Boolean, isEligible: Boolean) {
         itemView.reviewPendingStars.apply {
             resetStars()
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
-                    reviewPendingItemListener.trackStarsClicked(reputationId, productId, position)
-                    Handler().postDelayed({reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen)}, 200)
+                    reviewPendingItemListener.trackStarsClicked(reputationId, productId, position, isEligible)
+                    Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) } }, 200)
                 }
             })
             show()
@@ -86,6 +89,21 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     }
 
     private fun showNew(seen: Boolean) {
-        itemView.reviewPendingNewIcon.showWithCondition(!seen)
+        itemView.reviewPendingNewIcon.apply {
+            if (InboxUnifiedRemoteConfig.isInboxUnified()) {
+                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_SECONDARY)
+            } else {
+                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
+            }
+            showWithCondition(!seen)
+        }
+    }
+
+    private fun showIncentive(isEligible: Boolean) {
+        if (isEligible) {
+            itemView.reviewPendingOvoIncentiveLabel.show()
+            return
+        }
+        itemView.reviewPendingOvoIncentiveLabel.hide()
     }
 }

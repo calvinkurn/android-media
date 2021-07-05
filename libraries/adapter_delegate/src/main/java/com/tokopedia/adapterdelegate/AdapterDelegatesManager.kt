@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by jegul on 2019-10-01.
  */
-class AdapterDelegatesManager<T: Any> {
+class AdapterDelegatesManager<T: Any>(
+        private val isFlexibleType: Boolean = false
+) {
 
     private val typedAdapterDelegatesMap: MutableMap<Class<*>, Int> = mutableMapOf()
     private val specialAdapterDelegates: MutableList<Int> by lazy { mutableListOf<Int>() }
@@ -52,13 +54,24 @@ class AdapterDelegatesManager<T: Any> {
     private fun getAdapterDelegate(itemList: List<T>, position: Int): AdapterDelegate<T> {
         val item = itemList[position]
         val itemClass = item::class.java
-        if (typedAdapterDelegatesMap.containsKey(itemClass)) return adapterDelegates[typedAdapterDelegatesMap[itemClass]!!] ?: throw IllegalStateException("Index of adapter delegates found but does not exist in adapter delegate list")
+
+        if (typedAdapterDelegatesMap.containsKey(itemClass)) {
+            return adapterDelegates[typedAdapterDelegatesMap[itemClass]!!] ?: throw IllegalStateException("Index of adapter delegates found but does not exist in adapter delegate list")
+        }
         else {
             specialAdapterDelegates.forEach { delegateIndex ->
                 val adapterDelegate = adapterDelegates[delegateIndex]
-                if (adapterDelegate?.isForViewType(itemList, position) == true) return adapterDelegate
+                if (adapterDelegate?.isForViewType(itemList, position, isFlexibleType) == true) return adapterDelegate
             }
-            throw IllegalArgumentException("No delegate is found for item: $item with type: $itemClass on position: $position")
         }
+
+        if (isFlexibleType) {
+            for (index in 0 until adapterDelegates.size()) {
+                val adapterDelegate = adapterDelegates[index]
+                if (adapterDelegate?.isForViewType(itemList, position, isFlexibleType) == true) return adapterDelegate
+            }
+        }
+
+        throw IllegalArgumentException("No delegate is found for item: $item with type: $itemClass on position: $position")
     }
 }

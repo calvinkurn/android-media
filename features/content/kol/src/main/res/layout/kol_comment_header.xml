@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
+    android:orientation="vertical">
 
     <com.tokopedia.kol.feature.comment.view.custom.KolCommentCardView
         android:id="@+id/kcv_comment"
@@ -13,9 +14,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_load_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,10 +25,9 @@
         android:text="@string/see_more_comments"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/sp_11"
-        android:textStyle="bold"
-        />
+        app:typographyWeight="bold" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/account_user_item_profile_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_dp_16"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <include
+        android:id="@+id/home_account_profile_section"
+        layout="@layout/home_account_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/home_account_dp_54"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/home_account_profile_financial_section"
+        layout="@layout/home_account_financial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_account_profile_section" />
+
+    <include
+        android:id="@+id/home_account_profile_member_section"
+        layout="@layout/home_account_member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_profile_financial_section" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

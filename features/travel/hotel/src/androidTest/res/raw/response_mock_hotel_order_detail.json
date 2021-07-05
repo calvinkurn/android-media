@@ -1,0 +1,174 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "orderDetails": {
+        "status": {
+          "status": 700,
+          "statusText": "Transaksi Berhasil",
+          "iconUrl": "",
+          "textColor": "#42B549",
+          "backgroundColor": "",
+          "fontSize": "17pt"
+        },
+        "title": [
+          {
+            "label": "Tanggal Transaksi",
+            "value": "08 Mar 2021, 06:37"
+          },
+          {
+            "label": "Kategori Produk",
+            "value": "Hotel"
+          }
+        ],
+        "invoice": {
+          "invoiceRefNum": "QPN-12Q58-VHSO",
+          "invoiceUrl": "https://www.tokopedia.com/hotel/invoice?secured=aW52b2ljZV9pZD1RUE4tMTJRNTgtVkhTTyZ0b2tlbj1taUVGc3ZPZ1FMdU1BYW1HODhIQlh3JnNlc3Npb249Omh0bDQz"
+        },
+        "conditionalInfo": {
+          "title": ""
+        },
+        "conditionalInfoBottom": {
+          "title": ""
+        },
+        "actionButtons": [
+          {
+            "label": "Pesan Ulang",
+            "buttonType": "buy",
+            "uri": "tokopedia://hotel/dashboard",
+            "weight": 1,
+            "uriWeb": "https://www.tokopedia.com/hotel"
+          }
+        ],
+        "payMethod": [
+          {
+            "label": "Metode Pembayaran",
+            "value": "Saldo Tokopedia"
+          }
+        ],
+        "pricing": [
+          {
+            "label": "1 Kamar x 1 Malam",
+            "value": "Rp 116.375",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          },
+          {
+            "label": "Pajak",
+            "value": "Sudah Termasuk",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "paymentsData": [
+          {
+            "id": "1657356678",
+            "label": "Total Tagihan",
+            "value": "Rp 116.375",
+            "textColor": "#ff5722",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "contactUs": {
+          "helpText": "Butuh bantuan? Kami siap membantu 24/7. Hubungi <hyperlink>Tokopedia Care</hyperlink>",
+          "helpUrl": "https://www.tokopedia.com/help/reference-article?refnum=QPN-12Q58-VHSO&refnum_id=0&transaction_type_id=2&order_status=700&invoice_type_id=7&product_type_id=0&payment_gateway_id=-99&payment_status_id=-99&refnum_latest=true"
+        },
+        "hotelTransportDetails": {
+          "paymentType": "Bayar Sekarang",
+          "isShowEVoucher": true,
+          "guestDetail": {
+            "title": "Nama Tamu",
+            "content": "Hefdy Wiguna"
+          },
+          "propertyDetail": [
+            {
+              "propertyCountry": "Indonesia",
+              "appLink": "tokopedia://hotel/detail/3819285?show_room=0",
+              "bookingKey": {
+                "title": "Kode Booking",
+                "content": "PayNowTestMode-196792"
+              },
+              "image": [],
+              "checkInOut": [
+                {
+                  "title": "Check-in",
+                  "content": "",
+                  "checkInOut": {
+                    "day": "Selasa",
+                    "date": "09 Mar 2021",
+                    "time": "14:00"
+                  }
+                },
+                {
+                  "title": "Check-out",
+                  "content": "",
+                  "checkInOut": {
+                    "day": "Rabu",
+                    "date": "10 Mar 2021",
+                    "time": "11:00"
+                  }
+                }
+              ],
+              "stayLength": {
+                "title": "Lama Menginap",
+                "content": "1 Malam"
+              },
+              "propertyInfo": {
+                "types": "Hotel",
+                "name": "bumimakhraja 4",
+                "address": "Jl. Cigadung Raya Timur No. 35-41, Cigadung, Cibeunying Kaler, Cigadung, Bandung, Java, Indonesia, 40191",
+                "starRating": "5"
+              },
+              "room": [
+                {
+                  "title": "Kamar Superior Twin",
+                  "content": "1 Kamar • 2 Tamu per Kamar",
+                  "amenities": [
+                    {
+                      "content": "Tidak termasuk sarapan"
+                    }
+                  ]
+                }
+              ],
+              "specialRequest": {
+                "title": "Permintaan Khusus",
+                "content": ""
+              },
+              "extraInfo": {
+                "content": "",
+                "uri": "",
+                "uriWeb": "",
+                "isClickable": false,
+                "title": "",
+                "shortDesc": "",
+                "longDesc": ""
+              }
+            }
+          ],
+          "cancellationPolicies": {
+            "title": "Non-refundable",
+            "content": "Biaya yang sudah dibayarkan tidak bisa dikembalikan",
+            "isClickable": false,
+            "policies": [
+              {
+                "shortTitle": "",
+                "longTitle": "Non-refundable",
+                "shortDesc": "",
+                "longDesc": "Biaya yang sudah dibayarkan tidak bisa dikembalikan",
+                "active": false
+              }
+            ]
+          },
+          "contactInfo": [
+            {
+              "number": "+886988741287"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

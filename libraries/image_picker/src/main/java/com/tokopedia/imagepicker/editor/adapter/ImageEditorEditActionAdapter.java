@@ -8,17 +8,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
+
+import java.util.ArrayList;
 
 /**
  * Created by hendry on 19/04/18.
  */
 
 public class ImageEditorEditActionAdapter implements View.OnClickListener {
-    private @ImagePickerTabTypeDef
-    int[] tabTypeDef;
+    private ArrayList<ImageEditActionType> tabTypeDef;
     private Context context;
     private ViewGroup viewGroup;
 
@@ -27,18 +29,18 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (listener != null) {
-            listener.onEditActionClicked(v.getId());
+            listener.onEditActionClicked(ImageEditActionType.fromInt(v.getId()));
         }
     }
 
     public interface OnImageEditorEditActionAdapterListener {
-        void onEditActionClicked(@ImageEditActionTypeDef int actionEditType);
+        void onEditActionClicked(ImageEditActionType actionEditType);
     }
 
     public ImageEditorEditActionAdapter(
             ViewGroup viewGroup,
             Context context,
-            @ImageEditActionTypeDef int[] tabTypeDef,
+            ArrayList<ImageEditActionType> tabTypeDef,
             OnImageEditorEditActionAdapterListener listener) {
         this.viewGroup = viewGroup;
         this.tabTypeDef = tabTypeDef;
@@ -50,33 +52,35 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
         if (viewGroup.getChildCount() > 0) {
             viewGroup.removeAllViews();
         }
-        for (int tabTypeDefItem : tabTypeDef) {
+        for (ImageEditActionType tabTypeDefItem : tabTypeDef) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_edit_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
-            TextView tvEdit = view.findViewById(R.id.tv_edit);
-            view.setId(tabTypeDefItem);
+            Typography tvEdit = view.findViewById(R.id.tv_edit);
+            Label txtLabel = view.findViewById(R.id.txt_label);
+            view.setId(tabTypeDefItem.getAction());
             switch (tabTypeDefItem) {
-                case ImageEditActionTypeDef.ACTION_CROP:
+                case ACTION_CROP:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop));
                     tvEdit.setText(context.getString(R.string.crop));
                     break;
-                case ImageEditActionTypeDef.ACTION_ROTATE:
+                case ACTION_ROTATE:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_rotate));
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
-                case ImageEditActionTypeDef.ACTION_WATERMARK:
-                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
+                case ACTION_WATERMARK:
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_toped_watermark));
                     tvEdit.setText(context.getString(R.string.watermark));
+                    txtLabel.setVisibility(View.VISIBLE);
                     break;
-                case ImageEditActionTypeDef.ACTION_CROP_ROTATE:
+                case ACTION_CROP_ROTATE:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
                     tvEdit.setText(context.getString(R.string.crop_and_rotate));
                     break;
-                case ImageEditActionTypeDef.ACTION_BRIGHTNESS:
+                case ACTION_BRIGHTNESS:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_brightness));
                     tvEdit.setText(context.getString(R.string.brightness));
                     break;
-                case ImageEditActionTypeDef.ACTION_CONTRAST:
+                case ACTION_CONTRAST:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_contrast));
                     tvEdit.setText(context.getString(R.string.contrast));
                     break;

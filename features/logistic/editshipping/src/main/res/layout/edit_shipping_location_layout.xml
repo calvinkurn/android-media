@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/dp_5"
         android:layout_marginStart="@dimen/dp_5"
         android:text="@string/title_shop_location"
-        android:textColor="@color/label_color"
+        android:textColor="@color/Unify_N300"
         android:textSize="@dimen/sp_14" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="false"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_16" />
     </com.google.android.material.textfield.TextInputLayout>
 

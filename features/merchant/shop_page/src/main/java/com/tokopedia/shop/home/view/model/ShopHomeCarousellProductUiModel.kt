@@ -13,7 +13,7 @@ data class ShopHomeCarousellProductUiModel(
         override val name: String = "",
         override val type: String = "",
         override val header: Header = Header(),
-        val productList: List<ShopHomeProductViewModel> = listOf()
+        val productList: List<ShopHomeProductUiModel> = listOf()
 ) : BaseShopHomeWidgetUiModel {
 
     companion object{

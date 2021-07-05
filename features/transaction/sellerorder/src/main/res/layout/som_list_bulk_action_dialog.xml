@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderBulkAccept"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_gravity="center_horizontal" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivBulkAcceptDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        tools:src="@drawable/ic_som_list_success_bulk_accept" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomListBulkActionDialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        tools:text="@string/som_list_bulk_accept_dialog_title_success" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomListBulkActionDialogDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:gravity="center"
+        app:typographyType="body_2"
+        tools:text="@string/som_list_bulk_accept_dialog_description_success" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSomListBulkActionDialogPrimaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl6" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSomListBulkActionDialogSecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:unifyButtonVariant="text" />
+
+</LinearLayout>

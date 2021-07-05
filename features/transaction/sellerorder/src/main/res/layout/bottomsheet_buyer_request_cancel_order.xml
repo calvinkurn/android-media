@@ -8,7 +8,7 @@
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:paddingBottom="@dimen/layout_lvl2">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:lineSpacingMultiplier="1.5"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
@@ -38,6 +38,7 @@
         android:layout_alignTop="@id/tvBuyerRequestCancelNotes"
         android:layout_alignBottom="@id/tvBuyerRequestCancelNotes"
         android:scaleType="fitXY"
+        android:contentDescription="Alasan pembatalan"
         app:srcCompat="@drawable/ic_som_detail_buyer_reason_left_drawable" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -51,7 +52,7 @@
         android:layout_toEndOf="@id/buyer_request_cancel_notes_left_icon"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/dp_10"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,7 +71,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
-            tools:text="@string/bottomsheet_order_cancellation_response_negative_button_code_400" />
+            tools:text="Konfirmasi Pengiriman" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnPositive"

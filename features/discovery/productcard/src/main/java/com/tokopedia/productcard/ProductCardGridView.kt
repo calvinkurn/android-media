@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
@@ -33,27 +34,40 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
+
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
+
         renderOutOfStockView(productCardModel)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             )
         }
     }
@@ -68,6 +82,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -85,20 +103,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
-    }
-
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            progressBarStock.progress = productCardModel.stockBarPercentage
-        }
-    }
-
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-        }
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
@@ -110,4 +117,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             outOfStockOverlay?.gone()
         }
     }
+
+    override fun getThreeDotsButton(): View? = imageThreeDots
+
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    override fun getShopBadgeView(): View? = imageShopBadge
+
 }

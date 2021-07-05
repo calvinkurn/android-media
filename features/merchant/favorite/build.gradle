@@ -28,7 +28,7 @@ android {
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -50,6 +50,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
@@ -59,7 +60,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -71,6 +71,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.assertJ
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
@@ -87,3 +88,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

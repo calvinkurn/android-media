@@ -11,7 +11,7 @@
     android:paddingStart="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
     android:paddingEnd="@dimen/dp_16"
-    android:textColor="@color/product_card_options_item_title"
+    android:textColor="@color/Unify_N700_96"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"

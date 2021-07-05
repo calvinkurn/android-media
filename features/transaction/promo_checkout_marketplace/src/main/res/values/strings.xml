@@ -24,5 +24,7 @@
     <string name="label_promo_show_detail">Lihat Detail</string>
     <string name="label_promo_last_seen_title">Promo terakhir dilihat</string>
     <string name="label_promo_code">Kode promo:&#160;</string>
+    <string name="content_description_image_coupon_sub_section">image coupon sub section</string>
+    <string name="content_description_image_arrow_coupon_sub_section">image arrow coupon sub section</string>
 
 </resources>

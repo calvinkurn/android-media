@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_recom_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/topads_dash_recom_product_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/product_recom_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintTop_toBottomOf="@id/product_recom_title"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/cb_product_recom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/product_recom_desc" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/selectedItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/cb_product_recom"
+            app:layout_constraintTop_toTopOf="@id/cb_product_recom"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintTop_toBottomOf="@id/selectedItems" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProductRecom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:itemCount="8"
+            tools:listitem="@layout/topads_dash_recon_product_item" />
+
+        <include
+            android:id="@+id/emptyViewProductRecommendation"
+            layout="@layout/topads_dash_insight_empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

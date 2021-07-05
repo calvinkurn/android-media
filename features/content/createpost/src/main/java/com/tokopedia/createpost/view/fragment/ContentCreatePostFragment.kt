@@ -2,8 +2,10 @@ package com.tokopedia.createpost.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.applink.ApplinkConst.AttachProduct.*
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
 
 /**
@@ -14,6 +16,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
+        const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
 
         fun createInstance(bundle: Bundle): ContentCreatePostFragment {
             val fragment = ContentCreatePostFragment()
@@ -24,7 +27,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            REQUEST_ATTACH_PRODUCT -> if (resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
+            REQUEST_ATTACH_PRODUCT -> if (resultCode == TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
                 getAttachProductResult(data)
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -41,21 +44,21 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
     }
 
     private fun goToAttachProduct() {
-        val intent = AttachProductActivity.createInstance(context,
-                userSession.shopId,
-                "",
-                true,
-                "",
-                viewModel.maxProduct - viewModel.productIdList.size,
-                ArrayList(viewModel.productIdList)
-        )
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, userSession.shopId)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, true)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, "")
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, viewModel.maxProduct - viewModel.productIdList.size)
+        intent.putStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN, ArrayList(viewModel.productIdList))
+
         startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
     }
 
     private fun getAttachProductResult(data: Intent?) {
         isAddingProduct = true
         val products = data?.getParcelableArrayListExtra<ResultProduct>(
-                AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                 ?: arrayListOf()
         products.forEach {
             viewModel.productIdList.add(it.productId.toString())

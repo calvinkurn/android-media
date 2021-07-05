@@ -3,29 +3,33 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.removeTime
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -41,12 +45,16 @@ class FlightHomepageViewModel @Inject constructor(
         private val deleteAllFlightSearchDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
         private val userSessionInterface: UserSessionInterface,
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     private val mutableBannerList = MutableLiveData<Result<TravelCollectiveBannerModel>>()
     val bannerList: LiveData<Result<TravelCollectiveBannerModel>>
         get() = mutableBannerList
+
+    private val mutableVideoBanner = MutableLiveData<Result<TravelCollectiveBannerModel>>()
+    val videoBanner: LiveData<Result<TravelCollectiveBannerModel>>
+        get() = mutableVideoBanner
 
     private val mutableDashboardData = MutableLiveData<FlightHomepageModel>()
     val homepageData: LiveData<FlightHomepageModel>
@@ -61,21 +69,28 @@ class FlightHomepageViewModel @Inject constructor(
         get() = mutableAutoSearch
 
     fun init() {
-        mutableDashboardData.value = FlightHomepageModel()
-        mutableAutoSearch.value = false
+        mutableDashboardData.postValue(FlightHomepageModel())
+        mutableAutoSearch.postValue(false)
     }
 
-    fun fetchBannerData(query: String, isFromCloud: Boolean) {
-        launch(dispatcherProvider.ui()) {
-            val bannerList = getTravelCollectiveBannerUseCase.execute(query, TravelType.FLIGHT, isFromCloud)
+    fun fetchBannerData(isFromCloud: Boolean) {
+        launch(dispatcherProvider.main) {
+            val bannerList = getTravelCollectiveBannerUseCase.execute(TravelType.FLIGHT, isFromCloud)
             mutableBannerList.postValue(bannerList)
         }
     }
 
     fun fetchTickerData() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.HOME)
             mutableTickerData.postValue(tickerData)
+        }
+    }
+
+    fun fetchVideoBannerData() {
+        launch(dispatcherProvider.main) {
+            val bannerList = getTravelCollectiveBannerUseCase.execute(TravelType.FLIGHT_VIDEO_BANNER, true)
+            mutableVideoBanner.postValue(bannerList)
         }
     }
 
@@ -92,10 +107,10 @@ class FlightHomepageViewModel @Inject constructor(
             val extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_")
 
             dashboardCache.putDepartureAirport(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP])
-            dashboardCache.putDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP])
+            dashboardCache.putDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP].replace("%20", " "))
             dashboardCache.putDepartureCityCode("")
             dashboardCache.putArrivalAirport(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])
-            dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP])
+            dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP].replace("%20", " "))
             dashboardCache.putRoundTrip(false)
             if (extrasTripDeparture[INDEX_DATE_TRIP].isNotEmpty()) {
                 dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])
@@ -124,7 +139,7 @@ class FlightHomepageViewModel @Inject constructor(
             dashboardCache.putClassCache(extrasClass.toInt())
 
             if (extrasAutoSearch.toInt() == 1) {
-                mutableAutoSearch.value = true
+                mutableAutoSearch.postValue(true)
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -143,7 +158,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onBannerClicked(position: Int, banner: TravelCollectiveBannerModel.Banner) {
         flightAnalytics.eventPromotionClick(position + 1, banner,
-                FlightAnalytics.Screen.HOMEPAGE,
+                FlightAnalyticsScreenName.HOMEPAGE,
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
@@ -152,7 +167,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.departureAirport = departureAirport
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -161,7 +176,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.arrivalAirport = arrivalAirport
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -170,7 +185,7 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightClass = classModel
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
@@ -179,17 +194,16 @@ class FlightHomepageViewModel @Inject constructor(
         homepageData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightPassengerViewModel = passengerModel
-            mutableDashboardData.value = newDashboardData
+            mutableDashboardData.postValue(newDashboardData)
         }
     }
 
     fun generatePairOfMinAndMaxDateForDeparture(): Pair<Date, Date> {
-        val minDate = FlightDateUtil.getCurrentDate()
-        val maxDate = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE,
-                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val minDate = DateUtil.getCurrentDate()
+        val maxDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+        val maxDateCalendar = DateUtil.getCurrentCalendar()
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
         maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
@@ -199,11 +213,10 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun generatePairOfMinAndMaxDateForReturn(departureDate: Date): Pair<Date, Date> {
         val minDate = departureDate
-        val maxDate = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE,
-                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+        val maxDateCalendar = DateUtil.getCurrentCalendar()
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
         maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
@@ -213,13 +226,14 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun validateDepartureDate(departureDate: Date): Int {
         var resultStringResourceId = -1
-        val oneYears = FlightDateUtil.removeTime(FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE, MINUS_ONE_DAY))
+        val oneYears = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+                .removeTime()
 
         if (departureDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
-        } else if (departureDate.before(FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate()))) {
+        } else if (departureDate.before(DateUtil.getCurrentDate().removeTime())) {
             resultStringResourceId = R.string.flight_dashboard_departure_should_atleast_today_error
         }
 
@@ -229,13 +243,14 @@ class FlightHomepageViewModel @Inject constructor(
     fun validateReturnDate(departureDate: Date, returnDate: Date): Int {
         var resultStringResourceId = -1
 
-        val oneYears = FlightDateUtil.removeTime(FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE, MINUS_ONE_DAY))
+        val oneYears = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+                .removeTime()
 
         if (returnDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_return_max_one_years_from_today_error
-        } else if (returnDate.before(FlightDateUtil.removeTime(departureDate))) {
+        } else if (returnDate.before(departureDate.removeTime())) {
             resultStringResourceId = R.string.flight_dashboard_return_should_greater_equal_error
         }
 
@@ -243,9 +258,9 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData),
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             deleteAllFlightSearchDataUseCase.execute()
         }
@@ -261,7 +276,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun sendTrackingPromoScrolled(position: Int) {
         getBannerData(position)?.let {
-            flightAnalytics.eventPromoImpression(position, it, FlightAnalytics.Screen.HOMEPAGE,
+            flightAnalytics.eventPromoImpression(position, it, FlightAnalyticsScreenName.HOMEPAGE,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
     }
@@ -283,10 +298,17 @@ class FlightHomepageViewModel @Inject constructor(
     private fun cloneViewModel(currentHomepageData: FlightHomepageModel): FlightHomepageModel =
             currentHomepageData.clone() as FlightHomepageModel
 
-    companion object {
-        private const val MAX_YEAR_FOR_FLIGHT = 1
-        private const val MINUS_ONE_DAY = -1
+    fun sendTrackingVideoBannerImpression(travelVideoBannerModel: TravelVideoBannerModel) {
+        flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel, FlightAnalyticsScreenName.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+    }
 
+    fun sendTrackingVideoBannerClick(travelVideoBannerModel: TravelVideoBannerModel) {
+        flightAnalytics.eventVideoBannerClick(travelVideoBannerModel, FlightAnalyticsScreenName.HOMEPAGE,
+                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+    }
+
+    companion object {
         // applink params index
         private const val INDEX_DEPARTURE_TRIP: Int = 0
         private const val INDEX_RETURN_TRIP = 1

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.domain.model.editshipping.ProvinceCitiesDistrict;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
-import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
 
 import java.util.ArrayList;
 import java.util.HashMap;

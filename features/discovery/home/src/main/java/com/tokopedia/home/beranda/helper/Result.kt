@@ -20,33 +20,41 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
     companion object {
         fun <T> success(data: T?): Result<T> {
             return Result(
-                    Status.SUCCESS,
-                    data,
-                    null
+                    status = Status.SUCCESS,
+                    data = data,
+                    error = null
             )
         }
 
         fun <T> error(error: Throwable, data: T? = null): Result<T> {
             return Result(
-                    Status.ERROR,
-                    data,
-                    error
-            )
-        }
-
-        fun <T> loading(data: T?): Result<T> {
-            return Result(
-                    Status.LOADING,
-                    data,
-                    null
+                    status = Status.ERROR,
+                    data = data,
+                    error = error
             )
         }
 
         fun <T> errorPagination(error: Throwable, data: T? = null): Result<T> {
             return Result(
-                    Status.ERROR_PAGINATION,
-                    data,
-                    error
+                    status = Status.ERROR_PAGINATION,
+                    data = data,
+                    error = error
+            )
+        }
+
+        fun <T> errorAtf(error: Throwable, data: T? = null): Result<T> {
+            return Result(
+                    status = Status.ERROR_ATF,
+                    data = data,
+                    error = error
+            )
+        }
+
+        fun <T> errorGeneral(error: Throwable, data: T? = null): Result<T> {
+            return Result(
+                    status = Status.ERROR_GENERAL,
+                    data = data,
+                    error = error
             )
         }
     }
@@ -55,7 +63,9 @@ data class Result<out T>(val status: Status, val data: T?, val error: Throwable?
         SUCCESS,
         ERROR,
         ERROR_PAGINATION,
-        LOADING
+        LOADING,
+        ERROR_ATF,
+        ERROR_GENERAL
     }
 
     fun Status.isLoading() = this == Status.LOADING

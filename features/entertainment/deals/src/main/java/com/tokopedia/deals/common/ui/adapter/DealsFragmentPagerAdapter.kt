@@ -17,7 +17,7 @@ class DealsFragmentPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when (page) {
-            DealsCategoryActivity.TAG -> DealsCategoryFragment.getInstance(ids[position])
+            DealsCategoryActivity.TAG -> DealsCategoryFragment.getInstance(ids[position], tabs[position])
             DealsBrandActivity.TAG -> { DealsBrandFragment.getInstance(ids[position], tabs[position]) }
             else -> Fragment()
         }

@@ -8,9 +8,10 @@ internal object SellerMenuNotification {
                 sellerOrderStatus {
                     newOrder
      	            readyToShip
+                    inResolution
                 }
                 notifcenter_total_unread {
-                    notif_total_unread_seller
+                    notif_total_unread_seller_int
                 }
                 inbox {
                     talk

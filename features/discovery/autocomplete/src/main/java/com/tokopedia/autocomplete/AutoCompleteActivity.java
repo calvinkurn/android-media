@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
+import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 public class AutoCompleteActivity extends BaseActivity
         implements SearchBarView.OnQueryTextListener,
@@ -65,11 +66,16 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void setStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.setStatusBarColor(getResources().getColor(R.color.white, null));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!isDarkMode(this)) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         }
     }
 

@@ -1,0 +1,463 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "cart_revamp": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "errors": [],
+          "empty_cart": {
+            "title": "Wah, keranjang belanjamu kosong",
+            "image": "https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/zeus/kratos/103cf4bc.jpg",
+            "description": "Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!",
+            "buttons": [
+              {
+                "id": 1,
+                "code": "STARTSHOPPING",
+                "message": "Mulai Belanja",
+                "color": "green"
+              }
+            ]
+          },
+          "out_of_service": {
+            "id": 0,
+            "code": "",
+            "image": "",
+            "title": "",
+            "description": "",
+            "buttons": []
+          },
+          "shopping_summary": {
+            "total_wording": "Total Harga (3 Barang)",
+            "total_value": 441300,
+            "discount_total_wording": "Total Diskon Barang",
+            "discount_value": 354250,
+            "payment_total_wording": "Total Bayar",
+            "promo_wording": "Hemat pakai promo",
+            "promo_value": 0,
+            "seller_cashback_wording": "Cashback Penjual",
+            "seller_cashback_value": 0
+          },
+          "max_quantity": 32767,
+          "max_char_note": 144,
+          "messages": {
+            "ErrorFieldBetween": "Jumlah harus diisi antara 1 - {{value}}",
+            "ErrorFieldMaxChar": "Catatan terlalu panjang, maks. {{value}} karakter.",
+            "ErrorFieldRequired": "Jumlah harus diisi",
+            "ErrorProductAvailableStock": "Stok tersedia:{{value}}",
+            "ErrorProductAvailableStockDetail": "Harap kurangi jumlah barang",
+            "ErrorProductMaxQuantity": "Maks. beli {{value}} barang",
+            "ErrorProductMinQuantity": "Min. beli {{value}} barang"
+          },
+          "fulfillment_message": "Dilayani Tokopedia",
+          "toko_cabang": {
+            "message": "Tokocabang",
+            "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+          },
+          "available_section": {
+            "action": [
+              {
+                "id": 1,
+                "code": "WISHLIST",
+                "message": "Pindahkan ke Wishlist"
+              },
+              {
+                "id": 2,
+                "code": "DELETE",
+                "message": ""
+              },
+              {
+                "id": 3,
+                "code": "NOTES",
+                "message": "Tulis catatan untuk barang ini"
+              },
+              {
+                "id": 4,
+                "code": "VALIDATENOTES",
+                "message": "Maks. 144 character"
+              },
+              {
+                "id": 10,
+                "code": "WISHLISTED",
+                "message": "Sudah ada di wishlist"
+              }
+            ],
+            "available_group": [
+              {
+                "user_address_id": 0,
+                "shipment_information": {
+                  "shop_location": "Kota Surabaya",
+                  "estimation": "",
+                  "free_shipping": {
+                    "eligible": true,
+                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  },
+                  "preorder": {
+                    "is_preorder": false,
+                    "duration": ""
+                  }
+                },
+                "shop": {
+                  "shop_alert_message": "",
+                  "shop_id": 2661965,
+                  "user_id": 24071379,
+                  "admin_ids": [],
+                  "shop_name": "Miniso Indonesia",
+                  "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2017/10/31/2661965/2661965_c3b4680e-65a7-4281-bc8c-24ab8476e44b.png",
+                  "shop_url": "https://www.tokopedia.com/miniso-official",
+                  "shop_status": 1,
+                  "is_gold": 1,
+                  "is_official": 1,
+                  "is_free_returns": 0,
+                  "gold_merchant": {
+                    "is_gold": 0,
+                    "is_gold_badge": false,
+                    "gold_merchant_logo_url": ""
+                  },
+                  "official_store": {
+                    "is_official": 1,
+                    "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+                  },
+                  "address_id": 3519,
+                  "postal_code": "60281",
+                  "latitude": "-7.263663999999999",
+                  "longitude": "112.76717389999999",
+                  "district_id": 3519,
+                  "district_name": "",
+                  "origin": 0,
+                  "address_street": "",
+                  "province_id": 0,
+                  "city_id": 252,
+                  "city_name": "Kota Surabaya",
+                  "province_name": "",
+                  "country_name": "",
+                  "is_allow_manage": false,
+                  "shop_domain": "miniso-official",
+                  "shop_shipments": [
+                    {
+                      "ship_id": 11,
+                      "ship_name": "SiCepat",
+                      "ship_code": "sicepat",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 18,
+                          "ship_prod_name": "Regular Package",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 33,
+                          "ship_prod_name": "BEST",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 43,
+                          "ship_prod_name": "GOKIL",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 44,
+                          "ship_prod_name": "Regular Package",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    },
+                    {
+                      "ship_id": 23,
+                      "ship_name": "AnterAja",
+                      "ship_code": "anteraja",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 45,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 46,
+                          "ship_prod_name": "Next Day",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    }
+                  ]
+                },
+                "promo_codes": [],
+                "cart_string": "2661965-0-6219674",
+                "cart_details": [
+                  {
+                    "cart_id": "1908316120",
+                    "product": {
+                      "product_information": [],
+                      "product_tracker_data": {
+                        "attribution": "",
+                        "tracker_list_name": ""
+                      },
+                      "isWishlist": false,
+                      "product_id": 1000611087,
+                      "product_name": "MINISO Kotak Penyimpanan Storage Box Container Organizer Tempat Baju - Merah Muda, L",
+                      "product_price_fmt": "Rp 88.000",
+                      "product_price": 88000,
+                      "parent_id": 1000611064,
+                      "category_id": 3735,
+                      "category": "Rumah Tangga / Tempat Penyimpanan / Storage Box Multifungsi",
+                      "catalog_id": 0,
+                      "wholesale_price": [],
+                      "product_weight": 1400,
+                      "product_weight_fmt": "1400gr",
+                      "product_condition": 1,
+                      "product_status": 1,
+                      "product_url": "https://www.tokopedia.com/miniso-official/miniso-kotak-penyimpanan-storage-box-container-organizer-tempat-baju-merah-muda-l",
+                      "product_returnable": 0,
+                      "is_freereturns": 0,
+                      "is_preorder": 0,
+                      "product_cashback": "10%",
+                      "product_min_order": 1,
+                      "product_max_order": 5,
+                      "product_rating": "0.000000",
+                      "product_invenage_value": 5,
+                      "product_invenage_total": {
+                        "by_user": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_user_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_user": false,
+                        "by_product": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_product_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_product": false
+                      },
+                      "product_switch_invenage": 1,
+                      "price_changes": {
+                        "changes_state": 0,
+                        "amount_difference": 0,
+                        "original_amount": 0,
+                        "description": ""
+                      },
+                      "product_price_currency": 1,
+                      "product_image": {
+                        "image_src": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/9/4/78419712/78419712_bf445996-16c6-4647-9a25-f178014cecfb_1100_1100",
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/9/4/78419712/78419712_bf445996-16c6-4647-9a25-f178014cecfb_1100_1100",
+                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/9/4/78419712/78419712_bf445996-16c6-4647-9a25-f178014cecfb_1100_1100",
+                        "image_src_300": "https://ecs7.tokopedia.net/img/cache/300/product-1/2020/9/4/78419712/78419712_bf445996-16c6-4647-9a25-f178014cecfb_1100_1100",
+                        "image_src_square": "https://ecs7.tokopedia.net/img/cache/500-square/product-1/2020/9/4/78419712/78419712_bf445996-16c6-4647-9a25-f178014cecfb_1100_1100"
+                      },
+                      "product_all_images": "[{\"file_name\":\"78419712_bf445996-16c6-4647-9a25-f178014cecfb_1100_1100\",\"file_path\":\"product-1/2020/9/4/78419712\",\"status\":2},{\"file_name\":\"24071379_0c066f4c-767a-4c1e-82a6-b0d5e92603d6_800_800\",\"file_path\":\"product-1/2020/7/6/24071379\",\"status\":1},{\"file_name\":\"24071379_9d334f90-d8cb-45d6-bf7d-77d6feb95630_800_800\",\"file_path\":\"product-1/2020/7/6/24071379\",\"status\":1},{\"file_name\":\"24071379_7e8467aa-46d5-48dd-8007-13601ab413ac_800_800\",\"file_path\":\"product-1/2020/7/6/24071379\",\"status\":1},{\"file_name\":\"78419712_2db4ecee-cbe5-4361-8295-c7ca1eed0035_1100_1100\",\"file_path\":\"product-1/2020/9/4/78419712\",\"status\":1},{\"file_name\":\"78419712_812dcd6f-422a-45ee-a854-c5f93c187771_1100_1100\",\"file_path\":\"product-1/2020/9/4/78419712\",\"status\":1}]",
+                      "product_notes": "",
+                      "product_quantity": 1,
+                      "product_weight_unit_code": 1,
+                      "product_weight_unit_text": "gr",
+                      "last_update_price": "-62135622000",
+                      "is_update_price": false,
+                      "product_preorder": {
+                        "duration_day": "0",
+                        "duration_text": "",
+                        "duration_unit_code": "0",
+                        "duration_unit_text": "",
+                        "duration_value": "0"
+                      },
+                      "product_showcase": {
+                        "name": "Rumah Tangga",
+                        "id": 9458931
+                      },
+                      "product_alias": "miniso-kotak-penyimpanan-storage-box-container-organizer-tempat-baju-merah-muda-l",
+                      "sku": "6941055161541",
+                      "campaign_id": -10000,
+                      "product_original_price": 109900,
+                      "product_price_original_fmt": "Rp 109.900",
+                      "is_slash_price": false,
+                      "free_returns": {
+                        "free_returns_logo": ""
+                      },
+                      "product_finsurance": 1,
+                      "is_wishlisted": false,
+                      "is_ppp": false,
+                      "is_cod": false,
+                      "warehouse_id": 6219674,
+                      "is_parent": false,
+                      "is_campaign_error": false,
+                      "is_blacklisted": false,
+                      "free_shipping": {
+                        "eligible": true,
+                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "booking_stock": 0,
+                      "is_product_volume_weight": false,
+                      "initial_price": 0,
+                      "initial_price_fmt": "Rp0",
+                      "slash_price_label": "20%",
+                      "product_warning_message": "",
+                      "product_alert_message": "",
+                      "variant_description_detail": {
+                        "variant_name": [
+                          "Merah Muda",
+                          "L"
+                        ],
+                        "variant_description": "Merah Muda, L"
+                      }
+                    },
+                    "errors": [],
+                    "messages": [],
+                    "checkbox_state": true
+                  }
+                ],
+                "total_cart_details_error": 0,
+                "total_cart_price": 88000,
+                "errors": [],
+                "sort_key": 1908316120,
+                "is_fulfillment_service": true,
+                "warehouse": {
+                  "warehouse_id": 6219674,
+                  "partner_id": 1,
+                  "shop_id": 0,
+                  "warehouse_name": "Surabaya",
+                  "district_id": 3519,
+                  "district_name": "Gubeng",
+                  "city_id": 252,
+                  "city_name": "Kota Surabaya",
+                  "province_id": 15,
+                  "province_name": "Jawa Timur",
+                  "status": 1,
+                  "postal_code": "60281",
+                  "is_default": 0,
+                  "latlon": "-7.263663999999999,112.76717389999999",
+                  "latitude": "-7.263663999999999",
+                  "longitude": "112.76717389999999",
+                  "email": "",
+                  "address_detail": "Jl. Kaliwaron No.54, RT.001/RW.02, Mojo, Kec. Gubeng, Kota SBY, Jawa Timur 60285",
+                  "country_name": "Indonesia",
+                  "is_fulfillment": true
+                },
+                "checkbox_state": true
+              }
+            ]
+          },
+          "unavailable_ticker": "",
+          "unavailable_section_action": [
+            {
+              "id": 7,
+              "code": "SHOWLESS",
+              "message": "Tampilkan lebih sedikit"
+            },
+            {
+              "id": 8,
+              "code": "SHOWMORE",
+              "message": "Tampilkan semua"
+            }
+          ],
+          "unavailable_section": [],
+          "total_product_price": 687901,
+          "total_product_count": 5,
+          "total_product_error": 0,
+          "global_coupon_attr": {
+            "description": "Gunakan promo Tokopedia",
+            "quantity_label": "4 Kupon"
+          },
+          "global_checkbox_state": true,
+          "tickers": [
+            {
+              "id": 0,
+              "message": "Hai Member Silver, kamu dapat Bebas Ongkir spesial WIB sampai 30 Sep 2020. Total kuota:  6 (untuk 1 pesanan/transaksi).",
+              "page": "cart"
+            }
+          ],
+          "hashed_email": "c630e8053412031c4ab875cb68ad182d",
+          "promo": {
+            "last_apply": {
+              "data": {
+                "global_success": true,
+                "success": true,
+                "message": {
+                  "state": "",
+                  "color": "",
+                  "text": ""
+                },
+                "codes": [],
+                "promo_code_id": 0,
+                "title_description": "",
+                "discount_amount": 0,
+                "cashback_wallet_amount": 0,
+                "cashback_advocate_referral_amount": 0,
+                "cashback_voucher_description": "",
+                "invoice_description": "",
+                "is_coupon": 0,
+                "gateway_id": "",
+                "is_tokopedia_gerai": false,
+                "clashing_info_detail": {
+                  "clash_message": "",
+                  "clash_reason": "",
+                  "is_clashed_promos": false,
+                  "options": []
+                },
+                "tokopoints_detail": {
+                  "conversion_rate": {
+                    "rate": 0,
+                    "points_coefficient": 0,
+                    "external_currency_coefficient": 0
+                  }
+                },
+                "voucher_orders": [],
+                "additional_info": {
+                  "message_info": {
+                    "message": "Makin hemat pakai promo",
+                    "detail": ""
+                  },
+                  "error_detail": {
+                    "message": ""
+                  },
+                  "empty_cart_info": {
+                    "image_url": "",
+                    "message": "",
+                    "detail": ""
+                  },
+                  "usage_summaries": [],
+                  "sp_ids": []
+                }
+              },
+              "code": "200000"
+            },
+            "error_default": {
+              "title": "promo tidak dapat digunakan",
+              "description": "silahkan coba beberapa saat lagi"
+            }
+          },
+          "ab_test_button": {
+            "enable": false
+          }
+        }
+      }
+    }
+  }
+]

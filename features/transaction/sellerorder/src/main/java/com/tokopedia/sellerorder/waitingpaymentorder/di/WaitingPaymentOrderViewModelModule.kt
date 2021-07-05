@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@WaitingPaymentOrderScope
 abstract class WaitingPaymentOrderViewModelModule {
 
     @WaitingPaymentOrderScope

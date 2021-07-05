@@ -1,0 +1,14 @@
+mutation notifcenter_markSeenNotif($type_id: Int!, $notif_id: [String]!){
+  notifcenter_markSeenNotif(type_id:$type_id, notif_id:$notif_id, track_id:"main-android") {
+    links {
+      self
+    }
+    status
+    server_proccess_time
+    server
+    data {
+      is_success
+    }
+    message_error
+  }
+}

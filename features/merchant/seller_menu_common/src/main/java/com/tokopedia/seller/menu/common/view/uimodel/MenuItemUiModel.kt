@@ -6,20 +6,17 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoClickTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiType
 
 open class MenuItemUiModel(
     open val title: String = "",
-    open val drawableReference: Int? = null,
     private val clickApplink: String? = null,
     eventActionSuffix: String = "",
     settingTypeInfix: String = "",
     open val trackingAlias: String? = null,
+    open val iconUnify: Int? = null,
+    open var notificationCount: Int = 0,
     open val clickAction: () -> Unit = {}
 ) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
-
-    override val settingUiType: SettingUiType
-        get() = SettingUiType.MENU_ITEM
 
     override val onClickApplink: String?
         get() = clickApplink
@@ -72,7 +69,9 @@ open class MenuItemUiModel(
             }
 
     val isNoIcon: Boolean
-        get() = drawableReference == null
+        get() = iconUnify == null
+
+    var clickSendTracker: () -> Unit = {}
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)

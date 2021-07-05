@@ -14,4 +14,12 @@
     <string name="path_edit_bca_one_click" translatable="false">/editbcaoneklik</string>
     <string name="path_thank_you_page" translatable="false">/thankyou</string>
 
+<!--    // for pms-->
+
+    <string name="host_pms">buyer</string>
+    <string name="path_pms">/payment</string>
+
+<!--    // for how to pay-->
+    <string name="host_how_to_pay">howtopay</string>
+
 </resources>

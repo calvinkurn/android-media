@@ -26,7 +26,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Neutral_N0"
+                    android:background="@color/Unify_N0"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -59,7 +59,7 @@
                     android:id="@+id/location_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/Neutral_N0">
+                    android:background="@color/Unify_N0">
 
                     <ImageView
                         android:id="@+id/iv_map"
@@ -79,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/spacing_lvl3"
                         android:text="@string/deals_location_text_search"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         android:textSize="@dimen/fontSize_lvl3"
                         app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                         app:layout_constraintLeft_toRightOf="@+id/iv_map"
@@ -93,7 +93,7 @@
                         android:layout_marginRight="@dimen/spacing_lvl4"
                         android:drawablePadding="@dimen/spacing_lvl2"
                         android:padding="@dimen/spacing_lvl2"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/fontSize_lvl3"
                         android:textStyle="bold"
                         app:layout_constraintTop_toTopOf="parent"
@@ -111,7 +111,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/deals_dp_1"
-            android:background="@color/deals_search_divider_color" />
+            android:background="@color/Unify_N75" />
     </com.google.android.material.appbar.AppBarLayout>
 
 </merge>

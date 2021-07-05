@@ -66,4 +66,12 @@ class CouponDetailRepositoryTest {
             assert(repository.swipeMyCoupon(partnercode,pin) == data)
         }
     }
+
+    @Test
+    fun getUserPhoneVerificationInfo() {
+        coEvery{map[CommonConstant.GQLQuery.TP_GQL_USER_INFO] }  returns "bdkjasv"
+        runBlocking {
+            assert(repository.getUserPhoneVerificationInfo() == data)
+        }
+    }
 }

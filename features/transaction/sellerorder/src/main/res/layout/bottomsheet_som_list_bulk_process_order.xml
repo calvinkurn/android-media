@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBulkProcessOrder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_weight="1"
+        tools:itemCount="20"
+        tools:listitem="@layout/item_som_list_bulk_process_order_product" />
+
+    <FrameLayout
+        android:id="@+id/btnBulkProcessOrderContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:paddingBottom="@dimen/spacing_lvl3">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnBulkProcessOrder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/som_list_btn_bulk_accept_order"
+            app:unifyButtonSize="large" />
+    </FrameLayout>
+</LinearLayout>

@@ -9,7 +9,6 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.unifycomponents.ticker.*
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import java.util.*
 
 /**
@@ -23,7 +22,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     override fun bind(element: TickerDataModel?) {
         element?.let {element->
-            element.tickers?.let {tickers->
+            element.tickers.let {tickers->
                 val tickerDataList: MutableList<TickerData> = ArrayList()
 
                 for (tickerData in tickers) {
@@ -33,7 +32,7 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
                 tickerPagerAdapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                     override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        HomePageTracking.eventClickTickerHomePage(context,tickerId)
+                        HomePageTracking.eventClickTickerHomePage(tickerId)
                         listener.onSectionItemClicked(linkUrl.toString())
                     }
 
@@ -44,10 +43,18 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                     }
 
                     override fun onDismiss() {
-                        HomePageTracking.eventClickOnCloseTickerHomePage(context,tickerId);
+                        HomePageTracking.eventClickOnCloseTickerHomePage(tickerId);
                         listener.onCloseTicker();
                     }
                 })
+
+                tickerComponent.postDelayed({
+                    try {
+                        view.findViewById<View>(R.id.ticker_content_multiple).requestLayout()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }, 1000)
             }
         }
     }

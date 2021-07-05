@@ -39,7 +39,4 @@ class TabsItemViewModel(val application: Application, var components: Components
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    override fun initDaggerInject() {
-
-    }
 }

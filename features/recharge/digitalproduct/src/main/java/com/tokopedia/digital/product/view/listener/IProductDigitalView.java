@@ -10,7 +10,6 @@ import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import java.util.List;
 
@@ -27,9 +26,6 @@ public interface IProductDigitalView extends IBaseView {
     void renderGuideListData(List<GuideData> guideDataList);
 
     void renderStateSelectedAllData();
-
-    void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber,
-                                     String operatorErrorMsg, Boolean isSimActive, String carrierName);
 
     void renderCheckETollBalance(String text, String buttonText);
 
@@ -59,23 +55,13 @@ public interface IProductDigitalView extends IBaseView {
 
     void showSnackBarCallbackCloseView(String message);
 
+    void showSnackBar(String message);
+
     boolean isUserLoggedIn();
 
     void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData);
 
-    void showAccessibilityAlertDialog();
-
-    void registerUssdReciever();
-
-    void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim);
-
-    void showPulsaBalanceError(String message);
-
-    void showMessageAlert(String message,String title);
-
     void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);
-
-    void removeCheckPulsaCards();
 
     Activity getActivity();
 
@@ -90,4 +76,8 @@ public interface IProductDigitalView extends IBaseView {
     void goToCartPage(ProductDigitalData productDigitalData);
 
     void showPromoContainer();
+
+    void navigateToDigitalCart(DigitalCheckoutPassData digitalCheckoutPassData);
+
+    void onBuyButtonLoading(Boolean showLoading);
 }

@@ -3,6 +3,9 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 
 interface InitialStateContract {
     interface View : CustomerView {
@@ -12,7 +15,7 @@ interface InitialStateContract {
 
         fun onRecentSearchImpressed(list: List<Any>)
 
-        fun onPopularSearchImpressed(list: List<Any>)
+        fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel)
 
         fun onSeeMoreRecentSearchImpressed(userId: String)
 
@@ -20,15 +23,29 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
+        fun trackEventClickRecentSearch(label: String, pageSource: String)
 
-        fun trackEventClickRecentShop(label: String, userId: String)
+        fun trackEventClickRecentShop(label: String, userId: String, pageSource: String)
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
-        fun renderRecentSearch()
+        fun renderCompleteRecentSearch(recentSearchDataView: RecentSearchDataView)
 
         fun dropKeyBoard()
+
+        fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
+
+        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String)
+
+        fun refreshViewWithPosition(position: Int)
+
+        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
+
+        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
+
+        fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
+
+        fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -44,8 +61,16 @@ interface InitialStateContract {
 
         fun getQueryKey(): String
 
-        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch)
 
         fun recentSearchSeeMoreClicked()
+
+        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
+
+        fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
+
+        fun onRecentViewClicked(item: BaseItemInitialStateSearch)
+
+        fun onProductLineClicked(item: BaseItemInitialStateSearch)
     }
 }

@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="7dp"
     android:paddingBottom="8dp"
+    android:orientation="horizontal"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/settingTitleIcon"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:scaleType="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/settingTitleText"
-        app:layout_constraintWidth_percent="0.15"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/sah_dimen_20dp"
         tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/settingTitleText"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/layout_lvl2"
         android:gravity="center_vertical"
-        android:textColor="@color/default_black_text"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        app:layout_constraintStart_toEndOf="@id/settingTitleIcon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/settingTitleIcon"
-        app:layout_constraintBottom_toBottomOf="@id/settingTitleIcon"
         tools:text="Akun Toko"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

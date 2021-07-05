@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
@@ -48,6 +49,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("type")
             val type: String = "",
+            @SerializedName("pageName")
+            @Expose
+            val pageName: String = "",
             @SerializedName("showPromoBadge")
             val showPromoBadge: Boolean = false,
             @Expose
@@ -79,7 +83,10 @@ data class DynamicHomeChannel(
             val widgetParam: String = "",
             @SerializedName("token")
             var token: String = "",
-            var timestamp: String = ""
+            @SerializedName("dividerType")
+            val dividerType: Int = DIVIDER_NO_DIVIDER,
+            var timestamp: String = "",
+            var isCache: Boolean = true
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -254,7 +261,7 @@ data class DynamicHomeChannel(
                             ).toString(),
                                     "brand", "none / other",
                                     "variant", "none / other",
-                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType}" + header.name,
+                                    "list", "/ - p1 - lego product - product - ${grid.recommendationType} - $pageName - " + header.name,
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
                                     "dimension84", id,
@@ -297,6 +304,8 @@ data class DynamicHomeChannel(
             this.position = position
         }
 
+        fun getPosition() = position
+
         companion object {
             const val LAYOUT_HERO: String = "hero_4_image"
             const val LAYOUT_3_IMAGE: String = "3_image"
@@ -307,6 +316,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
+            const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
             const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
@@ -325,11 +335,20 @@ data class DynamicHomeChannel(
             const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
             const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val LAYOUT_SALAM_WIDGET: String = "salam_todo"
+            const val LAYOUT_RECHARGE_BU_WIDGET: String = "home_widget_2"
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
+            const val LAYOUT_BEST_SELLING: String = "best_selling"
+            const val LAYOUT_CATEGORY_ICON: String = "category_icon"
+            const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
+            const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
+            const val DIVIDER_NO_DIVIDER = 0
+            const val DIVIDER_TOP = 1
+            const val DIVIDER_BOTTOM = 2
+            const val DIVIDER_TOP_AND_BOTTOM = 3
         }
     }
 
@@ -349,6 +368,7 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("url")
             val url: String = "",
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",
@@ -373,6 +393,7 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("shop")
             val shop: Shop = Shop(),
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",
@@ -431,6 +452,8 @@ data class DynamicHomeChannel(
             val hasBuyButton: Boolean = false,
             @SerializedName("rating")
             var rating: Int = 0,
+            @SerializedName("ratingAverage")
+            var ratingFloat: String = "",
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose
@@ -441,7 +464,22 @@ data class DynamicHomeChannel(
             val textColor: String = "",
             @Expose
             @SerializedName("recommendationType")
-            val recommendationType: String = ""
+            val recommendationType: String = "",
+            @Expose
+            @SerializedName("campaignCode")
+            val campaignCode: String = "",
+            @Expose
+            @SerializedName("badges")
+            val badges: Array<HomeBadges> = arrayOf()
+    )
+
+    data class HomeBadges(
+            @Expose
+            @SerializedName("title")
+            val title: String = "",
+            @Expose
+            @SerializedName("image_url")
+            val imageUrl: String = ""
     )
 
     data class Benefit(
@@ -452,6 +490,7 @@ data class DynamicHomeChannel(
             @SerializedName("value")
             val value: String = ""
     )
+
     data class Header(
             @Expose
             @SerializedName("id")
@@ -517,7 +556,7 @@ data class DynamicHomeChannel(
             @SerializedName("attribution")
             val attribution: String = "",
             @SerializedName("gradient_color")
-            val gradientColor: ArrayList<String> = arrayListOf("#ffffff")
+            val gradientColor: ArrayList<String> = arrayListOf()
     ) : ImpressHolder()
 
     data class CtaData(
@@ -538,6 +577,9 @@ data class DynamicHomeChannel(
     data class Shop(
         @Expose
         @SerializedName("shopID")
-        val shopId: String = ""
+        val shopId: String = "",
+        @Expose
+        @SerializedName("city")
+        val city: String = ""
     )
 }

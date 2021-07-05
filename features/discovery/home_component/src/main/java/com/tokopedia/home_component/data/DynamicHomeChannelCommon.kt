@@ -210,6 +210,9 @@ data class DynamicHomeChannelCommon(
             @SerializedName("rating")
             var rating: Int = 0,
             @Expose
+            @SerializedName("ratingAverage")
+            var ratingFloat: String = "",
+            @Expose
             @SerializedName("count_review")
             val countReview: Int = 0,
             @Expose
@@ -297,7 +300,7 @@ data class DynamicHomeChannelCommon(
             @SerializedName("attribution")
             val attribution: String = "",
             @SerializedName("gradient_color")
-            val gradientColor: ArrayList<String> = arrayListOf("#ffffff")
+            val gradientColor: ArrayList<String> = arrayListOf("")
     ) : ImpressHolder()
 
     data class CtaData(

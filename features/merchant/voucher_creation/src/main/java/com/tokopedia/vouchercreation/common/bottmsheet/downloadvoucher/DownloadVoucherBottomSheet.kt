@@ -41,6 +41,8 @@ class DownloadVoucherBottomSheet : BottomSheetUnify() {
         private const val BANNER_URL = "banner_url"
         private const val SQUARE_URL = "square_url"
         private const val USER_ID = "user_id"
+
+        const val TAG = "DownloadVoucherBottomSheet"
     }
 
     private val mAdapter by lazy { DownloadVoucherAdapter() }
@@ -111,7 +113,7 @@ class DownloadVoucherBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        showNow(fm, DownloadVoucherBottomSheet::class.java.simpleName)
+        showNow(fm, TAG)
     }
 
     private fun getDownloadItems(): List<DownloadVoucherUiModel> {

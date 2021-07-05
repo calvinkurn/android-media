@@ -21,10 +21,7 @@
     <string name="cp_warning_empty_product">Masukkan barang yang mau kamu post dulu ya.</string>
     <string name="cp_warning_empty_photo">Tambah foto atau video dulu ya.</string>
     <string name="cp_delete_warning_desc">Kalau dihapus, post kamu diganti dengan foto barang yang dipilih.</string>
-    <string name="cp_title_update_post">Update Post</string>
     <string name="cp_title_edit">Edit</string>
-    <string name="cp_continue">Lanjutkan</string>
-    <string name="cp_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
     <string name="cp_get_commission">Raih Komisi</string>
 
     <string name="cp_share_tokopedia">Follower</string>
@@ -56,4 +53,6 @@
     <string name="cp_product_suggestion_title">Rekomendasi Barang Buatmu</string>
     <string name="cp_label_add_product">Masukkan Barang</string>
     <string name="cp_label_add_sticker">Aa</string>
+
+    <string name="string_attach_product_warning_max_product_format">Hanya bisa masukkan %1$s barang ya.</string>
 </resources>

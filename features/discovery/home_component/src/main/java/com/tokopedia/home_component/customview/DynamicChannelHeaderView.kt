@@ -2,6 +2,7 @@ package com.tokopedia.home_component.customview
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,31 +14,35 @@ import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
+import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 class DynamicChannelHeaderView: FrameLayout {
     private var itemView: View?
 
     private var listener: HeaderListener? = null
 
-    var countDownView: CountDownView? = null
+    var countDownView: TimerUnifySingle? = null
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
     var seeAllButtonUnify: UnifyButton? = null
     var channelSubtitle: TextView? = null
 
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.home_component_dynamic_channel_header, this)
@@ -63,6 +68,7 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
             handleHeaderExpiredTime(channel, stubCountDownView)
+            handleBackgroundColor(channel, it, stubSeeAllButton, stubSeeAllButtonUnify)
         }
     }
 
@@ -83,8 +89,8 @@ class DynamicChannelHeaderView: FrameLayout {
             channelTitle?.text = channelHeaderName
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -107,8 +113,8 @@ class DynamicChannelHeaderView: FrameLayout {
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
-                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE
@@ -131,6 +137,13 @@ class DynamicChannelHeaderView: FrameLayout {
             }
 
             handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
+
+            if(channel.style == ChannelStyle.ChannelHome){
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+            } else if(channel.style == ChannelStyle.ChannelOS){
+                seeAllButton?.setTypeface(null, Typeface.NORMAL)
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_P600))
+            }
 
             seeAllButton?.show()
             seeAllButton?.setOnClickListener {
@@ -213,23 +226,57 @@ class DynamicChannelHeaderView: FrameLayout {
             countDownView = if (stubCountDownView is ViewStub &&
                     !isViewStubHasBeenInflated(stubCountDownView)) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
-                inflatedStubCountDownView.findViewById<CountDownView>(R.id.count_down)
+                inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
                 itemView?.findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                countDownView?.setup(channel.channelConfig.serverTimeOffset, expiredTime) {
-                    listener?.onChannelExpired(channel)
+                countDownView?.run {
+                    timerVariant = if(channel.channelHeader.backColor.isNotEmpty()){
+                        TimerUnifySingle.VARIANT_ALTERNATE
+                    } else {
+                        TimerUnifySingle.VARIANT_MAIN
+                    }
+
+                    visibility = View.VISIBLE
+
+                    // calculate date diff
+                    targetDate = Calendar.getInstance().apply {
+                        val currentDate = Date()
+                        val currentMillisecond: Long = currentDate.time + channel.channelConfig.serverTimeOffset
+                        val timeDiff = expiredTime.time - currentMillisecond
+                        add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+                        add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+                        add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
+                    }
+                    onFinish = {
+                        listener?.onChannelExpired(channel)
+                    }
+
                 }
-                countDownView?.visibility = View.VISIBLE
             }
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
             }
         }
+    }
+
+    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
+        if (channel.channelHeader.backColor.isNotEmpty()) {
+            stubSeeAllButton?.gone()
+            stubSeeAllButtonUnify?.gone()
+            titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+
+            titleContainer.setPadding(
+                    titleContainer.paddingLeft,
+                    convertDpToPixel(10f, titleContainer.context),
+                    titleContainer.paddingRight,
+                    titleContainer.paddingBottom)
+        }
+
     }
 
     fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {

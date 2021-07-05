@@ -5,4 +5,6 @@
     <string name="content_desc_btn_wishlist">button wishlist</string>
     <string name="content_desc_btn_inbox">button inbox</string>
     <string name="content_desc_btn_notification">button notification</string>
+
+    <string name="tag_counter_id">iconCounter</string>
 </resources>

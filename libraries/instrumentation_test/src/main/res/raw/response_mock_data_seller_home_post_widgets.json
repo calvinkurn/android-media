@@ -1,40 +1,68 @@
-{
-  "data": {
-    "getPostWidgetData": {
-      "data": [
-        {
-          "datakey": "sellerInfo",
-          "list": [],
-          "errorMsg": ""
-        },
-        {
-          "datakey": "article",
-          "list": [
-            {
-              "title": "Maksimalkan Fitur Dekorasi Toko Buat Tokomu Tampil Beda",
-              "url": "https://seller.tokopedia.com/edu/fitur-dekorasi-toko/",
-              "applink": "https://seller.tokopedia.com/edu/fitur-dekorasi-toko/",
-              "subtitle": "<p>Fitur &#183; 13 AUG 20</p>",
-              "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/03/Dekorasi-toko-480x206.png"
-            },
-            {
-              "title": "Konten Pilihan Hari Ini: Baru! Kini Seller Bisa Live Streaming di Tokopedia Play",
-              "url": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/",
-              "applink": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/",
-              "subtitle": "<p>Panduan Berjualan &#183; 13 AUG 20</p>",
-              "featuredMediaURL": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/konten-hari-ini-agustus/"
-            },
-            {
-              "title": "Tips Mudah Live Streaming untuk Pemula",
-              "url": "https://seller.tokopedia.com/edu/tips-live-streaming/",
-              "applink": "https://seller.tokopedia.com/edu/tips-live-streaming/",
-              "subtitle": "<p>Fitur &#183; 12 AUG 20</p>",
-              "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/08/Live-Streaming-1-480x206.jpg"
-            }
-          ],
-          "errorMsg": ""
-        }
-      ]
+[
+  {
+    "data": {
+      "fetchPostWidgetData": {
+        "data": [
+          {
+            "datakey": "sellerInfo",
+            "list": [
+              {
+                "title": "Saldo Tokopedia berhasil dicairkan",
+                "url": "https://m.tokopedia.com/deposit",
+                "applink": "tokopedia://saldo",
+                "subtitle": "<p>Info &#183; 11 OCT 20</p>",
+                "featuredMediaURL": "https://cdn.tokopedia.net/img/toppay/update_withdrawal_complete.png"
+              },
+              {
+                "title": "Saldo Tokopedia berhasil dicairkan",
+                "url": "https://m.tokopedia.com/deposit",
+                "applink": "tokopedia://saldo",
+                "subtitle": "<p>Info &#183; 9 OCT 20</p>",
+                "featuredMediaURL": "https://cdn.tokopedia.net/img/toppay/update_withdrawal_complete.png"
+              },
+              {
+                "title": "Makin mudah jualan di aplikasi Tokopedia Seller",
+                "url": "https://seller.tokopedia.com/edu/aplikasi-topseller/",
+                "applink": "tokopedia://webview?allow_override=false&url=https%3A%2F%2Fseller.tokopedia.com%2Fedu%2Faplikasi-topseller%2F",
+                "subtitle": "<p>Info &#183; 9 OCT 20</p>",
+                "featuredMediaURL": ""
+              }
+            ],
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
+          },
+          {
+            "datakey": "article",
+            "list": [
+              {
+                "title": "Konten Pilihan Hari Ini: 3 Fitur Baru yang Launching di Akhir September! Sudah Coba Semuanya?",
+                "url": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/",
+                "applink": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/",
+                "subtitle": "\u003cp\u003ePanduan Berjualan \u0026#183; 9 OCT 20\u003c/p\u003e",
+                "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/10/konten-hari-ini-oktober-480x206.jpg"
+              },
+              {
+                "title": "SEO Optimal, Kunci Menjadi yang Teratas di Halaman Pencarian Google",
+                "url": "https://seller.tokopedia.com/edu/belajar-seo/",
+                "applink": "https://seller.tokopedia.com/edu/belajar-seo/",
+                "subtitle": "\u003cp\u003eSEO \u0026#183; 8 OCT 20\u003c/p\u003e",
+                "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/10/Seller-Center-480x206.jpg"
+              },
+              {
+                "title": "Buat Branding Toko Kuat dan Gampang Diingat dengan Merchandise",
+                "url": "https://seller.tokopedia.com/edu/branding-toko-merchandise/",
+                "applink": "https://seller.tokopedia.com/edu/branding-toko-merchandise/",
+                "subtitle": "\u003cp\u003ePanduan Berjualan \u0026#183; 8 OCT 20\u003c/p\u003e",
+                "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/08/merchandise-480x206.jpg"
+              }
+            ],
+            "error": false,
+            "errorMsg": "",
+            "showWidget": true
+          }
+        ]
+      }
     }
   }
-}
+]

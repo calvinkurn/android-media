@@ -12,8 +12,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgMvcEmptyState"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/mvc_dimen_240dp"
-        app:srcCompat="@drawable/il_mvc_no_result" />
+        android:layout_height="@dimen/mvc_dimen_240dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcEmptyStateTitle"

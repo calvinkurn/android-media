@@ -1,7 +1,6 @@
 package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -21,6 +22,7 @@ import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -38,7 +40,7 @@ public class CategoryProductStyle99View extends
     private LinearLayout holderChooserProduct;
     private LinearLayout holderAdditionalInfoProduct;
     private LinearLayout holderPriceInfoProduct;
-    private TextView btnBuyDigital;
+    private UnifyButton btnBuyDigital;
     private CheckBox cbInstantCheckout;
     private RelativeLayout layoutCheckout;
     private ImageView tooltipInstantCheckout;
@@ -147,6 +149,11 @@ public class CategoryProductStyle99View extends
     @Override
     public boolean isInstantCheckoutChecked() {
         return false;
+    }
+
+    @Override
+    public void onBuyButtonLoading(Boolean showLoading) {
+        btnBuyDigital.setLoading(showLoading);
     }
 
     @Override

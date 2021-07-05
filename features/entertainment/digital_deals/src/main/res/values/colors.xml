@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="search_background">#f6f6f6</color>
-    <color name="toolbar_home">#666666</color>
     <color name="expandable_text_color">#8a000000</color>
     <color name="deals_backgroud_color">#ffffff</color>
-    <color name="vlight_green">#daf5db</color>
     <color name="vlight_red">#ffeaef</color>
     <color name="tkpd_dark_gray_toolbar">#666666</color>
     <color name="green_toast_color">#f3fef3</color>
     <color name="color_search_icon">#BDBDBD</color>
-    <color name="black_70">#b3000000</color>
     <color name="red_error">#f13700</color>
-    <color name="seel_all_green_color">#03ac0e</color>
-    <color name="toolbar_title_color">#7031353b</color>
     <color name="deal_product_text_color">#e131353b</color>
     <color name="deal_price_price__off_color">#ff5c84</color>
     <color name="deal_sale_price__color">#fa591d</color>

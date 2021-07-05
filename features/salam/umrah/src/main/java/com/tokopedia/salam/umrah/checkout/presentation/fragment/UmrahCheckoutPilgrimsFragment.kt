@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -28,14 +29,17 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahPilgrimsTitle
 import com.tokopedia.salam.umrah.common.data.UmrahPilgrimsTitleType
 import com.tokopedia.salam.umrah.common.util.CommonParam
+import com.tokopedia.salam.umrah.common.util.DIGIT_STRING
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorian
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getDateGregorianID
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
+import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_pilgrims.*
+import kotlinx.android.synthetic.main.widget_umrah_autocomplete_edit_text.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -88,12 +92,12 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahCheckoutPilgrimsViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        umrahCheckoutPilgrimsViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
@@ -111,8 +115,8 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
         btn_umrah_checkout_pilgrims.setOnClickListener {
             if (validateData()) {
                 pilgrimsData.title = getPessangerTitleShort(getPassengerTitle())
-                pilgrimsData.firstName = ac_umrah_checkout_pilgrims_contact_first_name.text.toString()
-                pilgrimsData.lastName = ac_umrah_checkout_pilgrims_contact_last_name.text.toString()
+                pilgrimsData.firstName = ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.text.toString()
+                pilgrimsData.lastName = tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.text.toString()
                 pilgrimsData.dateBirth = dateBirth
                 activity?.run {
                     setResult(Activity.RESULT_OK, Intent().apply {
@@ -128,53 +132,59 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     }
 
     private fun renderCheckForm() {
-        til_umrah_checkout_pilgrims_contact_first_name.editText.addTextChangedListener(object : TextWatcher {
+        ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (count >= 0) {
-                    til_umrah_checkout_pilgrims_contact_first_name.error = ""
-                }
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (count >= 0) {
+                    ac_umrah_autocomplete_first_name.til_umrah_autocomplete.error = ""
+                }
+            }
 
+        })
+        tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.setKeyListener(DigitsKeyListener.getInstance(DIGIT_STRING));
+        tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (count >= 0) {
+                    tf_umrah_checkout_pilgrims_contact_last_name.setMessage("")
+                    tf_umrah_checkout_pilgrims_contact_last_name.setError(false)
+                }else{
+                    tf_umrah_checkout_pilgrims_contact_last_name.setError(true)
+                }
             }
 
         })
 
-        til_umrah_checkout_pilgrims_contact_last_name.editText.addTextChangedListener(object : TextWatcher {
+        tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                if (count >= 0) {
-                    til_umrah_checkout_pilgrims_contact_last_name.error = ""
-                }
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-        })
-
-        til_umrah_checkout_pilgrims_contact_date_birth.editText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 if (count >= 0) {
-                    til_umrah_checkout_pilgrims_contact_date_birth.error = ""
+                    tf_umrah_checkout_pilgrims_contact_date_birth.setMessage("")
+                    tf_umrah_checkout_pilgrims_contact_date_birth.setError(false)
+                }else{
+                    tf_umrah_checkout_pilgrims_contact_date_birth.setError(true)
                 }
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
             }
 
         })
@@ -182,22 +192,24 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
 
     private fun validateData(): Boolean {
         var isValid = true
-        if (til_umrah_checkout_pilgrims_contact_first_name.editText.text.isNullOrBlank()) {
-            til_umrah_checkout_pilgrims_contact_first_name.error = getString(R.string.umrah_checkout_pilgrims_first_name_error)
+        if (ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.text.isNullOrBlank()) {
+            ac_umrah_autocomplete_first_name.til_umrah_autocomplete.error = getString(R.string.umrah_checkout_pilgrims_first_name_error)
             isValid = false
         }
-        if (til_umrah_checkout_pilgrims_contact_last_name.editText.text.isNullOrBlank()) {
-            til_umrah_checkout_pilgrims_contact_last_name.error = getString(R.string.umrah_checkout_pilgrims_last_name_error)
+        if (tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.text.isNullOrBlank()) {
+            tf_umrah_checkout_pilgrims_contact_last_name.setMessage(getString(R.string.umrah_checkout_pilgrims_last_name_error))
+            tf_umrah_checkout_pilgrims_contact_last_name.setError(true)
             isValid = false
         }
-        if (til_umrah_checkout_pilgrims_contact_date_birth.editText.text.isNullOrBlank()) {
-            til_umrah_checkout_pilgrims_contact_date_birth.error = getString(R.string.umrah_checkout_pilgrims_date_birth_error)
+        if (tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.text.isNullOrBlank()) {
+            tf_umrah_checkout_pilgrims_contact_date_birth.setError(true)
+            tf_umrah_checkout_pilgrims_contact_date_birth.setMessage(getString(R.string.umrah_checkout_pilgrims_date_birth_error))
             isValid = false
         }
 
         if (getPassengerTitle().isNullOrBlank()) {
             view?.let {
-                Toaster.showError(it, getString(R.string.umrah_checkout_pilgrims_title_error), Snackbar.LENGTH_LONG)
+                Toaster.build(it, getString(R.string.umrah_checkout_pilgrims_title_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
             isValid = false
         }
@@ -212,12 +224,15 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
             val datePickerUnify = DatePickerUnify(it, getLastTime(), now, getCalendarTwoWeeksBefore())
             datePickerUnify.setTitle(getString(R.string.umroh_checkout_birth_date))
             datePickerUnify.clearClose(false)
-            til_umrah_checkout_pilgrims_contact_date_birth.editText.inputType = InputType.TYPE_NULL
-            til_umrah_checkout_pilgrims_contact_date_birth.editText.setOnTouchListener(object : View.OnTouchListener {
+            tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.inputType = InputType.TYPE_NULL
+            tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.setOnTouchListener(object : View.OnTouchListener {
                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                     when (event?.action) {
                         MotionEvent.ACTION_DOWN -> {
                             datePickerUnify.show(activity!!.supportFragmentManager, "")
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            v?.performClick()
                         }
                     }
                     return v?.onTouchEvent(event) ?: true
@@ -225,7 +240,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
             })
 
             datePickerUnify.datePickerButton.setOnClickListener {
-                til_umrah_checkout_pilgrims_contact_date_birth.editText.setText(getDateGregorianID(datePickerUnify.getDate(), UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT))
+                tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.setText(getDateGregorianID(datePickerUnify.getDate(), UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT))
                 dateBirth = getDateGregorian(datePickerUnify.getDate())
                 datePickerUnify.dismiss()
             }
@@ -254,16 +269,15 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     }
 
     private fun renderFilledUI() {
-        til_umrah_checkout_pilgrims_contact_first_name.setLabel(getString(R.string.umrah_checkout_bottom_sheet_pilgrims_label_name_first))
-        til_umrah_checkout_pilgrims_contact_last_name.setLabel(getString(R.string.umrah_checkout_bottom_sheet_pilgrims_label_name_last))
-        til_umrah_checkout_pilgrims_contact_date_birth.setLabel(getString(R.string.umrah_checkout_bottom_sheet_pilgrims_label_date_birth))
+        ac_umrah_autocomplete_first_name.setLabel(getString(R.string.umrah_checkout_bottom_sheet_pilgrims_label_name_first))
+        ac_umrah_autocomplete_first_name.setHint(getString(R.string.umrah_checkout_bottom_sheet_pilgrims_label_name_first_label))
 
         if (pilgrimsData.dateBirth.isNotEmpty())
-            til_umrah_checkout_pilgrims_contact_date_birth.editText.setText(getTime(UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT, pilgrimsData.dateBirth))
+            tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.setText(getTime(UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT, pilgrimsData.dateBirth))
         if (pilgrimsData.firstName.isNotEmpty())
-            til_umrah_checkout_pilgrims_contact_first_name.editText.setText(pilgrimsData.firstName)
+            ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.setText(pilgrimsData.firstName)
         if (pilgrimsData.lastName.isNotEmpty())
-            til_umrah_checkout_pilgrims_contact_last_name.editText.setText(pilgrimsData.lastName)
+            tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.setText(pilgrimsData.lastName)
 
     }
 
@@ -296,11 +310,11 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
                 com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(),
                 object : TravelContactArrayAdapter.ContactArrayListener {
                     override fun getFilterText(): String {
-                        return ac_umrah_checkout_pilgrims_contact_first_name.text.toString()
+                        return ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.text.toString()
                     }
                 })
-        (ac_umrah_checkout_pilgrims_contact_first_name as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
-        (ac_umrah_checkout_pilgrims_contact_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
+        (ac_umrah_autocomplete_first_name.ac_umrah_autocomplete as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+        (ac_umrah_autocomplete_first_name.ac_umrah_autocomplete as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
     }
 
     fun autofillPassengerContact(contact: TravelContactListModel.Contact?) {
@@ -308,11 +322,11 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
         if (contact != null) {
             if (contact.firstName.isNotBlank()) {
                 pilgrimsData.firstName = contact.firstName
-                til_umrah_checkout_pilgrims_contact_first_name.editText.setText(contact.firstName)
+                ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.setText(contact.firstName)
             }
             if (contact.lastName.isNotBlank()) {
                 pilgrimsData.lastName = contact.lastName
-                til_umrah_checkout_pilgrims_contact_last_name.editText.setText(contact.lastName)
+                tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.setText(contact.lastName)
             }
             if (contact.title.isNotBlank()) {
                 pilgrimsData.title = contact.shortTitle
@@ -320,19 +334,18 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
             }
             if (contact.birthDate.isNotBlank()) {
                 dateBirth = contact.birthDate
-                til_umrah_checkout_pilgrims_contact_date_birth.editText.setText(getTime(UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT, contact.birthDate))
+                tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.setText(getTime(UmrahDateUtil.DATE_WITH_YEAR_FULL_MONTH_FORMAT, contact.birthDate))
             }
 
         }
     }
 
     fun clearAllFields() {
-        til_umrah_checkout_pilgrims_contact_first_name.editText.setText("")
-        til_umrah_checkout_pilgrims_contact_last_name.editText.setText("")
-        til_umrah_checkout_pilgrims_contact_date_birth.editText.setText("")
+        ac_umrah_autocomplete_first_name.ac_umrah_autocomplete.setText("")
+        tf_umrah_checkout_pilgrims_contact_last_name.textFieldInput.setText("")
+        tf_umrah_checkout_pilgrims_contact_date_birth.textFieldInput.setText("")
         rv_umrah_checkout_pilgrims_title.onResetChip()
     }
-
 
     private fun renderPassengerTitle(passengerTitle: String) {
         when {

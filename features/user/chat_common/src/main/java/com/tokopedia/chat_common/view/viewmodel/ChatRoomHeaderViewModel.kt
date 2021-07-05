@@ -1,12 +1,8 @@
 package com.tokopedia.chat_common.view.viewmodel
 
-import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-/**
- * shopId always f
- */
 @Parcelize
 data class ChatRoomHeaderViewModel constructor(
         var name: String = "",
@@ -18,13 +14,13 @@ data class ChatRoomHeaderViewModel constructor(
         var image: String = "",
         var lastTimeOnline: String = "",
         var isOnline: Boolean = false,
-        var shopId: Int = 0,
+        var shopId: Long = 0,
         val isOfficial: Boolean = false,
         val isGold: Boolean = false,
         val badge: String = ""
 ) : Parcelable {
 
-    fun isOfficialStore(): Boolean = label == Companion.TAG_OFFICIAL
+    fun isOfficialAccountTokopedia(): Boolean = label == Companion.TAG_OFFICIAL
 
     object Companion {
         const val MODE_DEFAULT_GET_CHAT: Int = 1

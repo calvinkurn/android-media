@@ -1,0 +1,34 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.seller.action">
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
+
+    <application>
+        <activity android:name=".SellerActionActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_seller_action"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name="com.tokopedia.seller.action.SellerActionSliceProvider"
+            android:authorities="com.tokopedia.seller.action.slices"
+            android:exported="true"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.app.slice.category.SLICE" />
+            </intent-filter>
+        </provider>
+    </application>
+
+
+</manifest>

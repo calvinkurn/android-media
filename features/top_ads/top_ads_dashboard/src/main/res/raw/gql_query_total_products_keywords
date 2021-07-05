@@ -3,6 +3,7 @@ mutation topAdsGetTotalAdsAndKeywords($shopID: String!, $groupIDs: [String]!) {
     data {
       ID
       totalAds
+      totalProducts
       totalKeywords
     }
     errors {

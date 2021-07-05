@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.LiveData
-import com.tokopedia.review.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewdetail.domain.GetProductFeedbackDetailListUseCase
 import com.tokopedia.review.feature.reviewdetail.domain.GetProductReviewInitialUseCase
 import com.tokopedia.review.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
@@ -37,7 +37,7 @@ abstract class ProductReviewDetailViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ProductReviewDetailViewModel(TestCoroutineDispatchers, userSession,
+        viewModel = ProductReviewDetailViewModel(CoroutineTestDispatchersProvider, userSession,
                                         getProductReviewInitialUseCase, getProductFeedbackDetailListUseCase)
         lifecycle = LifecycleRegistry(mockk()).apply {
             handleLifecycleEvent(Lifecycle.Event.ON_RESUME)

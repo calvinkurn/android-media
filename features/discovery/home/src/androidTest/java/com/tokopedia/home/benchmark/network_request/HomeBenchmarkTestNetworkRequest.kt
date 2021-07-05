@@ -10,7 +10,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.home.benchmark.network_request.HomeMockResponseList.getDynamicHomeChannel
 import com.tokopedia.home.benchmark.prepare_page.TestQuery.dynamicChannelQuery
 import com.tokopedia.home.benchmark.prepare_page.TestQuery.homeQuery
-import com.tokopedia.home.beranda.common.HomeDispatcherProviderImpl
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeDatabase
@@ -21,13 +21,16 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
-import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase
+import com.tokopedia.home.beranda.data.model.HomeAtfData
+import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
+import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
+import com.tokopedia.home.beranda.di.module.query.QueryHome
+import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.HomeFlagData
 import com.tokopedia.home.beranda.domain.model.HomeRoomData
+import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.common.HomeAceApi
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -56,7 +59,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
         get() = Dispatchers.Main + masterJob
 
     companion object {
-        private lateinit var homeUseCase: HomeUseCase
+        private lateinit var homeUseCase: HomeRevampUseCase
         private lateinit var homeDao: HomeDao
         private lateinit var context: Context
         private lateinit var gson: Gson
@@ -87,8 +90,14 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                     HomeDynamicChannelVisitableFactoryImpl(userSessionInterface, remoteConfig, HomeDefaultDataSource()),
                     trackingQueue
             )
-            val getDynamicChannelUseCase = GetDynamicChannelsUseCase(
-                    useCaseChannel, homeDynamicChannelDataMapper
+            val getDynamicChannelRepository = GetHomeDynamicChannelsRepository(
+                    GraphqlInteractor.getInstance().graphqlRepository
+            )
+            val getTickerRepository = GetHomeTickerRepository(
+                    GraphqlInteractor.getInstance().graphqlRepository
+            )
+            val getIconRepository = GetHomeIconRepository(
+                    GraphqlInteractor.getInstance().graphqlRepository
             )
 
             homeDataMapper = HomeDataMapper(context, homeVisitableFactory, trackingQueue, homeDynamicChannelDataMapper)
@@ -96,12 +105,32 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
             val useCaseHomeData = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(GraphqlInteractor.getInstance().graphqlRepository)
             useCaseHomeData.setGraphqlQuery(homeQuery)
             val getHomeDataUseCase = GetHomeDataUseCase(useCaseHomeData)
+
+            val atfHomeData = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(GraphqlInteractor.getInstance().graphqlRepository)
+            atfHomeData.setGraphqlQuery(QueryHome.atfQuery)
+            val getAtfUseCase = GetHomeAtfUseCase(atfHomeData)
+
+            val homeFlagData = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFlagData>(GraphqlInteractor.getInstance().graphqlRepository)
+            homeFlagData.setGraphqlQuery(QueryHome.homeDataRevampQuery)
+            val getHomeFlagUseCase = GetHomeFlagUseCase(homeFlagData)
+
+            val homeBannerData = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(GraphqlInteractor.getInstance().graphqlRepository)
+            useCaseHomeData.setGraphqlQuery(QueryHome.homeSlidesQuery)
+            val getHomeBannerUseCase = GetHomePageBannerUseCase(homeBannerData)
+
             val homeRemoteDataSource = HomeRemoteDataSource(
-                    HomeDispatcherProviderImpl(), getDynamicChannelUseCase, getHomeDataUseCase)
+                    dispatchers = CoroutineDispatchersProvider,
+                    getHomeDynamicChannelsRepository = getDynamicChannelRepository,
+                    getHomeDataUseCase = getHomeDataUseCase,
+                    getAtfDataUseCase = getAtfUseCase,
+                    getHomeFlagUseCase = getHomeFlagUseCase,
+                    getHomePageBannerUseCase = getHomeBannerUseCase,
+                    getHomeIconRepository = getIconRepository,
+                    getHomeTickerRepository = getTickerRepository)
             val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource> = Lazy {
                 GeolocationRemoteDataSource(HomeAceApi { Observable.just(Response.success("Test")) })
             }
-            val homeRepository = HomeRepositoryImpl(
+            val homeRepository = HomeRevampRepositoryImpl(
                     homeCachedDataSource,
                     homeRemoteDataSource,
                     HomeDefaultDataSource(),
@@ -110,7 +139,7 @@ class HomeBenchmarkTestNetworkRequest: CoroutineScope {
                     context,
                     remoteConfig
             )
-            homeUseCase = HomeUseCase(
+            homeUseCase = HomeRevampUseCase(
                     homeRepository,
                     homeDataMapper
             )

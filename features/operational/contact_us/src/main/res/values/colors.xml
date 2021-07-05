@@ -46,7 +46,18 @@
     <color name="contact_us_unread_ticket_bg_color">#66ebffef</color>
     <color name="contact_us_priority_label_color">#7a08c9</color>
     <color name="contact_us_g_500">#03ac0e</color>
+    <color name="contact_us_red_500">#EF144A</color>
 
+    <color name="tkpd_bg_color">#EAEAEA</color>
 
-
+    <color name="contact_us_green_250">#42B549</color>
+    <color name="contact_us_green_500">#259b24</color>
+    <color name="contact_us_green_nob">#42b549</color>
+    <color name="contact_us_red_600">#dd191d</color>
+    <color name="contact_us_y_200">#fff0b3</color>
+    <color name="contact_us_orange_500">#fa591d</color>
+    <color name="contact_us_r_100">#ffeaef</color>
+    <color name="contact_us_r_400">#ff5c84</color>
+    <color name="contact_us_grey_200">#f1f1f1</color>
+    <color name="contact_us_black_38">#60000000</color>
 </resources>

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ic_ilustration"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,7 +13,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:src="@drawable/ill_success"
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -28,40 +25,41 @@
         style="@style/TextView.TitleBig.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
         android:text="@string/yay_produkmu_berhasil_diiklankan"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ic_ilustration" />
+        app:layout_constraintTop_toBottomOf="@+id/ic_ilustration"
+        app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center"
         android:text="@string/pantau_terus_performa_iklan_produkmu_di_dashboard_topads"
-        app:layout_constraintBottom_toTopOf="@+id/btn_go_to_dashboard"
+        app:layout_constraintBottom_toTopOf="@+id/goToDashboard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/btn_go_to_dashboard"
-        style="@style/Button.Submit.Green"
-        android:layout_width="0dp"
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/goToDashboard"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_50"
-        android:layout_marginRight="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/lihat_performa_iklan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle" />
-
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        app:unifyButtonType="main" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

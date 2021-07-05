@@ -3,17 +3,18 @@ package com.tokopedia.topupbills.telco.common.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.prefix_select.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -90,6 +91,7 @@ class SharedTelcoViewModelTest {
 
         //when
         telcoViewModel.getPrefixOperator("", 2)
+        Thread.sleep(1000)
 
         //then
         val actualData = telcoViewModel.catalogPrefixSelect.value

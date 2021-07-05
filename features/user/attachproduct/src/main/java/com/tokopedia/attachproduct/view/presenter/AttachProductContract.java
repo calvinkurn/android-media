@@ -1,7 +1,7 @@
 package com.tokopedia.attachproduct.view.presenter;
 
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachcommon.data.ResultProduct;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface AttachProductContract {
     interface View {
-        void addProductToList(List<AttachProductItemViewModel> products, boolean hasNextPage);
+        void addProductToList(List<AttachProductItemUiModel> products, boolean hasNextPage);
         void hideAllLoadingIndicator();
         void showErrorMessage(Throwable throwable);
         void updateButtonBasedOnChecked(int checkedCount);
@@ -27,7 +27,7 @@ public interface AttachProductContract {
     }
     interface Presenter {
         void loadProductData(String query, String shopId, int page);
-        void updateCheckedList(List<AttachProductItemViewModel> products);
+        void updateCheckedList(List<AttachProductItemUiModel> products);
         void resetCheckedList();
         void completeSelection();
         void attachView(AttachProductContract.View view);

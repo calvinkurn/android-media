@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:text="@string/notif_transaction_for_you"
-        android:textColor="@color/chorcoal_black"
+        android:textColor="@color/Unify_N700"
         android:paddingTop="@dimen/notif_dp_16"
         android:paddingStart="@dimen/notif_dp_16"
         android:paddingEnd="@dimen/notif_dp_16"

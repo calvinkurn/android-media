@@ -5,7 +5,6 @@
     android:id="@+id/waitingPaymentOrderContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
     android:paddingTop="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/layout_lvl2"
         android:text="@string/label_payment_deadline"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
@@ -23,8 +22,9 @@
         android:id="@+id/tvValuePaymentDeadline"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLabelPaymentDeadline"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:paddingStart="@dimen/layout_lvl2"
         android:text="@string/label_buyer_and_place_name"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
         app:typographyType="body_3" />
@@ -48,9 +48,10 @@
         android:id="@+id/tvValueBuyerNameAndPlace"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl1"
         android:layout_marginTop="@dimen/dp_4"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvLabelBuyerNameAndPlace"
         app:layout_constraintTop_toBottomOf="@id/tvLabelPaymentDeadline"
@@ -65,14 +66,14 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:background="@color/Neutral_N75"
-        app:layout_constraintTop_toBottomOf="@id/tvLabelBuyerNameAndPlace" />
+        android:background="@color/Unify_N75"
+        app:layout_constraintTop_toBottomOf="@id/tvValueBuyerNameAndPlace" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvWaitingPaymentOrderProducts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_13"
+        android:layout_marginTop="@dimen/waiting_order_recycler_margin_top"
         android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
@@ -88,7 +89,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl1"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvWaitingPaymentOrderProducts"
         app:typographyType="body_2"
@@ -99,6 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_3"
+        android:contentDescription="@string/content_description_ic_load_more_product_drop_down_indicator"
         app:layout_constraintBottom_toBottomOf="@id/tvToggleCollapseMoreProducts"
         app:layout_constraintStart_toEndOf="@id/tvToggleCollapseMoreProducts"
         app:layout_constraintTop_toTopOf="@id/tvToggleCollapseMoreProducts"

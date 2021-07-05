@@ -41,7 +41,7 @@
                 android:background="@color/transparent"
                 android:hint="Cari..."
                 android:textColor="@color/black_70"
-                android:textColorHint="@color/black_38"
+                android:textColorHint="@color/contact_us_black_38"
                 android:textSize="@dimen/sp_16"
                 android:gravity="center_vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -53,6 +53,7 @@
                 android:id="@+id/close_search"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:contentDescription="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -62,7 +63,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:layout_marginTop="?attr/actionBarSize">
 
@@ -147,6 +148,29 @@
             tools:visibility="visible"
             tools:listitem="@layout/layout_item_ticket" />
 
+        <com.tokopedia.contactus.inboxticket2.view.customview.CustomChatWidgetView
+            android:id="@+id/chat_widget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="1"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/chat_widget_notification_indicator"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:visibility="gone"
+            android:background="@drawable/rounded_chat_widget_notifiaction_red"
+            app:layout_constraintTop_toTopOf="@id/chat_widget"
+            app:layout_constraintRight_toRightOf="@id/chat_widget"
+            tools:visibility="visible"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
@@ -184,11 +208,11 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">
-
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center" />
+            app:loader_type="circular"
+            android:layout_gravity="center"/>
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

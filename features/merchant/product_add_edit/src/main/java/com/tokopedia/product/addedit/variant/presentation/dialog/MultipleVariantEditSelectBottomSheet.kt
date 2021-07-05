@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_sel
 import java.math.BigInteger
 
 class MultipleVariantEditSelectBottomSheet(
-        private val multipleVariantEditListener: MultipleVariantEditListener
+        private val multipleVariantEditListener: MultipleVariantEditListener? = null,
+        private val couldShowMultiLocationTicker: Boolean = false
 ): BottomSheetUnify(), MultipleVariantEditInputBottomSheet.MultipleVariantEditInputListener,
         MultipleVariantEditSelectAdapter.OnSelectionsDataListener {
 
@@ -52,16 +53,16 @@ class MultipleVariantEditSelectBottomSheet(
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         selectAdapter?.getSelectedData()?.let {
             multipleVariantEditInputModel.selection = it
-            multipleVariantEditListener.onMultipleEditFinished(multipleVariantEditInputModel)
+            multipleVariantEditListener?.onMultipleEditFinished(multipleVariantEditInputModel)
         }
     }
 
     override fun onMultipleEditInputValidatePrice(price: BigInteger): String {
-        return multipleVariantEditListener.onMultipleEditInputValidatePrice(price)
+        return multipleVariantEditListener?.onMultipleEditInputValidatePrice(price).orEmpty()
     }
 
     override fun onMultipleEditInputValidateStock(stock: BigInteger): String {
-        return multipleVariantEditListener.onMultipleEditInputValidateStock(stock)
+        return multipleVariantEditListener?.onMultipleEditInputValidateStock(stock).orEmpty()
     }
 
     override fun onSelectionsDataChanged(selectedCount: Int) {
@@ -120,7 +121,7 @@ class MultipleVariantEditSelectBottomSheet(
         contentView?.buttonNext?.setOnClickListener {
             dismiss()
             val multipleVariantEditSelectBottomSheet =
-                    MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, this)
+                    MultipleVariantEditInputBottomSheet(enableEditSku, enableEditPrice, couldShowMultiLocationTicker, this)
             multipleVariantEditSelectBottomSheet.isKeyboardOverlap = false
             multipleVariantEditSelectBottomSheet.setTrackerShopId(trackerShopId)
             multipleVariantEditSelectBottomSheet.setTrackerIsEditMode(trackerIsEditMode)

@@ -1,14 +1,13 @@
 package com.tokopedia.merchantvoucher.voucherList.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.UseMerchantVoucherUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.MERCHANT_VOUCHER_SOURCE
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -22,7 +21,6 @@ class MerchantVoucherListPresenter @Inject
 constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
             private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
             private val useMerchantVoucherUseCase: UseMerchantVoucherUseCase,
-            private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
             private val userSessionInterface: UserSessionInterface)
     : BaseDaggerPresenter<MerchantVoucherListView>() {
 
@@ -91,7 +89,6 @@ constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
     }
 
     fun clearCache() {
-        deleteShopInfoUseCase.executeSync()
         getMerchantVoucherListUseCase.clearCache()
     }
 

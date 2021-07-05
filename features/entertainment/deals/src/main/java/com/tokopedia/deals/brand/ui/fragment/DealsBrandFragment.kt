@@ -111,7 +111,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
             }
         })
 
-        baseViewModel.observableCurrentLocation.observe(this, Observer {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
     }
@@ -257,7 +257,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     override fun resetFilter() {}
 
     override fun getInitialLayout(): Int = R.layout.fragment_deals_brand
-    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_brand_recycler_view)
 
     override fun showTitle(brands: DealsBrandsDataView) {
         if (!brands.title.isNullOrEmpty() && showTitle()) {

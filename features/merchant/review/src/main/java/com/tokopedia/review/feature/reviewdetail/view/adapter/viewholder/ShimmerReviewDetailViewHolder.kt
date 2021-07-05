@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder
 
 import android.view.View
-import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.review.R
@@ -9,7 +8,6 @@ import com.tokopedia.review.R
 class ShimmerReviewDetailViewHolder(view: View): AbstractViewHolder<LoadingModel>(view) {
 
     companion object {
-        @LayoutRes
         val LAYOUT = R.layout.rating_product_detail_shimmer
     }
 

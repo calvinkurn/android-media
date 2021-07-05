@@ -1,16 +1,19 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
     : ImageUploadViewHolder(itemView, listener) {
@@ -24,32 +27,34 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             chatBalloon,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Neutral_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
             getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             chatBalloon,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            R.color.topchat_message_shadow,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
             R.dimen.dp_topchat_2,
             R.dimen.dp_topchat_1,
             Gravity.CENTER,
-            R.color.bg_topchat_right_message,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
     )
+
+    private val attachmentUnify get() = attachment as? ImageUnify
 
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
@@ -59,6 +64,15 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
         super.bind(element)
         bindChatReadStatus(element)
         bindBackground(element)
+        bindLoadingAnimation(element)
+    }
+
+    private fun bindLoadingAnimation(element: ImageUploadViewModel) {
+        if (ViewUtil.areSystemAnimationsEnabled(itemView.context) && element.isDummy) {
+            progressBarSendImage?.show()
+        } else {
+            progressBarSendImage?.hide()
+        }
     }
 
     private fun bindBackground(element: ImageUploadViewModel) {
@@ -70,24 +84,15 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
     }
 
     override fun bindImageAttachment(element: ImageUploadViewModel) {
-        changeHourColor(Color.WHITE)
+        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
-            ImageHandler.loadImageRounded2(
-                    itemView.context,
-                    attachment,
-                    element.imageUrl,
-                    imageRadius
-            )
         } else {
             setVisibility(progressBarSendImage, View.GONE)
-            ImageHandler.loadImageRounded2(
-                    itemView.context,
-                    attachment,
-                    element.imageUrl,
-                    imageRadius
-            )
+        }
+        element.imageUrl?.let {
+            ImageHandler.LoadImage(attachmentUnify, it)
         }
     }
 

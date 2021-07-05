@@ -17,11 +17,6 @@ class TroubleshootActivity : BaseSimpleActivity() {
         return TroubleshootFragment()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        window.decorView.setBackgroundColor(Color.WHITE)
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_troubleshoot, menu)
         return super.onCreateOptionsMenu(menu)

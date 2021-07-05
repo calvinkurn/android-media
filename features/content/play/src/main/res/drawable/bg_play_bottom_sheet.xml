@@ -4,5 +4,5 @@
         android:topRightRadius="@dimen/play_product_sheet_radius"
         android:topLeftRadius="@dimen/play_product_sheet_radius"
         />
-    <solid android:color="@color/Neutral_N0"/>
+    <solid android:color="@color/play_dms_bottom_sheet_background"/>
 </shape>

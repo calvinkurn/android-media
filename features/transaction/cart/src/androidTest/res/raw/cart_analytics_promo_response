@@ -1,0 +1,527 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "cart_revamp": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "errors": [],
+          "empty_cart": {
+            "title": "Wah, keranjang belanjamu kosong",
+            "image": "https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/zeus/kratos/103cf4bc.jpg",
+            "description": "Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!",
+            "buttons": [
+              {
+                "id": 1,
+                "code": "STARTSHOPPING",
+                "message": "Mulai Belanja",
+                "color": "green"
+              }
+            ]
+          },
+          "out_of_service": {
+            "id": 0,
+            "code": "",
+            "image": "",
+            "title": "",
+            "description": "",
+            "buttons": []
+          },
+          "shopping_summary": {
+            "total_wording": "Total Harga (1 Barang)",
+            "total_value": 9799000,
+            "discount_total_wording": "Total Diskon Barang",
+            "discount_value": 0,
+            "payment_total_wording": "Total Bayar",
+            "promo_wording": "Hemat pakai promo",
+            "promo_value": 400000,
+            "seller_cashback_wording": "Cashback Penjual",
+            "seller_cashback_value": 0
+          },
+          "max_quantity": 30000,
+          "max_char_note": 144,
+          "messages": {
+            "ErrorFieldBetween": "Jumlah harus diisi antara 1 - {{value}}",
+            "ErrorFieldMaxChar": "Catatan terlalu panjang, maks. {{value}} karakter.",
+            "ErrorFieldRequired": "Jumlah harus diisi",
+            "ErrorProductAvailableStock": "Stok tersedia:{{value}}",
+            "ErrorProductAvailableStockDetail": "Harap kurangi jumlah barang",
+            "ErrorProductMaxQuantity": "Maks. beli {{value}} barang",
+            "ErrorProductMinQuantity": "Min. beli {{value}} barang"
+          },
+          "fulfillment_message": "Dilayani Tokopedia",
+          "available_section": {
+            "action": [
+              {
+                "id": 1,
+                "code": "WISHLIST",
+                "message": "Pindahkan ke Wishlist"
+              },
+              {
+                "id": 2,
+                "code": "DELETE",
+                "message": ""
+              },
+              {
+                "id": 3,
+                "code": "NOTES",
+                "message": "Tulis catatan untuk barang ini"
+              },
+              {
+                "id": 4,
+                "code": "VALIDATENOTES",
+                "message": "Maks. 144 character"
+              },
+              {
+                "id": 10,
+                "code": "WISHLISTED",
+                "message": "Sudah ada di wishlist"
+              }
+            ],
+            "available_group": [
+              {
+                "user_address_id": 0,
+                "shipment_information": {
+                  "shop_location": "Kota Surabaya",
+                  "estimation": "",
+                  "free_shipping": {
+                    "eligible": true,
+                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  },
+                  "preorder": {
+                    "is_preorder": false,
+                    "duration": ""
+                  }
+                },
+                "shop": {
+                  "shop_alert_message": "",
+                  "shop_id": 6665895,
+                  "user_id": 75364100,
+                  "admin_ids": [],
+                  "shop_name": "FdS Store88",
+                  "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/7/3/6665895/6665895_3716d850-730b-4d8a-a28d-de72184cba39.jpg",
+                  "shop_url": "https://www.tokopedia.com/fdsstore88",
+                  "shop_status": 1,
+                  "is_gold": 1,
+                  "is_official": 0,
+                  "is_free_returns": 0,
+                  "gold_merchant": {
+                    "is_gold": 1,
+                    "is_gold_badge": true,
+                    "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                  },
+                  "official_store": {
+                    "is_official": 0,
+                    "os_logo_url": ""
+                  },
+                  "address_id": 3531,
+                  "postal_code": "60252",
+                  "latitude": "-7.267040030726212",
+                  "longitude": "112.717813141644",
+                  "district_id": 3531,
+                  "district_name": "",
+                  "origin": 0,
+                  "address_street": "",
+                  "province_id": 0,
+                  "city_id": 252,
+                  "city_name": "Kota Surabaya",
+                  "province_name": "",
+                  "country_name": "",
+                  "is_allow_manage": false,
+                  "shop_domain": "fdsstore88",
+                  "shop_shipments": [
+                    {
+                      "ship_id": 10,
+                      "ship_name": "Gojek",
+                      "ship_code": "gojek",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 28,
+                          "ship_prod_name": "Instant Courier",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    },
+                    {
+                      "ship_id": 11,
+                      "ship_name": "SiCepat",
+                      "ship_code": "sicepat",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 18,
+                          "ship_prod_name": "Regular Package",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 33,
+                          "ship_prod_name": "BEST",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 44,
+                          "ship_prod_name": "Regular Package",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    },
+                    {
+                      "ship_id": 14,
+                      "ship_name": "J\u0026T",
+                      "ship_code": "jnt",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 27,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    },
+                    {
+                      "ship_id": 1,
+                      "ship_name": "JNE",
+                      "ship_code": "jne",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 1,
+                          "ship_prod_name": "Reguler",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        },
+                        {
+                          "ship_prod_id": 6,
+                          "ship_prod_name": "YES",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    },
+                    {
+                      "ship_id": 25,
+                      "ship_name": "Indo Paket",
+                      "ship_code": "indopkt",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-indopaket.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 48,
+                          "ship_prod_name": "reguler",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    },
+                    {
+                      "ship_id": 13,
+                      "ship_name": "GrabExpress",
+                      "ship_code": "grab",
+                      "ship_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                      "ship_prods": [
+                        {
+                          "ship_prod_id": 37,
+                          "ship_prod_name": "Instant",
+                          "ship_group_id": 0,
+                          "ship_group_name": "",
+                          "minimum_weight": 0,
+                          "additional_fee": 0
+                        }
+                      ],
+                      "is_dropship_enabled": 0
+                    }
+                  ]
+                },
+                "promo_codes": [],
+                "cart_string": "6665895-0-6874698",
+                "cart_details": [
+                  {
+                    "cart_id": "2325216686",
+                    "product": {
+                      "product_information": [],
+                      "product_tracker_data": {
+                        "attribution": "",
+                        "tracker_list_name": ""
+                      },
+                      "isWishlist": false,
+                      "product_id": 1254643572,
+                      "product_name": "Samsung Galaxy Note 10+ 12/256GB Resmi SEIN Note 10 Plus - Aura White",
+                      "product_price_fmt": "Rp9.799.000",
+                      "product_price": 9799000,
+                      "parent_id": 1254643568,
+                      "category_id": 3054,
+                      "category": "Handphone \u0026 Tablet / Handphone / Android OS",
+                      "catalog_id": 0,
+                      "wholesale_price": [],
+                      "product_weight": 500,
+                      "product_weight_fmt": "500gr",
+                      "product_condition": 1,
+                      "product_status": 1,
+                      "product_url": "https://www.tokopedia.com/fdsstore88/samsung-galaxy-note-10-12-256gb-resmi-sein-note-10-plus-aura-white",
+                      "product_returnable": 0,
+                      "is_freereturns": 0,
+                      "is_preorder": 0,
+                      "product_cashback": "",
+                      "product_min_order": 1,
+                      "product_max_order": 30000,
+                      "product_rating": "0.000000",
+                      "product_invenage_value": 2,
+                      "product_invenage_total": {
+                        "by_user": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_user_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_user": false,
+                        "by_product": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_product_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_product": false
+                      },
+                      "product_switch_invenage": 1,
+                      "price_changes": {
+                        "changes_state": 0,
+                        "amount_difference": 0,
+                        "original_amount": 9799000,
+                        "description": "Harga Normal"
+                      },
+                      "product_price_currency": 1,
+                      "product_image": {
+                        "image_src": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/10/13/28019629-dedb-4fcc-ac26-b8a849d5a5f5.jpg",
+                        "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/13/28019629-dedb-4fcc-ac26-b8a849d5a5f5.jpg",
+                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/13/28019629-dedb-4fcc-ac26-b8a849d5a5f5.jpg",
+                        "image_src_300": "https://ecs7.tokopedia.net/img/cache/300/VqbcmM/2020/10/13/28019629-dedb-4fcc-ac26-b8a849d5a5f5.jpg",
+                        "image_src_square": "https://ecs7.tokopedia.net/img/cache/500-square/VqbcmM/2020/10/13/28019629-dedb-4fcc-ac26-b8a849d5a5f5.jpg"
+                      },
+                      "product_all_images": "[{\"file_name\":\"28019629-dedb-4fcc-ac26-b8a849d5a5f5.jpg\",\"file_path\":\"VqbcmM/2020/10/13\",\"status\":2},{\"file_name\":\"46de7e57-8791-48c6-89af-c44ce35ef731.jpg\",\"file_path\":\"VqbcmM/2020/10/13\",\"status\":1},{\"file_name\":\"c27c430c-5a8e-4c41-898d-39aed6e2d578.jpg\",\"file_path\":\"VqbcmM/2020/10/13\",\"status\":1},{\"file_name\":\"04cc4323-dcad-4d94-bcab-e468ab6909bd.jpg\",\"file_path\":\"VqbcmM/2020/10/13\",\"status\":1},{\"file_name\":\"d0d5a059-55ae-4034-aa17-10f160675b64.jpg\",\"file_path\":\"VqbcmM/2020/10/13\",\"status\":1}]",
+                      "product_notes": "",
+                      "product_quantity": 1,
+                      "product_weight_unit_code": 1,
+                      "product_weight_unit_text": "gr",
+                      "last_update_price": "1611948763",
+                      "is_update_price": false,
+                      "product_preorder": {
+                        "duration_day": "0",
+                        "duration_text": "",
+                        "duration_unit_code": "0",
+                        "duration_unit_text": "",
+                        "duration_value": "0"
+                      },
+                      "product_showcase": {
+                        "name": "",
+                        "id": 0
+                      },
+                      "product_alias": "samsung-galaxy-note-10-12-256gb-resmi-sein-note-10-plus-aura-white",
+                      "sku": "",
+                      "campaign_id": 0,
+                      "product_original_price": 0,
+                      "product_price_original_fmt": "",
+                      "is_slash_price": false,
+                      "free_returns": {
+                        "free_returns_logo": ""
+                      },
+                      "product_finsurance": 1,
+                      "is_wishlisted": false,
+                      "is_ppp": false,
+                      "is_cod": false,
+                      "warehouse_id": 6874698,
+                      "is_parent": false,
+                      "is_campaign_error": false,
+                      "is_blacklisted": false,
+                      "free_shipping": {
+                        "eligible": true,
+                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "booking_stock": 0,
+                      "is_product_volume_weight": false,
+                      "initial_price": 9799000,
+                      "initial_price_fmt": "Rp9.799.000",
+                      "slash_price_label": "",
+                      "product_warning_message": "Sisa 2",
+                      "product_alert_message": "",
+                      "variant_description_detail": {
+                        "variant_name": [
+                          "Aura White"
+                        ],
+                        "variant_description": "Aura White"
+                      }
+                    },
+                    "errors": [],
+                    "messages": [],
+                    "checkbox_state": true
+                  }
+                ],
+                "total_cart_details_error": 0,
+                "total_cart_price": 9799000,
+                "errors": [],
+                "sort_key": 2325216686,
+                "is_fulfillment_service": false,
+                "warehouse": {
+                  "warehouse_id": 6874698,
+                  "partner_id": 0,
+                  "shop_id": 6665895,
+                  "warehouse_name": "Shop Location",
+                  "district_id": 3531,
+                  "district_name": "Sawahan",
+                  "city_id": 252,
+                  "city_name": "Kota Surabaya",
+                  "province_id": 15,
+                  "province_name": "Jawa Timur",
+                  "status": 1,
+                  "postal_code": "60252",
+                  "is_default": 1,
+                  "latlon": "-7.267040030726212,112.717813141644",
+                  "latitude": "-7.267040030726212",
+                  "longitude": "112.717813141644",
+                  "email": "",
+                  "address_detail": "Jl Petemon baraattt no 172A",
+                  "country_name": "Indonesia",
+                  "is_fulfillment": false
+                },
+                "checkbox_state": true
+              }
+            ]
+          },
+          "unavailable_ticker": "",
+          "unavailable_section_action": [
+            {
+              "id": 7,
+              "code": "SHOWLESS",
+              "message": "Tampilkan lebih sedikit"
+            },
+            {
+              "id": 8,
+              "code": "SHOWMORE",
+              "message": "Tampilkan semua"
+            }
+          ],
+          "unavailable_section": [],
+          "total_product_price": 9799000,
+          "total_product_count": 1,
+          "total_product_error": 0,
+          "global_coupon_attr": {
+            "description": "Gunakan promo Tokopedia",
+            "quantity_label": ""
+          },
+          "global_checkbox_state": true,
+          "tickers": [
+            {
+              "id": 0,
+              "message": "Hai Member Gold, kuota Bebas Ongkir kamu sisa 9x (untuk 1 pesanan/transaksi) buat minggu ini.",
+              "page": "cart"
+            }
+          ],
+          "hashed_email": "bafd5794d0087249cab2cc01536457ce",
+          "promo": {
+            "last_apply": {
+              "data": {
+                "global_success": true,
+                "success": true,
+                "message": {
+                  "state": "grey",
+                  "color": "#e0e0e0",
+                  "text": "Kamu berpotensi dapat cashback sebesar Rp400.000 setelah pesanan selesai"
+                },
+                "codes": [
+                  "HBSG598GSA3B0J7U4E6"
+                ],
+                "promo_code_id": 0,
+                "title_description": "Cashback Tokopedia hingga Rp400.000",
+                "discount_amount": 0,
+                "cashback_wallet_amount": 400000,
+                "cashback_advocate_referral_amount": 0,
+                "cashback_voucher_description": "",
+                "invoice_description": "",
+                "is_coupon": 1,
+                "gateway_id": "",
+                "is_tokopedia_gerai": false,
+                "clashing_info_detail": {
+                  "clash_message": "",
+                  "clash_reason": "",
+                  "is_clashed_promos": false,
+                  "options": []
+                },
+                "tokopoints_detail": {
+                  "conversion_rate": {
+                    "rate": 0,
+                    "points_coefficient": 0,
+                    "external_currency_coefficient": 0
+                  }
+                },
+                "voucher_orders": [],
+                "additional_info": {
+                  "message_info": {
+                    "message": "Kamu bisa hemat Rp400.000",
+                    "detail": "1 promo dipakai"
+                  },
+                  "error_detail": {
+                    "message": ""
+                  },
+                  "empty_cart_info": {
+                    "image_url": "",
+                    "message": "",
+                    "detail": ""
+                  },
+                  "usage_summaries": [
+                    {
+                      "description": "Cashback OVO Points",
+                      "type": "cashback",
+                      "amount_str": "400.000",
+                      "amount": 400000
+                    }
+                  ],
+                  "sp_ids": []
+                }
+              },
+              "code": "200000"
+            },
+            "error_default": {
+              "title": "promo tidak dapat digunakan",
+              "description": "silahkan coba beberapa saat lagi"
+            }
+          },
+          "ab_test_button": {
+            "enable": true
+          }
+        }
+      }
+    }
+  }
+]

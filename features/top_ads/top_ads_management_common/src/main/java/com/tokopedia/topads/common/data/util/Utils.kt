@@ -6,12 +6,16 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.constant.Constants
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.unifycomponents.SearchBarUnify
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.NumberFormat
 import java.util.*
+import kotlin.jvm.Throws
 
 /**
  * Author errysuprayogi on 26,March,2019
@@ -105,5 +109,53 @@ object Utils {
         return (NumberFormat.getNumberInstance(locale).format(value) + KALI)
     }
 
-    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").trim()
+    fun convertToCurrency(value: Long): String {
+        return (NumberFormat.getNumberInstance(locale).format(value))
+    }
+
+    fun String.removeCommaRawString() = toString().replace(",", "").replace(".", "").replace("Rp", "").trim()
+
+    fun validateKeyword(context: Context?, text: CharSequence?): CharSequence? {
+        return if (!text.isNullOrBlank() && text.split(" ").size > Constants.KEYWORD_WORD_COUNT) {
+            context?.getString(R.string.error_max_length_keyword)
+        } else if (!text.isNullOrBlank() && !text.matches(Constants.KEYWORD_REGEX.toRegex())) {
+            context?.getString(R.string.error_keyword)
+        } else if (text?.length ?: 0 > 70) {
+            context?.getString(R.string.error_max_length)
+        } else {
+            null
+        }
+    }
+
+    fun validateKeywordCountAndChars(context: Context?, text: CharSequence?): CharSequence? {
+        return if (text?.length ?: 0 > Constants.KEYWORD_CHARACTER_COUNT) {
+            context?.getString(R.string.error_max_length)
+        } else if (!text.isNullOrBlank() && !text.matches(Constants.KEYWORD_REGEX_WITH_SPECIAL_CHARS.toRegex())) {
+            context?.getString(R.string.error_keyword)
+        } else {
+            null
+        }
+    }
+
+    fun getErrorMessage(context: Context?, message: String): String {
+        context?.let {
+            return when (message) {
+                TopAdsCommonConstant.ERROR_TOO_MANY_REQUEST -> {
+                    it.getString(R.string.topads_common_error_too_many_request)
+                }
+                TopAdsCommonConstant.ERROR_INVALID_ITEM_ID -> {
+                    it.getString(R.string.topads_common_error_invalid_item)
+                }
+                TopAdsCommonConstant.ERROR_INVALID_KEYWORD -> {
+                    it.getString(R.string.topads_common_error_invalid_keyword)
+                }
+                TopAdsCommonConstant.EROOR_GROUP_NAME_EXIST ->{
+                    it.getString(R.string.topads_common_error_invalid_keyword)
+                }
+                else -> message
+            }
+        }
+        return message
+    }
+
 }

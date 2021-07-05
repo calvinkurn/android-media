@@ -6,19 +6,19 @@
   <path
       android:pathData="M9,4C5.15,4 2,7.15 2,11C2,13.776 3.643,16.182 6,17.312L6,19.967C6,21.067 6.637,21.331 7.414,20.553L9.967,18L15,18C18.85,18 22,14.85 22,11C22,7.15 18.85,4 15,4L9,4Z"
       android:strokeWidth="1"
-      android:fillColor="#6C727C"
+      android:fillColor="@color/Unify_N400"
       android:fillType="nonZero"
-      android:strokeColor="#00000000"/>
+      android:strokeColor="@color/topchat_transparent"/>
   <path
       android:pathData="M9.0833,11.3358L7.7071,9.9596C7.3166,9.569 6.6834,9.569 6.2929,9.9596C5.9024,10.3501 5.9024,10.9832 6.2929,11.3738L8.3762,13.4571C8.7668,13.8476 9.3999,13.8476 9.7904,13.4571L13.5404,9.7071C13.931,9.3166 13.931,8.6834 13.5404,8.2929C13.1499,7.9024 12.5168,7.9024 12.1262,8.2929L9.0833,11.3358Z"
       android:strokeWidth="1"
-      android:fillColor="#FFFFFF"
+      android:fillColor="@color/Unify_N0"
       android:fillType="nonZero"
-      android:strokeColor="#00000000"/>
+      android:strokeColor="@color/topchat_transparent"/>
   <path
       android:pathData="M13.9571,13.4571L17.7071,9.7071C18.0976,9.3166 18.0976,8.6834 17.7071,8.2929C17.3166,7.9024 16.6834,7.9024 16.2929,8.2929L12.5429,12.0429C12.1524,12.4334 12.1524,13.0666 12.5429,13.4571C12.9334,13.8476 13.5666,13.8476 13.9571,13.4571Z"
       android:strokeWidth="1"
-      android:fillColor="#FFFFFF"
+      android:fillColor="@color/Unify_N0"
       android:fillType="nonZero"
-      android:strokeColor="#00000000"/>
+      android:strokeColor="@color/topchat_transparent"/>
 </vector>

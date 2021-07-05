@@ -27,7 +27,7 @@ class VariantImageViewHolder(val view: View,
     }
 
     override fun bind(element: VariantOptionWithAttribute) = with(view) {
-        ImageHandler.LoadImage(variantImg, element.image200)
+        ImageHandler.LoadImage(variantImg, element.image100)
         setState(element)
     }
 

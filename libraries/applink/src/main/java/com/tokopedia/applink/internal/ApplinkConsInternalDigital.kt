@@ -14,7 +14,11 @@ object ApplinkConsInternalDigital {
     const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL"
     const val INTERNAL_RECHARGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RECHARGE"
 
+    //new cart checkout applink
+    const val CHECKOUT_DIGITAL = "$INTERNAL_DIGITAL/checkout"
+    //old cart checkout applink
     const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
+
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
     const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
     const val VOUCHER_GAME = "$INTERNAL_DIGITAL/vouchergame"
@@ -24,6 +28,7 @@ object ApplinkConsInternalDigital {
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
     const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
+    const val ELECTRONIC_MONEY_PDP = "$INTERNAL_DIGITAL/electronicmoney"
 
     const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}&$PARAM_BRIZZI={status}"
     const val INTERNAL_SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/smartcard/emoney?$PARAM_SMARTCARD={type}"
@@ -32,4 +37,7 @@ object ApplinkConsInternalDigital {
     const val DIGITAL_PRODUCT_FORM = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form"
     const val DIGITAL_PRODUCT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form?category_id={category_id}&operator_id={operator_id}"
     const val PRODUCT_TEMPLATE = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?operator={operator_id}&menu_id={menu_id}&template={template}"
+    const val PRODUCT_TEMPLATE_WITH_CATEGORY_ID = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?category_id={category_id}&menu_id={menu_id}&template={template}"
+
+    const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
 }

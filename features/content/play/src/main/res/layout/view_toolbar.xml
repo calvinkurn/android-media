@@ -6,7 +6,7 @@
     android:id="@+id/cl_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/Neutral_N600"
+    tools:background="@color/play_dms_N600"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -15,59 +15,74 @@
         android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_back_white"
+        app:srcCompat="@drawable/ic_play_close_white"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_more"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginEnd="@dimen/dp_2"
-        android:layout_marginRight="@dimen/dp_2"
+    <LinearLayout
+        android:id="@+id/ll_button_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/iv_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_back"
-        app:srcCompat="@drawable/ic_play_more_white"
-        android:visibility="invisible"
-        />
-
-    <RelativeLayout
-        android:id="@+id/rl_cart"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginEnd="@dimen/play_cart_margin"
-        android:layout_marginRight="@dimen/play_cart_margin"
-        app:layout_constraintBottom_toBottomOf="@id/iv_back"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_back"
-        android:visibility="invisible">
-
+        >
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_more"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:srcCompat="@drawable/ic_cart_grayscale_20"
-            android:tint="@color/white"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp_2"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_back"
+            app:srcCompat="@drawable/ic_play_more_white"
             />
 
-        <TextView
-            android:id="@+id/tv_badge_cart"
-            android:layout_width="@dimen/play_cart_badge_size"
-            android:layout_height="@dimen/play_cart_badge_size"
-            android:background="@drawable/shape_play_cart_dots"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:textSize="@dimen/fontSize_lvl10"
-            android:textStyle="bold"
-            android:textColor="@color/Neutral_N0"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_copy_link"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:visibility="invisible"
-            tools:text="99"/>
+            app:srcCompat="@drawable/ic_play_copy_link"
+            tools:visibility="visible" />
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_cart"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/play_cart_margin"
+            android:visibility="gone"
+            tools:visibility="visible"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:tint="@color/Unify_Static_White"
+                app:srcCompat="@drawable/ic_cart_grayscale_20"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_badge_cart"
+                android:layout_width="@dimen/play_cart_badge_size"
+                android:layout_height="@dimen/play_cart_badge_size"
+                android:background="@drawable/shape_play_cart_dots"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textSize="@dimen/fontSize_lvl10"
+                android:textStyle="bold"
+                android:textColor="@color/Unify_Static_White"
+                android:visibility="invisible"
+                tools:text="99"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_partner"
@@ -79,7 +94,7 @@
         app:layout_constraintStart_toEndOf="@id/iv_back"
         app:layout_constraintTop_toTopOf="@id/iv_back"
         app:layout_constraintBottom_toBottomOf="@id/iv_back"
-        app:layout_constraintEnd_toStartOf="@id/iv_more"
+        app:layout_constraintEnd_toStartOf="@id/ll_button_action"
         app:layout_goneMarginLeft="@dimen/dp_16"
         app:layout_goneMarginStart="@dimen/dp_16"
         tools:visibility="visible"
@@ -87,11 +102,17 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_partner_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N0"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toStartOf="@id/v_separator"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="@string/play_mock_shop_name"
@@ -102,9 +123,9 @@
             android:layout_width="@dimen/dp_4"
             android:layout_height="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:background="@drawable/bg_play_circle_separator"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_follow"
             app:layout_constraintStart_toEndOf="@id/tv_partner_name"
             app:layout_constraintTop_toTopOf="parent"
             />
@@ -114,8 +135,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/v_separator"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"

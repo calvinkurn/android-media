@@ -7,6 +7,6 @@ import com.google.gson.annotations.SerializedName
  * @author by furqan on 18/02/19
  */
 class TravelTickerEntity(
-        @SerializedName("travelTicker")
+        @SerializedName("TravelGetTicker")
         @Expose
         val travelTicker: TravelTickerAttribute = TravelTickerAttribute())

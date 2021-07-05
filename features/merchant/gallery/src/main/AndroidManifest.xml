@@ -10,8 +10,8 @@
         <activity android:name=".ImageReviewGalleryActivity"
             android:label="@string/gallery_top_bar_title"
             android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

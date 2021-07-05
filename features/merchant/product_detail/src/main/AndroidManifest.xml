@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.product.detail" >
 
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application android:label="@string/app_name"
@@ -9,12 +10,11 @@
 
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -26,6 +26,10 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_product_detail_domain"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_product_detail_affiliate"/>
 
             </intent-filter>
         </activity>
@@ -37,13 +41,8 @@
             android:label="@string/product_detail_courier"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name=".estimasiongkir.view.activity.RatesEstimationDetailActivity"
+        <activity android:name="com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity"
             android:label="@string/label_rates_estimation_detail"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
-        <activity android:name=".view.activity.ProductInstallmentActivity"
-            android:label="@string/label_product_installment"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
@@ -52,7 +51,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name=".view.activity.ProductFullDescriptionTabActivity"
+        <activity android:name="com.tokopedia.product.info.view.ProductFullDescriptionActivity"
             android:label="@string/label_product_desc"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>

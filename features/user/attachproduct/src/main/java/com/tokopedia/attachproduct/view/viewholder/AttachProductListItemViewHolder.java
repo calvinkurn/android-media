@@ -10,14 +10,14 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.attachproduct.R;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 
 /**
  * Created by Hendri on 13/02/18.
  */
 
-public class AttachProductListItemViewHolder extends BaseCheckableViewHolder<AttachProductItemViewModel>
+public class AttachProductListItemViewHolder extends BaseCheckableViewHolder<AttachProductItemUiModel>
         implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
     @LayoutRes
     public static final int LAYOUT = R.layout.item_product_attach;
@@ -50,7 +50,7 @@ public class AttachProductListItemViewHolder extends BaseCheckableViewHolder<Att
     }
 
     @Override
-    public void bind(AttachProductItemViewModel element) {
+    public void bind(AttachProductItemUiModel element) {
         ImageHandler.loadImageRounded2(imageView.getContext(), imageView,element.getProductImage());
         nameTextView.setText(element.getProductName());
         priceTextView.setText(element.getProductPrice());

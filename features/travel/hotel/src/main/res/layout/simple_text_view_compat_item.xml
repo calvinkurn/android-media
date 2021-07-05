@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:clipToPadding="false"
     android:paddingLeft="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2">
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_2" />
 
 </androidx.core.widget.NestedScrollView>

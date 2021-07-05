@@ -4,7 +4,7 @@
     xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/light_green">
+    android:background="@color/Unify_G100">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/dp_22"
             android:layout_marginRight="@dimen/dp_22"
-            app:cardBackgroundColor="#FAFAFA"
+            app:cardBackgroundColor="@color/Unify_N0"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardElevation="@dimen/dp_2"
             app:cardUseCompatPadding="true"
@@ -39,7 +39,7 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_5"
-            app:cardBackgroundColor="#FAFAFA"
+            app:cardBackgroundColor="@color/Unify_N0"
             app:cardCornerRadius="@dimen/dp_8"
             app:cardElevation="@dimen/dp_4"
             app:cardUseCompatPadding="true"
@@ -84,7 +84,7 @@
                     android:paddingTop="@dimen/tp_padding_xxsmall"
                     android:paddingRight="@dimen/tp_margin_small"
                     android:paddingBottom="@dimen/tp_padding_xxsmall"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/sp_11"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +101,7 @@
                     android:layout_marginTop="@dimen/dp_2"
                     android:layout_marginBottom="@dimen/dp_2"
                     android:text="@string/tp_label_valid_for"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/tp_text_size_xxsmall"
                     android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/text_time_value"
@@ -111,14 +111,14 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_22"
+                    android:layout_height="@dimen/dp_22"
                     android:layout_marginStart="@dimen/tp_margin_medium"
                     android:layout_marginLeft="@dimen/tp_margin_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_banner"
-                    app:srcCompat="@drawable/ic_tp_time_new" />
+                    app:srcCompat="@drawable/ic_tp_green_clock" />
 
                 <ProgressBar
                     android:id="@+id/progress_timer"
@@ -141,7 +141,7 @@
                     android:layout_marginLeft="@dimen/tp_margin_small"
                     android:layout_marginTop="@dimen/dp_2"
                     android:layout_marginBottom="@dimen/dp_2"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/tp_text_size_small"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -152,8 +152,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_rp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
                     android:layout_marginStart="@dimen/dp_110"
                     android:layout_marginLeft="@dimen/dp_110"
                     android:layout_marginTop="@dimen/dp_16"
@@ -162,7 +162,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_banner"
-                    app:srcCompat="@drawable/ic_tp_rp_new" />
+                    app:srcCompat="@drawable/ic_tp_green_money" />
 
                 <TextView
                     android:id="@+id/tv_min_txn_label"
@@ -176,7 +176,7 @@
                     android:layout_marginRight="@dimen/dp_8"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="@color/black_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/tp_text_size_xxsmall"
                     app:layout_constraintBottom_toTopOf="@+id/tv_min_txn_value"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +192,7 @@
                     android:id="@+id/tv_min_txn_value"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:textColor="@color/black_70"
+                    android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/tp_text_size_small"
                     android:textStyle="bold"
 
@@ -217,7 +217,7 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginBottom="58dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/dp_12"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -230,7 +230,7 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_marginBottom="58dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/dp_12"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

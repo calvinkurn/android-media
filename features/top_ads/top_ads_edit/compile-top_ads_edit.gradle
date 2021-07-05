@@ -16,7 +16,6 @@ include 'libraries:tracking_optimizer'
 
 include "tkpdcore"
 include "tkpddesign"
-include "tkpdseller"
 include "tkpdabstraction"
 
 include "features:promo:loyalty_common"
@@ -32,7 +31,6 @@ include "libraries:blockcanary"
 include "libraries:iris_session"
 include "libraries:encryption"
 include "features:top_ads:top_ads_management_common"
-include "tkpdseller"
 include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
 include "libraries:date_picker_range"
@@ -55,7 +53,6 @@ include "libraries:webview"
 include "features:payment:payment"
 include "features:payment:common_payment"
 include "features:merchant:reputation_common"
-include "features:merchant:product_manage_item"
 include "features:merchant:product_manage_common"
 include "features:logistic:logisticdata"
 include "features:discovery:category_common"
@@ -75,6 +72,7 @@ include "libraries:push_notification"
 include "libraries:translator"
 include "libraries:analytics_debugger"
 include "libraries:analytics_debugger_noop"
+include "features:ordermanagement:orderhistory"
 
 
 

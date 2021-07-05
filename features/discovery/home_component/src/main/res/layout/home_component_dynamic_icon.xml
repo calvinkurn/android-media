@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.recyclerview.widget.RecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dynamic_icon_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingStart="@dimen/home_component_margin_default"
+    android:paddingEnd="@dimen/home_component_margin_default"
+    android:layout_marginTop="@dimen/dp_12"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:orientation="horizontal">
+
+</androidx.recyclerview.widget.RecyclerView>

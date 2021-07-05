@@ -10,7 +10,7 @@
         android:id="@+id/view_event_additional_item_line"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_dp_1"
-        android:background="@color/Neutral_N700_20"
+        android:background="@color/Unify_N700_44"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:text="@string/ent_checkout_data_tambahan_filled_data"
         app:typographyType="body_1"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         />
 
     <androidx.appcompat.widget.AppCompatImageView

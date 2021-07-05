@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">localizationchooseaddress</string>
+    <string name="txt_send_to">Dikirim ke &lt;b&gt;%s&lt;/b&gt;</string>
+    <string name="txt_label_default">Pilih alamat pengiriman</string>
+
+    <string name="coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="coachmark_desc">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+    <string name="address_title">Rumah</string>
+    <string name="main_address_label">Utama</string>
+    <string name="receiver_name">Regi</string>
+    <string name="addr_detail">Jl.Kyai H. Syahdan No. 0, adad afa</string>
+    <string name="cek_alamat_lainnya">Cek Alamat Lainnya</string>
+    <string name="state_dikirim_ke">Dikirim ke</string>
+    <string name="txt_bottomshoot_localization">Biar pengalaman belanjamu lebih baik, pilih alamat dulu.</string>
+    <string name="add_user_address">Tambah Alamat Pengirimanmu</string>
+    <string name="txt_no_address">Kamu belum memiliki alamat</string>
+    <string name="text_login_info">Masuk dulu biar bisa memilih alamat pengirimanmu.</string>
+    <string name="txt_login">Masuk</string>
+    <string name="txt_snippet_loc">Mau pakai cara lain?</string>
+    <string name="pilih_kota_kecamatan">Pilih Kota atau Kecamatan</string>
+    <string name="txt_info_error">Ada gangguan di rumah Toped!</string>
+    <string name="txt_info_error_detail">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti</string>
+    <string name="toaster_failed_chosen_address">Oops, alamat gagal dipilih. Silakan coba lagi.</string>
+    <string name="toaster_success_chosen_address">Alamat berhasil dipilih. Nikmati pengalaman belanja yang sesuai dengan alamatmu!</string>
+    <string name="bottomsheet_choose_address_title">Mau kirim belanjaan ke mana?</string>
+</resources>

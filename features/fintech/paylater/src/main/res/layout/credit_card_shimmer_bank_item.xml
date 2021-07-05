@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ccBankCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:card_type="border_disabled">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clAvailableBank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/ivBank"
+            android:layout_width="@dimen/unify_space_40"
+            android:layout_height="@dimen/unify_space_0"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"
+            app:unify_image_corner_radius="0" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/benefitLoader"
+            android:layout_width="@dimen/unify_space_128"
+            android:layout_height="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/credit_card_dp_10"
+            android:layout_marginTop="@dimen/unify_space_12"
+            app:layout_constraintBottom_toTopOf="@+id/tvInstallments"
+            app:layout_constraintStart_toEndOf="@+id/ivBank"
+            app:layout_constraintTop_toTopOf="@+id/ivBank"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:loader_type="rect" />
+
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tvInstallments"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_2"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="@+id/ivBank"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/benefitLoader"
+            app:layout_constraintTop_toBottomOf="@+id/benefitLoader"
+            app:loader_type="rect" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
+

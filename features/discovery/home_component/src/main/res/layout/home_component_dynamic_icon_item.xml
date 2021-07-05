@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dynamic_icon_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/dynamic_icon_background"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:background="@drawable/home_dynamic_icon_background"
+            android:contentDescription="@string/content_desc_icon_image"
+            android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/dynamic_icon_image_view"
+            android:contentDescription="@string/content_desc_icon_image"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dynamic_icon_typography"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:ellipsize="end"
+        app:typographyType="small"/>
+</LinearLayout>

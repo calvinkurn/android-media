@@ -2,7 +2,7 @@ package com.tokopedia.attachproduct.domain.usecase;
 
 import com.tokopedia.attachproduct.data.repository.AttachProductRepository;
 import com.tokopedia.attachproduct.domain.model.mapper.DataModelToDomainModelMapper;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -16,7 +16,7 @@ import rx.Observable;
  * Created by Hendri on 14/02/18.
  */
 
-public class AttachProductUseCase extends UseCase<List<AttachProductItemViewModel>> {
+public class AttachProductUseCase extends UseCase<List<AttachProductItemUiModel>> {
     private static final String KEYWORD_KEY = "q";
     private static final String SHOP_ID_KEY = "shop_id";
     private static final String PAGE_KEY = "start";
@@ -33,7 +33,7 @@ public class AttachProductUseCase extends UseCase<List<AttachProductItemViewMode
     }
 
     @Override
-    public Observable<List<AttachProductItemViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<AttachProductItemUiModel>> createObservable(RequestParams requestParams) {
         return repository.loadProductFromShop(requestParams.getParamsAllValueInString()).map(mapper);
     }
 

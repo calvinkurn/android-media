@@ -91,9 +91,9 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
                     )
                     clipboard.setPrimaryClip(clip)
                     view?.run {
-                        Toaster.make(this,
+                        Toaster.build(this,
                                 getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
-                                Snackbar.LENGTH_LONG)
+                                Snackbar.LENGTH_LONG).show()
                     }
                 }
             }

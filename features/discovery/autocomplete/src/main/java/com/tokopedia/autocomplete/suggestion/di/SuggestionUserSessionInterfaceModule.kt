@@ -7,7 +7,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@SuggestionScope
 @Module
 class SuggestionUserSessionInterfaceModule{
     @SuggestionScope

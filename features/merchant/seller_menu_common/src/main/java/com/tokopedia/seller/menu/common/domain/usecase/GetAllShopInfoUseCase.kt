@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
@@ -9,7 +9,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 
 class GetAllShopInfoUseCase constructor(
@@ -17,49 +16,47 @@ class GetAllShopInfoUseCase constructor(
         private val balanceInfoUseCase: BalanceInfoUseCase,
         private val getShopBadgeUseCase: GetShopBadgeUseCase,
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
-        private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
+        private val getUserShopInfoUseCase: GetUserShopInfoUseCase,
         private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
         private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
-        private val dispatcher: SellerHomeCoroutineDispatcher
-) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>(){
+        private val dispatchers: CoroutineDispatchers
+) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>() {
 
-    override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> = coroutineScope {
-        with(userSession) {
-            val partialShopInfo = async { getPartialShopInfoData(shopId.toIntOrZero()) }
-            val partialTopAdsInfo = async { getPartialTopAdsData(shopId) }
-            return@coroutineScope Pair(partialShopInfo.await(), partialTopAdsInfo.await())
+    override suspend fun executeOnBackground(): Pair<PartialSettingResponse, PartialSettingResponse> {
+        return withContext(dispatchers.io) {
+            val partialShopInfo = async { getPartialShopInfoData(userSession.shopId.toIntOrZero()) }
+            val partialTopAdsInfo = async { getPartialTopAdsData(userSession.shopId) }
+
+            return@withContext Pair(partialShopInfo.await(), partialTopAdsInfo.await())
         }
     }
 
     private suspend fun getPartialShopInfoData(shopId: Int): PartialSettingResponse {
-        return withContext(dispatcher.io()) {
-            try {
-                shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
-                getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
-                getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
-                PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                        shopStatusTypeUseCase.executeOnBackground(),
-                        getShopTotalFollowersUseCase.executeOnBackground(),
-                        getShopBadgeUseCase.executeOnBackground()
-                )
-            } catch (exception: Exception) {
-                getPartialFailResponse(exception)
-            }
+        return try {
+            getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
+            getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
+            getUserShopInfoUseCase.params = GetUserShopInfoUseCase.createRequestParams(shopId)
+            PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
+                    getUserShopInfoUseCase.executeOnBackground(),
+                    getShopTotalFollowersUseCase.executeOnBackground(),
+                    getShopBadgeUseCase.executeOnBackground()
+            )
+
+        } catch (exception: Exception) {
+            getPartialFailResponse(exception)
         }
     }
 
     private suspend fun getPartialTopAdsData(shopId: String): PartialSettingResponse {
-        return withContext(dispatcher.io()) {
-            try {
-                topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
-                topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
-                PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
-                        balanceInfoUseCase.executeOnBackground(),
-                        topAdsDashboardDepositUseCase.executeOnBackground(),
-                        topAdsAutoTopupUseCase.executeOnBackground())
-            } catch (exception: Exception) {
-                getPartialFailResponse(exception)
-            }
+        return try {
+            topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
+            topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
+            PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
+                    balanceInfoUseCase.executeOnBackground(),
+                    topAdsDashboardDepositUseCase.executeOnBackground(),
+                    topAdsAutoTopupUseCase.executeOnBackground())
+        } catch (exception: Exception) {
+            getPartialFailResponse(exception)
         }
     }
 
@@ -67,5 +64,4 @@ class GetAllShopInfoUseCase constructor(
         SellerMenuErrorHandler.logExceptionToCrashlytics(exception, SellerMenuErrorHandler.ERROR_GET_SETTING_SHOP_INFO)
         return PartialSettingFail
     }
-
 }

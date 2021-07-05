@@ -4,15 +4,16 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
+import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.*
@@ -38,7 +39,7 @@ class ShopHomeSliderBannerViewHolder(
     private var carouselData: ArrayList<Any>? = null
 
     private var itmListener = { view: View, data: Any ->
-        val img: ImageUnify = view.findViewById(R.id.imageCarousel)
+        val img: ShopCarouselBannerImageUnify = view.findViewById(R.id.imageCarousel)
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
         bannerData?.let { bannerData ->
@@ -53,13 +54,14 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
-        carouselShopPage?.post {
-            img.initialWidth = carouselShopPage?.measuredWidth
-        }
         val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         //avoid crash in ImageUnify when image url is returned as base64
         try {
-            img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
+            if(img.context.isValidGlideContext()) {
+                val ratio = bannerData?.let { getHeightRatio(it) } ?: 0f
+                img.heightRatio = ratio
+                img.setImageUrl(carouselItem.imageUrl, ratio)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -104,12 +106,12 @@ class ShopHomeSliderBannerViewHolder(
         bannerData = shopHomeDisplayWidgetUiModel
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
+            stage.removeAllViews()
             carouselData?.let {
                 if (stage.childCount == 0) {
                     addItems(R.layout.widget_slider_banner_item, it, itmListener)
                     Handler().post {
                         activeIndex = 0
-                        autoplay = true
                     }
                 }
             }
@@ -127,6 +129,25 @@ class ShopHomeSliderBannerViewHolder(
                 show()
             }
         }
+        bannerData?.let{
+            val widthRatio = getIndexRatio(it, 0).toString()
+            val heightRatio = getIndexRatio(it, 1).toString()
+            carouselShopPage?.apply {
+                (layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = "$widthRatio:$heightRatio"
+                post {
+                    (carouselShopPage?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ""
+                }
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        carouselShopPage?.autoplay = false
+    }
+
+    fun resumeTimer() {
+        carouselShopPage?.timer = Timer()
+        carouselShopPage?.autoplay = true
     }
 
     private fun onClickBannerItem(

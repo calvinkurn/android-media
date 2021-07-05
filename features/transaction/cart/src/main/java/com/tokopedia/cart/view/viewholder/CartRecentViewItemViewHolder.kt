@@ -1,90 +1,73 @@
 package com.tokopedia.cart.view.viewholder
 
-import android.text.TextUtils
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemProductRecentViewBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import kotlinx.android.synthetic.main.item_product_cart_additional.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(view) {
+class CartRecentViewItemViewHolder(private val binding: ItemProductRecentViewBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_product_cart_additional
+        val LAYOUT = R.layout.item_product_recent_view
     }
 
+    internal var isTopAds = false
+
     fun bind(element: CartRecentViewItemHolderData) {
-        if (element.isWishlist) {
-            itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_on)
-        } else {
-            itemView.img_wishlist.setImageResource(R.drawable.ic_wishlist_checkout_off)
-        }
-
-        itemView.tv_product_name.text = element.name
-        itemView.tv_product_price.text = element.price
-        itemView.tv_shop_location.text = element.shopLocation
-
-        if (element.rating > 0) {
-            itemView.img_rating.setImageResource(getRatingImageResource(element.rating))
-            itemView.tv_review_count.text = "(${element.reviewCount})"
-            itemView.img_rating.visibility = View.VISIBLE
-            itemView.tv_review_count.visibility = View.VISIBLE
-        } else {
-            itemView.img_rating.visibility = View.INVISIBLE
-            itemView.tv_review_count.visibility = View.INVISIBLE
-        }
-
-        if (!TextUtils.isEmpty(element.badgeUrl)) {
-            ImageHandler.loadImage(itemView.context, itemView.img_badge,
-                    element.badgeUrl, R.drawable.loading_page
+        binding.productCardView.apply {
+            setProductModel(
+                    ProductCardModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.name,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            isTopAds = element.isTopAds,
+                            discountPercentage = element.discountPercentage,
+                            reviewCount = element.reviewCount,
+                            ratingCount = element.rating,
+                            shopLocation = element.shopLocation,
+                            shopBadgeList = element.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.isFreeOngkirActive,
+                                    imageUrl = element.freeOngkirImageUrl
+                            ),
+                            labelGroupList = element.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        position = recommendationLabel.position,
+                                        title = recommendationLabel.title,
+                                        type = recommendationLabel.type,
+                                        imageUrl = recommendationLabel.imageUrl
+                                )
+                            },
+                            hasAddToCartButton = true,
+                            addToCartButtonType = UnifyButton.Type.MAIN
+                    )
             )
-            itemView.img_badge.visibility = View.VISIBLE
-            itemView.tv_badge_dot_separator.visibility = View.VISIBLE
-        } else {
-            itemView.img_badge.visibility = View.GONE
-            itemView.tv_badge_dot_separator.visibility = View.GONE
-        }
+            setImageProductViewHintListener(element, object : ViewHintListener {
+                override fun onViewHint() {
+                    actionListener?.onRecentViewProductImpression(element)
+                }
+            })
 
-        ImageHandler.loadImage(itemView.context, itemView.img_product,
-                element.imageUrl, R.drawable.loading_page
-        )
-
-        itemView.img_product.layoutParams.width = itemWidth
-        itemView.img_product.requestLayout()
-
-        itemView.img_wishlist.setOnClickListener {
-            if (element.isWishlist) {
-                actionListener?.onRemoveLastSeenFromWishlist(element.id)
-            } else {
-                actionListener?.onAddLastSeenToWishlist(element.id)
+            setOnClickListener {
+                actionListener?.onRecentViewProductClicked(element.id)
+            }
+            setAddToCartOnClickListener {
+                actionListener?.onButtonAddToCartClicked(element)
             }
         }
 
-        itemView.tv_atc.setOnClickListener {
-            actionListener?.onButtonAddToCartClicked(element)
-        }
-
-        itemView.setOnClickListener {
-            actionListener?.onRecentViewProductClicked(element.id)
-        }
-
+        isTopAds = element.isTopAds
     }
-
-    private fun getRatingImageResource(rating: Int): Int {
-        when (rating) {
-            1 -> return R.drawable.ic_star_one
-            2 -> return R.drawable.ic_star_two
-            3 -> return R.drawable.ic_star_three
-            4 -> return R.drawable.ic_star_four
-            5 -> return R.drawable.ic_star_five
-            else -> return 0
-        }
-    }
-
 }

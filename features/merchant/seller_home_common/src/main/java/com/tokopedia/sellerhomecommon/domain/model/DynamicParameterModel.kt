@@ -30,7 +30,13 @@ data class DynamicParameterModel(
         val limit: Int = 0,
         @Expose
         @SerializedName("date_type")
-        val dateType: String = DateFilterType.DATE_TYPE_WEEK
+        val dateType: String = DateFilterType.DATE_TYPE_WEEK,
+        @Expose
+        @SerializedName("post_filter")
+        val postFilter: String = "",
+        @Expose
+        @SerializedName("table_filter")
+        val tableFilter: String = ""
 ) {
 
     fun toJsonString(): String {

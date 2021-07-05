@@ -1,7 +1,7 @@
 package com.tokopedia.officialstore.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.officialstore.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
@@ -29,7 +29,7 @@ class OfficialStoreCategoryViewModelTest {
     private val viewModelStore: OfficialStoreCategoryViewModel by lazy {
         OfficialStoreCategoryViewModel(
                 getOfficialStoreCategoriesUseCase,
-                TestDispatcherProvider()
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -42,11 +42,11 @@ class OfficialStoreCategoryViewModelTest {
     fun testGetOfficialStoreCategoriesSuccess() {
         runBlocking {
             coEvery {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             } returns OfficialStoreCategories()
-            viewModelStore.getOfficialStoreCategories()
+            viewModelStore.getOfficialStoreCategories(false)
             coVerify {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             }
             assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
         }
@@ -56,11 +56,11 @@ class OfficialStoreCategoryViewModelTest {
     fun testGetOfficialStoreCategoriesError() {
         runBlocking {
             coEvery {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             } throws Throwable()
-            viewModelStore.getOfficialStoreCategories()
+            viewModelStore.getOfficialStoreCategories(false)
             coVerify {
-                getOfficialStoreCategoriesUseCase.executeOnBackground(any())
+                getOfficialStoreCategoriesUseCase.executeOnBackground(any(), any())
             }
             assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
         }

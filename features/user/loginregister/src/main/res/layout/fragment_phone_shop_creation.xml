@@ -24,7 +24,7 @@
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/welcome_title"
             android:textAlignment="viewStart"
-            android:textColor="#f531353b"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +44,7 @@
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/your_phone_number"
             android:textAlignment="viewStart"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_view_welcome"
@@ -60,7 +60,7 @@
             android:layout_marginTop="@dimen/dp_15"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_view_desc"
-            app:srcCompat="@drawable/ic_indo_flag" />
+            app:srcCompat="@drawable/ic_indo_flag_open_shop" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_view_country_number"
@@ -71,7 +71,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:lineSpacingExtra="4sp"
             android:text="@string/phone_id_idn"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/image_view_flag"
             app:layout_constraintTop_toBottomOf="@+id/text_view_desc"
             app:typographyType="body_1"
@@ -103,7 +103,7 @@
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/desc_phone_shop_creation"
             android:textAlignment="viewStart"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_view_flag"

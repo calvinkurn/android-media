@@ -6,31 +6,34 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
+import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
+import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_CHANNEL
+import com.tokopedia.home.beranda.helper.getTimeDiff
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.unifyprinciples.Typography
-import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
-import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
-import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_DYNAMIC_CHANNEL
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicChannelDataModel>(itemView) {
     private val context: Context = itemView.context
 
-    var countDownView: CountDownView? = null
+    var countDownView: TimerUnifySingle? = null
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
     var seeAllButtonUnify: UnifyButton? = null
@@ -55,12 +58,14 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_RECOMMENDATION_LIST = 14
         const val TYPE_PRODUCT_HIGHLIGHT = 11
         const val TYPE_CATEGORY_WIDGET = 15
+        const val TYPE_2_GRID_LEGO = 16
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> return TYPE_FOUR_GRID_LEGO
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_2_IMAGE -> return TYPE_2_GRID_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
                 DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
@@ -78,7 +83,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     }
 
     override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
-        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL + element.channel?.layout)
         super.bind(element, payloads)
         try {
             val channel = element.channel
@@ -93,13 +98,13 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel, payloads)
             }
         } catch (e: Exception) {
-            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
+            FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
         }
         BenchmarkHelper.endSystraceSection()
     }
 
     override fun bind(element: DynamicChannelDataModel) {
-        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL+element.channel?.layout)
+        BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_DYNAMIC_CHANNEL + element.channel?.layout)
         try {
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
@@ -113,7 +118,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 setupContent(channel)
             }
         } catch (e: Exception) {
-            Crashlytics.log(0, getViewHolderClassName(), e.localizedMessage)
+            FirebaseCrashlytics.getInstance().log("E/${getViewHolderClassName()}:${e.localizedMessage}")
         }
         BenchmarkHelper.endSystraceSection()
     }
@@ -151,8 +156,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelTitle?.text = channelHeaderName
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
-                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -175,8 +180,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
             channelSubtitle?.text = channelSubtitleName
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
-                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
-                    else ContextCompat.getColor(context, R.color.Neutral_N700)
+                    if (channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor).invertIfDarkMode(itemView.context)
+                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE
@@ -283,15 +288,26 @@ abstract class DynamicChannelViewHolder(itemView: View,
             countDownView = if (stubCountDownView is ViewStub &&
                     !isViewStubHasBeenInflated(stubCountDownView)) {
                 val inflatedStubCountDownView = stubCountDownView.inflate()
-                inflatedStubCountDownView.findViewById<CountDownView>(R.id.count_down)
+                inflatedStubCountDownView.findViewById(R.id.count_down)
             } else {
                 itemView.findViewById(R.id.count_down)
             }
 
             val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
             if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
-                countDownView?.setup(element.serverTimeOffset, expiredTime) {
+                val currentDate = Date()
+                val currentMillisecond: Long = currentDate.time + element.serverTimeOffset
+                val serverTime = Date()
+                serverTime.time = currentMillisecond
+                val timeDiff = serverTime.getTimeDiff(expiredTime)
+                countDownView?.targetDate = timeDiff
+                countDownView?.onFinish = {
                     listener?.updateExpiredChannel(element, adapterPosition)
+                }
+                if(channel.header.backColor.isNotEmpty()){
+                    countDownView?.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+                } else {
+                    countDownView?.timerVariant = TimerUnifySingle.VARIANT_MAIN
                 }
                 countDownView?.visibility = View.VISIBLE
             }
@@ -325,7 +341,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     protected abstract fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String)
 
     private fun hasExpiredTime(channel: DynamicHomeChannel.Channels): Boolean {
-        return channel.header.expiredTime != null && !TextUtils.isEmpty(channel.header.expiredTime)
+        return !TextUtils.isEmpty(channel.header.expiredTime)
     }
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {

@@ -7,16 +7,16 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
-
 
 class CategoryNavigationViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
@@ -35,6 +35,7 @@ class CategoryNavigationViewHolder(itemView: View, private val fragment: Fragmen
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         categoryNavigationViewModel = discoveryBaseViewModel as CategoryNavigationViewModel
+        getSubComponent().inject(categoryNavigationViewModel)
         categoryNavigationViewModel.getTitle().observe(fragment.viewLifecycleOwner, Observer { item ->
             when (item) {
                 is Success -> {

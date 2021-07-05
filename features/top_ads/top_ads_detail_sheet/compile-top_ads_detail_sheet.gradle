@@ -1,0 +1,85 @@
+include "features:top_ads:top_ads_detail_sheet"
+
+
+include 'features:common:resources_common'
+
+include 'libraries:analytics'
+include 'libraries:applink'
+include 'libraries:base_list'
+include 'libraries:inappupdate'
+include 'libraries:kotlin_extensions'
+include 'libraries:play_core'
+include 'libraries:promotions_target'
+include 'libraries:remote_config'
+include 'libraries:track'
+include 'libraries:tracking_optimizer'
+
+include "tkpdcore"
+include "tkpddesign"
+include "tkpdabstraction"
+
+include "features:promo:loyalty_common"
+include "libraries:core_network"
+include ":libraries:graphql"
+include ":libraries:akamai_bot_lib"
+include ":testapp-features:user:logintestapp"
+include ":libraries:utils"
+include ":libraries:dev_monitoring_tools"
+include "libraries:device_info"
+include "libraries:blockcanary"
+include "libraries:iris_session"
+include "libraries:encryption"
+include "features:top_ads:top_ads_management_common"
+include "libraries:base_list_seller"
+include "libraries:bottom_sheet_builder"
+include "libraries:date_picker_range"
+include "libraries:image_picker"
+include "libraries:imageuploader"
+include "libraries:core_network"
+include "features:top_ads:top_ads_management_sourcetagging"
+include "features:merchant:gold_merchant_common"
+include "features:merchant:shop_common"
+include "tkpdcore"
+include "features:promo:loyalty_common"
+include "libraries:analytics"
+include "libraries:permissionchecker"
+include "features:transaction:purchase_platform_common"
+include "features:im:referral"
+include "libraries:linker"
+include "libraries:weaver"
+include "libraries:core_legacy"
+include "libraries:webview"
+include "features:payment:payment"
+include "features:payment:common_payment"
+include "features:merchant:reputation_common"
+include "features:merchant:product_manage_common"
+include "features:logistic:logisticdata"
+include "features:discovery:category_common"
+include "libraries:fingerprint"
+include "features:user:fcm_common"
+include "libraries:iris"
+include "libraries:sharedata"
+include "features:user:user_identification_common"
+include "features:merchant:youtube_common"
+include "libraries:tracking_optimizer"
+include "libraries:cm_push_notifications"
+include "features:transaction:atc_common"
+include "features:im:common_promo"
+include "features:common:developer_options"
+include "libraries:screen_recorder"
+include "libraries:push_notification"
+include "libraries:translator"
+include "libraries:analytics_debugger"
+include "libraries:analytics_debugger_noop"
+include "features:logistic:logisticCommon"
+include "libraries:screenshot_observer"
+include "libraries:remoteresourcerequest"
+include "features:common:developer_options"
+include "libraries:image_preview"
+include "features:ordermanagement:orderhistory"
+
+
+
+include "libraries:logger"
+include ':libraries:common_network'
+include "features:user:sessioncommon"

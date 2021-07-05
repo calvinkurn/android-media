@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_16">
+
+    <View
+        android:id="@+id/product_detail_info_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        android:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/merchant_product_detail_label_product_detail"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Detail Produk" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_detail_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="vertical" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_info_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:ellipsize="end"
+        android:longClickable="false"
+        android:maxLines="5"
+        app:typographyType="body_2"
+        tools:text="Uniqlo AIRism JAKET UV CUT HOODIE RETSLETING - Orange Jaket Uniqlo Airism - Original Store..." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_detail_info_seemore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/label_read_detail"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textColor="@color/Unify_G500"
+        android:visibility="visible"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+</LinearLayout>

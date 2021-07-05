@@ -1,20 +1,16 @@
 package com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter
 
-import com.tokopedia.notifications.inApp.ruleEngine.RulesUtil
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import io.mockk.*
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
-import org.junit.runner.RunWith
-import org.powermock.api.mockito.PowerMockito
-import org.powermock.core.classloader.annotations.PowerMockIgnore
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
 
 class InAppDataProviderSubscriberTest {
 
@@ -40,7 +36,7 @@ class InAppDataProviderSubscriberTest {
 */
         inAppDataProviderSubscriber.onNext(inAppDataList)
 
-        verify { dataProvider.notificationsDataResult(capture(slot)) }
+        verify { dataProvider.notificationsDataResult(capture(slot), any(), any()) }
         assertEquals(slot.captured.size, 0 )
 
     }
@@ -129,7 +125,7 @@ class InAppDataProviderSubscriberTest {
 
         inAppDataProviderSubscriber.onNext(inAppDataList)
 
-        verify { dataProvider.notificationsDataResult(inAppDataList) }
+        verify { dataProvider.notificationsDataResult(inAppDataList, any(), any()) }
         //assertNull(slot.captured)
 
     }

@@ -15,13 +15,13 @@ public class DataConsumerImpl implements DataConsumer {
     }
 
     @Override
-    public void interactedWithView(long id){
-        RepositoryManager.getInstance().getStorageProvider().interactedWithView(id).subscribe();
+    public void updateVisibleStateForAlreadyShown() {
+        RepositoryManager.getInstance().getStorageProvider().updateVisibleStateForAlreadyShown().subscribe();
     }
 
     @Override
-    public void dataShown(long id, long newSt){
-        RepositoryManager.getInstance().getStorageProvider().updateInAppDataFreq(id, newSt).subscribe();
+    public void interactedWithView(long id){
+        RepositoryManager.getInstance().getStorageProvider().interactedWithView(id).subscribe();
     }
 
     @Override

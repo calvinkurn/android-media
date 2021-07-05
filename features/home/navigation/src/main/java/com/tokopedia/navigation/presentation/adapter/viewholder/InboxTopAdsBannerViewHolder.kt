@@ -9,12 +9,13 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.unifycomponents.toPx
 
 class InboxTopAdsBannerViewHolder constructor(
         itemView: View?,
         private val topAdsResponseListener: TopAdsImageVieWApiResponseListener,
         private val topAdsClickListener: TopAdsImageViewClickListener
-) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView), TopAdsImageViewImpressionListener {
+) : AbstractViewHolder<InboxTopAdsBannerUiModel>(itemView) {
 
     private val topAdsBanner: TopAdsImageView? = itemView?.findViewById(R.id.topads_banner)
 
@@ -33,19 +34,31 @@ class InboxTopAdsBannerViewHolder constructor(
 
     private fun bindTopAdsImage(element: InboxTopAdsBannerUiModel) {
         element.ad?.let {
-            topAdsBanner?.loadImage(it) { }
+            topAdsBanner?.loadImage(it, 8.toPx()) { }
         }
     }
 
     private fun bindTopAds(element: InboxTopAdsBannerUiModel) {
-        if (element.hasAd()) return
-        topAdsBanner?.setTopAdsImageViewImpression(this)
-        topAdsBanner?.setApiResponseListener(topAdsResponseListener)
-        topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
-        topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+        if (element.hasAd()) {
+            topAdsBanner?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
+                    if (!element.impressHolder.isInvoke) {
+                        hitTopAdsImpression(viewUrl)
+                        element.impressHolder.invoke()
+                    }
+                }
+            })
+            topAdsBanner?.setTopAdsImageViewClick(topAdsClickListener)
+        } else {
+            if (!element.requested) {
+                topAdsBanner?.setApiResponseListener(topAdsResponseListener)
+                topAdsBanner?.getImageData(SOURCE, ADS_COUNT, DIMEN_ID)
+                element.requested = true
+            }
+        }
     }
 
-    override fun onTopAdsImageViewImpression(viewUrl: String) {
+    private fun hitTopAdsImpression(viewUrl: String) {
         itemView.context.let {
             TopAdsUrlHitter(it).hitImpressionUrl(
                     this::class.java.simpleName,
@@ -62,7 +75,7 @@ class InboxTopAdsBannerViewHolder constructor(
 
         const val SOURCE = "5"
         const val ADS_COUNT = 1
-        const val DIMEN_ID = 4
+        const val DIMEN_ID = 3
 
         @JvmStatic
         val PAYLOAD_UPDATE_AD = "payload_update_ad"

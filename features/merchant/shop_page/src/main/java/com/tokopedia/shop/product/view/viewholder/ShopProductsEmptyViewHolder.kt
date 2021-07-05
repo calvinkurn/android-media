@@ -3,17 +3,17 @@ package com.tokopedia.shop.product.view.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant.URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE
-import com.tokopedia.shop.product.view.datamodel.ShopEmptyProductViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopEmptyProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopProductsEmptyViewHolder(
         val view: View,
         private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolderListener?
-) : AbstractViewHolder<ShopEmptyProductViewModel>(view) {
+) : AbstractViewHolder<ShopEmptyProductUiModel>(view) {
 
     companion object {
         @JvmField
@@ -42,13 +42,10 @@ class ShopProductsEmptyViewHolder(
     }
 
 
-    override fun bind(element: ShopEmptyProductViewModel) {
-        ImageHandler.loadImage(
-                view.context,
-                imageViewEmptyImage,
-                URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE,
-                com.tokopedia.design.R.drawable.ic_loading_image
-        )
+    override fun bind(element: ShopEmptyProductUiModel) {
+        imageViewEmptyImage.loadImage(URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE) {
+            setPlaceHolder(R.drawable.ic_shop_page_loading_image)
+        }
         textTitle.text = element.title
         textDescription.text = element.description
     }

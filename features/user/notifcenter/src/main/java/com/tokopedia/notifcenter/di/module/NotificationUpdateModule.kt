@@ -3,7 +3,6 @@ package com.tokopedia.notifcenter.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.data.entity.NotificationCenterSingleDetail
 import com.tokopedia.notifcenter.data.entity.ProductHighlightItem
@@ -27,7 +26,7 @@ class NotificationUpdateModule {
     @Named("atcMutation")
     @NotificationScope
     fun provideAddToCartMutation(@NotificationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_product_to_cart)
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @Provides

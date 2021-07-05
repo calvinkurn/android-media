@@ -2,12 +2,38 @@
 <resources>
     <dimen name="progress_bar_height">3dp</dimen>
 
+    <dimen name="flight_error_iv_width">280dp</dimen>
+    <dimen name="flight_error_iv_height">210dp</dimen>
+    <dimen name="flight_error_button_width">220dp</dimen>
+
     <dimen name="margin_16">16dp</dimen>
     <dimen name="margin_8">8dp</dimen>
     <dimen name="margin_4">4dp</dimen>
     <dimen name="padding_16">16dp</dimen>
     <dimen name="padding_8">8dp</dimen>
     <dimen name="padding_4">4dp</dimen>
+
+    <dimen name="flight_dp_1">1dp</dimen>
+    <dimen name="flight_dp_3">3dp</dimen>
+    <dimen name="flight_dp_6">6dp</dimen>
+    <dimen name="flight_dp_10">10dp</dimen>
+    <dimen name="flight_dp_11">11dp</dimen>
+    <dimen name="flight_dp_12">12dp</dimen>
+    <dimen name="flight_dp_14">14dp</dimen>
+    <dimen name="flight_dp_15">15dp</dimen>
+    <dimen name="flight_dp_20">20dp</dimen>
+    <dimen name="flight_dp_28">28dp</dimen>
+    <dimen name="flight_dp_30">30dp</dimen>
+    <dimen name="flight_dp_32">32dp</dimen>
+    <dimen name="flight_dp_36">36dp</dimen>
+    <dimen name="flight_dp_40">40dp</dimen>
+    <dimen name="flight_dp_50">50dp</dimen>
+    <dimen name="flight_dp_56">56dp</dimen>
+    <dimen name="flight_dp_60">60dp</dimen>
+    <dimen name="flight_dp_72">72dp</dimen>
+    <dimen name="flight_dp_100">100dp</dimen>
+    <dimen name="flight_dp_150">150dp</dimen>
+    <dimen name="flight_dp_160">160dp</dimen>
 
     <dimen name="banner_offset">32dp</dimen>
     <dimen name="banner_width">360dp</dimen>
@@ -19,4 +45,5 @@
     <dimen name="margin_top_flight_dashboard">60dp</dimen>
 
     <dimen name="flight_horizontal_height">3dp</dimen>
+    <dimen name="flight_promo_chips_price_translationY">-1.8sp</dimen>
 </resources>

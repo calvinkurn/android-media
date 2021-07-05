@@ -1,0 +1,1159 @@
+[
+  {
+    "data": {
+      "TravelCollectiveRecentSearches": {
+        "items": [
+          {
+            "product" : "BBQ",
+            "title" : "BBQ tes",
+            "subtitle": "bbq",
+            "prefix": "ashk",
+            "prefixStyling": "asaas",
+            "value": "12",
+            "webURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "appURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "imageURL": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+          }, {
+            "product" : "BBC",
+            "title" : "BBC Ttes",
+            "subtitle": "bbc",
+            "prefix": "ashk",
+            "prefixStyling": "asaas",
+            "value": "12",
+            "webURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "appURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "imageURL": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+          }, {
+            "product" : "BBD",
+            "title" : "BBD Tes",
+            "subtitle": "bbd",
+            "prefix": "ashk",
+            "prefixStyling": "asaas",
+            "value": "12",
+            "webURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "appURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "imageURL": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+          }, {
+            "product" : "BBE",
+            "title" : "BBE Tes",
+            "subtitle": "bbe",
+            "prefix": "ashk",
+            "prefixStyling": "asaas",
+            "value": "12",
+            "webURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "appURL": "https://ecs7.tokopedia.net/dealsweb/",
+            "imageURL": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+          }
+        ],
+        "meta": {
+          "title": "Destinasi populer",
+          "webURL": "",
+          "appURL": ""
+        }
+      },
+      "event_child_category": {
+        "categories": [
+          {
+            "id": "27",
+            "parent_id": "15",
+            "name": "top",
+            "title": "Voucher populer",
+            "description": "Cek voucher favorit orang-orang, yuk!",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "topdeals",
+            "media_url": "",
+            "seo_url": "topdeals",
+            "priority": "30",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=top&category_id=27",
+            "is_card": 1,
+            "is_hidden": 1,
+            "inactiveMediaUrl": ""
+          },
+          {
+            "id": "25",
+            "parent_id": "15",
+            "name": "makanan",
+            "title": "Makanan",
+            "description": " ",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "makanan",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+            "seo_url": " ",
+            "priority": "15",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=makanan&category_id=25",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/7/8/5478744/5478744_496ab2f6-82a8-4680-b044-fbf043c6c268.png"
+          },
+          {
+            "id": "24",
+            "parent_id": "15",
+            "name": "relaksasi",
+            "title": "Relaksasi",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "relaksasi",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_9afb8885-3151-4b60-9e95-41e8d3378bde.png",
+            "seo_url": "",
+            "priority": "6",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=relaksasi&category_id=24",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/7/8/5478744/5478744_b8d2eb3a-c769-4105-9872-986cb43b6d29.png"
+          },
+          {
+            "id": "45",
+            "parent_id": "15",
+            "name": "delivery",
+            "title": "Koleksi voucher terbaru",
+            "description": "Makin banyak penawaran menarik buat kamu",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "delivery",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/5/6/2892668/2892668_b880c92d-97a7-4bdd-bf03-35194bbe1e47.png",
+            "seo_url": "delivery",
+            "priority": "11",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=delivery&category_id=45",
+            "is_card": 1,
+            "is_hidden": 1,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/5/6/2892668/2892668_b880c92d-97a7-4bdd-bf03-35194bbe1e47.png"
+          },
+          {
+            "id": "50",
+            "parent_id": "15",
+            "name": "shabushabugrill",
+            "title": "BBQ & Shabu-shabu",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "shabushabugrill",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_d23aceed-b995-4c7e-9c37-5a4819cf21b4.jpg",
+            "seo_url": "shabushabugrill",
+            "priority": "10",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=shabushabugrill&category_id=50",
+            "is_card": 1,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_d23aceed-b995-4c7e-9c37-5a4819cf21b4.jpg"
+          },
+          {
+            "id": "39",
+            "parent_id": "15",
+            "name": "fashion",
+            "title": "Fashion",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "fashion",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+            "seo_url": "",
+            "priority": "10",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=fashion&category_id=39",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_813e61f3-6a0e-4c9d-a637-c8ac2080f780.png"
+          },
+          {
+            "id": "54",
+            "parent_id": "15",
+            "name": "fastfood",
+            "title": "Fast Food",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "fastfood",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_b52eb429-674e-4e18-aad6-3a4e791f307d.jpg",
+            "seo_url": "fastfood",
+            "priority": "9",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=fastfood&category_id=54",
+            "is_card": 1,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_b52eb429-674e-4e18-aad6-3a4e791f307d.jpg"
+          },
+          {
+            "id": "20",
+            "parent_id": "15",
+            "name": "kecantikan",
+            "title": "Kecantikan",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "kecantikan",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_7f6fd279-74a5-4200-bd2b-1c39ea7273c6.png",
+            "seo_url": "",
+            "priority": "9",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=kecantikan&category_id=20",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/7/8/5478744/5478744_215a961c-8de8-4c26-be07-8ac78933b75c.png"
+          },
+          {
+            "id": "52",
+            "parent_id": "15",
+            "name": "chinese",
+            "title": "Chinese Food",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "chinese",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_c8829c4e-180b-4dd6-acb9-e11b226f9d8a.jpg",
+            "seo_url": "chinese",
+            "priority": "8",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=chinese&category_id=52",
+            "is_card": 1,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_c8829c4e-180b-4dd6-acb9-e11b226f9d8a.jpg"
+          },
+          {
+            "id": "43",
+            "parent_id": "15",
+            "name": "transportasi",
+            "title": "Transportasi",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "transportasi",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/27/51998951/51998951_82b856d7-bc86-4391-b799-37b6625c4581.png",
+            "seo_url": "transportasi",
+            "priority": "8",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=transportasi&category_id=43",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/16/2892668/2892668_5f7484d7-df50-4b75-b1f5-5a892be089e9.png"
+          },
+          {
+            "id": "22",
+            "parent_id": "15",
+            "name": "lainnya",
+            "title": "Belanja",
+            "description": " ",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "lainnya",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+            "seo_url": " ",
+            "priority": "7",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=lainnya&category_id=22",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_74554e61-3292-45f2-9836-f006ecca06b5.png"
+          },
+          {
+            "id": "51",
+            "parent_id": "15",
+            "name": "dessert",
+            "title": "Dessert",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "dessert",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_a7cb8356-8dfd-42b8-b875-856d16a49ddd.jpg",
+            "seo_url": "dessert",
+            "priority": "7",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=dessert&category_id=51",
+            "is_card": 1,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_a7cb8356-8dfd-42b8-b875-856d16a49ddd.jpg"
+          },
+          {
+            "id": "53",
+            "parent_id": "15",
+            "name": "halal",
+            "title": "Kuliner Halal",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "halal",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_c43427be-5ca7-471d-8eea-18d5f15c0730.jpg",
+            "seo_url": "halal",
+            "priority": "6",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=halal&category_id=53",
+            "is_card": 1,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_c43427be-5ca7-471d-8eea-18d5f15c0730.jpg"
+          },
+          {
+            "id": "55",
+            "parent_id": "15",
+            "name": "koreanjapanese",
+            "title": "Khas Jepang & Korea",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "koreanjapanese",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_c8fa2f8c-6f0f-4f71-b64c-72e6f88c4679.jpg",
+            "seo_url": "koreanjapanese",
+            "priority": "5",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=koreanjapanese&category_id=55",
+            "is_card": 1,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2020/6/24/2892668/2892668_c8fa2f8c-6f0f-4f71-b64c-72e6f88c4679.jpg"
+          },
+          {
+            "id": "23",
+            "parent_id": "15",
+            "name": "liburan",
+            "title": "Liburan",
+            "description": " ",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "liburan",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_dc9b28c0-88d9-41e5-a03d-f96a25387d53.png",
+            "seo_url": " ",
+            "priority": "5",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=liburan&category_id=23",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/7/8/5478744/5478744_ee1dbfa7-c7bf-4294-ba7a-ddb9b9b09df7.png"
+          },
+          {
+            "id": "21",
+            "parent_id": "15",
+            "name": "kegiatan",
+            "title": "Kegiatan",
+            "description": "",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "kegiatan",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_591c685c-5143-40e0-b87d-5dd7ed548383.png",
+            "seo_url": "",
+            "priority": "3",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=kegiatan&category_id=21",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/7/8/5478744/5478744_facedf66-9540-4c44-8aff-1232b6d0471a.png"
+          },
+          {
+            "id": "19",
+            "parent_id": "15",
+            "name": "jasa",
+            "title": "Jasa",
+            "description": " ",
+            "meta_title": "",
+            "meta_description": "",
+            "url": "jasa",
+            "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_87df1ae5-917e-4300-bd66-93bd10be5f2e.png",
+            "seo_url": " ",
+            "priority": "2",
+            "status": 1,
+            "message": "",
+            "code": "",
+            "message_error": "",
+            "web_url": "https://www.tokopedia.com/deals/search/",
+            "app_url": "tokopedia://deals/category/page?search_name=jasa&category_id=19",
+            "is_card": 0,
+            "is_hidden": 0,
+            "inactiveMediaUrl": "https://ecs7.tokopedia.net/img/banner/2019/7/8/5478744/5478744_69b760f8-cec8-4d88-97e7-a0572645d909.png"
+          }
+        ]
+      },
+      "event_search": {
+        "brands": [],
+        "products": [
+          {
+            "id": "21187",
+            "brand_id": "4036",
+            "display_name": "Voucher The Children's Place Rp 100.000",
+            "seo_url": "voucher-the-childrens-place-rp-100000-21187",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/59253604/59253604_90adb28d-15cf-4ef3-88d4-ea57e8b08173.jpg",
+            "mrp": "100000",
+            "sales_price": "85000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1601744340",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1601744340",
+            "custom_text_1": "1",
+            "saving_percentage": "15% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-the-childrens-place-rp-100000-21187/",
+            "app_url": "tokopedia://deals/voucher-the-childrens-place-rp-100000-21187",
+            "brand": {
+              "id": "4036",
+              "title": "The Childrens Place",
+              "seo_url": "the-childrens-place-4036",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/15/59253604/59253604_a78a3f2c-95ab-436f-b12e-c5ecc019e6bb.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "21188",
+            "brand_id": "4036",
+            "display_name": "Voucher The Children's Place Rp 250.000",
+            "seo_url": "voucher-the-childrens-place-rp-250000-21188",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/59253604/59253604_90adb28d-15cf-4ef3-88d4-ea57e8b08173.jpg",
+            "mrp": "250000",
+            "sales_price": "212500",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1601744340",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1601744340",
+            "custom_text_1": "1",
+            "saving_percentage": "15% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-the-childrens-place-rp-250000-21188/",
+            "app_url": "tokopedia://deals/voucher-the-childrens-place-rp-250000-21188",
+            "brand": {
+              "id": "4036",
+              "title": "The Childrens Place",
+              "seo_url": "the-childrens-place-4036",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/15/59253604/59253604_a78a3f2c-95ab-436f-b12e-c5ecc019e6bb.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "35662",
+            "brand_id": "5870",
+            "display_name": "Voucher The People's Cafe Rp 50.000",
+            "seo_url": "voucher-the-peoples-cafe-rp-50000-35662",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/7/11/51998951/51998951_b5e97b8d-95d4-4a2c-ba29-47b4285133dc.jpg",
+            "mrp": "50000",
+            "sales_price": "41500",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1594263600",
+            "max_end_date": "1612234800",
+            "sale_start_date": "1594263600",
+            "sale_end_date": "1612234800",
+            "custom_text_1": "1",
+            "saving_percentage": "17% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-the-peoples-cafe-rp-50000-35662/",
+            "app_url": "tokopedia://deals/voucher-the-peoples-cafe-rp-50000-35662",
+            "brand": {
+              "id": "5870",
+              "title": "The Peoples Cafe",
+              "seo_url": "the-peoples-cafe-5870",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2020/7/10/51998951/51998951_95d935b4-9f52-4c85-8db7-a867a70491cd.jpg"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              }
+            ]
+          },
+          {
+            "id": "35672",
+            "brand_id": "5872",
+            "display_name": "Voucher Pizza e Birra Rp 250.000",
+            "seo_url": "voucher-pizza-e-birra-rp-250000-35672",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2020/7/11/51998951/51998951_a9c2c358-28a7-4333-a895-81022d4e675b.jpg",
+            "mrp": "250000",
+            "sales_price": "207500",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1594263600",
+            "max_end_date": "1612234800",
+            "sale_start_date": "1594263600",
+            "sale_end_date": "1612234800",
+            "custom_text_1": "1",
+            "saving_percentage": "17% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-pizza-e-birra-rp-250000-35672/",
+            "app_url": "tokopedia://deals/voucher-pizza-e-birra-rp-250000-35672",
+            "brand": {
+              "id": "5872",
+              "title": "Pizza e Birra",
+              "seo_url": "pizza-e-birra-5872",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2020/7/10/51998951/51998951_cbd009f2-88c4-413f-955e-d2ae414947ea.jpg"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              },
+              {
+                "id": "45",
+                "title": "Koleksi voucher terbaru",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/5/6/2892668/2892668_b880c92d-97a7-4bdd-bf03-35194bbe1e47.png",
+                "url": "delivery"
+              }
+            ]
+          },
+          {
+            "id": "21211",
+            "brand_id": "4040",
+            "display_name": "Voucher Guess Rp 500.000",
+            "seo_url": "voucher-guess-rp-500000-21211",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/2892668/2892668_0730bad3-ce5a-4197-a0d1-01390255bde6.jpg",
+            "mrp": "500000",
+            "sales_price": "460000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1625677140",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1625677140",
+            "custom_text_1": "1",
+            "saving_percentage": "8% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-guess-rp-500000-21211/",
+            "app_url": "tokopedia://deals/voucher-guess-rp-500000-21211",
+            "brand": {
+              "id": "4040",
+              "title": "Guess",
+              "seo_url": "guess-4040",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/15/2892668/2892668_0f9ff1ab-f7a4-456b-8633-595df7f87025.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "21179",
+            "brand_id": "4033",
+            "display_name": "Voucher Casio Rp 250.000",
+            "seo_url": "voucher-casio-rp-250000-21179",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/59253604/59253604_b6f142d9-10c8-4402-8787-16d360eaa9f5.jpg",
+            "mrp": "250000",
+            "sales_price": "230000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1625677140",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1625677140",
+            "custom_text_1": "1",
+            "saving_percentage": "8% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-casio-rp-250000-21179/",
+            "app_url": "tokopedia://deals/voucher-casio-rp-250000-21179",
+            "brand": {
+              "id": "4033",
+              "title": "Casio",
+              "seo_url": "casio-4033",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/15/59253604/59253604_6e72af09-5ca6-4c03-a1c0-b2a585a6cc01.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "21278",
+            "brand_id": "4062",
+            "display_name": "Voucher Watch Engine Rp 500.000",
+            "seo_url": "voucher-watch-engine-rp-500000-21278",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/2892668/2892668_efc03aaf-6a79-4dc3-aefc-5a6e9b26e462.jpg",
+            "mrp": "500000",
+            "sales_price": "470000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1625677140",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1625677140",
+            "custom_text_1": "1",
+            "saving_percentage": "6% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-watch-engine-rp-500000-21278/",
+            "app_url": "tokopedia://deals/voucher-watch-engine-rp-500000-21278",
+            "brand": {
+              "id": "4062",
+              "title": "Watch Engine",
+              "seo_url": "watch-engine-4062",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/17/59253604/59253604_aac28aa5-5993-43b3-a2dc-974365c1ffa0.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "21277",
+            "brand_id": "4062",
+            "display_name": "Voucher Watch Engine Rp 250.000",
+            "seo_url": "voucher-watch-engine-rp-250000-21277",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/2892668/2892668_efc03aaf-6a79-4dc3-aefc-5a6e9b26e462.jpg",
+            "mrp": "250000",
+            "sales_price": "235000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1625677140",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1625677140",
+            "custom_text_1": "1",
+            "saving_percentage": "6% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-watch-engine-rp-250000-21277/",
+            "app_url": "tokopedia://deals/voucher-watch-engine-rp-250000-21277",
+            "brand": {
+              "id": "4062",
+              "title": "Watch Engine",
+              "seo_url": "watch-engine-4062",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/17/59253604/59253604_aac28aa5-5993-43b3-a2dc-974365c1ffa0.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "21186",
+            "brand_id": "4035",
+            "display_name": "Voucher VNC Rp 500.000",
+            "seo_url": "voucher-vnc-rp-500000-21186",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/18/59253604/59253604_5063f1c8-8fc8-4e66-9d97-38aa731c4948.jpg",
+            "mrp": "500000",
+            "sales_price": "460000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1625677140",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1625677140",
+            "custom_text_1": "1",
+            "saving_percentage": "8% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-vnc-rp-500000-21186/",
+            "app_url": "tokopedia://deals/voucher-vnc-rp-500000-21186",
+            "brand": {
+              "id": "4035",
+              "title": "VNC",
+              "seo_url": "vnc-4035",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/15/59253604/59253604_b3e7e0c2-309e-48e4-be89-82b4e063fafa.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "16950",
+            "brand_id": "3535",
+            "display_name": "Voucher H&M Rp 100.000",
+            "seo_url": "voucher-hm-rp-100000-16950",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/4/15/2892668/2892668_79dda45f-6787-4ef2-81aa-61fadbb88412.jpg",
+            "mrp": "100000",
+            "sales_price": "86000",
+            "display_tags": "",
+            "priority": "1000",
+            "min_start_date": "1555297200",
+            "max_end_date": "1657213200",
+            "sale_start_date": "1555297200",
+            "sale_end_date": "1657213200",
+            "custom_text_1": "1",
+            "saving_percentage": "14% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-hm-rp-100000-16950/",
+            "app_url": "tokopedia://deals/voucher-hm-rp-100000-16950",
+            "brand": {
+              "id": "3535",
+              "title": "H&M",
+              "seo_url": "HnM-3535",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/4/15/2892668/2892668_208e3327-2a5d-415e-98b9-fd1d3e03fa81.png"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              },
+              {
+                "id": "38",
+                "title": "Style baru tiap minggu",
+                "media_url": "",
+                "url": "fashion-deals"
+              }
+            ]
+          },
+          {
+            "id": "21307",
+            "brand_id": "4053",
+            "display_name": "Voucher Ace Hardware Rp 100.000",
+            "seo_url": "voucher-ace-hardware-rp-100000-21307",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/15/2892668/2892668_c0c1dba5-e174-4de0-a284-dab3fcc0532a.jpg",
+            "mrp": "100000",
+            "sales_price": "97000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571626800",
+            "max_end_date": "1599584400",
+            "sale_start_date": "1571626800",
+            "sale_end_date": "1599584400",
+            "custom_text_1": "1",
+            "saving_percentage": "3% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-ace-hardware-rp-100000-21307/",
+            "app_url": "tokopedia://deals/voucher-ace-hardware-rp-100000-21307",
+            "brand": {
+              "id": "4053",
+              "title": "Ace Hardware",
+              "seo_url": "ace-hardware-4053",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/11/15/59253604/59253604_85432c38-161f-4a74-a09f-b81bceb71957.png"
+            },
+            "category": [
+              {
+                "id": "22",
+                "title": "Belanja",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_e9286600-af6b-4fc7-a01c-c389e121ad83.png",
+                "url": "lainnya"
+              }
+            ]
+          },
+          {
+            "id": "21208",
+            "brand_id": "4055",
+            "display_name": "Voucher The Little Things She Needs Rp 50.000",
+            "seo_url": "voucher-the-little-things-she-needs-rp-50000-21208",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/15/2892668/2892668_bdb38a44-fd02-4ad5-992f-57c90170d7ce.jpg",
+            "mrp": "50000",
+            "sales_price": "47500",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1571194800",
+            "max_end_date": "1609433940",
+            "sale_start_date": "1571194800",
+            "sale_end_date": "1609433940",
+            "custom_text_1": "1",
+            "saving_percentage": "5% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-the-little-things-she-needs-rp-50000-21208/",
+            "app_url": "tokopedia://deals/voucher-the-little-things-she-needs-rp-50000-21208",
+            "brand": {
+              "id": "4055",
+              "title": "The Little Things She Needs",
+              "seo_url": "the-little-things-she-needs-4055",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/10/15/2892668/2892668_bdb38a44-fd02-4ad5-992f-57c90170d7ce.jpg"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              }
+            ]
+          },
+          {
+            "id": "19166",
+            "brand_id": "3831",
+            "display_name": "Voucher Coconut Island Rp 200.000",
+            "seo_url": "voucher-coconut-island-rp-200000-19166",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/7/26/2892668/2892668_4996f5b4-e179-4f6e-95f3-ab524feae193.jpg",
+            "mrp": "200000",
+            "sales_price": "180000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1564023600",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1564023600",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "10% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-coconut-island-rp-200000-19166/",
+            "app_url": "tokopedia://deals/voucher-coconut-island-rp-200000-19166",
+            "brand": {
+              "id": "3831",
+              "title": "Coconut Island",
+              "seo_url": "coconut-island-3831",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/c162478dd03665800f5d91ac1b90aecc31b74c4d/store/fill/200/200/93a96ba449e78f8e64357484f6af821ef4d40c545a17a90267133936e12e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "39",
+                "title": "Fashion",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/9/11/2892668/2892668_b73b0fa6-024c-4750-8bca-ffaf1c3f32ba.png",
+                "url": "fashion"
+              },
+              {
+                "id": "38",
+                "title": "Style baru tiap minggu",
+                "media_url": "",
+                "url": "fashion-deals"
+              }
+            ]
+          },
+          {
+            "id": "19783",
+            "brand_id": "3855",
+            "display_name": "Voucher MAGAL Korean Bbq Rp 250.000",
+            "seo_url": "voucher-magal-korean-bbq-rp-250000-19783",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/8/21/2892668/2892668_18e5cc78-c8e1-4726-a6e3-f4822b370dff.jpg",
+            "mrp": "250000",
+            "sales_price": "235000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1566788400",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1566788400",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "6% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-magal-korean-bbq-rp-250000-19783/",
+            "app_url": "tokopedia://deals/voucher-magal-korean-bbq-rp-250000-19783",
+            "brand": {
+              "id": "3855",
+              "title": "Magal",
+              "seo_url": "magal-3855",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/8/7/2892668/2892668_cc75ae7e-cbdb-4bc8-9e14-40e5337c489b.png"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              },
+              {
+                "id": "29",
+                "title": "Home Widget",
+                "media_url": "",
+                "url": "homewidget"
+              }
+            ]
+          },
+          {
+            "id": "20973",
+            "brand_id": "4005",
+            "display_name": "Voucher Skin Ethica - Facial Glowing Rp 750.000",
+            "seo_url": "voucher-skin-ethica---facial-glowing-rp-750000-20973",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/10/8/59253604/59253604_c975d018-02b2-414c-8467-ad52dd6d6412.jpg",
+            "mrp": "750000",
+            "sales_price": "175000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1570503600",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1570503600",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "76% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-skin-ethica---facial-glowing-rp-750000-20973/",
+            "app_url": "tokopedia://deals/voucher-skin-ethica---facial-glowing-rp-750000-20973",
+            "brand": {
+              "id": "4005",
+              "title": "Skin Ethica",
+              "seo_url": "skin-ethica-4005",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/2da3cf1049d3b7df46d6387bb61f57eaa25a7f0d/store/fill/200/200/7a273810d87ed748c123dda9f248905a3e5b7063691075c1419b0d9148eb/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "20",
+                "title": "Kecantikan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_7f6fd279-74a5-4200-bd2b-1c39ea7273c6.png",
+                "url": "kecantikan"
+              }
+            ]
+          },
+          {
+            "id": "16084",
+            "brand_id": "3356",
+            "display_name": "Voucher Baso Malang Karapitan Rp 200.000",
+            "seo_url": "voucher-baso-malang-karapitan-rp-200000-16084",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/1/16/2892668/2892668_8d3a1b54-d302-4bbe-b7cc-dc37fc9258df.jpg",
+            "mrp": "200000",
+            "sales_price": "177500",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1574305200",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1574305200",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "11% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-baso-malang-karapitan-rp-200000-16084/",
+            "app_url": "tokopedia://deals/voucher-baso-malang-karapitan-rp-200000-16084",
+            "brand": {
+              "id": "3356",
+              "title": "Baso Malang Karapitan",
+              "seo_url": "bmk-3356",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/11/16/2892668/2892668_e1070851-e48a-45cd-b8e7-c8b52ed6c65f.png"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              }
+            ]
+          },
+          {
+            "id": "16123",
+            "brand_id": "3370",
+            "display_name": "Voucher Excelso Coffee Rp 50.000",
+            "seo_url": "voucher-excelso-coffee-rp-50000-16123",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2018/12/7/2892668/2892668_84ac7303-4416-4811-9ff5-acc5751fce53.jpg",
+            "mrp": "50000",
+            "sales_price": "45000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1553698800",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1553698800",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "10% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-excelso-coffee-rp-50000-16123/",
+            "app_url": "tokopedia://deals/voucher-excelso-coffee-rp-50000-16123",
+            "brand": {
+              "id": "3370",
+              "title": "Excelso Coffee",
+              "seo_url": "excelso-coffee-3370",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2018/10/15/2892668/2892668_2e7f93c6-1a26-49ad-9190-777d05fa6c6b.png"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              }
+            ]
+          },
+          {
+            "id": "17765",
+            "brand_id": "3650",
+            "display_name": "Voucher Imperial Kitchen & Dimsum Rp 200.000",
+            "seo_url": "voucher-imperial-kitchen-dimsum-rp-200000-17765",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2019/4/30/2892668/2892668_a46037bf-c1e8-4288-a7ba-902fce992af1.jpg",
+            "mrp": "200000",
+            "sales_price": "177000",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1592449200",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1592449200",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "11% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-imperial-kitchen-dimsum-rp-200000-17765/",
+            "app_url": "tokopedia://deals/voucher-imperial-kitchen-dimsum-rp-200000-17765",
+            "brand": {
+              "id": "3650",
+              "title": "Imperial Kitchen & Dimsum",
+              "seo_url": "imperial-kitchen-dimsum-3650",
+              "featured_thumbnail_image": "https://ecs7.tokopedia.net/img/banner/2019/4/30/2892668/2892668_23f32137-0f37-4834-bd8e-f9a486308478.png"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              },
+              {
+                "id": "32",
+                "title": "Makanan & Minuman Manis",
+                "media_url": "",
+                "url": "Makanan & Minuman Manis"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              }
+            ]
+          },
+          {
+            "id": "8066",
+            "brand_id": "388",
+            "display_name": "Voucher Mama Malaka Rp 50.000",
+            "seo_url": "voucher-mama-malaka-rp-50000-8066",
+            "thumbnail_app": "https://ecs7.tokopedia.net/img/banner/2018/12/7/2892668/2892668_76f30530-e9d6-40e1-b6ad-cddf481fafde.jpg",
+            "mrp": "50000",
+            "sales_price": "45000",
+            "display_tags": " ",
+            "priority": "0",
+            "min_start_date": "1509202800",
+            "max_end_date": "1598374800",
+            "sale_start_date": "1507532400",
+            "sale_end_date": "1598374800",
+            "custom_text_1": "1",
+            "saving_percentage": "10% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/voucher-mama-malaka-rp-50000-8066/",
+            "app_url": "tokopedia://deals/voucher-mama-malaka-rp-50000-8066",
+            "brand": {
+              "id": "388",
+              "title": "Mama Malaka",
+              "seo_url": "mama-malaka-388",
+              "featured_thumbnail_image": "https://image-assets.access.myfave.gdn/attachments/488b932cec202ccd0c72bb9c13aedf71130a9a99/store/fill/200/200/571d28a4d557208a191d59b6b87fc8f80c200843097001965d063d6c7507/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "25",
+                "title": "Makanan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_5c68e70e-19e5-4004-bae9-295bc701b0de.png",
+                "url": "makanan"
+              },
+              {
+                "id": "27",
+                "title": "Voucher populer",
+                "media_url": "",
+                "url": "topdeals"
+              }
+            ]
+          },
+          {
+            "id": "31478",
+            "brand_id": "1611",
+            "display_name": "1x Premium Facial Duolift Sequential",
+            "seo_url": "1x-premium-facial-duolift-sequential-31478",
+            "thumbnail_app": "https://fave-production-main.myfave.gdn/attachments/a3067678c0fd0f28e2a428846c8672679d1bf2b8/store/fill/400/250/8f294c896e6a9d4b743961c64547fced4b8e815eff6007eed61bdfdbdcd9/activity_image.jpg",
+            "mrp": "1500000",
+            "sales_price": "770721",
+            "display_tags": "",
+            "priority": "0",
+            "min_start_date": "1595869817",
+            "max_end_date": "1601135999",
+            "sale_start_date": "1595869817",
+            "sale_end_date": "1601135999",
+            "custom_text_1": "1",
+            "saving_percentage": "48% OFF",
+            "web_url": "https://www.tokopedia.com/deals/i/1x-premium-facial-duolift-sequential-31478/",
+            "app_url": "tokopedia://deals/1x-premium-facial-duolift-sequential-31478",
+            "brand": {
+              "id": "1611",
+              "title": "Impressions",
+              "seo_url": "impressions-1611",
+              "featured_thumbnail_image": "https://fave-production-main.myfave.gdn/attachments/22cfd7d2803adb1aec31a671f1ce910dabc8eb2a/store/fill/200/200/9e2e72829813779abfdc41bda34cc135a4ca421a909d31d5a3f7add6832e/logo.jpg"
+            },
+            "category": [
+              {
+                "id": "20",
+                "title": "Kecantikan",
+                "media_url": "https://ecs7.tokopedia.net/img/banner/2019/3/28/47197054/47197054_7f6fd279-74a5-4200-bd2b-1c39ea7273c6.png",
+                "url": "kecantikan"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

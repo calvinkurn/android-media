@@ -22,6 +22,8 @@
         android:layout_alignEnd="@id/iv_dynamic"
         android:layout_alignRight="@id/iv_dynamic"
         android:gravity="center"
+        android:layout_marginRight="@dimen/dp_2"
+        android:layout_marginTop="@dimen/dp_2"
         android:textSize="@dimen/tp_text_size_xsmall"
         android:visibility="gone"
         app:notificationColor="color_primary"

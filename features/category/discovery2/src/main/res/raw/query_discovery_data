@@ -4,7 +4,6 @@ query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: Str
       title
       components
      page_info {
-            Tags
             Id
             Identifier
             Name
@@ -12,6 +11,9 @@ query DiscoPageLayoutQuery($identifier: String!, $version: String!, $device: Str
             Type
             share_config
             campaign_code
+            search_applink
+            search_title
+            show_choose_address
           }
       additional_info
     }

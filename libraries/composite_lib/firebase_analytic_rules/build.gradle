@@ -35,7 +35,7 @@ repositories {
 project.ext {
     artifactId = 'firebase'
     groupId = 'com.tokopedia.analytic.rules'
-    versionName = "0.0.2"
+    versionName = "0.0.5"
     artifactName = "firebase_analytic_rules"
 }
 

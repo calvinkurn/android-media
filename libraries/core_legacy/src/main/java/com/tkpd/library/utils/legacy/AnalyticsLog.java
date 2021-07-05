@@ -49,16 +49,16 @@ public class AnalyticsLog {
             TrackApp.getInstance().getGTM().sendGeneralEvent(
                     EVENT_CLICK_LOGOUT,
                     CATEGORY_FORCE_LOGOUT,
-                    baseUrl,
-                    "get invalid request"
+                    "get invalid request",
+                    baseUrl
             );
         } else if (isRequestDenied) {
             TrackApp.getInstance().getGTM().sendGeneralEvent(
                     EVENT_CLICK_LOGOUT,
                     CATEGORY_FORCE_LOGOUT,
-                    baseUrl,
-                    "request denied"
-            );
+                    "request denied",
+                    baseUrl
+                    );
         }
     }
 
@@ -85,8 +85,8 @@ public class AnalyticsLog {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_LOGOUT,
                 CATEGORY_FORCE_LOGOUT,
-                baseUrl,
-                "get invalid token"
+                "get invalid token",
+                baseUrl
         );
     }
 

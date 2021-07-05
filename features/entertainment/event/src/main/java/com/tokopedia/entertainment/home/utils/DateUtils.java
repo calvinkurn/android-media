@@ -2,13 +2,22 @@ package com.tokopedia.entertainment.home.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Author errysuprayogi on 07,February,2020
  */
 public class DateUtils {
+    public static final String DEFAULT_VIEW_FORMAT = "dd MMM yyyy";
+    public static final int SECOND_IN_MILIS = 1000;
 
+    public static String dateToString(Date dateToBeFormatted, String outputFormat) {
+        try {
+            SimpleDateFormat newsdf = new SimpleDateFormat(outputFormat);
+            return newsdf.format(dateToBeFormatted);
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
     public static String formatedSchedule(String schedule) {
         try {
@@ -22,7 +31,7 @@ public class DateUtils {
                 date = sdf.parse(schedule);
             }
             return newsdf.format(date).toUpperCase();
-        }catch (Exception e){
+        } catch (Exception e) {
             return "";
         }
     }

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarVideoPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance">
+
+        <TextView
+            android:id="@+id/btnDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            style="@style/TextView.Title.Green"
+            android:text="@string/label_next_short"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_14"
+            android:layout_marginEnd="@dimen/dp_14"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_below="@+id/toolbarVideoPicker"
+        android:id="@+id/containerPicker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpVideoPicker"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tabPicker"/>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/VideoPickerTab"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@null"
+            app:tabMinWidth="@dimen/image_picker_tab_min_width"
+            app:tabMode="fixed"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutPreview"
+        android:layout_below="@+id/toolbarVideoPicker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+            android:id="@+id/videoPreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:onMeasure="false" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_100"
+            android:background="@drawable/bg_dark_shadow_270"
+            android:layout_alignParentBottom="true"/>
+
+        <Button
+            android:id="@+id/btnDeleteVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_32"
+            android:textSize="@dimen/sp_16"
+            android:background="@null"
+            android:text="@string/vidpick_btn_delete"
+            android:textAllCaps="false"
+            android:focusable="true"
+            android:clickable="true"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:foreground="?selectableItemBackground"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -32,6 +32,13 @@ class ChecklistWidget: BaseCustomView {
             checklistClickListener.onChecklistClick(element)
         }
     }
+
+    fun updateChecklist(element: ChecklistUiModel, checklistClickListener: ChecklistClickListener) {
+        this.checklist.isChecked = element.isSelected
+        checklist.setOnClickListener {
+            checklistClickListener.onChecklistClick(element)
+        }
+    }
 }
 
 interface ChecklistClickListener {

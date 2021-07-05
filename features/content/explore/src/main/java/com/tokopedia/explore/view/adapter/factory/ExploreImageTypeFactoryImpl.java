@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.explore.view.adapter.viewholder.ExploreImageViewHolder;
 import com.tokopedia.explore.view.listener.ContentExploreContract;
-import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel;
+import com.tokopedia.explore.view.uimodel.ExploreImageViewModel;
 
 /**
  * @author by milhamj on 20/02/18.

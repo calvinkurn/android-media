@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:angle="-90"
+        android:centerColor="@color/play_widget_dms_small_overlay_gradient_center"
+        android:centerY="72%"
+        android:endColor="@color/play_widget_dms_small_overlay_gradient_bottom"
+        android:startColor="@color/play_widget_dms_small_overlay_gradient_top"
+        />
+</shape>

@@ -11,7 +11,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/Neutral_N50"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -21,7 +21,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginStart="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/Neutral_N50"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="@id/talk_inbox_shimmer_thumbnail"
         app:layout_constraintStart_toEndOf="@id/talk_inbox_shimmer_thumbnail"/>
 
@@ -32,7 +32,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/Neutral_N50"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_title"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
@@ -43,7 +43,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
-        app:custom_color="@color/Neutral_N50"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_shimmer_subtitle"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
 
@@ -53,7 +53,7 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
-        app:custom_color="@color/Neutral_N50"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/talk_inbox_body"
         app:layout_constraintStart_toStartOf="@id/talk_inbox_shimmer_title"/>
 

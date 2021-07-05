@@ -3,7 +3,7 @@ package com.tokopedia.thankyou_native.recommendationdigital.analytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
+import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -23,17 +23,18 @@ class DigitalRecommendationAnalytics @Inject constructor(
 
 
     fun sendDigitalRecommendationItemDisplayed(trackingQueue: TrackingQueue?,
-                                               recommendationItem: RecommendationsItem,
-                                               position: Int, paymentId: String) {
+                                               recommendationItem: RecommendationItem,
+                                               position: Int, paymentId: String, profileID: String) {
         trackingQueue?.apply {
             val data: MutableMap<String, Any> = mutableMapOf(
                     KEY_EVENT to EVENT_PRODUCT_VIEW,
                     KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                     KEY_EVENT_ACTION to EVENT_ACTION_PRODUCT_VIEW,
+                    KEY_PROFILE_ID to profileID,
                     KEY_USER_ID to userSession.get().userId,
                     KEY_PAYMENT_ID to paymentId,
                     KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                    KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
+                    KEY_EVENT_LABEL to recommendationItem.trackingData.itemType + " - " + recommendationItem.trackingData.categoryName + " - " + (position + 1),
                     KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
             putEETracking(data as HashMap<String, Any>)
         }
@@ -41,8 +42,8 @@ class DigitalRecommendationAnalytics @Inject constructor(
     }
 
 
-    fun sendDigitalRecommendationItemClick(recommendationItem: RecommendationsItem,
-                                           position: Int, paymentId: String) {
+    fun sendDigitalRecommendationItemClick(recommendationItem: RecommendationItem,
+                                           position: Int, paymentId: String, profileID: String) {
 
         CoroutineScope(mainDispatcher.get()).launchCatchError(
                 block = {
@@ -51,10 +52,11 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_EVENT to EVENT_PRODUCT_CLICK,
                                 KEY_EVENT_CATEGORY to EVENT_CATEGORY_ORDER_COMPLETE,
                                 KEY_EVENT_ACTION to EVENT_ACTION_CLICK_PRODUCT,
+                                KEY_PROFILE_ID to profileID,
                                 KEY_USER_ID to userSession.get().userId,
                                 KEY_PAYMENT_ID to paymentId,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                                KEY_EVENT_LABEL to recommendationItem.type + " - " + recommendationItem.categoryName + " - " + (position + 1),
+                                KEY_EVENT_LABEL to recommendationItem.trackingData.itemType + " - " + recommendationItem.trackingData.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }
@@ -64,7 +66,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
         )
     }
 
-    private fun getProductViewECommerceData(recommendationItem: RecommendationsItem,
+    private fun getProductViewECommerceData(recommendationItem: RecommendationItem,
                                             position: Int): Any {
         return mutableMapOf(
                 KEY_CURRENCY_CODE to IDR_CURRENCY,
@@ -72,7 +74,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
         )
     }
 
-    private fun getProductClickECommerceData(recommendationItem: RecommendationsItem,
+    private fun getProductClickECommerceData(recommendationItem: RecommendationItem,
                                              position: Int): MutableMap<String, Any> {
         return mutableMapOf(
                 KEY_CLICK to mutableMapOf(
@@ -82,15 +84,15 @@ class DigitalRecommendationAnalytics @Inject constructor(
         )
     }
 
-    private fun getProductDataMap(recommendationItem: RecommendationsItem,
+    private fun getProductDataMap(recommendationItem: RecommendationItem,
                                   position: Int): MutableMap<String, Any?> {
         return mutableMapOf(
-                KEY_PRODUCT_NAME to recommendationItem.categoryName,
-                KEY_PRODUCT_ID to recommendationItem.productId,
-                KEY_PRODUCT_PRICE to recommendationItem.productPrice.toString(),
+                KEY_PRODUCT_NAME to recommendationItem.subtitle,
+                KEY_PRODUCT_ID to recommendationItem.trackingData.productID,
+                KEY_PRODUCT_PRICE to 0,
                 KEY_PRODUCT_BRAND to "",
-                KEY_PRODUCT_CATEGORY to recommendationItem.categoryName,
-                KEY_PRODUCT_VARIANT to "",
+                KEY_PRODUCT_CATEGORY to recommendationItem.trackingData.categoryName,
+                KEY_PRODUCT_VARIANT to recommendationItem.trackingData.itemType,
                 KEY_LIST to EVENT_LIST_RECOMMENDATION_ORDER_COMPLETE,
                 KEY_PRODUCT_POSITION to (position + 1)
         )
@@ -102,6 +104,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
         const val KEY_EVENT_CATEGORY = "eventCategory"
         const val KEY_EVENT_ACTION = "eventAction"
         const val KEY_EVENT_LABEL = "eventLabel"
+        const val KEY_PROFILE_ID = "profileId"
         const val KEY_E_COMMERCE = "ecommerce"
 
         const val KEY_CLICK = "click"

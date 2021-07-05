@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_search"
     android:layout_width="match_parent"
-    android:background="@drawable/bg_corner"
+    android:background="@drawable/toolbar_bg_corner"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="@dimen/layout_lvl1"
@@ -31,7 +31,7 @@
         android:enabled="false"
         android:textSize="@dimen/sp_16"
         android:maxLines="1"
-        android:textColorHint="@android:color/darker_gray"
+        android:textColorHint="@color/Unify_N200"
         android:background="@null"
         android:layout_weight="1"/>
 

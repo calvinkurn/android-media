@@ -1,43 +1,42 @@
-package com.tokopedia.digital.home.presentation.util
+package com.tokopedia.digital.home.old.presentation.util
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.CATEGORY
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.CREATIVE
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.CREATIVE_URL
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.ECOMMERCE
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.ID
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.NAME
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.POSITION
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.PROMOTIONS
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.PROMO_CODE
-import com.tokopedia.digital.home.presentation.util.DigitaHomepageTrackingEEConstant.PROMO_ID
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.ALL_BANNERS_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.BACK_BUTTON_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.BANNER_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.MORE_INFO_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_BOX_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingEventNameConstant.CLICK_TOPUP_BILLS
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingEventNameConstant.PROMO_CLICK
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingEventNameConstant.PROMO_VIEW
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingLabelConstant.FAVOURITE_NUMBER
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingLabelConstant.HELP
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingLabelConstant.LANGGANAN
-import com.tokopedia.digital.home.presentation.util.DigitalHomepageTrackingLabelConstant.ORDER_LIST
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
+import com.tokopedia.digital.home.old.model.*
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.CATEGORY
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.CREATIVE
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.CREATIVE_URL
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.ECOMMERCE
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.ID
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.NAME
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.POSITION
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.PROMOTIONS
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.PROMO_CODE
+import com.tokopedia.digital.home.old.presentation.util.DigitaHomepageTrackingEEConstant.PROMO_ID
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.ALL_BANNERS_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.BACK_BUTTON_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.BANNER_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.BANNER_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.DYNAMIC_ICON_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.MORE_INFO_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_BOX_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SEARCH_RESULT_PAGE_ICON_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBHOME_WIDGET_IMPRESSION
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SUBSCRIPTION_GUIDE_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingCategoryConstant.DIGITAL_HOMEPAGE_CATEGORY
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingEventNameConstant.CLICK_TOPUP_BILLS
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingEventNameConstant.PROMO_CLICK
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingEventNameConstant.PROMO_VIEW
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingLabelConstant.FAVOURITE_NUMBER
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingLabelConstant.HELP
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingLabelConstant.LANGGANAN
+import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingLabelConstant.ORDER_LIST
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -318,6 +317,31 @@ class DigitalHomeTrackingUtil {
                         ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, categories))
                 ))
 
+    }
+
+    fun sliceOpenApp(userId: String){
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                TrackAppUtils.EVENT, "clickGAMain",
+                TrackAppUtils.EVENT_CATEGORY, "ga main app",
+                TrackAppUtils.EVENT_ACTION, "click open app button",
+                TrackAppUtils.EVENT_LABEL, "",
+                BUSINESS_UNIT, "recharge",
+                CURRENT_SITE, "tokopediadigital",
+                USER_ID, userId
+        ))
+    }
+
+    fun onOpenPageFromSlice() {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                RechargeAnalytics.EVENT_KEY, "openScreen",
+                RechargeAnalytics.EVENT_SCREEN_NAME, "recharge homepage - from voice search - mainapp"
+        ))
+    }
+
+    companion object{
+        const val USER_ID = "userId"
+        const val CURRENT_SITE = "currentSite"
+        const val BUSINESS_UNIT = "businessUnit"
     }
 
 }

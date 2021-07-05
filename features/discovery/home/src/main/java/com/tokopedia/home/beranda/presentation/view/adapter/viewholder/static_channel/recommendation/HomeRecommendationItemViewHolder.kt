@@ -20,13 +20,14 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_feed_item
+        const val PM_PRO_TITLE = "Power Merchant Pro"
     }
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
     private fun setLayout(element: HomeRecommendationItemDataModel, listener: HomeRecommendationListener){
         val productCardModelLabelGroupList = element.product.labelGroup.map {
-            ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title)
+            ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title, imageUrl = it.imageUrl)
         }
 
         productCardView?.run{
@@ -38,8 +39,9 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                             productImageUrl = element.product.imageUrl,
                             isTopAds = element.product.isTopads,
                             discountPercentage = if (element.product.discountPercentage > 0) "${element.product.discountPercentage}%" else "",
-                            reviewCount = element.product.countReview,
                             ratingCount = element.product.rating,
+                            reviewCount = element.product.countReview,
+                            countSoldRating = element.product.ratingFloat,
                             shopLocation = element.product.shop.city,
                             isWishlistVisible = true,
                             isWishlisted = element.product.isWishlist,
@@ -56,6 +58,11 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
+                    //if pm pro
+                    val isPmPro = element.product.badges.find { it.title == PM_PRO_TITLE } != null
+                    if (isPmPro) {
+                        listener.onProductWithPmProImpressed(productCardView.getShopBadgeView(), adapterPosition)
+                    }
                     listener.onProductImpression(element, adapterPosition)
                 }
             })

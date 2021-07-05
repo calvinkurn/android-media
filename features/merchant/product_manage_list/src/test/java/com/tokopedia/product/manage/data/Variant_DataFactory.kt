@@ -1,14 +1,15 @@
 package com.tokopedia.product.manage.data
 
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.GetProductV3
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Option
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Picture
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Product
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Selection
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Variant
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
+import com.tokopedia.product.manage.common.feature.variant.data.model.Option
+import com.tokopedia.product.manage.common.feature.variant.data.model.Picture
+import com.tokopedia.product.manage.common.feature.variant.data.model.Product
+import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
+import com.tokopedia.product.manage.common.feature.variant.data.model.Variant
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 fun createProductVariantResponse(
@@ -19,9 +20,10 @@ fun createProductVariantResponse(
     price: Int = 100,
     sku: String = "sku",
     stock: Int = 0,
-    pictures: List<Picture> = emptyList()
+    pictures: List<Picture> = emptyList(),
+    isCampaign: Boolean = false
 ): Product {
-    return Product(productID, status, combination, isPrimary, price, sku, stock, pictures)
+    return Product(productID, status, combination, isPrimary, isCampaign, price, sku, stock, pictures)
 }
 
 fun createSelectionResponse(
@@ -44,25 +46,27 @@ fun createOptionResponse(
 }
 
 fun createProductVariant(
-    id: String = "1",
-    name: String = "",
-    status: ProductStatus = ProductStatus.ACTIVE,
-    combination: List<Int> = emptyList(),
-    isPrimary: Boolean = false,
-    price: Int = 100,
-    sku: String = "sku",
-    stock: Int = 0,
-    pictures: List<Picture> = emptyList(),
-    isAllStockEmpty: Boolean = true
+        id: String = "1",
+        name: String = "",
+        status: ProductStatus = ProductStatus.ACTIVE,
+        combination: List<Int> = emptyList(),
+        isPrimary: Boolean = false,
+        isCampaign: Boolean = false,
+        price: Int = 100,
+        sku: String = "sku",
+        stock: Int = 0,
+        pictures: List<Picture> = emptyList(),
+        isAllStockEmpty: Boolean = true,
+        access: ProductManageAccess = createShopOwnerAccess()
 ): ProductVariant {
-    return ProductVariant(id, name, status, combination, isPrimary, price, sku, stock, pictures, isAllStockEmpty)
+    return ProductVariant(id, name, status, combination, isPrimary, isCampaign, price, sku, stock, pictures, isAllStockEmpty, access)
 }
 
 fun createGetVariantResponse(
-    productName: String = "",
-    products: List<Product> = emptyList(),
-    selections: List<Selection> = emptyList(),
-    sizeCharts: List<Picture> = emptyList()
+        productName: String = "",
+        products: List<Product> = emptyList(),
+        selections: List<Selection> = emptyList(),
+        sizeCharts: List<Picture> = emptyList()
 ): GetProductVariantResponse {
     val variantResponse = Variant(products, selections, sizeCharts)
     val getProductV3Response = GetProductV3(productName, variantResponse)
@@ -70,11 +74,13 @@ fun createGetVariantResponse(
 }
 
 fun createEditVariantResult(
-    productId: String = "1",
-    productName: String = "Produk",
-    variants: List<ProductVariant> = emptyList(),
-    selections: List<Selection> = emptyList(),
-    sizeCharts: List<Picture> = emptyList()
+        productId: String = "1",
+        productName: String = "Produk",
+        variants: List<ProductVariant> = emptyList(),
+        selections: List<Selection> = emptyList(),
+        sizeCharts: List<Picture> = emptyList(),
+        editStock: Boolean = false,
+        editStatus: Boolean = false
 ): EditVariantResult {
-    return EditVariantResult(productId, productName, variants, selections, sizeCharts)
+    return EditVariantResult(productId, productName, variants, selections, sizeCharts, editStock, editStatus)
 }

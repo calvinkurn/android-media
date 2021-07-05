@@ -46,6 +46,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -59,6 +63,8 @@ android {
         exclude 'META-INF/LICENSE.md'
         exclude 'META-INF/LICENSE-notice.md'
         exclude('META-INF/androidx.*.version')
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
         exclude 'META-INF/**'
     }
     lintOptions {
@@ -69,6 +75,8 @@ android {
 }
 
 dependencies {
+
+    implementation platform(rootProject.ext.firebase.bom)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4
@@ -88,6 +96,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
@@ -103,11 +112,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.assertJCore
-    testImplementation rootProject.ext.testDependencies.powerMock
-    testImplementation rootProject.ext.testDependencies.powerMockJUnit
-    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.testDependencies.powerMockXstream
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
@@ -119,5 +123,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 
-    lintChecks project(rootProject.ext.libraries.lint)
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

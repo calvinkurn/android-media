@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.suggestion.singleline
 
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 
-fun SuggestionItem.convertSuggestionItemToSingleLineVisitableList(searchTerm: String, position: Int): SuggestionSingleLineViewModel {
-    val item = SuggestionSingleLineViewModel()
+fun SuggestionItem.convertToSingleLineVisitableList(searchTerm: String, position: Int, dimension90: String): SuggestionSingleLineDataDataView {
+    val item = SuggestionSingleLineDataDataView()
     item.template = this.template
     item.type = this.type
     item.applink = this.applink
@@ -19,5 +19,6 @@ fun SuggestionItem.convertSuggestionItemToSingleLineVisitableList(searchTerm: St
     item.searchTerm = searchTerm
     item.position = position
     item.trackingCode = this.tracking.code
+    item.dimension90 = dimension90
     return item
 }

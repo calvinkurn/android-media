@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <View
         android:id="@+id/vDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
     <TextView
         android:id="@+id/tvAddress"

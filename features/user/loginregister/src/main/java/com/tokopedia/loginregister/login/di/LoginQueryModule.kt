@@ -14,16 +14,8 @@ import dagger.multibindings.StringKey
  * ade.hadian@tokopedia.com
  */
 
-@LoginScope
 @Module
 class LoginQueryModule {
-
-    @LoginScope
-    @Provides
-    @IntoMap
-    @StringKey(LoginQueryConstant.QUERY_STATUS_PIN)
-    fun provideRawQueryStatusPin(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_status_pin)
 
     @LoginScope
     @Provides
@@ -35,8 +27,8 @@ class LoginQueryModule {
     @LoginScope
     @Provides
     @IntoMap
-    @StringKey(LoginQueryConstant.QUERY_VERIFY_FINGERPRINT)
-    fun provideRawQueryVerifyFingerprint(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_verify_fingerprint)
+    @StringKey(LoginQueryConstant.QUERY_REGISTER_PUSH_NOTIF)
+    fun provideRawQueryRegisterPushNotif(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_register_push_notif)
 
 }

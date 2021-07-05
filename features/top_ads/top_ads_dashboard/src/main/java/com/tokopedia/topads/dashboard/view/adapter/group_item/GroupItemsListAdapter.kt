@@ -3,28 +3,28 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder.GroupItemsViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsViewModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemModel
+import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsModel
 
 /**
  * Created by Pika on 2/6/20.
  */
 
-class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactory) : RecyclerView.Adapter<GroupItemsViewHolder<GroupItemsViewModel>>() {
+class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactory) : RecyclerView.Adapter<GroupItemsViewHolder<GroupItemsModel>>() {
 
 
-    var items: MutableList<GroupItemsViewModel> = mutableListOf()
+    var items: MutableList<GroupItemsModel> = mutableListOf()
     var countList: MutableList<CountDataItem> = mutableListOf()
     private var selectedMode = false
     private var fromSearch = false
     var statsData: MutableList<DataItem> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupItemsViewHolder<GroupItemsViewModel> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupItemsViewHolder<GroupItemsModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.holder(viewType, view) as GroupItemsViewHolder<GroupItemsViewModel>
+        return typeFactory.holder(viewType, view) as GroupItemsViewHolder<GroupItemsModel>
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -44,22 +44,22 @@ class GroupItemsListAdapter(private val typeFactory: GroupItemsAdapterTypeFactor
     private fun clearData(selectedMode: Boolean) {
         if (!selectedMode) {
             items.forEach {
-                if (it is GroupItemsItemViewModel) {
+                if (it is GroupItemsItemModel) {
                     it.isChecked = false
                 }
             }
         }
     }
 
-    override fun onBindViewHolder(holder: GroupItemsViewHolder<GroupItemsViewModel>, position: Int) {
+    override fun onBindViewHolder(holder: GroupItemsViewHolder<GroupItemsModel>, position: Int) {
 
         holder.bind(items[position], selectedMode, fromSearch, statsData, countList)
     }
 
-    fun getSelectedItems(): MutableList<GroupItemsItemViewModel> {
-        val list: MutableList<GroupItemsItemViewModel> = mutableListOf()
+    fun getSelectedItems(): MutableList<GroupItemsItemModel> {
+        val list: MutableList<GroupItemsItemModel> = mutableListOf()
         items.forEach {
-            if (it is GroupItemsItemViewModel) {
+            if (it is GroupItemsItemModel) {
                 if (it.isChecked) {
                     list.add(it)
 

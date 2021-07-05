@@ -3,10 +3,6 @@ package com.tokopedia.cart.domain.model.cartlist
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 @Parcelize
 data class CartItemData(
         var originData: OriginData? = null,
@@ -16,10 +12,6 @@ data class CartItemData(
         var isParentHasErrorOrWarning: Boolean = false,
         var isError: Boolean = false,
         var isWarning: Boolean = false,
-        var warningMessageTitle: String? = null,
-        var warningMessageDescription: String? = null,
-        var errorMessageTitle: String? = null,
-        var errorMessageDescription: String? = null,
         var isDisableAllProducts: Boolean = false,
         var isFulfillment: Boolean = false,
         var selectedUnavailableActionId: Int = 0,
@@ -28,7 +20,7 @@ data class CartItemData(
 
     @Parcelize
     data class OriginData(
-            var cartId: Int = 0,
+            var cartId: Long = 0,
             var parentId: String? = null,
             var productId: String? = null,
             var productName: String? = null,
@@ -40,11 +32,11 @@ data class CartItemData(
             var productInvenageByUserLastStockLessThan: Int = 0,
             var productInvenageByUserText: String? = null,
             var pricePlan: Double = 0.toDouble(),
-            var pricePlanInt: Int = 0,
+            var pricePlanInt: Long = 0,
             var priceCurrency: Int = 0,
             var priceFormatted: String? = null,
             var wholesalePriceFormatted: String? = null,
-            var wholesalePrice: Int = 0,
+            var wholesalePrice: Long = 0,
             var productImage: String? = null,
             var productVarianRemark: String? = null,
             var weightPlan: Double = 0.toDouble(),
@@ -68,29 +60,26 @@ data class CartItemData(
             var shopName: String? = null,
             var shopCity: String? = null,
             var shopId: String? = null,
-            var shopType: String? = null,
-            var isOfficialStore: Boolean = false,
-            var isGoldMerchant: Boolean = false,
+            var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
             var isWishlisted: Boolean = false,
             var originalQty: Int = 0,
-            var goldMerchantLogoUrl: String? = null,
-            var officialStoreLogoUrl: String? = null,
             var preOrderInfo: String? = null,
             var cartString: String? = null,
             var isCheckboxState: Boolean = false,
             var warehouseId: Int = 0,
             var promoCodes: String? = null,
             var promoDetails: String? = null,
-            var priceOriginal: Int = 0,
+            var priceOriginal: Long = 0,
+            var isFreeShippingExtra: Boolean = false,
             var isFreeShipping: Boolean = false,
-            var freeShippingBadgeUrl: String? = null,
             var listPromoCheckout: List<String> = emptyList(),
             var variant: String = "",
             var warningMessage: String = "", // eg : sisa 3
             var slashPriceLabel: String = "",
-            var initialPriceBeforeDrop: Int = 0,
+            var initialPriceBeforeDrop: Long = 0,
             var productInformation: List<String> = emptyList(),
-            var productAlertMessage: String = ""
+            var productAlertMessage: String = "",
+            var campaignId: Int = 0
     ) : Parcelable
 
     @Parcelize

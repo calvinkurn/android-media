@@ -8,7 +8,7 @@
         android:id="@+id/flightSearchShimmeringContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/spacing_lvl4"
@@ -43,9 +43,9 @@
 
         <View
             android:layout_width="1dp"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/layout_lvl0"
             android:layout_centerHorizontal="true"
-            android:background="@color/flight_dashed_line"
+            android:background="@color/Unify_N700_20"
             app:layout_constraintBottom_toTopOf="@+id/flightSearchLoaderDotArrivalTime"
             app:layout_constraintLeft_toLeftOf="@+id/flightSearchLoaderDotDepartureTime"
             app:layout_constraintRight_toRightOf="@+id/flightSearchLoaderDotDepartureTime"
@@ -94,7 +94,6 @@
             app:use_gradient="true" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:id="@+id/fightSearchLoaderStrikePrice"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -115,7 +114,6 @@
             app:use_gradient="true" />
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
-            android:id="@+id/flightSearchLoaderDetail"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -130,7 +128,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/flight_dashed_line"
+        android:background="@color/Unify_N700_20"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

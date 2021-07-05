@@ -1,18 +1,19 @@
 {
   "readme": "Search Product Global Nav Widget Tracking",
+  "mode": "exact",
   "query" : [
     {
       "event": "select_content",
       "eventCategory": "search result",
       "eventAction": "click",
-      "eventLabel": "{{keyword: .* - product: .* - applink: .*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": "keyword: .* - product: .* - applink: .*",
+      "sessionIris": ".*",
       "promotions": [
         {
-          "item_id": "{{.*}}",
+          "item_id": ".*",
           "item_name": "/search result - widget",
-          "creative_slot": "{{.*}}",
-          "creative_name": "{{.*}}"
+          "creative_slot": ".*",
+          "creative_name": ".*"
         }
       ]
     },
@@ -20,14 +21,14 @@
       "event": "view_item",
       "eventCategory": "search result",
       "eventAction": "impression widget - digital product",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
       "promotions": [
         {
-          "item_id": "{{.*}}",
+          "item_id": ".*",
           "item_name": "/search result - widget",
-          "creative_slot": "{{.*}}",
-          "creative_name": "{{.*}}"
+          "creative_slot": ".*",
+          "creative_name": ".*"
         }
       ]
     },
@@ -35,8 +36,8 @@
       "event": "clickSearchResult",
       "eventCategory": "search result",
       "eventAction": "click - lihat semua widget",
-      "eventLabel": "{{keyword: .* - product: .* - applink: .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .* - product: .* - applink: .*",
+      "sessionIris": ".*"
     }
   ]
 }

@@ -19,16 +19,16 @@ import com.tokopedia.topchat.R
 
 class FlexBoxChatLayout : FrameLayout {
 
+    var checkMark: ImageView? = null
+        private set
     private var message: TextView? = null
     private var status: LinearLayout? = null
-    private var checkMark: ImageView? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
     private var info: TextView? = null
 
-    private val defaultShowCheckMark = true
-
-    private var showCheckMark = defaultShowCheckMark
+    private var showCheckMark = DEFAULT_SHOW_CHECK_MARK
+    private var useMaxWidth = DEFAULT_USE_MAX_WIDTH
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -78,7 +78,8 @@ class FlexBoxChatLayout : FrameLayout {
                 0
         )?.apply {
             try {
-                showCheckMark = getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, defaultShowCheckMark)
+                showCheckMark = getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
+                useMaxWidth = getBoolean(R.styleable.FlexBoxChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }
@@ -108,7 +109,7 @@ class FlexBoxChatLayout : FrameLayout {
         var totalWidth = MeasureSpec.getSize(widthMeasureSpec)
         var totalHeight = MeasureSpec.getSize(heightMeasureSpec)
 
-        if (message == null || status == null || totalWidth <= 0) {
+        if (message == null || status == null || info == null || totalWidth <= 0) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
@@ -137,9 +138,9 @@ class FlexBoxChatLayout : FrameLayout {
         val infoHeight =
                 info!!.measuredHeight + infoLayout.topMargin + infoLayout.bottomMargin
 
-        val messageLineCount = message!!.lineCount
-        val lastLineWidth: Float = if (messageLineCount > 0) {
-            message!!.layout.getLineWidth(messageLineCount - 1)
+        val msgLineCount = message!!.lineCount
+        val msgLastLineWidth: Float = if (msgLineCount > 0) {
+            message!!.layout.getLineWidth(msgLineCount - 1)
         } else {
             0f
         }
@@ -150,7 +151,7 @@ class FlexBoxChatLayout : FrameLayout {
 
         if (messageWidth + statusWidth <= availableWidth) {
             totalWidth += statusWidth
-        } else if (lastLineWidth + statusWidth > availableWidth) {
+        } else if (msgLastLineWidth + statusWidth > availableWidth) {
             totalHeight += statusHeight
             isAddStatusHeight = true
         }
@@ -159,12 +160,30 @@ class FlexBoxChatLayout : FrameLayout {
             totalWidth += infoWidth
         }
 
-        if (infoHeight > 0 && info?.isVisible == true && !isAddStatusHeight) {
+        if (infoHeight > 0 && info?.isVisible == true) {
             totalHeight += infoHeight
+            if (isAddStatusHeight) {
+                totalHeight -= statusHeight
+            }
         }
 
-        if (totalWidth > maxWidth) {
+        if (totalWidth > maxWidth || useMaxWidth) {
             totalWidth = maxWidth
+        }
+
+        /**
+         * Calculate the info footer width to prevent overlap
+         * with [status]
+         */
+        val contentWidth = totalWidth - paddingLeft - paddingRight
+        if (msgLineCount > 1) {
+            val newInfoWidth = messageWidth - statusWidth
+            infoLayout.width = newInfoWidth
+            info?.layoutParams = infoLayout
+        } else if ((infoWidth + messageWidth + statusWidth) > contentWidth) {
+            val newInfoWidth = contentWidth - statusWidth
+            infoLayout.width = newInfoWidth
+            info?.layoutParams = infoLayout
         }
 
         setMeasuredDimension(totalWidth, totalHeight)
@@ -201,7 +220,13 @@ class FlexBoxChatLayout : FrameLayout {
         info?.hide()
     }
 
-    fun showInfo() {
+    fun showInfo(label: String) {
+        info?.text = label
         info?.show()
+    }
+
+    companion object {
+        private const val DEFAULT_USE_MAX_WIDTH = false
+        private const val DEFAULT_SHOW_CHECK_MARK = true
     }
 }

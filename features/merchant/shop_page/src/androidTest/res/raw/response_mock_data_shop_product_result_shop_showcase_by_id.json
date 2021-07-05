@@ -1,0 +1,100 @@
+[{
+  "data": {
+    "shopShowcasesByShopID": {
+      "result": [{
+        "id": "2",
+        "name": "Semua Produk",
+        "count": 0,
+        "type": -1,
+        "highlighted": false,
+        "alias": "etalase",
+        "uri": "https://m.tokopedia.com/tokocampaign07",
+        "useAce": true,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": []
+      }, {
+        "id": "cmp_26326",
+        "name": "B0mc4rtr4m",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_26326",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_26326",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": [{
+          "name": "followers_only"
+        }]
+      }, {
+        "id": "cmp_26355",
+        "name": "cmp biasa aja",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_26355",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_26355",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": []
+      }, {
+        "id": "cmp_25542",
+        "name": "Campaign 20/10",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_25542",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_25542",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": [{
+          "name": "followers_only"
+        }]
+      }, {
+        "id": "cmp_25543",
+        "name": "Campaign 21/10",
+        "count": 1,
+        "type": -2,
+        "highlighted": false,
+        "alias": "cmp_25543",
+        "uri": "tokopedia://shop/9716776/etalase/cmp_25543",
+        "useAce": false,
+        "badge": "",
+        "aceDefaultSort": 0,
+        "rules": [{
+          "name": "followers_only"
+        }]
+      }, {
+        "id": "8",
+        "name": "Diskon",
+        "count": 12,
+        "type": -1,
+        "highlighted": true,
+        "alias": "discount",
+        "uri": "https://m.tokopedia.com/tokocampaign07?discount=1",
+        "useAce": true,
+        "badge": "https://ecs7.tokopedia.net/img/official_store/diskon-badge.png",
+        "aceDefaultSort": 10,
+        "rules": []
+      }, {
+        "id": "3",
+        "name": "Produk Terjual",
+        "count": 2,
+        "type": -1,
+        "highlighted": true,
+        "alias": "sold",
+        "uri": "https://m.tokopedia.com/tokocampaign07/sold?sort=7",
+        "useAce": true,
+        "badge": "",
+        "aceDefaultSort": 14,
+        "rules": []
+      }],
+      "error": {
+        "message": ""
+      }
+    }
+  }
+}]

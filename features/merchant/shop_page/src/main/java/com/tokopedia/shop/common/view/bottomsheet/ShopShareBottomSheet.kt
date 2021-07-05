@@ -4,23 +4,25 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.bottomsheet.adapter.ShopShareBottomSheetAdapter
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.shop_page_share_bottomsheet.view.*
 
-class ShopShareBottomSheet(
-        context: Context?,
-        private val fm: FragmentManager?,
-        private val bottomsheetListener: ShopShareBottomsheetListener
-) : BottomSheetUnify() {
+/**
+ * Created by Rafli Syam 20/07/2020
+ */
+class ShopShareBottomSheet : BottomSheetUnify() {
 
     companion object {
         @LayoutRes
@@ -34,6 +36,8 @@ class ShopShareBottomSheet(
         private const val PACKAGE_NAME_LINE = "jp.naver.line.android"
         private const val PACKAGE_NAME_TWITTER = "com.twitter.android"
         private const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
+
+        fun createInstance(): ShopShareBottomSheet = ShopShareBottomSheet()
     }
 
     enum class MimeType(val type: String) {
@@ -41,30 +45,53 @@ class ShopShareBottomSheet(
         IMAGE(TYPE_IMAGE)
     }
 
-    init {
-        val itemView = View.inflate(context, LAYOUT, null).apply {
-            rv_social_media_list.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = ShopShareBottomSheetAdapter(context, bottomsheetListener, generateSocialMediaList(context))
-            }
-        }
-        setTitle(itemView.context.getString(R.string.shop_page_share_to_social_media_text))
-        setChild(itemView)
-        setCloseClickListener {
-            bottomsheetListener.onCloseBottomSheet()
-            dismiss()
-        }
+    private var bottomSheetListener: ShopShareBottomsheetListener? = null
+    private var rvSocialMediaList: RecyclerView? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setupBottomSheetChildView(inflater, container)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    fun show() {
-        fm?.let {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
+    }
+
+    fun init(bottomSheetListener: ShopShareBottomsheetListener) {
+        this.bottomSheetListener = bottomSheetListener
+    }
+
+    fun show(fragmentManager: FragmentManager?) {
+        fragmentManager?.let {
             show(it, TAG)
         }
     }
 
-    private fun getResolvedActivity(context: Context?, intent: Intent?): ResolveInfo? = context?.let {
-        return it.packageManager.resolveActivity(intent, 0)
+    private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
+        inflater.inflate(LAYOUT, container).apply {
+            rvSocialMediaList = findViewById(R.id.rv_social_media_list)
+            setTitle(context.getString(R.string.shop_page_share_to_social_media_text))
+            setChild(this)
+            setCloseClickListener {
+                bottomSheetListener?.onCloseBottomSheet()
+                dismiss()
+            }
+        }
+    }
+
+    private fun initRecyclerView() {
+        rvSocialMediaList?.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = bottomSheetListener?.let { ShopShareBottomSheetAdapter(context, it, generateSocialMediaList(context)) }
+        }
+    }
+
+    private fun getResolvedActivity(context: Context?, intent: Intent?): ResolveInfo? = context?.let { ctx ->
+        intent?.let {
+            return ctx.packageManager.resolveActivity(it, 0)
+        }
     }
 
     private fun getActivityIcon(context: Context?, intent: Intent?): Drawable? {

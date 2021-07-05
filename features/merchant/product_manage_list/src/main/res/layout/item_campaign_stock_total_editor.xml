@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/layout_lvl7"
-    android:paddingLeft="@dimen/layout_lvl2"
-    android:paddingStart="@dimen/layout_lvl2"
-    android:paddingEnd="@dimen/layout_lvl2"
-    android:paddingRight="@dimen/layout_lvl2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_campaign_stock_amount"
@@ -17,15 +17,52 @@
         app:typographyType="body_2"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/qte_campaign_stock_amount"
+        app:layout_constraintBottom_toBottomOf="@id/qte_campaign_stock_amount"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelCampaign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:visibility="gone"
+        app:labelTitle="@string/product_manage_campaign"
+        app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/qte_campaign_stock_amount"
+        app:layout_constraintLeft_toRightOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintTop_toTopOf="@id/qte_campaign_stock_amount"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emptyStockInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_manage_stock_info_description"
+        android:textColor="@color/Unify_N300"
+        android:lines="2"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qte_campaign_stock_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintBottom_toBottomOf="@id/tv_campaign_stock_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

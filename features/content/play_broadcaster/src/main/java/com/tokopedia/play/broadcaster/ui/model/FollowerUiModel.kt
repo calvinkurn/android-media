@@ -13,9 +13,9 @@ sealed class FollowerUiModel {
             fun fromIndex(index: Int) = Unknown(getColorList(index))
 
             private fun getColorList(index: Int) = when (index) {
-                0 -> com.tokopedia.unifyprinciples.R.color.Yellow_Y500
-                1 -> com.tokopedia.unifyprinciples.R.color.Blue_B600
-                else -> com.tokopedia.unifyprinciples.R.color.Yellow_Y300
+                0 -> com.tokopedia.play_common.R.color.play_dms_Y500
+                1 -> com.tokopedia.play_common.R.color.play_dms_B600
+                else -> com.tokopedia.play_common.R.color.play_dms_Y300
             }
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.variant.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -13,6 +14,9 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
@@ -38,6 +42,7 @@ import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariant
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import java.math.BigInteger
@@ -73,6 +78,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    private var multiLocationTicker: Ticker? = null
 
     override fun getScreenName(): String {
         return ""
@@ -110,7 +117,15 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         sendTrackerTrackScreenData()
 
-        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        // set bg color programatically, to reduce overdraw
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+
+        viewModel.setupMultiLocationValue()
+
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
+        multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)
+
+        val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
@@ -123,7 +138,8 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         recyclerViewVariantDetailFields.adapter = variantDetailFieldsAdapter
         recyclerViewVariantDetailFields.layoutManager = LinearLayoutManager(context)
 
-        switchUnifySku.setOnCheckedChangeListener { _, isChecked ->
+        switchUnifySku.setOnClickListener {
+            val isChecked = switchUnifySku.isChecked
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
             sendTrackerClickSKUToggleData(isChecked)
         }
@@ -344,7 +360,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun showMultipleEditBottomSheet() {
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
-        val bottomSheet = MultipleVariantEditSelectBottomSheet(this)
+        val bottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val hasWholesale = viewModel.hasWholesale.value ?: false
         bottomSheet.setData(variantInputModel)
         bottomSheet.setEnableEditSku(switchUnifySku.isChecked)

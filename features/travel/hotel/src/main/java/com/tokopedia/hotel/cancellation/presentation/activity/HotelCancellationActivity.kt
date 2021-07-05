@@ -30,7 +30,6 @@ class HotelCancellationActivity : HotelBaseActivity(), HasComponent<HotelCancell
             .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         val uri = intent.data
         if (uri != null) {
             invoiceId = uri.lastPathSegment ?: ""

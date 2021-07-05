@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.domain.query.SellerMenuNotification
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetSellerNotificationUseCase @Inject constructor(
@@ -19,10 +18,5 @@ class GetSellerNotificationUseCase @Inject constructor(
 
         setGraphqlQuery(SellerMenuNotification.QUERY)
         setTypeClass(SellerMenuNotificationResponse::class.java)
-    }
-
-    suspend fun execute(requestParams: RequestParams): SellerMenuNotificationResponse {
-        setRequestParams(requestParams.parameters)
-        return executeOnBackground()
     }
 }

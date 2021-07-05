@@ -6,7 +6,7 @@
     android:id="@+id/link"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/Green_G500"
+    android:textColor="@color/Unify_G500"
     android:paddingLeft="@dimen/dp_16"
     android:paddingStart="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"

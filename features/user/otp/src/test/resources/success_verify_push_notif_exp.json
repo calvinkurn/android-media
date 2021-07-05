@@ -1,0 +1,11 @@
+{
+  "VerifyPushnotifExpiration": {
+    "is_success": true,
+    "is_expire": false,
+    "error_message": "",
+    "image_link": "Imglink",
+    "title": "MessageTitle",
+    "description": "MessageBody",
+    "button_type": "CtaType"
+  }
+}

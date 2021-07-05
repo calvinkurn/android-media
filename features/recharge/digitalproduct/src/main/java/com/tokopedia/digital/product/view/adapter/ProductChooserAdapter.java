@@ -133,7 +133,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
-                        .getResources().getColor(com.tokopedia.design.R.color.white));
+                        .getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 enableView();
                 emptyStockNotification.setVisibility(View.GONE);
@@ -141,8 +141,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         private void enableView() {
-            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(R.color.digital_item_title));
-            tvPrice.setTextColor(hostFragment.getResources().getColor(R.color.digital_item_title));
+            tvTitlePrice.setTextColor(hostFragment.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            tvPrice.setTextColor(hostFragment.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }
 
@@ -206,7 +206,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
-                        .getResources().getColor(com.tokopedia.design.R.color.white));
+                        .getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 enableView();
                 emptyStockNotification.setVisibility(View.GONE);
@@ -215,11 +215,11 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void enableView() {
             tvProductPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.digital_item_title));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             tvProductDescription.setTextColor(hostFragment.getResources()
-                    .getColor(com.tokopedia.design.R.color.grey_500));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200));
             tvProductTotalPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.digital_item_title));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }
 
@@ -282,7 +282,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 disableView(itemView);
                 emptyStockNotification.setVisibility(View.VISIBLE);
                 emptyStockNotification.setTextColor(hostFragment
-                        .getResources().getColor(com.tokopedia.design.R.color.white));
+                        .getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
             } else {
                 enableView();
                 emptyStockNotification.setVisibility(View.GONE);
@@ -291,15 +291,15 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         private void enableView() {
             tvProductPromoTitle.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.digital_item_title));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             tvProductPromoTag.setTextColor(hostFragment.getResources()
-                    .getColor(com.tokopedia.design.R.color.deep_orange_500));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
             tvProductPromoDescription.setTextColor(hostFragment.getResources()
-                    .getColor(com.tokopedia.design.R.color.grey_500));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200));
             tvProductPromoOldPrice.setTextColor(hostFragment.getResources()
-                    .getColor(R.color.digital_item_title));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             tvPromoProductPrice.setTextColor(hostFragment.getResources()
-                    .getColor(com.tokopedia.design.R.color.deep_orange_500));
+                    .getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
         }
     }
 
@@ -321,7 +321,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void disableTextView(TextView textViewToDisable) {
-        textViewToDisable.setTextColor(hostFragment.getResources().getColor(com.tokopedia.design.R.color.grey_400));
+        textViewToDisable.setTextColor(hostFragment.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N150));
     }
 
 }

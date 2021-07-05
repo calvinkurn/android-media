@@ -27,6 +27,8 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
@@ -36,7 +38,7 @@ import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.shop.presentation.adapter.ShopListAdapter
 import com.tokopedia.search.result.shop.presentation.itemdecoration.ShopListItemDecoration
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactory
 import com.tokopedia.search.result.shop.presentation.typefactory.ShopListTypeFactoryImpl
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel
@@ -157,10 +159,10 @@ internal class ShopListFragment:
 
     private fun createShopItemDecoration(activity: Activity): RecyclerView.ItemDecoration {
         return ShopListItemDecoration(
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-                activity.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                activity.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
         )
     }
 
@@ -245,9 +247,9 @@ internal class ShopListFragment:
             }
 
             if (isSearchShopDataEmpty(searchShopLiveData)) {
-                showNetworkErrorOnEmptyList(activity, retryClickedListener)
+                showNetworkErrorOnEmptyList(activity, retryClickedListener, searchShopLiveData.throwable)
             } else {
-                showNetworkErrorOnLoadMore(activity, retryClickedListener)
+                showNetworkErrorOnLoadMore(activity, retryClickedListener, searchShopLiveData.throwable)
             }
         }
     }
@@ -256,10 +258,13 @@ internal class ShopListFragment:
         return searchShopLiveData.data?.size == 0
     }
 
-    private fun showNetworkErrorOnEmptyList(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener) {
+    private fun showNetworkErrorOnEmptyList(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
         hideViewOnError()
-
-        NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+        if (throwable != null) {
+            NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(requireContext(), throwable), retryClickedListener)
+        } else {
+            NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
+        }
     }
 
     private fun hideViewOnError() {
@@ -268,8 +273,12 @@ internal class ShopListFragment:
         refreshLayout?.hide()
     }
 
-    private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+    private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
+        if (throwable != null) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable), retryClickedListener).showRetrySnackbar()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
+        }
     }
 
     private fun observeGetDynamicFilterEvent() {
@@ -281,7 +290,7 @@ internal class ShopListFragment:
     private fun handleEventGetDynamicFilter(isSuccessGetDynamicFilter: Boolean) {
         activity?.let { activity ->
             if (!isSuccessGetDynamicFilter) {
-                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_get_dynamic_filter))
+                NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_get_dynamic_filter))))
             }
         }
     }
@@ -304,7 +313,7 @@ internal class ShopListFragment:
         }
         else {
             activity?.let { activity ->
-                NetworkErrorHelper.showSnackbar(activity, activity.getString(R.string.error_filter_data_not_ready))
+                NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(requireContext(), MessageErrorException(activity.getString(R.string.error_filter_data_not_ready))))
             }
         }
     }
@@ -444,9 +453,9 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventClickShopItem(shopItem: ShopViewModel.ShopItem) {
+    private fun trackEventClickShopItem(shopDataItem: ShopDataView.ShopItem) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.eventSearchResultShopItemClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
+        SearchTracking.eventSearchResultShopItemClick(shopDataItem.getShopAsObjectDataLayer(), shopDataItem.id, keyword)
     }
 
     private fun observeTrackingClickNotActiveShop() {
@@ -455,9 +464,9 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventClickNotActiveShop(shopItem: ShopViewModel.ShopItem) {
+    private fun trackEventClickNotActiveShop(shopDataItem: ShopDataView.ShopItem) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.eventSearchResultShopItemClosedClick(shopItem.getShopAsObjectDataLayer(), shopItem.id, keyword)
+        SearchTracking.eventSearchResultShopItemClosedClick(shopDataItem.getShopAsObjectDataLayer(), shopDataItem.id, keyword)
     }
 
     private fun observeTrackingClickShopRecommendation() {
@@ -466,9 +475,9 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventClickShopRecommendation(shopItem: ShopViewModel.ShopItem) {
+    private fun trackEventClickShopRecommendation(shopDataItem: ShopDataView.ShopItem) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.trackEventClickShopRecommendation(shopItem.getShopRecommendationAsObjectDataLayer(), shopItem.id, keyword)
+        SearchTracking.trackEventClickShopRecommendation(shopDataItem.getShopRecommendationAsObjectDataLayer(), shopDataItem.id, keyword)
     }
 
     private fun observeTrackingClickProductItem() {
@@ -477,9 +486,9 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventClickProductItem(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+    private fun trackEventClickProductItem(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.eventSearchResultShopProductPreviewClick(shopItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
+        SearchTracking.eventSearchResultShopProductPreviewClick(shopDataItemProduct.getShopProductPreviewAsObjectDataLayer(), keyword)
     }
 
     private fun observeTrackingClickProductRecommendation() {
@@ -488,9 +497,9 @@ internal class ShopListFragment:
         })
     }
 
-    private fun trackEventClickProductRecommendation(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
+    private fun trackEventClickProductRecommendation(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
         val keyword = searchShopViewModel?.getSearchParameterQuery() ?: ""
-        SearchTracking.trackEventClickShopRecommendationProductPreview(shopItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
+        SearchTracking.trackEventClickShopRecommendationProductPreview(shopDataItemProduct.getShopRecommendationProductPreviewAsObjectDataLayer(), keyword)
     }
 
     private fun observeQuickFilterLiveData() {
@@ -507,7 +516,7 @@ internal class ShopListFragment:
             it.visible()
             it.sortFilterHorizontalScrollView.scrollX = 0
             it.addItem(sortFilterItemList as ArrayList<SortFilterItem>)
-            it.textView.text = getString(R.string.search_filter)
+            it.textView?.text = getString(R.string.search_filter)
             it.parentListener = {
                 searchShopViewModel?.onViewOpenFilterPage()
             }
@@ -564,12 +573,12 @@ internal class ShopListFragment:
         return SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB
     }
 
-    override fun onItemClicked(shopItem: ShopViewModel.ShopItem) {
-        searchShopViewModel?.onViewClickShop(shopItem)
+    override fun onItemClicked(shopDataItem: ShopDataView.ShopItem) {
+        searchShopViewModel?.onViewClickShop(shopDataItem)
     }
 
-    override fun onProductItemClicked(shopItemProduct: ShopViewModel.ShopItem.ShopItemProduct) {
-        searchShopViewModel?.onViewClickProductPreview(shopItemProduct)
+    override fun onProductItemClicked(shopDataItemProduct: ShopDataView.ShopItem.ShopItemProduct) {
+        searchShopViewModel?.onViewClickProductPreview(shopDataItemProduct)
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
@@ -598,6 +607,10 @@ internal class ShopListFragment:
 
     override fun onSelectedFilterRemoved(uniqueId: String?) {
         searchShopViewModel?.onViewRemoveSelectedFilterAfterEmptySearch(uniqueId)
+    }
+
+    override fun onEmptySearchToGlobalSearchClicked(applink: String?) {
+        // No implementation here
     }
 
     override fun getRegistrationId(): String {

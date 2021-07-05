@@ -11,5 +11,5 @@
     android:gravity="center"
     app:typographyType="body_2"
     app:typographyWeight="reguler"
-    android:textColor="@color/search_empty_state_selected_filter_text_color"
+    android:textColor="@color/Unify_G500"
     android:id="@+id/filterText" />

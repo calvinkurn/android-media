@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetData
 import com.tokopedia.salam.umrah.homepage.data.UmrohHomepageBottomSheetwithType
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.item_umrah_home_page_bottom_sheet.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ class UmrahHomepageBottomSheetAdapter(context: Context,
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var listBottomSheet = emptyList<UmrohHomepageBottomSheetwithType>()
     var lastCheckedPosition = 0
-    lateinit var bottomSheetDialog : CloseableBottomSheetDialog
+    lateinit var bottomSheetDialog : BottomSheetUnify
 
     inner class UmrahHomepageBottomSheetViewHolder(view: View): RecyclerView.ViewHolder(view) {
         fun bind(data:UmrohHomepageBottomSheetwithType){

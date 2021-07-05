@@ -15,7 +15,7 @@
         <TextView
             android:id="@+id/viewHolderSourceNameText"
             style="@style/TextView"
-            android:textColor="@color/topads_item_source_name"
+            android:textColor="@color/Unify_N700"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
         <TextView
             android:id="@+id/viewHolderEventTypeText"
             style="@style/TextView"
-            android:textColor="@color/topads_item_source_name"
+            android:textColor="@color/Unify_N700"
             android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         <TextView
             android:id="@+id/viewHolderProductIdText"
             style="@style/TextView"
-            android:textColor="@color/topads_item_source_name"
+            android:textColor="@color/Unify_N700"
             android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         <TextView
             android:id="@+id/viewHolderUrlText"
             style="@style/TextView"
-            android:textColor="@color/topads_item_url"
+            android:textColor="@color/Unify_N200"
             android:textSize="12sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             <TextView
                 android:id="@+id/viewHolderTimestampText"
                 style="@style/TextView"
-                android:textColor="@color/topads_item_source_name"
+                android:textColor="@color/Unify_N700"
                 android:textSize="12sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             <TextView
                 android:id="@+id/viewHolderStatusText"
                 style="@style/TextView"
-                android:textColor="@color/topads_status_match"
+                android:textColor="@color/Unify_G500"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"

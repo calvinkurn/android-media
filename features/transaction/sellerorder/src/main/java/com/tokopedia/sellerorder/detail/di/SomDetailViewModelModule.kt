@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@SomDetailScope
 abstract class SomDetailViewModelModule {
     @SomDetailScope
     @Binds

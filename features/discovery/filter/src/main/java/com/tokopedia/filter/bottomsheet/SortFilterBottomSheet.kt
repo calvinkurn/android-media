@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet.view.*
 
 class SortFilterBottomSheet: BottomSheetUnify() {
@@ -276,6 +277,11 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun processLoading(isLoading: Boolean) {
         if (isLoading) {
             sortFilterBottomSheetView?.let {
+                if (context.isDarkMode()) {
+                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+                } else {
+                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                }
                 it.buttonApplyContainer?.visibility = View.VISIBLE
                 it.buttonApplySortFilter?.isLoading = true
                 it.buttonApplySortFilter?.text = ""

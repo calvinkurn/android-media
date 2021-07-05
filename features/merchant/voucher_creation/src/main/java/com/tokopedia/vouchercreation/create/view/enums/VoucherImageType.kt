@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.create.view.enums
 
-import androidx.annotation.DimenRes
 import androidx.annotation.StringDef
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R
@@ -14,16 +13,16 @@ sealed class VoucherImageType(val value: Int,
     class Percentage(value: Int, val percentage: Int) : VoucherImageType(value, BenefitType.PERCENT, CouponType.CASHBACK)
 }
 
-enum class VoucherImageTextType(@DimenRes val dimenRes: Int) {
-    VALUE(R.dimen.mvc_voucher_preview_value_text_size),
-    SCALE(R.dimen.mvc_voucher_preview_scale_text_size),
-    ASTERISK(R.dimen.mvc_voucher_preview_asterix_text_size)
+enum class VoucherImageTextType(val textSize: Float) {
+    VALUE(40f),
+    SCALE(20f),
+    ASTERISK(15f)
 }
 
-enum class PostImageTextType(@DimenRes val dimenRes: Int) {
-    VALUE(R.dimen.mvc_post_preview_value_text_size),
-    SCALE(R.dimen.mvc_post_preview_scale_text_size),
-    ASTERISK(R.dimen.mvc_post_preview_asterix_text_size)
+enum class PostImageTextType(val textSize: Float) {
+    VALUE(50f),
+    SCALE(22f),
+    ASTERISK(15f)
 }
 
 enum class ValueScaleType(@StringRes val stringRes: Int) {

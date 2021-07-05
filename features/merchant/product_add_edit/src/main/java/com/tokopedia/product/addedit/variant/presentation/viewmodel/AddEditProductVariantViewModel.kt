@@ -19,7 +19,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ALL_MODE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_CUSTOM_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
@@ -108,6 +107,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun getVariantCategoryCombination(categoryId: Int, selections: List<SelectionInputModel>) {
+        if (categoryId <= 0) return // only execute valid ID
         var productVariants = mutableListOf<String>()
         var type = ADD_MODE
         isEditMode.value?.let { isEdit ->
@@ -384,21 +384,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
     }
 
-    private fun mapUnit(variantDetail: VariantDetail, value: List<UnitValue>): Unit? {
-        val unitValue = value.firstOrNull()
-        return if (unitValue?.variantUnitValueID == VARIANT_CUSTOM_UNIT_VALUE_ID) {
-            // condition for custom value (get first unit)
-            variantDetail.units.firstOrNull()
-        } else {
-            // condition for main value
-            variantDetail.units.firstOrNull { unit ->
-                unit.unitValues.any {
-                    it.variantUnitValueID == unitValue?.variantUnitValueID
-                }
-            }
-        }
-    }
-
     private fun mapOptions(unit: List<UnitValue>): List<OptionInputModel> =
             unit.map {
                 OptionInputModel(
@@ -488,7 +473,9 @@ class AddEditProductVariantViewModel @Inject constructor(
             )
         } else {
             // condition if updating existing product variant
-            productVariant.pictures = variantPicture
+            if (variantPicture.isNotEmpty()) { // prevent clearing variant
+                productVariant.pictures = variantPicture
+            }
             productVariant
         }
     }

@@ -29,7 +29,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
 import javax.inject.Inject
 
@@ -175,7 +175,7 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun observeDataLength() {
-        productManageFilterExpandChecklistViewModel.dataSize.observe(this, Observer {
+        productManageFilterExpandChecklistViewModel.dataSize.observe(viewLifecycleOwner, Observer {
             if(it > 0) {
                 showButtons()
             } else {
@@ -185,7 +185,7 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun observeChecklistData() {
-        productManageFilterExpandChecklistViewModel.checklistData.observe(this, Observer {
+        productManageFilterExpandChecklistViewModel.checklistData.observe(viewLifecycleOwner, Observer {
             adapter?.updateChecklistData(it)
         })
     }

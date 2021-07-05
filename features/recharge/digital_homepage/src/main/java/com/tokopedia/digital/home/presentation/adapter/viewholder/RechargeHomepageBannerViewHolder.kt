@@ -13,6 +13,9 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemBannerAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_banner.view.*
 
 /**
@@ -36,12 +39,18 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         }
     }
 
-    private fun initSeeAllPromo(section: RechargeHomepageSections.Section){
-        itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
+    private fun initSeeAllPromo(section: RechargeHomepageSections.Section) {
+        if (section.textLink.isNotEmpty()) {
+            itemView.see_all_promo.show()
+            itemView.see_all_promo.text = section.textLink
+            itemView.see_all_promo.setOnClickListener { onPromoAllClick(section) }
+        } else {
+            itemView.see_all_promo.hide()
+        }
     }
 
     private fun initBanner(section: RechargeHomepageSections.Section){
-        val list = slidesList.map { CircularModel(it.id, it.mediaUrl) }
+        val list = slidesList.map { CircularModel(it.id.toIntOrZero(), it.mediaUrl) }
         with (itemView) {
             circular_view_pager.setIndicatorPageChangeListener(object : CircularViewPager.IndicatorPageChangeListener {
                 override fun onIndicatorPageChange(newIndicatorPosition: Int) {

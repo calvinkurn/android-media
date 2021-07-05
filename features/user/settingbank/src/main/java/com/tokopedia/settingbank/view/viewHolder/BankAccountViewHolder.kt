@@ -4,12 +4,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.settingbank.R
-import com.tokopedia.settingbank.domain.BankAccount
+import com.tokopedia.settingbank.domain.model.BankAccount
 import com.tokopedia.settingbank.view.adapter.BankAccountClickListener
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerType
 
@@ -17,6 +18,14 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private val DISABLE_IMAGE_ALPHA = 0.38F
     private val ENABLE_IMAGE_ALPHA = 1F
+
+    private val ivBankImage : ImageUnify = itemView.findViewById(R.id.ivBankImage)
+    private val tvBankName : TextView = itemView.findViewById(R.id.tvBankName)
+    private val tvBankAccountNumber : TextView = itemView.findViewById(R.id.tvBankAccountNumber)
+    private val tvBankAccountHolderName : TextView = itemView.findViewById(R.id.tvBankAccountHolderName)
+    private val btnIsiData : View = itemView.findViewById(R.id.btnIsiData)
+    private val tvAccountPending : View = itemView.findViewById(R.id.tvAccountPending)
+    private val btnHapus : View = itemView.findViewById(R.id.btnHapus)
 
 
     private val ticker: Ticker = view.findViewById(R.id.tickerBankAccount)
@@ -26,11 +35,12 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(bankAccount: BankAccount, listener: BankAccountClickListener?) {
         view.tag = bankAccount
         this.listener = listener
-        view.findViewById<TextView>(R.id.tvBankName).text = bankAccount.bankName ?: ""
-        view.findViewById<TextView>(R.id.tvBankAccountNumber).text = bankAccount.accNumber ?: ""
-        view.findViewById<TextView>(R.id.tvBankAccountHolderName).text = bankAccount.accName?.let { "a.n $it" } ?: ""
+        tvBankName.text = bankAccount.bankName ?: ""
+        tvBankAccountNumber.text = bankAccount.accNumber ?: ""
+        tvBankAccountHolderName.text = bankAccount.accName?.let { "a.n $it" } ?: ""
+        ivBankImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
         bankAccount.bankImageUrl?.let {
-            ImageLoader.LoadImage(view.findViewById(R.id.ivBankImage), bankAccount.bankImageUrl)
+            ivBankImage.loadImage(bankAccount.bankImageUrl)
         }
         ticker.gone()
         setBankStatus(
@@ -42,8 +52,8 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun addClickListener() {
-        view.findViewById<View>(R.id.btnIsiData).setOnClickListener { listener?.onClickDataContent(view.tag as BankAccount) }
-        view.findViewById<View>(R.id.btnHapus).setOnClickListener { listener?.deleteBankAccount(view.tag as BankAccount) }
+        btnIsiData.setOnClickListener { listener?.onClickDataContent(view.tag as BankAccount) }
+        btnHapus.setOnClickListener { listener?.deleteBankAccount(view.tag as BankAccount) }
     }
 
     private fun setBankStatus(status: Int, copyWriting: String?) {
@@ -79,17 +89,17 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private fun disableBankItem() {
-        view.findViewById<TextView>(R.id.tvBankName).isEnabled = false
-        view.findViewById<TextView>(R.id.tvBankAccountNumber).isEnabled = false
-        view.findViewById<TextView>(R.id.tvBankAccountHolderName).isEnabled = false
-        view.findViewById<ImageView>(R.id.ivBankImage).alpha = DISABLE_IMAGE_ALPHA
+        tvBankName.isEnabled = false
+        tvBankAccountNumber.isEnabled = false
+        tvBankAccountHolderName.isEnabled = false
+        ivBankImage.alpha = DISABLE_IMAGE_ALPHA
     }
 
     private fun enableBankItem() {
-        view.findViewById<TextView>(R.id.tvBankName).isEnabled = true
-        view.findViewById<TextView>(R.id.tvBankAccountNumber).isEnabled = true
-        view.findViewById<TextView>(R.id.tvBankAccountHolderName).isEnabled = true
-        view.findViewById<ImageView>(R.id.ivBankImage).alpha = ENABLE_IMAGE_ALPHA
+        tvBankName.isEnabled = true
+        tvBankAccountNumber.isEnabled = true
+        tvBankAccountHolderName.isEnabled = true
+        ivBankImage.alpha = ENABLE_IMAGE_ALPHA
     }
 
     private fun setCopyWriting(copyWriting: String?, @TickerType tickerType: Int) {
@@ -114,15 +124,15 @@ class BankAccountViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private fun hideShowIsiDataButton(isShow: Boolean) {
         when (isShow) {
-            true -> view.findViewById<TextView>(R.id.btnIsiData).visible()
-            else -> view.findViewById<TextView>(R.id.btnIsiData).gone()
+            true -> btnIsiData.visible()
+            else -> btnIsiData.gone()
         }
     }
 
     private fun hideShowPendingAccountTag(isShow: Boolean) {
         when (isShow) {
-            true -> view.findViewById<TextView>(R.id.tvAccountPending).visible()
-            else -> view.findViewById<TextView>(R.id.tvAccountPending).gone()
+            true -> tvAccountPending.visible()
+            else -> tvAccountPending.gone()
         }
     }
 

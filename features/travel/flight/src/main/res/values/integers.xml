@@ -1,5 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <integer name="max_length_duration_input">20</integer>
-    <integer name="version_aiport">7</integer>
-</resources>
+<resources></resources>

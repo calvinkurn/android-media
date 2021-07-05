@@ -1,5 +1,7 @@
 package com.tokopedia.home.beranda.domain.interactor
 
+import android.text.TextUtils
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -19,9 +21,14 @@ class GetKeywordSearchUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(KeywordSearchData::class.java)
     }
 
-    fun createParams(isFirstInstall: Boolean): Map<String, Any> {
+    fun createParams(isFirstInstall: Boolean, deviceId: String, userId: String): Map<String, Any> {
         return mutableMapOf<String, Any>().apply {
             put(FIRST_INSTALL, isFirstInstall)
+            var uniqueId = AuthHelper.getMD5Hash(deviceId)
+            if (!TextUtils.isEmpty(userId)) {
+                uniqueId = AuthHelper.getMD5Hash(userId)
+            }
+            put(UNIQUE_ID, uniqueId)
         }
     }
 
@@ -34,5 +41,6 @@ class GetKeywordSearchUseCase @Inject constructor(
 
     companion object {
         const val FIRST_INSTALL = "firstInstall"
+        const val UNIQUE_ID = "uniqueId"
     }
 }

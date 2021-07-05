@@ -3,15 +3,13 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,7 +28,6 @@ class ProductCardRevampViewModel(val application: Application, val components: C
 
 
     init {
-        initDaggerInject()
         components.lihatSemua?.run {
             val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
             val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
@@ -42,19 +39,12 @@ class ProductCardRevampViewModel(val application: Application, val components: C
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)
+            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
-            it.printStackTrace()
+            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+            this@ProductCardRevampViewModel.syncData.value = true
         })
     }
 
-    override fun initDaggerInject() {
-        DaggerDiscoveryComponent.builder()
-                .baseAppComponent((application.applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
-
     fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData
-
 }

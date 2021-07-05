@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawOrderItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/unify_space_12"
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingEnd="@dimen/layout_lvl0">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_toStartOf="@+id/imgSawOrderItemProduct">
+
+        <TextView
+            android:id="@+id/tvSawOrderItemProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/tvSawOrderItemOtherOrder"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700"
+            android:textSize="@dimen/unify_font_12"
+            android:textStyle="bold"
+            tools:text="Nike React Element..." />
+
+        <TextView
+            android:id="@+id/tvSawOrderItemOtherOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:textColor="@color/Unify_N700_44"
+            android:textSize="@dimen/unify_font_10"
+            android:visibility="gone"
+            tools:text="Batas response 1 hari"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvSawOrderItemDeadlineText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvSawOrderItemProductName"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_44"
+            android:textSize="@dimen/unify_font_10"
+            tools:text="Batas response 1 hari" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imgSawOrderItemProduct"
+        android:layout_width="@dimen/saw_dimen_46dp"
+        android:layout_height="@dimen/saw_dimen_46dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        tools:src="@tools:sample/avatars" />
+
+    <RelativeLayout
+        android:id="@+id/horLineSawOrderItem"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        android:layout_below="@+id/imgSawOrderItemProduct"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:background="@color/Unify_N50" />
+</RelativeLayout>

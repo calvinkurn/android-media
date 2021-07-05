@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="194dp"
-    android:layout_height="61dp"
-    android:layout_margin="@dimen/dp_5">
-
-    <include layout="@layout/attach_product_base_layout"/>
-</androidx.constraintlayout.widget.ConstraintLayout>

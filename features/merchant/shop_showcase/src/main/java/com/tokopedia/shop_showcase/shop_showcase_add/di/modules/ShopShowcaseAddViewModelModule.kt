@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  * @author by Rafli Syam on 2020-03-10
  */
 
-@ShopShowcaseAddScope
 @Module
 abstract class ShopShowcaseAddViewModelModule {
 

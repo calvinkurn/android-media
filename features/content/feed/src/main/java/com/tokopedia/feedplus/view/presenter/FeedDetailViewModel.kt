@@ -129,6 +129,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
                 shop.name,
                 shop.avatar,
                 shop.isGold,
+                shop.badgeUrl,
                 create_time,
                 shop.isOfficial,
                 shop.shareLinkURL,

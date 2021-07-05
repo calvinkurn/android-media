@@ -78,7 +78,15 @@ data class HotelRoom(
         @Expose
         val extraBedInfo: ExtraBedInfo = ExtraBedInfo(),
 
-        var additionalPropertyInfo: AdditionalPropertyInfo = AdditionalPropertyInfo()
+        var additionalPropertyInfo: AdditionalPropertyInfo = AdditionalPropertyInfo(),
+
+        @SerializedName("isDirectPayment")
+        @Expose
+        val isDirectPayment: Boolean = false,
+
+        @SerializedName("isDirectPaymentString")
+        @Expose
+        val isDirectPaymentString: String = ""
 
 ) : Visitable<RoomListTypeFactory> {
 

@@ -4,7 +4,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import dagger.Module
 import dagger.Provides
 
-@StockReminderScope
 @Module
 class StockReminderModule {
 

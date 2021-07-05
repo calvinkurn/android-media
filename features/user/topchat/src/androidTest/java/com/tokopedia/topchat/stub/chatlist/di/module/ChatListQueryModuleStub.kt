@@ -3,12 +3,10 @@ package com.tokopedia.topchat.stub.chatlist.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.TopchatAndroidTestCoroutineContextDispatcher
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.chatlist.usecase.GetChatListMessageUseCase
 import com.tokopedia.topchat.chatlist.usecase.GetChatNotificationUseCase
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatNotificationUseCaseStub
 import dagger.Module
@@ -16,7 +14,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@ChatListScope
 @Module
 class ChatListQueryModuleStub(
         private val chatListUseCase: GetChatListMessageUseCase,
@@ -50,10 +47,6 @@ class ChatListQueryModuleStub(
     @StringKey(ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA)
     fun provideRawQueryChatBlastSellerMetaData(@TopchatContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_blast_seller_metadata)
-
-    @Provides
-    @ChatListScope
-    fun provideTestDispatcher(): TopchatCoroutineContextProvider = TopchatAndroidTestCoroutineContextDispatcher()
 
     @Provides
     @ChatListScope

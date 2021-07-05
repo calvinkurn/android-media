@@ -1,17 +1,20 @@
 package com.tokopedia.entertainment.home.adapter.factory
 
-import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewholder.*
 import com.tokopedia.entertainment.home.adapter.viewmodel.*
 
 /**
  * Author errysuprayogi on 29,January,2020
  */
-class HomeTypeFactoryImpl(val action:((data: EventItemModel,
-                                       onSuccess: (EventItemModel)->Unit,
-                                       onError: (Throwable)->Unit) -> Unit)) : HomeTypeFactory {
+class HomeTypeFactoryImpl(private val trackingListener: TrackingListener,
+                          private val clickGridListener: EventGridEventViewHolder.ClickGridListener,
+                          private val clickCarouselListener: EventCarouselEventViewHolder.ClickCarouselListener
+) : BaseAdapterTypeFactory(),HomeTypeFactory {
 
     override fun type(model: BannerModel): Int {
         return BannerEventViewHolder.LAYOUT
@@ -33,21 +36,23 @@ class HomeTypeFactoryImpl(val action:((data: EventItemModel,
         return EventLocationEventViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(view: ViewGroup, type: Int): HomeEventViewHolder<*> {
-        val creatEventViewHolder: HomeEventViewHolder<*>
-        creatEventViewHolder = if (type == BannerEventViewHolder.LAYOUT) {
-            BannerEventViewHolder(view)
+    override fun type(model: LoadingHomeModel): Int {
+        return LoadingHomeEventViewHolder.LAYOUT
+    }
+
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+        return if (type == BannerEventViewHolder.LAYOUT) {
+            BannerEventViewHolder(view, trackingListener)
         } else if (type == CategoryEventViewHolder.LAYOUT) {
-            CategoryEventViewHolder(view)
+            CategoryEventViewHolder(view, trackingListener)
         } else if (type == EventGridEventViewHolder.LAYOUT) {
-            EventGridEventViewHolder(view, action)
+            EventGridEventViewHolder(view, trackingListener, clickGridListener)
         } else if (type == EventCarouselEventViewHolder.LAYOUT) {
-            EventCarouselEventViewHolder(view, action)
+            EventCarouselEventViewHolder(view, trackingListener, clickCarouselListener)
         } else if (type == EventLocationEventViewHolder.LAYOUT) {
-            EventLocationEventViewHolder(view)
-        } else {
-            throw TypeNotSupportedException.create("Layout not supported")
-        }
-        return creatEventViewHolder
+            EventLocationEventViewHolder(view, trackingListener)
+        } else if (type == LoadingHomeEventViewHolder.LAYOUT){
+            LoadingHomeEventViewHolder(view)
+        } else super.createViewHolder(view, type)
     }
 }

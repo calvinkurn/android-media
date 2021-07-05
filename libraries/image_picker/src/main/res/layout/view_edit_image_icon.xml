@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/image_editor_widget_item_width"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:minWidth="@dimen/dp_48"
     android:layout_marginLeft="@dimen/dp_8"
     android:layout_marginRight="@dimen/dp_8"
@@ -9,18 +10,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:foreground="?attr/selectableItemBackgroundBorderless">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_edit"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitCenter"
         tools:src="@drawable/ic_crop_rotate" />
-    <TextView
-        style="@style/TextView.Micro.BlackSecondary"
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_edit"
+        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:gravity="center_horizontal"
-        tools:text="Watermark"/>
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selection_container"
+        app:typographyType="body_3"
+        tools:text="Nama Menu Item" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/txt_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        app:labelType="general_dark_red"
+        android:layout_gravity="center"
+        app:labelTitle="@string/editor_common_new_feature"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
 </LinearLayout>

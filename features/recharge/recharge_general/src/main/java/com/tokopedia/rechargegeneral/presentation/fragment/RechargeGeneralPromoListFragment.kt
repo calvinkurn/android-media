@@ -34,6 +34,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
 
     private lateinit var promoList: ArrayList<TopupBillsPromo>
+    private var showTitle = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recharge_general_promo_list, container, false)
@@ -53,11 +54,15 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
 
         arguments?.let {
             promoList = it.getParcelableArrayList(EXTRA_PARAM_PROMO_LIST) ?: arrayListOf()
+            showTitle = it.getBoolean(EXTRA_PARAM_SHOW_TITLE, true)
         }
 
         with(promo_list_widget) {
             setListener(this@RechargeGeneralPromoListFragment)
-            if (::promoList.isInitialized && promoList.isNotEmpty()) setPromoList(promoList)
+            if (::promoList.isInitialized && promoList.isNotEmpty()) {
+                setPromoList(promoList)
+                toggleTitle(showTitle)
+            }
         }
     }
 
@@ -73,8 +78,8 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
             clipboard.setPrimaryClip(clip)
 
             view?.run {
-                Toaster.make(this,
-                        getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                Toaster.build(this,
+                        getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied), Snackbar.LENGTH_LONG).show()
             }
         }
     }
@@ -99,13 +104,15 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
 
     companion object {
         private const val EXTRA_PARAM_PROMO_LIST = "EXTRA_PARAM_PROMO_LIST"
+        private const val EXTRA_PARAM_SHOW_TITLE = "EXTRA_PARAM_SHOW_TITLE"
 
         const val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
 
-        fun newInstance(promos: List<TopupBillsPromo>): RechargeGeneralPromoListFragment {
+        fun newInstance(promos: List<TopupBillsPromo>, showTitle: Boolean = true): RechargeGeneralPromoListFragment {
             val fragment = RechargeGeneralPromoListFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(EXTRA_PARAM_PROMO_LIST, ArrayList(promos))
+            bundle.putBoolean(EXTRA_PARAM_SHOW_TITLE, showTitle)
             fragment.arguments = bundle
             return fragment
         }

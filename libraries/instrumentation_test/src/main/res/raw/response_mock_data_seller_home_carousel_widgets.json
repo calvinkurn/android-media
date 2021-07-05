@@ -1,21 +1,38 @@
-{
-  "data": {
-    "getCarouselWidgetData": {
-      "data": [
-        {
-          "dataKey": "home",
-          "items": [
-            {
-              "ID": "12624",
-              "URL": "https://m.tokopedia.com/discovery/tokopedia-anniversary-seller-11-tahun",
-              "CreativeName": "Tokped Annic_HPB SA_5 Aug 20",
-              "AppLink": "tokopedia://webview?url=https://m.tokopedia.com/discovery/tokopedia-anniversary-seller-11-tahun",
-              "FeaturedMediaURL": "https://ecs7-p.tokopedia.net/img/cache/800/VxWOnu/2020/8/6/a6dc8b0f-c30c-458e-b5ea-0882d0b19820.jpg"
-            }
-          ],
-          "errorMsg": ""
-        }
-      ]
+[
+  {
+    "data": {
+      "fetchCarouselWidgetData": {
+        "data": [
+          {
+            "dataKey": "home",
+            "items": [
+              {
+                "ID": "15288",
+                "URL": "https://seller.tokopedia.com/edu/fitur-wawasan-operasional/",
+                "CreativeName": "Wawasan Operasional_All_HPB 1_Public_9-15 Oct",
+                "AppLink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fseller.tokopedia.com%2Fedu%2Ffitur-wawasan-operasional%2F",
+                "FeaturedMediaURL": "https://ecs7-p.tokopedia.net/img/cache/500/VxWOnu/2020/9/28/822a547d-5447-4dd0-98ea-66ac86642b9c.jpg"
+              },
+              {
+                "ID": "15285",
+                "URL": "https://seller.tokopedia.com/edu/keuntungan-keluarga-tokopedia/",
+                "CreativeName": "KTOP_All_HPB 2_Public_9-15 Oct",
+                "AppLink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fseller.tokopedia.com%2Fedu%2Fkeuntungan-keluarga-tokopedia%2F",
+                "FeaturedMediaURL": "https://ecs7-p.tokopedia.net/img/cache/500/VxWOnu/2020/9/15/48a8589c-ed92-4eaf-b96f-aa7864a6e77b.jpg"
+              },
+              {
+                "ID": "15183",
+                "URL": "https://seller.tokopedia.com/edu/fitur-tukar-tambah/",
+                "CreativeName": "Tukar Tambah_All_HPB 5_Targeted_8-14 Oct",
+                "AppLink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fseller.tokopedia.com%2Fedu%2Ffitur-tukar-tambah%2F\u0026source\u003dhomepage.slider_banner.0.15183",
+                "FeaturedMediaURL": "https://ecs7-p.tokopedia.net/img/cache/500/VxWOnu/2020/10/8/22113e1e-7208-4cca-988f-cb5493b7d868.jpg"
+              }
+            ],
+            "errorMsg": "",
+            "showWidget": true
+          }
+        ]
+      }
     }
   }
-}
+]

@@ -15,8 +15,6 @@ data class Payment(
         val image: String = "",
         @SerializedName("description")
         val description: String = "",
-        @SerializedName("url")
-        val url: String = "",
         @SerializedName("minimum_amount")
         val minimumAmount: Long = 0,
         @SerializedName("maximum_amount")
@@ -33,6 +31,8 @@ data class Payment(
         val creditCard: PaymentCreditCard = PaymentCreditCard(),
         @SerializedName("error_message")
         val errorMessage: PaymentErrorMessage = PaymentErrorMessage(),
+        @SerializedName("occ_revamp_error_message")
+        val occRevampErrorMessage: PaymentRevampErrorMessage = PaymentRevampErrorMessage(),
         @SerializedName("ticker_message")
         val tickerMessage: String = "",
         @SerializedName("is_enable_next_button")
@@ -40,7 +40,15 @@ data class Payment(
         @SerializedName("is_disable_pay_button")
         val isDisablePayButton: Boolean = false,
         @SerializedName("is_ovo_only_campaign")
-        val isOvoOnlyCampaign: Boolean = false
+        val isOvoOnlyCampaign: Boolean = false,
+        @SerializedName("ovo_additional_data")
+        val ovoAdditionalData: OvoAdditionalData= OvoAdditionalData(),
+        @SerializedName("bid")
+        val bid: String = "",
+        @SerializedName("specific_gateway_campaign_only_type")
+        val specificGatewayCampaignOnlyType: Int = 0,
+        @SerializedName("wallet_additional_data")
+        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData()
 )
 
 data class PaymentErrorMessage(
@@ -55,6 +63,20 @@ data class PaymentErrorMessageButton(
         val text: String = "",
         @SerializedName("link")
         val link: String = ""
+)
+
+data class PaymentRevampErrorMessage(
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("button")
+        val button: PaymentRevampErrorMessageButton = PaymentRevampErrorMessageButton()
+)
+
+data class PaymentRevampErrorMessageButton(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("action")
+        val action: String = ""
 )
 
 data class PaymentCreditCard(
@@ -92,4 +114,58 @@ data class InstallmentTerm(
         val minAmount: Long = 0,
         @SerializedName("is_selected")
         val isSelected: Boolean = false
+)
+
+data class OvoAdditionalData(
+        @SerializedName("ovo_activation")
+        val ovoActivationData: OvoActionData = OvoActionData(),
+        @SerializedName("ovo_top_up")
+        val ovoTopUpData: OvoActionData = OvoActionData(),
+        @SerializedName("phone_number_registered")
+        val phoneNumberRegistered: OvoActionData = OvoActionData()
+)
+
+data class WalletAdditionalData(
+        @SerializedName("wallet_type")
+        val walletType: Int = 0, // 1 for ovo, 2 for gopay, 3 for gopaylater
+        @SerializedName("enable_wallet_amount_validation")
+        val enableWalletAmountValidation: Boolean = false,
+        @SerializedName("activation")
+        val activation: WalletData = WalletData(),
+        @SerializedName("top_up")
+        val topUp: WalletData = WalletData(),
+        @SerializedName("phone_number_registered")
+        val phoneNumberRegistered: WalletData = WalletData()
+)
+
+data class OvoActionData(
+        @SerializedName("is_required")
+        val isRequired: Boolean = false,
+        @SerializedName("button_title")
+        val buttonTitle: String = "",
+        @SerializedName("error_message")
+        val errorMessage: String = "",
+        @SerializedName("error_ticker")
+        val errorTicker: String = "",
+        @SerializedName("is_hide_digital")
+        val isHideDigital: Int = 0
+)
+
+data class WalletData(
+        @SerializedName("is_required")
+        val isRequired: Boolean = false, // flag to client to show activation button title or activation?
+        @SerializedName("button_title")
+        val buttonTitle: String = "",
+        @SerializedName("success_toaster")
+        val successToaster: String = "",
+        @SerializedName("error_toaster")
+        val errorToaster: String = "",
+        @SerializedName("error_message")
+        val errorMessage: String = "",
+        @SerializedName("is_hide_digital")
+        val isHideDigital: Boolean = false,
+        @SerializedName("header_title")
+        val headerTitle: String = "",
+        @SerializedName("url_link")
+        val urlLink: String = ""
 )

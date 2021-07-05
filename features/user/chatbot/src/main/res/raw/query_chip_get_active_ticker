@@ -1,5 +1,5 @@
 {
-  chipGetActiveTickerV4 {
+  chipGetActiveTickerV4(isHTML: true) {
     status
     server_process_time
     data {

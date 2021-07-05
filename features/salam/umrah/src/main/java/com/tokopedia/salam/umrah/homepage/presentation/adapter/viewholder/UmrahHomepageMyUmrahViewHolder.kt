@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.util.UmrahSpaceItemDecoration
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageMyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageMyUmrahAdapter
 import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
@@ -63,7 +63,7 @@ class UmrahHomepageMyUmrahViewHolder(view: View, private val onBindListener: onI
                     )
 
                     while (itemDecorationCount > 0) removeItemDecorationAt(0)
-                    addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4),
+                    addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2),
                             RecyclerView.HORIZONTAL))
 
 

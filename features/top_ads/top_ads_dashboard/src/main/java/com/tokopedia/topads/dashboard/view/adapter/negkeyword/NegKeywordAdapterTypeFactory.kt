@@ -2,15 +2,15 @@ package com.tokopedia.topads.dashboard.view.adapter.negkeyword
 
 import android.view.View
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewholder.NegKeywordViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 
 
 interface NegKeywordAdapterTypeFactory {
 
-    fun type(model: NegKeywordItemViewModel): Int
+    fun type(model: NegKeywordItemModel): Int
 
-    fun type(model: NegKeywordEmptyViewModel): Int
+    fun type(model: NegKeywordEmptyModel): Int
 
     fun holder(type: Int, view: View): NegKeywordViewHolder<*>
 

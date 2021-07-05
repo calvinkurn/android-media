@@ -2,6 +2,7 @@
 <resources>
     <!-- non unify dp -->
     <dimen name="voucher_creation_progressbar_padding_top">6dp</dimen>
+    <dimen name="mvc_dimen_24dp">24dp</dimen>
     <dimen name="mvc_dimen_20dp">20dp</dimen>
     <dimen name="mvc_dimen_12dp">12dp</dimen>
     <dimen name="mvc_dimen_240dp">240dp</dimen>
@@ -39,7 +40,7 @@
     <dimen name="mvc_create_voucher_type_chips_margin_left">12dp</dimen>
     <dimen name="mvc_create_voucher_cashback_into_divider_margin_top">6dp</dimen>
     <dimen name="mvc_create_voucher_cashback_value_margin_top">12dp</dimen>
-    <dimen name="mvc_create_voucher_cashback_discount_title_margin_top">15dp</dimen>
+    <dimen name="mvc_create_voucher_cashback_discount_title_margin_top">12dp</dimen>
     <dimen name="mvc_create_voucher_loader_size">100dp</dimen>
     <dimen name="mvc_textfield_margin_vertical">20dp</dimen>
     <dimen name="mvc_double_line_info_padding_vertical">10dp</dimen>
@@ -67,6 +68,7 @@
     <dimen name="mvc_dimen_120dp">120dp</dimen>
     <dimen name="mvc_dimen_140dp">140dp</dimen>
     <dimen name="mvc_dimen_6dp">6dp</dimen>
+    <dimen name="mvc_dimen_11dp">11dp</dimen>
 
     <!-- font size -->
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

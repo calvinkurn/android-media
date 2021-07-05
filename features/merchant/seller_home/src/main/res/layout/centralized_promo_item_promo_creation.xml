@@ -35,7 +35,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textAlignment="center"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -51,7 +51,7 @@
                 android:maxLines="4"
                 android:paddingBottom="@dimen/layout_lvl2"
                 android:textAlignment="center"
-                android:textColor="@color/sah_description_desc"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_height="@dimen/layout_lvl0"
                 android:layout_marginBottom="@dimen/layout_lvl1"
                 android:textAlignment="center"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -98,7 +98,8 @@
             android:adjustViewBounds="true"
             android:background="@drawable/ic_squircle"
             android:padding="@dimen/centralized_promo_dimen_12dp"
-            app:srcCompat="@drawable/sh_ic_top_ads_color" />
+            app:srcCompat="@drawable/sh_ic_top_ads_color"
+            android:contentDescription="@string/centralized_promo_content_desc_image_recommended_promo" />
 
     </FrameLayout>
 

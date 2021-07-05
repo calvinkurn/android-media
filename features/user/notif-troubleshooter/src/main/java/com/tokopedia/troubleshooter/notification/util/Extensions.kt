@@ -1,10 +1,32 @@
 package com.tokopedia.troubleshooter.notification.util
 
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+
+fun TextView.setCustomSpan(word: String, color: Int) {
+    val spannableString = SpannableString(text)
+    val start = text.indexOf(word)
+    val end = text.indexOf(word) + word.length
+    try {
+        val textColor = ForegroundColorSpan(color)
+        val textStyle = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(textColor, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(textStyle, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        text = spannableString
+    } catch (e: IndexOutOfBoundsException) {
+        println("invalid '$word' in TextView")
+    }
+}
 
 fun Any?.isNotNull(): Boolean {
     return this != null

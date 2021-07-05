@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/telco_loading_shimmering"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="gone">
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -16,7 +18,7 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
-        app:cardBackgroundColor="@color/Neutral_N0"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardElevation="@dimen/telco_space_1"
         app:cardPreventCornerOverlap="false">
@@ -61,10 +63,23 @@
         app:corners="4"
         app:width_weight="0.6" />
 
-    <include layout="@layout/item_telco_shimmering_product_list"/>
+    <include
+        layout="@layout/item_telco_shimmering_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3" />
 
-    <include layout="@layout/item_telco_shimmering_product_list"/>
+    <include
+        layout="@layout/item_telco_shimmering_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_12" />
 
-    <include layout="@layout/item_telco_shimmering_product_list"/>
+    <include
+        layout="@layout/item_telco_shimmering_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_12" />
 
 </LinearLayout>

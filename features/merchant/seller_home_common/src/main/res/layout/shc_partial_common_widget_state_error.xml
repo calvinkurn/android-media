@@ -12,9 +12,11 @@
         android:id="@+id/imgWidgetOnError"
         android:layout_width="@dimen/shc_dimen_110dp"
         android:layout_height="@dimen/shc_dimen_80dp"
-        tools:src="@drawable/unify_globalerrors_connection" />
+        tools:src="@drawable/unify_globalerrors_connection"
+        android:contentDescription="@string/shc_content_desc_image_error" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcErrorMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
@@ -26,7 +28,7 @@
         android:maxLines="1"
         android:text="@string/shc_failed_to_load_information"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         app:typographyWeight="bold" />
 </LinearLayout>

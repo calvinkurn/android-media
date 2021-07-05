@@ -6,51 +6,109 @@
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - shop - carousel",
-      "eventLabel": "{{.* - keyword: .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+ - keyword: .+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - lihat toko lainnya - carousel",
-      "eventLabel": "{{keyword: .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - homepage",
       "eventAction": "click - recent search autocomplete",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+",
+      "sessionIris": ".*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     },
     {
-      "event": "clickSearchResult",
+      "event": "clickTopNav",
       "eventCategory": "top nav",
       "eventAction": "click - shop autocomplete",
-      "eventLabel": "{{.* - keyword: .* - shop: .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+ - keyword: .+ - shop: .+",
+      "sessionIris": ".*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     },
     {
-      "event": "clickSearchResult",
+      "event": "clickTopNav",
       "eventCategory": "top nav",
       "eventAction": "click - product autocomplete",
-      "eventLabel": "{{keyword: .* - value: .* - po: .* - applink: .*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .+ - value: .+ - po: .+ - applink: .+",
+      "sessionIris": ".*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     },
     {
-      "event": "clickSearchResult",
+      "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - digital product suggestion",
-      "eventLabel": "{{keyword: .* - product: .* - po: .* - page: .*}}",
-      "campaignCode": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .+ - product: .+ - po: .+ - page: .+",
+      "campaignCode": ".*",
+      "sessionIris": ".*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     },
     {
       "event": "clickSearch",
       "eventCategory": "top nav",
       "eventAction": "click - search",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - autocomplete local",
+      "eventLabel": "keyword: .+ - value: .+ - applink: .+ - campaign: .+",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
+      "businessUnit": "search",
+      "sessionIris": ".*",
+      "pageSource": ".*"
+    },
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - autocomplete global",
+      "eventLabel": "keyword: .+ - value: .+ - applink: .+",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
+      "businessUnit": "search",
+      "sessionIris": ".*",
+      "pageSource": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product autocomplete campaign",
+      "eventCategory": "top nav",
+      "eventLabel": "keyword: .+ - value: .+ - applink: .+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/search - product autocomplete campaign",
+      "items": [
+        {
+          "index": "\\d*.\\d*",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": "none / other",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": "/search - product autocomplete campaign",
+          "dimension90": ".*"
+        }
+      ],
+      "userId": ".+",
+      "sessionIris": ".+"
     }
   ]
 }

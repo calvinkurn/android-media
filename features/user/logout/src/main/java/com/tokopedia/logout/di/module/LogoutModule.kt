@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 
-@LogoutScope
 @Module
 class LogoutModule(private val context: Context) {
 

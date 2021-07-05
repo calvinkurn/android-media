@@ -3,26 +3,30 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.dummy.BANNER_DATA
 import com.tokopedia.flight.dummy.TICKER_DATA
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.trimDate
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -37,7 +41,7 @@ class FlightHomepageViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
-    private val testDispatcherProvider = TravelTestDispatcherProvider()
+    private val testDispatcherProvider = CoroutineTestDispatchersProvider
 
     private val travelTickerUseCase = mockk<TravelTickerCoroutineUseCase>()
     private val travelCollectiveBannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
@@ -45,8 +49,10 @@ class FlightHomepageViewModelTest {
 
     @RelaxedMockK
     private lateinit var dashboardCache: FlightDashboardCache
+
     @RelaxedMockK
     private lateinit var flightAnalytics: FlightAnalytics
+
     @RelaxedMockK
     private lateinit var deleteAllFlightSearch: FlightSearchDeleteAllDataUseCase
 
@@ -64,14 +70,71 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
-    fun fetchBannerData_returnEmptyData_bannerSizeShouldBeEmpty() {
+    fun fetchVideoBannerData_returnEmptyData_videoBannerSizeShouldBeEmpty() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel())
 
         // when
-        flightHomepageViewModel.fetchBannerData("", true)
+        flightHomepageViewModel.fetchVideoBannerData()
+
+        // then
+        assert(flightHomepageViewModel.videoBanner.value is Success<TravelCollectiveBannerModel>)
+        val bannerData = (flightHomepageViewModel.videoBanner.value as Success<TravelCollectiveBannerModel>).data
+
+        bannerData.banners.size shouldBe 0
+    }
+
+    @Test
+    fun fetchVideoBannerData_returnListBanner_bannerSizeShouldBeSameAsData() {
+        // given
+        coEvery {
+            travelCollectiveBannerUseCase.execute(any(), any())
+        } returns Success(BANNER_DATA)
+
+        // when
+        flightHomepageViewModel.fetchVideoBannerData()
+
+        // then
+        assert(flightHomepageViewModel.videoBanner.value is Success<TravelCollectiveBannerModel>)
+        val bannerData = (flightHomepageViewModel.videoBanner.value as Success<TravelCollectiveBannerModel>).data
+
+        bannerData.banners.size shouldBe BANNER_DATA.banners.size
+        for ((index, banner) in bannerData.banners.withIndex()) {
+            banner.id shouldBe BANNER_DATA.banners[index].id
+            banner.product shouldBe BANNER_DATA.banners[index].product
+            banner.attribute.appUrl shouldBe BANNER_DATA.banners[index].attribute.appUrl
+            banner.attribute.imageUrl shouldBe BANNER_DATA.banners[index].attribute.imageUrl
+            banner.attribute.description shouldBe BANNER_DATA.banners[index].attribute.description
+            banner.attribute.promoCode shouldBe BANNER_DATA.banners[index].attribute.promoCode
+            banner.attribute.webUrl shouldBe BANNER_DATA.banners[index].attribute.webUrl
+        }
+    }
+
+    @Test
+    fun fetchVideoBannerData_returnFail_bannerValueShouldBeFailed() {
+        // given
+        coEvery {
+            travelCollectiveBannerUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        // when
+        flightHomepageViewModel.fetchVideoBannerData()
+
+        // then
+        assert(flightHomepageViewModel.videoBanner.value is Fail)
+    }
+
+    @Test
+    fun fetchBannerData_returnEmptyData_bannerSizeShouldBeEmpty() {
+        // given
+        coEvery {
+            travelCollectiveBannerUseCase.execute(any(), any())
+        } returns Success(TravelCollectiveBannerModel())
+
+        // when
+        flightHomepageViewModel.fetchBannerData(true)
 
         // then
         assert(flightHomepageViewModel.bannerList.value is Success<TravelCollectiveBannerModel>)
@@ -84,11 +147,11 @@ class FlightHomepageViewModelTest {
     fun fetchBannerData_returnListBanner_bannerSizeShouldBeSameAsData() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(BANNER_DATA)
 
         // when
-        flightHomepageViewModel.fetchBannerData("", true)
+        flightHomepageViewModel.fetchBannerData(true)
 
         // then
         assert(flightHomepageViewModel.bannerList.value is Success<TravelCollectiveBannerModel>)
@@ -110,11 +173,11 @@ class FlightHomepageViewModelTest {
     fun fetchBannerData_returnFail_bannerValueShouldBeFailed() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
         // when
-        flightHomepageViewModel.fetchBannerData("", true)
+        flightHomepageViewModel.fetchBannerData(true)
 
         // then
         assert(flightHomepageViewModel.bannerList.value is Fail)
@@ -421,12 +484,12 @@ class FlightHomepageViewModelTest {
     fun getBannerData_successGetBannerData() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(BANNER_DATA)
         val selectedBannerData = 0
 
         // when
-        flightHomepageViewModel.fetchBannerData("", false)
+        flightHomepageViewModel.fetchBannerData(false)
         val bannerData = flightHomepageViewModel.getBannerData(selectedBannerData)
 
         // then
@@ -443,12 +506,12 @@ class FlightHomepageViewModelTest {
     fun getBannerData_failedGetBannerData() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(BANNER_DATA)
         val selectedBannerData = 5
 
         // when
-        flightHomepageViewModel.fetchBannerData("", false)
+        flightHomepageViewModel.fetchBannerData(false)
         val bannerData = flightHomepageViewModel.getBannerData(selectedBannerData)
 
         // then
@@ -470,7 +533,7 @@ class FlightHomepageViewModelTest {
         verify {
             flightAnalytics.eventPromotionClick(position + 1,
                     bannerData,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -489,7 +552,7 @@ class FlightHomepageViewModelTest {
         verify {
             flightAnalytics.eventPromotionClick(position + 1,
                     bannerData,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -721,14 +784,11 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForDeparture_shouldReturnPairDate() {
         // given
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
-        maxDateCalendar.time = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE,
-                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-        maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
-        maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
-        maxDateCalendar.set(Calendar.SECOND, FlightSearchUniversalViewModel.DEFAULT_LAST_SEC)
+        val maxDateCalendar = DateUtil.getCurrentCalendar()
+        maxDateCalendar.time = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT)
+                .addTimeToSpesificDate(Calendar.DATE, FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+                .trimDate()
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -740,7 +800,7 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForReturn_shouldReturnPairDate() {
         // given
-        val departureDate = FlightDateUtil.getCurrentDate()
+        val departureDate = DateUtil.getCurrentDate()
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
@@ -752,7 +812,8 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_validDate() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -764,7 +825,8 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_dateMoreThanOneYear() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 2)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -776,7 +838,8 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_dateBeforeToday() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, -1)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, -1)
 
         // when
         val result = flightHomepageViewModel.validateDepartureDate(departureDate)
@@ -788,8 +851,10 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateReturnDate_validDate() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -801,8 +866,10 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateReturnDate_returnDateMoreThanOneYear() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 1)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 1)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -814,8 +881,10 @@ class FlightHomepageViewModelTest {
     @Test
     fun validateDepartureDate_returnDateBeforeDepartureDate() {
         // given
-        val departureDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 3)
-        val returnDate = FlightDateUtil.addTimeToCurrentDate(Calendar.MONTH, 2)
+        val departureDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 3)
+        val returnDate = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.MONTH, 2)
 
         // when
         val result = flightHomepageViewModel.validateReturnDate(departureDate, returnDate)
@@ -857,7 +926,7 @@ class FlightHomepageViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
+            flightAnalytics.eventSearchClick(any(), FlightAnalyticsScreenName.HOMEPAGE, any())
             deleteAllFlightSearch.execute()
         }
     }
@@ -894,7 +963,7 @@ class FlightHomepageViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
+            flightAnalytics.eventSearchClick(any(), FlightAnalyticsScreenName.HOMEPAGE, any())
             deleteAllFlightSearch.execute()
         }
     }
@@ -932,21 +1001,21 @@ class FlightHomepageViewModelTest {
     fun validateSendTrackingPromoScrolledWhenLoggedIn() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(BANNER_DATA)
         val selectedBannerData = 0
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { userSessionInterface.userId } returns "dummy user id"
 
         // when
-        flightHomepageViewModel.fetchBannerData("", false)
+        flightHomepageViewModel.fetchBannerData(false)
         flightHomepageViewModel.sendTrackingPromoScrolled(selectedBannerData)
 
         // then
         verify {
             flightAnalytics.eventPromoImpression(selectedBannerData,
                     BANNER_DATA.banners[selectedBannerData],
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -955,20 +1024,20 @@ class FlightHomepageViewModelTest {
     fun validateSendTrackingPromoScrolledNotLoggedIn() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(BANNER_DATA)
         val selectedBannerData = 0
         coEvery { userSessionInterface.isLoggedIn } returns false
 
         // when
-        flightHomepageViewModel.fetchBannerData("", false)
+        flightHomepageViewModel.fetchBannerData(false)
         flightHomepageViewModel.sendTrackingPromoScrolled(selectedBannerData)
 
         // then
         verify {
             flightAnalytics.eventPromoImpression(selectedBannerData,
                     BANNER_DATA.banners[selectedBannerData],
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -977,15 +1046,72 @@ class FlightHomepageViewModelTest {
     fun validateFailedSendTrackingPromoScrolled() {
         // given
         coEvery {
-            travelCollectiveBannerUseCase.execute(any(), any(), any())
+            travelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(BANNER_DATA)
         val selectedBannerData = 5
 
         // when
-        flightHomepageViewModel.fetchBannerData("", false)
+        flightHomepageViewModel.fetchBannerData(false)
         flightHomepageViewModel.sendTrackingPromoScrolled(selectedBannerData)
 
         // then
     }
 
+    @Test
+    fun validateSendTrackingVideoBannerImpression_LoggedIn() {
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalyticsScreenName.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerImpression_NotLoggedIn() {
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerImpression(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
+                    FlightAnalyticsScreenName.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_LoggedIn() {
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns true
+        coEvery { userSessionInterface.userId } returns "dummy user id"
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalyticsScreenName.HOMEPAGE,
+                    any())
+        }
+    }
+
+    @Test
+    fun validateSendTrackingVideoBannerClick_NotLoggedIn() {
+        val travelVideoBannerModel = TravelVideoBannerModel(title = "Travelling aman", id = "634")
+        coEvery { userSessionInterface.isLoggedIn } returns false
+
+        flightHomepageViewModel.sendTrackingVideoBannerClick(travelVideoBannerModel)
+
+        verify {
+            flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
+                    FlightAnalyticsScreenName.HOMEPAGE,
+                    any())
+        }
+    }
 }

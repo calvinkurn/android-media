@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.model
 
+import java.util.*
+
 
 /**
  * Created by mzennis on 14/06/20.
@@ -13,7 +15,8 @@ data class ConfigurationUiModel(
         val durationConfig: DurationConfigUiModel,
         val productTagConfig: ProductTagConfigUiModel,
         val coverConfig: CoverConfigUiModel,
-        val countDown: Long // second
+        val countDown: Long, // second
+        val scheduleConfig: BroadcastScheduleConfigUiModel
 )
 
 data class DurationConfigUiModel(
@@ -32,4 +35,10 @@ data class ProductTagConfigUiModel(
 
 data class CoverConfigUiModel(
         val maxChars: Int
+)
+
+data class BroadcastScheduleConfigUiModel(
+        val minimum: Date,
+        val maximum: Date,
+        val default: Date
 )

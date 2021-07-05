@@ -1,23 +1,14 @@
 package com.tokopedia.analyticsdebugger.debugger
 
-/**
- * @author okasurya on 5/16/18.
- */
+import com.tokopedia.analyticsdebugger.AnalyticsSource
+
 interface AnalyticsLogger {
 
     val isNotificationEnabled: Boolean
 
-    fun save(name: String, data: Map<String, Any>)
+    fun save(name: String, data: Map<String, Any>, @AnalyticsSource source:String)
 
     fun saveError(errorData: String)
-
-    fun wipe()
-
-    fun openActivity()
-
-    fun openErrorActivity()
-
-    fun navigateToValidator()
 
     fun enableNotification(status: Boolean)
 }

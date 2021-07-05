@@ -16,9 +16,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -31,9 +33,12 @@ import com.tokopedia.review.common.analytics.ReviewTracking
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.common.analytics.ReviewInboxTrackingConstants
+import com.tokopedia.review.feature.inbox.common.presentation.InboxUnifiedRemoteConfig
+import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
@@ -45,7 +50,8 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
-import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
+import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_review_pending.*
@@ -56,12 +62,15 @@ import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
 
 class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
-        ReviewPendingItemListener, HasComponent<ReviewPendingComponent>, ReviewPerformanceMonitoringContract {
+        ReviewPendingItemListener, HasComponent<ReviewPendingComponent>, ReviewPerformanceMonitoringContract,
+        IncentiveOvoListener {
 
     companion object {
         const val CREATE_REVIEW_REQUEST_CODE = 420
-        fun createNewInstance() : ReviewPendingFragment {
-            return ReviewPendingFragment()
+        fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
+            return ReviewPendingFragment().apply {
+                this.reviewInboxListener = reviewInboxListener
+            }
         }
     }
 
@@ -69,6 +78,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     lateinit var viewModel: ReviewPendingViewModel
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
+    private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
+    private var reviewInboxListener: ReviewInboxListener? = null
+    private var source: String = ""
+    private var containerListener: InboxFragmentContainer? = null
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -90,33 +103,20 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun trackCardClicked(reputationId: Int, productId: Int) {
-        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId())
+    override fun trackCardClicked(reputationId: String, productId: String, isEligible: Boolean) {
+        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible, source)
     }
 
-    override fun trackStarsClicked(reputationId: Int, productId: Int, rating: Int) {
-        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId())
+    override fun trackStarsClicked(reputationId: String, productId: String, rating: Int, isEligible: Boolean) {
+        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible, source)
     }
 
-    override fun onStarsClicked(reputationId: Int, productId: Int, rating: Int, inboxReviewId: Int, seen: Boolean) {
-        if(!seen) {
+    override fun onStarsClicked(reputationId: String, productId: String, rating: Int, inboxReviewId: String, seen: Boolean) {
+        if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
+            containerListener?.decreaseReviewUnreviewedCounter()
         }
-        goToCreateReviewActivity(reputationId, productId, rating)
-    }
-
-    override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
-        val bottomSheet: BottomSheetUnify = IncentiveOvoBottomSheet(productRevIncentiveOvoDomain, ReviewInboxTrackingConstants.PENDING_TAB)
-        fragmentManager?.let { bottomSheet.show(it, bottomSheet.tag)}
-        bottomSheet.setCloseClickListener {
-            ReviewTracking.onClickDismissIncentiveOvoBottomSheetTracker(ReviewInboxTrackingConstants.PENDING_TAB)
-            bottomSheet.dismiss()
-        }
-        ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.title, ReviewInboxTrackingConstants.PENDING_TAB)
-    }
-
-    override fun onDismissOvoIncentiveTicker(title: String) {
-        ReviewTracking.onClickDismissIncentiveOvoTracker(title, ReviewInboxTrackingConstants.PENDING_TAB)
+        goToCreateReviewActivity(reputationId, productId, rating, inboxReviewId.toString())
     }
 
     override fun getComponent(): ReviewPendingComponent? {
@@ -146,13 +146,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                reviewPendingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
-        return if(context is ReviewPerformanceMonitoringListener) {
+        return if (context is ReviewPerformanceMonitoringListener) {
             context
         } else {
             null
@@ -176,7 +176,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         super.onViewCreated(view, savedInstanceState)
         initView()
         showFullPageLoading()
-        getIncentiveOvoData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -187,10 +186,6 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
         return reviewPendingSwipeRefresh
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory> {
-        return ReviewPendingAdapter(adapterTypeFactory)
     }
 
     override fun onDestroy() {
@@ -228,13 +223,54 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CREATE_REVIEW_REQUEST_CODE) {
+        if (requestCode == CREATE_REVIEW_REQUEST_CODE) {
             loadInitialData()
-            if(resultCode == Activity.RESULT_OK) {
+            reviewInboxListener?.reloadCounter()
+            if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
-                onFailCreateReview(data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE) ?: getString(R.string.review_pending_invalid_to_review))
+                onFailCreateReview(data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
+                        ?: getString(R.string.review_pending_invalid_to_review))
             }
+        }
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory> {
+        return ReviewPendingAdapter(adapterTypeFactory)
+    }
+
+    override fun onUrlClicked(url: String): Boolean {
+        context?.let {
+            return ReviewUtil.routeToWebview(it, ovoIncentiveBottomSheet, url)
+        }
+        return false
+    }
+
+    override fun onClickCloseThankYouBottomSheet() {
+        // No Op
+    }
+
+    override fun onClickReviewAnother() {
+        // No Op
+    }
+
+    override fun onDismissOvoIncentiveTicker(subtitle: String) {
+        ReviewTracking.onClickDismissIncentiveOvoTracker(subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        reviewInboxListener?.reloadCounter()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getSourceData()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is InboxFragmentContainer) {
+            containerListener = context
         }
     }
 
@@ -253,6 +289,9 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
         reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
         reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
+        reviewEmptyButton.setOnClickListener {
+            goToHome()
+        }
     }
 
     private fun showError() {
@@ -288,11 +327,19 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit = {}) {
-        view?.let { Toaster.build(reviewPendingContainer, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+        try {
+            view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun showToaster(message: String, ctaText: String) {
-        view?.let { Toaster.build(reviewPendingContainer, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
+        try {
+            view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getPendingReviewData(page: Int, isRefresh: Boolean = false) {
@@ -308,19 +355,21 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             when (it) {
                 is CoroutineSucess -> onSuccessGetIncentiveOvo(it.data)
                 is CoroutineFail -> onErrorGetIncentiveOvo()
+                else -> onSuccessGetIncentiveOvo(null)
             }
         })
     }
 
     private fun observeReviewList() {
         viewModel.reviewList.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     hideFullPageLoading()
                     hideError()
-                    if(it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                    hideLoading()
+                    if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showEmptyState()
                     } else {
                         renderReviewData(ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
@@ -336,7 +385,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                 }
                 is Fail -> {
                     hideFullPageLoading()
-                    if(it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         showError()
                         hideEmptyState()
                         hideList()
@@ -348,15 +397,24 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         })
     }
 
-    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain) {
-        data.productrevIncentiveOvo?.ticker?.let {
-            ReviewTracking.onSuccessGetIncentiveOvoTracker(it.title, ReviewInboxTrackingConstants.PENDING_TAB)
+    private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
+        data?.productrevIncentiveOvo?.ticker?.let {
             (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(ReviewPendingOvoIncentiveUiModel((data)))
         }
     }
 
     private fun onErrorGetIncentiveOvo() {
         // No Op
+    }
+
+    override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
+        if (ovoIncentiveBottomSheet == null) {
+            ovoIncentiveBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this, ReviewInboxTrackingConstants.PENDING_TAB) }
+        }
+        ovoIncentiveBottomSheet?.let { bottomSheet ->
+            activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
+            ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
+        }
     }
 
     private fun onSuccessCreateReview() {
@@ -373,14 +431,31 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Int, productId: Int, rating: Int) {
-        val intent = RouteManager.getIntent(context,
-                Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
-                        .buildUpon()
-                        .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
-                        .build()
-                        .toString())
-        startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+    private fun goToCreateReviewActivity(reputationId: String, productId: String, rating: Int, inboxId: String) {
+        context?.let {
+            val intent = RouteManager.getIntent(it,
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId))
+                            .buildUpon()
+                            .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
+                            .build()
+                            .toString())
+            startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+        }
+    }
+
+    private fun getSourceData() {
+        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+            source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
+            if(source.isBlank()) {
+                source = ReviewInboxConstants.DEFAULT_SOURCE
+            }
+            return
+        }
+        source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
+    }
+
+    private fun goToHome() {
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 
 }

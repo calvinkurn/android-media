@@ -1,9 +1,9 @@
 package com.tokopedia.flight.dummy
 
-import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateDetail
-import com.tokopedia.flight.cancellationV2.data.FlightCancellationEstimateEntity
-import com.tokopedia.flight.cancellationV2.data.FlightCancellationRequestEntity
-import com.tokopedia.flight.cancellationV2.presentation.model.*
+import com.tokopedia.flight.cancellation.data.FlightCancellationEstimateDetail
+import com.tokopedia.flight.cancellation.data.FlightCancellationEstimateEntity
+import com.tokopedia.flight.cancellation.data.FlightCancellationRequestEntity
+import com.tokopedia.flight.cancellation.presentation.model.*
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 
 /**
@@ -82,7 +82,8 @@ val DUMMY_CANCELLATION_WRAPPER =
                                 ),
                                 arrayListOf()
                         )
-                )
+                ),
+                "1234567890"
         )
 
 val DUMMY_EMPTY_FILEPATH_CANCELLATION_WRAPPER =

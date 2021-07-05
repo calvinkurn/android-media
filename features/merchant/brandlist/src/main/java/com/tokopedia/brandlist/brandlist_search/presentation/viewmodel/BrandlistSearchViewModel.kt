@@ -7,7 +7,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreAllBrands
 import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreBrandsRecommendation
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
-import com.tokopedia.brandlist.common.BrandlistDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,8 +20,8 @@ import javax.inject.Inject
 class BrandlistSearchViewModel @Inject constructor(
         private val getBrandlistPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
         private val getBrandlistAllBrandUseCase: GetBrandlistAllBrandUseCase,
-        private val dispatchers: BrandlistDispatcherProvider
-): BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     companion object {
         private const val INITIAL_OFFSET = 0
@@ -124,7 +124,7 @@ class BrandlistSearchViewModel @Inject constructor(
             firstLetter: String
     ) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, offset,
                         query, brandSize, POPULARITY_SORT, firstLetter)
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
@@ -143,7 +143,7 @@ class BrandlistSearchViewModel @Inject constructor(
     ) {
         val categoryIdString = categoryIds.toString().replace(" ","")
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 getBrandlistPopularBrandUseCase.params = GetBrandlistPopularBrandUseCase.
                         createParams(
                                 userId.toInt(),
@@ -168,7 +168,7 @@ class BrandlistSearchViewModel @Inject constructor(
             firstLetter: String
     ) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, offset,
                         query, brandSize, sortType, firstLetter)
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()
@@ -183,7 +183,7 @@ class BrandlistSearchViewModel @Inject constructor(
 
     fun getTotalBrands() {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 getBrandlistAllBrandUseCase.params = GetBrandlistAllBrandUseCase.createParams(CATEGORY_ID, INITIAL_OFFSET,
                         ALL_BRANDS_QUERY, 0, ALPHABETIC_ASC_SORT, "")
                 val searchBrandResult = getBrandlistAllBrandUseCase.executeOnBackground()

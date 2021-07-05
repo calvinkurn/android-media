@@ -19,4 +19,6 @@ object Constants {
     const val NO_DPI_ARRAY = "noDpi"
     const val AUDIO_ARRAY = "audio"
 
+    const val REQUIRE_COMPLETE_URL_ERROR_MSG = "Please provide non empty name or correct completeUrl"
+
 }

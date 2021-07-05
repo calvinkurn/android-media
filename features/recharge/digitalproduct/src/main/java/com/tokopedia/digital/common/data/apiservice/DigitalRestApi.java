@@ -1,10 +1,10 @@
 package com.tokopedia.digital.common.data.apiservice;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCancelVoucherData;
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
-import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
+import com.tokopedia.digital.newcart.data.entity.response.cart.ResponseCancelVoucherData;
+import com.tokopedia.digital.newcart.data.entity.response.cart.ResponseCartData;
+import com.tokopedia.digital.newcart.data.entity.response.cart.ResponseCheckoutData;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.data.model.response.DataResponse;
 
@@ -24,12 +24,6 @@ import rx.Observable;
  */
 public interface DigitalRestApi {
 
-    @GET(TkpdBaseURL.DigitalApi.PATH_STATUS)
-    Observable<Response<TkpdDigitalResponse>> getStatus();
-
-    @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY_LIST)
-    Observable<Response<TkpdDigitalResponse>> getCategoryList(@QueryMap Map<String, Object> params);
-
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<DataResponse<ResponseCartData>>> getCart(@QueryMap Map<String, String> params);
 
@@ -47,13 +41,4 @@ public interface DigitalRestApi {
     @POST(TkpdBaseURL.DigitalApi.PATH_CANCEL_VOUCHER)
     @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<ResponseCancelVoucherData>>> cancelVoucher(@Body JsonObject requestBody);
-
-    @POST(TkpdBaseURL.DigitalApi.PATH_SMARTCARD_INQUIRY)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> smartcardInquiry(@Body JsonObject requestBody);
-
-    @POST(TkpdBaseURL.DigitalApi.PATH_SMARTCARD_COMMAND)
-    @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> smartcardCommand(@Body JsonObject requestBody);
-
 }

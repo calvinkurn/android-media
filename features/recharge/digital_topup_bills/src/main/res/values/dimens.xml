@@ -2,4 +2,6 @@
 <resources>
     <dimen name="telco_space_3">3dp</dimen>
     <dimen name="telco_space_1">1dp</dimen>
+    <dimen name="telco_banner_space">18dp</dimen>
+    <dimen name="telco_dynamic_banner_space">31dp</dimen>
 </resources>

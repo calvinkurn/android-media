@@ -1,0 +1,234 @@
+[
+  {
+    "data": {
+      "TravelGetHoliday": {
+        "data": [
+          {
+            "ID": "ID-2020-01-01",
+            "attribute": {
+              "date": "2020-01-01",
+              "label": "Tahun Baru"
+            }
+          },
+          {
+            "ID": "ID-2020-01-25",
+            "attribute": {
+              "date": "2020-01-25",
+              "label": "Tahun Baru Imlek"
+            }
+          },
+          {
+            "ID": "ID-2020-03-22",
+            "attribute": {
+              "date": "2020-03-22",
+              "label": "Isra Mi\u0027raj"
+            }
+          },
+          {
+            "ID": "ID-2020-03-25",
+            "attribute": {
+              "date": "2020-03-25",
+              "label": "Nyepi"
+            }
+          },
+          {
+            "ID": "ID-2020-04-10",
+            "attribute": {
+              "date": "2020-04-10",
+              "label": "Jumat Agung"
+            }
+          },
+          {
+            "ID": "ID-2020-05-01",
+            "attribute": {
+              "date": "2020-05-01",
+              "label": "Hari Buruh"
+            }
+          },
+          {
+            "ID": "ID-2020-05-07",
+            "attribute": {
+              "date": "2020-05-07",
+              "label": "Waisak"
+            }
+          },
+          {
+            "ID": "ID-2020-05-21",
+            "attribute": {
+              "date": "2020-05-21",
+              "label": "Kenaikan Yesus Kristus"
+            }
+          },
+          {
+            "ID": "ID-2020-05-24",
+            "attribute": {
+              "date": "2020-05-24",
+              "label": "Hari Raya Idul Fitri 1441 H"
+            }
+          },
+          {
+            "ID": "ID-2020-05-25",
+            "attribute": {
+              "date": "2020-05-25",
+              "label": "Hari Raya Idul Fitri 1441 H"
+            }
+          },
+          {
+            "ID": "ID-2020-06-01",
+            "attribute": {
+              "date": "2020-06-01",
+              "label": "Hari Lahir Pancasila"
+            }
+          },
+          {
+            "ID": "ID-2020-07-31",
+            "attribute": {
+              "date": "2020-07-31",
+              "label": "Hari Raya Idul Adha 1441 H"
+            }
+          },
+          {
+            "ID": "ID-2020-08-17",
+            "attribute": {
+              "date": "2020-08-17",
+              "label": "Hari Kemerdekaan RI"
+            }
+          },
+          {
+            "ID": "ID-2020-08-20",
+            "attribute": {
+              "date": "2020-08-20",
+              "label": "Tahun Baru Islam 1442 H"
+            }
+          },
+          {
+            "ID": "ID-2020-10-29",
+            "attribute": {
+              "date": "2020-10-29",
+              "label": "Maulid Nabi Muhammad SAW"
+            }
+          },
+          {
+            "ID": "ID-2020-12-25",
+            "attribute": {
+              "date": "2020-12-25",
+              "label": "Hari Raya Natal"
+            }
+          },
+          {
+            "ID": "ID-2021-01-01",
+            "attribute": {
+              "date": "2021-01-01",
+              "label": "Tahun Baru"
+            }
+          },
+          {
+            "ID": "ID-2021-02-12",
+            "attribute": {
+              "date": "2021-02-12",
+              "label": "Tahun Baru Imlek"
+            }
+          },
+          {
+            "ID": "ID-2021-03-11",
+            "attribute": {
+              "date": "2021-03-11",
+              "label": "Isra Mi\u0027raj"
+            }
+          },
+          {
+            "ID": "ID-2021-03-14",
+            "attribute": {
+              "date": "2021-03-14",
+              "label": "Nyepi"
+            }
+          },
+          {
+            "ID": "ID-2021-04-02",
+            "attribute": {
+              "date": "2021-04-02",
+              "label": "Jumat Agung"
+            }
+          },
+          {
+            "ID": "ID-2021-05-01",
+            "attribute": {
+              "date": "2021-05-01",
+              "label": "Hari Buruh"
+            }
+          },
+          {
+            "ID": "ID-2021-05-13",
+            "attribute": {
+              "date": "2021-05-13",
+              "label": "Kenaikan Isa Almasih"
+            }
+          },
+          {
+            "ID": "ID-2021-05-13",
+            "attribute": {
+              "date": "2021-05-13",
+              "label": "Hari Raya Idul Fitri 1442 H"
+            }
+          },
+          {
+            "ID": "ID-2021-05-14",
+            "attribute": {
+              "date": "2021-05-14",
+              "label": "Hari Raya Idul Fitri 1442 H"
+            }
+          },
+          {
+            "ID": "ID-2021-05-26",
+            "attribute": {
+              "date": "2021-05-26",
+              "label": "Hari Waisak"
+            }
+          },
+          {
+            "ID": "ID-2021-06-01",
+            "attribute": {
+              "date": "2021-06-01",
+              "label": "Hari Lahir Pancasila"
+            }
+          },
+          {
+            "ID": "ID-2021-07-20",
+            "attribute": {
+              "date": "2021-07-20",
+              "label": "Hari Raya Idul Adha 1442 H"
+            }
+          },
+          {
+            "ID": "ID-2021-08-10",
+            "attribute": {
+              "date": "2021-08-10",
+              "label": "Tahun Baru Islam 1443 H"
+            }
+          },
+          {
+            "ID": "ID-2021-08-17",
+            "attribute": {
+              "date": "2021-08-17",
+              "label": "Hari Kemerdekaan RI"
+            }
+          },
+          {
+            "ID": "ID-2021-10-19",
+            "attribute": {
+              "date": "2021-10-19",
+              "label": "Maulid Nabi Muhammad SAW"
+            }
+          },
+          {
+            "ID": "ID-2021-12-25",
+            "attribute": {
+              "date": "2021-12-25",
+              "label": "Hari Raya Natal"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

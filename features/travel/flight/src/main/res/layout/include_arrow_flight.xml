@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container_image_arrow"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
@@ -11,8 +10,8 @@
     android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_8"
+        android:layout_width="@dimen/layout_lvl1"
+        android:layout_height="@dimen/layout_lvl1"
         app:srcCompat="@drawable/flight_circle_green_stroke" />
 
     <View
@@ -21,7 +20,7 @@
         android:background="@drawable/flight_bg_dash_stroke_flight" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         app:srcCompat="@drawable/ic_plane_flight" />
 </LinearLayout>

@@ -4,13 +4,13 @@
     android:shape="oval">
 
     <size
-        android:height="@dimen/dp_5"
-        android:width="@dimen/dp_5"
+        android:height="@dimen/layout_lvl1"
+        android:width="@dimen/layout_lvl1"
         />
 
-    <solid android:color="@color/Red_R500" />
+    <solid android:color="@color/play_dms_R500" />
 
     <stroke android:width="@dimen/dp_1"
-        android:color="@color/Neutral_N0"
+        android:color="@color/Unify_Static_White"
         />
 </shape>

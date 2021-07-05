@@ -4,10 +4,10 @@
     android:shape="rectangle"
     >
     <corners
-        android:radius="@dimen/play_product_line_image_radius"
+        android:radius="@dimen/play_product_image_radius"
         />
     <stroke
-        android:color="@color/Neutral_N50"
+        android:color="@color/Unify_N50"
         android:width="@dimen/play_product_line_image_border_width"
         />
 </shape>

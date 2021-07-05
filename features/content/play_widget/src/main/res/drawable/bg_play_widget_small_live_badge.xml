@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners
+        android:topLeftRadius="@dimen/play_view_stats_info_badge_radius"
+        android:bottomLeftRadius="@dimen/play_view_stats_info_badge_radius"
+        />
+    <solid
+        android:color="@color/play_widget_dms_bg_small_live_badge"
+        />
+</shape>

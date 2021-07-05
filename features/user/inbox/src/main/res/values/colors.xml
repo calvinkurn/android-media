@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="title_bottom_nav">#778092</color>
+    <color name="title_bottom_nav_active">#00AA5B</color>
+    <color name="inbox_shadow_bottom_nav">#296c727c</color>
+</resources>

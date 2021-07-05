@@ -2,8 +2,6 @@ package com.tokopedia.home.account.revamp.domain.data.mapper
 
 import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.home.account.AccountConstants.VccStatus
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem
@@ -11,16 +9,15 @@ import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutListItem
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutResponse
 import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator.Companion.getModel
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
+import com.tokopedia.home.account.revamp.Utils.formatIdrCurrency
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.navigation_common.model.VccUserStatus
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import rx.functions.Func1
 import javax.inject.Inject
@@ -38,8 +35,8 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_BLOCKED = "Layanan Terblokir"
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
-    private val UOH_AB_TEST_KEY = "uoh_android"
-    private val UOH_AB_TEST_VALUE = "uoh_android"
+    private val UOH_AB_TEST_KEY = "uoh_android_v2"
+    private val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun call(t: AccountDataModel): BuyerViewModel {
         return getBuyerModel(t)
@@ -67,6 +64,12 @@ class BuyerAccountMapper @Inject constructor(
 
             shopName = userSession.shopName.toEmptyStringIfNull()
             isHasShop = userSession.hasShop()
+            roleName =
+                    if (userSession.isShopOwner) {
+                        null
+                    } else {
+                        accountDataModel.adminTypeText
+                    }
 
             setShortcutResponse(accountDataModel, this)
 
@@ -75,6 +78,7 @@ class BuyerAccountMapper @Inject constructor(
             isAffiliate = accountDataModel.isAffiliate
         }
 
+        userSession.shopName = buyerCardViewModel.shopName
         userSession.setHasPassword(accountDataModel.userProfileCompletion.isCreatedPassword)
 
         return buyerCardViewModel
@@ -139,10 +143,8 @@ class BuyerAccountMapper @Inject constructor(
         tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
         tokopediaPayViewModel.isRightSaldo = true
 
-        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false)
+        tokopediaPayViewModel.amountRight = formatIdrCurrency(accountDataModel.saldo.deposit)
         tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
-
-        setVCCBuyer(tokopediaPayViewModel, accountDataModel)
 
         return tokopediaPayViewModel
     }
@@ -181,71 +183,15 @@ class BuyerAccountMapper @Inject constructor(
         }
     }
 
-    private fun setVCCBuyer(tokopediaPayViewModel: TokopediaPayViewModel, accountDataModel: AccountDataModel) {
-        if (accountDataModel.vccUserStatus.title!= null && accountDataModel.vccUserStatus.title.equals(OVO_PAY_LATER, ignoreCase = true)) {
-
-            val vccUserStatus = accountDataModel.vccUserStatus
-
-            tokopediaPayViewModel.iconUrlCentre = vccUserStatus.icon.toEmptyStringIfNull()
-            tokopediaPayViewModel.applinkCentre = vccUserStatus.redirectionUrl.toEmptyStringIfNull()
-            tokopediaPayViewModel.amountCentre = accountDataModel.vccUserStatus.body.toEmptyStringIfNull()
-
-            setVCCBasedOnStatus(tokopediaPayViewModel, vccUserStatus)
-
-        } else {
-            tokopediaPayViewModel.bsDataCentre = null
-        }
-    }
-
-    private fun setVCCBasedOnStatus(tokopediaPayViewModel: TokopediaPayViewModel, vccUserStatus: VccUserStatus) {
-        val tokopediaPayBSModel = TokopediaPayBSModel()
-        val title = vccUserStatus.title.toEmptyStringIfNull()
-        when (vccUserStatus.status) {
-            VccStatus.ELIGIBLE -> {
-                tokopediaPayViewModel.amountCentre = title
-                tokopediaPayViewModel.labelCentre = LABEL_ELIGIBLE
-                tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
-            }
-            VccStatus.HOLD -> {
-                tokopediaPayViewModel.amountCentre = title
-                tokopediaPayViewModel.labelCentre = LABEL_HOLD
-                tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
-            }
-            VccStatus.ACTIVE -> {
-                tokopediaPayViewModel.labelCentre = title
-                val oplLimit: String? = try {
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(vccUserStatus.body.toLongOrZero(), true)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    vccUserStatus.body.toEmptyStringIfNull()
-                }
-                tokopediaPayViewModel.amountCentre = oplLimit
-                tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
-            }
-            VccStatus.REJECTED -> {
-                tokopediaPayViewModel.labelCentre = title
-                tokopediaPayViewModel.bsDataCentre = null
-            }
-            VccStatus.BLOCKED -> {
-                tokopediaPayViewModel.amountCentre = title
-                tokopediaPayViewModel.labelCentre = LABEL_BLOCKED
-                tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
-            }
-            VccStatus.DEACTIVATED -> {
-                tokopediaPayViewModel.amountCentre = title
-                tokopediaPayViewModel.labelCentre = LABEL_DEACTIVATED
-                tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
-            }
-            VccStatus.KYC_PENDING -> {
-                tokopediaPayViewModel.amountCentre = title
-                tokopediaPayViewModel.labelCentre = LABEL_KYC_PENDING
-                tokopediaPayViewModel.bsDataCentre = tokopediaPayBSModel
-            }
-        }
-    }
-
     private fun useUoh(): Boolean {
-        val remoteConfigValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-        return remoteConfigValue == UOH_AB_TEST_VALUE
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
+
+            val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
+            return (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            true
+        }
     }
 }

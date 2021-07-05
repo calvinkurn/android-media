@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import org.junit.Test
 
-internal class SearchShopHandleViewCreatedTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopHandleViewCreatedTest: SearchShopDataViewTestFixtures() {
 
     override fun setUp() {
         val searchShopParameterWithActiveTab = mapOf(

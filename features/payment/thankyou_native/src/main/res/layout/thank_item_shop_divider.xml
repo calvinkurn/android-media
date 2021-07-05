@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerTop"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:background="@color/Neutral_N75"
+        android:layout_height="@dimen/thank_dp_1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
