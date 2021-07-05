@@ -69,6 +69,7 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
             }
             cbInsurance.setOnCheckedChangeListener { _, isChecked ->
                 if (!isChecked) {
+                    // TODO: 05/07/21 ProductId
                     orderSummaryAnalytics.eventClickOnInsurance(productId, "uncheck", insuranceData.insurancePrice.toString())
                 } else {
                     orderSummaryAnalytics.eventClickOnInsurance(productId, "check", insuranceData.insurancePrice.toString())

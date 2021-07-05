@@ -21,5 +21,8 @@ data class OrderShop(
         var isFulfillment: Boolean = false,
         var fulfillmentBadgeUrl: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),
-        var errors: List<String> = emptyList()
+        var errors: List<String> = emptyList(),
+        var isFreeOngkir: Boolean = false,
+        var isFreeOngkirExtra: Boolean = false,
+        var freeOngkirImg: String = ""
 ): OrderItem

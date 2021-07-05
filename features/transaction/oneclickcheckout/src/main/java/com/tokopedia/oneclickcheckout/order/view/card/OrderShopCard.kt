@@ -16,7 +16,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding, private val order
 
     private var shop: OrderShop = OrderShop()
 
-    fun setShop(orderShop: OrderShop, freeOngkirImg: String, freeOngkirExtra: Boolean) {
+    fun setShop(orderShop: OrderShop) {
         this.shop = orderShop
         binding.apply {
             tvShopName.text = orderShop.shopName
@@ -41,12 +41,12 @@ class OrderShopCard(private val binding: CardOrderShopBinding, private val order
                 iuImageFulfill.gone()
             }
 
-            if (freeOngkirImg.isNotEmpty()) {
+            if (orderShop.freeOngkirImg.isNotEmpty()) {
                 iuFreeShipping.let {
-                    it.setImageUrl(freeOngkirImg)
+                    it.setImageUrl(orderShop.freeOngkirImg)
                     it.visible()
                 }
-                val contentDescriptionStringResource = if (freeOngkirExtra) {
+                val contentDescriptionStringResource = if (orderShop.isFreeOngkirExtra) {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo

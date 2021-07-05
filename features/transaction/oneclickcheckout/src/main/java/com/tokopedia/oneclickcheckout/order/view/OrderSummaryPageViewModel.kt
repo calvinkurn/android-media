@@ -56,8 +56,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         get() = orderCart.shop
     val orderShopData: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
 
-    val orderProduct: OrderProduct
-        get() = orderCart.product
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
 
     var _orderPreference: OrderPreference = OrderPreference()

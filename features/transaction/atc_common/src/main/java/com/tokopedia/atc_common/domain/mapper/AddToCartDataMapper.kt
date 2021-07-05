@@ -165,4 +165,26 @@ class AddToCartDataMapper @Inject constructor() {
         return dataModel
     }
 
+    fun mapAddToCartOccMultiDataModel(addToCartOccMultiDataModel: AddToCartOccMultiDataModel): AddToCartDataModel {
+        return AddToCartDataModel(
+                errorMessage = ArrayList(addToCartOccMultiDataModel.errorMessage),
+                status = addToCartOccMultiDataModel.status,
+                data = mapDataModel(addToCartOccMultiDataModel.data)
+        )
+    }
+
+    private fun mapDataModel(data: AddToCartOccMultiData): DataModel {
+        val cart = data.cart.firstOrNull() ?: AddToCartOccMultiCartData()
+        return DataModel(
+                success = data.success,
+                cartId = cart.cartId,
+                productId = cart.productId.toLong(),
+                quantity = cart.quantity,
+                notes = cart.notes,
+                shopId = cart.shopId.toLong(),
+                customerId = cart.customerId.toLong(),
+                warehouseId = cart.warehouseId.toLong()
+        )
+    }
+
 }

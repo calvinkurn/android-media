@@ -83,7 +83,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.bind(onboarding)
             }
             is OrderShopCard -> {
-                holder.setShop(shop, product!!.freeOngkirImg, product!!.isFreeOngkirExtra)
+                holder.setShop(shop)
             }
             is OrderProductCard -> {
                 holder.setData(products[position - 3], shop, position - 3)

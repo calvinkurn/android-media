@@ -24,11 +24,6 @@ class GetOccCartMapper @Inject constructor() {
             cartId = cart.cartId
             cartString = cart.cartString
             paymentProfile = cart.paymentProfile
-            product = generateOrderProduct(cart.product).apply {
-                quantity = mapQuantity(data)
-                tickerMessage = mapProductTickerMessage(data.tickerMessage)
-                purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
-            }
             products = arrayListOf(
                     generateOrderProduct(cart.product).apply {
                         quantity = mapQuantity(data)
@@ -107,6 +102,13 @@ class GetOccCartMapper @Inject constructor() {
             isFulfillment = cart.warehouse.isFulfillment
             fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
             cityName = if (cart.warehouse.isFulfillment) cart.tokoCabangInfo.message else shop.cityName
+            isFreeOngkirExtra = cart.product.freeShippingExtra.eligible
+            isFreeOngkir = cart.product.freeShipping.eligible
+            freeOngkirImg = when {
+                isFreeOngkirExtra -> cart.product.freeShippingExtra.badgeUrl
+                isFreeOngkir -> cart.product.freeShipping.badgeUrl
+                else -> ""
+            }
         }
     }
 
