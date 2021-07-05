@@ -20,7 +20,7 @@ object DateUtil {
     const val LAST_SEC_IN_A_MIN = 59
 
     val DEFAULT_LOCALE = Locale("in", "ID")
-    private val DEFAULT_TIMEZONE: TimeZone = TimeZone.getTimeZone("GMT+7")
+    val DEFAULT_TIMEZONE: TimeZone = TimeZone.getTimeZone("GMT+7")
 
     const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
     const val DEFAULT_VIEW_TIME_FORMAT = "dd MMM yyyy, HH:mm"
