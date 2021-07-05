@@ -37,8 +37,6 @@ class GetOccCartMapper @Inject constructor() {
         return OrderData(mapTicker(data.tickers),
                 data.occMainOnboarding,
                 orderCart,
-                data.profileIndex,
-                data.profileRecommendation,
                 mapProfile(data.profileResponse),
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),

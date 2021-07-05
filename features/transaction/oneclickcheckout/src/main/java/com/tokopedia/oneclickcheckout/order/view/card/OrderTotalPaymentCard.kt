@@ -19,11 +19,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private val listener: OrderTotalPaymentCardListener): RecyclerView.ViewHolder(binding.root) {
 
     fun setupPayment(orderTotal: OrderTotal) {
-        setupPaymentError(orderTotal.paymentErrorMessage)
-        setupButtonBayar(orderTotal)
-    }
-
-    private fun setupButtonBayar(orderTotal: OrderTotal) {
         binding.apply {
             root.context?.let { context ->
                 btnPay.apply {
@@ -117,17 +112,6 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
                 btnPay.setOnClickListener {
                     listener.onPayClicked()
                 }
-            }
-        }
-    }
-
-    private fun setupPaymentError(paymentErrorMessage: String?) {
-        binding.apply {
-            if (paymentErrorMessage.isNullOrEmpty()) {
-                tickerPaymentError.gone()
-            } else {
-                tickerPaymentError.setTextDescription(paymentErrorMessage)
-                tickerPaymentError.visible()
             }
         }
     }

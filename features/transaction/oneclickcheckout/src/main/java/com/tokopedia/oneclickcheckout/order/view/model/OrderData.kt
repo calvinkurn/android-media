@@ -7,13 +7,13 @@ data class OrderData(
         val ticker: TickerData? = null,
         var onboarding: OccMainOnboarding = OccMainOnboarding(),
         var cart: OrderCart = OrderCart(),
-        var profileIndex: String = "",
-        var profileRecommendation: String = "",
         var preference: OrderProfile = OrderProfile(),
         var promo: OrderPromo = OrderPromo(),
         var payment: OrderPayment = OrderPayment(),
         var prompt: OccPrompt = OccPrompt(),
+        // LCA
         val errorCode: String = "",
         val popUpMessage: String = "",
+        // OCC Remove Profile
         val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 )

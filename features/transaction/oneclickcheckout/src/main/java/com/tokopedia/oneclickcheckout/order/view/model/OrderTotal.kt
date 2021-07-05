@@ -5,8 +5,7 @@ import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 data class OrderTotal(
         val orderCost: OrderCost = OrderCost(),
         val buttonState: OccButtonState = OccButtonState.DISABLE,
-        val buttonType: OccButtonType = OccButtonType.PAY,
-        val paymentErrorMessage: String? = null
+        val buttonType: OccButtonType = OccButtonType.PAY
 ): OrderItem {
 
     val isButtonChoosePayment: Boolean
