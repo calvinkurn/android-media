@@ -3,7 +3,8 @@
     <gradient
         android:startColor="@color/play_dms_interactive_common_bg_g1"
         android:endColor="@color/play_dms_interactive_common_bg_g2"
-        android:angle="135"
+        android:centerX="0.65"
+        android:angle="90"
         />
     <corners
         android:radius="@dimen/play_interactive_common_radius"

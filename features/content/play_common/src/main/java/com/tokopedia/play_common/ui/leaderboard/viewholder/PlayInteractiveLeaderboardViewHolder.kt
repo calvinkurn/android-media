@@ -8,21 +8,21 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
-import com.tokopedia.play_common.ui.leaderboard.adapter.PlayEngagementWinnerAdapter
+import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveWinnerAdapter
 import com.tokopedia.unifyprinciples.Typography
 
 
 /**
  * Created by mzennis on 30/06/21.
  */
-class PlayEngagementLeaderboardViewHolder(itemView: View, listener: Listener) : BaseViewHolder(itemView) {
+class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) : BaseViewHolder(itemView) {
 
     private val tvTitle = itemView.findViewById<Typography>(R.id.tv_leaderboard_title)
     private val rvWinner = itemView.findViewById<RecyclerView>(R.id.rv_winner)
     private val tvOtherParticipant = itemView.findViewById<Typography>(R.id.tv_leaderboard_other_participant)
     private val tvEmpty = itemView.findViewById<Typography>(R.id.tv_leaderboard_empty)
 
-    private val winnerAdapter = PlayEngagementWinnerAdapter(object : PlayEngagementWinnerViewHolder.Listener{
+    private val winnerAdapter = PlayInteractiveWinnerAdapter(object : PlayInteractiveWinnerViewHolder.Listener{
         override fun onChatButtonClicked(item: PlayWinnerUiModel, position: Int) {
             listener.onChatWinnerButtonClicked(item, position)
         }
@@ -60,6 +60,6 @@ class PlayEngagementLeaderboardViewHolder(itemView: View, listener: Listener) : 
 
     companion object {
 
-        val LAYOUT = R.layout.item_play_engagement_leaderboard
+        val LAYOUT = R.layout.item_play_interactive_leaderboard
     }
 }

@@ -36,7 +36,7 @@
                 android:layout_height="@dimen/layout_lvl0"
                 android:orientation="vertical"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_play_engagement_leaderboard"
+                tools:listitem="@layout/item_play_interactive_leaderboard"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

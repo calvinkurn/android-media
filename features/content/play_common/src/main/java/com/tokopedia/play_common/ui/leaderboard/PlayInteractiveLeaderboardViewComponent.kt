@@ -9,15 +9,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
-import com.tokopedia.play_common.ui.leaderboard.adapter.PlayEngagementLeaderboardAdapter
-import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayEngagementLeaderboardViewHolder
+import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
+import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 
 /**
  * Created by mzennis on 29/06/21.
  */
-class PlayEngagementLeaderboardViewComponent(
+class PlayInteractiveLeaderboardViewComponent(
     container: ViewGroup,
     listener: Listener
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
@@ -26,9 +26,9 @@ class PlayEngagementLeaderboardViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
-    private val leaderboardAdapter = PlayEngagementLeaderboardAdapter(object : PlayEngagementLeaderboardViewHolder.Listener{
+    private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
-            listener.onChatWinnerButtonClicked(this@PlayEngagementLeaderboardViewComponent, winner, position)
+            listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
         }
     })
 
@@ -50,7 +50,7 @@ class PlayEngagementLeaderboardViewComponent(
 
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
-            .setText(R.string.play_engage_leaderboard_title)
+            .setText(R.string.play_interactive_leaderboard_title)
 
         findViewById<ImageView>(R.id.iv_sheet_close)
             .setOnClickListener {
@@ -85,7 +85,7 @@ class PlayEngagementLeaderboardViewComponent(
     }
 
     interface Listener {
-        fun onCloseButtonClicked(view: PlayEngagementLeaderboardViewComponent)
-        fun onChatWinnerButtonClicked(view: PlayEngagementLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int)
+        fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
+        fun onChatWinnerButtonClicked(view: PlayInteractiveLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int)
     }
 }
