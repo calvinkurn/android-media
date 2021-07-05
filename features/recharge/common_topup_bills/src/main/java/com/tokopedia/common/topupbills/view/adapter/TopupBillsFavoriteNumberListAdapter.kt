@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactory
 
 class TopupBillsFavoriteNumberListAdapter (
@@ -38,6 +39,11 @@ class TopupBillsFavoriteNumberListAdapter (
 
     fun setEmptyState(emptyStateDataView: List<TopupBillsFavNumberEmptyDataView>) {
         this.visitables = emptyStateDataView
+        notifyDataSetChanged()
+    }
+
+    fun setShimmer(shimmerDataView: List<TopupBillsFavNumberShimmerDataView>) {
+        this.visitables = shimmerDataView
         notifyDataSetChanged()
     }
 }

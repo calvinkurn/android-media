@@ -17,6 +17,10 @@
     <string name="common_topup_fav_number_empty_state_title">Wah, nomor baru ya?</string>
     <string name="common_topup_fav_number_not_found_state_title">Belum ada Nomor Favorite, Transaksi dulu, yuk!</string>
     <string name="common_topup_fav_number_not_found_state_desc">Setelah transaksi, nomor bakal tersimpan di sini supaya kamu nggak perlu masukin lagi.</string>
+    <string name="common_topup_fav_number_coachmark_1_title">Nomornya jangan lupa dinamain, ya &#9999;</string>
+    <string name="common_topup_fav_number_coachmark_1_subtitle">Biar mudah diingat, kamu bisa kasih nama buat masing-masing Nomor Favorit disini</string>
+    <string name="common_topup_fav_number_coachmark_2_title">Ada nomor yang nggak kepakai? &#128465;</string>
+    <string name="common_topup_fav_number_coachmark_2_subtitle">Lewat sini, kamu juga bisa hapus Nomor Favorit yang sudah tersimpan</string>
     <string name="common_topup_empty_state_desc">Nomor ini bakal otomatis tersimpan setelah transaksi selesai.</string>
     <string name="common_topup_empty_state_continue">Lanjut Transaksi</string>
     <string name="common_topup_voucher_code_already_copied">Kode voucher telah tersalin</string>

@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.view.viewholder
 
+import android.graphics.Color
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
