@@ -121,7 +121,7 @@ class EventSearchViewModelTest {
         eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"")
 
         assertNotNull(eventSearchViewModel.errorReport.value)
-        assertEquals(eventSearchViewModel.errorReport.value, errorGql.message)
+        assertEquals((eventSearchViewModel.errorReport.value as Throwable).message, errorGql.message)
     }
 
     @Test
@@ -161,7 +161,7 @@ class EventSearchViewModelTest {
         eventSearchViewModel.getSearchData("",CacheType.CACHE_FIRST,"")
 
         assertNotNull(eventSearchViewModel.errorReport.value)
-        assertEquals(eventSearchViewModel.errorReport.value, errorGql.message)
+        assertEquals((eventSearchViewModel.errorReport.value as Throwable).message, errorGql.message)
     }
 
     private fun getJson(path: String): String {

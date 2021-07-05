@@ -59,7 +59,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
         launchCatchError(block = {
             useCaseRedeem.setUrlRedeem(urlRedeem)
             withContext(dispatcher){
-                val data = usecase.executeOnBackground()
+                val data = useCaseRedeem.executeOnBackground()
                 val value = data[EventRedeemedData::class.java]
                 if (value?.code == 200 && !value.isError) {
                     val result = convertToRedeemedResponse(data)

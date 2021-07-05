@@ -116,7 +116,7 @@ class EventPDPViewModelTest {
         assertNotNull(eventPDPViewModel.isError.value)
 
         assertNotNull(eventPDPViewModel.eventHoliday.value)
-        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
+        assertEquals((eventPDPViewModel.isError.value as EventPDPErrorEntity).throwable.message, error.message)
     }
 
     @Test
@@ -167,7 +167,7 @@ class EventPDPViewModelTest {
         assertNull(eventPDPViewModel.eventProductDetail.value)
         assertNotNull(eventPDPViewModel.isError.value)
         assert(eventPDPViewModel.eventHoliday.value == arrayListOf<Legend>())
-        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
+        assertEquals((eventPDPViewModel.isError.value as EventPDPErrorEntity).throwable.message, error.message)
     }
 
 

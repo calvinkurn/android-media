@@ -110,7 +110,7 @@ class EventPDPTicketViewModelTest {
 
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
-        assertEquals(eventPDPTicketViewModel.error.value, error.message)
+        assertEquals((eventPDPTicketViewModel.error.value as Throwable).message, error.message)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
     }
 
@@ -132,7 +132,7 @@ class EventPDPTicketViewModelTest {
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
         assertNotNull(eventPDPTicketViewModel.error.value)
-        assertEquals(eventPDPTicketViewModel.error.value, error.message)
+        assertEquals((eventPDPTicketViewModel.error.value as Throwable).message, error.message)
         assert(eventPDPTicketViewModel.eventHoliday.value == arrayListOf<Legend>())
     }
 
@@ -164,7 +164,7 @@ class EventPDPTicketViewModelTest {
         eventPDPTicketViewModel.verify("", VerifyRequest())
 
         //then
-        assertEquals(eventPDPTicketViewModel.error.value, error.message)
+        assertEquals((eventPDPTicketViewModel.errorVerify.value as Throwable).message, error.message)
 
     }
 

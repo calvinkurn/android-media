@@ -104,7 +104,7 @@ class EventDetailViewModelTest {
         eventDetailViewModel.getData(query = "")
 
         Assert.assertNotNull(eventDetailViewModel.errorReport.value)
-        Assert.assertEquals(eventDetailViewModel.errorReport.value, errorGql.message)
+        Assert.assertEquals((eventDetailViewModel.errorReport.value as Throwable).message, errorGql.message)
         assert(!eventDetailViewModel.isItRefreshing.value!!)
         assert(!eventDetailViewModel.isItShimmering.value!!)
         assert(!eventDetailViewModel.showParentView.value!!)
