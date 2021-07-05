@@ -1,13 +1,13 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
+import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -61,7 +61,37 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should show new list section next page when load more button success clicked
+    @Test
+    fun should_show_new_list_section_next_page_when_load_more_button_success_clicked() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.newListOnlyHasNextTrue
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.clickLoadMoreAt(3)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                2, NormalNotificationViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                3, NormalNotificationViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                4, LoadMoreViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertLoadMoreTitle(4, "Lihat Lebih Banyak")
+    }
+
+    // TODO: should hide load more button if the next page hasNext is false
     // TODO: load more button on new list should not clickable when loading new list
     // TODO: should render notifications only when load more new list
 

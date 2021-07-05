@@ -69,6 +69,13 @@ object NotifcenterAction {
                 .atPositionOnView(position, R.id.chips_filter)
         ).perform(click())
     }
+
+    fun clickLoadMoreAt(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.btn_loading)
+        ).perform(click())
+    }
 }
 
 /**
