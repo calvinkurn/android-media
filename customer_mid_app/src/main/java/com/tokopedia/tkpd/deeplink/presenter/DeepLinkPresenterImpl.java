@@ -87,7 +87,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_NEED_LOGIN = "need_login";
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
-    private static final String KEY_ENABLE_SHOP_INFO_GQL = "android_enable_gql_shop_info_deeplink";
 
     private final Activity context;
     private final DeepLinkView viewListener;
