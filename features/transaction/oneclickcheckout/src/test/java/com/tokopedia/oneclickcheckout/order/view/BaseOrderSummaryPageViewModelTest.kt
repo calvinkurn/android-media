@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccExternalUseCase
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase

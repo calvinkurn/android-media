@@ -78,8 +78,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private var hasSentViewOspEe = false
 
-    var revampData: OccRevampData = OccRevampData()
-
     fun getCurrentShipperId(): Int {
         return _orderShipment.getRealShipperId()
     }
@@ -113,7 +111,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source)
             addressState.value = result.addressState
-            revampData = result.revampData
             orderCart = result.orderCart
             orderShopData.value = orderShop
             orderProducts.value = orderCart.products

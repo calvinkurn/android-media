@@ -32,6 +32,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
@@ -55,6 +56,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val transactionId = "123"
@@ -78,6 +80,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         val paymentType = "paymentType"
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(payment = OrderProfilePayment(gatewayName = paymentType)), isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val transactionId = "123"
@@ -100,6 +103,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val transactionId = "123"
@@ -122,6 +126,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val transactionId = "123"
@@ -144,6 +149,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id="))))
@@ -165,6 +171,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl", form = "transaction_id_error=1"))))
@@ -186,6 +193,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(match { it.carts.data.first().shopProducts.first().finsurance == 1 }) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
@@ -207,6 +215,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.PAY)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery {
@@ -230,6 +239,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.CHOOSE_PAYMENT)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery {
@@ -253,6 +263,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val promoUiModel = PromoUiModel(codes = listOf("promo"), messageUiModel = MessageUiModel(state = "green"),
@@ -368,6 +379,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val prompt = OccPrompt(OccPrompt.TYPE_DIALOG)
@@ -388,6 +400,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData(ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY)))
@@ -408,6 +421,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData(ERROR_CODE_PRICE_CHANGE)))
@@ -427,6 +441,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val errorMessage = "unknown error"
@@ -447,6 +462,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData("000")))
@@ -466,6 +482,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val responseMessage = "error"
@@ -486,6 +503,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = "")
@@ -505,6 +523,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
         val response = Throwable()
@@ -528,6 +547,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                         metadata = """{"express_checkout_param":{"installment_term":"3"}}""")),
                 isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
@@ -558,6 +578,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                         metadata = """{"express_checkout_param":{"installment_term":"3"}}""")),
                 isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
@@ -589,11 +610,11 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderCart = OrderCart(product = helper.product.copy(
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(
                 purchaseProtectionPlanData = PurchaseProtectionPlanData(
                         isProtectionAvailable = true,
                         stateChecked = PurchaseProtectionPlanData.STATE_TICKED
-                ))
+                )))
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -616,11 +637,11 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderCart = OrderCart(product = helper.product.copy(
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(
                 purchaseProtectionPlanData = PurchaseProtectionPlanData(
                         isProtectionAvailable = true,
                         stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED
-                ))
+                )))
         )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())

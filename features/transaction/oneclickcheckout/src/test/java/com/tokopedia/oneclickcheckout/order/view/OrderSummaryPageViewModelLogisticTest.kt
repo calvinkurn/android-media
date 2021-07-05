@@ -27,6 +27,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Reload Rates`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
@@ -90,11 +91,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Reload Rates While Debounce`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceTimeBy(100)
         orderSummaryPageViewModel.reloadRates()
         testDispatchers.main.advanceUntilIdle()
@@ -108,11 +110,12 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Reload Rates After Debounce`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
         orderSummaryPageViewModel.reloadRates()
 
@@ -227,7 +230,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
                 shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
         ), isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -265,7 +267,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
                 shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
         ), isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -294,7 +295,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     fun `Get Rates Duration Not Match Revamp With No Recommendation`() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(shipment = OrderProfileShipment()), isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
 
@@ -319,7 +319,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         shippingDurationViewModels[0].shippingCourierViewModelList[1].productData.isRecommend = true
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -1165,6 +1164,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1175,7 +1175,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1228,7 +1228,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         ))), status = "OK"))
 
         // When Update Quantity
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1249,6 +1249,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1264,7 +1265,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1280,6 +1281,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1292,7 +1294,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         )), status = "OK"))
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1308,6 +1310,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1319,7 +1322,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then
@@ -1334,6 +1337,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
@@ -1347,7 +1351,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
 
         // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)))
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
         testDispatchers.main.advanceUntilIdle()
 
         // Then

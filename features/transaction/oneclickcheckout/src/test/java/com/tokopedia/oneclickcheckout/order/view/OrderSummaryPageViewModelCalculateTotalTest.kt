@@ -16,7 +16,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Invalid Quantity`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -32,7 +32,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Invalid Preference`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = false)
 
         // When
@@ -46,7 +46,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total With Shop Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000), shop = OrderShop(errors = listOf("error")))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)), shop = OrderShop(errors = listOf("error")))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -62,7 +62,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total With Quantity Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1, isStateError = true), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -71,14 +71,14 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
     fun `Calculate Total With Shipment Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service", serviceErrorMessage = "error")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -94,7 +94,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total With Shipment Invalid State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment()
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -110,7 +110,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -126,7 +126,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total With Wholesale Price`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 10), productPrice = 1000, wholesalePrice = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100))))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10), productPrice = 1000, wholesalePrice = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100)))))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -142,7 +142,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total With Invalid Wholesale Price`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, wholesalePrice = listOf(WholesalePrice(qtyMin = 5, prdPrc = 100))))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, wholesalePrice = listOf(WholesalePrice(qtyMin = 5, prdPrc = 100)))))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -157,9 +157,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Below Minimum`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000)
@@ -175,9 +174,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Above Maximum`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10)
@@ -193,9 +191,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Below Minimum In OVO Only Campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000, isOvoOnlyCampaign = true)
@@ -210,9 +207,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Below Minimum In Specific Gateway Campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000, specificGatewayCampaignOnlyType = 2)
@@ -227,9 +223,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Above Maximum In OVO Only Campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10, isOvoOnlyCampaign = true)
@@ -244,9 +239,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Above Maximum In Specific Gateway Campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10, specificGatewayCampaignOnlyType = 2)
@@ -261,9 +255,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp OVO No Phone Number`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
@@ -285,9 +278,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Wallet No Phone Number`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
@@ -309,9 +301,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp OVO No Phone Number in OVO only campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
@@ -333,9 +324,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Wallet No Phone Number in Specific Gateway Campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
@@ -357,9 +347,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp OVO Inactive`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -383,9 +372,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Wallet Inactive`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -408,9 +396,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp OVO Inactive in OVO only campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -433,9 +420,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Wallet Inactive in Specific Gateway campaign`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -458,9 +444,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Above OVO Balance`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -486,13 +471,11 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Above Wallet Balance`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
-        val errorTicker = "error topup"
         val errorMessage = "error"
         val callbackUrl = "url"
         val isHideDigital = true
@@ -515,7 +498,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Revamp Above OVO Balance In OVO Only Campaign`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -541,7 +524,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Revamp Above Wallet Balance In Specific Gateway Campaign`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
@@ -567,7 +550,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Within OVO Balance`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10000, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)
@@ -583,7 +566,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Within Wallet Balance`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10000, walletData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true))
@@ -598,9 +581,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Has Payment Error And Button`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val message = "error"
@@ -619,9 +601,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Has Payment Error And Button Also Disable Pay Button`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val message = "error"
@@ -640,9 +621,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     @Test
     fun `Calculate Total Revamp Has Payment Credit Card Error And Button`() {
         // Given
-        orderSummaryPageViewModel.revampData = OccRevampData(true)
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val message = "error"
@@ -683,7 +663,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                         )))
                 )))
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 2000, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo,
                 logisticPromoShipping = ShippingCourierUiModel().apply {
@@ -730,7 +710,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Credit Card Mdr`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
@@ -762,7 +742,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Credit Card Mdr Subsidize`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000), shop = OrderShop(isOfficial = 1))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)), shop = OrderShop(isOfficial = 1))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
@@ -793,7 +773,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Has Error Installment`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
@@ -818,7 +798,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total Fix Error Installment`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
@@ -844,7 +824,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total with Purchase Protection Checked`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED)))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED))))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -860,7 +840,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total with Purchase Protection Checked and Multiple Quantity `() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 2), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED)))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 2), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED))))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -876,7 +856,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total with Purchase Protection Unchecked from State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED)))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED))))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
@@ -892,7 +872,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
     fun `Calculate Total with Purchase Protection Unchecked`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = OrderCart(product = OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_EMPTY)))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_EMPTY))))
         orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
         orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)

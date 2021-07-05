@@ -22,11 +22,11 @@ class AddToCartOccExternalUseCase @Inject constructor(private val graphqlReposit
     private var productIds: List<String>? = null
     private var userId: String? = null
 
-    fun setParams(productId: String, userId: String): AddToCartOccExternalUseCase {
-        this.productId = productId
-        this.userId = userId
-        return this
-    }
+//    fun setParams(productId: String, userId: String): AddToCartOccExternalUseCase {
+//        this.productId = productId
+//        this.userId = userId
+//        return this
+//    }
 
     fun setParams(productIds: List<String>, userId: String): AddToCartOccExternalUseCase {
         this.productIds = productIds

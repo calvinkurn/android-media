@@ -33,7 +33,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment,
                                validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
                                orderTotal: OrderTotal, forceButtonState: OccButtonState?, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
-        val hasInvalidQuantity = orderCart.products.find { it.quantity.orderQuantity <= 0 } != null
+        val hasInvalidQuantity = orderCart.products.find { !it.isError && it.quantity.orderQuantity <= 0 } != null
         var payment = _orderPayment
         if (hasInvalidQuantity || !_orderPreference.isValid) {
             return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)

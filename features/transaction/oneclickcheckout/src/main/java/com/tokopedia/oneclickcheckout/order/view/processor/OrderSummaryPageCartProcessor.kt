@@ -27,7 +27,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = atcOccExternalUseCase.get().setParams(productId, userId).executeOnBackground()
+                val response = atcOccExternalUseCase.get().setParams(listOf(productId), userId).executeOnBackground()
                 if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")
@@ -55,7 +55,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
                         throwable = null,
-                        revampData = orderData.revampData,
                         addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage)
                 )
             } catch (t: Throwable) {
@@ -67,7 +66,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPromo = OrderPromo(),
                         globalEvent = null,
                         throwable = t,
-                        revampData = OccRevampData(),
                         addressState = AddressState()
                 )
             }
@@ -207,6 +205,5 @@ class ResultGetOccCart(
         var orderPromo: OrderPromo,
         var globalEvent: OccGlobalEvent?,
         var throwable: Throwable?,
-        var revampData: OccRevampData,
         var addressState: AddressState
 )

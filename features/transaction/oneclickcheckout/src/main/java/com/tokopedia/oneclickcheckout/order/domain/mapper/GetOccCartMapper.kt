@@ -43,7 +43,6 @@ class GetOccCartMapper @Inject constructor() {
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
-                mapOccRevamp(data.revamp),
                 data.errorCode,
                 data.popUpMessage,
                 mapOccRemoveProfile(data.removeProfile))
@@ -310,10 +309,6 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
-    }
-
-    private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
-        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 
     private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
