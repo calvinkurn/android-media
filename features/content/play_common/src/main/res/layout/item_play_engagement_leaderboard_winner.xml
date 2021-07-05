@@ -29,11 +29,11 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_crown"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:src="@drawable/ic_play_crown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_play_winner_crown"
+            app:layout_constraintBottom_toTopOf="@id/img_winner"
             app:layout_constraintEnd_toEndOf="@id/img_winner"
             app:layout_constraintStart_toStartOf="@id/img_winner"
             tools:visibility="visible" />
@@ -48,6 +48,16 @@
             app:layout_constraintTop_toBottomOf="@id/img_crown"
             app:unify_image_type="circle"
             tools:src="@tools:sample/avatars" />
+
+        <FrameLayout
+            android:id="@+id/fl_border_img_winner"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:background="@drawable/bg_play_circle_winner"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/img_winner"
+            app:layout_constraintTop_toTopOf="@id/img_winner"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_winner_name"
