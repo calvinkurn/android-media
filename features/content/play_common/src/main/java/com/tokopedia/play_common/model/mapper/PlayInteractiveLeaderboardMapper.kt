@@ -15,6 +15,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
 
     fun mapLeaderboard(response: GetInteractiveLeaderboardResponse) = PlayLeaderboardInfoUiModel(
             leaderboardWinner = mapLeaderboardWinner(response.data.data),
+            totalParticipant = response.data.summary.totalParticipant.toString(),
             config = mapLeaderboardConfig(response.data.config)
     )
 

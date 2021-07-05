@@ -2,6 +2,7 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 
 import android.graphics.Color
 import android.view.View
+import android.widget.FrameLayout
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,10 +23,11 @@ class PlayEngagementWinnerViewHolder(itemView: View, private val listener: Liste
     private val container = itemView.findViewById<ContainerUnify>(R.id.container_winner)
     private val tvNumber = itemView.findViewById<Typography>(R.id.tv_winner_number)
     private val tvName = itemView.findViewById<Typography>(R.id.tv_winner_name)
-    private val ivWinner = itemView.findViewById<ImageUnify>(R.id.img_winner)
     private val lblWinner = itemView.findViewById<Label>(R.id.lbl_winner)
-    private val ivCrown = itemView.findViewById<ImageUnify>(R.id.img_crown)
     private val iconChat = itemView.findViewById<IconUnify>(R.id.icon_winner_chat)
+    private val ivCrown = itemView.findViewById<ImageUnify>(R.id.img_crown)
+    private val ivWinner = itemView.findViewById<ImageUnify>(R.id.img_winner)
+    private val borderIvWinner = itemView.findViewById<FrameLayout>(R.id.fl_border_img_winner)
 
     fun bind(winner: PlayWinnerUiModel) {
         tvNumber.text = winner.rank.toString()
@@ -46,12 +48,14 @@ class PlayEngagementWinnerViewHolder(itemView: View, private val listener: Liste
     private fun handleFirstWinner(winner: PlayWinnerUiModel) {
         if (winner.rank == FIRST_WINNER) {
             ivCrown.show()
+            borderIvWinner.show()
             lblWinner.show()
             container.setContainerColor(ContainerUnify.YELLOW)
         } else {
             ivCrown.hide()
-            container.setCustomContainerColor(Pair(Color.WHITE, Color.WHITE))
+            borderIvWinner.hide()
             lblWinner.hide()
+            container.setCustomContainerColor(Pair(Color.WHITE, Color.WHITE))
         }
     }
 

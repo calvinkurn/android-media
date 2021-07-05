@@ -16,9 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.ui.model.ChannelInfoUiModel
-import com.tokopedia.play.broadcaster.ui.model.LiveDurationUiModel
-import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -45,7 +43,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic,
         private val userSession: UserSessionInterface
-) : PlayBaseBroadcastFragment() {
+) : PlayBaseBroadcastFragment(), SummaryInfoViewComponent.Listener {
 
     companion object {
         private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
@@ -59,7 +57,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private lateinit var loaderView: LoaderUnify
     private lateinit var deleteVideoDialog: DialogUnify
 
-    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it) }
+    private val summaryInfoView by viewComponent(isEagerInit = true) { SummaryInfoViewComponent(it, this) }
 
     override fun getScreenName(): String = "Play Summary Page"
 
@@ -182,7 +180,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun observeLiveTrafficMetrics() {
-        viewModel.observableTrafficMetrics.observe(viewLifecycleOwner, Observer{
+        viewModel.observableLiveSummary.observe(viewLifecycleOwner, Observer{
             when(it) {
                 is NetworkResult.Loading -> {
                     loaderView.visible()
@@ -263,5 +261,9 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             )
             activity?.finish()
         }
+    }
+
+    override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
+         if (metricType.isGameParticipants) this.view?.showToaster("Lihat Pemenang")
     }
 }

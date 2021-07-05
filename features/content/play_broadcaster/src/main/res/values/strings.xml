@@ -119,6 +119,7 @@
     <string name="play_summary_title">Laporan Live Streaming</string>
     <string name="play_summary_button_save_video">Simpan Video di Halaman Toko</string>
     <string name="play_summary_button_delete_video">Hapus Video</string>
+    <string name="play_summary_total_game_participant"><![CDATA[Peserta Game <font color=#03AC0E>Lihat Pemenang</font></b>]]></string>
     <string name="play_summary_total_view">Penonton</string>
     <string name="play_summary_total_likes">Menyukai</string>
     <string name="play_summary_shop_visit">Mengunjungi Tokomu</string>
