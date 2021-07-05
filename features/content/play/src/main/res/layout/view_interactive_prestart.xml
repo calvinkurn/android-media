@@ -11,9 +11,7 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
-        android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg_play_interactive_decor"
@@ -23,7 +21,7 @@
         android:id="@+id/icon_gift"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/play_offset_10"
+        android:layout_marginStart="@dimen/play_offset_6"
         android:layout_marginTop="@dimen/play_offset_10"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
@@ -32,19 +30,6 @@
         app:icon_name="GIFT"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:inputType="textNoSuggestions"
-        android:text="@string/play_interactive_prestart_tag"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/icon_gift"
-        app:layout_constraintStart_toEndOf="@id/icon_gift"
-        app:layout_constraintTop_toTopOf="@id/icon_gift"
-        app:typographyType="small"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -68,9 +53,10 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:text="@string/play_interactive_prestart_follow_button"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_interactive_title"
@@ -80,37 +66,32 @@
         app:unifyButtonVariant="ghost"
         />
 
-    <LinearLayout
-        android:id="@+id/ll_timer_prestart"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_starting_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:background="@drawable/bg_play_interactive_prestart_timer"
-        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:text="@string/play_interactive_prestart_timer_text"
+        android:textColor="@color/Unify_Static_White_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_interactive_follow"
+        app:typographyType="small"
+        />
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/timer_prestart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_interactive_follow"
-        >
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:text="@string/play_interactive_prestart_timer_text"
-            android:textColor="@color/play_dms_interactive_timer_prestart_text"
-            app:typographyType="small"
-            />
-
-        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-            android:id="@+id/timer_prestart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl1"
-            app:timer_unify_single_type="hour"
-            app:timer_unify_single_variant="alternate"
-            />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/tv_starting_in"
+        app:timer_unify_single_type="minute"
+        app:timer_unify_single_variant="alternate"
+        />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

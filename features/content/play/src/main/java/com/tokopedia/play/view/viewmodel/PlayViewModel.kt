@@ -22,6 +22,7 @@ import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
@@ -286,6 +287,12 @@ class PlayViewModel @Inject constructor(
         addSource(_observablePartnerInfo) { partner ->
             viewModelScope.launch {
                 setUiState { copy(showInteractiveFollow = partner.isFollowable && !partner.isFollowed) }
+            }
+        }
+        addSource(_observableBottomInsetsState) { insets ->
+            viewModelScope.launch {
+                setUiState { copy(bottomInsets = insets) }
+                if (insets.isAnyShown) _uiEvent.emit(HideCoachMarkWinnerEvent)
             }
         }
     }
@@ -1056,12 +1063,26 @@ class PlayViewModel @Inject constructor(
         } else {
             interactiveRepo.setFinished(interactive.id.toString())
         }
-        setUiState {
-            copy(interactive = interactiveUiState)
+
+        if (interactiveRepo.getActiveInteractiveId() != null) {
+            setUiState {
+                copy(interactive = interactiveUiState)
+            }
         }
+
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
-            interactiveRepo.setFinished(interactive.id.toString())
-            //TODO("Get Leaderboard")
+            val channelId = mChannelData?.id ?: return
+
+            try {
+                val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+                setUiState {
+                    copy(
+                            showWinningBadge = true,
+                            interactive = PlayInteractiveUiState.NoInteractive,
+                            winnerLeaderboard = interactiveLeaderboard.leaderboardWinner
+                    )
+                }
+            } catch (e: Throwable) {}
         }
     }
 
@@ -1193,6 +1214,9 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Called when user tap
+     */
     private suspend fun onReceivedInteractiveAction(action: Unit) = withContext(dispatchers.io) {
         try {
             val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@withContext
@@ -1206,6 +1230,10 @@ class PlayViewModel @Inject constructor(
 
     /**
      * Handle UI Action
+     */
+
+    /**
+     * When pre-start finished, interactive should be played (e.g. TapTap)
      */
     private fun handleInteractivePreStartFinished() {
         viewModelScope.launch {
@@ -1223,10 +1251,10 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleInteractiveOngoingFinished() {
-        viewModelScope.launch {
-            val channelId = mChannelData?.id ?: return@launch
+        viewModelScope.launchCatchError(block = {
+            val channelId = mChannelData?.id ?: return@launchCatchError
 
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launch
+            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
             interactiveRepo.setFinished(activeInteractiveId)
 
             setUiState {
@@ -1235,7 +1263,7 @@ class PlayViewModel @Inject constructor(
                 ))
             }
 
-            delay(1000)
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             setUiState {
                 copy(interactive = PlayInteractiveUiState.Finished(
@@ -1271,14 +1299,11 @@ class PlayViewModel @Inject constructor(
                             interactiveLeaderboard.config.loserDetail
                     )
             )
-        }
+        }) {}
     }
 
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
-        viewModelScope.launch {
-            _uiEvent.emit(HideCoachMarkWinnerEvent)
-        }
     }
 
     private fun handleTapTapAction() {
@@ -1294,5 +1319,6 @@ class PlayViewModel @Inject constructor(
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val ONBOARDING_DELAY = 5000L
+        private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 1000L
     }
 }

@@ -78,8 +78,7 @@
     <dimen name="play_interactive_live_width">174dp</dimen>
     <dimen name="play_interactive_live_height">82dp</dimen>
 
-    <dimen name="play_interactive_tap_action">62dp</dimen>
-    <dimen name="play_interactive_tap_inside_margin">6dp</dimen>
+    <dimen name="play_interactive_tap_action">84dp</dimen>
     <dimen name="play_interactive_tap_inside_stroke_width">1dp</dimen>
     <dimen name="play_interactive_tap_timer_radius">14dp</dimen>
 

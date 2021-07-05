@@ -4,6 +4,45 @@
     android:color="@color/Unify_Static_White"
     >
     <item>
+        <shape android:shape="oval">
+            <size
+                android:width="@dimen/play_interactive_tap_action"
+                android:height="@dimen/play_interactive_tap_action" />
+            <solid
+                android:color="@color/Unify_Static_White_20"
+                />
+            <corners android:radius="@dimen/play_interactive_common_radius" />
+        </shape>
+    </item>
+
+    <item
+        android:left="@dimen/play_offset_6"
+        android:right="@dimen/play_offset_6"
+        android:top="@dimen/play_offset_6"
+        android:bottom="@dimen/play_offset_6">
+        <shape
+            android:shape="oval"
+            >
+            <size
+                android:width="@dimen/play_interactive_tap_action"
+                android:height="@dimen/play_interactive_tap_action"
+                />
+            <solid
+                android:color="#00FFFFFF"
+                />
+            <stroke
+                android:width="@dimen/play_interactive_tap_inside_stroke_width"
+                android:color="@color/Unify_Static_White_20"
+                />
+        </shape>
+    </item>
+
+    <item
+        android:left="@dimen/play_offset_12"
+        android:right="@dimen/play_offset_12"
+        android:top="@dimen/play_offset_12"
+        android:bottom="@dimen/play_offset_12"
+        >
         <shape
             android:shape="oval"
             >
@@ -23,10 +62,10 @@
     </item>
 
     <item
-        android:left="@dimen/play_interactive_tap_inside_margin"
-        android:right="@dimen/play_interactive_tap_inside_margin"
-        android:top="@dimen/play_interactive_tap_inside_margin"
-        android:bottom="@dimen/play_interactive_tap_inside_margin">
+        android:left="@dimen/play_offset_18"
+        android:right="@dimen/play_offset_18"
+        android:top="@dimen/play_offset_18"
+        android:bottom="@dimen/play_offset_18">
         <shape
             android:shape="oval"
             >
@@ -43,4 +82,5 @@
                 />
         </shape>
     </item>
+
 </ripple>

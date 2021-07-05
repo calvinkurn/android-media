@@ -17,7 +17,7 @@ import com.tokopedia.play_common.R
 /**
  * Created by jegul on 30/06/21
  */
-class RoundedFrameLayout : FrameLayout {
+open class RoundedFrameLayout : FrameLayout {
 
     private val roundedHelper = RoundedLayoutHelper()
 
