@@ -144,6 +144,10 @@ class HowToPayFragment : BaseDaggerFragment() {
         scrollViewHowToPay.visible()
         howToPayAnalytics.get().eventOnScreenOpen(data.gatewayCode)
         setHeaderData(data)
+        setInstructionList(data)
+    }
+
+    private fun setInstructionList(data: HowToPayData) {
         data.helpPageData?.channelList?.let { channelList ->
             if (channelList.size > 1) {
                 addMultipleChannelAdapter(channelList)
@@ -189,7 +193,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                     getString(R.string.pms_hwp_copy),
                     IconUnify.COPY
                 ) {
-                    copyTOClipBoard(context, data.transactionCode ?: "", data.gatewayCode ?: "")
+                    copyToClipBoard(context, data.transactionCode ?: "", data.gatewayCode ?: "")
                     showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
                 }
             }
@@ -233,7 +237,7 @@ class HowToPayFragment : BaseDaggerFragment() {
             getString(R.string.pms_hwp_copy),
             IconUnify.COPY
         ) {
-            copyTOClipBoard(context, data.transactionCode ?: "", data.gatewayCode ?: "")
+            copyToClipBoard(context, data.transactionCode ?: "", data.gatewayCode ?: "")
             showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
         }
     }
@@ -284,7 +288,7 @@ class HowToPayFragment : BaseDaggerFragment() {
             tvPaymentAmountAction.text = getString(R.string.pms_hwp_copy)
             ivAmountAction.setImage(IconUnify.COPY)
             tvPaymentAmountAction.setOnClickListener {
-                copyTOClipBoard(
+                copyToClipBoard(
                     context,
                     displayAmount?.toString() ?: "",
                     howToPayData.gatewayCode ?: ""
@@ -292,7 +296,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                 showToast(getString(R.string.pms_hwp_amount_copy_success))
             }
             ivAmountAction.setOnClickListener {
-                copyTOClipBoard(
+                copyToClipBoard(
                     context,
                     displayAmount?.toString() ?: "",
                     howToPayData.gatewayCode ?: ""
@@ -366,7 +370,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         return SpannableStringBuilder.valueOf(storeNote).append(" ").append(spannableString)
     }
 
-    private fun copyTOClipBoard(context: Context?, dataStr: String, gatewayCode: String) {
+    private fun copyToClipBoard(context: Context?, dataStr: String, gatewayCode: String) {
         context?.let {
             try {
                 val extraSpaceRegexStr = "\\s+".toRegex()
@@ -385,9 +389,7 @@ class HowToPayFragment : BaseDaggerFragment() {
     }
 
     private fun showToast(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
-        }
+        view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
     }
 
     override fun onRequestPermissionsResult(

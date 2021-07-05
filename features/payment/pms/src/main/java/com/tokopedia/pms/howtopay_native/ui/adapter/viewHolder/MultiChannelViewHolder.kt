@@ -19,18 +19,17 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val recyclerView: RecyclerView = itemView.rvInstructions
     private val divider: View = itemView.divider
 
-    fun bindView(paymentChannel: HtpPaymentChannel, isLastItem: Boolean,
-                 onExpand: (HtpPaymentChannel) -> Unit) {
+    fun bindView(
+        paymentChannel: HtpPaymentChannel, isLastItem: Boolean,
+        onExpand: (HtpPaymentChannel) -> Unit
+    ) {
 
         tvChannelName.text = paymentChannel.channelTitle
         if (paymentChannel.isExpanded) {
             iconExpand.setImage(IconUnify.CHEVRON_UP)
             recyclerView.visible()
             recyclerView.layoutManager = NonScrollLinerLayoutManager(itemView.context)
-            recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps,
-                "")
-            /*recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps,
-                    paymentChannel.channelNotes)*/
+            recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps, null)
             recyclerView.post {
                 recyclerView.adapter?.notifyDataSetChanged()
             }
