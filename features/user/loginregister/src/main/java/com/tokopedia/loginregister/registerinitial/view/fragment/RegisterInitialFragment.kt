@@ -1245,8 +1245,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
-            "#cde4c3" -> Ticker.TYPE_ANNOUNCEMENT
-            "#ecdb77" -> Ticker.TYPE_WARNING
+            TICKER_COLOR_DEFAULT -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_COLOR_WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
@@ -1475,9 +1475,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
 
-        private const val SOURCE_ACCOUNT = "account"
         private const val SOURCE_ATC = "atc"
-        private const val SOURCE_ONBOARDING = "onboarding"
 
         const val FACEBOOK_LOGIN_TYPE = "fb"
 
@@ -1488,7 +1486,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
-        private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
+        private const val TICKER_COLOR_DEFAULT = "#cde4c3"
+        private const val TICKER_COLOR_WARNING = "#ecdb77"
 
         const val TOKOPEDIA_CARE_PATH = "help"
         fun createInstance(bundle: Bundle): RegisterInitialFragment {

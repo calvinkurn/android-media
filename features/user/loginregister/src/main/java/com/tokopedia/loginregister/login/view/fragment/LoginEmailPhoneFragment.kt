@@ -1762,15 +1762,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
-            "#cde4c3" -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
-            "#ecdb77" -> {
-                Ticker.TYPE_WARNING
-            }
-            else -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
+            TICKER_COLOR_DEFAULT -> Ticker.TYPE_ANNOUNCEMENT
+            TICKER_COLOR_WARNING -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 
@@ -2025,6 +2019,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val TOKOPEDIA_CARE_PATH = "help"
+
+        private const val TICKER_COLOR_DEFAULT = "#cde4c3"
+        private const val TICKER_COLOR_WARNING = "#ecdb77"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
