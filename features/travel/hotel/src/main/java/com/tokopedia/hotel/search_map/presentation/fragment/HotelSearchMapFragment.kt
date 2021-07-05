@@ -867,7 +867,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             val imageView = IconUnify(it)
             imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
-            imageView.setImageResource(IconUnify.SEARCH)
+            imageView.setImage(IconUnify.SEARCH)
             wrapper.addView(imageView)
 
             val textView = Typography(it)
