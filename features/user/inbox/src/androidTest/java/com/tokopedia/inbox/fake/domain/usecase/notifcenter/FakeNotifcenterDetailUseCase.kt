@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.fake.domain.usecase.notifcenter
 
+import androidx.annotation.RawRes
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.util.CommonUtil
@@ -33,30 +34,20 @@ class FakeNotifcenterDetailUseCase(
 
     val newListOnly: NotifcenterDetailResponse
         get() {
-            val responseObj: JsonObject = AndroidFileUtil.parseRaw(
-                R.raw.notifcenter_detail_v3,
-                JsonObject::class.java
-            )
-            responseObj.getAsJsonObject(notifcenter_detail_v3)
-                .getAsJsonArray(list).removeAll { true }
-            return CommonUtil.fromJson(
-                responseObj.toString(), NotifcenterDetailResponse::class.java
-            )
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3)
+                    .getAsJsonArray(list).removeAll { true }
+            }
         }
 
     val newListOnlyHasNextTrue: NotifcenterDetailResponse
         get() {
-            val responseObj: JsonObject = AndroidFileUtil.parseRaw(
-                R.raw.notifcenter_detail_v3,
-                JsonObject::class.java
-            )
-            responseObj.getAsJsonObject(notifcenter_detail_v3).apply {
-                getAsJsonArray(list).removeAll { true }
-                getAsJsonObject(new_paging).addProperty(has_next, true)
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3).apply {
+                    getAsJsonArray(list).removeAll { true }
+                    getAsJsonObject(new_paging).addProperty(has_next, true)
+                }
             }
-            return CommonUtil.fromJson(
-                responseObj.toString(), NotifcenterDetailResponse::class.java
-            )
         }
 
     val newListOnlyHasNextFalse: NotifcenterDetailResponse
@@ -77,17 +68,12 @@ class FakeNotifcenterDetailUseCase(
 
     val noTrackHistoryWidgetMsg: NotifcenterDetailResponse
         get() {
-            val responseObj: JsonObject = AndroidFileUtil.parseRaw(
-                R.raw.notifcenter_detail_v3_no_track_history_widget,
-                JsonObject::class.java
-            )
-            responseObj.getAsJsonObject(notifcenter_detail_v3)
-                .getAsJsonArray(new_list).get(0).asJsonObject
-                .getAsJsonObject(widget)
-                .addProperty(message, "")
-            return CommonUtil.fromJson(
-                responseObj.toString(), NotifcenterDetailResponse::class.java
-            )
+            return alterResponseOf(R.raw.notifcenter_detail_v3_no_track_history_widget) {
+                it.getAsJsonObject(notifcenter_detail_v3)
+                    .getAsJsonArray(new_list).get(0).asJsonObject
+                    .getAsJsonObject(widget)
+                    .addProperty(message, "")
+            }
         }
 
     private val notifcenter_detail_v3 = "notifcenter_detail_v3"
@@ -109,9 +95,16 @@ class FakeNotifcenterDetailUseCase(
     private fun alterDefaultResponse(
         altercation: (JsonObject) -> Unit
     ): NotifcenterDetailResponse {
+        return alterResponseOf(R.raw.notifcenter_detail_v3, altercation)
+    }
+
+    private fun alterResponseOf(
+        @RawRes
+        rawRes: Int,
+        altercation: (JsonObject) -> Unit
+    ): NotifcenterDetailResponse {
         val responseObj: JsonObject = AndroidFileUtil.parseRaw(
-            R.raw.notifcenter_detail_v3,
-            JsonObject::class.java
+            rawRes, JsonObject::class.java
         )
         altercation(responseObj)
         return CommonUtil.fromJson(
