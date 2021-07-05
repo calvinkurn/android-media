@@ -13,6 +13,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
@@ -22,6 +23,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuErrorType
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
@@ -118,32 +120,24 @@ class OtherMenuViewModel @Inject constructor(
     val shopBadgeFollowersShimmerLiveData: LiveData<Boolean>
         get() = _shopBadgeFollowersShimmerLiveData
 
-    private val _errorStateMap = MediatorLiveData<Map<Int, Boolean>>().apply {
-        value = mutableMapOf(
-                ERROR_BADGE to false,
-                ERROR_FOLLOWERS to false,
-                ERROR_STATUS to false,
-                ERROR_OPERATIONAL to false,
-                ERROR_SALDO to false,
-                ERROR_TOPADS to false
-        )
+    private val _errorStateMap = MediatorLiveData<Map<OtherMenuErrorType, Boolean>>().apply {
         addSource(_shopBadgeLiveData) {
-            value = value?.getUpdatedErrorMap(ERROR_BADGE, it)
+            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Badge, it)
         }
         addSource(_shopTotalFollowersLiveData) {
-            value = value?.getUpdatedErrorMap(ERROR_FOLLOWERS, it)
+            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Followers, it)
         }
         addSource(_userShopInfoLiveData) {
-            value = value?.getUpdatedErrorMap(ERROR_STATUS, it)
+            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Status, it)
         }
         addSource(_shopOperationalLiveData) {
-            value = value?.getUpdatedErrorMap(ERROR_OPERATIONAL, it)
+            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Operational, it)
         }
         addSource(_balanceInfoLiveData) {
-            value = value?.getUpdatedErrorMap(ERROR_SALDO, it)
+            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Saldo, it)
         }
         addSource(_kreditTopAdsLiveData) {
-            value = value?.getUpdatedErrorMap(ERROR_TOPADS, it)
+            value = value?.getUpdatedErrorMap(OtherMenuErrorType.Topads, it)
         }
     }
 
@@ -152,8 +146,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _shouldShowAllError
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
         addSource(_errorStateMap) { map ->
-            val errorCounts = map.count { it.value }
-            if (errorCounts < map.count()) {
+            val errorCounts = map?.count { it.value }.orZero()
+            if (errorCounts < map?.count().orZero()) {
                 val shouldShowMultipleErrorToaster = errorCounts >= 2 && _hasShownMultipleErrorToaster.value == false
                 value = shouldShowMultipleErrorToaster
                 _hasShownMultipleErrorToaster.value = shouldShowMultipleErrorToaster
@@ -166,7 +160,7 @@ class OtherMenuViewModel @Inject constructor(
     }
     val shouldShowMultipleErrorToaster: LiveData<Boolean>
         get() = _shouldShowMultipleErrorToaster
-    private val _hasShownMultipleErrorToaster = MutableLiveData<Boolean>(false)
+    private val _hasShownMultipleErrorToaster = MutableLiveData(false)
 
     val shopPeriodType: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopPeriodType
@@ -191,6 +185,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     fun getAllOtherMenuData() {
+        setErrorStateMapDefaultValue()
         getShopBadge()
         getShopTotalFollowers()
         getUserShopInfo()
@@ -254,12 +249,12 @@ class OtherMenuViewModel @Inject constructor(
         _errorStateMap.value?.forEach{
             if (it.value) {
                 when(it.key) {
-                    ERROR_BADGE -> getShopBadge()
-                    ERROR_FOLLOWERS -> getShopTotalFollowers()
-                    ERROR_STATUS -> getUserShopInfo()
-                    ERROR_OPERATIONAL -> getShopOperational()
-                    ERROR_SALDO -> getBalanceInfo()
-                    ERROR_TOPADS -> getKreditTopAds()
+                    OtherMenuErrorType.Badge -> getShopBadge()
+                    OtherMenuErrorType.Followers -> getShopTotalFollowers()
+                    OtherMenuErrorType.Status -> getUserShopInfo()
+                    OtherMenuErrorType.Operational -> getShopOperational()
+                    OtherMenuErrorType.Saldo -> getBalanceInfo()
+                    else -> getKreditTopAds()
                 }
             }
         }
@@ -424,6 +419,19 @@ class OtherMenuViewModel @Inject constructor(
         })
     }
 
+    fun setErrorStateMapDefaultValue() {
+        if (_errorStateMap.value == null) {
+            _errorStateMap.value = mutableMapOf(
+                    OtherMenuErrorType.Badge to false,
+                    OtherMenuErrorType.Followers to false,
+                    OtherMenuErrorType.Status to false,
+                    OtherMenuErrorType.Operational to false,
+                    OtherMenuErrorType.Saldo to false,
+                    OtherMenuErrorType.Topads to false,
+            )
+        }
+    }
+
     private suspend fun checkDelayErrorResponseTrigger() {
         _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
             if (!isToasterAlreadyShown){
@@ -437,9 +445,9 @@ class OtherMenuViewModel @Inject constructor(
     private fun SettingResponseState<*>.isError(): Boolean =
             this is SettingResponseState.SettingError
 
-    private fun Map<Int, Boolean>.getUpdatedErrorMap(key: Int, state: SettingResponseState<*>): Map<Int, Boolean> {
+    private fun Map<OtherMenuErrorType, Boolean>.getUpdatedErrorMap(errorType: OtherMenuErrorType, state: SettingResponseState<*>): Map<OtherMenuErrorType, Boolean> {
         return mapValues {
-            if (it.key == key) {
+            if (it.key == errorType) {
                 state.isError()
             } else {
                 it.value
