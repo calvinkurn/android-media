@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:src="@drawable/ic_play_winner_crown"
+            android:src="@drawable/ic_play_interactive_crown_yellow"
             app:layout_constraintBottom_toTopOf="@id/img_winner"
             app:layout_constraintEnd_toEndOf="@id/img_winner"
             app:layout_constraintStart_toStartOf="@id/img_winner"
