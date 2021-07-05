@@ -39,6 +39,7 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.Card
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.model.ScrollToBottomState
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
@@ -56,6 +57,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
@@ -73,7 +75,7 @@ import javax.inject.Inject
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
         NotificationEndlessRecyclerViewScrollListener.Listener,
-        NotificationAdapter.Listener {
+        NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,6 +101,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
+    private val scrollState = ScrollToBottomState()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -147,6 +150,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
             triggerMarkAsSeenTracker(containerListener?.role)
+            trackIfUserScrollToBottom()
         }
     }
 
@@ -236,6 +240,23 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         rv = view.findViewById(R.id.recycler_view)
         filter = view.findViewById<NotificationFilterView>(R.id.sv_filter)?.also {
             it.initConfig(analytic)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackIfUserScrollToBottom()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        trackIfUserScrollToBottom()
+    }
+
+    private fun trackIfUserScrollToBottom() {
+        if (scrollState.hasScrolledDown()) {
+            analytic.trackScrollToBottom(scrollState.lastSeenItem.toString())
+            scrollState.updateOffset()
         }
     }
 
@@ -387,6 +408,23 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         rv?.setHasFixedSize(true)
         rv?.addItemDecoration(NotificationItemDecoration(context))
         rv?.addItemDecoration(RecommendationItemDecoration())
+        rv?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val currentLastItem = getLastVisibleItemPosition() ?: return
+                    if (currentLastItem > scrollState.lastSeenItem) {
+                        scrollState.lastSeenItem = currentLastItem
+                    }
+                }
+            }
+        })
+    }
+
+    private fun getLastVisibleItemPosition(): Int? {
+        val layoutManager = rv?.layoutManager as? StaggeredGridLayoutManager
+        return layoutManager
+            ?.findLastVisibleItemPositions(null)
+            ?.getOrNull(1)
     }
 
     private fun setupFilter() {
@@ -638,6 +676,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun trackClickOrderListItem(order: Card) {
         analytic.trackClickOrderListItem(containerListener?.role, order)
+    }
+
+    override fun getNotifAnalytic(): NotificationAnalytic {
+        return analytic
     }
 
     override fun hasFilter(): Boolean {

@@ -10,7 +10,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationPassengerAdapter
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.utils.date.DateUtil
 
 /**
  * @author by furqan on 14/07/2020
@@ -42,17 +42,17 @@ class FlightCancellationViewHolder(itemView: View,
         val arrivalCityAirportCode: String = if (element.flightCancellationJourney.arrivalCityCode == null ||
                 element.flightCancellationJourney.arrivalCityCode.isEmpty()) element.flightCancellationJourney.arrivalAirportId
         else element.flightCancellationJourney.arrivalCityCode
-        val departureDate = FlightDateUtil.formatDate(
-                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                FlightDateUtil.FORMAT_DATE,
+        val departureDate = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.FORMAT_DATE,
                 element.flightCancellationJourney.departureTime)
-        val departureTime = FlightDateUtil.formatDate(
-                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                FlightDateUtil.FORMAT_TIME_DETAIL,
+        val departureTime = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.HH_MM,
                 element.flightCancellationJourney.departureTime)
-        val arrivalTime = FlightDateUtil.formatDate(
-                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                FlightDateUtil.FORMAT_TIME_DETAIL,
+        val arrivalTime = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                DateUtil.HH_MM,
                 element.flightCancellationJourney.arrivalTime)
 
         tvDepartureDetail.text = itemView.context.getString(R.string.flight_cancellation_journey_title,
@@ -63,7 +63,7 @@ class FlightCancellationViewHolder(itemView: View,
                 element.flightCancellationJourney.arrivalCity,
                 arrivalCityAirportCode)
         tvAirlineName.text = element.flightCancellationJourney.airlineName
-        tvDuration.text = itemView.context.getString(R.string.flight_booking_trip_info_airport_format,
+        tvDuration.text = String.format(itemView.context.getString(R.string.flight_booking_trip_info_airport_format),
                 departureTime, arrivalTime)
 
         flightCancellationPassengerAdapter.addData(element.passengerModelList)

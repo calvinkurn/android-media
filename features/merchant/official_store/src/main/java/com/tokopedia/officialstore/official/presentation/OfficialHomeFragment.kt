@@ -56,10 +56,7 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
-import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -102,6 +99,7 @@ class OfficialHomeFragment :
     @Inject
     lateinit var officialHomeMapper: OfficialHomeMapper
 
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     private var tracking: OfficialStoreTracking? = null
@@ -182,6 +180,7 @@ class OfficialHomeFragment :
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
                 OSMixTopComponentCallback(this),
+                OSFeaturedBrandCallback(this, tracking),
                 recyclerView?.recycledViewPool)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
@@ -524,7 +523,7 @@ class OfficialHomeFragment :
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String) {
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
                 viewModel.currentSlug,
                 cta.text,
@@ -583,6 +582,14 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun getOSCategory(): Category? {
+        return category
+    }
+
+    override fun isLogin(): Boolean {
+        return userSession.isLoggedIn
+    }
+
     override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
         tracking?.seeAllBannerFlashSaleClickedComponent(
                 viewModel.currentSlugDC,
@@ -605,39 +612,30 @@ class OfficialHomeFragment :
         RouteManager.route(context, applink)
     }
 
-    private fun removeLoading() {
-        val osPltCallback = getOfficialStorePageLoadTimeCallback()
-        if (osPltCallback != null) {
-            osPltCallback.stopNetworkRequestPerformanceMonitoring()
-            osPltCallback.startRenderPerformanceMonitoring()
-        }
-        setPerformanceListenerForRecyclerView()
-    }
-
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventImpressionFeatureBrand(
-                categoryName,
-                position,
-                shopData.name.orEmpty(),
-                shopData.imageUrl.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
-                viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.imageUrl.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = viewModel.isLoggedIn(),
+                shopId = shopData.shopId.orEmpty()
         )
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventClickFeaturedBrand(
-                categoryName,
-                position,
-                shopData.name.orEmpty(),
-                shopData.url.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
-                viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty(),
-                shopData.campaignCode.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.url.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = viewModel.isLoggedIn(),
+                shopId = shopData.shopId.orEmpty(),
+                campaignCode = shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }
@@ -653,6 +651,15 @@ class OfficialHomeFragment :
 
         val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
+    }
+
+    private fun removeLoading() {
+        val osPltCallback = getOfficialStorePageLoadTimeCallback()
+        if (osPltCallback != null) {
+            osPltCallback.stopNetworkRequestPerformanceMonitoring()
+            osPltCallback.startRenderPerformanceMonitoring()
+        }
+        setPerformanceListenerForRecyclerView()
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
@@ -897,6 +904,7 @@ class OfficialHomeFragment :
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun goToPDP(item: RecommendationItem, position: Int) {
         eventTrackerClickListener(item, position)
         try {
@@ -926,6 +934,7 @@ class OfficialHomeFragment :
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isChooseAddressUpdated(): Boolean {
         try {
             localChooseAddress?.let {

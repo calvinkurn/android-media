@@ -10,13 +10,17 @@ import android.widget.TextView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
+
+import java.util.ArrayList;
 
 /**
  * Created by hendry on 19/04/18.
  */
 
 public class ImageEditorEditActionAdapter implements View.OnClickListener {
-    private ImageEditActionType[] tabTypeDef;
+    private ArrayList<ImageEditActionType> tabTypeDef;
     private Context context;
     private ViewGroup viewGroup;
 
@@ -36,7 +40,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
     public ImageEditorEditActionAdapter(
             ViewGroup viewGroup,
             Context context,
-            ImageEditActionType[] tabTypeDef,
+            ArrayList<ImageEditActionType> tabTypeDef,
             OnImageEditorEditActionAdapterListener listener) {
         this.viewGroup = viewGroup;
         this.tabTypeDef = tabTypeDef;
@@ -51,7 +55,8 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
         for (ImageEditActionType tabTypeDefItem : tabTypeDef) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_edit_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
-            TextView tvEdit = view.findViewById(R.id.tv_edit);
+            Typography tvEdit = view.findViewById(R.id.tv_edit);
+            Label txtLabel = view.findViewById(R.id.txt_label);
             view.setId(tabTypeDefItem.getAction());
             switch (tabTypeDefItem) {
                 case ACTION_CROP:
@@ -63,8 +68,9 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     tvEdit.setText(context.getString(R.string.rotate));
                     break;
                 case ACTION_WATERMARK:
-                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_toped_watermark));
                     tvEdit.setText(context.getString(R.string.watermark));
+                    txtLabel.setVisibility(View.VISIBLE);
                     break;
                 case ACTION_CROP_ROTATE:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));

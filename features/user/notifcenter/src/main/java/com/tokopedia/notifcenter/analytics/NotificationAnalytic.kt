@@ -30,6 +30,7 @@ class NotificationAnalytic @Inject constructor(
             const val PRODUCT_CLICK = "productClick"
             const val ADD_TO_CART = "add_to_cart"
             const val CLICK_NOTIF_CENTER = "clickNotifCenter"
+            const val NAME_EVENT_VIEW_NOTIF = "viewNotifCenterIris"
         }
     }
 
@@ -53,6 +54,10 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_WIDGET_CTA = "click cta on notif"
             const val CLICK_EXPAND_NOTIF = "click expand notif"
             const val CLICK_ORDER_LIST_ITEM = "click on going transaction entry point"
+            const val ACTION_VIEW_NOTIF_LIST = "view on notif list"
+            const val EVENT_ACTION_CLICK_NOTIF_LIST = "click on notif list"
+            const val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
+            const val SCROL_TO_BOTTOM = "scroll to bottom"
         }
     }
 
@@ -71,6 +76,14 @@ class NotificationAnalytic @Inject constructor(
     private class Product private constructor() {
         companion object {
             const val KEY_LIST = "list"
+        }
+    }
+
+    private class OtherAttr private constructor() {
+        companion object {
+            const val USER_ID = "userId"
+            const val PRODUCT_ID = "productId"
+            const val SHOP_ID = "shopId"
         }
     }
 
@@ -373,6 +386,92 @@ class NotificationAnalytic @Inject constructor(
                         userRole = getRoleString(role)
                 )
         )
+    }
+
+    fun trackNotificationImpression(element: NotificationUiModel) {
+        val label = getImpressionWithoutLocationLabel(
+            element.templateKey,
+            element.notifId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.NAME_EVENT_VIEW_NOTIF,
+                eventAction = EventAction.ACTION_VIEW_NOTIF_LIST,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = label,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                additionalAttribute = mapOf(
+                    OtherAttr.PRODUCT_ID to element.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
+                )
+            )
+        )
+    }
+
+    fun trackNotificationClick(element: NotificationUiModel) {
+        val label = getImpressionWithoutLocationLabel(
+            element.templateKey,
+            element.notifId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventAction = EventAction.EVENT_ACTION_CLICK_NOTIF_LIST,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = label,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                additionalAttribute = mapOf(
+                    OtherAttr.PRODUCT_ID to element.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
+                )
+            )
+        )
+    }
+
+    fun trackClickLongerContentCta(notification: NotificationUiModel?) {
+        notification ?: return
+        val label = getImpressionWithoutLocationLabel(
+            notification.templateKey,
+            notification.notifId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventAction = EventAction.ACTION_CLICK_LONGER_CONTENT_BUTTON,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = label,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                additionalAttribute = mapOf(
+                    OtherAttr.PRODUCT_ID to notification.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to notification.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
+                )
+            )
+        )
+    }
+
+    fun trackScrollToBottom(notificationSise: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventAction = EventAction.SCROL_TO_BOTTOM,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = notificationSise,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE
+            )
+        )
+    }
+
+    private fun getImpressionWithoutLocationLabel(
+        templateKey: String, notificationId: String
+    ): String {
+        return "$templateKey - $notificationId"
     }
 
     private fun getEventLabelNotifOrderListItem(role: Int, order: Card): String {

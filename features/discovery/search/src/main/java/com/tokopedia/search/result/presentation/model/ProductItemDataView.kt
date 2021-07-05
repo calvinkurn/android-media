@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -59,12 +58,13 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         get() = (position - 1) / SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt() + 1
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
+    var dimension90: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
 
-    fun getProductAsObjectDataLayer(filterSortParams: String, dimension90: String): Any {
+    fun getProductAsObjectDataLayer(filterSortParams: String): Any {
         return DataLayer.mapOf(
                 "name", productName,
                 "id", productID,
@@ -107,30 +107,30 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         get() = String.format(ACTION_FIELD, if (isOrganicAds) ORGANIC_ADS else ORGANIC)
 
     fun getProductAsATCObjectDataLayer(cartId: String): Any = DataLayer.mapOf(
-                "name", productName,
-                "id", productID,
-                "price", safeCastRupiahToInt(price).toString(),
-                "brand", "none / other",
-                "category", categoryBreadcrumb,
-                "variant", "none / other",
-                "quantity", minOrder,
-                "shop_id", shopID,
-                "shop_type", shopType,
-                "shop_name", shopName,
-                "category_id", categoryID,
-                "dimension82", cartId
-        )
+            "name", productName,
+            "id", productID,
+            "price", safeCastRupiahToInt(price).toString(),
+            "brand", "none / other",
+            "category", categoryBreadcrumb,
+            "variant", "none / other",
+            "quantity", minOrder,
+            "shop_id", shopID,
+            "shop_type", shopType,
+            "shop_name", shopName,
+            "category_id", categoryID,
+            "dimension82", cartId
+    )
 
     fun getProductAsShopPageObjectDataLayer(): Any = DataLayer.mapOf(
-                "id", shopID,
-                "name", String.format(ACTION_FIELD, if (isAds) ORGANIC_ADS else ORGANIC),
-                "creative", shopName,
-                "creative_url", shopUrl,
-                "position", position.toString(),
-                "category", categoryBreadcrumb,
-                "promo_id", "none / other",
-                "promo_code", "none / other"
-        )
+            "id", shopID,
+            "name", String.format(ACTION_FIELD, if (isAds) ORGANIC_ADS else ORGANIC),
+            "creative", shopName,
+            "creative_url", shopUrl,
+            "position", position.toString(),
+            "category", categoryBreadcrumb,
+            "promo_id", "none / other",
+            "promo_code", "none / other"
+    )
 
     private val shopType: String
         get() = when {

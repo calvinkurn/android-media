@@ -25,6 +25,8 @@ object PowerMerchantErrorLogger {
                     message = errorMessage,
                     cause = cause
             ))
+        } else {
+            cause?.printStackTrace()
         }
     }
 }

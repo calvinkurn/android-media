@@ -12,10 +12,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -24,6 +21,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.wallet.R
 import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
 import com.tokopedia.wallet.di.WalletComponentInstance
@@ -36,14 +35,14 @@ import javax.inject.Inject
  */
 class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
 
-    private lateinit var activationOvoBtn: Button
-    private lateinit var learnMoreOvoBtn: Button
-    private lateinit var tncOvo: TextView
-    private lateinit var titleOvo: TextView
-    private lateinit var descFirstOvo: TextView
-    private lateinit var descSecondOvo: TextView
+    private lateinit var activationOvoBtn: UnifyButton
+    private lateinit var learnMoreOvoBtn: UnifyButton
+    private lateinit var tncOvo: Typography
+    private lateinit var titleOvo: Typography
+    private lateinit var descFirstOvo: Typography
+    private lateinit var descSecondOvo: Typography
     private lateinit var imgIntroOvo: ImageView
-    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: View
     private lateinit var listener: OvoFragmentListener
     private var tokocashActive: Boolean = false
 
@@ -118,11 +117,11 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(it, com.tokopedia.design.R.color.tkpd_main_green)
+                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)
                 }
             }
             ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
-                    com.tokopedia.design.R.color.tkpd_main_green)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                com.tokopedia.unifycomponents.R.color.Unify_G500)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             ss.setSpan(clickableSpan, 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             tncOvo.movementMethod = LinkMovementMethod.getInstance()
             tncOvo.text = ss

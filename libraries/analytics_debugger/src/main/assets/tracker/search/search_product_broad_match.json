@@ -7,7 +7,8 @@
       "eventCategory": "search result",
       "eventAction": "click - broad match lihat semua",
       "eventLabel": ".* - .*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*"
     },
     {
       "event": "select_content",
@@ -29,7 +30,8 @@
           "item_variant": "none / other",
           "index": ".*",
           "attribution": "none / other",
-          "dimension40": "/search - broad match - .*"
+          "dimension40": "/search - broad match - .*",
+          "dimension90": ".*"
         }
       ]
     },
@@ -47,12 +49,13 @@
         {
           "item_id": ".*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "dimension40": "/search - broad match - .*",
           "index": ".*",
           "item_name": ".*",
           "item_brand": "none / other",
           "item_variant": "none / other",
-          "item_category": "none / other"
+          "item_category": "none / other",
+          "dimension40": "/search - broad match - .*",
+          "dimension90": ".*"
         }
       ]
     }

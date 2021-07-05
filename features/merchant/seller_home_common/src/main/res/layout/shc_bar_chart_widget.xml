@@ -125,5 +125,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvShcBarChartTitle" />
+
+        <include
+            layout="@layout/shc_partial_bar_chart_state_empty"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/barChartShc"
+            app:layout_constraintEnd_toEndOf="@id/barChartShc"
+            app:layout_constraintStart_toStartOf="@id/barChartShc"
+            app:layout_constraintTop_toTopOf="@id/barChartShc"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
