@@ -17,7 +17,7 @@ object CheckoutLogger {
             val errorMessage = throwable.message ?: "unknown exception"
 
             ServerLogger.log(
-                    Priority.P1,
+                    Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                     mapOf(
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR,
@@ -40,7 +40,7 @@ object CheckoutLogger {
 
             val errorMessage = throwable.message ?: "unknown exception"
             ServerLogger.log(
-                    Priority.P1,
+                    Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                     mapOf(
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_COURIER_ERROR,
@@ -59,7 +59,7 @@ object CheckoutLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message ?: "unknown exception"
             ServerLogger.log(
-                    Priority.P1,
+                    Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                     mapOf(
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.CHECKOUT_ERROR,

@@ -16,7 +16,7 @@ object CartLogger {
             val errorMessage = throwable.message
                     ?: if (throwable is ResponseErrorException) "response is null or response is error but empty message" else "unknown exception"
             ServerLogger.log(
-                    Priority.P1,
+                    Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                     mapOf(
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
@@ -35,7 +35,7 @@ object CartLogger {
             }
             val errorMessage = throwable.message ?: "unknown exception"
             ServerLogger.log(
-                    Priority.P1,
+                    Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                     mapOf(
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
