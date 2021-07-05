@@ -38,10 +38,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
-import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
+import com.tokopedia.feedcomponent.bottomsheets.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -144,6 +141,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -424,8 +424,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = getString(R.string.feed_like_error_message)
-                        showToast(message, Toaster.TYPE_ERROR)
+                        when (it.throwable.cause) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                val message = getString(R.string.feed_like_error_message)
+                                showToast(message, Toaster.TYPE_ERROR)
+                            }
+                        }
                     }
                 }
             })
@@ -442,8 +451,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = getString(R.string.default_request_error_unknown)
-                        showToast(message, Toaster.TYPE_ERROR)
+                        when (it.throwable.cause) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                val message = getString(R.string.default_request_error_unknown)
+                                showToast(message, Toaster.TYPE_ERROR)
+                            }
+                        }
                     }
                 }
             })
@@ -518,9 +536,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.message
-                            ?: getString(R.string.default_request_error_unknown)
-                        showToast(message, Toaster.TYPE_ERROR)
+                        when (it.throwable.cause) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                val message = it.throwable.message
+                                    ?: getString(R.string.default_request_error_unknown)
+                                showToast(message, Toaster.TYPE_ERROR)
+                            }
+                        }
+
                     }
                 }
             })
@@ -2668,4 +2696,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
     }
+    fun showNoInterNetDialog( context: Context) {
+        val sheet = FeedNetworkErrorBottomSheet.newInstance()
+        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+
+    }
+
 }
