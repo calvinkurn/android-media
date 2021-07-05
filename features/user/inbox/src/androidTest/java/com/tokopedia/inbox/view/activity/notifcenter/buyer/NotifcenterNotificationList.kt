@@ -3,8 +3,12 @@ package com.tokopedia.inbox.view.activity.notifcenter.buyer
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import com.tokopedia.test.application.matcher.hasViewHolderOf
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class NotifcenterNotificationList : InboxNotifcenterTest() {
@@ -43,7 +47,20 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         NotifcenterAssertion.assertLoadMoreTitle(3, "Lihat Lebih Banyak")
     }
 
-    // TODO: should hide new list section load more button when new list section has next false
+    @Test
+    fun should_hide_new_list_section_load_more_button_when_new_list_section_has_next_false() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.newListOnlyHasNextFalse
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(LoadMoreViewHolder::class.java))
+        )
+    }
+
     // TODO: should show new list section next page when load more button success clicked
     // TODO: load more button on new list should not clickable when loading new list
     // TODO: should render notifications only when load more new list

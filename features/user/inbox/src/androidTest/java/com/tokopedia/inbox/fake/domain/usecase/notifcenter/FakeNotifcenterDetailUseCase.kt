@@ -59,6 +59,16 @@ class FakeNotifcenterDetailUseCase(
             )
         }
 
+    val newListOnlyHasNextFalse: NotifcenterDetailResponse
+        get() {
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3).apply {
+                    getAsJsonArray(list).removeAll { true }
+                    getAsJsonObject(new_paging).addProperty(has_next, false)
+                }
+            }
+        }
+
     val noTrackHistoryWidget: NotifcenterDetailResponse
         get() = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_detail_v3_no_track_history_widget,
@@ -96,5 +106,17 @@ class FakeNotifcenterDetailUseCase(
         this.response = defaultResponse
     }
 
+    private fun alterDefaultResponse(
+        altercation: (JsonObject) -> Unit
+    ): NotifcenterDetailResponse {
+        val responseObj: JsonObject = AndroidFileUtil.parseRaw(
+            R.raw.notifcenter_detail_v3,
+            JsonObject::class.java
+        )
+        altercation(responseObj)
+        return CommonUtil.fromJson(
+            responseObj.toString(), NotifcenterDetailResponse::class.java
+        )
+    }
 
 }
