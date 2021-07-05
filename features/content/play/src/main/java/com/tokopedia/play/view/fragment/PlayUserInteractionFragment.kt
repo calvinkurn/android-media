@@ -891,7 +891,10 @@ class PlayUserInteractionFragment @Inject constructor(
             orientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
-                if (shouldImmersive) playFullscreenManager.onEnterFullscreen()
+                if (shouldImmersive) {
+                    interactiveWinnerBadgeView?.hideCoachMark()
+                    playFullscreenManager.onEnterFullscreen()
+                }
                 else playFullscreenManager.onExitFullscreen()
                 triggerFullImmersive(shouldImmersive, false)
             }
