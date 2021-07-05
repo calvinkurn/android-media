@@ -214,7 +214,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
             isFromAffiliate ?: false, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl, layoutId)
+            trackerListName, affiliateString, deeplinkUrl, layoutId, getSource())
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
@@ -309,6 +309,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             ""
         }
     }
+
+    private fun getSource() = intent.data?.query ?: ""
 }
 
 interface ProductDetailActivityInterface {

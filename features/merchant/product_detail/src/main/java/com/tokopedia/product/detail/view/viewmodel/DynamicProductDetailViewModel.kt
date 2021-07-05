@@ -119,6 +119,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
         private const val PARAM_JOB_TIMEOUT = 1000L
+        private const val PARAM_TXSC = "txsc"
     }
     val CODE_200 = 200
     val CODE_300 = 300
@@ -381,7 +382,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel) {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, queryParams: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -410,7 +411,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(it.listOfLayout.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2()
+            getProductP2(queryParams)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -486,7 +487,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2() {
+    private suspend fun getProductP2(queryParams: String = "") {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
@@ -507,7 +508,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
             getTopAdsImageViewData(it.basic.productID)
             async {
-                getProductTopadsStatus(it.basic.productID)
+                getProductTopadsStatus(it.basic.productID, queryParams)
             }
         }
     }
@@ -735,23 +736,26 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductTopadsStatus(
-            productId: String) {
-        launchCatchError(coroutineContext, block = {
-            var adsStatus = TopadsIsAdsQuery()
-            val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
-                getTopadsIsAdsUseCase.get().setParams(
-                        productId = productId
-                )
-                adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
-                val errorCode = adsStatus.data.status.error_code
-                if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
-                    _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
+            productId: String,
+            queryParams: String = "") {
+        if (queryParams.contains(PARAM_TXSC)) {
+            launchCatchError(coroutineContext, block = {
+                var adsStatus = TopadsIsAdsQuery()
+                val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+                    getTopadsIsAdsUseCase.get().setParams(
+                            productId = productId
+                    )
+                    adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
+                    val errorCode = adsStatus.data.status.error_code
+                    if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
+                        _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
+                    }
                 }
+            }) {
+                it.printStackTrace()
+                _topAdsRecomChargeData.postValue(it.asFail())
+                //nothing to do since fire and forget
             }
-        }) {
-            it.printStackTrace()
-            _topAdsRecomChargeData.postValue(it.asFail())
-            //nothing to do since fire and forget
         }
     }
 
