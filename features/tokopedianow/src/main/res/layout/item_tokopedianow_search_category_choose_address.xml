@@ -2,7 +2,7 @@
 <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tokomartSearchCategoryChooseAddress"
+    android:id="@+id/tokoNowSearchCategoryChooseAddress"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_16"

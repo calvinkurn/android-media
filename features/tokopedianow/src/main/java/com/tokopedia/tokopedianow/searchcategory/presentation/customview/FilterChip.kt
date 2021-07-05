@@ -41,8 +41,8 @@ class FilterChip: BaseCustomView, View.OnClickListener {
         View.inflate(context, R.layout.chip_tokopedianow_category_filter, this)
 
         background = ContextCompat.getDrawable(context, R.drawable.tokopedianow_category_filter_chip_selector)
-        chipImage = findViewById(R.id.tokomartCategoryFilterImage)
-        chipTitle = findViewById(R.id.tokomartCategoryFilterTitle)
+        chipImage = findViewById(R.id.tokoNowCategoryFilterImage)
+        chipTitle = findViewById(R.id.tokoNowCategoryFilterTitle)
 
         setOnClickListener(this)
     }

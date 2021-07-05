@@ -399,46 +399,6 @@ public class TopChatAnalytics {
         );
     }
 
-    // #AP5
-    public void eventSeenProductAttachmentBeta(
-            Context context,
-            @NotNull ProductAttachmentViewModel product,
-            @NotNull UserSessionInterface user
-    ) {
-        String devConst = "-dev";
-
-        ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
-        ProductListImpressionProduct product1 = new ProductListImpressionProduct(
-                product.getIdString(),
-                product.getProductName(),
-                null,
-                product.getCategory(),
-                product.getVariants().toString(),
-                product.getPriceInt() + 0.0,
-                null,
-                PRODUCT_INDEX,
-                getFrom(product),
-                getFrom(product),
-                null,
-                null
-        );
-        products.add(product1);
-
-        Bundle bundle = ProductListImpressionBundler.getBundle(
-                getFrom(product),
-                products,
-                null,
-                ProductListImpressionBundler.KEY,
-                Category.CHAT_DETAIL + devConst,
-                Action.VIEW_PRODUCT_PREVIEW + devConst,
-                null,
-                null
-        );
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListImpressionBundler.KEY, bundle
-        );
-    }
-
     private String getFrom(ProductAttachmentViewModel product) {
         String blastId = product.getStringBlastId();
         if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {

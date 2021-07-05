@@ -5,12 +5,12 @@
     android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16"
     android:background="?attr/selectableItemBackground"
-    android:id="@+id/tokomartCategoryChooserItemContainer"
+    android:id="@+id/tokoNowCategoryChooserItemContainer"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokomartCategoryChooserItemTitle"
+        android:id="@+id/tokoNowCategoryChooserItemTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Kategori"
@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-        android:id="@+id/tokomartCategoryChooserItemRadio"
+        android:id="@+id/tokoNowCategoryChooserItemRadio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"

@@ -20,5 +20,5 @@ abstract class HomeViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TokoNowHomeViewModel::class)
-    internal abstract fun tokoMartHomeViewModel(viewModelTokoNow: TokoNowHomeViewModel): ViewModel
+    internal abstract fun tokoNowHomeViewModel(viewModelTokoNow: TokoNowHomeViewModel): ViewModel
 }

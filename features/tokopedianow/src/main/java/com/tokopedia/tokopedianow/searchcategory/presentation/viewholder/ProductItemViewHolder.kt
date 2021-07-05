@@ -25,7 +25,7 @@ class ProductItemViewHolder(
     }
 
     private val productCard: ProductCardGridView? =
-            itemView.findViewById(R.id.tokomartSearchCategoryProductCard)
+            itemView.findViewById(R.id.tokoNowSearchCategoryProductCard)
 
     override fun bind(element: ProductItemDataView?) {
         element ?: return
