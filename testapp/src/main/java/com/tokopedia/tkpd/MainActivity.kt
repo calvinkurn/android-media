@@ -13,7 +13,6 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
-import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.user.session.UserSession
@@ -31,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_testapp)
 
         userSession = UserSession(this)
+
         if (userSession.deviceId.isNullOrEmpty()) {
             userSession.deviceId = DataSource.MOCK_DEVICE_ID
         }
