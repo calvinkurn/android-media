@@ -61,6 +61,7 @@ import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
 import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.sortfilter.SortFilter
@@ -864,9 +865,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val wrapper = LinearLayout(it)
             wrapper.gravity = Gravity.CENTER
 
-            val imageView = ImageView(it)
+            val imageView = IconUnify(it)
             imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
-            imageView.setImageResource(R.drawable.ic_hotel_search_map_search)
+            imageView.setImageResource(IconUnify.SEARCH)
             wrapper.addView(imageView)
 
             val textView = Typography(it)
@@ -1412,9 +1413,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val wrapper = LinearLayout(it)
             wrapper.gravity = Gravity.CENTER
 
-            val imageView = ImageView(it)
+            val imageView = IconUnify(it)
             imageView.setPadding(BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_ALL, BUTTON_RADIUS_PADDING_RIGHT, BUTTON_RADIUS_PADDING_ALL)
-            imageView.setImageResource(R.drawable.ic_hotel_search_maps)
+            imageView.setImage(IconUnify.MAP)
             wrapper.addView(imageView)
 
             val textView = Typography(it)

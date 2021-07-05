@@ -47,6 +47,7 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
@@ -335,7 +336,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             iv_hotel_info_image.clipToOutline = true
         }
-        iv_hotel_info_image.loadImage(property.image.urlMax300, R.drawable.ic_failed_load_image)
+        iv_hotel_info_image.loadImage(property.image.urlMax300, IconUnify.IMAGE_BROKEN)
     }
 
     private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {

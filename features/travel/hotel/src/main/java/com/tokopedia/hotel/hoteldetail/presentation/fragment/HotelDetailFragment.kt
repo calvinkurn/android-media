@@ -48,6 +48,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hide
@@ -462,7 +463,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 1 -> {
-                    iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_first_photo_preview.loadImage(item.urlMax300, IconUnify.IMAGE_BROKEN)
                     iv_first_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_first_photo_preview)
@@ -470,7 +471,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 2 -> {
-                    iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_second_photo_preview.loadImage(item.urlMax300, IconUnify.IMAGE_BROKEN)
                     iv_second_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_second_photo_preview)
@@ -478,7 +479,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 3 -> {
-                    iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_third_photo_preview.loadImage(item.urlMax300, IconUnify.IMAGE_BROKEN)
                     iv_third_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_third_photo_preview)
@@ -487,7 +488,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
-                iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                iv_main_photo_preview.loadImage(item.urlMax300, IconUnify.IMAGE_BROKEN)
                 iv_main_photo_preview.setOnClickListener {
                     onPhotoClicked()
                     openImagePreview(imageList, imageIndex, iv_main_photo_preview)
