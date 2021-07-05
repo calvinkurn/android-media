@@ -13,10 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -159,8 +156,6 @@ const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
 const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
 const val CLICK_SHOP_TOPADS = "click - shop - topads"
 const val CLICK_PRODUCT_TOPADS = "click - product - topads"
-private const val TYPE = "text/plain"
-
 
 class FeedPlusFragment : BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
@@ -666,8 +661,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                                 ?: 0
                                     }
                                 }
-
-                                val item: Visitable<*> = adapter.getlist()[position]
                                 FeedScrollListenerNew.onFeedScrolled(recyclerView,adapter.getList())
                             }
                         }

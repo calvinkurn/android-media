@@ -18,7 +18,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/videoPreviewImage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="360dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_loading_image"
@@ -75,7 +75,7 @@
             android:id="@+id/layout_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:keep_content_on_player_reset="true"
+            app:shutter_background_color="@android:color/transparent"
             app:show_timeout="3000"
             app:surface_type="texture_view"
             app:use_controller="false" />

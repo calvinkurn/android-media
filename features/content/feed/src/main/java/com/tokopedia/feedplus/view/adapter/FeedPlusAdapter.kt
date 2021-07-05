@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
@@ -45,10 +46,21 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         }
     }
 
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size) {
+            (holder as DynamicPostNewViewHolder).onItemDetach()
+
+        }
+    }
+
     val isLoading: Boolean
         get() = this.list.contains(loadingMoreModel)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>>  {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<Visitable<*>> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
 
