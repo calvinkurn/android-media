@@ -6,6 +6,7 @@ package com.tokopedia.play_common.model.ui
  */
 data class PlayLeaderboardInfoUiModel(
         val leaderboardWinner: List<PlayLeaderboardUiModel>,
+        val totalParticipant: String,
         val config: PlayLeaderboardConfigUiModel
 )
 
