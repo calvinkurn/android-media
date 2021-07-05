@@ -111,7 +111,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: load more button on new list should not clickable when loading new list
+    // TODO: load more button on new list should not clickable when loading new list - impossible with current unify, can't stop loading animation
     // TODO: should render notifications only when load more new list
 
     // TODO: should show earlier title
