@@ -58,8 +58,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -751,12 +749,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                         intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
-                        requestCode = REQUEST_CODE_PROMO_LIST
+                        requestCode = COUPON_EXTRA_LIST_ACTIVITY_RESULT
                     } else {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_IS_USE, true)
                         intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                        requestCode = REQUEST_CODE_PROMO_DETAIL
+                        requestCode = COUPON_EXTRA_DETAIL_ACTIVITY_RESULT
                     }
                     intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
                     startActivityForResult(intent, requestCode)
