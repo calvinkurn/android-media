@@ -80,7 +80,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         val orderProduct = orderCart.products.firstOrNull()
         if (orderPreference.isValid && orderPreference.preference.address.addressId > 0 && orderProduct != null) {
             val cart = UpdateCartOccCartRequest(
-                    orderCart.cartId,
+                    orderProduct.cartId,
                     orderProduct.quantity.orderQuantity,
                     orderProduct.notes,
                     orderProduct.productId.toString(),

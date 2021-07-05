@@ -21,11 +21,11 @@ class GetOccCartMapper @Inject constructor() {
     fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
         val cart = data.cartList.first()
         val orderCart = OrderCart().apply {
-            cartId = cart.cartId
             cartString = cart.cartString
             paymentProfile = cart.paymentProfile
             products = arrayListOf(
                     generateOrderProduct(cart.product).apply {
+                        cartId = cart.cartId
                         quantity = mapQuantity(data)
                         tickerMessage = mapProductTickerMessage(data.tickerMessage)
                         purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)

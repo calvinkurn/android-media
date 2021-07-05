@@ -4,6 +4,7 @@ import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
+        var cartId: String = "",
         var productId: Long = 0,
         var productName: String = "",
         var productPrice: Long = 0,

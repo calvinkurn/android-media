@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 data class OrderCart(
-        var cartId: String = "",
         var cartString: String = "",
         var paymentProfile: String = "",
         var products: MutableList<OrderProduct> = ArrayList(),

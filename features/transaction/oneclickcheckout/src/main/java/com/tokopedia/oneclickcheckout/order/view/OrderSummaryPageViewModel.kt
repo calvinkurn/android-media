@@ -728,7 +728,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setPromoCode(promoCodes)
                 setPromoDetails("")
                 setProductType("")
-                setCartId(orderCart.cartId)
+                setCartId(orderProduct.cartId)
                 setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
                 setSpid(_orderShipment.getRealShipperProductId().toString())
                 setCodFlag(false)
