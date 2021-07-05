@@ -1,9 +1,11 @@
 package com.tokopedia.review.feature.gallery.presentation.widget
 
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -40,6 +42,7 @@ class ReviewGalleryExpandedReviewBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        hideHeader()
         setBasicInfo()
         setReview()
     }
@@ -53,11 +56,19 @@ class ReviewGalleryExpandedReviewBottomSheet : BottomSheetUnify() {
     }
 
     private fun setReview() {
-        review?.text = reviewMessage
+        review?.apply {
+            text = reviewMessage
+            movementMethod = ScrollingMovementMethod()
+            maxLines = Int.MAX_VALUE
+        }
     }
 
     private fun bindViews(view: View) {
         basicInfoWidget = view.findViewById(R.id.review_gallery_expanded_review_detail_basic_info)
         review = view.findViewById(R.id.review_gallery_expanded_review)
+    }
+
+    private fun hideHeader() {
+        bottomSheetHeader.hide()
     }
 }

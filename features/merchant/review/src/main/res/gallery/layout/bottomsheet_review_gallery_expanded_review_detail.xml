@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
         android:id="@+id/review_gallery_expanded_review_detail_basic_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_height="wrap_content" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_gallery_expanded_review"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/review_gallery_expanded_review_detail_basic_info"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
+        android:scrollbars="vertical"
         app:typographyType="body_3" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

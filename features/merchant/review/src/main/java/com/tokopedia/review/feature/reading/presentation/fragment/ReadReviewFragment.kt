@@ -218,7 +218,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             cacheManager.put(INDEX_KEY, positionClicked)
             cacheManager.put(SHOP_ID_KEY, shopId)
             cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
-            startActivityForResult(ReviewGalleryActivity.getIntent(it, cacheManager.id ?: ""), GALLERY_ACTIVITY_CODE)
+            startActivityForResult(ReviewGalleryActivity.getIntent(it, cacheManager.id
+                    ?: ""), GALLERY_ACTIVITY_CODE)
         }
     }
 
@@ -297,10 +298,18 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == GALLERY_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == GALLERY_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
             loadInitialData()
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onSwipeRefresh() {
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
+        adapter.clearAllElements()
+        showListOnlyLoading()
+        loadData(defaultInitialPage)
     }
 
     private fun getProductIdFromArguments() {
@@ -397,13 +406,16 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         hideFilteredEmpty()
         with(productrevGetProductReviewList) {
             renderList(viewModel.mapProductReviewToReadReviewUiModel(reviewList, shopInfo.shopID, shopInfo.name), hasNext)
-            if(isListEmpty) hideFab() else showFab()
+            if (isListEmpty) hideFab() else showFab()
         }
     }
 
     private fun onFailGetProductReviews() {
-        if (currentPage == 0) return
-        showToasterError(getString(R.string.review_reading_connection_error)) { loadData(currentPage) }
+        if (currentPage == defaultInitialPage) {
+            showError()
+        } else {
+            showToasterError(getString(R.string.review_reading_connection_error)) { loadData(currentPage) }
+        }
     }
 
     private fun showError() {
@@ -484,7 +496,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun getRatingAndTopics(): ProductrevGetProductRatingAndTopic {
-        return (viewModel.ratingAndTopic.value as? Success)?.data ?: ProductrevGetProductRatingAndTopic()
+        return (viewModel.ratingAndTopic.value as? Success)?.data
+                ?: ProductrevGetProductRatingAndTopic()
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
