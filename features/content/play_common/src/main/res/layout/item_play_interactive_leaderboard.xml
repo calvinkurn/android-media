@@ -28,7 +28,7 @@
         app:layout_constraintStart_toStartOf="@id/tv_leaderboard_title"
         app:layout_constraintTop_toBottomOf="@id/tv_leaderboard_title"
         tools:itemCount="5"
-        tools:listitem="@layout/item_play_engagement_leaderboard_winner" />
+        tools:listitem="@layout/item_play_interactive_leaderboard_winner" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_other_participant"
@@ -57,7 +57,7 @@
         app:layout_constraintStart_toStartOf="@id/tv_leaderboard_title"
         app:layout_constraintTop_toBottomOf="@id/tv_leaderboard_title"
         app:typographyType="body_3"
-        android:text="@string/play_engage_empty"
+        android:text="@string/play_interactive_empty"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

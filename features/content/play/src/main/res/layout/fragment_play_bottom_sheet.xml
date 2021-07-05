@@ -16,7 +16,7 @@
         />
 
     <include
-        layout="@layout/view_play_engagement_leaderboard"
+        layout="@layout/view_play_interactive_leaderboard"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

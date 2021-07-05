@@ -18,7 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by mzennis on 30/06/21.
  */
-class PlayEngagementWinnerViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
+class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
 
     private val container = itemView.findViewById<ContainerUnify>(R.id.container_winner)
     private val tvNumber = itemView.findViewById<Typography>(R.id.tv_winner_number)
@@ -65,7 +65,7 @@ class PlayEngagementWinnerViewHolder(itemView: View, private val listener: Liste
 
     companion object {
 
-        val LAYOUT = R.layout.item_play_engagement_leaderboard_winner
+        val LAYOUT = R.layout.item_play_interactive_leaderboard_winner
 
         private const val FIRST_WINNER = 1
     }

@@ -42,7 +42,7 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayEngagementLeaderboardViewComponent
+import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -60,7 +60,7 @@ class PlayBottomSheetFragment @Inject constructor(
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
-        PlayEngagementLeaderboardViewComponent.Listener
+        PlayInteractiveLeaderboardViewComponent.Listener
 {
 
     companion object {
@@ -71,7 +71,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
-    private val leaderboardSheetView by viewComponent { PlayEngagementLeaderboardViewComponent(it, this) }
+    private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -206,11 +206,11 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * LeaderboardSheet View Component Listener
      */
-    override fun onCloseButtonClicked(view: PlayEngagementLeaderboardViewComponent) {
+    override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    override fun onChatWinnerButtonClicked(view: PlayEngagementLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int) {
+    override fun onChatWinnerButtonClicked(view: PlayInteractiveLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int) {
 
     }
 

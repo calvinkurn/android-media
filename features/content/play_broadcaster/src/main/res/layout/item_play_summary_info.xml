@@ -12,9 +12,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_item_play_summary_info_icon"
-        android:layout_width="@dimen/layout_lvl3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
         tools:src="@drawable/ic_play_interactive_crown" />
 
     <com.tokopedia.unifyprinciples.Typography

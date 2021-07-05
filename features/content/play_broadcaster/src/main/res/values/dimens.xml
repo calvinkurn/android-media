@@ -85,4 +85,6 @@
     <!--Tags-->
     <dimen name="play_tag_recommendation_stroke_width">1dp</dimen>
     <dimen name="play_tag_recommendation_radius">12dp</dimen>
+
+    <dimen name="play_interactive_create_radius">26dp</dimen>
 </resources>
