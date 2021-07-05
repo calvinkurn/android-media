@@ -51,12 +51,12 @@ object DateUtil {
     /**
      * Function to get the day difference from input date and today
      *
-     * @param dateStr date in string object
+     * @param dateString date in string object
      *
      * @return Long object of day difference between two dates
      */
-    fun getDayDiffFromToday(dateStr: String): Long {
-        val date = dateStr.toDate(YYYY_MM_DD).trimDate()
+    fun getDayDiffFromToday(dateString: String): Long {
+        val date = dateString.toDate(YYYY_MM_DD).trimDate()
         return date.getDayDiffFromToday()
     }
 
@@ -164,13 +164,13 @@ object DateUtil {
      * this function will format the date string
      * from yyyy-MM-dd format to dd MMM yyyy format
      *
-     * @param dateStr date in string
+     * @param dateString date in string
      *
      * @return String with new format
      */
     @JvmStatic
-    fun formatToUi(dateStr: String): String {
-        return formatDate(YYYY_MM_DD, DEFAULT_VIEW_FORMAT, dateStr)
+    fun formatToUi(dateString: String): String {
+        return formatDate(YYYY_MM_DD, DEFAULT_VIEW_FORMAT, dateString)
     }
 
 }
