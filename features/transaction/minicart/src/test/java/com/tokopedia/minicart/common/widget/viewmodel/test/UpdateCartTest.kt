@@ -41,7 +41,7 @@ class UpdateCartTest {
         //given
         viewModel.initializeGlobalState()
 
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()
@@ -63,7 +63,7 @@ class UpdateCartTest {
     @Test
     fun `WHEN update cart for checkout from mini cart widget success THEN global event state should be updated accordingly`() {
         //given
-        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAvailableAndUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         val mockResponse = DataProvider.provideUpdateCartSuccess()

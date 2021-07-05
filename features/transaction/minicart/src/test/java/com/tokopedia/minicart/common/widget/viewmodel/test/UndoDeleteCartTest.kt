@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.minicart.common.domain.usecase.*
@@ -44,7 +43,8 @@ class UndoDeleteCartTest {
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
-        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
+        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
+                ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItem(miniCartProductUiModel)
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
@@ -66,7 +66,8 @@ class UndoDeleteCartTest {
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
-        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
+        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
+                ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItem(miniCartProductUiModel)
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
@@ -88,7 +89,8 @@ class UndoDeleteCartTest {
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
-        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
+        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
+                ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItem(miniCartProductUiModel)
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
@@ -111,7 +113,8 @@ class UndoDeleteCartTest {
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val productId = "1920796612"
-        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
+        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
+                ?: MiniCartProductUiModel()
         viewModel.setLastDeleteProductItem(miniCartProductUiModel)
 
         val errorMessage = "Error Message"
@@ -126,6 +129,27 @@ class UndoDeleteCartTest {
 
         //then
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM)
+    }
+
+    @Test
+    fun `WHEN undo delete but temporary deleted item is null THEN global event state should not be updated`() {
+        //given
+        viewModel.initializeGlobalState()
+
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
+        coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+        coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.undoDeleteCartItem(false)
+
+        //then
+        assert(viewModel.globalEvent.value?.state == 0)
     }
 
 }

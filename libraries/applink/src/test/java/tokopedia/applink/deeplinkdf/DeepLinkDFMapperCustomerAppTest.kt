@@ -710,9 +710,9 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check hotel external appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://hotel"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check hotel external appLink then should return DF_TRAVEL in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://hotel"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_TRAVEL)
     }
 
     @Test
@@ -953,5 +953,23 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check promo checkout marketplace appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalPromo.INTERNAL_PROMO}/checkout-marketplace"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
+    fun `check tokopedia now home appLink then should return DF_TOKOPEDIA_NOW in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://now/home"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_TOKOPEDIA_NOW)
+    }
+
+    @Test
+    fun `check tokopedia now category appLink then should return DF_TOKOPEDIA_NOW in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://now/category"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_TOKOPEDIA_NOW)
+    }
+
+    @Test
+    fun `check tokopedia now search appLink then should return DF_TOKOPEDIA_NOW in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://now/search"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_TOKOPEDIA_NOW)
     }
 }

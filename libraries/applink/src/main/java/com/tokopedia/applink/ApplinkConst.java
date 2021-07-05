@@ -52,6 +52,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
+    String AFFILIATE_UNIQUE_ID = "aff_unique_id";
     String PRODUCT_ADD = "tokopedia://product/add";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
@@ -194,7 +195,9 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL_HOST = "hotel";
     String HOTEL = "tokopedia://hotel";
+    String HOTEL_DASHBOARD = "tokopedia://hotel/dashboard";
     String HOTEL_SRP = "tokopedia://hotel/result";
+    String HOTEL_DETAIL = "tokopedia://hotel/detail";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
@@ -476,7 +479,9 @@ public interface ApplinkConst {
 
     interface TokopediaNow {
         String HOME = "tokopedia://now";
-        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID = "11530573";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 = "11515028";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
+        String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
     }
@@ -561,6 +566,7 @@ public interface ApplinkConst {
         String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
         String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";
         String TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY = "TKPD_ATTACH_PRODUCT_RESULTS";
+        String TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID = "TKPD_ATTACH_PRODUCT_WAREHOUSE_ID";
     }
 
     interface Notification {

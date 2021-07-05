@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_product"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_product"
@@ -115,7 +117,7 @@
         app:flexWrap="wrap"
         app:layout_constraintStart_toEndOf="@+id/image_product"
         app:layout_constraintTop_toBottomOf="@+id/text_product_price"
-        tools:visibility="gone"/>
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/text_field_notes"
@@ -187,8 +189,6 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_16"
-        android:paddingStart="@dimen/dp_0"
-        android:paddingEnd="@dimen/dp_16"
         app:icon_name="DELETE"
         app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
         app:layout_constraintTop_toBottomOf="@+id/layout_product_info" />
@@ -197,6 +197,8 @@
         android:id="@+id/text_product_unavailable_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_0"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
@@ -211,6 +213,8 @@
         android:id="@+id/qty_editor_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_0"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
         app:layout_constraintEnd_toEndOf="parent"

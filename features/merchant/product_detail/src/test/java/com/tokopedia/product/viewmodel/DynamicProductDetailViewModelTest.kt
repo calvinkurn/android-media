@@ -8,7 +8,6 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -43,7 +42,6 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -799,7 +797,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productId = "123"
         val productParams = ProductParams(productId, "", "", "", "", "")
         val userLocation = UserLocationRequest("123")
-        `mock localization rollence`(true)
         `co every p1 success`(dataP1)
 
         coEvery {
@@ -825,7 +822,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val userLocation = UserLocationRequest("123")
 
         `co every p1 success`(dataP1)
-        `mock localization rollence`(true)
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
@@ -846,7 +842,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productParams = ProductParams("518076293", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
-        `mock localization rollence`(false)
         every {
             viewModel.userId
         } returns "123"
@@ -877,12 +872,12 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
 
     private fun `co verify p1 success`() {
@@ -900,7 +895,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         }
 
         coVerify {
@@ -918,7 +913,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns ProductInfoP2Login()
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         } returns ProductInfoP3()
 
         coEvery {
@@ -937,7 +932,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `on error get product info login`() {
         val productParams = ProductParams("", "", "", "", "", "")
-        `mock localization rollence`(true)
         coEvery {
             getPdpLayoutUseCase.executeOnBackground()
         } throws Throwable()
@@ -975,7 +969,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productParams = ProductParams("", "", "", "", "", "")
 
         viewModel.productInfoP3.observeForever { }
-        `mock localization rollence`(true)
         every {
             userSessionInterface.isLoggedIn
         } returns false
@@ -1002,7 +995,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         }
 
         coVerify(inverse = true) {
@@ -1022,7 +1015,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val dataP1 = ProductDetailTestUtil.getMockPdpThatShouldRemoveUnusedComponent()
         val productParams = ProductParams("", "", "", "", "", "")
 
-        `mock localization rollence`(true)
         every {
             viewModel.userId
         } returns "123"
@@ -1052,13 +1044,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
-    }
-
-    private fun `mock localization rollence`(expectedValue: Boolean) {
-        val rollenceKey = if (expectedValue) "hyperlocal_android" else ""
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
-        } returns rollenceKey
     }
 
     /**

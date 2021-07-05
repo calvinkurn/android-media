@@ -208,7 +208,7 @@ object CartListPresenterCalculateWeightTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -238,7 +238,7 @@ object CartListPresenterCalculateWeightTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -268,7 +268,7 @@ object CartListPresenterCalculateWeightTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -300,7 +300,7 @@ object CartListPresenterCalculateWeightTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }

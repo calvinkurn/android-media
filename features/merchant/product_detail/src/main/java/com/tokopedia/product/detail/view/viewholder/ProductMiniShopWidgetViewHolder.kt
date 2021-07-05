@@ -14,8 +14,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductMiniShopWidgetViewHolder(
-        private val view: View,
-        private val listener: DynamicProductDetailListener
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductMiniShopWidgetDataModel>(view) {
 
     companion object {
@@ -63,5 +63,6 @@ class ProductMiniShopWidgetViewHolder(
         return@with
     }
 
-    private fun getComponentTrackData(element: ProductMiniShopWidgetDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
+    private fun getComponentTrackData(element: ProductMiniShopWidgetDataModel) =
+        ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

@@ -129,7 +129,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check product-review create then should return tokopedia internal create review`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-review/create/abc/1234/?rating=5&utm_source="
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product-review/create/abc/1234/?rating=5&source="
         assertEqualsDeepLinkMapper(ApplinkConst.PRODUCT_CREATE_REVIEW + "/abc/1234", expectedDeepLink)
     }
 
@@ -1821,6 +1821,26 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check login by qr appLink then should return tokopedia internal login by qr in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/qr-login"
         assertEqualsDeepLinkMapper(ApplinkConst.QR_LOGIN, expectedDeepLink)
+    }
+
+    @Test
+    fun `check marketplace order detail appLink then should return revamped tokopedia internal marketplace order detail in customerapp`() {
+        val orderId = "123456789"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-detail?order_id=$orderId"
+        every {
+            DeeplinkMapperUohOrder.useRevampedBuyerOrderDetail()
+        } returns true
+        assertEqualsDeepLinkMapper("${ApplinkConst.MARKETPLACE_ORDER}/$orderId", expectedDeepLink)
+    }
+
+    @Test
+    fun `check marketplace order detail appLink then should return old tokopedia internal marketplace order detail in customerapp`() {
+        val orderId = "123456789"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/order?order_id=$orderId"
+        every {
+            DeeplinkMapperUohOrder.useRevampedBuyerOrderDetail()
+        } returns false
+        assertEqualsDeepLinkMapper("${ApplinkConst.MARKETPLACE_ORDER}/$orderId", expectedDeepLink)
     }
 
     @Test

@@ -240,7 +240,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             }
             var isAllSelected = true
             cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.forEach {
-                if (it.cartItemData?.isError == true && it.cartItemData?.isSingleChild == true) {
+                if (it.cartItemData.isError && it.cartItemData.isSingleChild) {
                     isAllSelected = false
                     return@forEach
                 }

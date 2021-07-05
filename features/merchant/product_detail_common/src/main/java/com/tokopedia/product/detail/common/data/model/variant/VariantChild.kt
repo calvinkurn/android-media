@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.common.data.model.variant
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
 /**
@@ -85,12 +86,17 @@ data class VariantChild(
     fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
             ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
 
+    fun getFinalMaxOrder(): Int = stock?.maximumOrder?.toIntOrNull() ?: DEFAULT_MAX_ORDER
+
     fun getVariantFinalStock(): Int {
         return if (campaign?.isActive == true) campaign.stock ?: 0 else stock?.stock ?: 0
     }
 
     val isBuyable: Boolean
         get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
+
+    val isInactive:Boolean
+        get() = getVariantFinalStock() > 0 && stock?.isBuyable == false
 
     val isFlashSale: Boolean
         get() = campaign?.isActive == true
@@ -162,7 +168,11 @@ data class VariantStock(
 
         @SerializedName("minimumOrder")
         @Expose
-        val minimumOrder: String? = ""
+        val minimumOrder: String? = "",
+
+        @SerializedName("maximumOrder")
+        @Expose
+        val maximumOrder: String? = ""
 )
 
 data class VariantCampaign(

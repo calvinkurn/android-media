@@ -1,4 +1,4 @@
-package com.tkpd.atc_variant.views.viewholder.item
+package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +10,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.product.detail.common.view.BaseAtcVariantItemViewHolder
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 /**
  * Created by Yehezkiel on 06/05/21
@@ -64,7 +63,11 @@ class ItemVariantChipViewHolder(val view: View,
                 }
             }
             VariantConstant.STATE_SELECTED -> {
-                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected)
+                if (context.isDarkMode()) {
+                    containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_dark)
+                } else {
+                    containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_light)
+                }
                 txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 view.setOnClickListener {
                     listener.onVariantEmptyAndSelectedClicked()

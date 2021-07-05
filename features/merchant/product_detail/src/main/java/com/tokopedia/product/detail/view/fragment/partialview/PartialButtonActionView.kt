@@ -11,10 +11,18 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_MAX_ORDER
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class PartialButtonActionView private constructor(val view: View,
@@ -38,14 +46,18 @@ class PartialButtonActionView private constructor(val view: View,
     private var miniCartItem: MiniCartItem? = null
     private var isVariant: Boolean = false
     private var minQuantity: Int = 0
-    private var alternateButtonVariant: String = ""
-    private var textWatchers: TextWatcher? = null
+    private var maxQuantity: Int = DEFAULT_ATC_MAX_ORDER
+    private var textWatcher: TextWatcher? = null
+    private var quantityDebounceSubscription: Subscription? = null
     private var localQuantity: Int = 0
 
     private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_editor_pdp)
 
     companion object {
         fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
+
+        private const val QUANTITY_REGEX = "[^0-9]"
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000L
     }
 
     fun setButtonP1(preOrder: PreOrder?) {
@@ -63,7 +75,7 @@ class PartialButtonActionView private constructor(val view: View,
                    hasTopAdsActive: Boolean,
                    isVariant: Boolean,
                    minQuantity: Int = 1,
-                   alternateButtonVariant: String = "",
+                   maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
                    cartTypeData: CartTypeData? = null,
                    miniCartItem: MiniCartItem? = null) {
 
@@ -76,7 +88,7 @@ class PartialButtonActionView private constructor(val view: View,
         this.miniCartItem = miniCartItem
         this.isVariant = isVariant
         this.minQuantity = minQuantity
-        this.alternateButtonVariant = alternateButtonVariant
+        this.maxQuantity = maxQuantity
         renderButton()
     }
 
@@ -105,8 +117,6 @@ class PartialButtonActionView private constructor(val view: View,
 
         if (!isVariant && miniCartItem != null) {
             renderQuantityButton(miniCartItem?.quantity ?: 1)
-        } else if (isVariant && alternateButtonVariant.isNotEmpty()) {
-            renderNormalButtonCartRedirection(alternateButtonVariant)
         } else {
             renderNormalButtonCartRedirection()
         }
@@ -119,15 +129,9 @@ class PartialButtonActionView private constructor(val view: View,
 
     }
 
-    private fun renderNormalButtonCartRedirection(alternateButtonVariant: String = "") = with(view) {
+    private fun renderNormalButtonCartRedirection() = with(view) {
         qtyButtonPdp.hide()
-        val availableButton = cartTypeData?.availableButtons?.map {
-            if (alternateButtonVariant.isNotEmpty()) {
-                it.copy(text = alternateButtonVariant)
-            } else {
-                it
-            }
-        } ?: listOf()
+        val availableButton = cartTypeData?.availableButtons ?: listOf()
 
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
@@ -157,37 +161,77 @@ class PartialButtonActionView private constructor(val view: View,
         btn_add_to_cart?.hide()
         qtyButtonPdp?.run {
             minValue = minQuantity
+            maxValue = maxQuantity
             setValue(localQuantity)
 
-            if (textWatchers != null) {
-                editText.removeTextChangedListener(textWatchers)
+            if (textWatcher != null) {
+                editText.removeTextChangedListener(textWatcher)
+            }
+            if (quantityDebounceSubscription != null) {
+                buttonListener.getRxCompositeSubcription().remove(quantityDebounceSubscription)
+                quantityDebounceSubscription = null
             }
 
-            textWatchers = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s.toString().toIntOrZero() < minQuantity) {
-                        setValue(minQuantity)
-                    } else if (s.toString().toIntOrZero() > maxValue) {
-                        setValue(maxValue)
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    if (localQuantity != s.toString().toIntOrZero() && s.toString().isNotEmpty()) {
-                        localQuantity = s.toString().toIntOrZero()
-                        buttonListener.updateQuantityNonVarTokoNow(getValue(), miniCartItem
-                                ?: MiniCartItem()
-                        )
-                        setValue(localQuantity)
-                        //fire again to update + and - button
-                    }
-                }
-            }
-            editText.addTextChangedListener(textWatchers)
+            initTextWatcherDebouncer()
             show()
+        }
+    }
+
+    private fun initTextWatcherDebouncer() {
+        quantityDebounceSubscription = Observable.create(
+                Observable.OnSubscribe<Int> { subscriber ->
+                    textWatcher = object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        }
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+                            val quantityInt: Int = s.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
+                            subscriber.onNext(quantityInt)
+                        }
+                    }
+                    qtyButtonPdp?.editText?.addTextChangedListener(textWatcher)
+                })
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Timber.d(e)
+                    }
+
+                    override fun onNext(quantity: Int) {
+                        onNextValueQuantity(quantity)
+                    }
+                })
+
+        buttonListener.getRxCompositeSubcription().add(quantityDebounceSubscription)
+    }
+
+    private fun onNextValueQuantity(quantity: Int) {
+        qtyButtonPdp?.run {
+            if (quantity < minQuantity) {
+                setValue(minQuantity)
+            } else if (quantity > maxQuantity) {
+                setValue(maxQuantity)
+            } else {
+                if (localQuantity != quantity && quantity != 0) {
+                    buttonListener.updateQuantityNonVarTokoNow(
+                            quantity = getValue(),
+                            miniCart = miniCartItem ?: MiniCartItem(),
+                            oldValue = localQuantity
+                    )
+                    localQuantity = quantity
+                    //fire again to update + and - button
+                    setValue(localQuantity)
+                }
+            }
         }
     }
 

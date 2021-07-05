@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
-import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
@@ -128,7 +128,6 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        hideProgressLoading()
                         onFailedUpdateCartForCheckout(it, fragment)
                     }
                 }
@@ -160,8 +159,8 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
+        hideProgressLoading()
         setTotalAmountLoading(true)
-        viewModel?.getLatestWidgetState()
         fragment.context?.let { context ->
             handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
         }
@@ -171,18 +170,17 @@ class MiniCartWidget @JvmOverloads constructor(
         val data = globalEvent.data
         if (data != null) {
             // Goes here if failed but get response from BE
-            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context)
+            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context, globalEvent)
         } else {
             // Goes here if failed and get no response from BE
             handleFailedUpdateCartWithThrowable(view, globalEvent, fragmentManager, context)
         }
     }
 
-    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context) {
+    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
         if (data is Data) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
-                analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
                 globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
                     override fun onGoToHome() {
                         RouteManager.route(context, ApplinkConst.HOME)
@@ -190,17 +188,31 @@ class MiniCartWidget @JvmOverloads constructor(
 
                     override fun onRefreshErrorPage() {
                         showProgressLoading()
-                        viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                        viewModel?.updateCart(true, globalEvent.observer)
                     }
                 })
+                analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
             } else {
+                // Reload data
+                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                    viewModel?.getLatestWidgetState()
+                } else if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                    viewModel?.getCartList()
+                }
+
                 // Show toaster error if have no out of service data
-                analytics.eventClickBuyThenGetToasterError(data.error)
-                var ctaText = "Oke"
-                if (data.toasterAction.showCta) {
+                var ctaText = context.getString(R.string.mini_cart_cta_ok)
+                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                     ctaText = data.toasterAction.text
                 }
-                showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText)
+                if (data.toasterAction.showCta) {
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickUpdateCartToasterErrorCta(data.error, ctaText)
+                    }
+                } else {
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
+                }
+                analytics.eventClickBuyThenGetToasterError(data.error)
             }
         }
     }
@@ -217,17 +229,26 @@ class MiniCartWidget @JvmOverloads constructor(
 
                         override fun onRefreshErrorPage() {
                             showProgressLoading()
-                            viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                            viewModel?.updateCart(true, globalEvent.observer)
                         }
                     })
+                    analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
                 }
                 is SocketTimeoutException -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
-                    showToaster(view, message, Toaster.TYPE_ERROR)
+                    val ctaText = context.getString(R.string.mini_cart_cta_ok)
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                    }
+                    analytics.eventClickBuyThenGetToasterError(message)
                 }
                 else -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
-                    showToaster(view, message, Toaster.TYPE_ERROR)
+                    val ctaText = context.getString(R.string.mini_cart_cta_ok)
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                    }
+                    analytics.eventClickBuyThenGetToasterError(message)
                 }
             }
         }
@@ -246,7 +267,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 fragment.context?.let {
                     globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.SERVER_ERROR, outOfService, object : GlobalErrorBottomSheetActionListener {
                         override fun onGoToHome() {
-                            // No-op
+                            RouteManager.route(context, ApplinkConst.HOME)
                         }
 
                         override fun onRefreshErrorPage() {
@@ -388,6 +409,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 setAmount("")
                 setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
                 amountCtaView.isEnabled = false
+                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+                amountCtaView.requestLayout()
             }
             labelUnavailable?.apply {
                 text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
@@ -400,6 +423,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
                 setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
                 amountCtaView.isEnabled = true
+                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+                amountCtaView.requestLayout()
             }
             labelUnavailable?.gone()
             imageChevronUnavailable?.gone()
@@ -430,7 +455,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_GN500))
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
                 analytics.eventClickChatOnMiniCart()
@@ -451,6 +476,7 @@ class MiniCartWidget @JvmOverloads constructor(
             updateData(it)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
+        viewModel?.resetTemporaryHiddenUnavailableItems()
     }
 
     override fun onBottomSheetSuccessUpdateCartForCheckout() {

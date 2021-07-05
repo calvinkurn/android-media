@@ -20,6 +20,7 @@ import javax.inject.Inject
  * Credit errysuprayogi
  */
 
+@Deprecated(message = "please use GetRecommendationUseCase from coroutine folder instead")
 open class GetRecommendationUseCase @Inject
 constructor(
             private val context: Context,

@@ -70,6 +70,7 @@
 /features/merchant/favorite/                            @tokopedia/android-minionstuart-dev
 /features/merchant/seller_search/                       @tokopedia/android-minionstuart-dev
 /features/merchant/seller_action/                       @tokopedia/android-minionstuart-dev
+/features/ordermanagement/buyer_order_detail            @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
 /features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
 
@@ -82,7 +83,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
-/features/tokomart/                                     @tokopedia/android-minionken-dev
+/features/tokopedianow/                                 @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev

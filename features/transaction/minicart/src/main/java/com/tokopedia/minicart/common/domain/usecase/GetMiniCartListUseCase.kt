@@ -66,6 +66,9 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     description
                     buttons {
                       id
+                      code
+                      message
+                      color
                     }
                   }
                   max_char_note
@@ -75,6 +78,8 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     total_value
                     discount_total_wording
                     discount_value
+                    seller_cashback_wording
+                    seller_cashback_value
                     payment_total_wording
                     payment_total_value
                   }
@@ -152,6 +157,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           warehouse_id
                           category_id
                           category
+                          product_cashback
                         }
                       }
                     }

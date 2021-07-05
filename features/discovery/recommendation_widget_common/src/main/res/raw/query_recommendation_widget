@@ -15,6 +15,15 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         prevPage
         hasNext
       }
+      campaign{
+        appLandingPageLink
+        landingPageLink
+        assets {
+          banner{
+            apps
+          }
+        }
+      }
       recommendation {
         id
         name

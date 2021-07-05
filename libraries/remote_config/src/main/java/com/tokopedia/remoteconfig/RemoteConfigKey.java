@@ -207,7 +207,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
-    public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled_v2";
@@ -248,5 +247,7 @@ public class RemoteConfigKey {
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
+
+    public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
 }

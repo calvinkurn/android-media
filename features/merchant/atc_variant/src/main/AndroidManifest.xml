@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tkpd.atc_variant">
+    package="com.tkpd.atcvariant">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
@@ -10,7 +10,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".views.AtcVariantActivity"
+            android:name=".view.activity.AtcVariantActivity"
             android:label="@string/title_activity_atc_variant"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent">

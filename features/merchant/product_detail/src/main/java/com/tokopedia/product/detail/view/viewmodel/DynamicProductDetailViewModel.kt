@@ -21,8 +21,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
@@ -48,6 +46,7 @@ import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
@@ -80,8 +79,11 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
@@ -226,7 +228,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var parentProductId: String? = null
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
-    var isNewShipment: Boolean = false
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
@@ -249,8 +250,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         _productInfoP3.addSource(_p2Data) { p2Data ->
             launchCatchError(context = dispatcher.io, block = {
                 getDynamicProductInfoP1?.let {
-                    getProductInfoP3(shopDomain, it)?.let { p3Data ->
-                        updateShippingValue(p3Data.ratesModel?.getMinimumShippingPrice())
+                    getProductInfoP3().let { p3Data ->
                         _productInfoP3.postValue(p3Data)
                     }
                 }
@@ -303,7 +303,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
 
-            updateCartUseCase.get().setParams(listOf(copyOfMiniCartItem))
+            updateCartUseCase.get().setParams(
+                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+            )
             val result = updateCartUseCase.get().executeOnBackground()
 
             if (result.error.isNotEmpty()) {
@@ -366,13 +369,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getMiniCartItem(): MiniCartItem? {
         return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
-    }
-
-    fun isParentExistInMiniCart(parentId: String): Boolean {
-        val data = p2Data.value?.miniCart?.values?.toList() ?: listOf()
-        return data.any {
-            it.productParentId == parentId
-        }
     }
 
     fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
@@ -463,7 +459,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel) {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid : String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -472,8 +468,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
-
-                isNewShipment = ChooseAddressUtils.isRollOutUser(null)
 
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
@@ -492,7 +486,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(it.listOfLayout.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2()
+            getProductP2(affiliateUniqueString, uuid)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -574,13 +568,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2() {
+    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String) {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.productID)
             } else null
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, it.basic.shopID, it.basic.isTokoNow)
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, affiliateUniqueString, uuid, it.basic.shopID, it.basic.isTokoNow)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await().let {
@@ -614,15 +608,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
-        val domain = shopDomain ?: getShopInfo().shopCore.domain
-        val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
-
-        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin)
-    }
-
     private fun updateShippingValue(shippingPriceValue: Int?) {
-        if (isNewShipment) return
         shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt()
                 ?: 30000 else shippingPriceValue
     }
@@ -641,7 +627,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
                 it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO && (!isUserSessionActive || isNewShipment)) {
+            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
                 it
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
@@ -654,8 +640,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
             } else if (it.name() == ProductDetailConstant.REPORT && (isUseOldNav || isShopOwner())) {
-                it
-            } else if (it.name() == ProductDetailConstant.SHIPMENT && !isNewShipment) {
                 it
             } else {
                 null
@@ -1057,20 +1041,21 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
+    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, affiliateUniqueString: String, uuid: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
                     requestParams = GetProductInfoP2DataUseCase.createParams(
                             productId,
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
-                            generateUserLocationRequest(userLocationCache)),
-                    isTokoNow = isTokoNow,
-                    shopId = shopId,
-                    forceRefresh = forceRefresh,
-                    setErrorLogListener = {
-                        logP2Data(it, productId, pdpSession)
-                    })
+                            generateUserLocationRequest(userLocationCache),
+                            getAffiliateUIID(affiliateUniqueString, uuid)),
+                            isTokoNow = isTokoNow,
+                            shopId = shopId,
+                            forceRefresh = forceRefresh,
+                            setErrorLogListener = {
+                                logP2Data(it, productId, pdpSession)
+                            })
         }
     }
 
@@ -1082,11 +1067,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?): ProductInfoP3 {
+    private suspend fun getProductInfoP3(): ProductInfoP3 {
         return getProductInfoP3UseCase.get().executeOnBackground(
-                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin),
                 forceRefresh,
-                isUserSessionActive, !isNewShipment)
+                isUserSessionActive)
     }
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {

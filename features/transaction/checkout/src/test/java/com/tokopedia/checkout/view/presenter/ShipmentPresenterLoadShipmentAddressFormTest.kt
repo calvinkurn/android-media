@@ -453,7 +453,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         assertEquals(errorTicker, presenter.shipmentTickerErrorModel.errorMessage)
         assertEquals(true, presenter.shipmentTickerErrorModel.isError)
-        assertEquals(false, presenter.recipientAddressModel.isEnabled)
         assertEquals(false, presenter.shipmentDonationModel.isEnabled)
         assertEquals(false, presenter.egoldAttributeModel.isEnabled)
     }

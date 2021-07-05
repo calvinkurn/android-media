@@ -89,6 +89,7 @@ object ProductDetailConstant {
     const val MINI_VARIANT_OPTIONS = "mini_variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
+    const val PDP_7 = "pdp_7"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -108,6 +109,8 @@ object ProductDetailConstant {
     const val MVC = "mvc"
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
 
+    const val BEST_SELLER = "best_seller"
+    const val ONE_LINERS = "one_liners"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -119,6 +122,7 @@ object ProductDetailConstant {
     const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
     const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
+    const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
     const val REVIEW_PRD_NM = "x_prd_nm"
@@ -164,6 +168,7 @@ object ProductDetailConstant {
     const val NO_BEBAS_ONGKIR = 0
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
+    const val BO_TOKONOW = 3
 
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
@@ -181,4 +186,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
+
+    const val DEFAULT_ATC_MAX_ORDER = 100
 }

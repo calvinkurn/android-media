@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
@@ -119,7 +120,7 @@ class UserInteractionTest {
     @Test
     fun `WHEN user toggle accordion from collapsed to expanded THEN temporary collapsed data should be empty`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
@@ -132,5 +133,38 @@ class UserInteractionTest {
         assert(viewModel.tmpHiddenUnavailableItems.size == 0)
     }
 
+    @Test
+    fun `WHEN close bottom sheet and get latest mini cart data with collapsed unavailable items THEN cart item count should be correct`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+        val unavailableItem = MiniCartProductUiModel()
+        viewModel.tmpHiddenUnavailableItems.clear()
+        viewModel.tmpHiddenUnavailableItems.add(unavailableItem)
+        viewModel.tmpHiddenUnavailableItems.add(unavailableItem)
+
+        val expectedSize = 7
+
+        //when
+        val value = viewModel.getLatestMiniCartData()
+
+        //then
+        assert(value.miniCartItems.size == expectedSize)
+    }
+
+    @Test
+    fun `WHEN close bottom sheet and get latest mini cart data without collapsed unavailable items THEN cart item count should be correct`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        val expectedSize = 5
+
+        //when
+        val value = viewModel.getLatestMiniCartData()
+
+        //then
+        assert(value.miniCartItems.size == expectedSize)
+    }
 
 }
