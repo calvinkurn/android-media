@@ -904,6 +904,7 @@ class OfficialHomeFragment :
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun goToPDP(item: RecommendationItem, position: Int) {
         eventTrackerClickListener(item, position)
         try {
@@ -933,6 +934,7 @@ class OfficialHomeFragment :
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isChooseAddressUpdated(): Boolean {
         try {
             localChooseAddress?.let {
