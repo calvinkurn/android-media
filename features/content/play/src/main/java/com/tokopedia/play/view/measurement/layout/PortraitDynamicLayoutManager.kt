@@ -24,7 +24,7 @@ class PortraitDynamicLayoutManager(
     private val playButtonView: View = container.findViewById(R.id.view_play_button)
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
     private val pinnedView: View = container.findViewById(R.id.view_pinned)
-    private val engagementToolsPreStartView: View = container.findViewById(R.id.view_interactive_prestart)
+    private val interactiveView: View = container.findViewById(R.id.view_interactive)
     private val immersiveBoxView: View = container.findViewById(R.id.v_immersive_box)
 
     override fun onVideoOrientationChanged(videoOrientation: VideoOrientation) {
@@ -49,7 +49,7 @@ class PortraitDynamicLayoutManager(
                 setDimensionRatio(immersiveBoxView.id, "H, ${videoOrientation.aspectRatio}")
             } else {
                 connect(immersiveBoxView.id, ConstraintSet.TOP, statsInfoView.id, ConstraintSet.BOTTOM)
-                connect(immersiveBoxView.id, ConstraintSet.BOTTOM, engagementToolsPreStartView.id, ConstraintSet.TOP, offset16)
+                connect(immersiveBoxView.id, ConstraintSet.BOTTOM, interactiveView.id, ConstraintSet.TOP, offset16)
             }
         }
     }

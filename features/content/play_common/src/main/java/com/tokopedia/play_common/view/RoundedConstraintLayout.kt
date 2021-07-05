@@ -16,7 +16,7 @@ import com.tokopedia.play_common.R
 /**
  * Created by jegul on 21/10/20
  */
-class RoundedConstraintLayout : ConstraintLayout {
+open class RoundedConstraintLayout : ConstraintLayout {
 
     private val roundedHelper = RoundedLayoutHelper()
 

@@ -69,10 +69,7 @@ import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.viewcomponent.*
-import com.tokopedia.play.view.viewcomponent.interactive.InteractiveFinishedViewComponent
-import com.tokopedia.play.view.viewcomponent.interactive.InteractivePreStartViewComponent
-import com.tokopedia.play.view.viewcomponent.interactive.InteractiveTapViewComponent
-import com.tokopedia.play.view.viewcomponent.interactive.InteractiveWinnerBadgeViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -115,8 +112,7 @@ class PlayUserInteractionFragment @Inject constructor(
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
         PinnedVoucherViewComponent.Listener,
-        InteractivePreStartViewComponent.Listener,
-        InteractiveTapViewComponent.Listener,
+        InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
@@ -141,9 +137,7 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactivePreStartView by viewComponentOrNull { InteractivePreStartViewComponent(it, this) }
-    private val interactiveTapView by viewComponentOrNull { InteractiveTapViewComponent(it, this) }
-    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
+    private val interactiveView by viewComponentOrNull { InteractiveViewComponent(it, this) }
     private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
@@ -435,23 +429,15 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * InteractivePreStart View Component Listener
+     * Interactive View Component Listener
      */
-    override fun onFollowButtonClicked(view: InteractivePreStartViewComponent) {
+    override fun onFollowButtonClicked(view: InteractiveViewComponent) {
         val partnerId = playViewModel.partnerId ?: return
         doClickFollow(partnerId, PartnerFollowAction.Follow)
     }
 
-    /**
-     * InteractiveToolsTap View Component Listener
-     */
-    override fun onTapClicked(view: InteractiveTapViewComponent) {
+    override fun onTapTapClicked(view: InteractiveViewComponent) {
         playViewModel.submitAction(InteractiveTapTapAction)
-    }
-
-    override fun onFollowClicked(view: InteractiveTapViewComponent) {
-        val partnerId = playViewModel.partnerId ?: return
-        doClickFollow(partnerId, PartnerFollowAction.Follow)
     }
 
     /**
@@ -687,7 +673,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setPartnerInfo(it)
-            interactivePreStartView?.showFollowButton(it.isFollowable && !it.isFollowed)
+            interactiveView?.showFollowMode(shouldShow = it.isFollowable && !it.isFollowed)
         })
     }
 
@@ -957,8 +943,7 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doFollow(partnerId, action)
 
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
-        interactivePreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
-        interactiveTapView?.showFollowMode(action == PartnerFollowAction.UnFollow)
+        interactiveView?.showFollowMode(action == PartnerFollowAction.UnFollow)
     }
 
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
@@ -1401,39 +1386,24 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderInteractiveView(state: PlayInteractiveUiState, showFollowButton: Boolean) {
         when (state) {
             is PlayInteractiveUiState.PreStart -> {
-                interactiveTapView?.hide()
-                interactiveFinishedView?.hide()
-
-                interactivePreStartView?.setTitle(state.title)
-                interactivePreStartView?.setTimer(state.timeToStartInMs) {
+                interactiveView?.showPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
                     playViewModel.submitAction(InteractivePreStartFinishedAction)
                 }
-                interactivePreStartView?.showFollowButton(showFollowButton)
-                interactivePreStartView?.show()
             }
             is PlayInteractiveUiState.Ongoing -> {
-                interactivePreStartView?.hide()
-                interactiveFinishedView?.hide()
-
-                interactiveTapView?.setTimer(state.timeRemainingInMs) {
+                interactiveView?.showTapTap(durationInMs = state.timeRemainingInMs) {
                     playViewModel.submitAction(InteractiveOngoingFinishedAction)
                 }
-                interactiveTapView?.showFollowMode(showFollowButton)
-                interactiveTapView?.show()
             }
             is PlayInteractiveUiState.Finished -> {
-                interactivePreStartView?.hide()
-                interactiveTapView?.hide()
-
-                interactiveFinishedView?.setInfo(getString(state.info))
-                interactiveFinishedView?.show()
+                interactiveView?.showFinish(info = getString(state.info))
             }
             else -> {
-                interactivePreStartView?.hide()
-                interactiveTapView?.hide()
-                interactiveFinishedView?.hide()
+                interactiveView?.hide()
             }
         }
+
+        interactiveView?.showFollowMode(showFollowButton)
     }
 
     private fun renderWinnerBadgeView(shouldShow: Boolean) {
