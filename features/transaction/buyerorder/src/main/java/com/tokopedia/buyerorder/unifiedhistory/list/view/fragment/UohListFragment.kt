@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
@@ -103,6 +104,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_TIBA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TIBA_DI_TUJUAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_CANCEL_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
@@ -159,6 +161,7 @@ import kotlinx.android.synthetic.main.bottomsheet_send_email.*
 import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
 import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
+import java.io.Serializable
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -224,8 +227,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
-    private val REQUEST_CODE_LOGIN = 288
-    private val MIN_KEYWORD_CHARACTER_COUNT = 3
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -247,6 +248,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_REQUEST_CODE = 200
         const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
+        const val UOH_CANCEL_ORDER = 300
+        const val REQUEST_CODE_LOGIN = 288
+        const val MIN_KEYWORD_CHARACTER_COUNT = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -286,12 +290,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             } else {
                 activity?.finish()
             }
-        }
-        if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
+        } else if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_ERROR_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
+            }
+        } else if (requestCode == UOH_CANCEL_ORDER) {
+            if (resultCode == Activity.RESULT_OK) {
+                initialLoad()
             }
         }
     }
@@ -1512,6 +1519,28 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (dotMenu.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
                 RouteManager.route(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8))
+            } else {
+                val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
+                    dotMenu.webURL
+                } else {
+                    dotMenu.appURL
+                }
+                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
+            }
+        } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
+            if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
+                val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
+                    putExtra(BuyerConsts.PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
+                    putExtra(BuyerConsts.PARAM_INVOICE, cancelOrderQueryParam.invoice)
+                    putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
+                    putExtra(BuyerConsts.PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
+                    putExtra(BuyerConsts.PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
+                    putExtra(BuyerConsts.PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
+                    putExtra(BuyerConsts.PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
+                    putExtra(BuyerConsts.PARAM_STATUS_ID, cancelOrderQueryParam.status)
+                }
+                startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
             } else {
                 val linkUrl = if (dotMenu.appURL.contains(UohConsts.WEBVIEW)) {
                     dotMenu.webURL
