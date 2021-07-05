@@ -30,6 +30,15 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var promo: OrderPromo = OrderPromo()
     var total: OrderTotal = OrderTotal()
 
+    val preferenceIndex: Int
+        get() = products.size + 3
+    val insuranceIndex: Int
+        get() = products.size + 4
+    val promoIndex: Int
+        get() = products.size + 5
+    val totalPaymentIndex: Int
+        get() = products.size + 6
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
