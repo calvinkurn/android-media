@@ -47,6 +47,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
@@ -132,6 +133,9 @@ class DiscoveryFragment :
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
     private var userAddressData: LocalCacheModel? = null
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    private var lastVisiblleComponent : ComponentsItem? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -231,21 +235,11 @@ class DiscoveryFragment :
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
                     ivToTop.hide()
+                    calculateScrollDepth(recyclerView)
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
                 scrollDist += dy
-
-                val offset = recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
-                val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
-                val range = recyclerView.computeVerticalScrollRange() // max scroll height
-                val percentage = 100.0f * offset / (range - extent).toFloat()
-
-                Log.d("Percentage", "${Math.round(percentage)}%")
-
-                val percentageWithScreen = 100.0f * (offset  + extent).toFloat() / range
-                Log.d("percentageWithScreen", "${Math.round(percentageWithScreen)}%")
-
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -271,6 +265,42 @@ class DiscoveryFragment :
         })
     }
 
+    private fun calculateScrollDepth(recyclerView: RecyclerView) {
+        val offset = recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
+        val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+        val range = recyclerView.computeVerticalScrollRange() // max scroll height
+        val percentage = 100.0f * offset / (range - extent).toFloat()
+
+        Log.d("Percentage", "${Math.round(percentage)}%")
+
+        val percentageWithScreen = 100.0f * (offset  + extent).toFloat() / range
+        Log.d("percentageWithScreen", "${Math.round(percentageWithScreen)}%")
+
+        if(percentage > 0){
+            if(lastVisiblleComponent != null && (lastVisiblleComponent?.name ==
+                            ComponentsList.ProductCardRevamp.componentName || lastVisiblleComponent?.name ==
+                            ComponentsList.ProductCardSprintSale.componentName)){
+                return
+            }
+            val positionArray = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
+            if(positionArray.isNotEmpty()){
+                discoveryAdapter.currentList[positionArray.first()]
+                if(discoveryAdapter.currentList.size <= positionArray.first()) return
+                lastVisiblleComponent = discoveryAdapter.currentList[positionArray.first()]
+
+                if (lastVisiblleComponent != null && (lastVisiblleComponent?.name ==
+                                ComponentsList.ProductCardRevampItem.componentName || lastVisiblleComponent?.name ==
+                                ComponentsList.ProductCardSprintSaleItem.componentName)) {
+                    lastVisiblleComponent = com.tokopedia.discovery2.datamapper
+                            .getComponent(lastVisiblleComponent!!.parentComponentId,
+                                    lastVisiblleComponent!!.pageEndPoint)
+                }
+                Log.d("lastVisiblleComponent", "${lastVisiblleComponent?.name}")
+            }
+
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
@@ -287,7 +317,7 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            setLayoutManager(StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL))
+            setLayoutManager(staggeredGridLayoutManager)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
