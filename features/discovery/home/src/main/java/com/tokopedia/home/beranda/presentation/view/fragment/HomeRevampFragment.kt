@@ -339,6 +339,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isNavRevamp(): Boolean {
         return try {
             return (context as? MainParentStateListener)?.isNavigationRevamp?:false
@@ -348,6 +349,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isNavOld(): Boolean {
         return try {
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
@@ -713,6 +715,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark() {
         context?.let {
             coachMarkIsShowing = true
@@ -2739,6 +2742,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun String?.safeEncodeUtf8(): String {
         return try {
             this?.encodeToUtf8() ?: ""
