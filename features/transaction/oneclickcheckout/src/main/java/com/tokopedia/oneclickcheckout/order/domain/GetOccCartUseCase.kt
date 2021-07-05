@@ -334,6 +334,42 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 error_ticker
             }
           }
+          bid
+          specific_gateway_campaign_only_type
+          wallet_additional_data {
+            wallet_type
+            enable_wallet_amount_validation
+            activation {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            top_up {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+            phone_number_registered {
+                is_required
+                button_title
+                success_toaster
+                error_toaster
+                error_message
+                is_hide_digital
+                header_title
+                url_link
+            }
+          }
         }
         shipment {
           service_id

@@ -48,14 +48,14 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.util.HotelSearchMapQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.FilterV2.Companion.FILTER_TYPE_SORT
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
-import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
-import com.tokopedia.hotel.search.presentation.widget.HotelFilterBottomSheets
-import com.tokopedia.hotel.search.presentation.widget.SubmitFilterListener
-import com.tokopedia.hotel.search_map.data.HotelLoadingModel
+import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.FilterV2.Companion.FILTER_TYPE_SORT
+import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
+import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultAdapter
+import com.tokopedia.hotel.search_map.presentation.adapter.PropertyAdapterTypeFactory
+import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheets
+import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
+import com.tokopedia.hotel.search_map.data.model.HotelLoadingModel
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity.Companion.SEARCH_SCREEN_NAME
@@ -1540,8 +1540,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_ZOOM_OUT: Float = 9f
         private const val MAX_RADIUS: Float = 10.5f
 
-        private const val PREFERENCES_NAME = "hotel_search_map_preferences"
-        private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
+        const val PREFERENCES_NAME = "hotel_search_map_preferences"
+        const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
         fun createInstance(hotelSearchModel: HotelSearchModel,
                            selectedParam: ParamFilterV2,

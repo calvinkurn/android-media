@@ -297,8 +297,8 @@ class PostListViewHolder(
             }
         }
 
-        if (pagerAdapter.itemCount <= 0) {
-            pagerAdapter.setItems(pagers)
+        if (pagers != pagerAdapter.pagers) {
+            pagerAdapter.pagers = pagers
             pagerAdapter.notifyDataSetChanged()
         }
     }
