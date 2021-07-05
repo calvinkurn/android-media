@@ -320,7 +320,7 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        return true;
+        return false;
     }
 
     @Override
