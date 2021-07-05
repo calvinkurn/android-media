@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class RemoveWishListResponse {
 
-    @SerializedName("wishlist_remove")
+    @SerializedName("wishlist_remove_v2")
     @Expose
     private WishlistRemove wishlist_remove;
 
