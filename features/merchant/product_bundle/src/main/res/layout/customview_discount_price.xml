@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/layout_discount_price"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyWeight="bold"
+        tool:text="Rp36.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:labelType="general_light_red"
+        app:layout_constraintStart_toEndOf="@+id/tv_price"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:labelTitle="30%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_slash_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_44"
+        app:layout_constraintStart_toEndOf="@+id/label_discount"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tool:text="Rp36.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
