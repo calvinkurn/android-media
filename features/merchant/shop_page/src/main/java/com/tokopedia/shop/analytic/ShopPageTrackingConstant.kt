@@ -168,6 +168,7 @@ object ShopPageTrackingConstant {
     const val IMPRESSION_PRODUCT_RECOMMENDATION = "impression - " + PRODUCT_RECOMMENDATION
     const val WIDGET_TYPE_CAROUSELL = "carousell"
     const val WIDGET_TYPE_BUY_AGAIN = "buy it again"
+    const val WIDGET_TYPE_REMINDER = "reminder"
     const val BUYER_RECOMMENDATION = "rekomendasi untuk anda"
     const val SEARCH_PRODUCT = "search product"
     const val SEARCH_PRODUCT_RESULT = "search result"
@@ -289,6 +290,7 @@ object ShopPageTrackingConstant {
     const val VERTICAL_POSITION = "p%1d"
     const val HOME_TAB = "home"
     const val HOME_FEATURED_PRODUCT = "featured product"
+    const val ETALASE_WIDGET = "etalase widget"
     const val ALL_PRODUCT = "all product"
     const val WITH_CART = "with cart"
     const val WITHOUT_CART = "without cart"

@@ -16,9 +16,9 @@ class FlightCancellationReviewPassengerViewHolder(itemView: View) : RecyclerView
         with(itemView) {
             tv_passenger_name.text = "${passenger.titleString} ${passenger.firstName} ${passenger.lastName}"
             when (passenger.type) {
-                FlightBookingPassenger.ADULT -> tv_passenger_type.setText(R.string.flightbooking_price_adult_label)
-                FlightBookingPassenger.CHILDREN -> tv_passenger_type.setText(R.string.flightbooking_price_child_label)
-                FlightBookingPassenger.INFANT -> tv_passenger_type.setText(R.string.flightbooking_price_infant_label)
+                FlightBookingPassenger.ADULT.value -> tv_passenger_type.setText(R.string.flightbooking_price_adult_label)
+                FlightBookingPassenger.CHILDREN.value -> tv_passenger_type.setText(R.string.flightbooking_price_child_label)
+                FlightBookingPassenger.INFANT.value -> tv_passenger_type.setText(R.string.flightbooking_price_infant_label)
                 else -> tv_passenger_type.setText(R.string.flightbooking_price_adult_label)
             }
         }

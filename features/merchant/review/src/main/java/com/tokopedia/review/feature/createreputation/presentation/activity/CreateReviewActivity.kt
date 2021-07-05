@@ -2,6 +2,8 @@ package com.tokopedia.review.feature.createreputation.presentation.activity
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -53,6 +55,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             setToolbar()
         }
         super.onCreate(savedInstanceState)
+        adjustOrientation()
         if (isNewView()) {
             handleDimming()
             hideToolbar()
@@ -161,7 +164,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean()
                     ?: false
             feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID) ?: ""
-            utmSource = uri.getQueryParameter(ReviewConstants.PARAM_UTM_SOURCE) ?: ""
+            utmSource = uri.getQueryParameter(ReviewConstants.PARAM_SOURCE) ?: ""
         } else {
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
@@ -218,6 +221,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             ) == WRITE_FORM_BOTTOM_SHEET_VARIANT
         } catch (t: Throwable) {
             false
+        }
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/form_account"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_nama_penerima"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_label="Nama Penerima"
+        app:text_field_counter="50"/>
+
+    <LinearLayout
+        android:id="@+id/info_name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            android:textColor="@color/light_N700_68"
+            android:text="@string/tv_info_lebih_lanjut"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_info"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_5"
+            app:icon_name="INFORMATION"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_nomor_hp"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_32"
+        app:text_field_label="Nomor Hp"
+        app:text_field_input_type="number"/>
+
+</LinearLayout>

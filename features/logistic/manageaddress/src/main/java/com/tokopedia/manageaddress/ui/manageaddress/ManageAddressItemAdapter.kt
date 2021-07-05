@@ -74,7 +74,6 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         fun bindData(data: RecipientAddressModel) {
             with(itemView) {
                 val addressStreet = data.street
-                val postalCode = data.postalCode
                 val tokopediaNoteCondition = context.getString(R.string.tokopedia_note_delimeter)
                 setVisibility(data)
                 setPrimary(data)
@@ -86,10 +85,10 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     val newAddress = addressStreet.replace(tokopediaNote, "")
                     tokopedia_note.visible()
                     tokopedia_note.text = tokopediaNote
-                    address_detail.text = if (addressStreet.contains(postalCode)) newAddress else newAddress + ", " + data.postalCode
+                    address_detail.text = newAddress
                 } else {
                     tokopedia_note.gone()
-                    address_detail.text = data.street + ", " + data.postalCode
+                    address_detail.text = data.street
                 }
                 val bitmap = assetMoreBtn?.toBitmap()
                 val d: Drawable = BitmapDrawable(resources, bitmap?.let { Bitmap.createScaledBitmap(it, 80.toDp(), 80.toDp(), true) })
@@ -123,7 +122,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         }
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
-            if(peopleAddress.latitude.isNullOrEmpty()|| peopleAddress.longitude.isNullOrEmpty()) {
+            if(peopleAddress.latitude.isNullOrEmpty() || peopleAddress.longitude.isNullOrEmpty() ||
+                    peopleAddress.latitude == "0.0" ||  peopleAddress.longitude == "0.0") {
                 val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 imageLocation.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)

@@ -7,6 +7,9 @@ import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -343,5 +346,87 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
     override fun trackLihatSemuaClick(headerName: String?) {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_LIHAT_SEMUA, eventLabel = CAROUSEL_BEST_SELLER))
+    }
+
+    override fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {
+        val list = ArrayList<Map<String, Any>>()
+        cpmModel.data.firstOrNull()?.let {
+            val productItem = HashMap<String, Any>()
+            productItem[KEY_NAME] = CATEGORY_TOPADS_CARD
+            productItem[KEY_ID] = it.id
+            productItem[KEY_POSITION] = 1.toString()
+            productItem[KEY_CREATIVE] = it.applinks
+            list.add(productItem)
+        }
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                eventAction = IMPRESSION_TOPADS_HEADLINE)
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                com.tokopedia.discovery2.analytics.EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
+        if(applink?.contains("shop") == true && position == 0) {
+            sendShopHeadlineClickEvent(position, cpmData, true)
+        } else if(applink?.contains("shop") == true && position == 1){
+            sendShopHeadlineClickEvent(position, cpmData, false)
+        } else {
+            val productId = applink?.substring(applink.lastIndexOf("/") + 1)
+            val clickedProducts : MutableList<Product> = mutableListOf()
+            for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
+                if(productId.equals(productItem.id)) {
+                    clickedProducts.clear()
+                    clickedProducts.add(productItem)
+                    sendTopAdsHeadlineProductClick(clickedProducts, index+1)
+                }
+            }
+        }
+    }
+
+    private fun sendTopAdsHeadlineProductClick(clickedProducts: MutableList<Product>, position: Int) {
+        val list = ArrayList<Map<String, Any>>()
+        for (item in clickedProducts) {
+            val productItem = HashMap<String, Any>()
+            productItem[KEY_NAME] = item.name
+            productItem[KEY_ID] = item.id
+            productItem[KEY_POSITION] = position.toString()
+            productItem[LIST] = "/category - topads"
+            productItem[PRICE] = CurrencyFormatHelper.convertRupiahToInt(item.priceFormat ?: "")
+            productItem[KEY_VARIANT] = ""
+            productItem[KEY_BRAND] = ""
+            productItem[CATEGORY] = ""
+            list.add(productItem)
+        }
+        val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK,
+                eventAction = CLICK_TOPADS_HEADLINE_PRODUCT, eventLabel = CLICK_PRODUCT)
+        val eCommerce = mapOf(
+                CLICK to mapOf(
+                        ACTION_FIELD to mapOf(
+                                LIST to "/category - topads"
+                        ),
+                        PRODUCTS to list
+                )
+        )
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    private fun sendShopHeadlineClickEvent(position: Int, it: CpmData, isCekSekarang : Boolean) {
+        val list = ArrayList<Map<String, Any>>()
+        val productItem = HashMap<String, Any>()
+        productItem[KEY_NAME] = CATEGORY_TOPADS_CARD
+        productItem[KEY_ID] = it.id
+        productItem[KEY_POSITION] = position.toString()
+        productItem[KEY_CREATIVE] = it.applinks
+        list.add(productItem)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+                eventAction = CLICK_TOPADS_HEADLINE, eventLabel = if(isCekSekarang) CEK_SEKARANG else HEADLINE_SHOP_NAME)
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                com.tokopedia.discovery2.analytics.EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 }
