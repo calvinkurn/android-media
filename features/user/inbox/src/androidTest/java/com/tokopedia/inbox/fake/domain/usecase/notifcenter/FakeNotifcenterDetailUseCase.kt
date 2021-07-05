@@ -44,6 +44,21 @@ class FakeNotifcenterDetailUseCase(
             )
         }
 
+    val newListOnlyHasNextTrue: NotifcenterDetailResponse
+        get() {
+            val responseObj: JsonObject = AndroidFileUtil.parseRaw(
+                R.raw.notifcenter_detail_v3,
+                JsonObject::class.java
+            )
+            responseObj.getAsJsonObject(notifcenter_detail_v3).apply {
+                getAsJsonArray(list).removeAll { true }
+                getAsJsonObject(new_paging).addProperty(has_next, true)
+            }
+            return CommonUtil.fromJson(
+                responseObj.toString(), NotifcenterDetailResponse::class.java
+            )
+        }
+
     val noTrackHistoryWidget: NotifcenterDetailResponse
         get() = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_detail_v3_no_track_history_widget,
@@ -67,6 +82,8 @@ class FakeNotifcenterDetailUseCase(
 
     private val notifcenter_detail_v3 = "notifcenter_detail_v3"
     private val new_list = "new_list"
+    private val new_paging = "new_paging"
+    private val has_next = "has_next"
     private val list = "list"
     private val widget = "widget"
     private val message = "message"
