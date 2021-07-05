@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.Editable
@@ -21,7 +22,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
@@ -39,12 +43,15 @@ import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBott
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
@@ -73,10 +80,11 @@ class TopupBillsFavoriteNumberFragment :
     private lateinit var clientNumbers: MutableList<TopupBillsSeamlessFavNumberItem>
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
+    private lateinit var localCacheHandler: LocalCacheHandler
 
-    private var number: String = ""
     protected lateinit var inputNumberActionType: InputNumberActionType
 
+    private var number: String = ""
     private var binding: FragmentFavoriteNumberBinding? = null
 
     override fun initInjector() {
@@ -107,11 +115,17 @@ class TopupBillsFavoriteNumberFragment :
         observeData()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
+        if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
+            if (numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
+                showCoachmark()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
+        localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
     }
 
     fun initView() {
@@ -126,7 +140,6 @@ class TopupBillsFavoriteNumberFragment :
                 }
             }
         }
-        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
 
         binding?.commonTopupbillsSearchNumberInputView?.run {
             searchBarTextField.addTextChangedListener(getSearchTextWatcher)
@@ -144,6 +157,11 @@ class TopupBillsFavoriteNumberFragment :
             inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
         }
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
 
         if (clientNumbers.isNotEmpty()) {
             numberListAdapter = TopupBillsFavoriteNumberListAdapter(
@@ -159,29 +177,12 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    var INDEX = 0
     private fun observeData() {
         topUpBillsViewModel.seamlessFavNumberUpdateData.observe(viewLifecycleOwner, Observer {
-            val dummy = UpdateFavoriteDetail(
-                    categoryID = 0,
-                    clientNumber = "123123",
-                    label = "Misael Baru",
-                    lastOrderDate = "",
-                    lastUpdated = "",
-                    operatorID = 0,
-                    productID = 0,
-                    subscribed = true,
-                    totalTransaction = 0,
-                    wishlist = true
-            )
             when (it) {
                 is Success -> onSuccessUpdateClientName()
                 is Fail -> onFailedUpdateClientName()
             }
-//            when (it) {
-//                is Success -> onSuccessUpdateClientName(dummy, it.data.second)
-//                is Fail -> onSuccessUpdateClientName(dummy, INDEX++)
-//            }
         })
 
         topUpBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
@@ -392,6 +393,50 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
+    private fun showCoachmark() {
+        Handler().run {
+            postDelayed({
+                context?.let {
+                    val coachMarkItem = ArrayList<CoachMark2Item>()
+                    val coachMark = CoachMark2(it)
+                    val anchorView = getKebabMenuView()
+                    anchorView?.let { anchor ->
+                        coachMarkItem.add(0,
+                                CoachMark2Item(
+                                        anchor,
+                                        getString(R.string.common_topup_fav_number_coachmark_1_title),
+                                        getString(R.string.common_topup_fav_number_coachmark_1_subtitle),
+                                        CoachMark2.POSITION_BOTTOM
+                                )
+                        )
+                        coachMarkItem.add(1,
+                                CoachMark2Item(
+                                        anchor,
+                                        getString(R.string.common_topup_fav_number_coachmark_2_title),
+                                        getString(R.string.common_topup_fav_number_coachmark_2_subtitle),
+                                        CoachMark2.POSITION_BOTTOM
+                                )
+                        )
+                    }
+                    coachMark.showCoachMark(coachMarkItem)
+                }
+                localCacheHandler.apply {
+                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, true)
+                    applyEditor()
+                }
+            }, COACH_MARK_START_DELAY)
+        }
+    }
+
+    private fun getKebabMenuView(): View? {
+        return binding?.commonTopupbillsFavoriteNumberRv?.findViewHolderForAdapterPosition(0)?.itemView
+                ?.findViewById<IconUnify>(R.id.common_topupbills_favorite_number_menu)
+    }
+
+    private fun getLocalCache(key: String): Boolean {
+        return localCacheHandler.getBoolean(key, false)
+    }
+
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(
                 favNumberItem, this)
@@ -490,6 +535,9 @@ class TopupBillsFavoriteNumberFragment :
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
+        const val COACH_MARK_START_DELAY: Long = 200
+        const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
+        const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
 
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsSeamlessFavNumberItem>,
