@@ -37,4 +37,8 @@
     <string name="buyer_order_detail_label_invoice">Lihat Invoice</string>
     <string name="buyer_order_detail_error_message_no_product">Tidak ada produk yang dapat ditambahkan ke keranjang!</string>
     <string name="label_call">Hubungi</string>
+    <string name="copy_label_awb_number">bom_awb</string>
+    <string name="copy_label_receiver_address">bom_receiver_address</string>
+    <string name="buyer_order_detail_receiver_address_format"><![CDATA[<b>%1$s</b><br>%2$s<br>%3$s]]></string>
+    <string name="buyer_order_detail_dropship_format"><![CDATA[<b>%1$s</b><br>%2$s]]></string>
 </resources>

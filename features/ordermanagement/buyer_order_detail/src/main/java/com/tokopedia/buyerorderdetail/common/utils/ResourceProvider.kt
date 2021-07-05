@@ -4,12 +4,13 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(@ApplicationContext private val context: Context?) {
-    private fun getString(resId: Int): String? {
+    private fun getString(resId: Int, vararg args: Any): String? {
         return try {
-            context?.getString(resId)
+            context?.getString(resId, *args)
         } catch (e: Resources.NotFoundException) {
             null
         }
@@ -29,5 +30,41 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
 
     fun getErrorMessageNoProduct(): String {
         return getString(R.string.buyer_order_detail_error_message_no_product).orEmpty()
+    }
+
+    fun getCopyMessageReceiverAddress(): String {
+        return getString(R.string.message_receiver_address_copied).orEmpty()
+    }
+
+    fun getCopyMessageAwb(): String {
+        return getString(R.string.message_awb_copied).orEmpty()
+    }
+
+    fun getReceiverAddressLabel(): String {
+        return getString(R.string.label_address).orEmpty()
+    }
+
+    fun getAwbLabel(): String {
+        return getString(R.string.label_awb_number).orEmpty()
+    }
+
+    fun getDropshipLabel(): String {
+        return getString(R.string.label_dropshipper).orEmpty()
+    }
+
+    fun getCopyLabelReceiverAddress(): String {
+        return getString(R.string.copy_label_receiver_address).orEmpty()
+    }
+
+    fun getCopyLabelAwb(): String {
+        return getString(R.string.copy_label_awb_number).orEmpty()
+    }
+    
+    fun formatReceiverAddressValue(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver, receiverAddress: String): String {
+        return getString(R.string.buyer_order_detail_receiver_address_format, receiver.name, receiver.phone, receiverAddress).orEmpty()
+    }
+
+    fun formatDropshipperValue(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): String {
+        return getString(R.string.buyer_order_detail_dropship_format, dropship.name, dropship.phoneNumber).orEmpty()
     }
 }

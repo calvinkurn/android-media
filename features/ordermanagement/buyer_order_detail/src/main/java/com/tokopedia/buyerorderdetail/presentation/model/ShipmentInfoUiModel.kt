@@ -8,26 +8,21 @@ data class ShipmentInfoUiModel(
         val awbInfoUiModel: AwbInfoUiModel,
         val courierDriverInfoUiModel: CourierDriverInfoUiModel,
         val courierInfoUiModel: CourierInfoUiModel,
-        val dropShipperInfoUiModel: DropShipperInfoUiModel,
+        val dropShipperInfoUiModel: CopyableKeyValueUiModel,
         val headerUiModel: PlainHeaderUiModel,
-        val receiverAddressInfoUiModel: ReceiverAddressInfoUiModel,
+        val receiverAddressInfoUiModel: CopyableKeyValueUiModel,
         val ticker: TickerUiModel
 ) {
-    data class ReceiverAddressInfoUiModel(
-            val receiverAddress: String,
-            val receiverName: String,
-            val receiverPhoneNumber: String
-    ) : Visitable<BuyerOrderDetailTypeFactory> {
-        override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
-            return typeFactory?.type(this).orZero()
-        }
-    }
 
     data class AwbInfoUiModel(
-            val awbNumber: String,
             val orderId: String,
-            val orderStatusId: String
-    ) : Visitable<BuyerOrderDetailTypeFactory> {
+            val orderStatusId: String,
+            override val copyableText: String,
+            override val copyMessage: String,
+            override val copyableTextToShow: String,
+            override val label: String,
+            override val copyLabel: String
+    ) : CopyableKeyValueUiModel() {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }
@@ -50,15 +45,6 @@ data class ShipmentInfoUiModel(
             val photoUrl: String,
             val plateNumber: String
     ) : Visitable<BuyerOrderDetailTypeFactory> {
-        override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
-            return typeFactory?.type(this).orZero()
-        }
-    }
-
-    data class DropShipperInfoUiModel(
-            val name: String,
-            val phoneNumber: String
-    ): Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
         }

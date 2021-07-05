@@ -126,7 +126,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun scrollToCopyAWB(activity: AppCompatActivity) {
-        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.icBuyerOrderDetailCopyAwb)))
+        scrollThroughUntilViewVisible(activity, firstView(withId(R.id.icBuyerOrderDetailCopy)))
     }
 
     private fun waitUntilViewVisible(matcher: Matcher<View>) {
@@ -224,7 +224,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickCopyAWB() {
-        clickView(firstView(withId(R.id.icBuyerOrderDetailCopyAwb)))
+        clickView(firstView(withId(R.id.icBuyerOrderDetailCopy)))
     }
 
     private fun clickPrimaryActionButton() {
