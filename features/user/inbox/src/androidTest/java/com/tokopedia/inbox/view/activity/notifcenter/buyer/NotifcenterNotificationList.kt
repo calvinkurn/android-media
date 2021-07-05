@@ -91,7 +91,26 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         NotifcenterAssertion.assertLoadMoreTitle(4, "Lihat Lebih Banyak")
     }
 
-    // TODO: should hide load more button if the next page hasNext is false
+    @Test
+    fun should_hide_load_more_button_if_the_next_page_hasNext_is_false() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.newListOnlyHasNextTrue
+        }
+        startInboxActivity()
+
+        // When
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.newListOnlyHasNextFalse
+        }
+        NotifcenterAction.clickLoadMoreAt(3)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(LoadMoreViewHolder::class.java))
+        )
+    }
+
     // TODO: load more button on new list should not clickable when loading new list
     // TODO: should render notifications only when load more new list
 
