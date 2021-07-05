@@ -12,20 +12,21 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_item_play_summary_info_icon"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
         android:layout_height="wrap_content"
-        tools:src="@drawable/ic_play_new_follower_white"/>
+        android:adjustViewBounds="true"
+        tools:src="@drawable/ic_play_interactive_crown" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_play_summary_description"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_gravity="center_vertical"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="body_3"
         tools:text="Penonton" />
