@@ -138,6 +138,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private UserSessionInterface userSession;
     private RemoteConfig remoteConfig;
 
+    //save state if watermark is rendered
+    private boolean isSetWatermark = false;
+
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder);
@@ -304,6 +307,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     fragment.cancelCropRotateImage();
                     break;
                 case ACTION_WATERMARK:
+                    isSetWatermark = false;
                     fragment.cancelWatermark();
                     break;
                 case ACTION_BRIGHTNESS:
@@ -527,7 +531,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     tvActionTitle.setText(getString(R.string.rotate));
                     break;
                 case ACTION_WATERMARK:
-                    if (fragment != null) {
+                    if (fragment != null && !isSetWatermark) {
+                        isSetWatermark = true;
                         fragment.setWatermark();
                     }
 
