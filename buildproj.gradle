@@ -91,6 +91,9 @@ subprojects {
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
+                } else {
+                    //support new chucker gson
+                    substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:2.8.6")
                 }
             }
         }

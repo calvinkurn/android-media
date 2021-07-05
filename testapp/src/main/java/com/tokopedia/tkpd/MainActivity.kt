@@ -3,6 +3,7 @@ package com.tokopedia.tkpd
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_testapp)
 
         userSession = UserSession(this)
-
+        Log.e("asdnya", GlobalConfig.isAllowDebuggingTools().toString())
         if (userSession.deviceId.isNullOrEmpty()) {
             userSession.deviceId = DataSource.MOCK_DEVICE_ID
         }
