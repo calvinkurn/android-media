@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    tools:layout_width="200dp"
     >
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
@@ -37,7 +38,9 @@
         android:layout_width="@dimen/play_interactive_tap_action"
         android:layout_height="@dimen/play_interactive_tap_action"
         android:layout_marginEnd="@dimen/play_offset_12"
+        android:layout_marginBottom="@dimen/spacing_lvl6"
         android:background="@drawable/bg_play_interactive_tap_action"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/fl_tap_background"
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -79,7 +82,6 @@
         app:layout_constraintBottom_toBottomOf="@id/fl_tap_background"
         app:layout_constraintEnd_toEndOf="@id/fl_tap_background"
         app:layout_constraintStart_toStartOf="@id/fl_tap_background"
-        app:layout_constraintTop_toBottomOf="@id/fl_interactive_tap"
         app:layout_constraintVertical_bias="1"
         >
 

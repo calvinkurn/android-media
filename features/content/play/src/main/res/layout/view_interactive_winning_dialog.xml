@@ -41,7 +41,7 @@
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:src="@drawable/ic_play_crown"
+                android:src="@drawable/ic_play_interactive_crown_yellow"
                 tools:visibility="visible"
                 />
 
