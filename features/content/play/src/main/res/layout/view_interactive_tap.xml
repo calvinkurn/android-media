@@ -39,7 +39,7 @@
         android:layout_width="@dimen/play_interactive_tap_action"
         android:layout_height="@dimen/play_interactive_tap_action"
         android:layout_marginEnd="@dimen/spacing_lvl1"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_interactive_tap_action"
         app:layout_constraintBottom_toBottomOf="@id/fl_tap_background"
         app:layout_constraintEnd_toEndOf="@id/fl_tap_background"

@@ -21,7 +21,7 @@
         android:id="@+id/icon_gift"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/play_offset_10"
+        android:layout_marginStart="@dimen/play_offset_6"
         android:layout_marginTop="@dimen/play_offset_10"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
