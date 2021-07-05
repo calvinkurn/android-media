@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import android.view.ViewStub
@@ -12,18 +12,19 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
-import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.adapter.TokoNowCategoryGridAdapter
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridAdapterTypeFactory
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
-class HomeCategoryGridViewHolder(
-        itemView: View,
-        private val listener: HomeCategoryGridListener? = null,
-): AbstractViewHolder<HomeCategoryGridUiModel>(itemView), HomeCategoryItemViewHolder.HomeCategoryItemListener  {
+class TokoNowCategoryGridViewHolder(
+    itemView: View,
+    private val listener: TokoNowCategoryGridListener? = null,
+): AbstractViewHolder<TokoNowCategoryGridUiModel>(itemView),
+    TokoNowCategoryItemViewHolder.TokoNowCategoryItemListener {
 
     companion object {
         @LayoutRes
@@ -38,17 +39,17 @@ class HomeCategoryGridViewHolder(
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
 
-    private val adapter by lazy { HomeAdapter(HomeAdapterTypeFactory(homeCategoryItemListener = this), HomeListDiffer()) }
+    private val adapter by lazy { TokoNowCategoryGridAdapter(TokoNowCategoryGridAdapterTypeFactory(this), TokoNowCategoryGridDiffer()) }
 
     init {
         initView()
     }
 
-    override fun bind(data: HomeCategoryGridUiModel) {
+    override fun bind(data: TokoNowCategoryGridUiModel) {
         when(data.state) {
-            HomeLayoutState.SHOW -> showCategoryGrid(data)
-            HomeLayoutState.LOADING -> showLoadingState(data)
-            HomeLayoutState.HIDE -> showLocalLoad(data)
+            TokoNowLayoutState.SHOW -> showCategoryGrid(data)
+            TokoNowLayoutState.LOADING -> showLoadingState(data)
+            TokoNowLayoutState.HIDE -> showLocalLoad(data)
         }
     }
 
@@ -67,14 +68,14 @@ class HomeCategoryGridViewHolder(
         }
     }
 
-    private fun showLoadingState(data: HomeCategoryGridUiModel) {
+    private fun showLoadingState(data: TokoNowCategoryGridUiModel) {
         tvTitle?.text = data.title
         llCategory?.hide()
         rvCategory?.hide()
         categoryShimmering?.show()
     }
 
-    private fun showCategoryGrid(data: HomeCategoryGridUiModel) {
+    private fun showCategoryGrid(data: TokoNowCategoryGridUiModel) {
         tvTitle?.text = data.title
         tvSeeAll?.setOnClickListener {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
@@ -83,7 +84,7 @@ class HomeCategoryGridViewHolder(
         }
 
         rvCategory?.apply {
-            adapter = this@HomeCategoryGridViewHolder.adapter
+            adapter = this@TokoNowCategoryGridViewHolder.adapter
             layoutManager = GridLayoutManager(context, GRID_SPAN_COUNT)
         }
 
@@ -94,7 +95,7 @@ class HomeCategoryGridViewHolder(
         rvCategory?.show()
     }
 
-    private fun showLocalLoad(data: HomeCategoryGridUiModel) {
+    private fun showLocalLoad(data: TokoNowCategoryGridUiModel) {
         llCategory?.apply {
             progressState = false
             title?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_title)
@@ -111,7 +112,7 @@ class HomeCategoryGridViewHolder(
         llCategory?.show()
     }
 
-    interface HomeCategoryGridListener {
+    interface TokoNowCategoryGridListener {
         fun onCategoryRetried()
         fun onAllCategoryClicked()
         fun onCategoryClicked(position: Int, categoryId: String)
