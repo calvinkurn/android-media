@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl2"
-    android:layout_marginLeft="@dimen/spacing_lvl3"
-    android:layout_marginRight="@dimen/spacing_lvl3"
-    android:layout_marginBottom="@dimen/spacing_lvl2"
-    app:cardCornerRadius="@dimen/layout_lvl1"
-    app:cardElevation="@dimen/telco_space_3">
+    android:layout_marginBottom="@dimen/spacing_lvl2">
 
     <RelativeLayout
         android:id="@+id/telco_layout_product"
@@ -24,20 +19,23 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:visibility="gone"
+            tools:visibility="visible"
             tools:labelTitle="Eksklusif" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/telco_prepaid_title_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/telco_label_product"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/telco_label_product"
+            android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:lines="2"
             app:typographyType="heading_5"
-            tools:text="Pulsa 40.000" />
+            tools:text="Pulsa 40.000 Pulsa 40.000 Pulsa Pulsa 40.000 Pulsa 40.000" />
 
         <View
             android:id="@+id/telco_empty_view"
@@ -52,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/telco_empty_view"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:lines="1"
@@ -74,8 +72,9 @@
             tools:text="Pulsa 40.000" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:id="@+id/telco_product_promo_price"
-            style="@style/TextView.Micro10"
             android:layout_below="@+id/telco_desc_product"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
@@ -83,7 +82,7 @@
             android:lines="1"
             android:textColor="@color/Unify_N700_44"
             tools:text="Pulsa 40.000"
-            app:typographyType="small"/>
+            app:typographyType="small" />
 
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -100,8 +99,8 @@
             android:lines="1"
             app:unifyButtonSize="micro"
             app:unifyButtonVariant="ghost"
-            android:text="@string/digital_see_more_btn"/>
+            android:text="@string/digital_see_more_btn" />
 
     </RelativeLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>
