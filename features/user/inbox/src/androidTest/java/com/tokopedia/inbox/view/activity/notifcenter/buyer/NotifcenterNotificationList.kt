@@ -159,7 +159,36 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should show earlier section next page when load more button success clicked
+    @Test
+    fun should_show_earlier_section_next_page_when_load_more_button_success_clicked() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.earlierOnlyHasNextTrue
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.clickLoadMoreAt(3)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                2, NormalNotificationViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                3, NormalNotificationViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                4, LoadMoreViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertLoadMoreTitle(4, "Lihat Lebih Banyak")
+    }
+
     // TODO: load more button on earlier should not clickable when loading earlier notifications
 
     // TODO: should show new list title and earlier title when both response is not empty
