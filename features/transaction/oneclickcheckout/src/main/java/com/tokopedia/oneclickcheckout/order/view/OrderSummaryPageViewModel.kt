@@ -15,7 +15,6 @@ import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccMutableLiveData
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
@@ -426,44 +425,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun shouldSkipShippingValidationWhenUpdateCart(): Boolean {
         return cartProcessor.shouldSkipShippingValidationWhenUpdateCart(_orderShipment)
-    }
-
-    fun updatePreference(preference: ProfilesItemModel) {
-        launch(executorDispatchers.immediate) {
-            var param = generateUpdateCartParam()
-            if (param == null) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-                return@launch
-            }
-            val recommendedShipping = logisticProcessor.getRecommendedShipmentFromServiceId(_orderShipment, preference.shipmentModel.serviceId)
-            val cart = param.cart.first().copy(shippingId = recommendedShipping?.first
-                    ?: 0, spId = recommendedShipping?.second ?: 0)
-            param = param.copy(
-                    cart = arrayListOf(cart),
-                    profile = UpdateCartOccProfileRequest(
-                            profileId = preference.profileId.toString(),
-                            addressId = preference.addressModel.addressId.toString(),
-                            serviceId = preference.shipmentModel.serviceId,
-                            gatewayCode = preference.paymentModel.gatewayCode,
-                            metadata = preference.paymentModel.metadata
-                    ))
-            val chosenAddress = ChosenAddress(
-                    addressId = preference.addressModel.addressId.toString(),
-                    districtId = preference.addressModel.districtId.toString(),
-                    postalCode = preference.addressModel.postalCode,
-                    geolocation = if (preference.addressModel.latitude.isNotBlank() && preference.addressModel.longitude.isNotBlank()) {
-                        preference.addressModel.latitude + "," + preference.addressModel.longitude
-                    } else "",
-                    mode = ChosenAddress.MODE_ADDRESS
-            )
-            param.chosenAddress = chosenAddress
-            globalEvent.value = OccGlobalEvent.Loading
-            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
-            if (isSuccess) {
-                clearBboIfExist()
-            }
-            globalEvent.value = newGlobalEvent
-        }
     }
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {

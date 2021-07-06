@@ -126,8 +126,6 @@ class OrderSummaryPageEnhanceECommerce {
     }
 
     fun saveData() {
-//        val dataCopy = HashMap(data)
-//        data = HashMap()
         dataList.add(data)
         data = HashMap()
     }

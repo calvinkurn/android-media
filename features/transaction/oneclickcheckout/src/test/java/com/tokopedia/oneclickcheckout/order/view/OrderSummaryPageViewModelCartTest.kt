@@ -17,7 +17,6 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
@@ -91,7 +90,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.getOccCart(true, "")
 
         // Then
-        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", isValid = true)), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OccState.FirstLoad(OrderPreference(isValid = true)), orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(inverse = true) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
@@ -196,7 +195,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.getOccCart(true, "")
 
         // Then
-        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
+        assertEquals(OccState.FirstLoad(OrderPreference(preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { ratesUseCase.execute(any()) }
@@ -217,7 +216,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.getOccCart(true, "")
 
         // Then
-        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
+        assertEquals(OccState.FirstLoad(OrderPreference(preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OccGlobalEvent.Prompt(prompt), orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { ratesUseCase.execute(any()) }
@@ -264,7 +263,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.getOccCart(true, "")
 
         // Then
-        assertEquals(OccState.FirstLoad(OrderPreference(profileIndex = "", profileRecommendation = "", preference = profile, isValid = true)),
+        assertEquals(OccState.FirstLoad(OrderPreference(preference = profile, isValid = true)),
                 orderSummaryPageViewModel.orderPreference.value)
         assertEquals(OrderShipment(serviceName = "kirimaja (2 hari)", serviceDuration = "kirimaja (2 hari)", serviceId = 1, shipperName = "kirimin",
                 shipperId = 1, shipperProductId = 1, ratesId = "0", shippingPrice = 0, shippingRecommendationData = shippingRecommendationData,
@@ -440,85 +439,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                         UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1"), skipShippingValidation = true), it)
             })
         }
-    }
-
-    @Test
-    fun `Update Preference Success Should Trigger Refresh`() {
-        // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-
-        // When
-        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
-
-        // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(true), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
-    fun `Update Preference Got Prompt`() {
-        // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        val occPrompt = OccPrompt()
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
-
-        // When
-        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
-
-        // Then
-        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
-    fun `Update Preference Failed`() {
-        // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        val responseMessage = "message"
-        val response = MessageErrorException(responseMessage)
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
-
-        // When
-        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
-
-        // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
-    fun `Update Preference Error`() {
-        // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        val response = Throwable()
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
-
-        // When
-        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
-
-        // Then
-        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
-    }
-
-    @Test
-    fun `Update Preference On Invalid Preference State`() {
-        // Given
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        val response = Throwable()
-        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
-
-        // When
-        orderSummaryPageViewModel.updatePreference(ProfilesItemModel())
-
-        // Then
-        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

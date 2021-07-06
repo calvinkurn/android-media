@@ -59,7 +59,17 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-            val isPPPChecked = products.first().purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+            val checkoutProducts: ArrayList<ProductData> = ArrayList()
+            products.forEach {
+                if (!it.isError) {
+                    checkoutProducts.add(ProductData(
+                            it.productId,
+                            it.quantity.orderQuantity,
+                            it.notes,
+                            it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+                    ))
+                }
+            }
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -68,14 +78,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     isPreorder = products.first().isPreOrder,
                                     warehouseId = products.first().warehouseId,
                                     finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
-                                    productData = products.map {
-                                        ProductData(
-                                                it.productId,
-                                                it.quantity.orderQuantity,
-                                                it.notes,
-                                                it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
-                                        )
-                                    },
+                                    productData = checkoutProducts,
                                     shippingInfo = ShippingInfo(
                                             orderShipment.getRealShipperId(),
                                             orderShipment.getRealShipperProductId(),
@@ -97,12 +100,12 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                         }
                         products.forEach {
-                            if (it.purchaseProtectionPlanData.isProtectionAvailable) {
+                            if (!it.isError && it.purchaseProtectionPlanData.isProtectionAvailable) {
                                 orderSummaryAnalytics.eventPPClickBayar(userId,
                                         it.categoryId,
                                         "",
                                         it.purchaseProtectionPlanData.protectionTitle,
-                                        isPPPChecked,
+                                        it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,
                                         orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
                             }
                         }
