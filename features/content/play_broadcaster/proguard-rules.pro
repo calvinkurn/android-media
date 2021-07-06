@@ -21,3 +21,5 @@
 #-renamesourcefileattribute SourceFile
 -keep class com.alibaba.livecloud.** { *;}
 -keep class com.alivc.** { *;}
+
+-dontwarn com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
