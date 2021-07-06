@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
+import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
@@ -117,7 +118,8 @@ open class HomeRevampViewModel @Inject constructor(
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
         private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val playWidgetTools: Lazy<PlayWidgetTools>
+        private val playWidgetTools: Lazy<PlayWidgetTools>,
+        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -1043,6 +1045,17 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
+    private suspend fun walletAppAbTestCondition(
+        isUsingWalletApp: suspend () -> Unit,
+        isUsingOldWallet: suspend () -> Unit
+    ) {
+        if (true) {
+            isUsingWalletApp.invoke()
+        } else {
+            isUsingOldWallet.invoke()
+        }
+    }
+
     private fun getHomeLocationDataParam() : String {
         return if (!isAddressDataEmpty()) {
             buildLocationParams(
@@ -1225,14 +1238,61 @@ open class HomeRevampViewModel @Inject constructor(
             var walletContent: HomeHeaderWalletAction? = null
             var tokopointContent: TokopointsDrawerListHomeData? = null
             var pendingCashback: PendingCashback? = null
+            var walletAppData: WalletAppData? = null
 
-            try {
-                walletContent = getWalletBalanceContent()
-            } catch (e: Exception) {
-                homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                homeDataModel.homeBalanceModel.mapErrorWallet()
-                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-            }
+            walletAppAbTestCondition(
+                isUsingWalletApp = {
+                    try {
+                        walletAppData = getWalletAppData()
+
+                        walletAppData?.let { walletContent ->
+                            if (walletContent.balance.isNotEmpty()) {
+                                homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
+                            } else {
+                                throw IllegalStateException("Wallet is empty")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                    }
+                },
+                isUsingOldWallet = {
+                    try {
+                        walletContent = getWalletBalanceContent()
+
+                        walletContent?.let { walletContent ->
+                            if (!walletContent.isLinked) {
+                                try {
+                                    pendingCashback = getPendingTokoCashContent()
+                                    pendingCashback?.let { pendingData ->
+                                        homeDataModel.homeBalanceModel.mapBalanceData(
+                                            tokopointDrawerListHomeData = tokopointContent,
+                                            homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
+                                            pendingCashBackData = PendingCashbackModel(
+                                                pendingCashback = pendingData,
+                                                labelActionButton = walletContent.labelActionButton,
+                                                labelTitle = walletContent.labelTitle,
+                                                walletType = walletContent.walletType
+                                            )
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                                }
+                            } else {
+                                homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                    }
+                }
+            )
 
             try {
                 tokopointContent = getTokopointBalanceContent()
@@ -1240,31 +1300,6 @@ open class HomeRevampViewModel @Inject constructor(
                 homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
                 homeDataModel.homeBalanceModel.mapErrorTokopoints()
                 newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
-            }
-
-            walletContent?.let {
-                if (!walletContent.isLinked) {
-                    try {
-                        pendingCashback = getPendingTokoCashContent()
-                        pendingCashback?.let { pendingData ->
-                            homeDataModel.homeBalanceModel.mapBalanceData(
-                                    tokopointDrawerListHomeData = tokopointContent,
-                                    homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
-                                    pendingCashBackData = PendingCashbackModel(
-                                            pendingCashback = pendingData,
-                                            labelActionButton = walletContent.labelActionButton,
-                                            labelTitle = walletContent.labelTitle,
-                                            walletType = walletContent.walletType
-                                    )
-                            )
-                        }
-                    } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-                    }
-                } else {
-                    homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
-                }
             }
 
             tokopointContent?.let {
@@ -1297,16 +1332,41 @@ open class HomeRevampViewModel @Inject constructor(
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
-            val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
-            homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
-            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-            if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
-                _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
-            }
+            walletAppAbTestCondition(
+                isUsingWalletApp = {
+                    try {
+                        val walletAppData = getWalletAppData()
+                        walletAppData.let { walletContent ->
+                            if (walletContent.balance.isNotEmpty()) {
+                                homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
+                                newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                            } else {
+                                throw IllegalStateException("Wallet is empty")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                    }
+                },
+                isUsingOldWallet = {
+                    try {
+                        val homeHeaderWalletAction = mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
+                        homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = homeHeaderWalletAction)
+                        newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                        if (homeHeaderWalletAction?.isShowAnnouncement == true && homeHeaderWalletAction.appLinkActionButton.isNotEmpty()) {
+                            _popupIntroOvoLiveData.postValue(Event(homeHeaderWalletAction.appLinkActionButton))
+                        }
+                    } catch (e: Exception) {
+                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
+                        homeDataModel.homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
+                        newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                    }
+                }
+            )
         }){
-            homeDataModel.homeBalanceModel.mapErrorWallet()
-            homeDataModel.homeBalanceModel.setWalletBalanceState(state = STATE_ERROR)
-            newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+
         }
     }
 
@@ -1317,6 +1377,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {
         return mapToHomeHeaderWalletAction(getWalletBalanceUseCase.get().executeOnBackground())
+    }
+
+    private suspend fun getWalletAppData(): WalletAppData {
+        return getWalletAppBalanceUseCase.get().executeOnBackground()
     }
 
     private suspend fun getPendingTokoCashContent(): PendingCashback {

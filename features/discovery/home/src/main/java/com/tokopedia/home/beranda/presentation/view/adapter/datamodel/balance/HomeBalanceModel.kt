@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance
 
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.*
+import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS
@@ -10,6 +11,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_TOKOPOINT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_UNKNOWN
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_LINKED
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_APP_NOT_LINKED
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
@@ -35,11 +38,8 @@ data class HomeBalanceModel (
         const val TYPE_STATE_4 = 4
 
         const val OVO_WALLET_TYPE = "OVO"
-
         const val OVO_TITLE = "OVO"
-
         const val OVO_TOP_UP = "Top-up OVO"
-
         const val OVO_POINTS_BALANCE = "%s Points"
 
         private const val HASH_CODE = 39
@@ -90,11 +90,13 @@ data class HomeBalanceModel (
     fun mapBalanceData(
             homeHeaderWalletAction: HomeHeaderWalletAction? = null,
             tokopointDrawerListHomeData: TokopointsDrawerListHomeData? = null,
-            pendingCashBackData: PendingCashbackModel? = null
+            pendingCashBackData: PendingCashbackModel? = null,
+            walletAppData: WalletAppData? = null
     ) {
         mapTokopoint(tokopointDrawerListHomeData)
         mapWallet(homeHeaderWalletAction)
         mapPendingCashback(homeHeaderWalletAction, pendingCashBackData)
+        mapWalletApp(walletAppData)
     }
 
     fun mapErrorTokopoints() {
@@ -116,15 +118,24 @@ data class HomeBalanceModel (
         }
     }
 
-    fun mapErrorWallet() {
+    fun mapErrorWallet(isWalletApp: Boolean) {
         when(balanceType) {
             TYPE_STATE_1 -> {
-                balanceDrawerItemModels[0] = getDefaultOvoErrorState()
+                balanceDrawerItemModels[0] = if (isWalletApp) getDefaultGopayErrorState() else getDefaultOvoErrorState()
             }
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[0] = getDefaultOvoErrorState()
+                balanceDrawerItemModels[0] = if (isWalletApp) getDefaultGopayErrorState() else getDefaultOvoErrorState()
             }
         }
+    }
+
+    private fun getDefaultGopayErrorState(): BalanceDrawerItemModel {
+        return BalanceDrawerItemModel(
+            drawerItemType = TYPE_WALLET_APP_LINKED,
+            defaultIconRes = R.drawable.ic_gopay,
+            balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
+            balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
+        )
     }
 
     private fun getDefaultOvoErrorState(): BalanceDrawerItemModel {
@@ -285,6 +296,18 @@ data class HomeBalanceModel (
         }
     }
 
+    private fun mapWalletApp(walletAppData: WalletAppData?) {
+        walletAppData?.let { walletApp ->
+            val selectedBalance = walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS).getOrNull(0)
+            selectedBalance?.let { balance ->
+                flagStateCondition(
+                    itemType = balance.drawerItemType,
+                    action = { balanceDrawerItemModels[it] = balance }
+                )
+            }
+        }
+    }
+
     private fun getDrawerType(type: String) = when(type) {
         "TokoPoints" -> TYPE_TOKOPOINT
         "Rewards" -> TYPE_REWARDS
@@ -339,7 +362,12 @@ data class HomeBalanceModel (
     ) {
         when(type) {
             TYPE_TOKOPOINT -> typeTokopointCondition.invoke()
-            TYPE_WALLET_OVO, TYPE_WALLET_OTHER, TYPE_WALLET_WITH_TOPUP, TYPE_WALLET_PENDING_CASHBACK -> typeWalletCondition.invoke()
+            TYPE_WALLET_OVO,
+            TYPE_WALLET_OTHER,
+            TYPE_WALLET_WITH_TOPUP,
+            TYPE_WALLET_PENDING_CASHBACK,
+            TYPE_WALLET_APP_LINKED,
+            TYPE_WALLET_APP_NOT_LINKED -> typeWalletCondition.invoke()
             TYPE_COUPON -> typeCouponCondition.invoke()
             TYPE_FREE_ONGKIR -> typeFreeOngkirCondition.invoke()
             TYPE_REWARDS -> typeRewardsCondition.invoke()

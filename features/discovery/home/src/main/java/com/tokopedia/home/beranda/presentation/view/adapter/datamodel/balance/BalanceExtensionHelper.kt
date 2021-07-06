@@ -4,6 +4,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.TagAttributes
 import com.tokopedia.home.beranda.data.model.TextAttributes
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
+import com.tokopedia.home.beranda.domain.model.walletapp.Balance
+import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OTHER
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_OVO
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
@@ -147,6 +149,21 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
             state = state,
             mainPageTitle = mainPageTitle
     )
+}
+
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int): List<BalanceDrawerItemModel> {
+    return balance.map {
+        BalanceDrawerItemModel(
+            applinkContainer = redirectUrl,
+            applinkActionText = redirectUrl,
+            iconImageUrl = iconUrl,
+            balanceTitleTextAttribute = BalanceTextAttribute(text = walletName),
+            balanceSubTitleTextAttribute = BalanceTextAttribute(text = if (isLinked) it.amountFmt else "Sambungkan"),
+            drawerItemType = if (isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
+            state = state,
+            trackingAttribute = it.walletCode
+        )
+    }
 }
 
 fun TextAttributes.mapToBalanceTextAttributes(): BalanceTextAttribute {

@@ -16,7 +16,8 @@ data class BalanceDrawerItemModel(
         var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
         val drawerItemType: Int = TYPE_TOKOPOINT,
         val mainPageTitle: String = "",
-        var state: Int = STATE_LOADING
+        var state: Int = STATE_LOADING,
+        val trackingAttribute: String = ""
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0
@@ -34,6 +35,10 @@ data class BalanceDrawerItemModel(
         const val TYPE_WALLET_WITH_TOPUP = 6
 
         const val TYPE_WALLET_OTHER = 7
+
+        const val TYPE_WALLET_APP_LINKED = 8
+
+        const val TYPE_WALLET_APP_NOT_LINKED = 9
 
         //is not linked for any type of wallet
         const val TYPE_WALLET_PENDING_CASHBACK = 8
