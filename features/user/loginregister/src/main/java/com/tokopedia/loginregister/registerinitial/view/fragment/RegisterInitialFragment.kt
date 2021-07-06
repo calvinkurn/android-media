@@ -1245,8 +1245,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
-            TICKER_COLOR_DEFAULT -> Ticker.TYPE_ANNOUNCEMENT
-            TICKER_COLOR_WARNING -> Ticker.TYPE_WARNING
+            colorTickerDefault() -> Ticker.TYPE_ANNOUNCEMENT
+            colorTickerWarning() -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
@@ -1448,6 +1448,14 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
+    private fun colorTickerDefault(): String {
+        return getString(R.string.color_ticker_default)
+    }
+
+    private fun colorTickerWarning(): String {
+        return getString(R.string.color_ticker_warning)
+    }
+
     companion object {
         val REQUEST_REGISTER_EMAIL = 101
         private val REQUEST_CREATE_PASSWORD = 102
@@ -1485,9 +1493,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
-
-        private const val TICKER_COLOR_DEFAULT = "#cde4c3"
-        private const val TICKER_COLOR_WARNING = "#ecdb77"
 
         const val TOKOPEDIA_CARE_PATH = "help"
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
