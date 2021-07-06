@@ -145,7 +145,7 @@ class ShopHomeNplCampaignViewHolder(
                                 shopHomeProductViewModel = it
                         )
                     })
-                } catch (throwable: Throwable) {
+                } catch (throwable: Exception) {
                     throwable.printStackTrace()
                 }
             }
@@ -180,7 +180,7 @@ class ShopHomeNplCampaignViewHolder(
             try {
                 if(context.isValidGlideContext())
                     setImageUrl(bannerUrl, heightRatio = 1f)
-            } catch (e: Throwable) { }
+            } catch (e: Exception) { }
         }
     }
 
@@ -307,7 +307,8 @@ class ShopHomeNplCampaignViewHolder(
             (colonMinuteView as? Typography)?.setWeight(Typography.BOLD)
             (colonMinuteView as? Typography)?.setType(Typography.SMALL)
             onFinish = {
-                shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+                if(remainingMilliseconds >= 0)
+                    shopHomeCampaignNplWidgetListener.onTimerFinished(model)
             }
             show()
         }

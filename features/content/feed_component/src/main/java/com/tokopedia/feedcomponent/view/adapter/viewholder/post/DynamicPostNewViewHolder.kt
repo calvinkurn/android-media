@@ -39,11 +39,10 @@ open class DynamicPostNewViewHolder(
             itemView.hide()
             return
         }
-        when(payloads.firstOrNull() as Int){
+        when (payloads.firstOrNull() as Int) {
             PAYLOAD_ANIMATE_LIKE -> postDynamicView.bindLike(element.feedXCard)
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
-            ANIMATE_COUNTER -> postDynamicView.bindItems(element.feedXCard)
-            PAYLOAD_PLAY_VIDEO -> postDynamicView.bindItems(element.feedXCard)
+            PAYLOAD_PLAY_VIDEO -> postDynamicView.bindItems(element.feedXCard, true)
         }
     }
 
@@ -68,6 +67,10 @@ open class DynamicPostNewViewHolder(
             itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
             itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
         )
+    }
+
+    fun onItemDetach() {
+        postDynamicView?.detach()
     }
 
 }

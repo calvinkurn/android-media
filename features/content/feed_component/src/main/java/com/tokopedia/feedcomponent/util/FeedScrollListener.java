@@ -50,33 +50,29 @@ public class FeedScrollListener {
         Rect rvRect = new Rect();
         recyclerView.getGlobalVisibleRect(rvRect);
         Rect rowRect = new Rect();
-        View view = layoutManager.findViewByPosition(i);
-        if (view != null) {
-            view.getGlobalVisibleRect(rowRect);
-            Rect videoViewRect = new Rect();
-            if (view.findViewById(R.id.image) != null)
-                view.findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
-            View imageView = view.findViewById(R.id.image);
-            if (imageView != null) {
-                int percentVideo;
-                int visibleVideo;
-                if (rowRect.bottom >= rvRect.bottom) {
-                    visibleVideo = rvRect.bottom - videoViewRect.top;
-                } else {
-                    visibleVideo = videoViewRect.bottom - rvRect.top;
-                }
+        layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
+        Rect videoViewRect = new Rect();
+        layoutManager.findViewByPosition(i).findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
+        View imageView = layoutManager.findViewByPosition(i).findViewById(R.id.image);
+        if (imageView != null) {
+            int percentVideo = 0;
+            if (rowRect.bottom >= rvRect.bottom) {
+                int visibleVideo = rvRect.bottom - videoViewRect.top;
                 percentVideo = (visibleVideo * 100) / imageView.getHeight();
-                boolean isStateChanged = false;
-                if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
-                    if (!item.getCanPlayVideo()) isStateChanged = true;
-                    item.setCanPlayVideo(true);
-                } else {
-                    if (item.getCanPlayVideo()) isStateChanged = true;
-                    item.setCanPlayVideo(false);
-                }
-                if (isStateChanged) {
-                    recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
-                }
+            } else {
+                int visibleVideo = videoViewRect.bottom - rvRect.top;
+                percentVideo = (visibleVideo * 100) / imageView.getHeight();
+            }
+            boolean isStateChanged = false;
+            if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
+                if (!item.getCanPlayVideo()) isStateChanged = true;
+                item.setCanPlayVideo(true);
+            } else {
+                if (item.getCanPlayVideo()) isStateChanged = true;
+                item.setCanPlayVideo(false);
+            }
+            if (isStateChanged) {
+                recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
             }
         }
     }
@@ -85,32 +81,29 @@ public class FeedScrollListener {
         Rect rvRect = new Rect();
         recyclerView.getGlobalVisibleRect(rvRect);
         Rect rowRect = new Rect();
-        View view = layoutManager.findViewByPosition(i);
-        if (view != null) {
-            view.getGlobalVisibleRect(rowRect);
-            Rect videoViewRect = new Rect();
-            View imageView = view.findViewById(R.id.image);
-            imageView.getGlobalVisibleRect(videoViewRect);
-            if (imageView != null && imageView.getHeight() != 0) {
-                int percentVideo;
-                int visibleVideo;
-                if (rowRect.bottom >= rvRect.bottom) {
-                    visibleVideo = rvRect.bottom - videoViewRect.top;
-                } else {
-                    visibleVideo = videoViewRect.bottom - rvRect.top;
-                }
+        layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
+        Rect videoViewRect = new Rect();
+        View imageView = layoutManager.findViewByPosition(i).findViewById(R.id.image);
+        imageView.getGlobalVisibleRect(videoViewRect);
+        if (imageView != null && imageView.getHeight() != 0) {
+            int percentVideo = 0;
+            if (rowRect.bottom >= rvRect.bottom) {
+                int visibleVideo = rvRect.bottom - videoViewRect.top;
                 percentVideo = (visibleVideo * 100) / imageView.getHeight();
-                boolean isStateChanged = false;
-                if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
-                    if (!item.isCanPlayVideo()) isStateChanged = true;
-                    item.setCanPlayVideo(true);
-                } else {
-                    if (item.isCanPlayVideo()) isStateChanged = true;
-                    item.setCanPlayVideo(false);
-                }
-                if (isStateChanged && recyclerView.getAdapter() != null) {
-                    recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
-                }
+            } else {
+                int visibleVideo = videoViewRect.bottom - rvRect.top;
+                percentVideo = (visibleVideo * 100) / imageView.getHeight();
+            }
+            boolean isStateChanged = false;
+            if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
+                if (!item.isCanPlayVideo()) isStateChanged = true;
+                item.setCanPlayVideo(true);
+            } else {
+                if (item.isCanPlayVideo()) isStateChanged = true;
+                item.setCanPlayVideo(false);
+            }
+            if (isStateChanged) {
+                recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
             }
         }
     }

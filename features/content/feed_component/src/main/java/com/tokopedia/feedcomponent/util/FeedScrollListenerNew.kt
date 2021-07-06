@@ -16,7 +16,7 @@ import java.util.*
 
 
 object FeedScrollListenerNew {
-    private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 75
+    private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
     private const val TYPE_VIDEO = "video"
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {
@@ -27,7 +27,7 @@ object FeedScrollListenerNew {
                 if (isVideoCard(list, i)) {
                     val item = getVideoCardViewModel(list, i)
                     if (item != null) {
-                        getVideoModelScrollListener(item, layoutManager, recyclerView, i)
+                        getVideoModelScrollListener(layoutManager, recyclerView, i)
                     }
                 }
             }
@@ -35,7 +35,6 @@ object FeedScrollListenerNew {
     }
 
     private fun getVideoModelScrollListener(
-        item: FeedXMedia,
         layoutManager: LinearLayoutManager?,
         recyclerView: RecyclerView,
         i: Int
@@ -57,14 +56,7 @@ object FeedScrollListenerNew {
                 videoViewRect.bottom - rvRect.top
             }
             percentVideo = visibleVideo * 100 / imageView.height
-            var isStateChanged = false
-            if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
-                if (!item.canPlayVideo) isStateChanged = true
-                item.canPlayVideo = true
-            } else {
-                if (item.canPlayVideo) isStateChanged = true
-                item.canPlayVideo = false
-            }
+            val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
             if (isStateChanged) {
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)

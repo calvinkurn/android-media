@@ -16,10 +16,13 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -50,10 +53,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -61,13 +60,16 @@ private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
 private val scope = CoroutineScope(Dispatchers.Main)
+private val scopeDef = CoroutineScope(Dispatchers.Default)
 private var productVideoJob: Job? = null
+private const val TIMER_TO_BE_SHOWN = 3000L
+private const val TIME_SECOND = 1000L
 
 class PostDynamicViewNew @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
     private var shopImage: ImageUnify
     private var shopBadge: ImageUnify
@@ -97,10 +99,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
     private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
     private var positionInFeed: Int = 0
-    var isPlaying = false
+    var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
 
     init {
+        (context as LifecycleOwner).lifecycle.addObserver(this)
         val view =
             LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
         view.run {
@@ -145,7 +148,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         this.positionInFeed = adapterPosition
         this.imagePostListener = imagePostListener
         bindFollow(feedXCard)
-        bindItems(feedXCard)
+        bindItems(feedXCard, false)
         bindCaption(feedXCard)
         bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard)
@@ -192,7 +195,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.reportable,
             feedXCard.deletable,
             feedXCard.followers,
-            feedXCard.typename,
+            feedXCard.typename
         )
     }
 
@@ -567,7 +570,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun bindItems(
-        feedXCard: FeedXCard
+        feedXCard: FeedXCard,
+        isVideoVisible: Boolean,
     ) {
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
@@ -622,10 +626,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             )
                             productTagText.postDelayed({
                                 if (products.isNotEmpty()) {
-                                    productTagText.visible()
+                                    productTagText.apply {
+                                        visible()
+                                        animate().alpha(1f).start()
+                                    }
                                 }
 
-                            }, 1000)
+                            }, TIME_SECOND)
+
                             val gd = GestureDetector(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
@@ -636,10 +644,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             feedXCard.followers.isFollowed,
                                             feedXCard.author.id
                                         )
-                                        if (!productTagText.isVisible)
-                                            productTagText.visible()
-                                        else
+                                        if (!productTagText.isVisible) {
+                                            productTagText.apply {
+                                                visible()
+                                                animate().alpha(1f).start()
+                                            }
+                                        } else {
                                             productTagText.gone()
+                                            productTagText.animate().alpha(0f)
+                                        }
                                         return true
                                     }
 
@@ -726,7 +739,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedXCard.author.id,
                                 feedXCard.typename,
                                 feedXCard.followers.isFollowed,
-                                feedXCard.author.id
+                                feedXCard.author.id,
+                                isVideoVisible
                             )
                         )
                     }
@@ -734,6 +748,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
                         pageControl.setCurrentIndicator(current)
+                        if (media[current].type == TYPE_IMAGE)
+                            videoPlayer?.pause()
+                        else
+                            videoPlayer?.start(media[current].mediaUrl, isMute)
                     }
                 }
             }
@@ -750,7 +768,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         id: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        isVideoVisible: Boolean
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
@@ -758,19 +777,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         videoItem?.layoutParams = param
-        setVideoControl(videoItem,feedMedia)
+        videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+
+        if (isVideoVisible) {
+            setVideoControl(videoItem, feedMedia, postId)
+        }
         videoItem?.run {
-            video_tag_text.visible()
-            setOnClickListener {
-                if (feedMedia.mediaUrl.isNotEmpty()) {
-                    videoListener?.onVideoPlayerClicked(
-                        positionInFeed,
-                        0,
-                        postId,
-                        feedMedia.appLink
-                    )
-                }
-            }
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
@@ -783,34 +795,65 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
             }
+
             volumeIcon.setOnClickListener {
+                isMute = !isMute
+                volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
         }
         return (videoItem)
     }
 
-    private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia) {
+    private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia, postId: String) {
         videoItem?.run {
-            layout_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-            videoPreviewImage.setImageUrl(feedMedia.coverUrl)
+            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+            var time = feedMedia.videoTime
+            if (time == 0L) {
+                scopeDef.launch {
+                    try {
+                        feedMedia.videoTime = getVideoDuration(feedMedia) / TIME_SECOND
+                    } catch (e: Exception) {
+
+                    }
+                }
+            }
+            video_tag_text.postDelayed({
+                video_tag_text.visible()
+                video_tag_text.animate().alpha(1F).setDuration(300L).start()
+            }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
                 if (videoPlayer == null)
                     videoPlayer = FeedExoPlayer(context)
-                var time = getVideoDuration(feedMedia)
                 layout_video?.player = videoPlayer?.getExoPlayer()
-                videoPlayer?.start(feedMedia.mediaUrl, feedMedia.isMute)
+                layout_video?.videoSurfaceView?.setOnClickListener {
+                    if (feedMedia.mediaUrl.isNotEmpty()) {
+                        videoListener?.onVideoPlayerClicked(
+                            positionInFeed,
+                            0,
+                            postId,
+                            feedMedia.appLink
+                        )
+                    }
+                }
+                videoPlayer?.start(feedMedia.mediaUrl, isMute)
+                volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
-                    override fun onInitialStateLoading() {}
+                    override fun onInitialStateLoading() {
+                        showVideoLoading(videoItem)
+                    }
 
                     override fun onVideoReadyToPlay() {
                         hideVideoLoading(videoItem)
-                        object : CountDownTimer(3000, 1000) {
+                        time = feedMedia.videoTime
+                        object : CountDownTimer(TIMER_TO_BE_SHOWN, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
-                                time = time/1000 -1
-                                timer_view.text = String.format("%02d:%02d", (time / 60) % 60, time % 60);
+                                time -= 1
+                                timer_view.text =
+                                    String.format("%02d:%02d", (time / 60) % 60, time % 60)
                             }
+
                             override fun onFinish() {
                                 timer_view.gone()
                             }
@@ -820,16 +863,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     override fun configureVolume(isMute: Boolean) {
                         setupVolume(isMute)
                     }
-
-                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                    }
-
                 })
-
             }
-
         }
-
     }
 
     private fun hideVideoLoading(videoItem: View) {
@@ -839,7 +875,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             timer_view?.visible()
             videoPreviewImage?.gone()
         }
-
     }
 
     private fun showVideoLoading(videoItem: View) {
@@ -862,7 +897,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun setupVolume(isMute: Boolean) {
-        volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+        //  volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
     }
 
     private fun setGridASGCLayout(feedXCard: FeedXCard) {
@@ -976,7 +1011,33 @@ class PostDynamicViewNew @JvmOverloads constructor(
         timestampText.text = spannableString
     }
 
-    fun showAnim() {
-        carouselView.getChildAt(0)
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+        videoPlayer?.reset()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    internal fun onPause() {
+        videoPlayer?.stop()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    internal fun onDestroy() {
+        detach()
+    }
+
+    fun detach() {
+        if (videoPlayer != null) {
+            videoPlayer?.setVideoStateListener(null)
+            videoPlayer?.destroy()
+            videoPlayer = null
+            layout_video?.player = null
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        videoPlayer?.destroy()
     }
 }

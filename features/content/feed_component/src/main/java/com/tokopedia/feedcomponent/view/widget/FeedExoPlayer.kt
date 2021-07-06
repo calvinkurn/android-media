@@ -47,18 +47,13 @@ class FeedExoPlayer(val context: Context) {
                     isInitialLoad -> {
                         videoStateListener?.onInitialStateLoading()
                     }
-
-                }
-
-                if (!playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION && playbackState == ExoPlayer.STATE_READY) {
-                    //Track only when video stop
-                    videoStateListener?.onVideoStateChange(
-                        exoPlayer.currentPosition,
-                        exoPlayer.duration
-                    )
                 }
             }
         })
+    }
+
+    fun reset() {
+        exoPlayer.seekTo(1)
     }
 
     fun setVideoResizeListener(listener: VideoListener) {
@@ -130,5 +125,4 @@ interface VideoStateListener {
     fun onInitialStateLoading()
     fun onVideoReadyToPlay()
     fun configureVolume(isMute: Boolean)
-    fun onVideoStateChange(stopDuration: Long, videoDuration: Long) //Tracker Purpose
 }

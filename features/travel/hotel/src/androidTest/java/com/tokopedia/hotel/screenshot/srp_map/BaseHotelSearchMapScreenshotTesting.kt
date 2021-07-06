@@ -9,9 +9,8 @@ import androidx.test.uiautomator.UiSelector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
-import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -36,9 +35,9 @@ abstract class BaseHotelSearchMapScreenshotTesting {
             super.beforeActivityLaunched()
             setupDarkModeTest(forceDarkMode())
             setupGraphqlMockResponse(HotelSearchMockResponseConfig())
-            val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchResultFragment.PREFERENCES_NAME)
+            val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchMapFragment.PREFERENCES_NAME)
             localCacheHandler.apply {
-                putBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+                putBoolean(HotelSearchMapFragment.SHOW_COACH_MARK_KEY, false)
                 applyEditor()
             }
             login()

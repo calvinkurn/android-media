@@ -237,13 +237,13 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet() {
-        val matcher = withId(R.id.btnFinishOrderPrimary)
+        val matcher = withId(R.id.btnFinishOrderRight)
         waitUntilViewVisible(matcher)
         clickView(matcher)
     }
 
     private fun clickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet() {
-        val matcher = withId(R.id.btnFinishOrderSecondary)
+        val matcher = withId(R.id.btnFinishOrderLeft)
         waitUntilViewVisible(matcher)
         clickView(matcher)
     }

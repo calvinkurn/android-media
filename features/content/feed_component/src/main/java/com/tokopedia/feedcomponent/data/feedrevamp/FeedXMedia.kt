@@ -19,9 +19,6 @@ data class FeedXMedia(
     var tagging: List<FeedXMediaTagging>,
     @SerializedName("mods")
     var mods: List<String>,
-
-    var canPlayVideo: Boolean = false,
-    var isMute: Boolean = true
-
+    var videoTime: Long = 0L
 )
 
