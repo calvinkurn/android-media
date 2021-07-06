@@ -65,7 +65,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     gridPostViewModel.actionLink,
                     gridPostViewModel.postId,
                     gridPostViewModel.postType,
-                    gridPostViewModel.isFollowed
+                    gridPostViewModel.isFollowed,
+                    gridPostViewModel.shopId
             )
 
         } else if (gridPostViewModel.showGridButton
@@ -79,14 +80,16 @@ class GridPostAdapter(private val contentPosition: Int,
                 gridPostViewModel.actionLink,
                 gridPostViewModel.postId,
                 gridPostViewModel.postType,
-                gridPostViewModel.isFollowed
+                gridPostViewModel.isFollowed,
+                gridPostViewModel.shopId
             )
 
         } else {
             holder.bindProduct(gridPostViewModel.postId,
                 gridPostViewModel.itemList[position],
                 gridPostViewModel.postType,
-                gridPostViewModel.isFollowed)
+                gridPostViewModel.isFollowed,
+                gridPostViewModel.shopId)
         }
     }
 
@@ -99,8 +102,7 @@ class GridPostAdapter(private val contentPosition: Int,
             setImageMargins(listSize)
         }
 
-        fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean) {
-            listener.userProductImpression(postId, item.id, item.text, item.price, adapterPosition)
+        fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean, shopId: String) {
             itemView.extraProduct.background = null
             itemView.extraProduct.hide()
 
@@ -129,7 +131,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     item.id.toInt(),
                     item.redirectLink,
                     type,
-                    isFollowed)
+                    isFollowed,
+                    shopId)
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -165,7 +168,7 @@ class GridPostAdapter(private val contentPosition: Int,
         }
 
         fun bindOthers(numberOfExtraProduct: Int, actionText: String,
-                       actionLink: String, postId: Int, type: String, isFollowed: Boolean) {
+                       actionLink: String, postId: Int, type: String, isFollowed: Boolean, shopId: String) {
             val extra = "+$numberOfExtraProduct $actionText"
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
@@ -183,7 +186,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     if (!TextUtils.isEmpty(actionLink)) actionLink
                     else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
                     type,
-                    isFollowed
+                    isFollowed,
+                    shopId
                 )
             }
         }
@@ -205,13 +209,7 @@ class GridPostAdapter(private val contentPosition: Int,
         fun onGridItemClick(
             positionInFeed: Int, activityId: Int, productId: Int,
             redirectLink: String, type: String, isFollowed: Boolean,
-        )
-        fun userProductImpression(
-            activityId: Int,
-            productId: String,
-            productName: String,
-            price: String,
-            positionInFeed: Int
+            shopId: String
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)

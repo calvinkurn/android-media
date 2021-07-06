@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -51,9 +52,21 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
             positionInFeed: Int,
             media: List<FeedXMedia>,
             postType: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            shopId: String
         )
-        fun userGridPostImpression(positionInFeed: Int,activityId: String, postType: String)
+        fun userGridPostImpression(
+            positionInFeed: Int,
+            activityId: String,
+            postType: String,
+            shopId: String,
+        )
+        fun userProductImpression(
+            positionInFeed: Int,
+            activityId: String,
+            postType: String,
+            shopId: String,
+            productList: List<FeedXProduct>)
 
 
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)

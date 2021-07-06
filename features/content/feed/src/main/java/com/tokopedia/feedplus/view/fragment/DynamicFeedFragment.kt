@@ -195,7 +195,8 @@ class DynamicFeedFragment:
         activityName: String,
         followCta: FollowCta,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         val item = ((adapter.list[positionInFeed]) as HighlightViewModel)
         feedAnalyticTracker.eventTrendingClickProfile(item.postId)

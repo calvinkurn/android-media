@@ -104,7 +104,7 @@ open class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName)
+        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "")
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
@@ -143,7 +143,7 @@ open class DynamicPostViewHolder(v: View,
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader, activityName: String) {
+    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader, activityName: String, shopId: String) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(header.avatar)) {
@@ -153,7 +153,13 @@ open class DynamicPostViewHolder(v: View,
                             MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
                     )
                 }
-                itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
+                itemView.authorImage.setOnClickListener {
+                    onAvatarClick(header.avatarApplink,
+                        postId,
+                        activityName,
+                        header.followCta,
+                        shopId)
+                }
             }
 
             if (template.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
@@ -167,7 +173,7 @@ open class DynamicPostViewHolder(v: View,
 
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
                 itemView.authorTitle.text = MethodChecker.fromHtml(header.avatarTitle)
-                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
+                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta, shopId) }
             }
 
             itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
@@ -182,7 +188,7 @@ open class DynamicPostViewHolder(v: View,
                             SpannableString(header.avatarDate)
                         }
                 itemView.authorSubtitile.text = spannableString
-                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
+                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta, shopId) }
             }
 
             itemView.headerAction.shouldShowWithAction(template.followCta
@@ -215,8 +221,19 @@ open class DynamicPostViewHolder(v: View,
         return reportable || deletable || editable
     }
 
-    private fun onAvatarClick(redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
-        listener.onAvatarClick(adapterPosition, redirectUrl, activityId, activityName, followCta)
+    private fun onAvatarClick(
+        redirectUrl: String,
+        activityId: Int,
+        activityName: String,
+        followCta: FollowCta,
+        shopId: String,
+    ) {
+        listener.onAvatarClick(adapterPosition,
+            redirectUrl,
+            activityId,
+            activityName,
+            followCta,
+            shopId=shopId)
     }
 
     private fun bindFollow(followCta: FollowCta) {
@@ -564,7 +581,8 @@ open class DynamicPostViewHolder(v: View,
             activityName: String,
             followCta: FollowCta,
             type: String = "",
-            isFollowed: Boolean = false
+            isFollowed: Boolean = false,
+            shopId: String
         )
 
         fun onHeaderActionClick(
@@ -595,7 +613,8 @@ open class DynamicPostViewHolder(v: View,
             isLiked: Boolean,
             postType: String = "",
             isFollowed: Boolean = false,
-            type: Boolean = false
+            type: Boolean = false,
+            shopId: String = ""
 
         )
 
@@ -604,7 +623,8 @@ open class DynamicPostViewHolder(v: View,
             id: Int,
             authorType: String,
             type: String,
-            isFollowed: Boolean = false
+            isFollowed: Boolean = false,
+            shopId: String = ""
         )
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
@@ -618,7 +638,8 @@ open class DynamicPostViewHolder(v: View,
             imageUrl: String,
             postTypeASGC: Boolean = false,
             type: String="",
-            isFollowed: Boolean = false
+            isFollowed: Boolean = false,
+            shopId: String=""
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
@@ -644,7 +665,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
 
-        fun onImageClicked(activityId: String, type: String, isFollowed: Boolean)
+        fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
 
         fun onTagClicked(
             postId: Int,
@@ -652,13 +673,14 @@ open class DynamicPostViewHolder(v: View,
             listener: DynamicPostListener,
             id: String,
             type: String,
-            isFollowed: Boolean,
+            isFollowed: Boolean
         )
 
-        fun onReadMoreClicked(postId: String)
+        fun onReadMoreClicked(postId: String, shopId: String = "")
         fun onBottomSheetMenuClicked(
             item: ProductPostTagViewModelNew,
-            context: Context
+            context: Context,
+            shopId: String = ""
         )
     }
 }

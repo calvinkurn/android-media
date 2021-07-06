@@ -504,7 +504,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         feedAnalytics.eventOnTagSheetItemBuyClicked(
                                             data.activityId,
                                             data.postType,
-                                            data.isFollowed
+                                            data.isFollowed,
+                                            data.shopId
                                         )
                                         onAddToCartSuccess()
                                     }).show()
@@ -1354,14 +1355,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activityName: String,
         followCta: FollowCta,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         onGoToLink(redirectUrl)
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.AVATAR)
         feedAnalytics.eventClickFeedAvatar(
             activityId.toString(),
             type,
-            isFollowed
+            isFollowed,
+            shopId
         )
     }
 
@@ -1408,7 +1411,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postType: String
     ) {
         if (context != null) {
-            feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed)
+            feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed, authorId)
             val sheet = MenuOptionsBottomSheet.newInstance(
                 reportable, isFollowed,
                 deletable
@@ -1418,7 +1421,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventClickThreeDotsOption(postId.toString(),
                     "laporkan",
                     postType,
-                    isFollowed)
+                    isFollowed,
+                    authorId)
                 if (userSession.isLoggedIn) {
                     context?.let {
                         ReportBottomSheet.newInstance(
@@ -1445,7 +1449,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sheet.onFollow = {
                 feedAnalytics.eventClickThreeDotsOption(postId.toString(), "unfollow",
                     postType,
-                    isFollowed)
+                    isFollowed, authorId)
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
                         positionInFeed,
@@ -1458,19 +1462,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 createDeleteDialog(positionInFeed, postId)
                 feedAnalytics.eventClickThreeDotsOption(postId.toString(), "Hapus",
                     postType,
-                    isFollowed)
+                    isFollowed, authorId)
 
             }
             sheet.onDismiss = {
                 feedAnalytics.eventClickGreyAreaThreeDots(postId.toString(),
                     postType,
-                    isFollowed)
+                    isFollowed, authorId)
             }
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(postId.toString(),
                     postType,
-                    isFollowed)
+                    isFollowed, authorId)
 
             }
         }
@@ -1486,9 +1490,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isLiked: Boolean,
         postType: String,
         isFollowed: Boolean,
-        type: Boolean
+        type: Boolean,
+        shopId: String
     ) {
-        feedAnalytics.eventClickLikeButton(id.toString(), type, isLiked, postType, isFollowed)
+        feedAnalytics.eventClickLikeButton(id.toString(), type, isLiked, postType, isFollowed, shopId)
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -1501,9 +1506,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         id: Int,
         authorType: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
-        feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed)
+        feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, shopId)
         onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
@@ -1513,7 +1519,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         imageUrl: String,
         typeASGC: Boolean,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         activity?.let {
             val urlString = if (typeASGC) {
@@ -1540,7 +1547,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             )
         }
-        feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed)
+        feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed, shopId)
     }
 
     override fun onStatsClick(
@@ -1576,7 +1583,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
             feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.products,
-                itemPosition, item.feedXCard.typename, item.feedXCard.followers.isFollowed)
+                itemPosition, item.feedXCard.typename, item.feedXCard.followers.isFollowed, item.feedXCard.author.id)
 
         }
         onGoToLink(redirectUrl)
@@ -1597,26 +1604,36 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>,type: String,isFollowed: Boolean) {
-        feedAnalytics.eventImpression(positionInFeed.toString(), media, type, isFollowed)
+    override fun userCarouselImpression(
+        positionInFeed: Int,
+        media: List<FeedXMedia>,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String
+    ) {
+        feedAnalytics.eventImpression(positionInFeed.toString(), media, type, isFollowed, shopId)
     }
 
-    override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String) {
-        feedAnalytics.eventImpressionPostASGC(activityId, positionInFeed, "")
+    override fun userGridPostImpression(
+        positionInFeed: Int,
+        activityId: String,
+        postType: String,
+        shopId: String
+    ) {
+        feedAnalytics.eventImpressionPostASGC(activityId, positionInFeed, "", shopId)
     }
 
     override fun userProductImpression(
-        activityId: Int,
+        positionInFeed: Int,
+        activityId: String,
         productId: String,
-        productName: String,
-        price: String,
-        positionInFeed: Int
+        shopId: String,
+        productList: List<FeedXProduct>
     ) {
-        feedAnalytics.eventImpressionProductASGC(activityId.toString(),
+        feedAnalytics.eventImpressionProductASGC(activityId,
             productId,
-            productName,
-            price,
-            positionInFeed)
+            productList,
+            shopId)
     }
 
     override fun onImageClick(
@@ -1685,7 +1702,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean
     ) {
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed)
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
             productTagBS.dismiss()
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed)
@@ -1757,21 +1774,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onReadMoreClicked(postId: String) {
-        feedAnalytics.eventClickReadMoreNew(postId)
+    override fun onReadMoreClicked(postId: String, shopId: String) {
+        feedAnalytics.eventClickReadMoreNew(postId, shopId)
     }
 
-    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean) {
-        feedAnalytics.eventImageClicked(activityId, type, isFollowed)
+    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+        feedAnalytics.eventImageClicked(activityId, type, isFollowed, shopId)
     }
 
-    fun addToWishList(postId: Int, productId: String, type: String, isFollowed: Boolean) {
+    fun addToWishList(postId: Int, productId: String, type: String, isFollowed: Boolean, shopId: String) {
 
-        feedAnalytics.eventAddToWishlistClicked(postId.toString(), productId, type, isFollowed)
+        feedAnalytics.eventAddToWishlistClicked(postId.toString(), productId, type, isFollowed, shopId)
 
         productTagBS.dismiss()
         feedViewModel.addWishlist(
             productId,
+            shopId,
             0,
             type,
             isFollowed,
@@ -1784,7 +1802,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         showToast(s, Toaster.TYPE_ERROR)
     }
 
-    private fun onWishListSuccess(activityId: String,type: String,isFollowed: Boolean) {
+    private fun onWishListSuccess(
+        activityId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
         Toaster.build(
             requireView(),
             getString(R.string.feed_added_to_wishlist),
@@ -1792,7 +1815,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             Toaster.TYPE_NORMAL,
             getString(R.string.feed_go_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed)
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
     }
@@ -1805,13 +1828,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean
     ) {
-        feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed)
+        feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id)
         productTagBS.show(childFragmentManager, products, listener, postId, id, type, isFollowed)
         productTagBS.closeClicked = {
-            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed)
+            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed, id)
         }
         productTagBS.disMissed = {
-            feedAnalytics.eventClickGreyArea(postId.toString(), type, isFollowed)
+            feedAnalytics.eventClickGreyArea(postId.toString(), type, isFollowed, id)
         }
     }
 
@@ -1823,13 +1846,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         imageUrl: String,
         activityId: Int,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId.toString(),
             id.toString(),
             type,
-            isFollowed)
+            isFollowed, shopId)
         productTagBS.dismiss()
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
@@ -1854,12 +1878,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onBottomSheetMenuClicked(
         item: ProductPostTagViewModelNew,
-        context: Context
+        context: Context,
+        shopId: String
     ) {
         feedAnalytics.eventClickBottomSheetMenu(
             item.postId.toString(),
             item.postType,
-            item.isFollowed
+            item.isFollowed,
+            item.shopId
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
@@ -1874,14 +1900,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.imgUrl,
                 item.postId,
                 item.postType,
-                item.isFollowed
+                item.isFollowed,
+                item.shopId
             )
         }
         sheet.addToCartCB = {
           onTagSheetItemBuy(item.postId,item.positionInFeed, item.product, item.shopId,item.postType,item.isFollowed)
         }
         sheet.addToWIshListCB = {
-            addToWishList(item.postId, item.id, item.postType, item.isFollowed)
+            addToWishList(item.postId, item.id, item.postType, item.isFollowed, item.shopId)
         }
     }
 
@@ -1891,18 +1918,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
         productId: Int,
         redirectLink: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         onGoToLink(redirectLink)
 
         if (redirectLink.contains(FEED_DETAIL)) {
             feedAnalytics.eventGridMoreProductCLicked(
-                activityId.toString(), type, isFollowed)
+                activityId.toString(), type, isFollowed, shopId)
         } else {
             feedAnalytics.eventGridProductItemClicked(activityId.toString(),
                 productId.toString(),
                 type,
-                isFollowed)
+                isFollowed,
+                shopId)
         }
     }
 
@@ -2215,7 +2244,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventClickFollowitem(item.feedXCard.id,
                     adapterPosition,
                     item.feedXCard.typename,
-                    item.feedXCard.followers.isFollowed)
+                    item.feedXCard.followers.isFollowed,
+                    item.feedXCard.author.id)
 
                 if (item.feedXCard.followers.isFollowed)
                     item.feedXCard.followers.transitionFollow = true

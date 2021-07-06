@@ -9,6 +9,7 @@ data class AtcViewModel (
         var errorMsg:String = "",
         var activityId: String = "",
         var postType: String = "",
-        var isFollowed: Boolean = false
+        var isFollowed: Boolean = false,
+        var  shopId: String = ""
 
 )

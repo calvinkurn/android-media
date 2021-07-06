@@ -380,11 +380,12 @@ class FeedViewModel @Inject constructor(
 
     fun addWishlist(
         productId: String,
+        shopId: String,
         position: Int,
         type: String,
         isFollowed: Boolean,
         onFail: (String) -> Unit,
-        onSuccess: (String, String, Boolean) -> Unit
+        onSuccess: (String, String, String, Boolean) -> Unit
     ) {
         addWishListUseCase.createObservable(
             productId, userSession.userId,
@@ -395,7 +396,7 @@ class FeedViewModel @Inject constructor(
 
                 override fun onSuccessAddWishlist(productId: String?) {
                     if (productId != null) {
-                        onSuccess.invoke(productId, type, isFollowed)
+                        onSuccess.invoke(productId, shopId, type, isFollowed)
                     }
                 }
 
@@ -633,6 +634,7 @@ class FeedViewModel @Inject constructor(
             data.activityId = postTagItem.id
             data.postType = type
             data.isFollowed = isFollowed
+            data.shopId = shopId
 
             val params = AddToCartUseCase.getMinimumParams(
                 postTagItem.id,
