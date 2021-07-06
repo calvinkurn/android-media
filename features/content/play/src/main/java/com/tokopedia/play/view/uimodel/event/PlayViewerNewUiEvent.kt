@@ -7,4 +7,5 @@ sealed class PlayViewerNewUiEvent
 
 data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
 data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
+data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()

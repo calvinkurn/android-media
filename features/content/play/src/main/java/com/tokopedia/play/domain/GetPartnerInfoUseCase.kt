@@ -76,9 +76,9 @@ class GetPartnerInfoUseCase @Inject constructor(
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
-        fun createParam(partnerId: Int, partnerType: PartnerType, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams =
+        fun createParam(partnerId: Long, fields: List<String>? = DEFAULT_SHOP_FIELDS): RequestParams =
                 RequestParams.create().apply {
-            putObject(PARAM_SHOP_IDS, partnerId)
+            putLong(PARAM_SHOP_IDS, partnerId)
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SOURCE, SOURCE_VALUE)
         }

@@ -10,8 +10,8 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
  */
 data class PlayViewerNewUiState(
         val interactive: PlayInteractiveUiState = PlayInteractiveUiState.NoInteractive,
-        val showInteractiveFollow: Boolean = false,
-        val toolbarFollowStatus: PlayToolbarFollowUiState = PlayToolbarFollowUiState.Hide,
+        val followStatus: PlayFollowStatusUiState = PlayFollowStatusUiState.NotFollowable,
+        val partnerName: String = "",
         val showWinningBadge: Boolean = false,
         val winnerLeaderboard: List<PlayLeaderboardUiModel> = emptyList(),
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState> = emptyMap()
@@ -36,8 +36,8 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 }
 
-sealed class PlayToolbarFollowUiState {
+sealed class PlayFollowStatusUiState {
 
-    data class Show(val isFollowed: Boolean) : PlayToolbarFollowUiState()
-    object Hide : PlayToolbarFollowUiState()
+    data class Followable(val isFollowing: Boolean) : PlayFollowStatusUiState()
+    object NotFollowable : PlayFollowStatusUiState()
 }
