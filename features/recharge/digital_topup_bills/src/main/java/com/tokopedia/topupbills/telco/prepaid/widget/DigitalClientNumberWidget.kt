@@ -1,13 +1,10 @@
 package com.tokopedia.topupbills.telco.prepaid.widget
 
 import android.content.Context
-import android.graphics.Color
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.widget.AutoCompleteTextView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView

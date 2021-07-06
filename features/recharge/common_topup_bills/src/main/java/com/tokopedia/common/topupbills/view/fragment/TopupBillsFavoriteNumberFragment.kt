@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
@@ -117,8 +118,8 @@ class TopupBillsFavoriteNumberFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
-        loadData()
         initView()
+        loadData()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
         if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
@@ -192,10 +193,25 @@ class TopupBillsFavoriteNumberFragment :
 
         topUpBillsViewModel.seamlessFavNumberDeleteData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessDeleteClientName()
+                is Success -> onSuccessDeleteClientName(it.data)
                 is Fail -> onFailedDeleteClientName()
             }
         })
+        
+        topUpBillsViewModel.seamlessFavNumberUndoDeleteData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessUndoDeleteFavoriteNumber()
+                is Fail -> onFailedUndoDeleteFavoriteNumber()
+            }
+        })
+    }
+
+    private fun onSuccessUndoDeleteFavoriteNumber() {
+        getSeamlessFavoriteNumber()
+    }
+
+    private fun onFailedUndoDeleteFavoriteNumber() {
+
     }
 
     private fun loadData() {
@@ -359,7 +375,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessUpdateClientName() {
-        showShimmering()
         getSeamlessFavoriteNumber()
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_success_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -372,11 +387,13 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    private fun onSuccessDeleteClientName() {
-        showShimmering()
+    private fun onSuccessDeleteClientName(deletedFavoriteNumber: UpdateFavoriteDetail) {
         getSeamlessFavoriteNumber()
         view?.let {
-            Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                getString(R.string.common_topup_fav_number_toaster_undo_delete),
+                View.OnClickListener { undoDelete(deletedFavoriteNumber) }).show()
         }
     }
 
@@ -386,7 +403,25 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
+    private fun undoDelete(deletedFavoriteNumber: UpdateFavoriteDetail) {
+        val isDelete = false
+        showShimmering()
+        topUpBillsViewModel.modifySeamlessFavoriteNumber(
+                CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
+                topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
+                        categoryId = deletedFavoriteNumber.categoryID,
+                        productId = deletedFavoriteNumber.productID,
+                        clientNumber = deletedFavoriteNumber.clientNumber,
+                        totalTransaction = deletedFavoriteNumber.totalTransaction,
+                        label = deletedFavoriteNumber.label,
+                        isDelete = isDelete
+                ),
+                FavoriteNumberActionType.UNDO_DELETE
+        )
+    }
+
     private fun getSeamlessFavoriteNumber() {
+        showShimmering()
         topUpBillsViewModel.getSeamlessFavoriteNumbers(
                 CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
@@ -467,6 +502,7 @@ class TopupBillsFavoriteNumberFragment :
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val isDelete = false
+        showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
@@ -475,9 +511,9 @@ class TopupBillsFavoriteNumberFragment :
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = newName,
-                        isDelete = false
+                        isDelete = isDelete
                 ),
-                isDelete
+                FavoriteNumberActionType.UPDATE
         )
     }
 
@@ -504,6 +540,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val isDelete = true
+        showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
@@ -514,12 +551,16 @@ class TopupBillsFavoriteNumberFragment :
                         label = favNumberItem.clientName,
                         isDelete = isDelete
                 ),
-                isDelete
+                FavoriteNumberActionType.DELETE
         )
     }
 
     enum class InputNumberActionType {
         MANUAL, CONTACT, FAVORITE
+    }
+
+    enum class FavoriteNumberActionType {
+        UPDATE, DELETE, UNDO_DELETE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

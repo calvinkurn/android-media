@@ -50,4 +50,5 @@
     <string name="common_topup_fav_number_delete_dialog_confirm">Hapus</string>
     <string name="common_topup_fav_number_success_delete_name">Oke, nomor berhasil dihapus</string>
     <string name="common_topup_fav_number_failed_delete_name">Maaf, belum berhasil terhapus. Coba lagi, ya.</string>
+    <string name="common_topup_fav_number_toaster_undo_delete">Batalkan</string>
 </resources>
