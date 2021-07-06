@@ -276,6 +276,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.eventClickInitialStateProductLine(productDataLayer, userId, label, item.dimension90)
     }
 
+    override fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String) {
+        AutocompleteTracking.eventClickDynamicSection(userId, label, type, pageSource)
+    }
+
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
         presenter.onChipClicked(item)
     }

@@ -46,6 +46,8 @@ interface InitialStateContract {
         fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
 
         fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String)
+
+        fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String)
     }
 
     interface Presenter : CustomerPresenter<View> {

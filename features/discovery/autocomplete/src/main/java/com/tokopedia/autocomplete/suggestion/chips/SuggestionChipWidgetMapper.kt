@@ -24,12 +24,13 @@ fun SuggestionItem.convertToSuggestionChipWidgetDataView(searchTerm: String, pos
     item.discountPercentage = this.discountPercentage
     item.originalPrice = this.originalPrice
     item.dimension90 = dimension90
-    item.childItems = this.suggestionChildItems.convertToChildItems()
+    item.childItems = this.suggestionChildItems.convertToChildItems(searchTerm, dimension90)
     return item
 }
 
-private fun List<SuggestionChildItem>.convertToChildItems(): List<BaseSuggestionDataView.ChildItem> {
+private fun List<SuggestionChildItem>.convertToChildItems(searchTerm: String, dimension90: String): List<BaseSuggestionDataView.ChildItem> {
     val list = mutableListOf<BaseSuggestionDataView.ChildItem>()
+    var position = 1
     for (item in this) {
         list.add(
                 BaseSuggestionDataView.ChildItem(
@@ -37,9 +38,13 @@ private fun List<SuggestionChildItem>.convertToChildItems(): List<BaseSuggestion
                         type = item.type,
                         applink = item.applink,
                         url = item.url,
-                        title = item.title
+                        title = item.title,
+                        searchTerm = searchTerm,
+                        dimension90 = dimension90,
+                        position = position
                 )
         )
+        position++
     }
     return list
 }

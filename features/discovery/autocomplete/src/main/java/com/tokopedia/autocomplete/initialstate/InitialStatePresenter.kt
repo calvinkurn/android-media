@@ -572,6 +572,9 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickChip(getUserId(), label, item.featureId, item.dimension90)
+
         view?.route(item.applink, searchParameter)
         view?.finish()
     }

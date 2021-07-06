@@ -51,6 +51,7 @@ public interface AutocompleteEventTracking {
         String IMPRESSION_CURATED_CAMPAIGN = "impression - curated campaign";
         String CLICK_INITIAL_STATE_PRODUCT_LINE = "click - product initial state campaign";
         String CLICK_SUGGESTION_PRODUCT_LINE = "click - product autocomplete campaign";
+        String CLICK_CHIP_SUGGESTION = "click - related autocomplete";
     }
 
     interface Label {

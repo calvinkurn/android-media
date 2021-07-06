@@ -29,6 +29,8 @@ interface SuggestionContract {
 
         fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String)
 
+        fun trackClickChip(eventLabel: String, dimension90: String)
+
         fun dropKeyBoard()
 
         fun route(applink: String, searchParameter: Map<String, String>)

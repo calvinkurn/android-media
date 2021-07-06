@@ -216,4 +216,8 @@ class SuggestionFragment :
         val productDataLayer = item.getProductLineAsObjectDataLayer()
         AutocompleteTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
     }
+
+    override fun trackClickChip(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickChipSuggestion(eventLabel, dimension90)
+    }
 }

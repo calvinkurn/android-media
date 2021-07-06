@@ -237,7 +237,14 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     }
 
     private fun `then verify view tracking click chip widget`(item: BaseSuggestionDataView.ChildItem) {
+        val expectedEventLabel =
+                "keyword: ${item.title} " +
+                        "- value: $keywordTypedByUser " +
+                        "- po: ${item.position} " +
+                        "- page: ${item.applink}"
+
         verify {
+            suggestionView.trackClickChip(expectedEventLabel, item.dimension90)
             suggestionView.dropKeyBoard()
             suggestionView.route(item.applink, suggestionPresenter.getSearchParameter())
             suggestionView.finish()

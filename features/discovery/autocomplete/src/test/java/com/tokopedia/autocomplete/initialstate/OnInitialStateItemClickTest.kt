@@ -267,7 +267,9 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     }
 
     private fun InitialStateContract.View.onClickChip(item: BaseItemInitialStateSearch) {
+        val expectedLabel = "value: ${item.title} - title: ${item.header} - po: 1"
         verifyOrder {
+            trackEventClickChip(any(), expectedLabel, item.featureId, item.dimension90)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }
