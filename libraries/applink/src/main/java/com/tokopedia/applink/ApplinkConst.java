@@ -443,6 +443,7 @@ public interface ApplinkConst {
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
+        String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
         String SALES = "sellerapp://sales";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
         String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
