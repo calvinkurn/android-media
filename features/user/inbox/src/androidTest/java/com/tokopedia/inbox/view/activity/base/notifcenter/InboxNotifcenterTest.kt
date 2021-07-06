@@ -122,6 +122,29 @@ object NotifcenterAssertion {
         ).check(matches(withText(msgRes)))
     }
 
+    fun assertEmptyNotifStateIllustrationImageVisibility(
+        position: Int, visibilityMatcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_empty_notification_title)
+        ).check(matches(visibilityMatcher))
+    }
+
+    fun assertEmptyNotifStateIllustrationTitle(position: Int, @StringRes msgRes: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_empty_notification_title)
+        ).check(matches(withText(msgRes)))
+    }
+
+    fun assertEmptyNotifStateIllustrationDescription(position: Int, @StringRes msgRes: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_empty_filter)
+        ).check(matches(withText(msgRes)))
+    }
+
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {
         onView(withId(R.id.recycler_view))
             .check(matches(matcher))

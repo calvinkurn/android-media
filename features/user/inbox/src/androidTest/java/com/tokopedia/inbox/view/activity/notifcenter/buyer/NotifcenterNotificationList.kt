@@ -1,13 +1,11 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.EmptyNotificationWithRecomViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers.not
@@ -257,7 +255,38 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should show empty state with illustration when notifications is empty with filter
+    @Test
+    fun should_show_empty_state_with_illustration_when_notifications_is_empty_with_filter() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // When
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.emptyNotifications
+        }
+        NotifcenterAction.clickFilterAt(0)
+
+        // Then
+        val expectedEmptyStatePosition = 0
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                expectedEmptyStatePosition, EmptyNotificationViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertEmptyNotifStateIllustrationImageVisibility(
+            expectedEmptyStatePosition, isDisplayed()
+        )
+        NotifcenterAssertion.assertEmptyNotifStateIllustrationTitle(
+            expectedEmptyStatePosition, R.string.notification_empty_message
+        )
+        NotifcenterAssertion.assertEmptyNotifStateIllustrationDescription(
+            expectedEmptyStatePosition, R.string.notification_empty_filter_message
+        )
+    }
+
     // TODO: assert big divider location
 
 
