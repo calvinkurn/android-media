@@ -20,7 +20,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
-        if (addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel) || addTickerSection(orderStatusUiModel.ticker)) {
+        if ((addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel) || addTickerSection(orderStatusUiModel.ticker)) && orderStatusUiModel.orderStatusInfoUiModel.shouldShow()) {
             addThinDividerSection()
         }
         addOrderStatusInfoSection(orderStatusUiModel.orderStatusInfoUiModel)
