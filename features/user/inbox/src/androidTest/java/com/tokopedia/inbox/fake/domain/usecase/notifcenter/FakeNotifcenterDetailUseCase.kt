@@ -58,6 +58,16 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val earlierOnlyHasNextTrue: NotifcenterDetailResponse
+        get() {
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3).apply {
+                    getAsJsonArray(new_list).removeAll { true }
+                    getAsJsonObject(paging).addProperty(has_next, true)
+                }
+            }
+        }
+
     val newListOnlyHasNextFalse: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
@@ -86,6 +96,7 @@ class FakeNotifcenterDetailUseCase(
 
     private val notifcenter_detail_v3 = "notifcenter_detail_v3"
     private val new_list = "new_list"
+    private val paging = "paging"
     private val new_paging = "new_paging"
     private val has_next = "has_next"
     private val list = "list"
