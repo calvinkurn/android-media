@@ -540,20 +540,19 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-
-//        val isDelete = true
-//        topUpBillsViewModel.modifySeamlessFavoriteNumber(
-//                CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
-//                topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-//                        categoryId = favNumberItem.categoryId,
-//                        productId = favNumberItem.productId,
-//                        clientNumber = favNumberItem.clientNumber,
-//                        totalTransaction = DEFAULT_TOTAL_TRANSACTION,
-//                        label = favNumberItem.clientName,
-//                        isDelete = isDelete
-//                ),
-//                FavoriteNumberActionType.DELETE
-//        )
+        val isDelete = true
+        topUpBillsViewModel.modifySeamlessFavoriteNumber(
+                CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
+                topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
+                        categoryId = favNumberItem.categoryId,
+                        productId = favNumberItem.productId,
+                        clientNumber = favNumberItem.clientNumber,
+                        totalTransaction = DEFAULT_TOTAL_TRANSACTION,
+                        label = favNumberItem.clientName,
+                        isDelete = isDelete
+                ),
+                FavoriteNumberActionType.DELETE
+        )
     }
 
     enum class InputNumberActionType {
@@ -594,7 +593,6 @@ class TopupBillsFavoriteNumberFragment :
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
 
         private const val DEFAULT_TOTAL_TRANSACTION = 0
-        private const val SNACKBAR_SHORT_DURATION = 1600
 
         fun newInstance(clientNumberType: String, number: String,
                         digitalCategoryIds: ArrayList<String>
