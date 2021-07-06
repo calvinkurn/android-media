@@ -287,7 +287,21 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: assert big divider location
+    @Test
+    fun should_have_big_divider_between_earlier_and_new_section() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                3, BigDividerViewHolder::class.java
+            )
+        )
+    }
 
 
     // TODO: load more button on new list should not clickable when loading new list - impossible with current unify, can't stop loading animation
