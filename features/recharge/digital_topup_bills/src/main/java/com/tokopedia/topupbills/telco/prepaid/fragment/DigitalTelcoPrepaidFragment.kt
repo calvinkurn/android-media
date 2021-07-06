@@ -34,7 +34,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
@@ -473,7 +472,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     TopupBillsFavoriteNumberActivity.getCallingIntent(it,
                         ClientNumberType.TYPE_INPUT_TEL,
                         clientNumber,
-                        seamlessFavNumberList,
                         arrayListOf(
                                 TelcoCategoryType.CATEGORY_PULSA.toString(),
                                 TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),

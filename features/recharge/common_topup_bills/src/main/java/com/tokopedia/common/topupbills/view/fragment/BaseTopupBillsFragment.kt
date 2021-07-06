@@ -411,7 +411,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     fun getSeamlessFavoriteNumbers(categoryIds: List<String>) {
         topupBillsViewModel.getSeamlessFavoriteNumbers(
                 CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds)
+                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds),
+                isLoadFromCloud = true
         )
     }
 

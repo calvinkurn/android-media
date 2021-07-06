@@ -36,4 +36,8 @@
     <string name="common_topup_favorite_number_modify_name">Nama</string>
     <string name="common_topup_favorite_number_modify_phone">Nomor HP</string>
     <string name="common_topup_favorite_number_modify_button">Simpan</string>
+    <string name="common_topup_fav_number_success_update_name">Oke, nama berhasil diubah.</string>
+    <string name="common_topup_fav_number_failed_update_name">Maaf, belum berhasil diubah. Coba lagi, ya.</string>
+    <string name="common_topup_fav_number_failed_fetch_after_update">Maaf, nama belum berhasil ke-update. Coba refresh, yuk.</string>
+    <string name="common_topup_fav_number_refresh">Refresh</string>
 </resources>

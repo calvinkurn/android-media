@@ -305,18 +305,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClientNumberHasFocus(clientNumber: String) {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
-                // TODO: [Misael] toggle
-                // TODO: [Misael] ini categoryID-nya supaya dpt 1 gmn
-                // TelcoCategoryType.CATEGORY_PULSA.toString(),
-                // TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                // TelcoCategoryType.CATEGORY_ROAMING.toString()
                 if (isSeamlessFavoriteNumber) {
                     startActivityForResult(activity?.let {
                         TopupBillsFavoriteNumberActivity.getCallingIntent(it,
                             ClientNumberType.TYPE_INPUT_TEL,
                             clientNumber,
-                            seamlessFavNumberList,
-                            arrayListOf(TelcoCategoryType.CATEGORY_PULSA.toString())
+                            arrayListOf(categoryId.toString())
                         )
                     },
                             REQUEST_CODE_DIGITAL_SEARCH_NUMBER)

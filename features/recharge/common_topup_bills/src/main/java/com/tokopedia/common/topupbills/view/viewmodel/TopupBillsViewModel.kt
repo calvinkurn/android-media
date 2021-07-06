@@ -150,9 +150,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
-                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+//                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+//                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberData>()
 
             _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber))
@@ -298,8 +298,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                        FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
                        FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
                        FAVORITE_NUMBER_PARAM_SOURCE to "PDP",
-                       FAVORITE_NUMBER_PARAM_UPDATE_STATUS to false,
-                       FAVORITE_NUMBER_PARAM_WISHLIST to false
+                       FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
+                       FAVORITE_NUMBER_PARAM_WISHLIST to true
                )
         )
     }
