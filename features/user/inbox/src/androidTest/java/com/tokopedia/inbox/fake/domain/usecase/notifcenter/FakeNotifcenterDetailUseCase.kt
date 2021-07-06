@@ -78,6 +78,16 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val earlierOnlyHasNextFalse: NotifcenterDetailResponse
+        get() {
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3).apply {
+                    getAsJsonArray(new_list).removeAll { true }
+                    getAsJsonObject(paging).addProperty(has_next, false)
+                }
+            }
+        }
+
     val noTrackHistoryWidget: NotifcenterDetailResponse
         get() = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_detail_v3_no_track_history_widget,

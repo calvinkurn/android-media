@@ -145,7 +145,20 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         NotifcenterAssertion.assertLoadMoreTitle(3, "Lihat Lebih Banyak")
     }
 
-    // TODO: should hide earlier section load more button when earlier section has next false
+    @Test
+    fun should_hide_earlier_section_load_more_button_when_earlier_section_has_next_false() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.earlierOnlyHasNextFalse
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(LoadMoreViewHolder::class.java))
+        )
+    }
+
     // TODO: should show earlier section next page when load more button success clicked
     // TODO: load more button on earlier should not clickable when loading earlier notifications
 
