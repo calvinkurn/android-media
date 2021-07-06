@@ -570,7 +570,7 @@ class PlayViewModel @Inject constructor(
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
-            ClickFollowAction -> handleClickFollow()
+            ClickFollowAction -> handleClickFollow(isFromLogin = false)
             ClickPartnerNameAction -> handleClickPartnerName()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
         }
@@ -1305,10 +1305,14 @@ class PlayViewModel @Inject constructor(
         hideLeaderboardSheet()
     }
 
-    private fun handleClickFollow() = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
+    /**
+     * @param isFromLogin If true, it means follow action will always be follow,
+     * if false, it depends on the current state
+     */
+    private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
         viewModelScope.launchCatchError(block = {
             val followStatus = state.followStatus as? PlayFollowStatusUiState.Followable ?: return@launchCatchError
-            val shouldFollow = !followStatus.isFollowing
+            val shouldFollow = if (isFromLogin) true else !followStatus.isFollowing
             setUiState {
                 copy(followStatus = PlayFollowStatusUiState.Followable(shouldFollow))
             }
@@ -1335,7 +1339,7 @@ class PlayViewModel @Inject constructor(
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) return
         when (requestCode) {
-            REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow()
+            REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             else -> {}
         }
     }
