@@ -24,7 +24,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.data.*
-import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
+import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewConstants

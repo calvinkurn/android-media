@@ -119,7 +119,7 @@ ext {
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
-            
+
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
@@ -147,6 +147,7 @@ ext {
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            reviewInbox                     : ":features:merchant:review_inbox",
             sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerAppWidget                 : ":features:merchant:seller_app_widget",

@@ -42,7 +42,8 @@ import com.tokopedia.review.feature.createreputation.presentation.listener.TextA
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.*
-import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.common.ReviewInboxConstants
+import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
@@ -347,7 +348,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 is com.tokopedia.review.common.data.Fail -> {
                     onFailSubmitReview(it.fail)
                 }
-                is com.tokopedia.review.common.data.LoadingView -> {
+                is LoadingView -> {
                     showButtonLoading()
                 }
             }

@@ -33,8 +33,8 @@ import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
-import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
-import com.tokopedia.review.feature.inbox.common.presentation.listener.OnTabChangeListener
+import com.tokopedia.review.common.presentation.activity.InboxReputationActivity
+import com.tokopedia.review.common.presentation.listener.OnTabChangeListener
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent

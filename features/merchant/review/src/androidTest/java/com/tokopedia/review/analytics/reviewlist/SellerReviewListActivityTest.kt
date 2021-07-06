@@ -19,7 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.review.analytics.common.actionTest
-import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity
+import com.tokopedia.review.common.presentation.activity.InboxReputationActivity
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse

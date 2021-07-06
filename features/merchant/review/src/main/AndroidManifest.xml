@@ -32,7 +32,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="com.tokopedia.review.feature.inbox.common.presentation.activity.ReviewInboxActivity"
+            android:name="com.tokopedia.review.common.presentation.activity.ReviewInboxActivity"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
@@ -85,7 +85,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity"
+            android:name="com.tokopedia.review.common.presentation.activity.InboxReputationActivity"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

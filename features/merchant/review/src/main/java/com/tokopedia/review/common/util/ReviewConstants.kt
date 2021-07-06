@@ -97,11 +97,6 @@ object ReviewConstants {
     const val REPUTATION_SCORE_MEDIOCRE = 1
     const val REPUTATION_SCORE_EXCELLENT = 2
 
-    const val REVIEW_PENDING_TRACE = "review_pending_trace"
-    const val REVIEW_PENDING_PLT_PREPARE_METRICS = "review_pending_plt_prepare_metrics"
-    const val REVIEW_PENDING_PLT_NETWORK_METRICS = "review_pending_plt_network_metrics"
-    const val REVIEW_PENDING_PLT_RENDER_METRICS = "review_pending_plt_render_metrics"
-
     const val REVIEW_DETAIL_TRACE = "review_history_detail_trace"
     const val REVIEW_DETAIL_PLT_PREPARE_METRICS = "review_history_detail_plt_prepare_metrics"
     const val REVIEW_DETAIL_PLT_NETWORK_METRICS = "review_history_detail_plt_network_metrics"
@@ -131,10 +126,6 @@ object ReviewConstants {
     const val SELLER_REVIEW_REPLY_PLT_PREPARE_METRICS = "seller_review_reply_plt_prepare_metrics"
     const val SELLER_REVIEW_REPLY_PLT_NETWORK_METRICS = "seller_review_reply_plt_network_metrics"
     const val SELLER_REVIEW_REPLY_PLT_RENDER_METRICS = "seller_review_reply_plt_render_metrics"
-
-    const val IV_MORE_FOCUS_SERVICE_PM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_pm@3x.png"
-    const val IV_MORE_FOCUS_SERVICE_RM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_rm@3x.png"
-    const val IV_MORE_INTEREST_BUYER = "https://images.tokopedia.net/img/android/shop_score/iv_more_interest_buyer@3x.png"
 
     const val REVIEW_READING_TRACE = "review_reading_trace"
     const val REVIEW_READING_PLT_PREPARE_METRICS = "review_reading_plt_prepare_metrics"
