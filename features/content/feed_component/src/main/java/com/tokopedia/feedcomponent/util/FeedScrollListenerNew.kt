@@ -16,7 +16,7 @@ import java.util.*
 
 
 object FeedScrollListenerNew {
-    private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 75
+    private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
     private const val TYPE_VIDEO = "video"
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {

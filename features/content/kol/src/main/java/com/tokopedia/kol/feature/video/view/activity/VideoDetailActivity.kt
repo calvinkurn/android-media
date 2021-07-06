@@ -1,12 +1,13 @@
 package com.tokopedia.kol.feature.video.view.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kol.feature.video.view.fragment.POST_POSITION
 import com.tokopedia.kol.feature.video.view.fragment.VideoDetailFragment
 import com.tokopedia.kotlin.extensions.view.hide
 
@@ -22,8 +23,10 @@ class VideoDetailActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         getDataFromIntent()
         super.onCreate(savedInstanceState)
     }
@@ -37,12 +40,15 @@ class VideoDetailActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         toolbar.hide()
         val extras = Bundle()
+        extras.putInt(POST_POSITION, intent.getIntExtra(POST_POSITION, 0))
         extras.putString(PARAM_ID, paramId)
         return VideoDetailFragment.getInstance(extras)
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        setResult(Activity.RESULT_OK)
+        val intent = Intent()
+        intent.putExtra(POST_POSITION, intent.getIntExtra(POST_POSITION, 0))
+        setResult(Activity.RESULT_OK, intent)
     }
 }

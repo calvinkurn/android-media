@@ -772,7 +772,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
 
         if (isVideoVisible) {
-            setVideoControl(videoItem, feedMedia)
+            setVideoControl(videoItem, feedMedia, postId)
         }
         videoItem?.run {
             video_tag_text?.setOnClickListener {
@@ -797,7 +797,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         return (videoItem)
     }
 
-    private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia) {
+    private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia, postId: String) {
         videoItem?.run {
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             var time = feedMedia.videoTime
@@ -824,7 +824,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         videoListener?.onVideoPlayerClicked(
                             positionInFeed,
                             0,
-                            "0",
+                            postId,
                             feedMedia.appLink
                         )
                     }

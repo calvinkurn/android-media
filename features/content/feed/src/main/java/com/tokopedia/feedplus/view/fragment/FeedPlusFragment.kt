@@ -244,6 +244,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
         private const val DEFAULT_VALUE = -1
         private const val OPEN_PLAY_CHANNEL = 1858
+        private const val OPEN_VIDEO_DETAIL = 1311
         const val REQUEST_LOGIN = 345
         private const val KOL_COMMENT_CODE = 13
         private const val TYPE = "text/plain"
@@ -259,6 +260,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
+        private const val POST_POSITION = "position"
+
 
         //region Content Report Param
         private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
@@ -791,6 +794,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val channelId = data.getStringExtra(EXTRA_PLAY_CHANNEL_ID)
                 val totalView = data.getStringExtra(EXTRA_PLAY_TOTAL_VIEW)
                 updatePlayWidgetTotalView(channelId, totalView)
+            }
+            OPEN_VIDEO_DETAIL -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val positionInFeed = data.getIntExtra(POST_POSITION, 0)
+                    adapter.notifyItemChanged(positionInFeed)
+                }
             }
             else -> {
             }
@@ -1900,7 +1909,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectUrl: String
     ) {
         if (activity != null) {
-            onGoToLink(redirectUrl)
+            val videoDetailIntent =
+                RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
+            videoDetailIntent.putExtra(POST_POSITION, positionInFeed)
+            startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL)
         }
     }
 
