@@ -2254,6 +2254,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 somOrderHasCancellationRequestDialog.apply {
                     setupActionButton(pendingAction.actionName, pendingAction.action)
                     setupGoToOrderDetailButton {
+                        selectedOrderId = pendingAction.orderId
                         goToSomOrderDetail(this@SomListFragment, pendingAction.orderId)
                     }
                     show()
