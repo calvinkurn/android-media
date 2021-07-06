@@ -118,8 +118,8 @@ class TopupBillsFavoriteNumberFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
-        loadData()
         initView()
+        loadData()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
         if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
@@ -207,7 +207,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessUndoDeleteFavoriteNumber() {
-        showShimmering()
         getSeamlessFavoriteNumber()
     }
 
@@ -376,7 +375,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessUpdateClientName() {
-        showShimmering()
         getSeamlessFavoriteNumber()
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_success_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -390,7 +388,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessDeleteClientName(deletedFavoriteNumber: UpdateFavoriteDetail) {
-        showShimmering()
         getSeamlessFavoriteNumber()
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name),
@@ -408,6 +405,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun undoDelete(deletedFavoriteNumber: UpdateFavoriteDetail) {
         val isDelete = false
+        showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
@@ -423,6 +421,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun getSeamlessFavoriteNumber() {
+        showShimmering()
         topUpBillsViewModel.getSeamlessFavoriteNumbers(
                 CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
@@ -503,6 +502,7 @@ class TopupBillsFavoriteNumberFragment :
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val isDelete = false
+        showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
@@ -540,6 +540,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val isDelete = true
+        showShimmering()
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
