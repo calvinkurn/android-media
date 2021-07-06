@@ -465,7 +465,7 @@ class TopupBillsFavoriteNumberFragment :
                         categoryId = favNumberItem.categoryId,
                         productId = favNumberItem.productId,
                         clientNumber = favNumberItem.clientNumber,
-                        totalTransaction = 0,
+                        totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = newName,
                         isDelete = false
                 ),
@@ -502,7 +502,7 @@ class TopupBillsFavoriteNumberFragment :
                         categoryId = favNumberItem.categoryId,
                         productId = favNumberItem.productId,
                         clientNumber = favNumberItem.clientNumber,
-                        totalTransaction = 0,
+                        totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = favNumberItem.clientName,
                         isDelete = isDelete
                 ),
@@ -542,6 +542,8 @@ class TopupBillsFavoriteNumberFragment :
         const val COACH_MARK_START_DELAY: Long = 200
         const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
+
+        private const val DEFAULT_TOTAL_TRANSACTION = 0
 
         fun newInstance(clientNumberType: String, number: String,
                         digitalCategoryIds: ArrayList<String>
