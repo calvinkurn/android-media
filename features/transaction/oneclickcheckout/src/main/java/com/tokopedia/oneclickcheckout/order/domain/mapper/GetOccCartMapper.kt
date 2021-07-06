@@ -105,8 +105,6 @@ class GetOccCartMapper @Inject constructor() {
                 isFreeOngkir -> cart.product.freeShipping.badgeUrl
                 else -> ""
             }
-            maximumWeight = 30
-            maximumWeightWording = "testing"
         }
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
 class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
+                              private val shopListener: OrderShopCard.OrderShopCardListener,
                               private val productListener: OrderProductCard.OrderProductCardListener,
                               private val preferenceListener: OrderPreferenceCard.OrderPreferenceCardListener,
                               private val insuranceListener: OrderInsuranceCard.OrderInsuranceCardListener,
@@ -53,7 +54,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 return OrderOnboardingCard(LayoutOccOnboardingNewBinding.inflate(inflater, parent, false))
             }
             OrderShopCard.VIEW_TYPE -> {
-                return OrderShopCard(CardOrderShopBinding.inflate(inflater, parent, false), analytics)
+                return OrderShopCard(CardOrderShopBinding.inflate(inflater, parent, false), shopListener, analytics)
             }
             OrderProductCard.VIEW_TYPE -> {
                 return OrderProductCard(CardOrderProductBinding.inflate(inflater, parent, false), productListener, analytics)

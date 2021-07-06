@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -267,7 +268,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
-        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderProductCardListener(), getNewOrderPreferenceCardListener(),
+        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getNewOrderPreferenceCardListener(),
                 getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())
         binding.rvOrderSummaryPage.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrderSummaryPage.adapter = adapter
@@ -845,6 +846,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
             else -> {
                 updateLocalCacheAddressData(addressState.address)
+            }
+        }
+    }
+
+    private fun getOrderShopCardListener(): OrderShopCard.OrderShopCardListener = object : OrderShopCard.OrderShopCardListener {
+        override fun onClickLihatProductError(index: Int) {
+            binding.rvOrderSummaryPage.layoutManager?.let {
+                val linearSmoothScroller = object : LinearSmoothScroller(binding.rvOrderSummaryPage.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+                linearSmoothScroller.targetPosition = index + 3
+                it.startSmoothScroll(linearSmoothScroller)
             }
         }
     }

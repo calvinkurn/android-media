@@ -9,7 +9,9 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.util.*
 
-class OrderShopCard(private val binding: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
+class OrderShopCard(private val binding: CardOrderShopBinding,
+                    private val listener: OrderShopCardListener,
+                    private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 2
@@ -65,15 +67,32 @@ class OrderShopCard(private val binding: CardOrderShopBinding, private val order
 
     private fun renderShopError() {
         binding.apply {
-            if (shop.overweight > 0) {
+            if (shop.errors.isNotEmpty()) {
+                tickerOrderShop.tickerType = Ticker.TYPE_ERROR
+                tickerOrderShop.setHtmlDescription(shop.errors.first())
+                tickerOrderShop.visible()
+                occCustomTickerError.gone()
+            } else if (shop.overweight > 0) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
                 tickerOrderShop.setHtmlDescription(shop.maximumWeightWording)
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
+            } else if (shop.firstProductErrorIndex > -1 && shop.unblockingErrorMessage.isNotBlank()) {
+                occCustomTickerDescription.text = shop.unblockingErrorMessage
+                occCustomTickerAction.setOnClickListener {
+                    listener.onClickLihatProductError(shop.firstProductErrorIndex)
+                }
+                tickerOrderShop.gone()
+                occCustomTickerError.visible()
             } else {
                 tickerOrderShop.gone()
                 occCustomTickerError.gone()
             }
         }
+    }
+
+    interface OrderShopCardListener {
+
+        fun onClickLihatProductError(index: Int)
     }
 }
