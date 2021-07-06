@@ -28,35 +28,36 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
 
     override fun bind(element: VideoViewModel) {
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
-            itemView.videoPreviewImage.setOnClickListener {
+            itemView.image.setOnClickListener {
                 if (!element.url.isBlank()) {
                     listener.onVideoPlayerClicked(
-                            element.positionInFeed,
-                            pagerPosition,
-                            element.postId.toString(),
-                            element.redirectLink)
+                        element.positionInFeed,
+                        pagerPosition,
+                        element.postId.toString(),
+                        element.redirectLink
+                    )
                 }
             }
         } else {
             itemView.ic_play.visibility = View.GONE
         }
-        itemView.videoPreviewImage.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = itemView.videoPreviewImage.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
-
-                        itemView.videoPreviewImage.maxHeight = itemView.videoPreviewImage.width
-                        itemView.videoPreviewImage.requestLayout()
+        itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val viewTreeObserver = itemView.image.viewTreeObserver
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        viewTreeObserver.removeGlobalOnLayoutListener(this)
                     }
+
+                    itemView.image.maxHeight = itemView.image.width
+                    itemView.image.requestLayout()
                 }
+            }
         )
-        itemView.videoPreviewImage.loadImage(element.thumbnail)
+        imageView.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
             playVideo(element.url)
         } else {
@@ -76,7 +77,7 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                 override fun onPrepared(mp: MediaPlayer) {
                     mp.isLooping = true
                     itemView.ic_play.visibility = View.GONE
-                    itemView.videoPreviewImage.visibility = View.GONE
+                    itemView.image.visibility = View.GONE
                     mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {

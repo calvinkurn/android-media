@@ -29,7 +29,7 @@ class FeedExoPlayer(val context: Context) {
 
     init {
         exoPlayer.volume = MUTE_VOLUME
-        exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
+        exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 val isPlaying = playWhenReady && playbackState == Player.STATE_READY
@@ -50,6 +50,10 @@ class FeedExoPlayer(val context: Context) {
                 }
             }
         })
+    }
+
+    fun reset() {
+        exoPlayer.seekTo(1)
     }
 
     fun setVideoResizeListener(listener: VideoListener) {

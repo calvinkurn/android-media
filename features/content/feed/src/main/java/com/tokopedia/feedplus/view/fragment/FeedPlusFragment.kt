@@ -1562,8 +1562,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
-            //  val (id, _, header, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostUiModel
-
             feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.products,
                 itemPosition, item.feedXCard.typename, item.feedXCard.followers.isFollowed)
 

@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -102,6 +103,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var videoPlayer: FeedExoPlayer? = null
 
     init {
+        (context as LifecycleOwner).lifecycle.addObserver(this)
         val view =
             LayoutInflater.from(context).inflate(R.layout.item_post_dynamic_new_content, this, true)
         view.run {
@@ -565,7 +567,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     fun bindItems(
         feedXCard: FeedXCard,
-        isVideoVisible: Boolean
+        isVideoVisible: Boolean,
     ) {
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
@@ -619,10 +621,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             )
                             productTagText.postDelayed({
                                 if (products.isNotEmpty()) {
-                                    productTagText.visible()
+                                    productTagText.apply {
+                                        visible()
+                                        animate().alpha(1f).start()
+                                    }
                                 }
 
                             }, TIME_SECOND)
+
                             val gd = GestureDetector(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
@@ -632,10 +638,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             feedXCard.typename,
                                             feedXCard.followers.isFollowed
                                         )
-                                        if (!productTagText.isVisible)
-                                            productTagText.visible()
-                                        else
+                                        if (!productTagText.isVisible) {
+                                            productTagText.apply {
+                                                visible()
+                                                animate().alpha(1f).start()
+                                            }
+                                        } else {
                                             productTagText.gone()
+                                            productTagText.animate().alpha(0f)
+                                        }
                                         return true
                                     }
 
@@ -733,7 +744,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
                         else
-                            videoPlayer?.start(media[current].mediaUrl, media[current].isMute)
+                            videoPlayer?.start(media[current].mediaUrl, isMute)
                     }
                 }
             }
@@ -758,17 +769,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         videoItem?.layoutParams = param
+        videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+
         if (isVideoVisible) {
             setVideoControl(videoItem, feedMedia)
         }
         videoItem?.run {
-            video_tag_text.postDelayed({
-                if (products.isNotEmpty()) {
-                    video_tag_text.visible()
-                }
-
-            }, TIME_SECOND)
-
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
@@ -781,27 +787,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
             }
-            videoPreviewImage.setOnClickListener {
-                if (feedMedia.mediaUrl.isNotEmpty()) {
-                    videoListener?.onVideoPlayerClicked(
-                        positionInFeed,
-                        0,
-                        postId,
-                        feedMedia.appLink
-                    )
-                }
-            }
 
-            layout_main.setOnClickListener {
-                if (feedMedia.mediaUrl.isNotEmpty()) {
-                    videoListener?.onVideoPlayerClicked(
-                        positionInFeed,
-                        0,
-                        postId,
-                        feedMedia.appLink
-                    )
-                }
-            }
             volumeIcon.setOnClickListener {
                 isMute = !isMute
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
@@ -813,20 +799,36 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia) {
         videoItem?.run {
-            var time = 0L
-            scopeDef.launch {
-                try {
-                    time = getVideoDuration(feedMedia) / TIME_SECOND
-                } catch (e: Exception) {
+            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+            var time = feedMedia.videoTime
+            if (time == 0L) {
+                scopeDef.launch {
+                    try {
+                        feedMedia.videoTime = getVideoDuration(feedMedia) / TIME_SECOND
+                    } catch (e: Exception) {
 
+                    }
                 }
             }
-            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
+            video_tag_text.postDelayed({
+                video_tag_text.visible()
+                video_tag_text.animate().alpha(1F).setDuration(300L).start()
+            }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
                 if (videoPlayer == null)
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
+                layout_video?.videoSurfaceView?.setOnClickListener {
+                    if (feedMedia.mediaUrl.isNotEmpty()) {
+                        videoListener?.onVideoPlayerClicked(
+                            positionInFeed,
+                            0,
+                            "0",
+                            feedMedia.appLink
+                        )
+                    }
+                }
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
@@ -836,6 +838,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoReadyToPlay() {
                         hideVideoLoading(videoItem)
+                        time = feedMedia.videoTime
                         object : CountDownTimer(TIMER_TO_BE_SHOWN, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
@@ -991,9 +994,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStop() {
-        videoPlayer?.stop()
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+        videoPlayer?.reset()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -1009,10 +1012,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun detach() {
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
-            videoPlayer?.pause()
-            //     videoPlayer?.destroy()
+            videoPlayer?.destroy()
             videoPlayer = null
             layout_video?.player = null
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        videoPlayer?.destroy()
     }
 }

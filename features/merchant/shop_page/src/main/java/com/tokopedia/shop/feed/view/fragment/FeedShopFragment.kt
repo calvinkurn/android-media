@@ -35,6 +35,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
+import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -207,7 +208,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                             showBottomSheetSellerMigration()
                         } else {
                             hideBottomSheetSellerMigration()
-                            //                   FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                            FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
                         hideBottomSheetSellerMigration()
