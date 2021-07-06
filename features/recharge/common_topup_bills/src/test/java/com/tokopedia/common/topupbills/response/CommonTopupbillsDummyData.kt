@@ -100,6 +100,24 @@ object CommonTopupbillsDummyData {
         )
     }
 
+
+    fun deleteSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberModData {
+        return TopupBillsSeamlessFavNumberModData(
+                updateFavoriteDetail = UpdateFavoriteDetail(
+                        categoryID = 578,
+                        clientNumber = "081208120812",
+                        label = "Misael Jonathan",
+                        lastOrderDate = "",
+                        lastUpdated = "",
+                        operatorID = 123,
+                        productID = 123,
+                        subscribed = false,
+                        totalTransaction = 0,
+                        wishlist = false
+                )
+        )
+    }
+
     fun updateSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberModData {
         return TopupBillsSeamlessFavNumberModData(
                 updateFavoriteDetail = UpdateFavoriteDetail(

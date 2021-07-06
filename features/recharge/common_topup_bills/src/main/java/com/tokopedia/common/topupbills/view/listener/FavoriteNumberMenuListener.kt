@@ -4,5 +4,5 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 
 interface FavoriteNumberMenuListener {
     fun onChangeNameMenuClicked(favNumberItem: TopupBillsSeamlessFavNumberItem)
-    fun onDeleteContactClicked()
+    fun onDeleteContactClicked(favNumberItem: TopupBillsSeamlessFavNumberItem)
 }

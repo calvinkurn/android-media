@@ -2,7 +2,6 @@ package com.tokopedia.common.topupbills
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
@@ -39,14 +38,12 @@ import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
@@ -327,7 +324,7 @@ class CommonTopupBillsViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         // When
-        topupBillsViewModel.updateSeamlessFavoriteNumber("", hashMapOf())
+        topupBillsViewModel.modifySeamlessFavoriteNumber("", hashMapOf())
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberUpdateData.value
@@ -352,7 +349,7 @@ class CommonTopupBillsViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         // When
-        topupBillsViewModel.updateSeamlessFavoriteNumber("", hashMapOf())
+        topupBillsViewModel.modifySeamlessFavoriteNumber("", hashMapOf())
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberUpdateData.value
@@ -363,6 +360,51 @@ class CommonTopupBillsViewModelTest {
         Assert.assertEquals(errorGql.message, error.message)
     }
 
+    @Test
+    fun deleteSeamlessFavoriteNumber_returnSuccessResponse() {
+        // Given
+        val favoriteNumber = CommonTopupbillsDummyData.deleteSeamlessFavoriteNumberSuccess()
+        val result = HashMap<Type, Any>()
+        result[TopupBillsSeamlessFavNumberModData::class.java] = favoriteNumber
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.modifySeamlessFavoriteNumber("", hashMapOf(), isDelete = true)
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberDeleteData.value
+        assertNotNull(actualData)
+        assert(actualData is Success)
+
+        val resultData = (actualData as Success).data
+        assertNotNull(resultData)
+
+        assertThat(resultData == favoriteNumber.updateFavoriteDetail)
+    }
+
+    @Test
+    fun deleteSeamlessFavoriteNumber_returnFailResponse() {
+        // Given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TopupBillsSeamlessFavNumberModData::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.modifySeamlessFavoriteNumber("", hashMapOf(), isDelete = true)
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberDeleteData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        Assert.assertEquals(errorGql.message, error.message)
+    }
 
     @Test
     fun createFavoriteNumbersParams_returnsCorrectMapContent() {

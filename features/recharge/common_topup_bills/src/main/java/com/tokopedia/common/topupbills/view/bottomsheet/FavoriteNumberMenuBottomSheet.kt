@@ -37,7 +37,7 @@ class FavoriteNumberMenuBottomSheet(
             }
 
             common_topup_bills_favorite_number_delete.setOnClickListener {
-                listener.onDeleteContactClicked()
+                listener.onDeleteContactClicked(favNumberItem)
                 dismiss()
             }
         }

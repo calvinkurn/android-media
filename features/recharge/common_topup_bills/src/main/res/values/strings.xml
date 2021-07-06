@@ -36,6 +36,7 @@
     <string name="common_topup_favorite_number_modify_name">Nama</string>
     <string name="common_topup_favorite_number_modify_phone">Nomor HP</string>
     <string name="common_topup_favorite_number_modify_button">Simpan</string>
+    <string name="common_topup_fav_number_delete_dialog">%s %s akan dihapus dari Nomor Favorite. Kamu masih bisa simpan lagi nomor ini lain kali</string>
     <string name="common_topup_fav_number_success_update_name">Oke, nama berhasil diubah.</string>
     <string name="common_topup_fav_number_failed_update_name">Maaf, belum berhasil diubah. Coba lagi, ya.</string>
     <string name="common_topup_fav_number_failed_fetch_after_update">Maaf, nama belum berhasil ke-update. Coba refresh, yuk.</string>
@@ -44,4 +45,9 @@
     <string name="common_topup_fav_number_validator_more_than_18_char">Maksimal 18 karakter. Coba pendekin, yuk!</string>
     <string name="common_topup_fav_number_validator_less_than_3_char">Minimal 3 karakter. Tambah lagi, yuk!</string>
     <string name="common_topup_fav_number_validator_alphanumeric">Oops, cuma boleh pakai huruf A-Z dan angka 0-9 ya.</string>
+    <string name="common_topup_fav_number_delete_dialog_title">Yakin hapus nomor ini?</string>
+    <string name="common_topup_fav_number_delete_dialog_cancel">Batal</string>
+    <string name="common_topup_fav_number_delete_dialog_confirm">Hapus</string>
+    <string name="common_topup_fav_number_success_delete_name">Oke, nomor berhasil dihapus</string>
+    <string name="common_topup_fav_number_failed_delete_name">Maaf, belum berhasil terhapus. Coba lagi, ya.</string>
 </resources>
