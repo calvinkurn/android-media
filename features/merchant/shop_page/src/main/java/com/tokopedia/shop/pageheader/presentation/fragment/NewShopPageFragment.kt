@@ -119,7 +119,6 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMo
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -1365,10 +1364,10 @@ class NewShopPageFragment :
         var selectedPosition = viewPager.currentItem
         if (tabLayout.tabCount == 0) {
             if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(HomeProductFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(HomeProductFragment::class.java).orZero()
-                } else {
+                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
                     viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                } else {
+                    selectedPosition
                 }
             }
             if (shouldOverrideTabToReview) {
