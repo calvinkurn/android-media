@@ -26,6 +26,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
@@ -640,6 +641,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onClickNextBuyButton() {
         processCheckoutData()
+    }
+
+    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        // do nothing
+    }
+    
+    override fun onSeamlessFavoriteNumbersError(error: Throwable) {
+        // do nothing
     }
 
     private fun processCheckoutData() {

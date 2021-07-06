@@ -14,6 +14,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
+import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common_digital.atc.data.response.AttributesCart
@@ -94,6 +96,41 @@ object CommonTopupbillsDummyData {
                         ),
                         operatorId = 123,
                         productId = 5
+                )
+        )
+    }
+
+
+    fun deleteSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberModData {
+        return TopupBillsSeamlessFavNumberModData(
+                updateFavoriteDetail = UpdateFavoriteDetail(
+                        categoryID = 578,
+                        clientNumber = "081208120812",
+                        label = "Misael Jonathan",
+                        lastOrderDate = "",
+                        lastUpdated = "",
+                        operatorID = 123,
+                        productID = 123,
+                        subscribed = false,
+                        totalTransaction = 0,
+                        wishlist = false
+                )
+        )
+    }
+
+    fun updateSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberModData {
+        return TopupBillsSeamlessFavNumberModData(
+                updateFavoriteDetail = UpdateFavoriteDetail(
+                        categoryID = 5,
+                        clientNumber = "081208120812",
+                        label = "New Misael Jonathan",
+                        lastOrderDate = "",
+                        lastUpdated = "",
+                        operatorID = 0,
+                        productID = 0,
+                        subscribed = false,
+                        totalTransaction = 0,
+                        wishlist = false
                 )
         )
     }

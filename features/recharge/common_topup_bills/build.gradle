@@ -47,6 +47,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -57,6 +58,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.viewPager2)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     //Unit Test
     testImplementation rootProject.ext.testDependencies.mockk

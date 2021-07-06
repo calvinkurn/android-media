@@ -9,13 +9,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberEmptyStateBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberNotFoundBinding
+import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberShimmerBinding
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberEmptyViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberNotFoundViewHolder
+import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberShimmerViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
 import com.tokopedia.network.exception.MessageErrorException
 
@@ -31,11 +34,14 @@ class FavoriteNumberTypeFactoryImpl(
 
     override fun type(favoriteNumberNotFoundDataView: TopupBillsFavNumberNotFoundDataView): Int = FavoriteNumberNotFoundViewHolder.LAYOUT
 
+    override fun type(favoriteNumberShimmerDataView: TopupBillsFavNumberShimmerDataView): Int = FavoriteNumberShimmerViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
             FavoriteNumberViewHolder.LAYOUT -> createFavoriteNumberViewHolder(parent)
             FavoriteNumberEmptyViewHolder.LAYOUT -> createFavoriteNumberEmptyViewHolder(parent)
             FavoriteNumberNotFoundViewHolder.LAYOUT -> createFavoriteNumberNotFoundViewHolder(parent)
+            FavoriteNumberShimmerViewHolder.LAYOUT -> createFavoriteNumberShimmerViewHolder(parent)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }
@@ -56,5 +62,11 @@ class FavoriteNumberTypeFactoryImpl(
         val binding = ItemTopupBillsFavoriteNumberNotFoundBinding.inflate(
                 LayoutInflater.from(parent.context), parent as ViewGroup, false)
         return FavoriteNumberNotFoundViewHolder(binding, emptyStateListener) as AbstractViewHolder<Visitable<*>>
+    }
+
+    private fun createFavoriteNumberShimmerViewHolder(parent: View): AbstractViewHolder<Visitable<*>> {
+        val binding = ItemTopupBillsFavoriteNumberShimmerBinding.inflate(
+                LayoutInflater.from(parent.context), parent as ViewGroup, false)
+        return FavoriteNumberShimmerViewHolder(binding) as AbstractViewHolder<Visitable<*>>
     }
 }

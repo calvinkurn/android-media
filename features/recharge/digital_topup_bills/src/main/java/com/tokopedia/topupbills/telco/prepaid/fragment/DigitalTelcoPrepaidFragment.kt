@@ -34,7 +34,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
@@ -468,11 +467,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             telcoClientNumberWidget.clearFocusAutoComplete()
 
-            // TODO: [Misael] Toggle
             if (isSeamlessFavoriteNumber) {
                 startActivityForResult(activity?.let {
                     TopupBillsFavoriteNumberActivity.getCallingIntent(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, seamlessFavNumberList)
+                        ClientNumberType.TYPE_INPUT_TEL,
+                        clientNumber,
+                        arrayListOf(
+                                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                                TelcoCategoryType.CATEGORY_ROAMING.toString()
+                        )
+                    )
                 },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             } else {
