@@ -9,5 +9,4 @@ data class OrderPreference(
         val onboarding: OccMainOnboarding = OccMainOnboarding(),
         val preference: OrderProfile = OrderProfile(),
         val isValid: Boolean = false,
-        val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 ): OrderItem

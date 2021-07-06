@@ -14,6 +14,4 @@ data class OrderData(
         // LCA
         val errorCode: String = "",
         val popUpMessage: String = "",
-        // OCC Remove Profile
-        val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
 )

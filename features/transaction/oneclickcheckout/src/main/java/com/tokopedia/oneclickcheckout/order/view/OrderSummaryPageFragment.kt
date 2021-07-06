@@ -3,7 +3,6 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,9 +27,9 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_LOGISTIC_LABEL
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -1525,8 +1524,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         private const val SOURCE_OTHERS = "others"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
-
-        const val SP_KEY_REMOVE_PROFILE_TICKER = "occ_remove_profile_ticker"
 
         @JvmStatic
         fun newInstance(productId: String?): OrderSummaryPageFragment {

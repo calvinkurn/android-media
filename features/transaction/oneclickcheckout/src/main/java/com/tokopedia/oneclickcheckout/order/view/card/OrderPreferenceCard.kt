@@ -24,10 +24,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
@@ -66,38 +64,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     private fun showPreferenceTicker() {
-        val sharedPreferences = listener.getRemoveProfileTickerSharedPreference()
-        if (preference.removeProfileData.message.hasMessage() && sharedPreferences != null &&
-                sharedPreferences.getInt(OrderSummaryPageFragment.SP_KEY_REMOVE_PROFILE_TICKER, 0) != preference.removeProfileData.type) {
-            binding.tickerPreferenceInfo.tickerTitle = preference.removeProfileData.message.title
-            binding.tickerPreferenceInfo.setHtmlDescription(preference.removeProfileData.message.description)
-            binding.tickerPreferenceInfo.closeButtonVisibility = View.VISIBLE
-            binding.tickerPreferenceInfo.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    //no op
-                }
-
-                override fun onDismiss() {
-                    val preferences = listener.getRemoveProfileTickerSharedPreference() ?: return
-                    preferences.edit().putInt(OrderSummaryPageFragment.SP_KEY_REMOVE_PROFILE_TICKER, preference.removeProfileData.type).apply()
-                }
-            })
-            binding.tickerPreferenceInfo.visible()
-        } else {
-            binding.tickerPreferenceInfo.tickerTitle = null
-            binding.tickerPreferenceInfo.setHtmlDescription(preference.preference.message)
-            binding.tickerPreferenceInfo.closeButtonVisibility = View.GONE
-            binding.tickerPreferenceInfo.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    //no op
-                }
-
-                override fun onDismiss() {
-                    //no op
-                }
-            })
-            binding.tickerPreferenceInfo.visibility = if (preference.preference.message.isNotBlank()) View.VISIBLE else View.GONE
-        }
+        binding.tickerPreferenceInfo.tickerTitle = null
+        binding.tickerPreferenceInfo.setHtmlDescription(preference.preference.message)
+        binding.tickerPreferenceInfo.closeButtonVisibility = View.GONE
+        binding.tickerPreferenceInfo.visibility = if (preference.preference.message.isNotBlank()) View.VISIBLE else View.GONE
     }
 
     @SuppressLint("SetTextI18n")
@@ -721,8 +691,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     interface OrderPreferenceCardListener {
-
-        fun getRemoveProfileTickerSharedPreference(): SharedPreferences?
 
         fun onAddAddress(token: Token?)
 

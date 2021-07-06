@@ -42,8 +42,7 @@ class GetOccCartMapper @Inject constructor() {
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
                 data.errorCode,
-                data.popUpMessage,
-                mapOccRemoveProfile(data.removeProfile))
+                data.popUpMessage)
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -307,10 +306,5 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
-    }
-
-    private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
-        return OccRemoveProfileData(removeProfileResponse.enable, removeProfileResponse.type,
-                OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }

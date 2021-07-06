@@ -49,7 +49,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                 val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source))
                 return@withContext ResultGetOccCart(
                         orderCart = orderData.cart,
-                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference, true, orderData.removeProfileData),
+                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference, true),
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,

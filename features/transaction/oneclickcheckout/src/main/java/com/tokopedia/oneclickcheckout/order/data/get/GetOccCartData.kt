@@ -43,9 +43,7 @@ data class GetOccCartData(
         @SerializedName("error_code")
         val errorCode: String = "",
         @SerializedName("pop_up_message")
-        val popUpMessage: String = "",
-        @SerializedName("occ_remove_profile")
-        val removeProfile: OccRemoveProfileResponse = OccRemoveProfileResponse()
+        val popUpMessage: String = ""
 )
 
 data class CartMessages(
