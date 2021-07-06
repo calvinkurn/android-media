@@ -247,7 +247,6 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         startInboxActivity()
 
         // Then
-        waitForIt(5000)
         NotifcenterAssertion.assertRecyclerviewItem(
             hasViewHolderItemAtPosition(
                 1, EmptyNotificationWithRecomViewHolder::class.java
