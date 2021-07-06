@@ -64,29 +64,6 @@ class FavoriteNumberModifyBottomSheet(
                 }
             }
 
-            common_topupbills_favorite_number_name_field.run {
-                textFieldInput.addTextChangedListener(object: TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-                        // do nothing
-                    }
-
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                        // do nothing
-                    }
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        val errMsg = validateClientName(s.toString())
-                        if (errMsg.isNullOrEmpty()) {
-                            setMessage("")
-                            setError(false)
-                        } else {
-                            setMessage(errMsg)
-                            setError(true)
-                        }
-                    }
-                })
-            }
-
             common_topupbills_favorite_number_phone_field.textFieldInput.run {
                 isClickable = false
                 isFocusable = false
