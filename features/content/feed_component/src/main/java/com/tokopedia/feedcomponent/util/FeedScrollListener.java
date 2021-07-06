@@ -1,10 +1,9 @@
 package com.tokopedia.feedcomponent.util;
 
 import android.graphics.Rect;
-import android.view.View;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedcomponent.R;
@@ -111,16 +110,16 @@ public class FeedScrollListener {
     private static boolean isVideoCard(List<Visitable> list, int position) {
         return list.size() > position
                 && list.get(position) instanceof DynamicPostViewModel
-                && ((DynamicPostViewModel) list.get(position)).getContentList().size() == 1
-                && (((DynamicPostViewModel) list.get(position)).getContentList().get(0) instanceof VideoViewModel
-                || ((((DynamicPostViewModel) list.get(position)).getContentList().get(0) instanceof MultimediaGridViewModel)
-                && ((MultimediaGridViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0)).getMediaItemList().size() == 1
-                && ((MultimediaGridViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0)).getMediaItemList().get(0).getType().equalsIgnoreCase(TYPE_VIDEO)));
+                && ((DynamicPostViewModel)list.get(position)).getContentList().size() == 1
+                && (((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof VideoViewModel
+                    || ((((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof MultimediaGridViewModel)
+                        && ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().size() == 1
+                        && ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().get(0).getType().equalsIgnoreCase(TYPE_VIDEO)));
     }
 
     private static VideoViewModel getVideoCardViewModel(List<Visitable> list, int position) {
         try {
-            return (VideoViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0);
+            return (VideoViewModel) ((DynamicPostViewModel)list.get(position)).getContentList().get(0);
         } catch (Exception e) {
             e.getLocalizedMessage();
         }
@@ -128,12 +127,12 @@ public class FeedScrollListener {
     }
 
     private static MediaItem getVideoCardItemViewModel(List<Visitable> list, int position) {
-        return ((MultimediaGridViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0)).getMediaItemList().get(0);
+        return ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().get(0);
     }
 
     private static boolean canAutoplayVideo(RecyclerView recyclerView) {
         RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());
-        return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI, false);
+        return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI,false);
     }
 
 }

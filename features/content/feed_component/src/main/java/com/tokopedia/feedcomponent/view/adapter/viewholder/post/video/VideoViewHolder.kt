@@ -31,33 +31,32 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
             itemView.image.setOnClickListener {
                 if (!element.url.isBlank()) {
                     listener.onVideoPlayerClicked(
-                        element.positionInFeed,
-                        pagerPosition,
-                        element.postId.toString(),
-                        element.redirectLink
-                    )
+                            element.positionInFeed,
+                            pagerPosition,
+                            element.postId.toString(),
+                            element.redirectLink)
                 }
             }
         } else {
             itemView.ic_play.visibility = View.GONE
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
-            object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val viewTreeObserver = itemView.image.viewTreeObserver
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    } else {
-                        @Suppress("DEPRECATION")
-                        viewTreeObserver.removeGlobalOnLayoutListener(this)
-                    }
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        val viewTreeObserver = itemView.image.viewTreeObserver
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            viewTreeObserver.removeGlobalOnLayoutListener(this)
+                        }
 
-                    itemView.image.maxHeight = itemView.image.width
-                    itemView.image.requestLayout()
+                        itemView.image.maxHeight = itemView.image.width
+                        itemView.image.requestLayout()
+                    }
                 }
-            }
         )
-        imageView.loadImage(element.thumbnail)
+        itemView.image.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
             playVideo(element.url)
         } else {
