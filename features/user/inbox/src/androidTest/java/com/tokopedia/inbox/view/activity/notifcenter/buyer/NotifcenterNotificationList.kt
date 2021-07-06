@@ -13,6 +13,10 @@ import org.junit.Test
 
 class NotifcenterNotificationList : InboxNotifcenterTest() {
 
+    private val TITLE_NEW_LIST = "Terbaru"
+    private val TITLE_EARLIER = "Sebelumnya"
+    private val TITLE_LOAD_MORE = "Lihat Lebih Banyak"
+
     @Test
     fun should_show_new_list_title() {
         // Given
@@ -27,7 +31,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
                 1, SectionTitleViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertSectionTitleTextAt(1, "Terbaru")
+        NotifcenterAssertion.assertSectionTitleTextAt(1, TITLE_NEW_LIST)
     }
 
     @Test
@@ -44,7 +48,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
                 3, LoadMoreViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertLoadMoreTitle(3, "Lihat Lebih Banyak")
+        NotifcenterAssertion.assertLoadMoreTitle(3, TITLE_LOAD_MORE)
     }
 
     @Test
@@ -88,7 +92,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
                 4, LoadMoreViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertLoadMoreTitle(4, "Lihat Lebih Banyak")
+        NotifcenterAssertion.assertLoadMoreTitle(4, TITLE_LOAD_MORE)
     }
 
     @Test
@@ -125,7 +129,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
                 1, SectionTitleViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertSectionTitleTextAt(1, "Sebelumnya")
+        NotifcenterAssertion.assertSectionTitleTextAt(1, TITLE_EARLIER)
     }
 
     @Test
@@ -142,7 +146,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
                 3, LoadMoreViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertLoadMoreTitle(3, "Lihat Lebih Banyak")
+        NotifcenterAssertion.assertLoadMoreTitle(3, TITLE_LOAD_MORE)
     }
 
     @Test
@@ -186,7 +190,7 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
                 4, LoadMoreViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertLoadMoreTitle(4, "Lihat Lebih Banyak")
+        NotifcenterAssertion.assertLoadMoreTitle(4, TITLE_LOAD_MORE)
     }
 
     @Test
@@ -209,7 +213,29 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should show new list title and earlier title when both response is not empty
+    @Test
+    fun should_show_new_list_title_and_earlier_title_when_both_response_is_not_empty() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                1, SectionTitleViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertSectionTitleTextAt(1, TITLE_NEW_LIST)
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                4, SectionTitleViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertSectionTitleTextAt(4, TITLE_EARLIER)
+    }
+
     // TODO: should show empty state with just text when notifications is empty
     // TODO: should show empty state with illustration when notifications is empty with filter
     // TODO: assert big divider location
