@@ -22,7 +22,6 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
-import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.NEW
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
@@ -38,9 +37,7 @@ import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import rx.Subscriber
 import java.io.File
-import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
@@ -435,10 +432,12 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                         val ticketReplyData = createTicketResponse.ticketReply?.ticketReplyData
                         if (ticketReplyData?.status.equals(REPLY_TICKET_RESPONSE_STATUS)) {
                             if (ticketReplyData?.postKey?.isNotEmpty() == true) {
-                                val queryMap2 = postMessageUseCase2.setQueryMap(
+                                val requestParams = postMessageUseCase2.createRequestParams(
+                                        mTicketDetail?.id ?: "",
+                                        userSession.userId,
                                         getUtils().getFileUploaded(list),
                                         ticketReplyData.postKey)
-                                sendImages(queryMap2)
+                                sendImages(requestParams)
                             } else {
                                 handleErrorState(mView?.getActivity()?.getString(R.string.contact_us_something_went_wrong) ?: "")
                             }
@@ -509,12 +508,11 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         return MultipartBody.Part.createFormData(FORM_DATA_KEY, file.name, reqFile)
     }
 
-    private fun sendImages(queryMap: MutableMap<String, Any>) {
+    private fun sendImages(requestParams: RequestParams) {
         launchCatchError(
                 block = {
-                    val response = postMessageUseCase2.getInboxDataResponse(queryMap)
-                    val stepTwoResponse = response?.data as StepTwoResponse
-                    if (stepTwoResponse.isSuccess > 0) {
+                    val stepTwoResponse = postMessageUseCase2.getInboxDataResponse(requestParams)
+                    if (stepTwoResponse?.ticketReplyAttach?.ticketReplyAttachData?.isSuccess ?: 0 > 0) {
                         mView?.hideSendProgress()
                         addNewLocalComment()
                     } else {
