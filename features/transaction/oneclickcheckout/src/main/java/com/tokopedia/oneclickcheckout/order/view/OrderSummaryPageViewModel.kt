@@ -135,6 +135,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = it
             }
             if (orderCart.products.isNotEmpty() && _orderPreference.preference.address.addressId > 0) {
+                // TODO: 06/07/21 validate tokonow pinpoint
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
             } else if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
@@ -251,6 +252,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.immediate) {
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
+            // TODO: 06/07/21 handle tokonow autoapply
             if (isApplied && resultValidateUse != null) {
                 val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                 if (newShipment != null) {

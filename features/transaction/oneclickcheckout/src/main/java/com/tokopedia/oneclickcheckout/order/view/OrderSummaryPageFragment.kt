@@ -895,33 +895,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun getNewOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
 
-        override fun onAddAddress(token: Token?) {
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                    putExtra(CheckoutConstant.KERO_TOKEN, token)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                    putExtra(CheckoutConstant.KERO_TOKEN, token)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            }
-        }
-
-        override fun onAddressChange(addressModel: RecipientAddressModel) {
+        fun onAddressChange(addressModel: RecipientAddressModel) {
             orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
             viewModel.chooseAddress(addressModel)
         }
 
-        override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
+        fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
             orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
             viewModel.chooseCourier(shippingCourierViewModel)
         }
 
-        override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+        fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
             orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
@@ -944,11 +928,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
 
                     override fun onAddAddress(token: Token?) {
-                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                            putExtra(EXTRA_IS_FULL_FLOW, true)
-                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                            putExtra(CheckoutConstant.KERO_TOKEN, token)
-                        }, REQUEST_CODE_ADD_ADDRESS)
+                        if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+                            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                                putExtra(EXTRA_IS_FULL_FLOW, true)
+                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                                putExtra(CheckoutConstant.KERO_TOKEN, token)
+                            }, REQUEST_CODE_ADD_ADDRESS)
+                        } else {
+                            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                                putExtra(EXTRA_IS_FULL_FLOW, true)
+                                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                                putExtra(CheckoutConstant.KERO_TOKEN, token)
+                            }, REQUEST_CODE_ADD_ADDRESS)
+                        }
                     }
                 }).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
             }
@@ -1012,7 +1004,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
+        fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
             viewModel.chooseInstallment(selectedInstallmentTerm)
         }
 

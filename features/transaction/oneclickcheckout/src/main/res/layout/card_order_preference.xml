@@ -308,13 +308,27 @@
                 app:typographyType="body_3"
                 tools:ignore="RtlSymmetry" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_shipping_courier_notes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/btn_change_courier"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_shipping_price"
+                app:typographyType="small"
+                tools:ignore="RtlSymmetry" />
+
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_change_courier"
                 android:layout_width="@dimen/layout_lvl2"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 app:icon_name="CHEVRON_RIGHT"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_courier_eta"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_courier_notes"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_shipping_courier" />
 
@@ -328,7 +342,7 @@
                 android:textColor="@color/Unify_R600"
                 app:layout_constraintEnd_toStartOf="@+id/icon_reload_shipping"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier_eta"
+                app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier_notes"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler" />
 

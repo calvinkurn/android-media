@@ -49,7 +49,15 @@ data class OrderProfileShipment(
         val spId: Int = 0,
         val recommendationServiceId: Int = 0,
         val recommendationSpId: Int = 0,
-        val isFreeShippingSelected: Boolean = false
+        val isFreeShippingSelected: Boolean = false,
+        val isDisableChangeCourier: Boolean = false,
+        val autoCourierSelection: Boolean = false,
+        val courierSelectionError: CourierSelectionError = CourierSelectionError()
+)
+
+data class CourierSelectionError(
+        val title: String = "",
+        val description: String = ""
 )
 
 data class OrderProfilePayment(

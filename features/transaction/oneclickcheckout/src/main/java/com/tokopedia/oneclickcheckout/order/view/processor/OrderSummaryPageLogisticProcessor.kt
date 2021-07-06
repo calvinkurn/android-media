@@ -191,6 +191,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
+                    // TODO: 06/07/21 handle tokonow bbo data
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
                     if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected)) {
                         return@withContext ResultRates(
