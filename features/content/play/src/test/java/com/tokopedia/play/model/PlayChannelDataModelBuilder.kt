@@ -2,6 +2,7 @@ package com.tokopedia.play.model
 
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
 
 /**
  * Created by jegul on 09/02/21
@@ -22,7 +23,7 @@ class PlayChannelDataModelBuilder {
     fun buildChannelData(
             id: String = "1",
             channelInfo: PlayChannelInfoUiModel = channelInfoBuilder.buildChannelInfo(),
-            partnerInfo: PlayPartnerInfoUiModel = partnerInfoBuilder.buildCompleteData(),
+            partnerInfo: PlayPartnerInfo = partnerInfoBuilder.buildPlayPartnerInfo(),
             likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildCompleteData(),
             totalViewInfo: PlayTotalViewUiModel = totalViewBuilder.buildCompleteData(),
             shareInfo: PlayShareInfoUiModel = shareInfoBuilder.build(),
@@ -30,7 +31,8 @@ class PlayChannelDataModelBuilder {
             pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
             quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
             videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
-            statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build()
+            statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build(),
+            leaderboardInfo: PlayLeaderboardUiState = PlayLeaderboardUiState()
     ) = PlayChannelData(
             id = id,
             channelInfo = channelInfo,
@@ -42,6 +44,7 @@ class PlayChannelDataModelBuilder {
             pinnedInfo = pinnedInfo,
             quickReplyInfo = quickReplyInfo,
             videoMetaInfo = videoMetaInfo,
-            statusInfo = statusInfo
+            statusInfo = statusInfo,
+            leaderboardInfo = leaderboardInfo
     )
 }

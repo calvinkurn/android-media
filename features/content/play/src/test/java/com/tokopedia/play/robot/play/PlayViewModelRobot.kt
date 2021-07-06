@@ -23,6 +23,9 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
+import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -59,6 +62,9 @@ class PlayViewModelRobot(
         playPreference: PlayPreference,
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         playChannelWebSocket: PlayChannelWebSocket,
+        interactiveRepo: PlayViewerInteractiveRepository,
+        partnerRepo: PlayViewerPartnerRepository,
+        partnerAnalytic: PlayPartnerAnalytic,
 ) {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -73,7 +79,6 @@ class PlayViewModelRobot(
                 videoBufferGovernorFactory,
                 getChannelStatusUseCase,
                 getSocketCredentialUseCase,
-                getPartnerInfoUseCase,
                 getReportSummariesUseCase,
                 getIsLikeUseCase,
                 getCartCountUseCase,
@@ -87,7 +92,10 @@ class PlayViewModelRobot(
                 remoteConfig,
                 playPreference,
                 videoLatencyPerformanceMonitoring,
-                playChannelWebSocket
+                playChannelWebSocket,
+                interactiveRepo,
+                partnerRepo,
+                partnerAnalytic
         )
     }
 
@@ -224,6 +232,9 @@ fun givenPlayViewModelRobot(
         playPreference: PlayPreference = mockk(relaxed = true),
         videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
+        interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true),
+        partnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true),
+        partnerAnalytic: PlayPartnerAnalytic = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -249,6 +260,9 @@ fun givenPlayViewModelRobot(
             playPreference = playPreference,
             videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
             playChannelWebSocket = playChannelWebSocket,
+            interactiveRepo = interactiveRepo,
+            partnerRepo = partnerRepo,
+            partnerAnalytic = partnerAnalytic
     ).apply(fn)
 }
 
