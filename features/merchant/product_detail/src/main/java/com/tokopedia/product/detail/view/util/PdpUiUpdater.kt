@@ -697,26 +697,23 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val productRecom = mapOfData[key] as ProductRecommendationDataModel
                 productRecom.recomWidgetData?.let { recomWidget ->
                     if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                        updateData(key) {
-                            var successChangeData = false
-                            recomWidget.recommendationItemList.forEach { recomItem ->
-                                if (cartData.containsKey(recomItem.productId.toString())
-                                        && recomItem.isRecomProductShowVariantAndCart
-                                        && recomItem.quantity != cartData[recomItem.productId.toString()]?.quantity) {
-                                    recomItem.quantity = cartData[recomItem.productId.toString()]?.quantity
-                                            ?: 0
-                                    successChangeData = true
-                                }
+                        var successChangeData = false
+                        recomWidget.recommendationItemList.forEach {recomItem ->
+                            if (cartData.containsKey(recomItem.productId.toString())
+                                    && recomItem.isRecomProductShowVariantAndCart
+                                    && recomItem.quantity != cartData[recomItem.productId.toString()]?.quantity) {
+                                recomItem.quantity = cartData[recomItem.productId.toString()]?.quantity
+                                        ?: 0
+                                successChangeData = true
                             }
-                            if (successChangeData) {
-                                productRecom.cardModel = recomWidget.recommendationItemList.toProductCardModels(false)
-                            }
+                        }
+                        if (successChangeData) {
+                            productRecom.cardModel = recomWidget.recommendationItemList.toProductCardModels(false)
                         }
                     }
                 }
             }
         }
-
     }
 
     fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {
