@@ -423,4 +423,7 @@
     <string name="text_term_and_privacy_2"> serta </string>
     <string name="text_term_condition">Syarat dan Ketentuan</string>
     <string name="text_privacy_policy">Kebijakan Privasi</string>
+    
+    <string name="color_ticker_default">#cde4c3</string>
+    <string name="color_ticker_warning">#ecdb77</string>
 </resources>

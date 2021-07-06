@@ -183,11 +183,16 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
                 page = FIRST_PAGE
             }
         }
-        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickFilter,
-                selected)
+
+        sendGtmClickTicketFilter(selected)
         mView?.hideBottomFragment()
+    }
+
+    private fun sendGtmClickTicketFilter(selected: String) {
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventClickTicketFilter,
+                selected)
     }
 
     private fun getFilterList(filterList: ArrayList<String>, listType: Int): String {
@@ -202,10 +207,10 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
         val detailIntent =
                 InboxDetailActivity.getIntent(mView?.getActivity(), originalList[index].id, isOfficialStore)
         mView?.navigateToActivityRequest(detailIntent, InboxBaseView.REQUEST_DETAILS)
-        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
-                InboxTicketTracking.Category.EventInboxTicket,
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
                 InboxTicketTracking.Action.EventTicketClick,
-                originalList[index].status)
+                originalList[index].caseNumber)
     }
 
     override fun scrollList() {
@@ -308,5 +313,14 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
 
     override fun showSerVicePriorityBottomSheet() {
         mView?.showSerVicePriorityBottomSheet()
+    }
+
+    override fun sendGTMClickChatButton() {
+        ContactUsTracking.sendGTMInboxTicket(
+                mView?.getActivity(),
+                InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventClickChatbotButton,
+                "")
     }
 }

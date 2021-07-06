@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <dimen name="wallet_inactive_ovo_dp_210">210dp</dimen>
 </resources>
