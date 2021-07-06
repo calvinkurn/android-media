@@ -120,10 +120,14 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
 
-        viewModel.errorReport.observe(viewLifecycleOwner, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)){ getData() }.showRetrySnackbar()})
+        viewModel.errorReport.observe(viewLifecycleOwner,
+                Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity,
+                ErrorHandler.getErrorMessage(context, it)){ getData() }.
+        showRetrySnackbar()})
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
+        swipe_refresh_layout.isRefreshing = true
         if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                 || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
             viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())

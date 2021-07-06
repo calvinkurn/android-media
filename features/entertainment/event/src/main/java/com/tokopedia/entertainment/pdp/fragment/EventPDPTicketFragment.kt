@@ -207,6 +207,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         }
     }
 
+    private fun loadData(){
+        swipe_refresh_layout.isRefreshing = true
+        loadInitialData()
+    }
+
     @SuppressLint("InflateParams")
     private fun setupBottomSheet(listActiveDates: List<String>) {
         if (startDate.isNotBlank() && endDate.isNotBlank() && selectedDate.isNotBlank()) {
@@ -348,10 +353,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     }
 
     private fun showErrorState(throwable: Throwable, isVerify: Boolean){
+        swipe_refresh_layout.isRefreshing = false
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
             showViewBottom(false)
-            loadInitialData()
+            loadData()
         }.showRetrySnackbar()
         if(!isVerify) {
             renderList(listOf())
