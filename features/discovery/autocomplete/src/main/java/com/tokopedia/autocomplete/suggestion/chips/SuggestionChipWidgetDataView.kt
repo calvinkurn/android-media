@@ -9,4 +9,4 @@ class SuggestionChipWidgetDataView : BaseSuggestionDataView(), Visitable<Suggest
     override fun type(typeFactory: SuggestionAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-}S
+}
