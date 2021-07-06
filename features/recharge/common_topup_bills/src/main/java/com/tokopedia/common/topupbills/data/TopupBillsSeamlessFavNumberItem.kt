@@ -11,7 +11,7 @@ data class TopupBillsSeamlessFavNumberItem (
         @SerializedName("client_number")
         val clientNumber: String = "",
         @SerializedName("label")
-        val clientName: String = "",
+        var clientName: String = "",
         @SerializedName("operator_id")
         val operatorId: Int = -1,
         @SerializedName("product_id")

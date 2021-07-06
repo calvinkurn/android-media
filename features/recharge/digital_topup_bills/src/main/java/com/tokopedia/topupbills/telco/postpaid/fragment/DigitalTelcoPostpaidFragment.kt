@@ -305,11 +305,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClientNumberHasFocus(clientNumber: String) {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
-                // TODO: [Misael] toggle
                 if (isSeamlessFavoriteNumber) {
                     startActivityForResult(activity?.let {
                         TopupBillsFavoriteNumberActivity.getCallingIntent(it,
-                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, seamlessFavNumberList)
+                            ClientNumberType.TYPE_INPUT_TEL,
+                            clientNumber,
+                            arrayListOf(categoryId.toString())
+                        )
                     },
                             REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
                 } else {

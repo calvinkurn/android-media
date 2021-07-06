@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/common_topupbills_favorite_number_name_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_44"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/common_topup_favorite_number_modify_name" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/common_topupbills_favorite_number_phone_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N75_20"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:text_field_label_static="true"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/common_topup_favorite_number_modify_phone" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/common_topupbills_favorite_number_modify_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:text="@string/common_topup_favorite_number_modify_button"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
+
+</LinearLayout>
