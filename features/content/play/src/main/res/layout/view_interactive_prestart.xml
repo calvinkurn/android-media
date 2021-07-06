@@ -92,6 +92,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_starting_in"
         app:timer_unify_single_type="minute"
         app:timer_unify_single_variant="alternate"
+        app:timer_unify_single_remainingSeconds="0"
         />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

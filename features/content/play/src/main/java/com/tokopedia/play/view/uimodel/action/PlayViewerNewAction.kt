@@ -13,3 +13,8 @@ data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewA
 object InteractiveTapTapAction : PlayViewerNewAction()
 
 object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()
+
+object ClickFollowAction : PlayViewerNewAction()
+object ClickPartnerNameAction : PlayViewerNewAction()
+
+data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

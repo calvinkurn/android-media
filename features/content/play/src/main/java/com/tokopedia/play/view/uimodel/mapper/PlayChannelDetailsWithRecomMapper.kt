@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
@@ -36,7 +37,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
-                    interactiveInfo = mapInteractiveInfo()
+                    interactiveInfo = mapInteractiveInfo(),
+                    lastUiState = mapLastUiState(it.partner)
             )
         }
     }
@@ -49,12 +51,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             backgroundUrl = configResponse.roomBackground.imageUrl
     )
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfoUiModel.Incomplete(
-            basicInfo = PlayPartnerBasicInfoUiModel(
-                    id = partnerResponse.id.toLongOrZero(),
-                    name = htmlTextTransformer.transform(partnerResponse.name),
-                    type = PartnerType.getTypeByValue(partnerResponse.type),
-            )
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerBasicInfoUiModel(
+            id = partnerResponse.id.toLongOrZero(),
+            name = htmlTextTransformer.transform(partnerResponse.name),
+            type = PartnerType.getTypeByValue(partnerResponse.type),
     )
 
     private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
@@ -200,6 +200,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapInteractiveInfo() = PlayInteractiveModel.Incomplete(
             hasInteractive = true
+    )
+
+    private fun mapLastUiState(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayViewerNewUiState(
+            partnerName = partnerResponse.name
     )
 
     companion object {

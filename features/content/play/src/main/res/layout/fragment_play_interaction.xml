@@ -139,42 +139,6 @@
         app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
-<!--    <include-->
-<!--        android:id="@+id/view_interactive_prestart"-->
-<!--        layout="@layout/view_interactive_prestart"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
-<!--        android:layout_marginBottom="@dimen/spacing_lvl3"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/view_chat_list"-->
-<!--        app:layout_constraintStart_toStartOf="@id/view_size"-->
-<!--        />-->
-
-<!--    <include-->
-<!--        android:id="@+id/view_interactive_tap"-->
-<!--        layout="@layout/view_interactive_tap"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
-<!--        android:layout_marginBottom="@dimen/spacing_lvl3"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"-->
-<!--        app:layout_constraintStart_toStartOf="@id/view_size"-->
-<!--        />-->
-
-<!--    <include-->
-<!--        android:id="@+id/view_interactive_finish"-->
-<!--        layout="@layout/view_interactive_finish"-->
-<!--        android:layout_width="@dimen/play_interactive_finish_width"-->
-<!--        android:layout_height="@dimen/play_interactive_finish_height"-->
-<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
-<!--        android:layout_marginBottom="@dimen/spacing_lvl3"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/view_interactive_tap"-->
-<!--        app:layout_constraintStart_toStartOf="@id/view_size"-->
-<!--        />-->
-
     <include
         android:id="@+id/view_interactive_winner_badge"
         layout="@layout/view_interactive_winner_badge"

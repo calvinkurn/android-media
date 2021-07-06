@@ -15,6 +15,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.state.PlayFollowStatusUiState
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -49,46 +50,39 @@ class ToolbarViewComponent(
         rlCart.setOnClickListener {
             listener.onCartButtonClicked(this)
         }
+
+        tvFollow.setOnClickListener {
+            listener.onFollowButtonClicked(this)
+        }
+
+        tvPartnerName.setOnClickListener {
+            listener.onPartnerNameClicked(this)
+        }
     }
 
     fun hideActionMore() {
         ivMore.hide()
     }
 
-    fun setPartnerInfo(partnerInfo: PlayPartnerInfoUiModel) {
-        tvPartnerName.text = partnerInfo.basicInfo.name
-        setFollowStatus(partnerInfo.isFollowed)
-
-        if (!partnerInfo.isFollowable) {
-            tvFollow.setOnClickListener {}
-        } else {
-            tvFollow.setOnClickListener {
-                if (partnerInfo.isFollowed) {
-                    listener.onFollowButtonClicked(this, partnerInfo.basicInfo.id, PartnerFollowAction.UnFollow)
-                } else {
-                    listener.onFollowButtonClicked(this, partnerInfo.basicInfo.id, PartnerFollowAction.Follow)
-                }
-                partnerInfo.isFollowed = !partnerInfo.isFollowed
-            }
-        }
-
-        if (partnerInfo.basicInfo.name.isEmpty() || partnerInfo.basicInfo.name.isBlank()) clPartner.hide()
+    fun setPartnerName(name: String) {
+        if (name.isEmpty() || name.isBlank()) clPartner.hide()
         else {
             clPartner.show()
-            if (!partnerInfo.isFollowable) groupFollowable.hide()
-            else groupFollowable.show()
-
-            tvPartnerName.setOnClickListener {
-                listener.onPartnerNameClicked(this, partnerInfo.basicInfo.id, partnerInfo.basicInfo.type)
-            }
+            tvPartnerName.text = name
         }
     }
 
-    fun setFollowStatus(shouldFollow: Boolean) {
-        tvFollow.text = getString(
-                if (shouldFollow) R.string.play_following
-                else R.string.play_follow
-        )
+
+    fun setFollowStatus(followStatus: PlayFollowStatusUiState) {
+        if (followStatus is PlayFollowStatusUiState.Followable) {
+            tvFollow.text = getString(
+                    if (followStatus.isFollowing) R.string.play_following
+                    else R.string.play_follow
+            )
+            groupFollowable.show()
+        } else {
+            groupFollowable.hide()
+        }
     }
 
     fun setCartInfo(cartUiModel: PlayCartInfoUiModel) {
@@ -116,8 +110,8 @@ class ToolbarViewComponent(
     interface Listener {
         fun onBackButtonClicked(view: ToolbarViewComponent)
         fun onMoreButtonClicked(view: ToolbarViewComponent)
-        fun onFollowButtonClicked(view: ToolbarViewComponent, partnerId: Long, action: PartnerFollowAction)
-        fun onPartnerNameClicked(view: ToolbarViewComponent, partnerId: Long, type: PartnerType)
+        fun onFollowButtonClicked(view: ToolbarViewComponent)
+        fun onPartnerNameClicked(view: ToolbarViewComponent)
         fun onCartButtonClicked(view: ToolbarViewComponent)
         fun onCopyButtonClicked(view: ToolbarViewComponent, content: String)
     }

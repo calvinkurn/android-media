@@ -6,8 +6,10 @@
         android:left="@dimen/play_variant_sheet_header_separator_height_minus"
         android:right="@dimen/play_variant_sheet_header_separator_height_minus">
         <shape>
-            <stroke android:width="@dimen/play_variant_sheet_header_separator_height"
-                android:color="@color/play_dms_variant_sheet_divider"/>
+            <stroke
+                android:width="@dimen/play_variant_sheet_header_separator_height"
+                android:color="@color/play_dms_variant_sheet_divider"
+                />
         </shape>
     </item>
 </layer-list>
