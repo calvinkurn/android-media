@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
@@ -23,7 +22,7 @@ class ItemDetailPerformanceViewHolder(view: View,
     : AbstractViewHolder<ItemDetailPerformanceUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_detail_shop_performance
+        val LAYOUT = com.tokopedia.shop.score.R.layout.item_detail_shop_performance
         const val PERCENT = "%"
         const val MINUS_SIGN = "-"
     }
@@ -32,8 +31,8 @@ class ItemDetailPerformanceViewHolder(view: View,
         with(itemView) {
             setupItemDetailPerformance(element)
 
-            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
-                getString(R.string.desc_calculation_open_seller_app)
+            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(com.tokopedia.shop.score.R.string.desc_calculation_open_seller_app)) == true) {
+                getString(com.tokopedia.shop.score.R.string.desc_calculation_open_seller_app)
             } else {
                 if (element?.titleDetailPerformance?.contains(AND_TEXT) == true) {
                     element.titleDetailPerformance.replace(AND_TEXT, AND_SYMBOL)
@@ -88,7 +87,7 @@ class ItemDetailPerformanceViewHolder(view: View,
             if (element?.colorValueDetailPerformance?.isNotBlank() == true && element.valueDetailPerformance != MINUS_SIGN) {
                 tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
-            tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
+            tvPerformanceTarget?.text = getString(com.tokopedia.shop.score.R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
         }
     }
 
@@ -96,7 +95,7 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
+                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(com.tokopedia.shop.score.R.color.shop_score_penalty_dms_container))
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -108,7 +107,7 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, com.tokopedia.shop.score.R.drawable.corner_rounded_performance_list)
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -119,13 +118,13 @@ class ItemDetailPerformanceViewHolder(view: View,
     private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
         try {
             when (colorValueDetailPerformance) {
-                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                getColorHexString(com.tokopedia.shop.score.R.color.shop_score_item_parameter_dms_grey) -> {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
                 }
-                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                getColorHexString(com.tokopedia.shop.score.R.color.shop_score_item_parameter_dms_grey) -> {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
-                getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
+                getColorHexString(com.tokopedia.shop.score.R.color.shop_score_item_parameter_dms_green) -> {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 }
             }
