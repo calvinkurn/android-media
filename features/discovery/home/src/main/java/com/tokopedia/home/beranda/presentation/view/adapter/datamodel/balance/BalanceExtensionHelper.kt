@@ -152,13 +152,24 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 }
 
 fun WalletAppData.mapToHomeBalanceItemModel(state: Int): List<BalanceDrawerItemModel> {
+    val balanceTitleTextAttribute = BalanceTextAttribute(text = walletName)
+
     return balance.map {
+        val balanceSubTitleTextAttribute =
+            if (isLinked) {
+                BalanceTextAttribute(text = it.amountFmt)
+            } else  BalanceTextAttribute(
+                text = activationCta,
+                colourRef = R.color.Unify_G500,
+                isBold = true
+            )
+
         BalanceDrawerItemModel(
             applinkContainer = redirectUrl,
             applinkActionText = redirectUrl,
             iconImageUrl = iconUrl,
-            balanceTitleTextAttribute = BalanceTextAttribute(text = walletName),
-            balanceSubTitleTextAttribute = BalanceTextAttribute(text = if (isLinked) it.amountFmt else "Sambungkan"),
+            balanceTitleTextAttribute = balanceTitleTextAttribute,
+            balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
             drawerItemType = if (isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
             state = state,
             trackingAttribute = it.walletCode
