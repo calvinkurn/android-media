@@ -1,8 +1,29 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
-class NotifcenterOrderList {
+import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
+import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
+import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import org.junit.Test
 
-    // TODO: should show order list when success load order list with no cache
+class NotifcenterOrderList : InboxNotifcenterTest() {
+
+    @Test
+    fun should_show_order_list_when_success_load_order_list_with_no_cache() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.response = notifOrderListUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                0, NotificationOrderListViewHolder::class.java
+            )
+        )
+    }
+
     // TODO: should hide order list when user has notification filter
     // TODO: should show cached version order list when cache data is exist
     // TODO: should update currently visible cached order list with counter when finished loading remote data

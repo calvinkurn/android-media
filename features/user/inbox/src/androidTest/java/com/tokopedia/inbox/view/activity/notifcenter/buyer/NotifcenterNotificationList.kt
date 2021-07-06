@@ -303,7 +303,6 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         )
     }
 
-
     // TODO: load more button on new list should not clickable when loading new list - impossible with current unify, can't stop loading animation
     // TODO: load more button on earlier should not clickable when loading earlier notifications - impossible with current unify, can't stop loading animation
 }

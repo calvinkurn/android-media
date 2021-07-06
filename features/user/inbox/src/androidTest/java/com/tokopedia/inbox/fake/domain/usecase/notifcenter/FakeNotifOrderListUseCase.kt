@@ -13,7 +13,7 @@ class FakeNotifOrderListUseCase(
     @Named(QUERY_ORDER_LIST)
     query: String,
     private val gqlUseCase: FakeGraphqlUseCase<NotifOrderListResponse>,
-    cacheManager: NotifcenterCacheManager,
+    cacheManager: FakeNotifcenterCacheManager,
     userSession: UserSessionInterface
 ) : NotifOrderListUseCase(
     query, gqlUseCase, cacheManager, userSession
