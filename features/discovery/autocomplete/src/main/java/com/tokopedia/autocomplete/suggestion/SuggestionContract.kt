@@ -42,5 +42,7 @@ interface SuggestionContract {
         fun onSuggestionItemClicked(item: BaseSuggestionDataView)
 
         fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView)
+
+        fun onSuggestionChipClicked(item: BaseSuggestionDataView.ChildItem)
     }
 }

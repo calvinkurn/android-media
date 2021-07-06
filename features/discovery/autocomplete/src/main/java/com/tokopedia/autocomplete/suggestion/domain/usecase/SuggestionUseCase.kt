@@ -43,6 +43,13 @@ class SuggestionUseCase(
                     }
                     discount_percentage
                     original_price
+                    child_items {
+                      template
+                      type
+                      applink
+                      url
+                      title
+                    }
                   }
                 }
                 top_shops{

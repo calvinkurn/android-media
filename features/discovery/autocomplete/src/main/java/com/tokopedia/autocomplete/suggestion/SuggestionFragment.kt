@@ -137,6 +137,10 @@ class SuggestionFragment :
         presenter.onSuggestionItemClicked(item)
     }
 
+    override fun onChipClicked(item: BaseSuggestionDataView.ChildItem) {
+        presenter.onSuggestionChipClicked(item)
+    }
+
     override fun dropKeyBoard() {
         suggestionViewUpdateListener?.dropKeyboard()
     }

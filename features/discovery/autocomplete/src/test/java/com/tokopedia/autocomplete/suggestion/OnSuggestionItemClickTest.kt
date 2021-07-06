@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.suggestion
 
+import com.tokopedia.autocomplete.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUseCase
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineDataDataView
 import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineDataDataView
@@ -218,5 +219,28 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         }
 
         confirmVerified(suggestionView)
+    }
+
+    @Test
+    fun `test tracking click suggestion chip widget`() {
+        `given suggestion tracker use case capture request params`()
+        `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
+
+        val item = findDataView<SuggestionChipWidgetDataView>().childItems[0]
+
+        `when suggestion chip clicked`(item)
+        `then verify view tracking click chip widget`(item)
+    }
+
+    private fun `when suggestion chip clicked`(item: BaseSuggestionDataView.ChildItem) {
+        suggestionPresenter.onSuggestionChipClicked(item)
+    }
+
+    private fun `then verify view tracking click chip widget`(item: BaseSuggestionDataView.ChildItem) {
+        verify {
+            suggestionView.dropKeyBoard()
+            suggestionView.route(item.applink, suggestionPresenter.getSearchParameter())
+            suggestionView.finish()
+        }
     }
 }

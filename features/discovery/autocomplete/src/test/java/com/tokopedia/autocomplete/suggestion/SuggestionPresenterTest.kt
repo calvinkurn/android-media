@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
+import com.tokopedia.autocomplete.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
@@ -76,15 +77,14 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify visitable list`(suggestionUniverse: SuggestionUniverse) {
         val visitableList = slotVisitableList.captured
 
-        visitableList[0].shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-        visitableList[1].shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-        visitableList[2].shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-        visitableList[3].shouldBeInstanceOf<SuggestionTitleDataView>()
-        visitableList[4].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList[5].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList[6].shouldBeInstanceOf<SuggestionTitleDataView>()
-        visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
+        visitableList[0].shouldBeSuggestionSingleLineDataDataView()
+        visitableList[1].shouldBeSuggestionSingleLineDataDataView()
+        visitableList[2].shouldBeSuggestionSingleLineDataDataView()
+        visitableList[3].shouldBeSuggestionTitleDataView()
+        visitableList[4].shouldBeSuggestionDoubleLineDataView()
+        visitableList[5].shouldBeSuggestionDoubleLineDataView()
+        visitableList[6].shouldBeSuggestionTitleDataView()
+        visitableList[7].shouldBeSuggestionChipWidgetDataView()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
@@ -103,61 +103,21 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     visitable.assertTopShopWidgetDataView(expectedItem, suggestionUniverse.topShop)
                     expectedPosition++
                 }
-                is BaseSuggestionDataView -> {
-                    (visitable as BaseSuggestionDataView).assertBaseSuggestionDataView(expectedItem, dimension90)
+                is SuggestionSingleLineDataDataView -> {
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_SINGLE_LINE, expectedItem, dimension90)
+                    expectedPosition++
+                }
+                is SuggestionDoubleLineDataDataView -> {
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_DOUBLE_LINE, expectedItem, dimension90)
+                    expectedPosition++
+                }
+                is SuggestionChipWidgetDataView -> {
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_DOUBLE_LINE, expectedItem, dimension90)
+                    visitable.assertSuggestionChipWidgetDataView(expectedItem.suggestionChildItems)
                     expectedPosition++
                 }
             }
         }
-    }
-
-    private fun SuggestionTitleDataView.assertSuggestionTitleDataView(item: SuggestionItem) {
-        title shouldBe item.title
-    }
-
-    private fun SuggestionTopShopWidgetDataView.assertTopShopWidgetDataView(item: SuggestionItem, listExpectedData: List<SuggestionTopShop>) {
-        template shouldBe item.template
-        title shouldBe item.title
-
-        listSuggestionTopShopCardData.forEachIndexed { index, suggestionTopShopCardDataView ->
-            suggestionTopShopCardDataView.assertSuggestionTopShopCardDataView(listExpectedData[index])
-        }
-    }
-
-    private fun SuggestionTopShopCardDataView.assertSuggestionTopShopCardDataView(suggestionTopShop: SuggestionTopShop) {
-        type shouldBe suggestionTopShop.type
-        id shouldBe suggestionTopShop.id
-        applink shouldBe suggestionTopShop.applink
-        url shouldBe suggestionTopShop.url
-        title shouldBe suggestionTopShop.title
-        subtitle shouldBe suggestionTopShop.subtitle
-        iconTitle shouldBe suggestionTopShop.iconTitle
-        iconSubtitle shouldBe suggestionTopShop.iconSubtitle
-        urlTracker shouldBe suggestionTopShop.urlTracker
-        imageUrl shouldBe suggestionTopShop.imageUrl
-
-        productData.forEachIndexed { index, suggestionTopShopProductDataView ->
-            suggestionTopShopProductDataView.imageUrl shouldBe suggestionTopShop.topShopProducts[index].imageUrl
-        }
-    }
-
-    private fun BaseSuggestionDataView.assertBaseSuggestionDataView(item: SuggestionItem, dimension90: String = "") {
-        template shouldBe item.template
-        type shouldBe item.type
-        applink shouldBe item.applink
-        url shouldBe item.url
-        title shouldBe item.title
-        subtitle shouldBe item.subtitle
-        iconTitle shouldBe item.iconTitle
-        iconSubtitle shouldBe item.iconSubtitle
-        shortcutUrl shouldBe item.shortcutUrl
-        shortcutImage shouldBe item.shortcutImage
-        imageUrl shouldBe item.imageUrl
-        label shouldBe item.label
-        labelType shouldBe item.labelType
-        urlTracker shouldBe item.urlTracker
-        trackingCode shouldBe item.tracking.code
-        this.dimension90 shouldBe dimension90
     }
 
     @Test

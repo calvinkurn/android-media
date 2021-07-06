@@ -1,5 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
@@ -242,6 +243,31 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         verifyOrder {
             trackEventClickProductLine(item, userId, expectedLabel)
+            route(item.applink, initialStatePresenter.getSearchParameter())
+            finish()
+        }
+    }
+
+    @Test
+    fun `Test click Chip Widget`() {
+        `Given view already get initial state`(initialStateWithSeeMoreRecentSearch)
+
+        val item = findDataView<InitialStateChipWidgetDataView>().list[0]
+
+        `When click chip`(item)
+        `Then verify view interaction is correct for chip widget`(item)
+    }
+
+    private fun `When click chip`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.onChipClicked(item)
+    }
+
+    private fun `Then verify view interaction is correct for chip widget`(item: BaseItemInitialStateSearch) {
+        initialStateView.onClickChip(item)
+    }
+
+    private fun InitialStateContract.View.onClickChip(item: BaseItemInitialStateSearch) {
+        verifyOrder {
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }

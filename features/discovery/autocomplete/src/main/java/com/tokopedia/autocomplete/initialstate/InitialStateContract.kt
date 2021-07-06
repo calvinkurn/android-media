@@ -72,5 +72,7 @@ interface InitialStateContract {
         fun onRecentViewClicked(item: BaseItemInitialStateSearch)
 
         fun onProductLineClicked(item: BaseItemInitialStateSearch)
+
+        fun onChipClicked(item: BaseItemInitialStateSearch)
     }
 }
