@@ -441,7 +441,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void replyToUser(MentionableUserViewModel user) {
-        
+
     }
 
     @Override
@@ -589,7 +589,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, int activityId, @NotNull String activityName, @NotNull FollowCta followCta, @NotNull String type, boolean isFollowed) {
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, int activityId, @NotNull String activityName, @NotNull FollowCta followCta, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
 
         if (followCta.getAuthorType().equals(FollowCta.AUTHOR_SHOP)) {
             feedAnalytics.eventContentDetailClickShopNameAvatar(String.valueOf(activityId), followCta.getAuthorID());
@@ -681,7 +681,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type) {
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId) {
+
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id);
         } else {
@@ -690,7 +691,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed) {
+    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
         onGoToKolComment(positionInFeed, id);
     }
 
@@ -705,7 +706,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
 
@@ -859,7 +860,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int activityId, int productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed) {
+    public void onGridItemClick(int positionInFeed, int activityId, int productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
 
         onGoToLink(redirectLink);
     }
@@ -998,7 +999,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onImageClicked(@NotNull String activityId, @NotNull String type, boolean isFollowed) {
+    public void onImageClicked(@NotNull String activityId, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
 
     }
 
@@ -1013,28 +1014,28 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onReadMoreClicked(@NotNull String postId) {
+    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId) {
 
     }
 
     @Override
-    public void userCarouselImpression(int positionInFeed, @NotNull List<FeedXMedia> media, String type, boolean isFollowed) {
+    public void userCarouselImpression(int positionInFeed, @NotNull List<FeedXMedia> media, String type, boolean isFollowed, @NotNull String shopId) {
 
     }
 
     @Override
-    public void onBottomSheetMenuClicked(@NonNull ProductPostTagViewModelNew item, @NonNull Context context) {
+    public void onBottomSheetMenuClicked(@NotNull ProductPostTagViewModelNew item, @NotNull Context context, @NotNull String shopId) {
 
     }
 
 
     @Override
-    public void userProductImpression(int activityId, @NotNull String productId, @NotNull String productName, @NotNull String price, int positionInFeed) {
+    public void userProductImpression(int positionInFeed, @NotNull String activityId, @NotNull String postType, @NotNull String shopId, @NotNull List<FeedXProduct> productList) {
 
     }
 
     @Override
-    public void userGridPostImpression(int positionInFeed, @NotNull String activityId, @NotNull String postType) {
+    public void userGridPostImpression(int positionInFeed, @NotNull String activityId, @NotNull String postType, @NotNull String shopId) {
 
     }
 }

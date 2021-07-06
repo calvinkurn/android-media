@@ -68,7 +68,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     "",
                     FollowCta(),
                     "",
-                    false)
+                    false, "")
             }
             itemView.userName.setOnClickListener {
                 highlightListener.onAvatarClick(item.positionInFeed,
@@ -77,7 +77,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     "",
                     FollowCta(),
                     "",
-                    false)
+                    false,"")
             }
             itemView.productImage.setOnClickListener {
                 highlightListener.onHighlightItemClicked(item.positionInFeed, item)
@@ -152,7 +152,8 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             activityName: String,
             followCta: FollowCta,
             type: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            shopId: String
         )
 
         fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean)

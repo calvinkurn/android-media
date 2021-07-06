@@ -170,7 +170,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.media.firstOrNull()?.mediaUrl ?: "",
                 feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
                 feedXCard.typename,
-                feedXCard.followers.isFollowed
+                feedXCard.followers.isFollowed,
+                feedXCard.author.id
             )
         }
     }
@@ -191,7 +192,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.reportable,
             feedXCard.deletable,
             feedXCard.followers,
-            feedXCard.typename
+            feedXCard.typename,
         )
     }
 
@@ -253,7 +254,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     activityName,
                     followCta,
                     type,
-                    isFollowed
+                    isFollowed,
+                    author.id
                 )
             }
 
@@ -306,7 +308,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 activityName,
                 followCta,
                 type,
-                isFollowed
+                isFollowed,
+                author.id
             )
         }
         shopMenuIcon.setOnClickListener {
@@ -425,7 +428,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                 spannableString = SpannableString(MethodChecker.fromHtml(captionTxt))
                 captionText.setOnClickListener {
-                    listener?.onReadMoreClicked(caption.id)
+                    listener?.onReadMoreClicked(caption.id, caption.author.id)
                     val txt: String = buildString {
                         append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
                     }
@@ -473,7 +476,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         "",
                         followCta,
                         caption.typename,
-                        caption.followers.isFollowed
+                        caption.followers.isFollowed,
+                        caption.author.id
                     )
                 }
 
@@ -587,7 +591,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         positionInFeed,
                         media,
                         feedXCard.typename,
-                        feedXCard.followers.isFollowed
+                        feedXCard.followers.isFollowed,
+                        feedXCard.author.id
                     )
 
                     if (feedMedia.type == TYPE_IMAGE) {
@@ -628,7 +633,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         listener?.onImageClicked(
                                             postId.toString(),
                                             feedXCard.typename,
-                                            feedXCard.followers.isFollowed
+                                            feedXCard.followers.isFollowed,
+                                            feedXCard.author.id
                                         )
                                         if (!productTagText.isVisible)
                                             productTagText.visible()
@@ -719,7 +725,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 products,
                                 feedXCard.author.id,
                                 feedXCard.typename,
-                                feedXCard.followers.isFollowed
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.id
                             )
                         )
                     }
@@ -742,7 +749,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         products: List<FeedXProduct>,
         id: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
@@ -880,15 +888,24 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         imagePostListener.userGridPostImpression(
             positionInFeed, feedXCard.id,
-            feedXCard.typename
+            feedXCard.typename,
+            feedXCard.author.id
         )
         val adapter = GridPostAdapter(
             0,
             getGridPostModel(feedXCard, feedXCard.products),
             gridPostListener
         )
+
         gridList.adapter = adapter
         setGridListPadding(feedXCard.products.size)
+        imagePostListener.userProductImpression(
+            positionInFeed,
+            feedXCard.id,
+            feedXCard.typename,
+            feedXCard.author.id,
+            feedXCard.products
+        )
     }
 
 
@@ -919,7 +936,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.id.toInt(),
             positionInFeed,
             feedXCard.typename,
-            feedXCard.followers.isFollowed
+            feedXCard.followers.isFollowed,
+            feedXCard.author.id
         )
     }
 

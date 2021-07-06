@@ -535,7 +535,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         activityName: String,
         followCta: FollowCta,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {}
 
 
@@ -604,7 +605,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isLiked: Boolean,
         postType: String,
         isFollowed: Boolean,
-        type: Boolean
+        type: Boolean,
+        shopId: String
     ) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -618,7 +620,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         id: Int,
         authorType: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
@@ -632,7 +635,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         imageUrl: String,
         typeASGC: Boolean,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -715,11 +719,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         positionInFeed: Int,
         media: List<FeedXMedia>,
         postType: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
     }
 
-    override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String) {
+    override fun userGridPostImpression(
+        positionInFeed: Int,
+        activityId: String,
+        postType: String,
+        shopId: String
+    ) {
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
@@ -811,17 +821,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         productPosition: Int,
         redirectLink: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopId: String
     ) {
         onGoToLink(redirectLink)
     }
 
     override fun userProductImpression(
-        activityId: Int,
-        productId: String,
-        productName: String,
-        price: String,
         positionInFeed: Int,
+        activityId: String,
+        productId: String,
+        shopId: String,
+        productList: List<FeedXProduct>
     ) {
     }
 
@@ -858,10 +869,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         )
     }
 
-    override fun onReadMoreClicked(postId: String) {
+    override fun onReadMoreClicked(postId: String, shopId: String) {
     }
 
-    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean) {
+    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
     }
 
     override fun onTagClicked(
@@ -876,7 +887,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onBottomSheetMenuClicked(
         item: ProductPostTagViewModelNew,
-        context: Context
+        context: Context,
+        shopId: String
     ) {
     }
 

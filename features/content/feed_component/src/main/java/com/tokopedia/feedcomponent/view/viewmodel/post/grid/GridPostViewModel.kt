@@ -16,5 +16,7 @@ data class GridPostViewModel(
         override var postId: Int = 0,
         override var positionInFeed: Int = 0,
         val postType: String="",
-        val isFollowed: Boolean = false
+        val isFollowed: Boolean = false,
+        val shopId: String=""
+
 ) : BasePostViewModel
