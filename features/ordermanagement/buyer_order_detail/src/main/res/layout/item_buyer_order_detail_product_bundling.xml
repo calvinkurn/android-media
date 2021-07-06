@@ -2,6 +2,7 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/buyer_order_detail_card_horizontal_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -15,7 +16,7 @@
             android:id="@+id/iv_bom_detail_bundling_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             app:srcCompat="@drawable/ic_buyer_order_product_bundling"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,14 +37,16 @@
             android:id="@+id/divider_bom_detail_bundling_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/buyer_order_detail_divider_height"
-            android:layout_marginTop="@dimen/buyer_order_detail_bundling_divider_margin_top"
+            android:layout_marginTop="@dimen/spacing_lvl7"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_bom_detail_bundling"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/divider_bom_detail_bundling_top"/>
+            app:layout_constraintTop_toBottomOf="@id/divider_bom_detail_bundling_top"
+            tools:listitem="@layout/item_buyer_order_detail_product_bundling_list_item"
+            tools:itemCount="3"/>
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_bom_detail_bundling_bottom"
@@ -55,8 +58,8 @@
             android:id="@+id/tv_bom_detail_bundling_price_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/buyer_order_detail_bundling_price_total"
             app:typographyType="small"
             app:typographyWeight="reguler"
@@ -67,12 +70,28 @@
             android:id="@+id/tv_bom_detail_bundling_price_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             app:layout_constraintStart_toStartOf="@id/tv_bom_detail_bundling_price_title"
             app:typographyType="heading_6"
             app:layout_constraintTop_toBottomOf="@id/tv_bom_detail_bundling_price_title"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Rp150.000"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_bom_detail_bundling_purchase_again"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/buy_again_label"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_default="wrap"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
