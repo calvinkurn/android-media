@@ -1762,15 +1762,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {
-            "#cde4c3" -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
-            "#ecdb77" -> {
-                Ticker.TYPE_WARNING
-            }
-            else -> {
-                Ticker.TYPE_ANNOUNCEMENT
-            }
+            colorTickerDefault() -> Ticker.TYPE_ANNOUNCEMENT
+            colorTickerWarning() -> Ticker.TYPE_WARNING
+            else -> Ticker.TYPE_ANNOUNCEMENT
         }
     }
 
@@ -1956,6 +1950,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 it.setSelection(it.text.length)
             }
         }
+    }
+
+    private fun colorTickerDefault(): String {
+        return getString(R.string.color_ticker_default)
+    }
+
+    private fun colorTickerWarning(): String {
+        return getString(R.string.color_ticker_warning)
     }
 
     companion object {

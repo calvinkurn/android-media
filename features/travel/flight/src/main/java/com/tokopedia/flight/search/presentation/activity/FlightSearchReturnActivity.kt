@@ -8,12 +8,12 @@ import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchReturnFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.utils.date.DateUtil
 
 /**
  * @author by furqan on 15/04/2020
@@ -68,9 +68,9 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     override fun isReturnPage(): Boolean = true
 
     override fun initializeToolbarData() {
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.FORMAT_DATE_SHORT_MONTH,
+        dateString = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD,
+                DateUtil.EEE_DD_MMM_YY,
                 flightSearchPassDataModel.returnDate)
         passengerString = buildPassengerTextFormatted(flightSearchPassDataModel.flightPassengerModel)
         classString = flightSearchPassDataModel.flightClass.title
