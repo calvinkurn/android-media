@@ -13,7 +13,11 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.new.CartCollapsedProductListHolderData
+import com.tokopedia.cart.view.uimodel.new.CartShopSimpleHolderData
 import com.tokopedia.cart.view.viewholder.*
+import com.tokopedia.cart.view.viewholder.new.CartCollapsedProductListViewHolder
+import com.tokopedia.cart.view.viewholder.new.CartShopSimpleViewHolder
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -246,6 +250,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
             is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
+            is CartShopSimpleHolderData -> CartShopSimpleViewHolder.LAYOUT
+            is CartCollapsedProductListHolderData -> CartCollapsedProductListViewHolder.LAYOUT
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
@@ -279,6 +285,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription)
+            }
+            CartShopSimpleViewHolder.LAYOUT -> {
+                val binding = ItemCartShopSimpleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartShopSimpleViewHolder(binding)
+            }
+            CartCollapsedProductListViewHolder.LAYOUT -> {
+                val binding = ItemCartCollapsedListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartCollapsedProductListViewHolder(binding)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -369,6 +383,14 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
+            }
+            CartShopSimpleViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartShopSimpleHolderData
+                (holder as CartShopSimpleViewHolder).bind(data)
+            }
+            CartCollapsedProductListViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartCollapsedProductListHolderData
+                (holder as CartCollapsedProductListViewHolder).bind(data)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
@@ -470,28 +492,36 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     fun addAvailableDataList(shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
         for (shopGroupAvailableData in shopGroupAvailableDataList) {
             if (shopGroupAvailableData.cartItemDataList.size > 0) {
-                val cartShopHolderData = CartShopHolderData()
-                cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
-                if (shopGroupAvailableData.isError) {
-                    cartShopHolderData.setAllItemSelected(false)
+                if (shopGroupAvailableData.isTokoNow) {
+                    addAvailableTokoNowData(shopGroupAvailableData)
                 } else {
-                    if (shopGroupAvailableData.isChecked) {
-                        cartShopHolderData.setAllItemSelected(true)
-                    } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
-                        shopGroupAvailableData.cartItemDataList.let {
-                            for (cartItemHolderData in it) {
-                                if (cartItemHolderData.isSelected) {
-                                    cartShopHolderData.isPartialSelected = true
-                                    break
+                    val cartShopHolderData = CartShopHolderData()
+                    cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
+                    if (shopGroupAvailableData.isError) {
+                        cartShopHolderData.setAllItemSelected(false)
+                    } else {
+                        if (shopGroupAvailableData.isChecked) {
+                            cartShopHolderData.setAllItemSelected(true)
+                        } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
+                            shopGroupAvailableData.cartItemDataList.let {
+                                for (cartItemHolderData in it) {
+                                    if (cartItemHolderData.isSelected) {
+                                        cartShopHolderData.isPartialSelected = true
+                                        break
+                                    }
                                 }
                             }
                         }
                     }
+                    cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
+                    cartDataList.add(cartShopHolderData)
                 }
-                cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
-                cartDataList.add(cartShopHolderData)
             }
         }
+    }
+
+    private fun addAvailableTokoNowData(shopGroupAvailableData: ShopGroupAvailableData) {
+
     }
 
     fun addNotAvailableHeader(disabledItemHeaderHolderData: DisabledItemHeaderHolderData) {
