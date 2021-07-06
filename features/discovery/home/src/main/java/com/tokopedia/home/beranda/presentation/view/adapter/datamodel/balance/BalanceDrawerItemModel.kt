@@ -36,12 +36,12 @@ data class BalanceDrawerItemModel(
 
         const val TYPE_WALLET_OTHER = 7
 
-        const val TYPE_WALLET_APP_LINKED = 8
-
-        const val TYPE_WALLET_APP_NOT_LINKED = 9
-
         //is not linked for any type of wallet
         const val TYPE_WALLET_PENDING_CASHBACK = 8
+
+        const val TYPE_WALLET_APP_LINKED = 9
+
+        const val TYPE_WALLET_APP_NOT_LINKED = 11
 
         const val STATE_SUCCESS = 0
         const val STATE_LOADING = 1
