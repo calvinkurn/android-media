@@ -73,15 +73,15 @@ class TopupBillsFavoriteNumberFragment :
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
-    private lateinit var clientNumbers: List<TopupBillsSeamlessFavNumberItem>
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
     private lateinit var localCacheHandler: LocalCacheHandler
-
     protected lateinit var inputNumberActionType: InputNumberActionType
 
     private var number: String = ""
+
     private var binding: FragmentFavoriteNumberBinding? = null
+    private var clientNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
 
     override fun initInjector() {
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
@@ -106,9 +106,9 @@ class TopupBillsFavoriteNumberFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         observeData()
         loadData()
+        initView()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
         if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
@@ -143,10 +143,6 @@ class TopupBillsFavoriteNumberFragment :
             searchBarTextField.onFocusChangeListener = getFocusChangeListener
             clearListener = { onSearchReset() }
             searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
-        }
-
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
 
         binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
@@ -196,6 +192,9 @@ class TopupBillsFavoriteNumberFragment :
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
         } else {
             numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+        }
+        binding?.commonTopupbillsFavoriteNumberClue?.run {
+            if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
     }
 
