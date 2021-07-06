@@ -74,10 +74,8 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                         switch.isChecked = false
                         enableSwitch = true
                         showBiometricPrompt()
-                        tracker.trackClickBiometricSwitch(isEnable)
                     } else {
                         viewModel.removeFingerprint()
-                        tracker.trackClickBiometricSwitch(isEnable)
                     }
                 }
             }
@@ -102,6 +100,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                 is Success -> {
                     enableSwitch = false
                     fragment_fingerprint_setting_switch?.isChecked = false
+                    tracker.trackRemoveFingerprintSuccess()
                 }
                 is Fail -> {
                     enableSwitch = false
@@ -151,6 +150,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     fun onSuccessRegisterFingerprint(data: RegisterFingerprintResult) {
         if (data.success) {
+            tracker.trackRegisterFpSuccess()
             enableSwitch = false
             fragment_fingerprint_setting_switch?.isChecked = true
             view?.let {
@@ -193,11 +193,18 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
             if(BiometricPromptHelper.isBiometricAvailable(it)) {
                 BiometricPromptHelper.showBiometricPrompt(it,
                     onSuccess = {
+                        tracker.trackClickOnLoginWithFingerprintSuccessDevice()
                         goToVerification()
                     },
                     onFailed = {
+                        tracker.trackClickOnLoginWithFingerprintFailedDevice("")
                         enableSwitch = true
-                    }, onError = { errCode ->
+                    }, onError = { errCode, errString ->
+                        if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+                            tracker.trackButtonCloseVerify()
+                        } else {
+                            tracker.trackOpenVerifyFingerprintFailed(errString)
+                        }
                         if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
                             FingerprintDialogHelper.showFingerprintLockoutDialog(activity)
                         }

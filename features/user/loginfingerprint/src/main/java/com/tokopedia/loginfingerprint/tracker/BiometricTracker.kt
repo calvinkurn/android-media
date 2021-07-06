@@ -15,6 +15,7 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no. 9 - failed - fp unavailable */
     fun trackOpenVerifyFingerprintBiometricUnavailable(){
         track(
             TrackAppUtils.gtmData(
@@ -25,6 +26,7 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no. 9 - failed - error */
     fun trackOpenVerifyFingerprintFailed(errorMsg: String){
         track(
             TrackAppUtils.gtmData(
@@ -35,6 +37,7 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no.2 */
     fun trackButtonCloseVerify(){
        track(
            TrackAppUtils.gtmData(
@@ -45,6 +48,7 @@ class BiometricTracker {
        )
     }
 
+    /* Tracker no.3 */
     fun trackClickOnLoginWithFingerprintSuccessDevice(){
         track(
             TrackAppUtils.gtmData(
@@ -55,6 +59,7 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no.3 */
     fun trackClickOnLoginWithFingerprintFailedDevice(errorMsg: String){
         track(
             TrackAppUtils.gtmData(
@@ -65,6 +70,7 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no.4 */
     fun trackClickOnLoginWithFingerprintSuccessBackend(){
         track(
             TrackAppUtils.gtmData(
@@ -75,6 +81,7 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no.4 */
     fun trackClickOnLoginWithFingerprintFailedBackend(errorMsg: String){
         track(
             TrackAppUtils.gtmData(
@@ -82,16 +89,6 @@ class BiometricTracker {
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_LOGIN_FINGERPRINT,
                 "$EVENT_LABEL_FAILED - backend - $errorMsg")
-        )
-    }
-
-    fun trackOnLoginFingerprintSuccess(){
-        track(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                ACTION_CLICK_LOGIN_FINGERPRINT,
-                EVENT_LABEL_SUCCESS)
         )
     }
 
@@ -105,13 +102,25 @@ class BiometricTracker {
         )
     }
 
-    fun trackClickBiometricSwitch(isEnable: Boolean){
+    /* Tracker no.7 */
+    fun trackRegisterFpSuccess(){
         track(
             TrackAppUtils.gtmData(
                 EVENT_BIOMETRIC_SETTING,
                 CATEGORY_ACCOUNT_SETTING_PAGE,
                 ACTION_CLICK_MENU_BIOMETRIC,
-                "$EVENT_LABEL_CLICK - $EVENT_LABEL_FINGERPRINT - $isEnable")
+                "$EVENT_LABEL_CLICK - $EVENT_LABEL_FINGERPRINT - enable")
+        )
+    }
+
+    /* Tracker no.7 */
+    fun trackRemoveFingerprintSuccess(){
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_BIOMETRIC_SETTING,
+                CATEGORY_ACCOUNT_SETTING_PAGE,
+                ACTION_CLICK_MENU_BIOMETRIC,
+                "$EVENT_LABEL_CLICK - $EVENT_LABEL_FINGERPRINT - disable")
         )
     }
 
@@ -125,6 +134,16 @@ class BiometricTracker {
         )
     }
 
+    /* Tracker no. 9 - success */
+    fun trackOpenVerifyPage() {
+        track(
+            TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_BIOMETRIC_LOGIN,
+                "$EVENT_LABEL_SUCCESS - fingerprint")
+        )
+    }
 
     private fun track(map: MutableMap<String, Any>) {
         map[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT

@@ -525,10 +525,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onSuccessLoginBiometric() {
+        analytics.trackOnLoginFingerprintSuccess()
         viewModel.getUserInfo()
     }
 
     private fun onErrorLoginBiometric(throwable: Throwable) {
+        analytics.trackOnLoginFingerprintFailed(throwable.message ?:"")
         onErrorLogin("Error Login Fingerprint", "", throwable)
     }
 

@@ -43,7 +43,7 @@ class VerifyFingerprintActivity: BaseActivity() {
         initComponents()
         initObserver()
         if(BiometricPromptHelper.isBiometricAvailable(this)) {
-            tracker.trackOpenVerifyFingerprint()
+            tracker.trackOpenVerifyPage()
             showBiometricPrompt()
         } else {
             tracker.trackOpenVerifyFingerprintBiometricUnavailable()
@@ -106,13 +106,13 @@ class VerifyFingerprintActivity: BaseActivity() {
             }, onFailed = {
                 tracker.trackClickOnLoginWithFingerprintFailedDevice("")
             },
-            onError = {
-                if(it == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+            onError = { errCode, errString ->
+                if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
                     tracker.trackButtonCloseVerify()
                 } else {
-                    tracker.trackClickOnLoginWithFingerprintFailedDevice("error code: $it")
+                    tracker.trackOpenVerifyFingerprintFailed(errString)
                 }
-                if(it == BiometricPrompt.ERROR_LOCKOUT) {
+                if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
                     FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
                         onErrorVerifyFingerprint()
                     }, onDismiss = { onErrorVerifyFingerprint() })

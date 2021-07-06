@@ -228,6 +228,7 @@ public class AccountAnalytics {
         ));
     }
 
+    /* Tracker no.6 */
     public void eventClickFingerprint() {
         Analytics analytics = TrackApp.getInstance().getGTM();
 
