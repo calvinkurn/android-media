@@ -53,7 +53,7 @@ data class OrderStatusUiModel(
         )
 
         override fun shouldShow(): Boolean {
-            return invoice.invoice.isNotBlank() || (deadline.label.isNotBlank() && deadline.value.isNotBlank())
+            return invoice.invoice.isNotBlank() || (deadline.label.isNotBlank() && deadline.value.isNotBlank()) || purchaseDate.isNotBlank()
         }
     }
 }

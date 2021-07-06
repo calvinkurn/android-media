@@ -21,7 +21,7 @@ data class ProductListUiModel(
         }
 
         override fun shouldShow(): Boolean {
-            return true
+            return header.isNotBlank()
         }
     }
 

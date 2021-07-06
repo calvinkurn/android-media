@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -19,6 +20,8 @@ class OrderStatusHeaderViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info_header
+
+        private const val WAITING_INVOICE_ORDER_ID = "0"
     }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
@@ -39,6 +42,7 @@ class OrderStatusHeaderViewHolder(
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
             setupPreOrderLabel(it.preOrder)
+            setupSeeDetailVisibility(it.orderId)
         }
     }
 
@@ -94,5 +98,9 @@ class OrderStatusHeaderViewHolder(
         } else {
             labelBuyerOrderDetailPreOrder?.gone()
         }
+    }
+
+    private fun setupSeeDetailVisibility(orderId: String) {
+        tvBuyerOrderDetailSeeDetail?.showWithCondition(orderId.isNotBlank() && orderId != WAITING_INVOICE_ORDER_ID)
     }
 }
