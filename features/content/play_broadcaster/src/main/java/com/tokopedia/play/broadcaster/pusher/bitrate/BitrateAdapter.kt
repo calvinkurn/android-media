@@ -117,8 +117,8 @@ abstract class BitrateAdapter(context: Context) {
         mStreamer?.changeBitRate(mFullBitrate.toInt())
     }
 
-    fun setConnection(connecitonId: Int) {
-        mConnectionId = connecitonId
+    fun setConnection(connectionId: Int) {
+        mConnectionId = connectionId
     }
 
     fun getCurrentBitrate(): Long = mCurrentBitrate
