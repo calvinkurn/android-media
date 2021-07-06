@@ -9,6 +9,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
@@ -26,6 +27,7 @@ private const val samePosition = "searchproduct/inspirationcarousel/same-positio
 private const val unknownLayout = "searchproduct/inspirationcarousel/unknown-layout.json"
 private const val chips = "searchproduct/inspirationcarousel/chips.json"
 private const val dynamicProduct = "searchproduct/inspirationcarousel/dynamic-product.json"
+private const val keywordProduct = "searchproduct/inspirationcarousel/keyword-product.json"
 
 internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
@@ -571,10 +573,16 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         `When Load Data`()
 
         `Then verify view set product list`()
-        `Then assert inspiration carousel dynamic product`(searchProductModel)
+        `Then assert inspiration carousel product list`(
+                searchProductModel,
+                ::assertCarouselProductTypeDynamic
+        )
     }
 
-    private fun `Then assert inspiration carousel dynamic product`(searchProductModel: SearchProductModel) {
+    private fun `Then assert inspiration carousel product list`(
+            searchProductModel: SearchProductModel,
+            assertType: (BroadMatchDataView, SearchProductModel.InspirationCarouselData) -> Unit,
+    ) {
         /**
          * Dynamic Carousel Product feature has same UI with Broad Match
          * */
@@ -598,6 +606,9 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                             inspirationCarouselOptionIndex,
                             inspirationCarouselData
                     )
+
+                    val broadMatchDataView = visitable as BroadMatchDataView
+                    assertType(broadMatchDataView, inspirationCarouselData)
 
                     inspirationCarouselOptionIndex++
                 }
@@ -623,12 +634,11 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         val inspirationCarouselOption = inspirationCarouselData.inspirationCarouselOptions[inspirationCarouselOptionIndex]
 
         this.shouldBeInstanceOf<BroadMatchDataView>(shouldBeBroadMatchMessage)
-        (this as BroadMatchDataView).assertBroadMatchViewModel(inspirationCarouselOption, inspirationCarouselData.type)
+        (this as BroadMatchDataView).assertBroadMatchViewModel(inspirationCarouselOption)
     }
 
     private fun BroadMatchDataView.assertBroadMatchViewModel(
             inspirationCarouselOption: SearchProductModel.InspirationCarouselOption,
-            type: String,
     ) {
         keyword shouldBe inspirationCarouselOption.title
         applink shouldBe inspirationCarouselOption.applink
@@ -637,13 +647,18 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         broadMatchItemDataViewList.size shouldBe inspirationCarouselProducts.size
 
         inspirationCarouselProducts.forEachIndexed { index, inspirationCarouselProduct ->
-            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(inspirationCarouselProduct, type)
+            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(
+                    index,
+                    inspirationCarouselProduct,
+                    inspirationCarouselOption.title,
+            )
         }
     }
 
     private fun BroadMatchItemDataView.assertBroadMatchItemViewModel(
+            index: Int,
             inspirationCarouselProduct: SearchProductModel.InspirationCarouselProduct,
-            type: String,
+            expectedAlternativeKeyword: String,
     ) {
         id shouldBe inspirationCarouselProduct.id
         name shouldBe inspirationCarouselProduct.name
@@ -653,6 +668,8 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         applink shouldBe inspirationCarouselProduct.applink
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
+        position shouldBe index + 1
+        alternativeKeyword shouldBe expectedAlternativeKeyword
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
@@ -660,12 +677,6 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
             actual.type shouldBe expected.type
             actual.imageUrl shouldBe expected.url
         }
-
-        carouselProductType.shouldBeInstanceOf<DynamicCarouselProduct>()
-        carouselProductType.hasThreeDots shouldBe false
-
-        val dynamicCarouselProductType = carouselProductType as DynamicCarouselProduct
-        dynamicCarouselProductType.type shouldBe type
     }
 
     private fun Visitable<*>.assertNotBroadMatchDataView(visitableIndex: Int) {
@@ -673,5 +684,47 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                 false,
                 "Visitable index $visitableIndex should not be broad match"
         )
+    }
+
+    private fun assertCarouselProductTypeDynamic(
+            broadMatchDataView: BroadMatchDataView,
+            inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+    ) {
+        broadMatchDataView.broadMatchItemDataViewList.forEach {
+            val carouselProductType = it.carouselProductType
+            carouselProductType.shouldBeInstanceOf<DynamicCarouselProduct>()
+
+            val dynamicCarouselProductType = carouselProductType as DynamicCarouselProduct
+            dynamicCarouselProductType.hasThreeDots shouldBe false
+            dynamicCarouselProductType.type shouldBe inspirationCarouselData.type
+        }
+    }
+
+    @Test
+    fun `Show inspiration carousel keyword product`() {
+        val searchProductModel = keywordProduct.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+
+        `When Load Data`()
+
+        `Then verify view set product list`()
+        `Then assert inspiration carousel product list`(
+                searchProductModel,
+                ::assertCarouselProductTypeBroadMatch,
+        )
+    }
+
+    private fun assertCarouselProductTypeBroadMatch(
+            broadMatchDataView: BroadMatchDataView,
+            inspirationCarouselData: SearchProductModel.InspirationCarouselData,
+    ) {
+        broadMatchDataView.broadMatchItemDataViewList.forEach {
+            val carouselProductType = it.carouselProductType
+            carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
+
+            val broadMatchProductType = carouselProductType as BroadMatchProduct
+            broadMatchProductType.isOrganicAds shouldBe false
+            broadMatchProductType.hasThreeDots shouldBe false
+        }
     }
 }
