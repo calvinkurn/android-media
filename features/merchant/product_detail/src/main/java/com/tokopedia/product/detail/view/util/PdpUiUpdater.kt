@@ -26,6 +26,7 @@ import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -691,6 +692,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
+        miniCart?.let { cartData ->
+            mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
+                val productRecom = mapOfData[key] as ProductRecommendationDataModel
+                productRecom.recomWidgetData?.let { recomWidget ->
+                    if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                        updateData(key) {
+                            var successChangeData = false
+                            recomWidget.recommendationItemList.forEach { recomItem ->
+                                if (cartData.containsKey(recomItem.productId.toString())
+                                        && recomItem.isRecomProductShowVariantAndCart
+                                        && recomItem.quantity != cartData[recomItem.productId.toString()]?.quantity) {
+                                    recomItem.quantity = cartData[recomItem.productId.toString()]?.quantity
+                                            ?: 0
+                                    successChangeData = true
+                                }
+                            }
+                            if (successChangeData) {
+                                productRecom.cardModel = recomWidget.recommendationItemList.toProductCardModels(false)
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
