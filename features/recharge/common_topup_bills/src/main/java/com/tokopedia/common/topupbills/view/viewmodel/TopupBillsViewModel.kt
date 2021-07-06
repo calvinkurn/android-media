@@ -308,7 +308,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                        FAVORITE_NUMBER_PARAM_LABEL to label,
                        FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
                        FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
-                       FAVORITE_NUMBER_PARAM_SOURCE to "PDP",
+                       FAVORITE_NUMBER_PARAM_SOURCE to FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP,
                        FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
                        FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
                )
@@ -378,13 +378,14 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
         const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
         const val FAVORITE_NUMBER_PARAM_SOURCE = "source"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP = "PDP"
         const val FAVORITE_NUMBER_PARAM_CATEGORY_IDS = "category_ids"
         const val FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION = "min_last_transaction"
         const val FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION = "min_total_transaction"
         const val FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE = "service_plan_type"
         const val FAVORITE_NUMBER_PARAM_SUBSCRIPTION = "subscription"
-        const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
 
+        const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
         const val FAVORITE_NUMBER_PARAM_UPDATE_REQUEST = "updateRequest"
         const val FAVORITE_NUMBER_PARAM_CATEGORY_ID ="categoryID"
         const val FAVORITE_NUMBER_PARAM_CLIENT_NUMBER = "clientNumber"
