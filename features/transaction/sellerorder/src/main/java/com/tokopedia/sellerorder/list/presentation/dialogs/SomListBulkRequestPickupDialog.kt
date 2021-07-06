@@ -58,7 +58,9 @@ class SomListBulkRequestPickupDialog(private val context: Context) {
     }
 
     fun show() {
-        dialogUnify?.show()
+        if (dialogUnify?.isShowing == false) {
+            dialogUnify?.show()
+        }
     }
 
     fun dismiss() {
@@ -70,11 +72,15 @@ class SomListBulkRequestPickupDialog(private val context: Context) {
     }
 
     fun setDescription(description: String) {
-        descDialog?.text = description
+        descDialog?.run {
+            text = description
+            show()
+        }
     }
 
     fun showOnProgress() {
         ivBulkAcceptDialog?.hide()
+        descDialog?.hide()
         loaderBulkAccept?.show()
     }
 
@@ -112,5 +118,13 @@ class SomListBulkRequestPickupDialog(private val context: Context) {
                 onSecondaryButtonClicked.invoke()
             }
         }
+    }
+
+    fun hidePrimaryButton() {
+        btnPrimaryDialog?.hide()
+    }
+
+    fun hideSecondaryButton() {
+        btnSecondaryDialog?.hide()
     }
 }

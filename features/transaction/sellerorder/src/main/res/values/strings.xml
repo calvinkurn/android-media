@@ -284,9 +284,17 @@
     <string name="som_list_bulk_request_pickup_partial_all_fail_success">Ada %1s pesanan yang tidak bisa dipick-up dan %2s pesanan yang belum terproses, nih.</string>
     <string name="som_list_bulk_request_pickup_partial_partial_fail_success">Ada %s pesanan yang belum terproses, nih.</string>
 
+    <string name="som_list_bulk_request_pickup_title_not_eligible_fail">%s pesanan tidak siap untuk dipick-up</string>
+
     <string name="som_list_bulk_request_pickup_title_fail">Yaah, gagal minta pick-up</string>
     <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Belum ada pesanan yang siap untuk dipick-up.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
 
+    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_retry_pickup_order">Pick-up %s Pesanan</string>
+
+    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_can_retry">Coba Lagi</string>
+    <string name="som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry">Kembali ke pesanan</string>
+
+    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
 </resources>
