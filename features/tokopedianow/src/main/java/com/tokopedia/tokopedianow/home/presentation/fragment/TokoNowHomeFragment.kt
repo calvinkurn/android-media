@@ -504,7 +504,7 @@ class TokoNowHomeFragment: Fragment(),
                 miniCartWidget.height
             } else {
                 activity?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
             }
             swipeLayout?.setPadding(0, 0, 0, paddingBottom)
         }
