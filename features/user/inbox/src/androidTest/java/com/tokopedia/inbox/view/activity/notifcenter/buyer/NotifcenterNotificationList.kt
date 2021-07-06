@@ -189,12 +189,32 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         NotifcenterAssertion.assertLoadMoreTitle(4, "Lihat Lebih Banyak")
     }
 
-    // TODO: load more button on earlier should not clickable when loading earlier notifications
+    @Test
+    fun should_hide_load_more_button_if_earlier_next_page_hasNext_is_false() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.earlierOnlyHasNextTrue
+        }
+        startInboxActivity()
+
+        // When
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.earlierOnlyHasNextFalse
+        }
+        NotifcenterAction.clickLoadMoreAt(3)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(LoadMoreViewHolder::class.java))
+        )
+    }
 
     // TODO: should show new list title and earlier title when both response is not empty
     // TODO: should show empty state with just text when notifications is empty
     // TODO: should show empty state with illustration when notifications is empty with filter
     // TODO: assert big divider location
 
+
     // TODO: load more button on new list should not clickable when loading new list - impossible with current unify, can't stop loading animation
+    // TODO: load more button on earlier should not clickable when loading earlier notifications - impossible with current unify, can't stop loading animation
 }
