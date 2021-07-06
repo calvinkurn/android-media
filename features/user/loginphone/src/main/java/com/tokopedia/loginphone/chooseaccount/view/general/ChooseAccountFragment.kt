@@ -216,8 +216,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
 
     private fun onSuccessLoginToken() {
         activity?.apply {
-            this.setResult(Activity.RESULT_OK)
-            this.finish()
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 

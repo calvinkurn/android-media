@@ -1542,12 +1542,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 activityShouldEnd = false
                 isFromChooseAccount = true
-                data?.extras?.let {
-                    if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                        onGoToSecurityQuestion("")
-                    } else {
-                        viewModel.getUserInfo()
+
+                if (data != null) {
+                    data.extras?.let {
+                        if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
+                            onGoToSecurityQuestion("")
+                        } else {
+                            viewModel.getUserInfo()
+                        }
                     }
+                } else {
+                    viewModel.getUserInfo()
                 }
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
                 data?.extras?.let {
