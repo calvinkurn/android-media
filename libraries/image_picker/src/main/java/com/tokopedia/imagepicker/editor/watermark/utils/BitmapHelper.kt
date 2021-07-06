@@ -6,25 +6,39 @@ import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.util.TypedValue
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import kotlin.math.roundToInt
+import android.graphics.Bitmap.createBitmap as createBitmap
+import android.text.Layout.Alignment.ALIGN_NORMAL as ALIGN_NORMAL
+import android.util.TypedValue.COMPLEX_UNIT_DIP as COMPLEX_UNIT_DIP
+import android.util.TypedValue.applyDimension as applyDimension
 
 object BitmapHelper {
+
+    private const val DEFAULT_STROKE_WIDTH = 5f
+    private const val DEFAULT_LINE_SPACING = 2.0f
+    private const val THRESHOLD_WHITE_SPACE = 20
+
+    // space between first bitmap to other bitmap (in dp)
+    private const val SPACE_BETWEEN_BITMAP = 70
+
+    // max length of text and division with 2
+    private const val MAX_LENGTH_TWO_SPAN = 13
+
+    // watermark span
+    private const val WATERMARK_SPAN_2 = 2f
+    private const val WATERMARK_SPAN_3 = 3f
+    private const val WATERMARK_SPAN_3_5 = 3.5f
 
     fun String.textAsBitmap(context: Context, properties: TextUIModel): Bitmap {
         // created TextPaint for painting the watermark text
         val paint = TextPaint().apply {
             // text size in pixel based on device dimension
-            val textInPixel = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                properties.textSize.toFloat(),
-                context.resources.displayMetrics
-            )
+            val textInPixel = applyDimension(COMPLEX_UNIT_DIP, properties.textSize.toFloat(), context.resources.displayMetrics)
 
             // basic properties
             textSize = textInPixel
-            strokeWidth = 5f
+            strokeWidth = DEFAULT_STROKE_WIDTH
             isAntiAlias = true
             color = properties.textShadowColor
             style = properties.textStyle
@@ -36,15 +50,8 @@ object BitmapHelper {
             }
 
             // text shadow properties
-            if (properties.textShadowBlurRadius != 0f
-                || properties.textShadowXOffset != 0f
-                || properties.textShadowYOffset != 0f) {
-                setShadowLayer(
-                    properties.textShadowBlurRadius,
-                    properties.textShadowXOffset,
-                    properties.textShadowYOffset,
-                    properties.textShadowColor
-                )
+            if (properties.textShadowBlurRadius != 0f || properties.textShadowXOffset != 0f || properties.textShadowYOffset != 0f) {
+                setShadowLayer(properties.textShadowBlurRadius, properties.textShadowXOffset, properties.textShadowYOffset, properties.textShadowColor)
             }
 
             // font properties
@@ -64,19 +71,16 @@ object BitmapHelper {
             bounds
         )
 
-        var boundWidth = bounds.width() + 20 // 20 is the threshold of white space
+        var boundWidth = bounds.width() + THRESHOLD_WHITE_SPACE
         val textMaxWidth = paint.measureText(this).toInt()
-
-        if (boundWidth > textMaxWidth) {
-            boundWidth = textMaxWidth
-        }
+        if (boundWidth > textMaxWidth) boundWidth = textMaxWidth
 
         // create the static layout
         val staticLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StaticLayout.Builder
                 .obtain(this, 0, this.length, paint, textMaxWidth)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setLineSpacing(2.0f, 2.0f)
+                .setAlignment(ALIGN_NORMAL)
+                .setLineSpacing(DEFAULT_LINE_SPACING, DEFAULT_LINE_SPACING)
                 .setIncludePad(false)
                 .build()
         } else {
@@ -86,9 +90,9 @@ object BitmapHelper {
                 this.length,
                 paint,
                 textMaxWidth,
-                Layout.Alignment.ALIGN_NORMAL,
-                2.0f,
-                2.0f,
+                ALIGN_NORMAL,
+                DEFAULT_LINE_SPACING,
+                DEFAULT_LINE_SPACING,
                 false
             )
         }
@@ -97,17 +101,16 @@ object BitmapHelper {
         val bitmapHeight = ((baseline + paint.descent() + 3) * staticLayout.lineCount).toInt()
 
         // create bitmap
-        var bitmapResult = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        var bitmapResult = createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
         if (boundWidth > 0 && bitmapHeight > 0) {
-            bitmapResult = Bitmap.createBitmap(boundWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+            bitmapResult = createBitmap(boundWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
         }
 
         // create the bitmap canvas
-        val canvas = Canvas(bitmapResult)
-        canvas.drawColor(properties.backgroundColor)
-
-        staticLayout.draw(canvas)
+        staticLayout.draw(Canvas(bitmapResult).apply {
+            drawColor(properties.backgroundColor)
+        })
 
         return bitmapResult
     }
@@ -120,7 +123,7 @@ object BitmapHelper {
         val matrix = Matrix()
         matrix.postScale(scale, scale)
 
-        return Bitmap.createBitmap(
+        return createBitmap(
             this,
             0,
             0,
@@ -154,17 +157,16 @@ object BitmapHelper {
             (this.height / 2).toFloat()
         )
 
-        return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
+        return createBitmap(this, 0, 0, this.width, this.height, matrix, true)
     }
 
     fun Bitmap.combineBitmapWithPadding(other: Bitmap): Bitmap {
-        val thresholdSpace = 170 // space between first bitmap to other bitmap
-        val otherBitmap = other.addPadding(thresholdSpace, 0, thresholdSpace, 0)
+        val otherBitmap = other.addPadding(SPACE_BETWEEN_BITMAP, 0, SPACE_BETWEEN_BITMAP, 0)
 
         val width = this.width + otherBitmap.width
         val height = maxOf(this.height, otherBitmap.height)
 
-        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val resultBitmap = createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
 
         canvas.drawBitmap(this, 0f, 0f, null)
@@ -179,7 +181,7 @@ object BitmapHelper {
         right:Int = 0,
         bottom:Int = 0
     ):Bitmap {
-        val bitmap = Bitmap.createBitmap(
+        val bitmap = createBitmap(
             width + left + right, // width in pixels
             height + top + bottom, // height in pixels
             Bitmap.Config.ARGB_8888
@@ -246,13 +248,13 @@ object BitmapHelper {
     }
 
     private fun Bitmap.scaleByDividedOfThreesHold(textLength: Int): Float {
-        if (textLength >= 13) return this.width / 2f
-        if (this.width == this.height) return this.width / 2f
+        if (textLength >= MAX_LENGTH_TWO_SPAN) return this.width / WATERMARK_SPAN_2
+        if (this.width == this.height) return this.width / WATERMARK_SPAN_2
 
         return if (this.width > this.height) {
-            this.width / 3f
+            this.width / WATERMARK_SPAN_3
         } else {
-            this.height / 3.5f
+            this.height / WATERMARK_SPAN_3_5
         }
     }
 
