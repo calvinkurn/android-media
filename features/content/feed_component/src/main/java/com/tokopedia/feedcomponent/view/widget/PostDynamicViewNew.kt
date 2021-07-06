@@ -740,11 +740,27 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        //todo
                         pageControl.setCurrentIndicator(current)
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
-                        else
+                        else {
+                            if (videoPlayer == null) {
+                                videoPlayer = FeedExoPlayer(context)
+                            }
+                            layout_video?.player = videoPlayer?.getExoPlayer()
                             videoPlayer?.start(media[current].mediaUrl, isMute)
+                            layout_video?.videoSurfaceView?.setOnClickListener {
+                                if (media[current].mediaUrl.isNotEmpty()) {
+                                    videoListener?.onVideoPlayerClicked(
+                                        positionInFeed,
+                                        current,
+                                        postId.toString(),
+                                        media[current].appLink
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

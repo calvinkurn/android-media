@@ -260,7 +260,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
-        private const val POST_POSITION = "position"
+        private const val PARAM_POST_POSITION = "position"
+        private const val PARAM_VIDEO_INDEX = "video_index"
 
 
         //region Content Report Param
@@ -797,7 +798,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             OPEN_VIDEO_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val positionInFeed = data.getIntExtra(POST_POSITION, 0)
+                    val positionInFeed = data.getIntExtra(PARAM_POST_POSITION, 0)
                     adapter.notifyItemChanged(positionInFeed)
                 }
             }
@@ -1423,7 +1424,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         ReportBottomSheet.newInstance(
                             postId,
                             context = object : ReportBottomSheet.OnReportOptionsClick {
-                                override fun onOption1(reasonType: String, reasonDesc: String) {
+                                override fun onReportAction(
+                                    reasonType: String,
+                                    reasonDesc: String
+                                ) {
                                     feedViewModel.sendReport(
                                         positionInFeed,
                                         postId,
@@ -1911,7 +1915,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null) {
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
-            videoDetailIntent.putExtra(POST_POSITION, positionInFeed)
+            videoDetailIntent.putExtra(PARAM_POST_POSITION, positionInFeed)
+            videoDetailIntent.putExtra(PARAM_VIDEO_INDEX, contentPosition)
             startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL)
         }
     }
@@ -2172,7 +2177,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 getString(com.tokopedia.affiliatecommon.R.string.af_title_ok),
                 View.OnClickListener {
                     Toaster.snackBar.dismiss()
-                })
+                }).show()
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()

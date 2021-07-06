@@ -7,6 +7,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kol.feature.video.view.fragment.PARAM_VIDEO_INDEX
 import com.tokopedia.kol.feature.video.view.fragment.POST_POSITION
 import com.tokopedia.kol.feature.video.view.fragment.VideoDetailFragment
 import com.tokopedia.kotlin.extensions.view.hide
@@ -42,6 +43,7 @@ class VideoDetailActivity : BaseSimpleActivity() {
         val extras = Bundle()
         extras.putInt(POST_POSITION, intent.getIntExtra(POST_POSITION, 0))
         extras.putString(PARAM_ID, paramId)
+        extras.putInt(PARAM_VIDEO_INDEX, intent.getIntExtra(PARAM_VIDEO_INDEX, 0))
         return VideoDetailFragment.getInstance(extras)
     }
 

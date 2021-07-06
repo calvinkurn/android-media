@@ -306,6 +306,16 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSuccessSendReport() {
+
+    }
+
+    @Override
+    public void onErrorSendReport(String message) {
+
+    }
+
+    @Override
     public void onSuccessChangeWishlist() {
         setWishlist(true);
     }

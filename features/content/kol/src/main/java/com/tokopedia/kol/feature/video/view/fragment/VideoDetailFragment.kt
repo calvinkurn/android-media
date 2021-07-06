@@ -48,6 +48,8 @@ import javax.inject.Inject
  */
 
 const val POST_POSITION = "position"
+const val PARAM_VIDEO_INDEX = "video_index"
+
 
 class VideoDetailFragment :
     BaseDaggerFragment(),
@@ -70,6 +72,8 @@ class VideoDetailFragment :
 
     private var id: String = ""
 
+    private var index: Int = 0
+
     companion object {
         private const val INTENT_COMMENT = 1234
         private const val LOGIN_CODE = 1383
@@ -88,7 +92,7 @@ class VideoDetailFragment :
 
     override fun initInjector() {
         DaggerKolComponent.builder()
-            .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
     }
@@ -104,6 +108,7 @@ class VideoDetailFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         id = arguments?.getString(VideoDetailActivity.PARAM_ID, "") ?: ""
+        index = arguments?.getInt(PARAM_VIDEO_INDEX, 0) ?: 0
         presenter.attachView(this)
         initView()
         initViewListener()
@@ -197,12 +202,16 @@ class VideoDetailFragment :
     }
 
     override fun onSuccessGetVideoDetail(visitables: List<Visitable<*>>) {
-        dynamicPostViewModel = visitables.get(0) as DynamicPostViewModel
+        dynamicPostViewModel = visitables[0] as DynamicPostViewModel
         bindHeader(dynamicPostViewModel.header)
         bindCaption(dynamicPostViewModel.caption, dynamicPostViewModel.template.cardpost.body)
         bindFooter(dynamicPostViewModel.footer, dynamicPostViewModel.template.cardpost.footer)
 
-        videoViewModel = dynamicPostViewModel.contentList[0] as VideoViewModel
+        videoViewModel = if (dynamicPostViewModel.contentList.size > index) {
+            dynamicPostViewModel.contentList[index] as VideoViewModel
+        } else {
+            dynamicPostViewModel.contentList[0] as VideoViewModel
+        }
         initPlayer(videoViewModel.url)
 
     }

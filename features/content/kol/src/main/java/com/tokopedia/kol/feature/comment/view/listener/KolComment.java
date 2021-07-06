@@ -64,6 +64,10 @@ public interface KolComment {
 
         void onHashTagClicked(String hashTag, String id);
 
+        void onSuccessSendReport();
+
+        void onErrorSendReport(String message);
+
 
         interface ViewHolder {
             void onGoToProfile(String url);
@@ -94,5 +98,8 @@ public interface KolComment {
         void sendComment(int id, String comment);
 
         void getMentionableUserByKeyword(String keyword);
+
+        void sendReport(int contentId, String reasonType, String reasonMessage, String contentType);
+
     }
 }

@@ -43,7 +43,7 @@ class ReportBottomSheet : BottomSheetUnify() {
     private fun sendReport() {
         getReason()
         setFinalView()
-        onReportOptionsClick?.onOption1(reasonType, reasonDesc)
+        onReportOptionsClick?.onReportAction(reasonType, reasonDesc)
     }
 
     private fun getReason() {
@@ -107,6 +107,6 @@ class ReportBottomSheet : BottomSheetUnify() {
     }
 
     interface OnReportOptionsClick {
-        fun onOption1(reasonType: String, reasonDesc: String)
+        fun onReportAction(reasonType: String, reasonDesc: String)
     }
 }

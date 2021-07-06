@@ -40,7 +40,6 @@ import com.tokopedia.kol.feature.comment.view.listener.KolComment
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments
-import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
@@ -54,19 +53,17 @@ import java.util.*
 import javax.inject.Inject
 
 class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
-    MentionAdapterListener, ContentReportContract.View {
+    MentionAdapterListener {
 
     private var adapter: KolCommentAdapter? = null
     private var header: KolCommentHeaderNewModel? = null
     private var listComment: RecyclerView? = null
-    private var adapterPosition = 0
     private var sendButton: ImageView? = null
     private var userSession: UserSessionInterface? = null
     private var kolComment: MentionEditText? = null
     private var avatarShop: ImageView? = null
     private var mentionAdapter: MentionableUserAdapter? = null
     private var totalNewComment = 0
-    private var commentId = "0"
     private lateinit var globalError: GlobalError
 
     @Inject
@@ -74,9 +71,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     @Inject
     lateinit var presenter: KolComment.Presenter
-
-    @Inject
-    lateinit var presenterReport: ContentReportContract.Presenter
 
     @Inject
     lateinit var typeFactory: KolCommentTypeFactory
@@ -107,7 +101,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         sendButton = parentView.findViewById(R.id.send_but)
         prepareView()
         presenter.attachView(this)
-        presenterReport.attachView(this)
         return parentView
     }
 
@@ -194,10 +187,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         reasonType: String,
         reasonDesc: String
     ) {
-        presenterReport.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
-        this.adapterPosition = adapterPosition
-        this.commentId = id
-        feedAnalytics.clickReportCommentPage(commentId)
+        presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
+        feedAnalytics.clickReportCommentPage(id)
     }
 
     override fun onMenuClicked(
@@ -216,7 +207,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 ReportBottomSheet.newInstance(
                     id.toInt(),
                     context = object : ReportBottomSheet.OnReportOptionsClick {
-                        override fun onOption1(reasonType: String, reasonDesc: String) {
+                        override fun onReportAction(reasonType: String, reasonDesc: String) {
                             reportAction(
                                 adapterPosition,
                                 id,
@@ -354,28 +345,16 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         adapter?.deleteItem(adapterPosition)
     }
 
-    override fun hideKeyboard() {
-    }
-
-    override fun enableSendBtn() {
-    }
-
     override fun showLoading() {
         adapter?.showLoading()
     }
 
-    override fun hideLoading() {
-        adapter?.removeLoading()
-    }
-
     override fun onSuccessSendReport() {
+        adapter?.removeLoading()
     }
 
     override fun onErrorSendReport(message: String) {
         showToastMessage(message)
-    }
-
-    override fun onErrorSendReportDuplicate(message: String) {
     }
 
     override fun showMentionUserSuggestionList(userList: MutableList<MentionableUserViewModel>?) {
@@ -512,7 +491,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-        presenterReport.detachView()
     }
 
 }
