@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/Unify_N600"
-        app:titleTextColor="@color/Unify_N0"/>
+        app:titleTextColor="@color/Unify_Background"/>
 
     <fragment
         android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
