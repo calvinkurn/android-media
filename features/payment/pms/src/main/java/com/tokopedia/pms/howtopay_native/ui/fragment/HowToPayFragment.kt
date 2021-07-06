@@ -313,16 +313,14 @@ class HowToPayFragment : BaseDaggerFragment() {
         if (!paymentChannels.isNullOrEmpty()) {
             recyclerView.layoutManager = NonScrollLinerLayoutManager(activity as Context)
             recyclerView.adapter = MultiChannelAdapter(paymentChannels)
-            recyclerView.post { recyclerView.adapter?.notifyDataSetChanged() }
+            recyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
     private fun addSingleChannelInstruction(instructions: ArrayList<String>) {
         recyclerView.layoutManager = NonScrollLinerLayoutManager(activity as Context)
         recyclerView.adapter = InstructionAdapter(instructions, null)
-        recyclerView.post {
-            recyclerView.adapter?.notifyDataSetChanged()
-        }
+        recyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun highlightLastThreeDigits(amountStr: String): SpannableString {
