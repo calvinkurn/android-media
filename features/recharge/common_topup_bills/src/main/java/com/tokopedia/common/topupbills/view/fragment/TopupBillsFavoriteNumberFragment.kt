@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.Html
@@ -28,7 +27,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
@@ -77,15 +75,15 @@ class TopupBillsFavoriteNumberFragment :
     private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
-    private lateinit var clientNumbers: MutableList<TopupBillsSeamlessFavNumberItem>
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
     private lateinit var localCacheHandler: LocalCacheHandler
-
     protected lateinit var inputNumberActionType: InputNumberActionType
 
     private var number: String = ""
+
     private var binding: FragmentFavoriteNumberBinding? = null
+    private var clientNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
 
     override fun initInjector() {
         getComponent(CommonTopupBillsComponent::class.java).inject(this)
@@ -99,7 +97,6 @@ class TopupBillsFavoriteNumberFragment :
         arguments?.run {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
-            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST) ?: mutableListOf()
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
         }
     }
@@ -111,8 +108,9 @@ class TopupBillsFavoriteNumberFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         observeData()
+        loadData()
+        initView()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
         if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
@@ -149,10 +147,6 @@ class TopupBillsFavoriteNumberFragment :
             searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
         }
 
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (clientNumbers.isNullOrEmpty()) hide() else show()
-        }
-
         binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
             inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
@@ -162,14 +156,9 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun initRecyclerView() {
         val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
-
-        if (clientNumbers.isNotEmpty()) {
-            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
-                    CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers), typeFactory)
-        } else {
-            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
-                    listOf(TopupBillsFavNumberNotFoundDataView()), typeFactory)
-        }
+        numberListAdapter = TopupBillsFavoriteNumberListAdapter(
+                getListOfShimmeringDataView(), typeFactory
+        )
 
         binding?.commonTopupbillsFavoriteNumberRv?.run {
             layoutManager = LinearLayoutManager(activity)
@@ -179,6 +168,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun observeData() {
         topUpBillsViewModel.seamlessFavNumberUpdateData.observe(viewLifecycleOwner, Observer {
+            binding?.commonTopupbillsSearchNumberInputView?.clearFocus()
             when (it) {
                 is Success -> onSuccessUpdateClientName()
                 is Fail -> onFailedUpdateClientName()
@@ -195,21 +185,34 @@ class TopupBillsFavoriteNumberFragment :
         topUpBillsViewModel.seamlessFavNumberDeleteData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessDeleteClientName()
-                is Fail -> onSuccessDeleteClientName()
+                is Fail -> onFailedDeleteClientName()
             }
         })
     }
 
+    private fun loadData() {
+        getSeamlessFavoriteNumber()
+    }
+
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
-        clientNumbers = newClientNumbers.toMutableList()
-        numberListAdapter.setNumbers(CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(
-                clientNumbers
-        ))
+        clientNumbers = newClientNumbers
+        if (clientNumbers.isNotEmpty()) {
+            numberListAdapter.setNumbers(
+                    CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
+        } else {
+            numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+        }
+        binding?.commonTopupbillsFavoriteNumberClue?.run {
+            if (clientNumbers.isNullOrEmpty()) hide() else show()
+        }
     }
 
     private fun onFailedGetFavoriteNumber() {
         view?.let {
-            Toaster.build(it, "anjay gagal", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(
+                    it, getString(R.string.common_topup_fav_number_failed_fetch_after_update),
+                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.common_topup_fav_number_refresh),
+                    View.OnClickListener { getSeamlessFavoriteNumber() }).show()
         }
     }
 
@@ -270,18 +273,6 @@ class TopupBillsFavoriteNumberFragment :
         } else {
             numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
         }
-    }
-
-
-    private fun findNumber(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): TopupBillsSeamlessFavNumberItem? {
-        var foundClientNumber: TopupBillsSeamlessFavNumberItem? = null
-        for (orderClientNumber in clientNumbers) {
-            if (orderClientNumber.clientNumber.equals(number, ignoreCase = true)) {
-                foundClientNumber = orderClientNumber
-                break
-            }
-        }
-        return foundClientNumber
     }
 
     fun onSearchSubmitted(text: String?) {
@@ -360,37 +351,51 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessUpdateClientName() {
-        topUpBillsViewModel.getSeamlessFavoriteNumbers(
-                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-                topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
-        )
-
+        showShimmering()
+        getSeamlessFavoriteNumber()
         view?.let {
-            Toaster.build(it, "Oke, nama berhasil diubah.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.build(it, getString(R.string.common_topup_fav_number_success_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
     private fun onFailedUpdateClientName() {
         view?.let {
-            Toaster.build(it, "Maaf, belum berhasil diubah. Coba lagi, ya.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, getString(R.string.common_topup_fav_number_failed_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
     private fun onSuccessDeleteClientName() {
-        topUpBillsViewModel.getSeamlessFavoriteNumbers(
-                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-                topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
-        )
-
+        showShimmering()
+        getSeamlessFavoriteNumber()
         view?.let {
-            Toaster.build(it, "Oke, nomor berhasil dihapus", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
     private fun onFailedDeleteClientName() {
         view?.let {
-            Toaster.build(it, "Maaf, belum berhasil terhapus. Coba lagi, ya.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, getString(R.string.common_topup_fav_number_failed_delete_name), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
+    }
+
+    private fun getSeamlessFavoriteNumber() {
+        topUpBillsViewModel.getSeamlessFavoriteNumbers(
+                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+                topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
+        )
+    }
+
+    private fun showShimmering() {
+        numberListAdapter.setShimmer(getListOfShimmeringDataView())
+    }
+
+    private fun getListOfShimmeringDataView(): List<TopupBillsFavNumberShimmerDataView> {
+        return listOf(
+                TopupBillsFavNumberShimmerDataView(),
+                TopupBillsFavNumberShimmerDataView(),
+                TopupBillsFavNumberShimmerDataView(),
+                TopupBillsFavNumberShimmerDataView()
+        )
     }
 
     private fun showCoachmark() {
@@ -454,7 +459,7 @@ class TopupBillsFavoriteNumberFragment :
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val isDelete = false
-        topUpBillsViewModel.updateSeamlessFavoriteNumber(
+        topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
                         categoryId = favNumberItem.categoryId,
@@ -462,7 +467,7 @@ class TopupBillsFavoriteNumberFragment :
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = 0,
                         label = newName,
-                        updateStatus = false
+                        isDelete = false
                 ),
                 isDelete
         )
@@ -472,14 +477,14 @@ class TopupBillsFavoriteNumberFragment :
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.run {
-                setTitle("Yakin hapus nomor ini?")
+                setTitle(getString(R.string.common_topup_fav_number_delete_dialog_title))
                 setDescription(Html.fromHtml(
                         getString(R.string.common_topup_fav_number_delete_dialog,
                         favNumberItem.clientName,
                         favNumberItem.clientNumber)))
-                setSecondaryCTAText("Batal")
+                setSecondaryCTAText(getString(R.string.common_topup_fav_number_delete_dialog_cancel))
                 setSecondaryCTAClickListener { dismiss() }
-                setPrimaryCTAText("Hapus")
+                setPrimaryCTAText(getString(R.string.common_topup_fav_number_delete_dialog_confirm))
                 setPrimaryCTAClickListener {
                     onConfirmDelete(favNumberItem)
                     dismiss()
@@ -491,7 +496,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val isDelete = true
-        topUpBillsViewModel.updateSeamlessFavoriteNumber(
+        topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
                         categoryId = favNumberItem.categoryId,
@@ -499,7 +504,7 @@ class TopupBillsFavoriteNumberFragment :
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = 0,
                         label = favNumberItem.clientName,
-                        updateStatus = isDelete
+                        isDelete = isDelete
                 ),
                 isDelete
         )
@@ -531,7 +536,6 @@ class TopupBillsFavoriteNumberFragment :
     companion object {
         const val REQUEST_CODE_CONTACT_PICKER = 75
 
-        const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
@@ -540,7 +544,6 @@ class TopupBillsFavoriteNumberFragment :
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
 
         fun newInstance(clientNumberType: String, number: String,
-                        numberList: List<TopupBillsSeamlessFavNumberItem>,
                         digitalCategoryIds: ArrayList<String>
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
@@ -548,7 +551,6 @@ class TopupBillsFavoriteNumberFragment :
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
-            bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             fragment.arguments = bundle
             return fragment
         }

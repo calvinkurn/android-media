@@ -29,7 +29,7 @@ class FavoriteNumberModifyBottomSheet(
     }
 
     private fun initBottomSheet() {
-        setTitle("Ubah nama nomor ini")
+        setTitle(getString(R.string.common_topup_fav_number_modify_bottom_sheet_title))
         setCloseClickListener { dismiss() }
 
         childView = View.inflate(context, R.layout.bottom_sheet_seamless_favorite_number_modify, null)
@@ -64,29 +64,6 @@ class FavoriteNumberModifyBottomSheet(
                 }
             }
 
-            common_topupbills_favorite_number_name_field.run {
-                textFieldInput.addTextChangedListener(object: TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-                        // do nothing
-                    }
-
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                        // do nothing
-                    }
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        val errMsg = validateClientName(s.toString())
-                        if (errMsg.isNullOrEmpty()) {
-                            setMessage("")
-                            setError(false)
-                        } else {
-                            setMessage(errMsg)
-                            setError(true)
-                        }
-                    }
-                })
-            }
-
             common_topupbills_favorite_number_phone_field.textFieldInput.run {
                 isClickable = false
                 isFocusable = false
@@ -97,13 +74,13 @@ class FavoriteNumberModifyBottomSheet(
     private fun validateClientName(clientName: String): String? {
         val mClientName = clientName
         if (mClientName.length > 18) {
-            return "Maksimal 18 karakter. Coba pendekin, yuk!"
+            return getString(R.string.common_topup_fav_number_validator_more_than_18_char)
         }
         if (mClientName.length < 3) {
-            return "Minimal 3 karakter. Tambah lagi, yuk!"
+            return getString(R.string.common_topup_fav_number_validator_less_than_3_char)
         }
         if (!mClientName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex())) {
-            return "Oops, cuma boleh pakai huruf A-Z dan angka 0-9 ya."
+            return getString(R.string.common_topup_fav_number_validator_alphanumeric)
         }
         return null
     }
