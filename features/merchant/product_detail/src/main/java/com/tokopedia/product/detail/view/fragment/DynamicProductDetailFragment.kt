@@ -1301,6 +1301,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.miniCartData.observe(viewLifecycleOwner) {
             if (it) {
                 updateButtonState()
+                if (firstOpenPage == false) {
+                    pdpUiUpdater?.updateRecomTokonowQuantityData(viewModel.p2Data.value?.miniCart)
+                    updateUi()
+                }
             }
         }
     }

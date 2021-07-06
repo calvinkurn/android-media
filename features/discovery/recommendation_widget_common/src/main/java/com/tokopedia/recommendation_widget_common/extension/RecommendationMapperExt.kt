@@ -100,7 +100,9 @@ fun RecommendationItem.toProductCardModel(
 ) : ProductCardModel{
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
+    var hasThreeDotsFinalValue = hasThreeDots
     if (isRecomProductShowVariantAndCart) {
+        hasThreeDotsFinalValue = false
         if (isProductHasParentID()) variant = ProductCardModel.Variant(quantity = quantity)
         else nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
     }
@@ -111,7 +113,7 @@ fun RecommendationItem.toProductCardModel(
             productImageUrl = imageUrl,
             isTopAds = isTopAds,
             isWishlistVisible = true,
-            hasThreeDots = hasThreeDots,
+            hasThreeDots = hasThreeDotsFinalValue,
             isWishlisted = isWishlist,
             discountPercentage = discountPercentage,
             reviewCount = countReview,
