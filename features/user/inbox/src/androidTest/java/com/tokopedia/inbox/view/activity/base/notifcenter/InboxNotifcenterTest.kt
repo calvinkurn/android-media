@@ -3,6 +3,7 @@ package com.tokopedia.inbox.view.activity.base.notifcenter
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -112,6 +113,13 @@ object NotifcenterAssertion {
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.btn_loading)
         ).check(matches(withText(title)))
+    }
+
+    fun assertEmptyNotifStateWithRecomText(position: Int, @StringRes msgRes: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tv_empty_title)
+        ).check(matches(withText(msgRes)))
     }
 
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {

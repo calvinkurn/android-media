@@ -32,6 +32,16 @@ class FakeNotifcenterDetailUseCase(
             NotifcenterDetailResponse::class.java
         )
 
+    val emptyNotifications: NotifcenterDetailResponse
+        get() {
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3).apply {
+                    getAsJsonArray(list).removeAll { true }
+                    getAsJsonArray(new_list).removeAll { true }
+                }
+            }
+        }
+
     val newListOnly: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {

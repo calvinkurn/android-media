@@ -1,8 +1,10 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
+import com.tokopedia.inbox.R
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.EmptyNotificationWithRecomViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NormalNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
@@ -236,7 +238,26 @@ class NotifcenterNotificationList : InboxNotifcenterTest() {
         NotifcenterAssertion.assertSectionTitleTextAt(4, TITLE_EARLIER)
     }
 
-    // TODO: should show empty state with just text when notifications is empty
+    @Test
+    fun should_show_empty_state_with_just_text_when_notifications_is_empty() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.emptyNotifications
+        }
+        startInboxActivity()
+
+        // Then
+        waitForIt(5000)
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                1, EmptyNotificationWithRecomViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertEmptyNotifStateWithRecomText(
+            1, R.string.title_notifcenter_empty_with_recom
+        )
+    }
+
     // TODO: should show empty state with illustration when notifications is empty with filter
     // TODO: assert big divider location
 
