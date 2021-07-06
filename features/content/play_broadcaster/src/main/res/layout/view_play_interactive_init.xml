@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_interactive"
+    app:cornerRadius="@dimen/play_interactive_create_radius">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_interactive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_interactive_gift"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/play_dp_12"
+        android:text="@string/play_interactive_create_game"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/iv_interactive"
+        app:layout_constraintStart_toEndOf="@id/iv_interactive"
+        app:layout_constraintTop_toTopOf="@id/iv_interactive"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

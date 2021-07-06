@@ -4,7 +4,7 @@
     <string name="play_common_live">Live</string>
     <string name="lihat_semua">Lihat semua</string>
 
-    <string name="play_engage_leaderboard_title">Pemenang &amp; peserta game</string>
-    <string name="play_engage_winner">Pemenang</string>
-    <string name="play_engage_empty">Belum ada yang ikut main di sesi ini</string>
+    <string name="play_interactive_leaderboard_title">Pemenang &amp; peserta game</string>
+    <string name="play_interactive_winner">Pemenang</string>
+    <string name="play_interactive_empty">Belum ada yang ikut main di sesi ini</string>
 </resources>
