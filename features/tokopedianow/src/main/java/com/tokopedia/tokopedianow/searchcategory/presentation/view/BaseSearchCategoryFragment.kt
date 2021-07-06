@@ -614,9 +614,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_lihat)) {
-            RouteManager.route(context, ApplinkConst.CART)
-        }
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_oke))
     }
 
     protected open fun showToaster(
