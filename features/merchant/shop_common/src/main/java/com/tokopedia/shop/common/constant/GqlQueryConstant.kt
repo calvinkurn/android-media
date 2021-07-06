@@ -225,8 +225,6 @@ object GqlQueryConstant {
             "          endDateUTC\n" +
             "          openDateUTC\n" +
             "        }\n" +
-            "        closedNote\n" +
-            "        reason\n" +
             "        until\n" +
             "      }\n" +
             "    }"

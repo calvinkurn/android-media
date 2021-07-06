@@ -63,6 +63,17 @@ object OperationalHoursUtil {
     }
 
     /**
+     * Get day with format 1 - 7 from Monday to Sunday
+     * @return [Int]
+     */
+    fun getOrdinalDate(dayOfWeek: Int): Int {
+        return if (dayOfWeek == 1) {
+            dayOfWeek + 6
+        }
+        else dayOfWeek - 1
+    }
+
+    /**
      * Generate Shop operational hours wording
      * Example : "Jam 10.00 - 16.00 WIB"
      * @return [String]
