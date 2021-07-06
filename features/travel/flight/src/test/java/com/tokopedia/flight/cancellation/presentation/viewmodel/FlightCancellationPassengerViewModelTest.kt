@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_JOURNEY
 import com.tokopedia.flight.dummy.DUMMY_CANCELLED_PASSENGER
 import com.tokopedia.flight.dummy.DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION
@@ -12,6 +11,7 @@ import com.tokopedia.flight.dummy.DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCEL
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -84,7 +84,7 @@ class FlightCancellationPassengerViewModelTest {
     @Test
     fun getCancellablePassenger_failToFetch_valueShouldBeNull() {
         // given
-        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } coAnswers { throw Throwable() }
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } coAnswers { throw NoSuchElementException() }
 
         // when
         viewModel.getCancellablePassenger("", arrayListOf())
@@ -285,7 +285,10 @@ class FlightCancellationPassengerViewModelTest {
         // then
         for (item in viewModel.selectedCancellationPassengerList) {
             val route = "${item.flightCancellationJourney.departureAirportId}${item.flightCancellationJourney.arrivalAirportId}"
-            val departureDate = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, item.flightCancellationJourney.departureTime)
+            val departureDate = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.YYYYMMDD,
+                    item.flightCancellationJourney.departureTime)
 
             coVerify {
                 flightAnalytics.eventClickNextOnCancellationPassenger(

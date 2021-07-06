@@ -16,7 +16,7 @@
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
+    <com.tokopedia.hotel.search_map.presentation.widget.HotelFilterPriceRangeSlider
         android:id="@+id/hotel_filter_open_range_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
