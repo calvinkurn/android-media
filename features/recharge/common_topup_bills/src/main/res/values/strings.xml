@@ -40,4 +40,8 @@
     <string name="common_topup_fav_number_failed_update_name">Maaf, belum berhasil diubah. Coba lagi, ya.</string>
     <string name="common_topup_fav_number_failed_fetch_after_update">Maaf, nama belum berhasil ke-update. Coba refresh, yuk.</string>
     <string name="common_topup_fav_number_refresh">Refresh</string>
+    <string name="common_topup_fav_number_modify_bottom_sheet_title">Ubah nama nomor ini</string>
+    <string name="common_topup_fav_number_validator_more_than_18_char">Maksimal 18 karakter. Coba pendekin, yuk!</string>
+    <string name="common_topup_fav_number_validator_less_than_3_char">Minimal 3 karakter. Tambah lagi, yuk!</string>
+    <string name="common_topup_fav_number_validator_alphanumeric">Oops, cuma boleh pakai huruf A-Z dan angka 0-9 ya.</string>
 </resources>

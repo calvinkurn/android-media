@@ -324,7 +324,7 @@ class TopupBillsFavoriteNumberFragment :
                                 openContactPicker()
                             }
                         })
-            }!!
+            }
         } else {
             openContactPicker()
         }
@@ -359,8 +359,7 @@ class TopupBillsFavoriteNumberFragment :
     private fun getSeamlessFavoriteNumber() {
         topUpBillsViewModel.getSeamlessFavoriteNumbers(
                 CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-                topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds),
-                isLoadFromCloud = true
+                topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
         )
     }
 
@@ -476,7 +475,6 @@ class TopupBillsFavoriteNumberFragment :
     companion object {
         const val REQUEST_CODE_CONTACT_PICKER = 75
 
-        const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
