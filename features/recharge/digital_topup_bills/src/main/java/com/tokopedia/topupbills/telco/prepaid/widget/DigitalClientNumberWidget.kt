@@ -6,17 +6,20 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import org.jetbrains.annotations.NotNull
 
 /**

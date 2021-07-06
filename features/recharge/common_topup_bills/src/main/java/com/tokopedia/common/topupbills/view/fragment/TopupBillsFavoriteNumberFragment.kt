@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -197,6 +198,22 @@ class TopupBillsFavoriteNumberFragment :
                 is Fail -> onFailedDeleteClientName()
             }
         })
+        
+        topUpBillsViewModel.seamlessFavNumberUndoDeleteData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessUndoDeleteFavoriteNumber()
+                is Fail -> onFailedUndoDeleteFavoriteNumber()
+            }
+        })
+    }
+
+    private fun onSuccessUndoDeleteFavoriteNumber() {
+        showShimmering()
+        getSeamlessFavoriteNumber()
+    }
+
+    private fun onFailedUndoDeleteFavoriteNumber() {
+
     }
 
     private fun loadData() {
@@ -402,7 +419,7 @@ class TopupBillsFavoriteNumberFragment :
                         label = deletedFavoriteNumber.label,
                         isDelete = isDelete
                 ),
-                isDelete
+                FavoriteNumberActionType.UNDO_DELETE
         )
     }
 
@@ -497,7 +514,7 @@ class TopupBillsFavoriteNumberFragment :
                         label = newName,
                         isDelete = isDelete
                 ),
-                isDelete
+                FavoriteNumberActionType.UPDATE
         )
     }
 
@@ -523,23 +540,28 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val isDelete = true
-        topUpBillsViewModel.modifySeamlessFavoriteNumber(
-                CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
-                topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = favNumberItem.categoryId,
-                        productId = favNumberItem.productId,
-                        clientNumber = favNumberItem.clientNumber,
-                        totalTransaction = DEFAULT_TOTAL_TRANSACTION,
-                        label = favNumberItem.clientName,
-                        isDelete = isDelete
-                ),
-                isDelete
-        )
+
+//        val isDelete = true
+//        topUpBillsViewModel.modifySeamlessFavoriteNumber(
+//                CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
+//                topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
+//                        categoryId = favNumberItem.categoryId,
+//                        productId = favNumberItem.productId,
+//                        clientNumber = favNumberItem.clientNumber,
+//                        totalTransaction = DEFAULT_TOTAL_TRANSACTION,
+//                        label = favNumberItem.clientName,
+//                        isDelete = isDelete
+//                ),
+//                FavoriteNumberActionType.DELETE
+//        )
     }
 
     enum class InputNumberActionType {
         MANUAL, CONTACT, FAVORITE
+    }
+
+    enum class FavoriteNumberActionType {
+        UPDATE, DELETE, UNDO_DELETE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -572,6 +594,7 @@ class TopupBillsFavoriteNumberFragment :
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
 
         private const val DEFAULT_TOTAL_TRANSACTION = 0
+        private const val SNACKBAR_SHORT_DURATION = 1600
 
         fun newInstance(clientNumberType: String, number: String,
                         digitalCategoryIds: ArrayList<String>

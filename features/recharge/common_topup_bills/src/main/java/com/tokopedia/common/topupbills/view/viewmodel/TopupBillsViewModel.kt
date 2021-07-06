@@ -8,6 +8,8 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -65,6 +67,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     private val _seamlessFavNumberDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
     val seamlessFavNumberDeleteData: LiveData<Result<UpdateFavoriteDetail>>
         get() = _seamlessFavNumberDeleteData
+
+    private val _seamlessFavNumberUndoDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
+    val seamlessFavNumberUndoDeleteData: LiveData<Result<UpdateFavoriteDetail>>
+        get() = _seamlessFavNumberUndoDeleteData
 
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
     val checkVoucherData : LiveData<Result<PromoData>>
@@ -163,23 +169,27 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun modifySeamlessFavoriteNumber(rawQuery: String, mapParam: Map<String, Any>, isDelete: Boolean = false) {
+    fun modifySeamlessFavoriteNumber(
+            rawQuery: String,
+            mapParam: Map<String, Any>,
+            actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
+    ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberModData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
-            if (isDelete) {
-                _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
-            } else {
-                _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
+            when (actionType) {
+                UPDATE -> _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
+                DELETE -> _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
+                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Success(data.updateFavoriteDetail))
             }
         }) {
-            if (isDelete) {
-                _seamlessFavNumberDeleteData.postValue(Fail(it))
-            } else {
-                _seamlessFavNumberUpdateData.postValue(Fail(it))
+            when (actionType) {
+                UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
+                DELETE -> _seamlessFavNumberDeleteData.postValue(Fail(it))
+                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }
         }
     }
