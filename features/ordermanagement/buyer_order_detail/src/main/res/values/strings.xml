@@ -37,4 +37,7 @@
     <string name="buyer_order_detail_label_invoice">Lihat Invoice</string>
     <string name="buyer_order_detail_error_message_no_product">Tidak ada produk yang dapat ditambahkan ke keranjang!</string>
     <string name="label_call">Hubungi</string>
+
+    <!--Product Bundling-->
+    <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
 </resources>

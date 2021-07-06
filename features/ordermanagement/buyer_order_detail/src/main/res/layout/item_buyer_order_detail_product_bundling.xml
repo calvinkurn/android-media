@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_bom_detail_bundling"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_bom_detail_bundling_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            app:srcCompat="@drawable/ic_buyer_order_product_bundling"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_bom_detail_bundling_top"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bom_detail_bundling_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/buyer_order_detail_bundling_name_margin_start"
+            app:layout_constraintStart_toEndOf="@id/iv_bom_detail_bundling_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_bom_detail_bundling_top"
+            app:typographyType="heading_6"
+            tools:text="Paket Tahun Baru"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_bom_detail_bundling_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/buyer_order_detail_divider_height"
+            android:layout_marginTop="@dimen/buyer_order_detail_bundling_divider_margin_top"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_bom_detail_bundling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/divider_bom_detail_bundling_top"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_bom_detail_bundling_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/buyer_order_detail_divider_height"
+            app:layout_constraintTop_toBottomOf="@id/rv_bom_detail_bundling"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bom_detail_bundling_price_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="@string/buyer_order_detail_bundling_price_total"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toBottomOf="@id/divider_bom_detail_bundling_bottom"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bom_detail_bundling_price_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="@id/tv_bom_detail_bundling_price_title"
+            app:typographyType="heading_6"
+            app:layout_constraintTop_toBottomOf="@id/tv_bom_detail_bundling_price_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Rp150.000"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

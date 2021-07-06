@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_item_bom_detail_bundling_thumbnail"
+        android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
+        android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_bom_detail_bundling_product_name"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tv_item_bom_detail_bundling_product_price_quantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_item_bom_detail_bundling_thumbnail"
+        app:layout_constraintTop_toTopOf="@id/iv_item_bom_detail_bundling_thumbnail"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="heading_6"
+        tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_bom_detail_bundling_product_price_quantity"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/iv_item_bom_detail_bundling_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_item_bom_detail_bundling_product_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_bom_detail_bundling_product_name"
+        app:typographyType="body_3"
+        tools:text="2 x Rp 2.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_bom_detail_bundling_product_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintTop_toBottomOf="@id/iv_item_bom_detail_bundling_thumbnail"
+        app:typographyType="body_3"
+        tools:text="43 Size. Packing rapi plis." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
