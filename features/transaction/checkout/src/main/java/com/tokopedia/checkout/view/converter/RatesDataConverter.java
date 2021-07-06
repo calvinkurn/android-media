@@ -68,7 +68,13 @@ public class RatesDataConverter {
                 if (!cartItemModel.isError()) {
                     orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
                     totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
-                    totalWeightActual += (cartItemModel.getQuantity() * cartItemModel.getWeightActual());
+                    double weightActual;
+                    if (cartItemModel.getWeightActual() > 0) {
+                        weightActual = cartItemModel.getWeightActual();
+                    } else {
+                        weightActual = cartItemModel.getWeight();
+                    }
+                    totalWeightActual += (cartItemModel.getQuantity() * weightActual);
                     preOrderDuration = cartItemModel.getPreOrderDurationDay();
                 }
             }
