@@ -117,8 +117,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USE
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 import static com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
 import static com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment.CREATE_REVIEW_ERROR_MESSAGE;
@@ -905,7 +903,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
 
                 if (actionButton.getKey().equalsIgnoreCase(BuyerConsts.KEY_REQUEST_CANCEL)) {
-                    Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
+                    Intent buyerReqCancelIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
@@ -921,6 +919,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE_URL, invoiceUrl);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_ID, status.status());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_STATUS_INFO, status.statusText());
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_HELP_LINK_URL, _helplink);
                     startActivityForResult(buyerReqCancelIntent, REQUEST_CANCEL_ORDER);
 
                 } else {
@@ -1086,30 +1085,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Toaster.build(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
                         }).show();
                     }
-                } else if (result == 3) {
-                    String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);
-                    String popupBody = data.getStringExtra(RESULT_POPUP_BODY_INSTANT_CANCEL);
-                    if (getContext() != null && popupTitle != null && popupBody != null) {
-                        DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE);
-                        dialogUnify.setTitle(popupTitle);
-                        dialogUnify.setDescription(popupBody);
-                        dialogUnify.setPrimaryCTAText(getString(R.string.mengerti_button));
-                        dialogUnify.setPrimaryCTAClickListener(() -> {
-                            dialogUnify.dismiss();
-                            return Unit.INSTANCE;
-                        });
-                        dialogUnify.setSecondaryCTAText(getString(R.string.pusat_bantuan_button));
-                        dialogUnify.setSecondaryCTAClickListener(() -> {
-                            dialogUnify.dismiss();
-                            if (!_helplink.isEmpty()) {
-                                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, _helplink);
-                            }
-                            return Unit.INSTANCE;
-                        });
-                        dialogUnify.show();
-                    }
-                }
-                if (result != 0) {
+                } else if (result != 0) {
                     finishOrderDetail();
                 }
             } else if (resultCode == CANCEL_ORDER_DISABLE) {

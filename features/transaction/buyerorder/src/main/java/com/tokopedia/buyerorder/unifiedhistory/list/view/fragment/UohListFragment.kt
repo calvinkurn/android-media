@@ -251,6 +251,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val UOH_CANCEL_ORDER = 300
         const val REQUEST_CODE_LOGIN = 288
         const val MIN_KEYWORD_CHARACTER_COUNT = 3
+        const val LABEL_HELP_LINK = "Bantuan"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1529,6 +1530,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
+                var helpLinkUrl = ""
+                orderData.metadata.dotMenus.forEach {
+                    if (it.label.equals(LABEL_HELP_LINK)) {
+                        helpLinkUrl = it.webURL
+                    }
+                }
+
                 val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
                 val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
                     putExtra(BuyerConsts.PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
@@ -1539,6 +1547,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     putExtra(BuyerConsts.PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
                     putExtra(BuyerConsts.PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
                     putExtra(BuyerConsts.PARAM_STATUS_ID, cancelOrderQueryParam.status)
+                    putExtra(BuyerConsts.PARAM_SOURCE_UOH, true)
+                    putExtra(BuyerConsts.PARAM_HELP_LINK_URL, helpLinkUrl)
                 }
                 startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
             } else {
