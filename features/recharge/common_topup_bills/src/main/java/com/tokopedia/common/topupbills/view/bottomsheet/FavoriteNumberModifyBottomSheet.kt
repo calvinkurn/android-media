@@ -73,10 +73,10 @@ class FavoriteNumberModifyBottomSheet(
 
     private fun validateClientName(clientName: String): String? {
         val mClientName = clientName
-        if (mClientName.length > 18) {
+        if (mClientName.length > MAX_CHAR) {
             return getString(R.string.common_topup_fav_number_validator_more_than_18_char)
         }
-        if (mClientName.length < 3) {
+        if (mClientName.length < MIN_CHAR) {
             return getString(R.string.common_topup_fav_number_validator_less_than_3_char)
         }
         if (!mClientName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex())) {
@@ -87,6 +87,8 @@ class FavoriteNumberModifyBottomSheet(
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val MAX_CHAR = 18
+        private const val MIN_CHAR = 3
 
         fun newInstance(favNumberItem: TopupBillsSeamlessFavNumberItem,
                         listener: FavoriteNumberModifyListener): FavoriteNumberModifyBottomSheet {
