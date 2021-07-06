@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
@@ -53,6 +54,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -68,6 +70,12 @@ class TopupBillsFavoriteNumberFragment :
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    @Inject
+    lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
