@@ -43,6 +43,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -354,7 +355,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
     fun getTickerInfo() {
         launchCatchError(coroutineContext, {
             val params = TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE)
-            val ticker = tickerInfoUseCase.createObservable(params).toBlocking().single()
+            val ticker = withContext(dispatchers.io) {
+                tickerInfoUseCase.createObservable(params).toBlocking().single()
+            }
             mutableGetTickerInfoResponse.value = Success(ticker)
         }, {
             mutableGetTickerInfoResponse.value = Fail(it)
