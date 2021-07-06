@@ -143,10 +143,6 @@ import java.net.UnknownHostException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 @Keep
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
@@ -473,7 +469,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isNavRevamp(): Boolean {
         val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false) ?: false
+        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false)
+                ?: false
         if (fromActivity) {
             return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION
         } else {
@@ -1780,16 +1777,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             validateRenderCart(it)
             validateShowPopUpMessage(cartListData)
-            validateRenderWishlist()
-            validateRenderRecentView()
-            loadRecommendation()
             validateRenderPromo(cartListData)
 
             setInitialCheckboxGlobalState(cartListData)
             setGlobalDeleteVisibility()
 
             validateGoToCheckout()
+
+            renderAdditionalWidget()
         }
+    }
+
+    private fun renderAdditionalWidget() {
+        validateRenderWishlist()
+        validateRenderRecentView()
+        loadRecommendation()
     }
 
     private fun updateStateAfterFinishGetCartList(it: CartListData) {
@@ -1823,13 +1825,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun validateRenderCart(it: CartListData) {
-        if (it.shopGroupAvailableDataList.isEmpty() && it.unavailableGroupData.isEmpty()) {
-            renderCartEmpty(it)
+    private fun validateRenderCart(cartListData: CartListData) {
+        if (cartListData.shopGroupAvailableDataList.isEmpty() && cartListData.unavailableGroupData.isEmpty()) {
+            renderCartEmpty(cartListData)
             setTopLayoutVisibility(false)
         } else {
-            renderCartNotEmpty(it)
-            setTopLayoutVisibility(it.shopGroupAvailableDataList.isNotEmpty())
+            renderCartNotEmpty(cartListData)
+            setTopLayoutVisibility(cartListData.shopGroupAvailableDataList.isNotEmpty())
         }
     }
 
