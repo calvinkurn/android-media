@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -99,7 +100,7 @@ class ProductViewHolder(
 
     private fun goToProductSnapshotPage() {
         element?.let {
-            if (it.orderId != "0") {
+            if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
                 navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
                 BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
             } else {

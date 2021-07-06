@@ -5,6 +5,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
@@ -20,8 +21,6 @@ class OrderStatusHeaderViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_status_info_header
-
-        private const val WAITING_INVOICE_ORDER_ID = "0"
     }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
@@ -101,6 +100,6 @@ class OrderStatusHeaderViewHolder(
     }
 
     private fun setupSeeDetailVisibility(orderId: String) {
-        tvBuyerOrderDetailSeeDetail?.showWithCondition(orderId.isNotBlank() && orderId != WAITING_INVOICE_ORDER_ID)
+        tvBuyerOrderDetailSeeDetail?.showWithCondition(orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
     }
 }

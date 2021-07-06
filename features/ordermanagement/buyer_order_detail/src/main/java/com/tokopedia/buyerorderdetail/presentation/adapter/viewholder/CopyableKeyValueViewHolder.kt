@@ -52,7 +52,7 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
     }
 
     private fun setupCopyIcon(copyLabel: String) {
-        icBuyerOrderDetailCopy?.apply {
+        icBuyerOrderDetailCopy?.run {
             tag = copyLabel
             showWithCondition(copyLabel.isNotBlank())
         }
