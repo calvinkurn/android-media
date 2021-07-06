@@ -44,8 +44,8 @@ class ReadReviewRatingBar : BaseCustomView {
         ratingTypography?.text = rating.toString()
     }
 
-    fun setProgressAndRatingCount(progress: Int, ratingCount: Long) {
+    fun setProgressAndRatingCount(progress: Int, formattedRatingCount: String) {
         progressBar?.setValue(progress)
-        ratingCountTypography?.text = ratingCount.toString()
+        ratingCountTypography?.text = formattedRatingCount
     }
 }

@@ -75,8 +75,8 @@ class ReadReviewHeader : BaseCustomView {
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter)) }
             filter.add(topicFilter)
         }
-        val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_most_helpful))
-        setListenerAndChevronListener(sortOption) { listener.onSortClicked(sortOption.title.toString()) }
+        val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_default))
+        setListenerAndChevronListener(sortOption) { listener.onSortClicked(mapSortTitleToBottomSheetInput(sortOption)) }
         filter.add(sortOption)
         return filter
     }
@@ -128,6 +128,14 @@ class ReadReviewHeader : BaseCustomView {
         }
     }
 
+    private fun mapSortTitleToBottomSheetInput(sortOption: SortFilterItem): String {
+        return if (sortOption.title == context.getString(R.string.review_reading_sort_default)) {
+            SortTypeConstants.MOST_HELPFUL_COPY
+        } else {
+            sortOption.title.toString()
+        }
+    }
+
     fun setRatingData(productRating: ProductRating) {
         rating?.setRating(productRating.ratingScore)
         this.satisfactionRate?.text = productRating.satisfactionRate
@@ -168,8 +176,13 @@ class ReadReviewHeader : BaseCustomView {
 
     fun updateSelectedSort(selectedSort: String) {
         sortFilter?.chipItems?.lastOrNull()?.apply {
-            title = selectedSort
-            type = if (selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+            if (selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) {
+                title = context.getString(R.string.review_reading_sort_default)
+                type = ChipsUnify.TYPE_NORMAL
+            } else {
+                title = selectedSort
+                type = ChipsUnify.TYPE_SELECTED
+            }
         }
     }
 }

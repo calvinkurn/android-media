@@ -86,6 +86,10 @@ class ReviewGalleryReviewDetailWidget : BaseCustomView {
     }
 
     fun setReviewMessage(reviewMessage: String, action: () -> Unit) {
+        if (reviewMessage.isEmpty()) {
+            reviewText?.text = context.getString(R.string.review_reading_empty_review)
+            return
+        }
         reviewText?.apply {
             isEnabled = true
             val formattingResult = ReviewUtil.reviewDescFormatter(context, reviewMessage, MAX_CHAR, ALLOW_CLICK)

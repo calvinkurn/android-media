@@ -74,6 +74,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val PRODUCT_ID_KEY = "ProductId"
         const val EMPTY_FILTERED_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/others/review-reading-filtered-empty.png"
         const val GALLERY_ACTIVITY_CODE = 420
+        const val REPORT_REVIEW_ACTIVITY_CODE = 421
         fun createNewInstance(productId: String): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
@@ -197,8 +198,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onSortClicked(chipTitle: String) {
-        val filterOptions = readReviewFilterFactory.getSortOptions(listOf(getString(R.string.review_reading_sort_most_helpful), getString(R.string.review_reading_sort_latest), getString(R.string.review_reading_sort_highest_rating), getString(R.string.review_reading_sort_lowest_rating)))
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterBottomSheetType.SortBottomSheet, setOf(), chipTitle, 0).show(it, ReadReviewFilterBottomSheet.TAG) }
+        val sortOptions = readReviewFilterFactory.getSortOptions(listOf(getString(R.string.review_reading_sort_most_helpful), getString(R.string.review_reading_sort_latest), getString(R.string.review_reading_sort_highest_rating), getString(R.string.review_reading_sort_lowest_rating)))
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), sortOptions, this, SortFilterBottomSheetType.SortBottomSheet, setOf(), chipTitle, 0).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onClearFiltersClicked() {
@@ -298,8 +299,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == GALLERY_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
-            loadInitialData()
+        when {
+            requestCode == GALLERY_ACTIVITY_CODE && resultCode == Activity.RESULT_OK -> {
+                loadInitialData()
+            }
+            requestCode == REPORT_REVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK -> {
+                showToaster(getString(R.string.review_reading_success_submit_report))
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -433,6 +439,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
+    private fun showToaster(message: String) {
+        reviewReadingCoordinatorLayout?.let {
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     private fun hideError() {
         if (globalError?.getErrorType() == GlobalError.NO_CONNECTION) {
             globalError?.hide()
@@ -504,7 +516,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toLongOrZero())
-        startActivity(intent)
+        startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
     }
 
     private fun logToCrashlytics(throwable: Throwable) {

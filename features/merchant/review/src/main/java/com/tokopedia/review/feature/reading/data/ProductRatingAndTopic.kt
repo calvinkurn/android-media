@@ -90,10 +90,10 @@ data class ProductReviewDetail(
         @SerializedName("rate")
         @Expose
         val rate: Int = 0,
-        @SerializedName("totalReviews")
+        @SerializedName("formattedTotalReviews")
         @Expose
-        val totalReviews: Long = 0L,
+        val totalReviews: String = "",
         @SerializedName("percentageFloat")
         @Expose
-        val percentage: Float = 0F,
+        val percentage: Float = 0F
 )
