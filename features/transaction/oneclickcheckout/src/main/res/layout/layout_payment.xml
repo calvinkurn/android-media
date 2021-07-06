@@ -52,7 +52,7 @@
         android:id="@+id/btn_order_detail"
         android:layout_width="@dimen/dp_32"
         android:layout_height="0dp"
-        app:icon_name="CHEVRON_DOWN"
+        app:icon_name="CHEVRON_UP"
         app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment_value"
         app:layout_constraintEnd_toStartOf="@+id/btn_pay"
         app:layout_constraintHorizontal_bias="0"

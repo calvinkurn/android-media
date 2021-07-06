@@ -6,9 +6,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.databinding.CardOrderShopBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.unifycomponents.ticker.Ticker
 import java.util.*
 
-class OrderShopCard(private val binding: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(binding.root) {
+class OrderShopCard(private val binding: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 2
@@ -56,6 +57,22 @@ class OrderShopCard(private val binding: CardOrderShopBinding, private val order
             } else {
                 iuFreeShipping.gone()
                 separatorFreeShipping.gone()
+            }
+
+            renderShopError()
+        }
+    }
+
+    private fun renderShopError() {
+        binding.apply {
+            if (shop.overweight > 0) {
+                tickerOrderShop.tickerType = Ticker.TYPE_WARNING
+                tickerOrderShop.setHtmlDescription(shop.maximumWeightWording)
+                tickerOrderShop.visible()
+                occCustomTickerError.gone()
+            } else {
+                tickerOrderShop.gone()
+                occCustomTickerError.gone()
             }
         }
     }

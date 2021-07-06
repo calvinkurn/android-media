@@ -1,7 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -30,24 +29,24 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
 
-    private lateinit var preference: OrderPreference
+    private lateinit var profile: OrderProfile
     private var shipment: OrderShipment? = null
     private var payment: OrderPayment? = null
 
-    fun setPreference(preference: OrderPreference) {
-        this.preference = preference
+    fun setPreference(profile: OrderProfile) {
+        this.profile = profile
         showPreference()
     }
 
     fun setShipment(shipment: OrderShipment?) {
-        if (::preference.isInitialized) {
+        if (::profile.isInitialized) {
             this.shipment = shipment
             showShipping()
         }
     }
 
     fun setPayment(payment: OrderPayment) {
-        if (::preference.isInitialized) {
+        if (::profile.isInitialized) {
             this.payment = payment
             showPayment()
         }
@@ -61,13 +60,15 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         showShipping()
 
         showPayment()
+
+        binding.root.alpha = if (profile.enable) 1.0f else 0.5f
     }
 
     private fun showPreferenceTicker() {
         binding.tickerPreferenceInfo.tickerTitle = null
-        binding.tickerPreferenceInfo.setHtmlDescription(preference.preference.message)
+        binding.tickerPreferenceInfo.setHtmlDescription(profile.message)
         binding.tickerPreferenceInfo.closeButtonVisibility = View.GONE
-        binding.tickerPreferenceInfo.visibility = if (preference.preference.message.isNotBlank()) View.VISIBLE else View.GONE
+        binding.tickerPreferenceInfo.visibility = if (profile.message.isNotBlank()) View.VISIBLE else View.GONE
     }
 
     @SuppressLint("SetTextI18n")
@@ -316,7 +317,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     private fun showPayment() {
-        val paymentModel = preference.preference.payment
+        val paymentModel = profile.payment
 
         binding.apply {
             ivPayment.let {
@@ -360,7 +361,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                             }
                             tvPaymentErrorMessage.setOnClickListener {
                                 when (payment.errorData.action) {
-                                    OrderPaymentErrorData.ACTION_CHANGE_PAYMENT -> listener.choosePayment(preference)
+                                    OrderPaymentErrorData.ACTION_CHANGE_PAYMENT -> listener.choosePayment(profile)
                                     OrderPaymentErrorData.ACTION_CHANGE_CC -> listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                                 }
                             }
@@ -518,7 +519,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 hidePaymentCC()
                 btnChangePayment.visible()
                 setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
-                    listener.choosePayment(preference)
+                    listener.choosePayment(profile)
                 }
             }
         }
@@ -547,7 +548,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             btnChangePaymentCc.visible()
             dividerCcPayment.visible()
             setMultiViewsOnClickListener(tvPaymentCcName, btnChangePaymentCc) {
-                listener.choosePayment(preference)
+                listener.choosePayment(profile)
             }
         }
     }
@@ -570,7 +571,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     @SuppressLint("SetTextI18n")
     private fun showAddress() {
-        val addressModel = preference.preference.address
+        val addressModel = profile.address
         val receiverName = addressModel.receiverName
         val phone = addressModel.phone
         var receiverText = ""
@@ -600,43 +601,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         binding.tvAddressName.setMargin(if (isMainAddress) MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics) else NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics), ADDRESS_TOP_MARGIN.dpToPx(displayMetrics), ADDRESS_RIGHT_MARGIN, ADDRESS_BOTTOM_MARGIN)
     }
 
-//    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
-//        AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
-//            override fun onSelect(addressModel: RecipientAddressModel) {
-//                listener.onAddressChange(addressModel)
-//            }
-//
-//            override fun onAddAddress(token: Token?) {
-//                listener.onAddAddress(token)
-//            }
-//        }).show(fragment, preference.preference.address.addressId.toString(), addressState)
-//    }
-
-//    fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
-//        val shippingRecommendationData = shipment?.shippingRecommendationData
-//        if (shippingRecommendationData != null) {
-//            val list: ArrayList<RatesViewModelType> = ArrayList()
-//            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-//                if (shippingDurationViewModel.isSelected) {
-//                    if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-//                        list.add(NotifierModel())
-//                    }
-//                    list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
-//                    break
-//                }
-//            }
-//            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
-//                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
-//                    listener.onCourierChange(shippingCourierViewModel)
-//                }
-//
-//                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-//                    listener.onLogisticPromoClick(data)
-//                }
-//            })
-//        }
-//    }
-
     private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
         val ids = CourierConstant.INSTANT_SAMEDAY_COURIER
         for (id in ids) {
@@ -644,39 +608,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         }
         return false
     }
-
-//    fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
-//        val shippingRecommendationData = shipment?.shippingRecommendationData
-//        if (shippingRecommendationData != null) {
-//            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
-//            if (shippingRecommendationData.logisticPromo != null) {
-//                list.add(0, shippingRecommendationData.logisticPromo)
-//                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-//                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-//                }
-//            }
-//            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
-//                override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-//                    listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
-//                }
-//
-//                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-//                    listener.onLogisticPromoClick(data)
-//                }
-//            })
-//        }
-//    }
-
-//    fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
-//        val creditCard = payment?.creditCard
-//        if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
-//            InstallmentDetailBottomSheet().show(fragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-//                override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-//                    listener.onInstallmentDetailChange(installment)
-//                }
-//            })
-//        }
-//    }
 
     companion object {
         const val VIEW_TYPE = 4
@@ -710,7 +641,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun chooseDuration(isDurationError: Boolean, currentSpId: String, list: ArrayList<RatesViewModelType>)
 
-        fun choosePayment(preference: OrderPreference)
+        fun choosePayment(profile: OrderProfile)
 
         fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
 

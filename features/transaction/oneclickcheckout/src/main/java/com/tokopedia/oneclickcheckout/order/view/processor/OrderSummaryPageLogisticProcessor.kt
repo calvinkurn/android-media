@@ -38,38 +38,51 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: CoroutineDispatchers) {
 
-    private fun generateRatesParam(orderCart: OrderCart, orderPreference: OrderPreference, listShopShipment: List<ShopShipment>): RatesParam {
-        return RatesParam.Builder(listShopShipment, generateShippingParam(orderCart, orderPreference)).build().apply {
+    private fun generateRatesParam(orderCart: OrderCart, orderPreference: OrderPreference, listShopShipment: List<ShopShipment>): Pair<RatesParam?, Double> {
+        val (shipping, overweight) = generateShippingParam(orderCart, orderPreference)
+        if (shipping == null) return null to overweight
+        return RatesParam.Builder(listShopShipment, shipping).build().apply {
             occ = "1"
-        }
+        } to 0.0
     }
 
-    fun generateShippingParam(orderCart: OrderCart, orderPreference: OrderPreference): ShippingParam {
-        return ShippingParam().apply {
-            val address = orderPreference.preference.address
-            val orderShop = orderCart.shop
-            val orderProducts = orderCart.products
-            val orderKero = orderCart.kero
+    private fun generateShippingParam(orderCart: OrderCart, orderPreference: OrderPreference): Pair<ShippingParam?, Double> {
+        val address = orderPreference.preference.address
+        val orderShop = orderCart.shop
+        val orderProducts = orderCart.products
+        val orderKero = orderCart.kero
 
-            var totalWeight = 0.0
-            var totalWeightActual = 0.0
-            var totalValue = 0L
-            var productFInsurance = 0
-            var preOrder = false
-            var productPreOrderDuration = 0
-            orderProducts.forEach {
-                if (!it.isError) {
-                    totalWeight += it.quantity.orderQuantity * it.weight
-                    totalWeightActual += it.quantity.orderQuantity * it.weightActual
-                    totalValue += it.quantity.orderQuantity * it.getPrice()
-                    if (it.productFinsurance == 1) {
-                        productFInsurance = 1
-                    }
-                    preOrder = it.isPreOrder != 0
-                    productPreOrderDuration = it.preOrderDuration
+        var totalWeight = 0.0
+        var totalWeightActual = 0.0
+        var totalValue = 0L
+        var productFInsurance = 0
+        var preOrder = false
+        var productPreOrderDuration = 0
+        val productList: ArrayList<Product> = ArrayList()
+        val categoryList: ArrayList<String> = ArrayList()
+        orderProducts.forEach {
+            if (!it.isError) {
+                totalWeight += it.quantity.orderQuantity * it.weight
+                totalWeightActual += if (it.weightActual > 0) {
+                    it.quantity.orderQuantity * it.weightActual
+                } else {
+                    it.quantity.orderQuantity * it.weight
                 }
+                totalValue += it.quantity.orderQuantity * it.getPrice()
+                if (it.productFinsurance == 1) {
+                    productFInsurance = 1
+                }
+                preOrder = it.isPreOrder != 0
+                productPreOrderDuration = it.preOrderDuration
+                categoryList.add(it.categoryId)
+                productList.add(Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra))
             }
-
+        }
+        if (orderShop.maximumWeight > 0 && totalWeight > orderShop.maximumWeight) {
+            // overweight
+            return null to (totalWeight - orderShop.maximumWeight)
+        }
+        return ShippingParam().apply {
             originDistrictId = orderShop.districtId
             originPostalCode = orderShop.postalCode
             originLatitude = orderShop.latitude
@@ -84,17 +97,17 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             ut = orderKero.keroUT
             insurance = 1
             isPreorder = preOrder
-            categoryIds = orderProducts.joinToString(",") { it.categoryId }
+            categoryIds = categoryList.joinToString(",")
             uniqueId = orderCart.cartString
             addressId = address.addressId.toString()
-            products = orderProducts.map { Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra) }
+            products = productList
             weightInKilograms = totalWeight / 1000.0
             weightActualInKilograms = totalWeightActual / 1000.0
             productInsurance = productFInsurance
             orderValue = totalValue
             isFulfillment = orderShop.isFulfillment
             preOrderDuration = productPreOrderDuration
-        }
+        } to 0.0
     }
 
     private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
@@ -126,7 +139,20 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         OccIdlingResource.increment()
         val result: ResultRates = withContext(executorDispatchers.io) {
             try {
-                val shippingRecommendationData = ratesUseCase.execute(generateRatesParam(orderCart, orderPreference, listShopShipment))
+                val (param, overweight) = generateRatesParam(orderCart, orderPreference, listShopShipment)
+                if (param == null) {
+                    // overweight
+                    return@withContext ResultRates(
+                            orderShipment = OrderShipment(
+                                    serviceName = orderPreference.preference.shipment.serviceName,
+                                    serviceDuration = orderPreference.preference.shipment.serviceDuration,
+                                    serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                                    shippingRecommendationData = null
+                            ),
+                            overweight = overweight
+                    )
+                }
+                val shippingRecommendationData = ratesUseCase.execute(param)
                         .map { mapShippingRecommendationData(it, orderShipment, listShopShipment) }
                         .toBlocking().single()
                 val profileShipment = orderPreference.preference.shipment
@@ -407,6 +433,17 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return if (eta != null && eta.errorCode == 0) eta.textEtaSummarize else null
     }
 
+    fun generateOrderErrorResultRates(orderPreference: OrderPreference): ResultRates {
+        return ResultRates(
+                orderShipment = OrderShipment(
+                        serviceName = orderPreference.preference.shipment.serviceName,
+                        serviceDuration = orderPreference.preference.shipment.serviceDuration,
+                        serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                        shippingRecommendationData = null
+                )
+        )
+    }
+
     suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String, userId: String, deviceId: String): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -624,8 +661,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
 class ResultRates(
         val orderShipment: OrderShipment,
-        val clearOldPromoCode: String,
-        val autoApplyPromo: LogisticPromoUiModel?,
-        val shippingErrorId: String?,
-        val preselectedSpId: String?
+        val clearOldPromoCode: String = "",
+        val autoApplyPromo: LogisticPromoUiModel? = null,
+        val shippingErrorId: String? = null,
+        val preselectedSpId: String? = null,
+        val overweight: Double? = null
 )

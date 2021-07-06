@@ -24,5 +24,12 @@ data class OrderShop(
         var errors: List<String> = emptyList(),
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
-        var freeOngkirImg: String = ""
+        var freeOngkirImg: String = "",
+
+        var unblockingErrorMessage: String = "",
+        var firstProductErrorIndex: Int = -1,
+        var isTokoNow: Boolean = false,
+        var maximumWeight: Int = 0,
+        var maximumWeightWording: String = "",
+        var overweight: Double = 0.0
 ): OrderItem

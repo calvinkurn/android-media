@@ -26,7 +26,9 @@ class OrderPromoCard(private val binding: CardOrderPromoBinding,
                 binding.btnPromoCheckout.title = binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
                 binding.btnPromoCheckout.desc = binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
                 binding.btnPromoCheckout.setOnClickListener {
-                    listener.onClickRetryValidatePromo()
+                    if (!orderPromo.isDisabled) {
+                        listener.onClickRetryValidatePromo()
+                    }
                 }
             }
             else -> {
@@ -46,10 +48,13 @@ class OrderPromoCard(private val binding: CardOrderPromoBinding,
                 }
 
                 binding.btnPromoCheckout.setOnClickListener {
-                    listener.onClickPromo()
+                    if (!orderPromo.isDisabled) {
+                        listener.onClickPromo()
+                    }
                 }
             }
         }
+        binding.root.alpha = if (orderPromo.isDisabled) 0.5f else 1.0f
     }
 
     interface OrderPromoCardListener {

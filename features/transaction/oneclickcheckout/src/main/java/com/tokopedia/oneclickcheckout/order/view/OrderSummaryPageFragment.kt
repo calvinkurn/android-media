@@ -274,22 +274,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         binding.rvOrderSummaryPage.itemAnimator = null
     }
 
-//    private fun notifyAdapter() {
-//        if (binding.rvOrderSummaryPage.isComputingLayout) {
-//            binding.rvOrderSummaryPage.post {
-//                adapter.notifyDataSetChanged()
-//            }
-//        } else {
-//            adapter.notifyDataSetChanged()
-//        }
-//    }
-
     private fun initViewModel(savedInstanceState: Bundle?) {
         observeAddressState()
 
         observeOrderShop()
 
         observeOrderProducts()
+
+        observeOrderProfile()
 
         observeOrderPreference()
 
@@ -356,6 +348,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun observeOrderProfile() {
+        viewModel.orderProfile.observe(viewLifecycleOwner) {
+            adapter.profile = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyItemChanged(adapter.preferenceIndex)
+                }
+            } else {
+                adapter.notifyItemChanged(adapter.preferenceIndex)
+            }
+        }
+    }
+
     private fun observeOrderPreference() {
         viewModel.orderPreference.observe(viewLifecycleOwner) {
             when (it) {
@@ -364,19 +369,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     binding.loaderContent.animateGone()
                     binding.globalError.animateGone()
                     view?.also { _ ->
-                        adapter.preference = it.data
                         adapter.onboarding = it.data.onboarding
                         adapter.ticker = it.data.ticker
                         if (binding.rvOrderSummaryPage.isComputingLayout) {
                             binding.rvOrderSummaryPage.post {
                                 adapter.notifyItemRangeChanged(0, 2)
-                                adapter.notifyItemChanged(adapter.preferenceIndex)
                             }
                         } else {
                             adapter.notifyItemRangeChanged(0, 2)
-                            adapter.notifyItemChanged(adapter.preferenceIndex)
                         }
-                        showMessage(it.data)
                         if (it.data.preference.address.addressId > 0 &&
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             binding.rvOrderSummaryPage.show()
@@ -387,7 +388,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
                 }
                 is OccState.Loading -> {
-//                    binding.mainContent.animateGone()
                     binding.rvOrderSummaryPage.gone()
                     binding.globalError.animateGone()
                     binding.layoutNoAddress.root.animateGone()
@@ -416,8 +416,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 adapter.notifyItemChanged(adapter.preferenceIndex)
                 adapter.notifyItemChanged(adapter.insuranceIndex)
             }
-            //            newOrderPreferenceCard.setShipment(it)
-            //            orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
             }
@@ -426,7 +424,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderPayment() {
         viewModel.orderPayment.observe(viewLifecycleOwner) {
-            //            newOrderPreferenceCard.setPayment(it)
             if (shouldShowToaster) showToasterSuccess()
             adapter.payment = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
@@ -449,7 +446,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             } else {
                 adapter.notifyItemChanged(adapter.promoIndex)
             }
-//            setupButtonPromo(it)
         }
     }
 
@@ -463,7 +459,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             } else {
                 adapter.notifyItemChanged(adapter.totalPaymentIndex)
             }
-            //            orderTotalPaymentCard.setupPayment(it)
         }
     }
 
@@ -667,11 +662,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun showLayoutNoAddress() {
         binding.layoutNoAddress.root.animateShow()
-//        val scrollView = binding.nestedScrollView
-//        val height = scrollView.height
-//        val displayMetrics = context?.resources?.displayMetrics
-//        val minHeight = if (displayMetrics != null) 420.dpToPx(displayMetrics) else 0
-//        binding.layoutNoAddress.root.layoutParams?.height = max(height, minHeight)
         binding.layoutNoAddress.iuNoAddress.setImageUrl(NO_ADDRESS_IMAGE)
         binding.layoutNoAddress.descNoAddress.text = getString(R.string.occ_lbl_desc_no_address)
         binding.layoutNoAddress.btnOccAddNewAddress.setOnClickListener {
@@ -688,87 +678,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
     }
-
-    private fun showMessage(orderPreference: OrderPreference) {
-//        if (orderPreference.ticker != null) {
-//            binding.tickerOsp.tickerTitle = orderPreference.ticker.title
-//            binding.tickerOsp.setHtmlDescription(orderPreference.ticker.message)
-//            binding.tickerOsp.visible()
-//        } else {
-//            binding.tickerOsp.gone()
-//        }
-
-//        val preference = orderPreference.preference
-//        if (orderPreference.isValid) {
-//            binding.tvHeader2.gone()
-//            binding.tvHeader3.gone()
-//        } else {
-//            binding.tvHeader2.text = getString(R.string.lbl_osp_secondary_header)
-//            val message = MethodChecker.fromHtml(preference.onboardingHeaderMessage)
-//            val infoButton = getString(R.string.lbl_osp_secondary_header_info)
-//            val spannableString = SpannableString("$message $infoButton")
-//            context?.also {
-//                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//            }
-//            spannableString.setSpan(StyleSpan(BOLD), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-//            binding.tvHeader3.text = spannableString
-//            binding.tvHeader3.setOnClickListener {
-//                orderSummaryAnalytics.eventClickInfoOnOSPNewBuyer()
-//                OccInfoBottomSheet().show(this, preference.onboardingComponent)
-//                orderSummaryAnalytics.eventViewOnboardingInfo()
-//            }
-//            binding.tvHeader2.visible()
-//            binding.tvHeader3.visible()
-//        }
-//        showPreferenceTicker(orderPreference)
-
-//        if (orderPreference.onboarding.isShowOnboardingTicker) {
-//            binding.layoutNewOccOnboarding.root.visible()
-//            binding.layoutNewOccOnboarding.ivNewOccOnboarding.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
-//            binding.layoutNewOccOnboarding.tvNewOccOnboardingMessage.text = orderPreference.onboarding.onboardingTicker.message
-//        } else {
-//            binding.layoutNewOccOnboarding.root.gone()
-//        }
-    }
-
-//    private fun showPreferenceTicker(preference: OrderPreference) {
-//        val sharedPreferences = getRemoveProfileTickerSharedPreference()
-//        if (preference.removeProfileData.message.hasMessage() && sharedPreferences != null &&
-//                sharedPreferences.getInt(SP_KEY_REMOVE_PROFILE_TICKER, 0) != preference.removeProfileData.type) {
-//            binding.tickerPreferenceInfo.tickerTitle = preference.removeProfileData.message.title
-//            binding.tickerPreferenceInfo.setHtmlDescription(preference.removeProfileData.message.description)
-//            binding.tickerPreferenceInfo.closeButtonVisibility = View.VISIBLE
-//            binding.tickerPreferenceInfo.setDescriptionClickEvent(object : TickerCallback {
-//                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-//                    //no op
-//                }
-//
-//                override fun onDismiss() {
-//                    val preferences = getRemoveProfileTickerSharedPreference() ?: return
-//                    preferences.edit().putInt(SP_KEY_REMOVE_PROFILE_TICKER, preference.removeProfileData.type).apply()
-//                }
-//            })
-//            binding.tickerPreferenceInfo.visible()
-//        } else {
-//            binding.tickerPreferenceInfo.tickerTitle = null
-//            binding.tickerPreferenceInfo.setHtmlDescription(preference.preference.message)
-//            binding.tickerPreferenceInfo.closeButtonVisibility = View.GONE
-//            binding.tickerPreferenceInfo.setDescriptionClickEvent(object : TickerCallback {
-//                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-//                    //no op
-//                }
-//
-//                override fun onDismiss() {
-//                    //no op
-//                }
-//            })
-//            binding.tickerPreferenceInfo.visibility = if (preference.preference.message.isNotBlank()) View.VISIBLE else View.GONE
-//        }
-//    }
-
-//    private fun getRemoveProfileTickerSharedPreference(): SharedPreferences? {
-//        return context?.applicationContext?.getSharedPreferences(SP_KEY_REMOVE_PROFILE_TICKER, Context.MODE_PRIVATE)
-//    }
 
     private fun showNewOnboarding(onboarding: OccMainOnboarding) {
         view?.let {
@@ -833,12 +742,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.consumeForceShowOnboarding()
         }
     }
-
-//    private fun showPreferenceCard() {
-//        binding.newPreferenceCard.root.visible()
-//        orderTotalPaymentCard.setPaymentVisible(true)
-//        binding.btnPromoCheckout.visible()
-//    }
 
     private fun goToPinpoint(address: OrderProfileAddress?) {
         address?.let {
@@ -923,65 +826,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-//    private fun setupButtonPromo(orderPromo: OrderPromo) {
-//        when (orderPromo.state) {
-//            OccButtonState.LOADING -> {
-//                binding.btnPromoCheckout.state = ButtonPromoCheckoutView.State.LOADING
-//            }
-//            OccButtonState.DISABLE -> {
-//                binding.btnPromoCheckout.state = ButtonPromoCheckoutView.State.INACTIVE
-//                binding.btnPromoCheckout.title = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_label)
-//                binding.btnPromoCheckout.desc = getString(com.tokopedia.purchase_platform.common.R.string.promo_checkout_inactive_desc)
-//                binding.btnPromoCheckout.setOnClickListener {
-//                    viewModel.validateUsePromo()
-//                }
-//            }
-//            else -> {
-//                val lastApply = orderPromo.lastApply
-//                var title = getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
-//                if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
-//                    title = lastApply.additionalInfo.messageInfo.message
-//                } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
-//                    title = lastApply.defaultEmptyPromoMessage
-//                }
-//                binding.btnPromoCheckout.state = ButtonPromoCheckoutView.State.ACTIVE
-//                binding.btnPromoCheckout.title = title
-//                binding.btnPromoCheckout.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
-//
-//                if (lastApply?.additionalInfo?.usageSummaries?.isNotEmpty() == true) {
-//                    orderSummaryAnalytics.eventViewPromoAlreadyApplied()
-//                }
-//
-//                binding.btnPromoCheckout.setOnClickListener {
-//                    viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
-//                        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-//                        intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
-//                        intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-//                        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
-//                        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
-//
-//                        val codes = validateUsePromoRequest.codes
-//                        val promoCodes = ArrayList<String>()
-//                        for (code in codes) {
-//                            if (code != null) {
-//                                promoCodes.add(code)
-//                            }
-//                        }
-//                        if (validateUsePromoRequest.orders.isNotEmpty()) {
-//                            val orderCodes = validateUsePromoRequest.orders[0]?.codes
-//                                    ?: mutableListOf()
-//                            for (code in orderCodes) {
-//                                promoCodes.add(code)
-//                            }
-//                        }
-//                        orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
-//                        startActivityForResult(intent, REQUEST_CODE_PROMO)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private fun validateAddressState(addressState: AddressState) {
         if (addressState.popupMessage.isNotBlank()) {
             view?.let {
@@ -1029,7 +873,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
-            return lastPurchaseProtectionCheckStates[productId] ?: PurchaseProtectionPlanData.STATE_EMPTY
+            return lastPurchaseProtectionCheckStates[productId]
+                    ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
     }
 
@@ -1038,15 +883,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         override fun onAddAddress(token: Token?) {
             if (LogisticCommonUtil.isRollOutUserANARevamp()) {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                putExtra(EXTRA_IS_FULL_FLOW, true)
-                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                putExtra(CheckoutConstant.KERO_TOKEN, token)
+                    putExtra(EXTRA_IS_FULL_FLOW, true)
+                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                    putExtra(CheckoutConstant.KERO_TOKEN, token)
                 }, REQUEST_CODE_ADD_ADDRESS)
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                putExtra(EXTRA_IS_FULL_FLOW, true)
-                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                putExtra(CheckoutConstant.KERO_TOKEN, token)
+                    putExtra(EXTRA_IS_FULL_FLOW, true)
+                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                    putExtra(CheckoutConstant.KERO_TOKEN, token)
                 }, REQUEST_CODE_ADD_ADDRESS)
             }
         }
@@ -1091,7 +936,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         }, REQUEST_CODE_ADD_ADDRESS)
                     }
                 }).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
-//                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.address.state)
             }
         }
 
@@ -1129,11 +973,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun choosePayment(preference: OrderPreference) {
-            val currentGatewayCode = preference.preference.payment.gatewayCode
+        override fun choosePayment(profile: OrderProfile) {
+            val currentGatewayCode = profile.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
-                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId.toString())
+                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId.toString())
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
@@ -1165,39 +1009,39 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onOvoActivateClicked(callbackUrl: String) {
             OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
-                getString(R.string.lbl_activate_ovo_now),
-                object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
-                override fun onActivationResult(isSuccess: Boolean) {
-                    view?.let {
-                        it.post {
-                            if (isSuccess) {
-                                Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                            } else {
-                                Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                    getString(R.string.lbl_activate_ovo_now),
+                    object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                        override fun onActivationResult(isSuccess: Boolean) {
+                            view?.let {
+                                it.post {
+                                    if (isSuccess) {
+                                        Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                                    } else {
+                                        Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                                    }
+                                    source = SOURCE_OTHERS
+                                    shouldShowToaster = false
+                                    refresh()
+                                }
                             }
-                            source = SOURCE_OTHERS
-                            shouldShowToaster = false
-                            refresh()
                         }
-                    }
-                }
-            }).show(this@OrderSummaryPageFragment, userSession.get())
+                    }).show(this@OrderSummaryPageFragment, userSession.get())
         }
 
         override fun onWalletActivateClicked(activationUrl: String, callbackUrl: String) {
             OvoActivationWebViewBottomSheet(activationUrl, callbackUrl,
-                viewModel.getActivationData().headerTitle,
-                object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
-                override fun onActivationResult(isSuccess: Boolean) {
-                    view?.let {
-                        it.post {
-                            source = SOURCE_OTHERS
-                            shouldShowToaster = true
-                            refresh()
+                    viewModel.getActivationData().headerTitle,
+                    object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                        override fun onActivationResult(isSuccess: Boolean) {
+                            view?.let {
+                                it.post {
+                                    source = SOURCE_OTHERS
+                                    shouldShowToaster = true
+                                    refresh()
+                                }
+                            }
                         }
-                    }
-                }
-            }).show(this@OrderSummaryPageFragment, userSession.get())
+                    }).show(this@OrderSummaryPageFragment, userSession.get())
         }
 
         override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
@@ -1245,7 +1089,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             shouldShowToaster = false
             refresh()
         }
-//        binding.mainContent.animateGone()
         binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
@@ -1300,7 +1143,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 RouteManager.route(context, ApplinkConst.HOME)
                 activity?.finish()
             }
-//            binding.mainContent.animateGone()
             binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateShow()
@@ -1321,7 +1163,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             RouteManager.route(context, ApplinkConst.HOME)
             activity?.finish()
         }
-//        binding.mainContent.animateGone()
         binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
@@ -1329,7 +1170,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
         if (shouldHideAll) {
-//            binding.mainContent.animateGone()
             binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateGone()

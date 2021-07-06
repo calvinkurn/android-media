@@ -23,7 +23,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var shop: OrderShop = OrderShop()
     var product: OrderProduct? = null
     var products: List<OrderProduct> = emptyList()
-    var preference: OrderPreference = OrderPreference()
+    var profile: OrderProfile = OrderProfile(enable = false)
     var shipment: OrderShipment = OrderShipment()
     var payment: OrderPayment = OrderPayment()
     var insurance: InsuranceData? = null
@@ -89,7 +89,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setData(products[position - 3], shop, position - 3)
             }
             is OrderPreferenceCard -> {
-                holder.setPreference(preference)
+                holder.setPreference(profile)
                 holder.setShipment(shipment)
                 holder.setPayment(payment)
             }
