@@ -40,6 +40,14 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val earlierOnly: NotifcenterDetailResponse
+        get() {
+            return alterDefaultResponse {
+                it.getAsJsonObject(notifcenter_detail_v3)
+                    .getAsJsonArray(new_list).removeAll { true }
+            }
+        }
+
     val newListOnlyHasNextTrue: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
