@@ -25,17 +25,19 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
     private var isTokoNow: Boolean = false
     private var shopId: String = ""
     private var forceRefresh: Boolean = false
+    private var isLoggedIn: Boolean = false
 
     fun clearCacheP2Data() {
         getProductInfoP2DataUseCase.clearCache()
     }
 
-    suspend fun executeOnBackground(requestParams: RequestParams, isTokoNow: Boolean, shopId: String, forceRefresh: Boolean,
+    suspend fun executeOnBackground(requestParams: RequestParams, isTokoNow: Boolean, shopId: String, forceRefresh: Boolean, isLoggedIn: Boolean,
                                     setErrorLogListener: OnErrorLog): ProductInfoP2UiData {
         this.requestParamsP2Data = requestParams
         this.isTokoNow = isTokoNow
         this.shopId = shopId
         this.forceRefresh = forceRefresh
+        this.isLoggedIn = isLoggedIn
         getProductInfoP2DataUseCase.setErrorLogListener {
             setErrorLogListener.invoke(it)
         }
@@ -44,7 +46,7 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
 
     override suspend fun executeOnBackground(): ProductInfoP2UiData {
         val request: MutableList<Deferred<Any?>> = mutableListOf(executeP2Data())
-        if (isTokoNow) {
+        if (isTokoNow && isLoggedIn) {
             request.add(executeMiniCart())
         }
 
