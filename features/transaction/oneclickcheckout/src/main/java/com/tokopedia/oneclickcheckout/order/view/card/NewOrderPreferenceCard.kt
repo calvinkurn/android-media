@@ -30,8 +30,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.AddressListBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
+import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
+import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
@@ -94,9 +94,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
 
-    fun setPreference(preference: OrderPreference, revampData: OccRevampData) {
+    fun setPreference(preference: OrderPreference) {
         this.preference = preference
-        showPreference(revampData)
+        showPreference()
     }
 
     fun setShipment(shipment: OrderShipment?) {
@@ -113,8 +113,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    private fun showPreference(revampData: OccRevampData) {
-        showHeader(revampData)
+    private fun showPreference() {
+        showHeader()
 
         showAddress()
 
@@ -123,7 +123,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         showPayment()
     }
 
-    private fun showHeader(revampData: OccRevampData) {
+    private fun showHeader() {
         tvHeader?.visible()
         tvCardHeader?.gone()
         lblDefaultPreference?.gone()
@@ -369,19 +369,23 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     btnChangePayment?.invisible()
                     tvPaymentOvoErrorAction?.gone()
                     setPaymentErrorAlpha()
-                } else if (payment.ovoErrorData != null) {
+                } else if (payment.walletErrorData != null) {
                     // ovo error
-                    val message = payment.ovoErrorData.message
-                    val button = payment.ovoErrorData.buttonTitle
+                    val message = payment.walletErrorData.message
+                    val button = payment.walletErrorData.buttonTitle
 
                     val span = SpannableString("$message $button")
                     if (message.isBlank() && button.isNotBlank()) {
                         // only show button
                         tvPaymentOvoErrorAction?.setOnClickListener {
-                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
+                                if (payment.walletErrorData.isOvo) {
+                                    listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                } else {
+                                    listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                }
                             }
                         }
                         tvPaymentOvoErrorAction?.text = button
@@ -395,16 +399,20 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                             span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         tvPaymentErrorMessage?.setOnClickListener {
-                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
+                                if (payment.walletErrorData.isOvo) {
+                                    listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                } else {
+                                    listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                }
                             }
                         }
                         tvPaymentErrorMessage?.text = span
                         tvPaymentErrorMessage?.visible()
                         tvPaymentOvoErrorAction?.gone()
-                        if (payment.ovoErrorData.type != OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                        if (payment.walletErrorData.type != OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                             tvPaymentDetail?.gone()
                         }
                     } else {
@@ -418,7 +426,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvPaymentOvoErrorAction?.gone()
                     }
                     btnChangePayment?.visible()
-                    if (payment.ovoErrorData.isBlockingError) {
+                    if (payment.walletErrorData.isBlockingError) {
                         setPaymentErrorAlpha()
                     } else {
                         setPaymentActiveAlpha()
@@ -658,10 +666,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     interface OrderPreferenceCardListener {
 
-        fun onChangePreferenceClicked()
-
-        fun onAddPreferenceClicked(preference: OrderPreference)
-
         fun onAddAddress(token: Token?)
 
         fun onAddressChange(addressModel: RecipientAddressModel)
@@ -682,8 +686,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         fun choosePayment(preference: OrderPreference)
 
-        fun onPreferenceEditClicked(preference: OrderPreference)
-
         fun onInstallmentDetailClicked()
 
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
@@ -691,6 +693,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 
         fun onOvoActivateClicked(callbackUrl: String)
+
+        fun onWalletActivateClicked(activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
     }

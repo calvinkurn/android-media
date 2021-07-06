@@ -3,5 +3,5 @@
     android:shape="rectangle">
     <stroke android:color="@color/Unify_G400" android:width="@dimen/dp_2" />
     <solid android:color="@android:color/transparent" />
-    <corners android:radius="@dimen/dp_2" />
+    <corners android:radius="@dimen/image_editor_rounded" />
 </shape>

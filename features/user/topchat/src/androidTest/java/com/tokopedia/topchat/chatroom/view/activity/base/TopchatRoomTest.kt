@@ -49,7 +49,6 @@ import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
-import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -127,10 +126,6 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
-    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-    protected open var keyboardStateIdling: CountingIdlingResource = CountingIdlingResource(
-        "ChatRoom-Keyboard"
-    )
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
     protected var firstPageChatAsSeller = GetExistingChatPojo()
@@ -145,33 +140,32 @@ abstract class TopchatRoomTest {
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
 
-    protected lateinit var chatComponentStub: ChatComponentStub
-
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
         const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
     }
 
+    companion object {
+        const val MSG_ID = "66961"
+        var chatComponentStub: ChatComponentStub? = null
+        var keyboardStateIdling: CountingIdlingResource? = null
+    }
+
     @Before
     open fun before() {
         setupResponse()
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatComponentStub = DaggerChatComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .chatRoomContextModule(ChatRoomContextModule(context))
-            .build()
-        chatComponentStub.inject(this)
+        setupDaggerComponent()
         setupDefaultResponseWhenFirstOpenChatRoom()
-        UploadImageChatService.dummyMap.clear()
-        IdlingRegistry.getInstance().register(keyboardStateIdling)
+        setupDummyImageChatService()
+        setupKeyboardIdlingResource()
     }
 
     @After
     open fun tearDown() {
         IdlingRegistry.getInstance().unregister(keyboardStateIdling)
+        chatComponentStub = null
+        keyboardStateIdling = null
     }
 
     protected open fun setupResponse() {
@@ -209,6 +203,17 @@ abstract class TopchatRoomTest {
         )
     }
 
+    private fun setupDaggerComponent() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .build()
+        chatComponentStub = DaggerChatComponentStub.builder()
+            .fakeBaseAppComponent(baseComponent)
+            .chatRoomContextModule(ChatRoomContextModule(context))
+            .build()
+        chatComponentStub!!.inject(this)
+    }
+
     protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
         chatBackgroundUseCase.response = chatBackgroundResponse
@@ -222,11 +227,23 @@ abstract class TopchatRoomTest {
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
     }
 
-    protected fun setupChatRoomActivity(
+    private fun setupDummyImageChatService() {
+        UploadImageChatService.dummyMap.clear()
+    }
+
+    private fun setupKeyboardIdlingResource() {
+        keyboardStateIdling = CountingIdlingResource("ChatRoom-Keyboard")
+        IdlingRegistry.getInstance().register(keyboardStateIdling)
+    }
+
+    protected fun launchChatRoomActivity(
         sourcePage: String? = null,
         isSellerApp: Boolean = false,
         intentModifier: (Intent) -> Unit = {}
     ) {
+        if (isSellerApp) {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        }
         val intent = Intent().apply {
             putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
             sourcePage?.let {
@@ -236,25 +253,6 @@ abstract class TopchatRoomTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-        fragmentTransactionIdling = FragmentTransactionIdle(
-            activity.supportFragmentManager,
-            TopChatRoomActivityStub.TAG
-        )
-        if (isSellerApp) {
-            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        }
-    }
-
-    protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        onView(withId(R.id.recycler_view))
-            .check(matches(isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun inflateTestFragment() {
-        activity.setupTestFragment(chatComponentStub, keyboardStateIdling)
-        waitForFragmentResumed()
     }
 
     protected fun changeResponseStartTime(
@@ -701,10 +699,6 @@ abstract class TopchatRoomTest {
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
-    }
-
-    companion object {
-        const val MSG_ID = "66961"
     }
 }
 

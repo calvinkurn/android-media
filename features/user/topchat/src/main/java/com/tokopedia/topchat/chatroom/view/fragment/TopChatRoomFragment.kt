@@ -1585,36 +1585,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onVoucherCopyClicked(
-        voucherCode: String,
-        messageId: String,
-        replyId: String,
-        blastId: String,
-        attachmentId: String,
-        replyTime: String?,
-        fromUid: String?
-    ) {
-        analytics.eventVoucherCopyClicked(voucherCode)
-        presenter.copyVoucherCode(fromUid, replyId, blastId, attachmentId, replyTime)
-        activity?.run {
-            val snackbar = Snackbar.make(
-                findViewById(android.R.id.content),
-                getString(com.tokopedia.merchantvoucher.R.string.title_voucher_code_copied),
-                Snackbar.LENGTH_LONG
-            )
-            snackbar.setAction(
-                this.getString(com.tokopedia.merchantvoucher.R.string.close),
-                { snackbar.dismiss() })
-            snackbar.setActionTextColor(
-                MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
-                )
-            )
-            snackbar.show()
-        }
-    }
-
     override fun onVoucherClicked(data: MerchantVoucherViewModel) {
         analytics.eventVoucherThumbnailClicked()
         activity?.let {
@@ -1678,11 +1648,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session, amISeller)
-
-            // this for experimentation of DATA
-            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) == true) {
-                analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
-            }
         }
     }
 

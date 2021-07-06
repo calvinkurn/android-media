@@ -1193,8 +1193,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @Suppress("UNCHECKED_CAST")
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
         val newWidgetList = adapter.data.map {
-            if (it.dataKey == widget.dataKey && it.widgetType == widget.widgetType) widget
-            else it
+            return@map if (it.dataKey == widget.dataKey && it.widgetType == widget.widgetType) {
+                widget
+            } else {
+                it
+            }
         }
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         checkLoadingWidgets()

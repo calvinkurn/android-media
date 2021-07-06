@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "29.0.2"
 
     jacocoVersion = "0.8.5"
-    kotlinVersion = "1.4.10"
+    kotlinVersion = "1.4.32"
 
     navigationVersion = "2.3.0"
     lifeCycleVersion = "2.2.0"
@@ -14,13 +14,14 @@ ext {
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.5.0"
 
+    biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     exifInterfaceVersion = '1.2.0'
     androidxCoreVersion = '1.3.2'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
-    coroutineVersion = '1.4.2'
+    coroutineVersion = '1.4.3'
     retrofitVersion = '2.6.0'
     okHttpVersion = '3.12.5'
     brotliVersion = '0.1.2'
@@ -42,7 +43,7 @@ ext {
     swipeRefreshVersion = '1.0.0'
 
     exoPlayerVersion = '2.11.8'
-    stfalconVersion = '1.0.0'
+    stfalconVersion = '1.0.10'
 
     playServiceFirebaseConfig = '16.1.3'
     playServiceBaseVersion = '17.3.0'
@@ -98,11 +99,12 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.7'
     unifyPrinciplesVersion = '1.3.8'
-    unifyComponentsVersion = '1.1.66'
+    unifyComponentsVersion = '1.1.67'
     unifyCoachMarkVersion = '1.2.14'
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
+    unifyLoaderDialogVersion = '1.0.0'
     unifyDatePickerVersion = '1.0.8'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
@@ -275,6 +277,7 @@ ext {
             sliceCore             : "androidx.slice:slice-core:$sliceCoreVersion",
             transition            : "androidx.transition:transition:$transitionVersion",
             newRelic              : 'com.newrelic.agent.android:android-agent:5.28.1',
+            biometric             : "androidx.biometric:biometric:$biometricVersion"
     ]
 
     testDependencies = [
@@ -343,6 +346,7 @@ ext {
             calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}",
             banner          : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+            loader_dialog    : "com.tokopedia.unify.compositions:loader_dialog:${unifyLoaderDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
