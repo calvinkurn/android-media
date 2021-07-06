@@ -781,23 +781,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 val categoryName = it.lastOrNull()?.name ?: ""
                 DynamicProductDetailTracking.Click.eventCategoryClicked(categoryId, categoryName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
-            RouteManager.route(context, url)
+            goToApplink(url)
         }
     }
 
     override fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel) {
-        val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
-        val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
-        val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+        viewModel.getDynamicProductInfoP1?.basic?.menu?.let {
+            val etalaseId = it.id
+            val etalaseName = it.name
+            DynamicProductDetailTracking.Click.eventEtalaseClicked(etalaseId, etalaseName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+        }
 
-        val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
-            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
-        } else {
-            UriUtil.buildUri(ApplinkConst.SHOP, shopId)
-        })
-        DynamicProductDetailTracking.Click.eventEtalaseClicked(etalaseId, etalaseName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-
-        startActivity(intent)
+        goToApplink(url)
     }
 
     override fun goToApplink(url: String) {
