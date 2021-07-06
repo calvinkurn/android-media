@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.util.toDate
+import kotlin.math.roundToInt
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -28,9 +29,9 @@ object VariantMapper {
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
-        val priceBefore = if (priceBeforeInt > 0) {
-            priceBeforeInt.getCurrencyFormatted()
+        val priceBeforeDouble = productInfo?.priceBeforeDouble ?: 0.0
+        val priceBefore = if (priceBeforeDouble > 0) {
+            priceBeforeDouble.getCurrencyFormatted()
         } else {
             ""
         }
@@ -57,7 +58,7 @@ object VariantMapper {
             productFsIsActive = productFsIsActive,
             productFsImageUrl = freeOngkirImgUrl,
             priceBefore = priceBefore,
-            priceBeforeInt = priceBeforeInt,
+            priceBeforeInt = priceBeforeDouble.roundToInt(),
             dropPercentage = dropPercentage,
             isActive = isActive,
             remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
@@ -86,8 +87,8 @@ object VariantMapper {
                 campaignType = newData?.campaign?.campaignType.toString(),
                 campaignTypeName = newData?.campaign?.campaignTypeName ?: "",
                 isActive = newData?.campaign?.isActive ?: false,
-                originalPrice = newData?.campaign?.originalPrice?.toInt() ?: 0,
-                discountedPrice = newData?.campaign?.discountedPrice?.toInt() ?: 0,
+                originalPrice = newData?.campaign?.originalPrice ?: 0.0,
+                discountedPrice = newData?.campaign?.discountedPrice ?: 0.0,
                 startDate = newData?.campaign?.startDate ?: "",
                 endDate = newData?.campaign?.endDateUnix toDate "yyyy-MM-dd HH:mm:ss",
                 endDateUnix = newData?.campaign?.endDateUnix ?: "",
@@ -126,7 +127,7 @@ object VariantMapper {
         }
 
         val newPrice = oldData.data.price.copy(
-                value = newData?.price?.toInt() ?: 0
+                value = newData?.price ?: 0.0
         )
 
         val newStock = oldData.data.stock.copy(

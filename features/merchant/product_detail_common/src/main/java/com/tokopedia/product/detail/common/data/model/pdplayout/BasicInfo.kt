@@ -63,7 +63,7 @@ data class BasicInfo(
         const val KILO = 1000
     }
 
-    fun getDefaultOngkirInt(): Int = defaultOngkirEstimation.toIntOrNull() ?: 30000
+    fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull() ?: 30000.0
     fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
     fun getProductId(): Int = productID.toIntOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0

@@ -20,6 +20,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlin.math.roundToInt
 
 /**
  * Created by Yehezkiel on 11/05/21
@@ -33,7 +34,7 @@ object AtcCommonMapper {
                         trackerAttributionPdp: String,
                         trackerListNamePdp: String,
                         categoryName: String,
-                        shippingMinPrice: Int,
+                        shippingMinPrice: Double,
                         userId: String,
                         isTokoNow: Boolean,
                         selectedStock: Int
@@ -50,7 +51,7 @@ object AtcCommonMapper {
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false
-                    shippingPrice = shippingMinPrice
+                    shippingPrice = shippingMinPrice.roundToInt()
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""

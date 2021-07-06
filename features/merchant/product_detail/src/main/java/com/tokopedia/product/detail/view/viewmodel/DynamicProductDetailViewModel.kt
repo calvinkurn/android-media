@@ -89,6 +89,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -224,7 +225,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
-    var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
+    var shippingMinimumPrice: Double = getDynamicProductInfoP1?.basic?.getDefaultOngkirDouble() ?: 30000.0
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
@@ -606,9 +607,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun updateShippingValue(shippingPriceValue: Int?) {
-        shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt()
-                ?: 30000 else shippingPriceValue
+    /**
+     * No Usage function
+     */
+    private fun updateShippingValue(shippingPriceValue: Double?) {
+        shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0.0) getDynamicProductInfoP1?.basic?.getDefaultOngkirDouble()
+                ?: 30000.0 else shippingPriceValue
     }
 
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
@@ -947,7 +951,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
             tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
-            tradeInParams.setPrice(it.data.price.value)
+            tradeInParams.setPrice(it.data.price.value.roundToInt())
             tradeInParams.productId = it.basic.getProductId()
             tradeInParams.shopId = it.basic.getShopId()
             tradeInParams.productName = it.getProductName

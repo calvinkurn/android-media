@@ -23,7 +23,7 @@ data class ProductVariantBottomSheetParams(
         var miniCartData: Map<String, MiniCartItem>? = null,
 
         //Basic info pdp
-        var minimumShippingPrice: Int = 30000,
+        var minimumShippingPrice: Int = 30000.0,
         var trackerAttribution: String = "",
         var trackerListNamePdp: String = "",
         var isShopOwner: Boolean = false

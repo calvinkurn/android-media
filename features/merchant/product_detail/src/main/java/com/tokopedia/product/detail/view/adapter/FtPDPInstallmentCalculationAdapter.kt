@@ -15,7 +15,7 @@ import com.tokopedia.product.detail.data.model.financing.FtCalculationPartnerDat
 import com.tokopedia.product.detail.data.model.financing.FtTncData
 import kotlin.math.roundToLong
 
-class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
+class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                                          var isOfficialStore: Boolean,
                                          var partnerDataList: ArrayList<FtCalculationPartnerData>,
                                          var getDataFromFragment: GetTncDataFromFragment) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -78,7 +78,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Float?,
                         tvInstallmentMinimumPriceExt.text = String.format(mContext.getString(R.string.ft_min_installment_amount),
                                 CurrencyFormatUtil.convertPriceValueToIdrFormat(installmentData.minimumAmount, false))
                     } else {
-                        if (installmentData.maximumAmount == 0) {
+                        if (installmentData.maximumAmount == 0.0) {
                             tvInstallmentMinimumPriceExt.hide()
                             tvInstallmentPriceExt.show()
                             priceTv.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(monthlyProductPrice.roundToLong(), false)
