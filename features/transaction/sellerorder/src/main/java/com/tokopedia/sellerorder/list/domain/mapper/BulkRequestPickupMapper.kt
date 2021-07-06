@@ -8,6 +8,7 @@ class BulkRequestPickupMapper @Inject constructor() {
 
     fun mapResponseToUiModel(result: SomListBulkRequestPickupResponse.Data.MpLogisticBulkRequestPickup): SomListBulkRequestPickupUiModel {
         return SomListBulkRequestPickupUiModel(
+                status = result.status,
                 data = SomListBulkRequestPickupUiModel.Data(
                         jobId = result.jobId,
                         message = result.message,

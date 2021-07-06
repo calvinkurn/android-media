@@ -693,6 +693,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
     }
 
+    override fun onBulksRequestPickupButtonClicked() {
+        viewModel.bulkRequestPickup(getSelectedOrderIds())
+    }
+
     override fun onMenuItemClicked(keyAction: String) {
         when (keyAction) {
             KEY_PRINT_AWB -> {
@@ -1056,6 +1060,57 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
             }
         })
+    }
+
+    private fun observeBulkRequestPickupFinalResult() {
+        observe(viewModel.bulkRequestPickupFinalResult) {
+            when(it) {
+                is AllSuccess -> {
+
+                }
+                is PartialSuccess -> {
+
+                }
+                is SuccessPartialFailEligible -> {
+
+                }
+                is NotEligibleAndFail -> {
+
+                }
+                is AllValidationFail -> {
+
+                }
+                is ServerFail -> {
+                    showGlobalError(it.throwable)
+                }
+                is ShowLoading -> {
+
+                }
+                is HideLoading -> {
+
+                }
+                null -> {
+
+                }
+            }
+        }
+    }
+
+    private fun observeBulkRequestPickup() {
+        observe(viewModel.bulkRequestPickupResult) {
+            when (it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun hideBulkRequestPickupDialog() {
+
     }
 
     private fun observeValidateOrder() {
@@ -1824,11 +1879,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                                 getString(R.string.som_list_bulk_print_button),
                                 true
                         ))
-                        add(SomListBulkProcessOrderMenuItemUiModel(
-                                KEY_REQUEST_PICKUP,
-                                getString(R.string.som_list_bulk_request_pickup_button),
-                                isEligibleRequestPickup()
-                        ))
+                        if (GlobalConfig.isSellerApp()) {
+                            add(SomListBulkProcessOrderMenuItemUiModel(
+                                    KEY_REQUEST_PICKUP,
+                                    getString(R.string.som_list_bulk_request_pickup_button),
+                                    isEligibleRequestPickup()
+                            ))
+                        }
                     }
                     bottomSheet.init(fragmentView)
                     bottomSheet.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))

@@ -1,6 +1,11 @@
 package com.tokopedia.sellerorder.list.presentation.models
 
-sealed class BulkRequestPickupState<out T: Any>
-data class Success<out T: Any>(val data: T): BulkRequestPickupState<T>()
-data class SuccessPartial(val totalSuccess: Long, val totalFail: Long): BulkRequestPickupState<Nothing>()
-data class Fail(val throwable: Throwable): BulkRequestPickupState<Nothing>()
+sealed class BulkRequestPickupState
+data class PartialSuccess(val totalSuccess: Long, val orderIdListFail: List<Long>): BulkRequestPickupState()
+data class AllSuccess(val totalSuccess: Long): BulkRequestPickupState()
+data class ServerFail(val throwable: Throwable): BulkRequestPickupState()
+data class SuccessPartialFailEligible(val totalSuccess: Long, val totalNotEligible: Long, val orderIdListFail: List<Long>): BulkRequestPickupState()
+data class NotEligibleAndFail(val totalNotEligible: Long, val orderIdListFail: List<Long>): BulkRequestPickupState()
+object AllValidationFail: BulkRequestPickupState()
+object ShowLoading: BulkRequestPickupState()
+object HideLoading: BulkRequestPickupState()

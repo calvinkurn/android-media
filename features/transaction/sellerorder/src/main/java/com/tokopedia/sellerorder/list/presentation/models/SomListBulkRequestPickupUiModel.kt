@@ -2,7 +2,8 @@ package com.tokopedia.sellerorder.list.presentation.models
 
 data class SomListBulkRequestPickupUiModel (
         val `data`: Data = Data(),
-        val errors: List<ErrorBulkRequestPickup> = listOf()
+        val errors: List<ErrorBulkRequestPickup> = listOf(),
+        val status: Int
 ) {
     data class Data(
             val jobId: String = "",

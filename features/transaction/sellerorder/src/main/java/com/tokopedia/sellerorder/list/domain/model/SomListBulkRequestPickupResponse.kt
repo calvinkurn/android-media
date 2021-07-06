@@ -26,7 +26,7 @@ data class SomListBulkRequestPickupResponse(
                 val message: String = "",
                 @Expose
                 @SerializedName("status")
-                val status: Long = 0,
+                val status: Int = 0,
                 @Expose
                 @SerializedName("total_on_process")
                 val totalOnProcess: Long = 0
