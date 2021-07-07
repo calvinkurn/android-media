@@ -14,12 +14,14 @@ class SmartBillsEmptyStateViewHolder(itemView: View) : AbstractViewHolder<EmptyM
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_smart_bills_empty_state
+        
+        private const val NEW_SUBHOMEPAGE_RECHARGE = "tokopedia://recharge/home?platform_id=31"
     }
 
     override fun bind(element: EmptyModel) {
         with (itemView) {
             smart_bills_empty_state_button.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                RouteManager.route(context, NEW_SUBHOMEPAGE_RECHARGE)
             }
         }
     }
