@@ -121,4 +121,8 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.commonDigital)
+	implementation project(rootProject.ext.features.digitalCheckout)
+	implementation project(rootProject.ext.features.digitalTopupBills)
+	implementation project(rootProject.ext.features.commonTopupBills)
 }

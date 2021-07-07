@@ -3,8 +3,11 @@ package com.tokopedia.common.topupbills.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.*
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.EnhanceEccomerce.Companion.ECOMMERCE
+import com.tokopedia.common.topupbills.data.constant.RechargeCategory
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.util.*
 
 class CommonTopupBillsAnalytics {
     fun eventClickUsePromo() {
@@ -123,7 +126,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberEmptyState(categoryName: String, userId: String) {
+    fun eventImpressionFavoriteNumberEmptyState(categoryId: Int, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -137,7 +141,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberCoachmark(categoryName: String, userId: String) {
+    fun eventImpressionFavoriteNumberCoachmark(categoryId: Int, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -151,7 +156,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberContinue(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickFavoriteNumberContinue(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -165,7 +171,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberKebabMenu(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickFavoriteNumberKebabMenu(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -179,7 +186,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionEditBottomSheet(categoryName: String, operatorName: String, userId: String) {
+    fun eventImpressionEditBottomSheet(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -193,7 +201,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberSaveBottomSheet(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickFavoriteNumberSaveBottomSheet(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -207,7 +216,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberDeletePopUp(categoryName: String, operatorName: String, userId: String) {
+    fun eventImpressionFavoriteNumberDeletePopUp(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -221,7 +231,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberConfirmDelete(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickFavoriteNumberConfirmDelete(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -235,7 +246,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberSuccessDeleteToaster(categoryName: String, operatorName: String, userId: String) {
+    fun eventImpressionFavoriteNumberSuccessDeleteToaster(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -249,7 +261,8 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberFailedDeleteToaster(categoryName: String, operatorName: String, userId: String) {
+    fun eventImpressionFavoriteNumberFailedDeleteToaster(categoryId: Int, operatorName: String, userId: String) {
+        val categoryName = getTrackingCategoryName(categoryId)
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -261,5 +274,19 @@ class CommonTopupBillsAnalytics {
                         General.Key.USER_ID, userId
                 )
         )
+    }
+
+    private fun getTrackingCategoryName(categoryId: Int): String {
+        return getCategoryName(categoryId).toLowerCase(Locale.getDefault())
+    }
+
+    private fun getCategoryName(categoryId: Int): String {
+        return when (categoryId) {
+            RechargeCategory.ID.PULSA -> RechargeCategory.Name.PULSA
+            RechargeCategory.ID.PAKET_DATA -> RechargeCategory.Name.PAKET_DATA
+            RechargeCategory.ID.ROAMING -> RechargeCategory.Name.ROAMING
+            RechargeCategory.ID.PASCABAYAR -> RechargeCategory.Name.PASCABAYAR
+            else -> throw MessageErrorException("Category ID have to be defined in RechargeCategory")
+        }
     }
 }
