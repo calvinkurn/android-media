@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -61,7 +62,9 @@ class AtcVariantQuantityViewHolder constructor(
 
             removeTextChangedListener()
             initTextWatcherDebouncer(element)
-            txtMinOrder.text = view.context.getString(R.string.atc_variant_min_order_builder, element.minOrder)
+            txtMinOrder.shouldShowWithAction(element.minOrder > 1) {
+                txtMinOrder.text = view.context.getString(R.string.atc_variant_min_order_builder, element.minOrder)
+            }
             showContainer()
         } else {
             hideContainer()
