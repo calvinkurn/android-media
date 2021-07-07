@@ -340,12 +340,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     fun reloginAfterSQ(validateToken: String) {
         loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
-                {
-                    mutableLoginTokenAfterSQResponse.value = Success(it)
-                },
-                {
-                    mutableLoginTokenAfterSQResponse.value = Fail(it)
-                },
+                { mutableLoginTokenAfterSQResponse.value = Success(it) },
+                { mutableLoginTokenAfterSQResponse.value = Fail(it) },
                 { showPopup(it.loginToken.popupError) },
                 { onGoToActivationPageAfterRelogin(it) },
                 { onGoToSecurityQuestionAfterRelogin("") })
