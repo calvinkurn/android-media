@@ -98,7 +98,35 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should placed first when notification rendered first
+    @Test
+    fun should_placed_first_when_notification_rendered_first() {
+        // Given
+        val delay = 150L
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.setResponseWithDelay(
+                delay, notifOrderListUseCase.defaultResponse
+            )
+        }
+        startInboxActivity()
+
+        // When
+        // Need to make sure that notifications are rendered first, wait for it.
+        waitForIt(delay * 2)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                0, NotificationOrderListViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertNotifOrderFirstCardText(
+            "Transaksi berlangsung"
+        )
+        NotifcenterAssertion.assertNotifOrderSecondCardText(
+            "Lihat semua"
+        )
+    }
+
     // TODO: should placed first when rendered first instead of notification
     // TODO: should render notification empty state when notification remote data is empty
 
