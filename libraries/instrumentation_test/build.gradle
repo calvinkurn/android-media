@@ -9,6 +9,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
@@ -138,6 +139,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     api rootProject.ext.miscDependencies.coroutineTest
+
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {
