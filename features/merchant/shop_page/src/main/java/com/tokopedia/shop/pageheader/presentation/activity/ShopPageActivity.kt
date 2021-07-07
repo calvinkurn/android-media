@@ -2,16 +2,15 @@ package com.tokopedia.shop.pageheader.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
+import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -40,6 +39,7 @@ import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHead
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
+import kotlinx.android.synthetic.main.activity_new_shop_page.*
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, ShopPagePerformanceMonitoringListener{
 
@@ -74,22 +74,23 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
-        val fragTrans = supportFragmentManager.beginTransaction()
-        val frag = RouteManager.instantiateFragmentDF(
-                this,
-                parentViewResourceID,
-                "com.example.test_fragment_df.TestDfFragment",
-                intent.extras)
-//            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
-//                    activity as AppCompatActivity,
-//                    "com.example.test_fragment_df.TestDfFragment",
-//                    intentData.extras
-//            ))
-        fragTrans.add(R.id.parent_view, frag)
-        fragTrans.commit()
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
-//        val navController = navHostFragment.navController
-//        navController.navigate(R.id.test_fragment_df_graph)
+//        val fragTrans = supportFragmentManager.beginTransaction()
+//        val frag = RouteManager.instantiateFragmentDF(
+//                this,
+//                parentViewResourceID,
+//                "com.example.test_fragment_df.TestDfFragment",
+//                intent.extras)
+////            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
+////                    activity as AppCompatActivity,
+////                    "com.example.test_fragment_df.TestDfFragment",
+////                    intentData.extras
+////            ))
+//        fragTrans.add(R.id.parent_view, frag)
+//        fragTrans.commit()
+    }
+
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        return super.onCreateView(name, context, attrs)
     }
 
     override fun getLayoutRes(): Int {
@@ -97,11 +98,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     override fun getNewFragment(): Fragment? {
-//        return if(ShopUtil.isUsingNewShopPageHeader(this))
-//            NewShopPageFragment.createInstance()
-//        else
-//            ShopPageFragment.createInstance()
-        return null
+//        return RouteManager.instantiateFragmentDF(
+//                this,
+//                "com.example.test_fragment_df.TestDfFragment",
+//                null)
+        return if(ShopUtil.isUsingNewShopPageHeader(this))
+            NewShopPageFragment.createInstance()
+        else
+            ShopPageFragment.createInstance()
+//        return null
     }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)

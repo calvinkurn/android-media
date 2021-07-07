@@ -182,17 +182,12 @@ public class RouteManager {
         }
     }
 
-    public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, int fragmentContainerResourceId, @NonNull String className, @Nullable Bundle extras) {
-//        String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
-        String moduleName = "test_fragment_df";
-        boolean isModuleInstalled = DeeplinkDFMapper.checkIfModuleIsInstalled(activity,moduleName);
-//        if(!isModuleInstalled){
-//            DeeplinkDFMapper.installMissingModule(moduleName);
-//        }
-        if (isModuleInstalled) {
-            return instantiateFragment(activity, className, extras);
+    public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
+        boolean isFragmentInstalled = DeeplinkDFMapper.checkIfFragmentIsInstalled(classPathName);
+        if (isFragmentInstalled) {
+            return instantiateFragment(activity, classPathName, extras);
         } else {
-            return DeeplinkDFMapper.getFragmentDFDownloader(activity,"", fragmentContainerResourceId);
+            return DeeplinkDFMapper.getFragmentDFDownloader(activity,classPathName);
         }
 
     }

@@ -20,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
@@ -828,26 +827,12 @@ class NewShopPageFragment :
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
-//            getInitialData()
-//            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-//            if (swipeToRefresh?.isRefreshing == false) {
-//                setViewState(VIEW_LOADING)
-//            }
-//            initViews(view)
-            initToolbar()
-            val navHostFragment = childFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
-            val fragTrans = childFragmentManager.beginTransaction()
-            val frag = RouteManager.instantiateFragment(activity as AppCompatActivity, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, intentData.getExtras())
-//            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
-//                    activity as AppCompatActivity,
-//                    "com.example.test_fragment_df.TestDfFragment",
-//                    intentData.extras
-//            ))
-            fragTrans.add(R.id.df_host_fragment, frag)
-            fragTrans.commit()
-//            navHostFragment.navController.navigate()
-//            val navController = navHostFragment.navController
-//            navController.navigate(R.id.test_fragment_df_graph)
+            getInitialData()
+            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+            if (swipeToRefresh?.isRefreshing == false) {
+                setViewState(VIEW_LOADING)
+            }
+            initViews(view)
         }
     }
 
@@ -1419,14 +1404,24 @@ class NewShopPageFragment :
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
         val listShopPageTabModel  = mutableListOf<ShopPageTabModel>()
         if (isShowHomeTab()) {
-            getHomeFragment()?.let { homeFragment ->
-                listShopPageTabModel.add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_home),
-                        iconTabHomeInactive,
-                        iconTabHomeActive,
-                        homeFragment
-                ))
-            }
+//            getHomeFragment()?.let { homeFragment ->
+//                listShopPageTabModel.add(ShopPageTabModel(
+//                        getString(R.string.shop_info_title_tab_home),
+//                        iconTabHomeInactive,
+//                        iconTabHomeActive,
+//                        homeFragment
+//                ))
+//            }
+            val testFragmentHomeTab = RouteManager.instantiateFragmentDF(
+                    activity as AppCompatActivity,
+                    "com.example.test_fragment_df.TestDfFragment",
+                    null)
+            listShopPageTabModel.add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_home),
+                    iconTabHomeInactive,
+                    iconTabHomeActive,
+                    testFragmentHomeTab
+            ))
         }
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(
                 shopId,

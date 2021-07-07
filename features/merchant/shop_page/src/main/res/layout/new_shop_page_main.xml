@@ -97,11 +97,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/Unify_N75" />
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/df_host_fragment"
-        />
 
     <ViewStub
         android:id="@+id/view_stub_content_layout"

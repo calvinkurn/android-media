@@ -768,16 +768,16 @@ object DeeplinkDFMapper : CoroutineScope {
             // Test
             add(DFP({
                 listOf(
-                        "test_fragment_df"
+                        "com.example.test_fragment_df.TestDfFragment"
                 ).contains(it)
             }, DF_MERCHANT_SELLER, R.string.applink_title_affiliate))
         }
     }
 
     @JvmStatic
-    fun checkIfModuleIsInstalled(context: Context, moduleName: String): Boolean? {
-        moduleDFMapper?.forEach {
-            return if(it.logic(moduleName)){
+    fun checkIfFragmentIsInstalled(className: String): Boolean? {
+        moduleDFMapper.forEach {
+            return if(it.logic(className)){
                 true
             } else{
                 null
@@ -787,23 +787,16 @@ object DeeplinkDFMapper : CoroutineScope {
     }
 
     @JvmStatic
-    fun getFragmentDFDownloader(activity: AppCompatActivity, moduleId: String, fragmentContainerResourceId: Int): Fragment? {
+    fun getFragmentDFDownloader(activity: AppCompatActivity, classPathName: String): Fragment? {
         getSplitManager(activity)?.let {
-            val hasInstalled = it.installedModules.contains(moduleId)
-            return if (hasInstalled) {
-                null
-            } else {
-//                UriUtil.buildUri(
-//                        DYNAMIC_FEATURE_INSTALL,
-//                        moduleId,
-//                        moduleName,
-//                        Uri.encode(deeplink).toString(),
-//                        fallbackUrl)
-                val bundle = Bundle()
-                bundle.putString("MODULE_ID", DF_MERCHANT_SELLER)
-                bundle.putInt("FRAGMENT_CONTAINER_ID", fragmentContainerResourceId)
-                RouteManager.instantiateFragment(activity, "com.tokopedia.dynamicfeatures.DFInstallerFragment", bundle)
+            val dfModuleName = moduleDFMapper.firstOrNull {
+                it.logic(classPathName)
             }
+            val bundle = Bundle()
+            bundle.putString("MODULE_ID", dfModuleName?.moduleId.orEmpty())
+            bundle.putString("CLASS_PATH_NAME", classPathName)
+            val dfInstallFragmentClassPathName = "com.tokopedia.dynamicfeatures.DFInstallerFragment"
+            return RouteManager.instantiateFragment(activity, dfInstallFragmentClassPathName, bundle)
         } ?: return null
     }
 
