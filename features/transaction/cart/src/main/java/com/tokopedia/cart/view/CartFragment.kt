@@ -3546,7 +3546,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         val cartShopHolderData = cartViewHolderDataMapper.mapCartShopHolderData(shopGroupAvailableData)
                         cartAdapter.addItem(startIndex, cartShopHolderData)
                         val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(false, shopGroupAvailableData)
-                        cartAdapter.addItem(collapsedProductAccordion)
+                        cartAdapter.addItem(startIndex + 1, collapsedProductAccordion)
                         onNeedToInsertMultipleViewItem(startIndex, shopGroupAvailableData.cartItemDataList.size + 1)
                         break@loop
                     }
