@@ -816,7 +816,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            return view.itemView
+            val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
+            if (balanceWidgetView.isShown) {
+                return balanceWidgetView
+            }
         }
         return null
     }
