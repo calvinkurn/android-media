@@ -2475,34 +2475,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         for (shopGroupAvailableData in cartListData.shopGroupAvailableDataList) {
             if (shopGroupAvailableData.cartItemDataList.size > 0) {
                 if (shopGroupAvailableData.isTokoNow) {
-                    val shopSimple = cartViewHolderDataMapper.mapCartShopSimpleHolderData(shopGroupAvailableData)
-                    cartAdapter.addItem(shopSimple)
-                    val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
-                    cartAdapter.addItem(collapsedProductList)
+                    renderCollapsedAvailableCartItems(shopGroupAvailableData)
                 } else {
-                    val cartShopHolderData = CartShopHolderData()
-                    cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
-                    if (shopGroupAvailableData.isError) {
-                        cartShopHolderData.setAllItemSelected(false)
-                    } else {
-                        if (shopGroupAvailableData.isChecked) {
-                            cartShopHolderData.setAllItemSelected(true)
-                        } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
-                            shopGroupAvailableData.cartItemDataList.let {
-                                for (cartItemHolderData in it) {
-                                    if (cartItemHolderData.isSelected) {
-                                        cartShopHolderData.isPartialSelected = true
-                                        break
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
-                    cartAdapter.addItem(cartShopHolderData)
+                    renderExpandedAvailableCartItems(shopGroupAvailableData)
                 }
             }
         }
+    }
+
+    private fun renderExpandedAvailableCartItems(shopGroupAvailableData: ShopGroupAvailableData) {
+        val cartShopHolderData = cartViewHolderDataMapper.mapCartShopHolderData(shopGroupAvailableData)
+        cartAdapter.addItem(cartShopHolderData)
+    }
+
+    private fun renderCollapsedAvailableCartItems(shopGroupAvailableData: ShopGroupAvailableData) {
+        val shopSimple = cartViewHolderDataMapper.mapCartShopSimpleHolderData(shopGroupAvailableData)
+        cartAdapter.addItem(shopSimple)
+        val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
+        cartAdapter.addItem(collapsedProductList)
     }
 
     private fun renderCartUnavailableItems(cartListData: CartListData) {

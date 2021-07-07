@@ -38,6 +38,28 @@ class CartViewHolderDataMapper @Inject constructor() {
         }
     }
 
+    fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData): CartShopHolderData {
+        return CartShopHolderData().apply {
+            if (shopGroupAvailableData.isError) {
+                setAllItemSelected(false)
+            } else {
+                if (shopGroupAvailableData.isChecked) {
+                    setAllItemSelected(true)
+                } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
+                    shopGroupAvailableData.cartItemDataList.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.isSelected) {
+                                isPartialSelected = true
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+            this.shopGroupAvailableData = shopGroupAvailableData
+        }
+    }
+
     private fun mapCartCollapsedProductHolderData(cartItemHolderData: CartItemHolderData): CartCollapsedProductHolderData {
         return CartCollapsedProductHolderData().apply {
             productId = cartItemHolderData.cartItemData.originData.productId
