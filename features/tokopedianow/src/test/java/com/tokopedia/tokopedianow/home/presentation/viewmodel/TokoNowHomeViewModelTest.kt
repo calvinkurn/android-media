@@ -140,37 +140,51 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting data for mini cart should run and give success result`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
     }
 
     @Test
     fun `when getting data for mini cart should throw mini cart exception`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(Exception())
 
-        viewModel.getMiniCart(shopId = listOf("123"), "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartFail()
     }
 
     @Test
     fun `when shopId is empty should get null for category livedata`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf(), "233")
+        viewModel.getMiniCart(shopId = listOf(), warehouseId = "233")
 
         verifyMiniCartNullResponse()
     }
 
     @Test
     fun `when warehouseId is zero should get null for category livedata`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), "0")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "0")
 
+        verifyMiniCartNullResponse()
+    }
+
+    @Test
+    fun `given user is not logged in when getMiniCart should not call use case`() {
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = false)
+
+        viewModel.getMiniCart(listOf("123"), "1")
+
+        verifyGetMiniCartUseCaseNotCalled()
         verifyMiniCartNullResponse()
     }
 

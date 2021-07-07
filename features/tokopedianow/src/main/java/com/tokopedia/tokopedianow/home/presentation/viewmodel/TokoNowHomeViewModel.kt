@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -47,6 +48,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getTickerUseCase: GetTickerUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
@@ -176,7 +178,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
-        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L) {
+        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
