@@ -25,6 +25,7 @@ import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.presentation.listener.OnTabChangeListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewConstants.ALL_RATINGS
 import com.tokopedia.review.common.util.ReviewConstants.ANSWERED_VALUE
@@ -33,8 +34,7 @@ import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
 import com.tokopedia.review.common.util.getStatusFilter
 import com.tokopedia.review.common.util.isUnAnswered
-import com.tokopedia.review.common.presentation.activity.InboxReputationActivity
-import com.tokopedia.review.common.presentation.listener.OnTabChangeListener
+import com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity
 import com.tokopedia.review.feature.inboxreview.analytics.InboxReviewTracking
 import com.tokopedia.review.feature.inboxreview.di.component.DaggerInboxReviewComponent
 import com.tokopedia.review.feature.inboxreview.di.component.InboxReviewComponent

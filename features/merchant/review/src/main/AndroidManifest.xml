@@ -32,7 +32,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="com.tokopedia.review.common.presentation.activity.ReviewInboxActivity"
+            android:name="com.tokopedia.review.feature.inbox.presentation.ReviewInboxActivity"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

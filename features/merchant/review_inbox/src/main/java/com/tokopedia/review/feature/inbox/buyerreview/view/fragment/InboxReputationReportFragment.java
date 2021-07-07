@@ -22,13 +22,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationReport;
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationReportPresenter;
+import com.tokopedia.review.inbox.R;
 
 import javax.inject.Inject;
 

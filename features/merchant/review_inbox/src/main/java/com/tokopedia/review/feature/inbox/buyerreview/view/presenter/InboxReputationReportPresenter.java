@@ -1,10 +1,10 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.report.ReportReviewUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationReport;
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.ReportReviewSubscriber;
+import com.tokopedia.review.inbox.R;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.presentation.activity;
+package com.tokopedia.review.feature.inbox.presentation;
 
 import android.app.NotificationManager;
 import android.content.Context;
@@ -28,7 +28,11 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.header.HeaderUnify;
+import com.tokopedia.review.R;
+import com.tokopedia.review.common.ReviewInboxConstants;
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener;
+import com.tokopedia.review.common.presentation.listener.OnTabChangeListener;
+import com.tokopedia.review.common.util.ReviewConstants;
 import com.tokopedia.review.common.util.ReviewUtil;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTrackingConstant;
@@ -36,8 +40,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.SectionsPager
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationListener;
-import com.tokopedia.review.common.ReviewInboxConstants;
-import com.tokopedia.review.common.presentation.listener.OnTabChangeListener;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;

@@ -1,4 +1,4 @@
-package com.tokopedia.review.common.presentation.activity
+package com.tokopedia.review.feature.inbox.presentation
 
 import android.content.Context
 import android.content.Intent

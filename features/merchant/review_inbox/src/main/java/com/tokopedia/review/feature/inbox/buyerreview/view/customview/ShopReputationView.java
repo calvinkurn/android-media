@@ -17,7 +17,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.review.R;
+import com.tokopedia.review.inbox.R;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**

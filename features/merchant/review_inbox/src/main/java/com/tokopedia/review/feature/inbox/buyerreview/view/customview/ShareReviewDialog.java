@@ -20,11 +20,11 @@ import com.facebook.share.widget.ShareDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
-import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.ClipboardHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ShareAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ShareModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
+import com.tokopedia.review.inbox.R;
 
 /**
  * Created by stevenfredian on 2/20/17.

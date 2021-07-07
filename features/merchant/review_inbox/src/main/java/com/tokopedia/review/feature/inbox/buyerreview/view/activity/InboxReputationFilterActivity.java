@@ -12,9 +12,9 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.text.TextDrawable;
-import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFilterFragment;
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment;
+import com.tokopedia.review.inbox.R;
 
 /**
  * @author by nisie on 8/21/17.

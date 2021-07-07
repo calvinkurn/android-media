@@ -1,13 +1,13 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.tokopedia.review.R;
+import androidx.annotation.LayoutRes;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.review.inbox.R;
 
 public class LoadingInboxReputationViewholder extends AbstractViewHolder<LoadingModel> {
     @LayoutRes

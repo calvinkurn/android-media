@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.review.R;
+import com.tokopedia.review.common.ReviewInboxConstants;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
@@ -25,7 +25,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputationFilterAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.HeaderOptionUiModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel;
-import com.tokopedia.review.common.ReviewInboxConstants;
+import com.tokopedia.review.inbox.R;
 
 import java.util.ArrayList;
 
