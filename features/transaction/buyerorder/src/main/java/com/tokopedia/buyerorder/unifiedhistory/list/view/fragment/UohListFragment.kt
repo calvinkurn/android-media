@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -468,12 +469,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun resetFocusEditText() {
-        search_bar?.searchBarTextField?.apply {
-            isFocusableInTouchMode = false
-            isFocusable = false
-            isFocusableInTouchMode = true
-            isFocusable = true
-        }
+        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
     }
 
     private fun getLimitDate(): GregorianCalendar {
