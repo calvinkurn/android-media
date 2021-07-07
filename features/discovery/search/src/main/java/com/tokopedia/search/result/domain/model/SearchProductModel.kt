@@ -654,9 +654,13 @@ data class SearchProductModel(
             @Expose
             val identifier: String = "",
 
+            @SerializedName("meta")
+            @Expose
+            val meta: String = "",
+
             @SerializedName("product")
             @Expose
-            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
+            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf(),
     )
 
     data class InspirationCarouselProduct (

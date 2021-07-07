@@ -1111,6 +1111,282 @@
             "product": []
           }
         ]
+      },
+      {
+        "title": "Pilih sesuai warna-mu",
+        "position": 8,
+        "layout": "chips",
+        "type": "annotation_color_product_chips",
+        "options": [
+          {
+            "title": "Hijau",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "identifier": "",
+            "meta": "#112233",
+            "product": [
+              {
+                "id": 219723699,
+                "name": "Samsung Galaxy J5 Prime Fullset 1",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723600,
+                "name": "Samsung Galaxy J5 Prime Fullset 2",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723612,
+                "name": "Samsung Galaxy J5 Prime Fullset 3",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723633,
+                "name": "Samsung Galaxy J5 Prime Fullset 4",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723611,
+                "name": "Samsung Galaxy J5 Prime Fullset 5",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              }
+            ]
+          },
+          {
+            "title": "Kuning",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "identifier": "option-2",
+            "meta": "#112234",
+            "product": []
+          },
+          {
+            "title": "Biru",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "identifier": "option-3",
+            "meta": "#122234",
+            "product": []
+          }
+        ]
+      },
+      {
+        "title": "Pilih sesuai ukuran-mu",
+        "position": 10,
+        "layout": "chips",
+        "type": "annotation_not_color_product_chips",
+        "options": [
+          {
+            "title": "Hijau",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "identifier": "",
+            "meta": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+            "product": [
+              {
+                "id": 219723699,
+                "name": "Samsung Galaxy J5 Prime Fullset 1",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723600,
+                "name": "Samsung Galaxy J5 Prime Fullset 2",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723612,
+                "name": "Samsung Galaxy J5 Prime Fullset 3",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723633,
+                "name": "Samsung Galaxy J5 Prime Fullset 4",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              },
+              {
+                "id": 219723611,
+                "name": "Samsung Galaxy J5 Prime Fullset 5",
+                "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+                "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
+                "applink": "tokopedia://product/219723699",
+                "rating": 5,
+                "count_review": 34,
+                "price": 1200000,
+                "description": [],
+                "wishlist": false,
+                "shop": {
+                  "name": "",
+                  "city": ""
+                },
+                "badges": [],
+                "free_ongkir": {
+                  "is_active": false,
+                  "img_url": ""
+                }
+              }
+            ]
+          },
+          {
+            "title": "Kuning",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "identifier": "option-2",
+            "meta": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+            "product": []
+          },
+          {
+            "title": "Biru",
+            "url": "https://www.tokopedia.com/search?pmax=1700000&amp;pmin=920001&amp;q=samsung&amp;source=search&amp;st=product",
+            "applink": "tokopedia://search?pmax=1700000&pmin=920001&q=samsung&source=search&st=product",
+            "identifier": "option-3",
+            "meta": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2018/9/25/219723699/219723699_0fe60597-35d9-409f-a7ef-a2731de072a4_1560_1560.jpg",
+            "product": []
+          }
+        ]
       }
     ]
   }

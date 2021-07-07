@@ -172,6 +172,7 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
         String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_COLOR_PRODUCT_CHIPS = "annotation_color_product_chips";
     }
 
     interface TopAdsComponent {
