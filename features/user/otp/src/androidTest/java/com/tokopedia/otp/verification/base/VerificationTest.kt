@@ -10,16 +10,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.action.PinUnifyAction
 import com.tokopedia.otp.common.action.SpannableTypographyAction.clickClickableSpan
-import com.tokopedia.otp.common.action.TypographyAction
 import com.tokopedia.otp.common.idling.FragmentTransactionIdle
-import com.tokopedia.otp.common.matcher.RecyclerViewMatcher
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.otp.common.utility.RootViewInteractionUtil.waitOnView
 import com.tokopedia.otp.stub.common.di.OtpComponentStub
 import com.tokopedia.otp.stub.common.di.OtpComponentStubBuilder
@@ -44,6 +42,9 @@ abstract class VerificationTest {
     var activityTestRule = IntentsTestRule(
             VerificationActivityStub::class.java, false, false
     )
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Inject
     protected lateinit var getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FAStub
@@ -119,13 +120,10 @@ abstract class VerificationTest {
         get() = InstrumentationRegistry
                 .getInstrumentation().context.applicationContext
 
-    protected val gtmLogDbSource = GtmLogDBSource(context)
-
     @Before
     open fun before() {
         otpComponent = OtpComponentStubBuilder.getComponent(applicationContext, context)
         otpComponent.inject(this)
-        gtmLogDbSource.deleteAll().subscribe()
     }
 
     @After
@@ -225,7 +223,7 @@ abstract class VerificationTest {
     protected fun clickInactivePhone() {
         onView(withId(R.id.phone_inactive))
                 .check(matches(isDisplayed()))
-                .perform(TypographyAction.clickText())
+                .perform(click())
     }
 
     protected fun inputVerificationOtp(length: Long) {
@@ -267,10 +265,7 @@ abstract class VerificationTest {
 
     protected fun checkTracker(path: String, sleepTime: Long = 6000) {
         sleep(sleepTime)
-        assertThat(
-                getAnalyticsWithQuery(gtmLogDbSource, context, path),
-                hasAllSuccess()
-        )
+        assertThat(cassavaTestRule.validate(path), hasAllSuccess())
     }
 
     companion object {
