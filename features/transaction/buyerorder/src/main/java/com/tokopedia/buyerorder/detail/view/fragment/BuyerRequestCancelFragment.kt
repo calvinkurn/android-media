@@ -30,6 +30,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
+import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
@@ -589,7 +590,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        backToDetailPage(1, buyerRequestCancelResponse.message.first())
+                        backToEntryPoint(1, buyerRequestCancelResponse.message.first())
                     } else if (buyerRequestCancelResponse.success == 0) {
                         if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
                             showPopup(buyerRequestCancelResponse.popup)
@@ -639,7 +640,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
             1 -> {
                 // showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
-                backToDetailPage(1, instantCancelResponse.message)
+                backToEntryPoint(1, instantCancelResponse.message)
             }
             2 -> {
                 showPopupWithTwoButtons()
@@ -650,11 +651,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun backToDetailPage(resultCode: Int, resultMsg: String) {
+    private fun backToEntryPoint(resultCode: Int, resultMsg: String) {
         val intent = Intent()
         intent.putExtra(RESULT_CODE_INSTANT_CANCEL, resultCode)
         intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
-        activity?.setResult(MarketPlaceDetailFragment.INSTANT_CANCEL_BUYER_REQUEST, intent)
+        activity?.setResult(INSTANT_CANCEL_BUYER_REQUEST, intent)
         activity?.finish()
     }
 
@@ -689,7 +690,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
             setSecondaryCTAClickListener {
                 dismiss()
-                backToDetailPage(0, "")
+                backToEntryPoint(0, "")
             }
         }
         dialog?.show()

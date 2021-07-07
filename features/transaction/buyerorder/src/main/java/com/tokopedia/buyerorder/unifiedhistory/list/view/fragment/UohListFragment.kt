@@ -55,6 +55,9 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
+import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
@@ -149,6 +152,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -298,6 +302,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 onFailCreateReview(data?.getStringExtra(CREATE_REVIEW_ERROR_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review))
             }
         } else if (requestCode == UOH_CANCEL_ORDER) {
+            if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
+                val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
+                val result = data?.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1)
+                if (result == 1) {
+                    if (resultMsg != null) {
+                        showToaster(resultMsg, Toaster.TYPE_NORMAL)
+                    }
+                }
+            }
             if (resultCode == Activity.RESULT_OK) {
                 initialLoad()
             }

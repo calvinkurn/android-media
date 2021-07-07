@@ -115,6 +115,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
@@ -156,7 +157,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
-    public static final int INSTANT_CANCEL_BUYER_REQUEST = 100;
     public static final int CANCEL_ORDER_DISABLE = 102;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
