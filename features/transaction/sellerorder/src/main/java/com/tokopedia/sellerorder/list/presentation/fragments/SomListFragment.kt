@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.fragments
 import android.animation.Animator
 import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
@@ -11,10 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -76,6 +74,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
@@ -161,6 +160,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         sortFilterSomList?.let {
             SomListSortFilterTab(it, this)
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private val maskTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            view.hideKeyboard()
+        }
+        false
     }
 
     private val somListLayoutManager by lazy { rvSomList?.layoutManager as? LinearLayoutManager }
@@ -830,6 +837,14 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         setupToolbar()
         setupSearchBar()
         setupListeners()
+        setupMasks()
+    }
+
+    private fun setupMasks() {
+        somListUpperMask?.setOnTouchListener(maskTouchListener)
+        somListLowerMask?.setOnTouchListener(maskTouchListener)
+        somListLeftMask?.setOnTouchListener(maskTouchListener)
+        somListRightMask?.setOnTouchListener(maskTouchListener)
     }
 
     private fun setupSearchBar() {
