@@ -1,9 +1,12 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
+import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import com.tokopedia.test.application.matcher.hasViewHolderOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class NotifcenterOrderList : InboxNotifcenterTest() {
@@ -24,7 +27,23 @@ class NotifcenterOrderList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should hide order list when user has notification filter
+    @Test
+    fun should_hide_order_list_when_user_has_notification_filter() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.response = notifOrderListUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        //
+        NotifcenterAction.clickFilterAt(0)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(NotificationOrderListViewHolder::class.java))
+        )
+    }
+
     // TODO: should show cached version order list when cache data is exist
     // TODO: should update currently visible cached order list with counter when finished loading remote data
     // TODO: should placed first when notification rendered first

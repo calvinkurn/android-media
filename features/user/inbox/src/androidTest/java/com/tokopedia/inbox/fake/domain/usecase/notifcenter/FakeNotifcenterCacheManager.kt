@@ -2,8 +2,9 @@ package com.tokopedia.inbox.fake.domain.usecase.notifcenter
 
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-class FakeNotifcenterCacheManager : NotifcenterCacheManager {
+class FakeNotifcenterCacheManager @Inject constructor() : NotifcenterCacheManager {
     override fun saveCache(key: String, obj: Any) {
 
     }
