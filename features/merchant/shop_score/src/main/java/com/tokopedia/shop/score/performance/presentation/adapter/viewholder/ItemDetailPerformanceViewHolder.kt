@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
@@ -22,7 +23,7 @@ class ItemDetailPerformanceViewHolder(view: View,
     : AbstractViewHolder<ItemDetailPerformanceUiModel>(view) {
 
     companion object {
-        val LAYOUT = com.tokopedia.shop.score.R.layout.item_detail_shop_performance
+        val LAYOUT = R.layout.item_detail_shop_performance
         const val PERCENT = "%"
         const val MINUS_SIGN = "-"
     }
@@ -95,7 +96,7 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(com.tokopedia.shop.score.R.color.shop_score_penalty_dms_container))
+                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -107,7 +108,7 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, com.tokopedia.shop.score.R.drawable.corner_rounded_performance_list)
+                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
                 }
             }
         } catch (e: Resources.NotFoundException) {
@@ -118,13 +119,13 @@ class ItemDetailPerformanceViewHolder(view: View,
     private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
         try {
             when (colorValueDetailPerformance) {
-                getColorHexString(com.tokopedia.shop.score.R.color.shop_score_item_parameter_dms_grey) -> {
+                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
                 }
-                getColorHexString(com.tokopedia.shop.score.R.color.shop_score_item_parameter_dms_grey) -> {
+                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
-                getColorHexString(com.tokopedia.shop.score.R.color.shop_score_item_parameter_dms_green) -> {
+                getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 }
             }
