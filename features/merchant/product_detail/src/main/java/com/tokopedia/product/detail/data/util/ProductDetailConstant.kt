@@ -164,12 +164,6 @@ object ProductDetailConstant {
 
     const val KEY_PRODUCT_DETAIL = "product detail"
 
-    //bo type
-    const val NO_BEBAS_ONGKIR = 0
-    const val BEBAS_ONGKIR_NORMAL = 1
-    const val BEBAS_ONGKIR_EXTRA = 2
-    const val BO_TOKONOW = 3
-
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
 

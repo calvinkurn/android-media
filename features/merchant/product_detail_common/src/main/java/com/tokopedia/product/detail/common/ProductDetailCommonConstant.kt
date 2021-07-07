@@ -88,4 +88,10 @@ object ProductDetailCommonConstant{
     const val OVO_INACTIVE_STATUS = 1;
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
+    //bo type
+    const val NO_BEBAS_ONGKIR = 0
+    const val BEBAS_ONGKIR_NORMAL = 1
+    const val BEBAS_ONGKIR_EXTRA = 2
+    const val BO_TOKONOW = 3
+
 }
