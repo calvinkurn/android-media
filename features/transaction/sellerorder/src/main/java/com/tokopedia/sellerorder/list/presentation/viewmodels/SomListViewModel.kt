@@ -331,20 +331,6 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    fun retryGetBulkMultiShippingStatus() {
-        launchCatchError(block = {
-            bulkRequestPickupFinalResult.postValue(ShowLoading(orderIdsRequestPickup.size.toLong()))
-            val bulkAcceptResult = _bulkRequestPickupResult.value
-            if (bulkAcceptResult is Success) {
-                retryRequestPickup = 0
-                getMultiShippingStatus(bulkAcceptResult.data.data.jobId, 0L)
-            }
-        }, onError = {
-            //Case 1 will happen when there's an error/down from BE
-            _bulkRequestPickupResult.postValue(Fail(it))
-        })
-    }
-
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
             retryCount = 0
