@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
@@ -52,10 +53,10 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
             showReportOptionWithCondition(isReportable, feedbackID, element.shopId)
-            setReview(message)
+            setReview(message, feedbackID, element.productId)
             showAttachedImages(imageAttachments, this, element.shopId)
             setLikeButton(feedbackID, element.shopId, likeDislike)
-            setReply(element.shopName, reviewResponse)
+            setReply(element.shopName, reviewResponse, feedbackID, element.productId)
         }
     }
 
@@ -105,7 +106,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         basicInfo?.setReviewerName(name)
     }
 
-    private fun setReview(message: String) {
+    private fun setReview(message: String, feedbackId: String, productId: String) {
         if (message.isEmpty()) {
             reviewMessage?.apply {
                 text = getString(R.string.review_reading_empty_review)
@@ -120,6 +121,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             text = formattingResult.first
             if (formattingResult.second) {
                 setOnClickListener {
+                    ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
                     maxLines = Integer.MAX_VALUE
                     text = message
                 }
@@ -148,14 +150,14 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         }
     }
 
-    private fun setReply(shopName: String, response: ProductReviewResponse) {
+    private fun setReply(shopName: String, response: ProductReviewResponse, feedbackId: String, productId: String) {
         if (response.message.isNotBlank()) {
             showResponseChevron?.apply {
-                setSellerResponseClickListener(shopName, response.createTime, response.message)
+                setSellerResponseClickListener(shopName, response.createTime, response.message, feedbackId, productId)
                 show()
             }
             showResponseText?.apply {
-                setSellerResponseClickListener(shopName, response.createTime, response.message)
+                setSellerResponseClickListener(shopName, response.createTime, response.message, feedbackId, productId)
                 show()
             }
         } else {
@@ -164,7 +166,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         }
     }
 
-    private fun View.setSellerResponseClickListener(shopName: String, timeStamp: String, response: String) {
+    private fun View.setSellerResponseClickListener(shopName: String, timeStamp: String, response: String, feedbackId: String, productId: String) {
         setOnClickListener {
             if (showResponseText?.text == getString(R.string.review_reading_show_response)) {
                 showResponseChevron?.setImage(IconUnify.CHEVRON_UP)
@@ -173,6 +175,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
                     setResponseData(shopName, timeStamp, response)
                     show()
                 }
+                ReadReviewTracking.trackOnSeeReplyClicked(feedbackId, productId)
             } else {
                 showResponseChevron?.setImage(IconUnify.CHEVRON_DOWN)
                 showResponseText?.text = getString(R.string.review_reading_show_response)

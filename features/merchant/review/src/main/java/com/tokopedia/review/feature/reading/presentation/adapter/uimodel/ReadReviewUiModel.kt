@@ -11,6 +11,7 @@ data class ReadReviewUiModel(
         val shopName: String,
         val productImage: String = "",
         val productName: String = "",
+        val productId: String = ""
 ) : Visitable<ReadReviewAdapterTypeFactory> {
 
     override fun type(typeFactory: ReadReviewAdapterTypeFactory): Int {

@@ -32,6 +32,8 @@ import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheet
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
+import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
+import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
@@ -121,7 +123,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun getScreenName(): String {
-        return ""
+        return ReadReviewTrackingConstants.SCREEN_NAME
     }
 
     override fun initInjector() {
@@ -145,6 +147,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onThreeDotsClicked(reviewId: String, shopId: String) {
+        ReadReviewTracking.trackOnReportClicked(reviewId, viewModel.getProductId())
         activity?.supportFragmentManager?.let { ReviewReportBottomSheet.newInstance(reviewId, shopId, this).show(it, ReviewReportBottomSheet.TAG) }
     }
 
@@ -153,6 +156,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onHeaderClicked() {
+        ReadReviewTracking.trackOnClickPositiveReviewPercentage(viewModel.getProductId())
         if (statisticsBottomSheet == null) {
             statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(getReviewStatistics(), getSatisfactionRate())
         }
@@ -204,6 +208,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onClearFiltersClicked() {
         clearAllData()
+        ReadReviewTracking.trackOnClearFilter(viewModel.getProductId())
         viewModel.clearFilters()
         viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM)
         viewModel.getSelectedRatingFilter()
@@ -213,6 +218,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onAttachedImagesClicked(productReview: ProductReview, positionClicked: Int, shopId: String) {
+        ReadReviewTracking.trackOnImageClicked(productReview.feedbackID, viewModel.getProductId())
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)
             cacheManager.put(PRODUCT_REVIEW_KEY, productReview)
@@ -258,6 +264,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getProductIdFromArguments()
+        ReadReviewTracking.trackOpenScreen(screenName, viewModel.getProductId())
     }
 
     override fun onAttach(context: Context) {
