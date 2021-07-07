@@ -2,6 +2,7 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_interactive_loading"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N700_44"

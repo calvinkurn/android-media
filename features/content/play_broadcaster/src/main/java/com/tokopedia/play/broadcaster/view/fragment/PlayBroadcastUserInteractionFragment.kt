@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,6 +20,8 @@ import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -45,7 +46,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -119,6 +119,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (arguments?.getBoolean(KEY_START_COUNTDOWN) == true) {
             startCountDown()
         }
+        parentViewModel.onOpenLiveStreamPage()
     }
 
     override fun onStart() {
@@ -199,6 +200,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeEvent()
+        observeInteractiveConfig()
     }
 
     private fun startCountDown() {
@@ -503,7 +505,47 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
+    private fun observeInteractiveConfig() {
+        parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is BroadcastInteractiveState.Forbidden -> {
+                    interactiveView.hide()
+                }
+                is BroadcastInteractiveState.Allowed -> {
+                    handleHasInteractiveState(state)
+                    interactiveView.show()
+                }
+            }
+        }
+    }
     //endregion
+
+    private fun handleHasInteractiveState(state: BroadcastInteractiveState.Allowed) {
+        when (state) {
+            is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
+            is BroadcastInteractiveState.Allowed.Schedule -> {
+                interactiveView.setSchedule(state.title, state.timeToStartInMs) {
+                    interactiveView.setLive(state.durationInMs) {
+                        //TODO("When Live end")
+                    }
+                }
+            }
+            is BroadcastInteractiveState.Allowed.Live -> {
+                interactiveView.setLive(state.remainingTimeInMs) {
+                    //TODO("When Live end")
+                }
+            }
+        }
+    }
+
+    private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
+        when (state) {
+            BroadcastInteractiveInitState.NoPrevious -> interactiveView.setInit()
+            BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
+            BroadcastInteractiveInitState.HasPrevious -> interactiveView.setFinish()
+        }
+    }
 
     companion object {
         const val KEY_START_COUNTDOWN = "start_count_down"

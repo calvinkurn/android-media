@@ -1,17 +1,20 @@
 package com.tokopedia.play_common.domain.usecase.interactive
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by jegul on 02/07/21
  */
 class GetInteractiveLeaderboardUseCase @Inject constructor(
-        gqlRepository: GraphqlRepository
+        gqlRepository: GraphqlRepository,
+        private val dispatchers: CoroutineDispatchers,
 ) : GraphqlUseCase<GetInteractiveLeaderboardResponse>(gqlRepository) {
 
     private val query = """
@@ -50,9 +53,9 @@ class GetInteractiveLeaderboardUseCase @Inject constructor(
         setTypeClass(GetInteractiveLeaderboardResponse::class.java)
     }
 
-    suspend fun execute(channelId: String): GetInteractiveLeaderboardResponse {
+    suspend fun execute(channelId: String): GetInteractiveLeaderboardResponse = withContext(dispatchers.io) {
         setRequestParams(createParams(channelId))
-        return executeOnBackground()
+        return@withContext executeOnBackground()
     }
 
     companion object {

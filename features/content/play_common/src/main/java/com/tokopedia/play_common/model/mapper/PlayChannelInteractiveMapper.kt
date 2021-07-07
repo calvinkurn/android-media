@@ -1,13 +1,13 @@
-package com.tokopedia.play.view.uimodel.mapper
+package com.tokopedia.play_common.model.mapper
 
-import com.tokopedia.play.data.dto.interactive.InteractiveType
-import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play.data.interactive.ChannelInteractive
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.model.dto.InteractiveType
+import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
 import javax.inject.Inject
 
 /**
- * Created by jegul on 30/06/21
+ * Created by jegul on 07/07/21
  */
 class PlayChannelInteractiveMapper @Inject constructor() {
 

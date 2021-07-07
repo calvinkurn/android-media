@@ -1,17 +1,20 @@
-package com.tokopedia.play.domain.interactive
+package com.tokopedia.play_common.domain.usecase.interactive
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * Created by jegul on 28/06/21
+ * Created by jegul on 07/07/21
  */
 class GetCurrentInteractiveUseCase @Inject constructor(
-        gqlRepository: GraphqlRepository
+        gqlRepository: GraphqlRepository,
+        private val dispatchers: CoroutineDispatchers,
 ): GraphqlUseCase<GetCurrentInteractiveResponse>(gqlRepository) {
 
     private val query = """
@@ -36,6 +39,10 @@ class GetCurrentInteractiveUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(GetCurrentInteractiveResponse::class.java)
+    }
+
+    override suspend fun executeOnBackground(): GetCurrentInteractiveResponse = withContext(dispatchers.io) {
+        return@withContext super.executeOnBackground()
     }
 
     companion object {

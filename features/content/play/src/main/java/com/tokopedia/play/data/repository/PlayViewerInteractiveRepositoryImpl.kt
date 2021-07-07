@@ -1,13 +1,13 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play.domain.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
+import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

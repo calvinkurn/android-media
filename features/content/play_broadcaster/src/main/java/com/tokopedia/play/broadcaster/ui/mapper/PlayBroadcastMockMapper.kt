@@ -7,8 +7,10 @@ import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -224,6 +226,16 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             title = bannedEvent.title,
             message = bannedEvent.reason,
             buttonTitle = bannedEvent.btnText
+    )
+
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+            isActive = true,
+            nameGuidelineHeader = "Mau kasih hadiah apa?",
+            nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
+            timeGuidelineHeader = "Kapan game-nya mulai?",
+            timeGuidelineDetail = "Tentukan kapan game dimulai, dan game akan berlangsung selama 10 detik.",
+            durationInMs = 10000L,
+            availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
     )
 
     companion object {

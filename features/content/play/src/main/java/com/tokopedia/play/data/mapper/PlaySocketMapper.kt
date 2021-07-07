@@ -6,9 +6,8 @@ import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.*
-import com.tokopedia.play.data.interactive.ChannelInteractive
-import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.websocket.WebSocketResponse
 import java.lang.reflect.Type
 

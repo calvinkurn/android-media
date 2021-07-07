@@ -2,6 +2,7 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_interactive_finish"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N700_44"
@@ -18,7 +19,8 @@
         android:background="@drawable/bg_play_interactive_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="wrap_content"
