@@ -10,10 +10,12 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
@@ -26,6 +28,7 @@ import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by jegul on 02/06/20
@@ -259,5 +262,17 @@ class PlayBroadcastUiMapper(
             title = bannedEvent.title,
             message = bannedEvent.reason,
             buttonTitle = bannedEvent.btnText
+    )
+
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+            isActive = response.interactiveConfig.config.isActive,
+            nameGuidelineHeader = response.interactiveConfig.config.interactiveNamingGuidelineHeader,
+            nameGuidelineDetail = response.interactiveConfig.config.interactiveNamingGuidelineDetail,
+            timeGuidelineHeader = response.interactiveConfig.config.interactiveTimeGuidelineHeader,
+            timeGuidelineDetail = response.interactiveConfig.config.interactiveTimeGuidelineDetail,
+            durationInMs = TimeUnit.SECONDS.toMillis(response.interactiveConfig.config.interactiveDuration.toLong()),
+            availableStartTimeInMs = response.interactiveConfig.config.countdownPickerTime.map {
+                TimeUnit.SECONDS.toMillis(it.toLong())
+            },
     )
 }

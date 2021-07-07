@@ -90,7 +90,8 @@
     <dimen name="play_interactive_loading_radius">52dp</dimen>
     <dimen name="play_interactive_setup_width">228dp</dimen>
     <dimen name="play_interactive_live_width">173dp</dimen>
-    <dimen name="play_interactive_time_radius">100dp</dimen>
+    <dimen name="play_interactive_time_radius">10dp</dimen>
+    <dimen name="play_interactive_live_radius">12dp</dimen>
     <dimen name="play_interactive_gift_width">27dp</dimen>
     <dimen name="play_interactive_gift_height">29dp</dimen>
     <dimen name="play_interactive_setup_top_margin">100dp</dimen>

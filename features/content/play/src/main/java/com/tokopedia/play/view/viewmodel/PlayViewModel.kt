@@ -13,10 +13,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.data.*
-import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play.data.dto.interactive.isScheduled
-import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
@@ -50,7 +46,11 @@ import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
@@ -1227,7 +1227,7 @@ class PlayViewModel @Inject constructor(
             if (!interactiveDetail.timeStatus.isScheduled()) return@launch
 
             _interactive.value = PlayInteractiveUiState.Ongoing(
-                    timeRemainingInMs = interactiveDetail.timeStatus.interactiveDurationInMs
+                    timeRemainingInMs = (interactiveDetail.timeStatus as PlayInteractiveTimeStatus.Scheduled).interactiveDurationInMs
             )
         }
     }

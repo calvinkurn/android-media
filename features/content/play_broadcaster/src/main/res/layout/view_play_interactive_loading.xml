@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_interactive_loading"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N700_44"
-    app:cornerRadius="@dimen/play_interactive_loading_radius">
+    app:cornerRadius="@dimen/play_interactive_loading_radius"
+    >
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_interactive_winner"
@@ -16,14 +19,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular_white" />
+        app:loader_type="circular_white"
+        />
 
     <include
+        android:id="@+id/view_play_interactive_init"
         layout="@layout/view_play_interactive_init"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintStart_toEndOf="@id/loader_interactive_winner"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

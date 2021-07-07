@@ -20,6 +20,8 @@ import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -31,6 +33,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
@@ -78,6 +81,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
+    private val interactiveView by viewComponent {
+        BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
+            override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
+                //TODO("Mock")
+                Toaster.build(requireView(), "New game clicked").show()
+            }
+        })
+    }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -108,6 +119,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (arguments?.getBoolean(KEY_START_COUNTDOWN) == true) {
             startCountDown()
         }
+        parentViewModel.onOpenLiveStreamPage()
     }
 
     override fun onStart() {
@@ -138,6 +150,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.title)
         }
+
+        //TODO("Mock")
+//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+//            interactiveView.show()
+//
+//            interactiveView.setInit()
+//            delay(5000)
+//            interactiveView.setSchedule("Giveaway Tesla", 10000) {
+//                interactiveView.setLive(15000) {
+//                    interactiveView.setLoading()
+//                    view?.postDelayed({
+//                        interactiveView.setFinish()
+//                    }, 3000)
+//                }
+//            }
+//        }
     }
 
     private fun setupInsets(view: View) {
@@ -172,6 +200,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeEvent()
+        observeInteractiveConfig()
     }
 
     private fun startCountDown() {
@@ -476,7 +505,47 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
+    private fun observeInteractiveConfig() {
+        parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is BroadcastInteractiveState.Forbidden -> {
+                    interactiveView.hide()
+                }
+                is BroadcastInteractiveState.Allowed -> {
+                    handleHasInteractiveState(state)
+                    interactiveView.show()
+                }
+            }
+        }
+    }
     //endregion
+
+    private fun handleHasInteractiveState(state: BroadcastInteractiveState.Allowed) {
+        when (state) {
+            is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
+            is BroadcastInteractiveState.Allowed.Schedule -> {
+                interactiveView.setSchedule(state.title, state.timeToStartInMs) {
+                    interactiveView.setLive(state.durationInMs) {
+                        //TODO("When Live end")
+                    }
+                }
+            }
+            is BroadcastInteractiveState.Allowed.Live -> {
+                interactiveView.setLive(state.remainingTimeInMs) {
+                    //TODO("When Live end")
+                }
+            }
+        }
+    }
+
+    private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
+        when (state) {
+            BroadcastInteractiveInitState.NoPrevious -> interactiveView.setInit()
+            BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
+            BroadcastInteractiveInitState.HasPrevious -> interactiveView.setFinish()
+        }
+    }
 
     companion object {
         const val KEY_START_COUNTDOWN = "start_count_down"

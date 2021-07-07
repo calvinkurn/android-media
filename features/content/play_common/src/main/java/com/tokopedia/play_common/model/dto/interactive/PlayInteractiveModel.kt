@@ -1,10 +1,10 @@
-package com.tokopedia.play.data.dto.interactive
+package com.tokopedia.play_common.model.dto
 
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 /**
- * Created by jegul on 28/06/21
+ * Created by jegul on 07/07/21
  */
 data class PlayCurrentInteractiveModel(
         val id: Long = 0L,
