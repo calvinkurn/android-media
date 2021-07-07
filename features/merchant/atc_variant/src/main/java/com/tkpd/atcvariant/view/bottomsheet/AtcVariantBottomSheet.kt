@@ -343,21 +343,25 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private fun trackSuccessAtc(cartId: String) {
         val aggregatorParams = sharedViewModel.aggregatorParams.value
         val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
+        val variantAggregatorData = viewModel.getVariantAggregatorData()
 
         ProductTrackingCommon.eventEcommerceAddToCart(
-                userId = userSessionInterface.userId, cartId = cartId,
-                buttonAction = buttonActionType, buttonText = buttonText,
-                productId = productId, shopId = aggregatorParams?.shopId ?: "",
+                userId = userSessionInterface.userId,
+                cartId = cartId,
+                buttonAction = buttonActionType,
+                buttonText = buttonText,
+                productId = productId,
+                shopId = variantAggregatorData?.simpleBasicInfo?.shopID ?: "",
                 productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
                 productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
-                quantity = viewModel.getSelectedQuantity(productId), variantName = viewModel.titleVariantName.value
-                ?: "",
-                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment
-                        ?: false, shopType = aggregatorParams?.shopTypeString ?: "",
-                shopName = aggregatorParams?.shopName
-                        ?: "", categoryName = aggregatorParams?.categoryName ?: "",
-                categoryId = aggregatorParams?.categoryId
-                        ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
+                quantity = viewModel.getSelectedQuantity(productId),
+                variantName = viewModel.titleVariantName.value ?: "",
+                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
+                shopType = variantAggregatorData?.shopType ?: "",
+                shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
+                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatter() ?: "",
+                categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
+                isFreeOngkir = variantAggregatorData?.getIsFreeOngkirByBoType(productId) ?: false,
                 pageSource = aggregatorParams?.pageSource ?: "",
                 cdListName = aggregatorParams?.trackerCdListName ?: "")
     }
@@ -527,7 +531,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
             viewModel.hitAtc(buttonAction,
                     sharedData?.shopId?.toIntOrZero() ?: 0,
-                    sharedData?.categoryName ?: "",
+                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatter() ?: "",
                     userSessionInterface.userId,
                     sharedData?.minimumShippingPrice ?: 0,
                     sharedData?.trackerAttribution ?: "",

@@ -1,7 +1,7 @@
 package com.tokopedia.product.estimasiongkir.data.model.shipping
 
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.BO_TOKONOW
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.NO_BEBAS_ONGKIR
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.BO_TOKONOW
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.NO_BEBAS_ONGKIR
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactory
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingVisitable
 

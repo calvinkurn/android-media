@@ -26,7 +26,34 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val QUERY = """
         query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
             pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
-                variantData { 
+                    basicInfo {
+                          shopID
+                          shopName
+                          category {
+                            id
+                            name
+                            title
+                            breadcrumbURL
+                            isAdult
+                            lastUpdateCategory
+                            detail {
+                              id
+                              name
+                              breadcrumbURL
+                              isAdult
+                            }
+                          }
+                    }
+                    bebasOngkir {
+                      products {
+                        productID
+                        boType
+                      }
+                    }
+                    shopInfo {
+                        shopType
+                    }
+                    variantData { 
                       errorCode
                       parentID
                       defaultChild
@@ -185,7 +212,10 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 variantData = data.variantData,
                 cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
                 nearestWarehouse = data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
-                alternateCopy = data.cardRedirection.alternateCopy
+                alternateCopy = data.cardRedirection.alternateCopy,
+                simpleBasicInfo = data.basicInfo,
+                shopType = data.shopInfo.shopType,
+                boData = data.bebasOngkir.boProduct
         )
     }
 }
