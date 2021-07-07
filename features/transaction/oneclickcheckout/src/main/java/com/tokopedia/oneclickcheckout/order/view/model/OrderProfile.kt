@@ -37,6 +37,9 @@ data class OrderProfileAddress(
     internal val isMainAddress: Boolean
         get() = status == STATUS_MAIN_ADDRESS
 
+    internal val hasNoPinpoint: Boolean
+        get() = longitude.isEmpty() || latitude.isEmpty()
+
     companion object {
         private const val STATUS_MAIN_ADDRESS = 2
     }

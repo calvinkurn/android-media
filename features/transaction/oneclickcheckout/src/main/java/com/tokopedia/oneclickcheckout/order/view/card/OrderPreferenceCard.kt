@@ -99,11 +99,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (shipping.needPinpoint) {
                     renderShippingPinpointError()
                 } else if (shipping.shipperName != null && (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank())) {
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                        renderSingleShippingWithBbo(shipping, shipping.shipperName, shipping.logisticPromoViewModel)
-                    } else {
-                        renderSingleShippingWithoutBbo(shipping)
-                    }
+                    renderSingleShipping(shipping, shipping.shipperName)
                 } else {
                     renderErrorShipping(shipping)
                 }
@@ -117,6 +113,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingDurationEta.gone()
             btnChangeDuration.gone()
             tvShippingCourierEta.gone()
+            tvShippingCourierNotes.gone()
             btnChangeCourier.gone()
             tvShippingErrorMessage.gone()
             btnReloadShipping.gone()
@@ -141,6 +138,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingCourier.gone()
             tvShippingPrice.gone()
             tvShippingCourierEta.gone()
+            tvShippingCourierNotes.gone()
             btnChangeCourier.gone()
             tvShippingErrorMessage.gone()
             btnReloadShipping.gone()
@@ -421,56 +419,56 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     }
 
     @SuppressLint("SetTextI18n")
-    private fun renderSingleShippingWithBbo(shipping: OrderShipment, shipperName: String, logisticPromoViewModel: LogisticPromoUiModel) {
+    private fun renderSingleShipping(shipping: OrderShipment, shipperName: String) {
         binding.apply {
             tvShippingDuration.gone()
             tvShippingDurationEta.gone()
             btnChangeDuration.gone()
-            if (logisticPromoViewModel.benefitAmount >= logisticPromoViewModel.shippingRate) {
-                tvShippingCourier.text = "$shipperName (${
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                })"
-                tvShippingPrice.gone()
-                if (shipping.shippingEta.isNullOrBlank()) {
-                    tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+            tvShippingPrice.gone()
+            btnChangeCourier.gone()
+            tvShippingErrorMessage.gone()
+            btnReloadShipping.gone()
+            iconReloadShipping.gone()
+            tickerShippingPromo.gone()
+            loaderShipping.gone()
+            if (shipping.isApplyLogisticPromo && shipping.logisticPromoShipping != null && shipping.logisticPromoViewModel != null) {
+                if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
+                    tvShippingCourier.text = "${shipping.logisticPromoShipping.productData.shipperName} (${
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                    })"
                 } else {
-                    tvShippingCourierEta.text = shipping.shippingEta
-                }
-                if (logisticPromoViewModel.description.isNotBlank()) {
-                    tvShippingCourierNotes.text = logisticPromoViewModel.description
-                } else {
-                    tvShippingCourierNotes.gone()
+                    val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
+                    val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                    val span = SpannableString("${shipping.logisticPromoShipping.productData.shipperName} ($originalPrice $finalPrice)")
+                    val originalPriceStartIndex = shipperName.length + 1
+                    val originalPriceEndIndex = originalPriceStartIndex + originalPrice.length
+                    span.setSpan(StrikethroughSpan(), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    span.setSpan(RelativeSizeSpan(10 / 12f), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    binding.root.context?.let {
+                        val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                        span.setSpan(ForegroundColorSpan(color), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
+                    tvShippingCourier.text = span
                 }
             } else {
-                val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-                val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-                val span = SpannableString("$shipperName ($originalPrice $finalPrice)")
-                val originalPriceStartIndex = shipperName.length + 1
-                val originalPriceEndIndex = originalPriceStartIndex + originalPrice.length
-                span.setSpan(StrikethroughSpan(), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                span.setSpan(RelativeSizeSpan(10 / 12f), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                binding.root.context?.let {
-                    val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                    span.setSpan(ForegroundColorSpan(color), originalPriceStartIndex, originalPriceEndIndex, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                tvShippingPrice.gone()
-                if (shipping.shippingEta.isNullOrBlank()) {
-                    tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
-                } else {
-                    tvShippingCourierEta.text = shipping.shippingEta
-                }
-                if (logisticPromoViewModel.description.isNotBlank()) {
-                    tvShippingCourierNotes.text = logisticPromoViewModel.description
-                } else {
-                    tvShippingCourierNotes.gone()
-                }
+                tvShippingCourier.text = "$shipperName (${
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()
+                })"
             }
-            btnChangeCourier.gone()
+            if (shipping.shippingEta.isNullOrBlank()) {
+                tvShippingCourierEta.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
+            } else {
+                tvShippingCourierEta.text = shipping.shippingEta
+            }
+            if (shipping.logisticPromoViewModel?.description?.isNotBlank() == true) {
+                tvShippingCourierNotes.text = shipping.logisticPromoViewModel.description
+                tvShippingCourierNotes.visible()
+            } else {
+                tvShippingCourierNotes.gone()
+            }
+            tvShippingCourier.visible()
+            tvShippingCourierEta.visible()
         }
-    }
-
-    private fun renderSingleShippingWithoutBbo(shipping: OrderShipment) {
-
     }
 
     private fun showPayment() {
@@ -801,6 +799,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         fun chooseCourier(list: ArrayList<RatesViewModelType>)
 
         fun chooseDuration(isDurationError: Boolean, currentSpId: String, list: ArrayList<RatesViewModelType>)
+
+        fun choosePinpoint(address: OrderProfileAddress)
 
         fun choosePayment(profile: OrderProfile)
 

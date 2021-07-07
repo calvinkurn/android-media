@@ -124,6 +124,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             val logisticPromo = data.logisticPromo
             if (logisticPromo != null) {
                 // validate army courier
+                // TODO: 07/07/21 check tokonow bbo
                 val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
                 if (serviceData == null) {
                     data.logisticPromo = null
@@ -190,10 +191,10 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
 
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
+                // TODO: 06/07/21 handle tokonow bbo data
                 if (logisticPromo != null && !logisticPromo.disabled) {
-                    // TODO: 06/07/21 handle tokonow bbo data
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
-                    if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected)) {
+                    if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected) || profileShipment.isDisableChangeCourier) {
                         return@withContext ResultRates(
                                 shipping,
                                 if (logisticPromo.promoCode != currPromo) currPromo else "",
@@ -204,6 +205,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     }
                     shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null,
                             logisticPromoShipping = null, isApplyLogisticPromo = false)
+                } else if (logisticPromo != null && profileShipment.isDisableChangeCourier) {
+                    shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
                 } else {
                     shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
                 }
@@ -361,6 +364,12 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     }
                 }
             }
+        }
+        if ((selectedShippingDurationUiModel == null || selectedShippingCourierUiModel == null) && profileShipment.autoCourierSelection) {
+            selectedShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+            selectedShippingDurationUiModel?.isSelected = true
+            selectedShippingCourierUiModel = selectedShippingDurationUiModel?.shippingCourierViewModelList?.firstOrNull { it.productData.error?.errorMessage.isNullOrEmpty() }
+            selectedShippingCourierUiModel?.isSelected = true
         }
         if (selectedShippingDurationUiModel == null || selectedShippingCourierUiModel == null) {
             // Recommendation Courier not available

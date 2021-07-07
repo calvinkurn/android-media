@@ -136,8 +136,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             if (orderCart.products.isNotEmpty() && _orderPreference.preference.address.addressId > 0) {
                 // TODO: 06/07/21 validate tokonow pinpoint
-                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-                getRatesSuspend()
+                if (_orderPreference.preference.shipment.isDisableChangeCourier && _orderPreference.preference.address.hasNoPinpoint) {
+                    _orderShipment = _orderShipment.copy(serviceName = "", needPinpoint = true)
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                } else {
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+                    getRatesSuspend()
+                }
             } else if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -162,7 +167,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
-                if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0) {
+                if (_orderPreference.preference.shipment.isDisableChangeCourier && _orderPreference.preference.address.hasNoPinpoint) {
+                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+                } else if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0) {
                     getRates()
                 }
             }
@@ -171,6 +178,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun reloadRates() {
         if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0 && orderTotal.value.buttonState != OccButtonState.LOADING) {
+            _orderShipment = _orderShipment.copy(serviceName = null)
+            orderShipment.value = _orderShipment
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             debounceJob?.cancel()
             updateCart()
@@ -250,6 +259,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String, shipping: OrderShipment) {
         launch(executorDispatchers.immediate) {
+            updateCartWithCustomShipment(shipping)
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
             // TODO: 06/07/21 handle tokonow autoapply
@@ -265,7 +275,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     return@launch
                 }
             }
-            _orderShipment = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+            _orderShipment = if (_orderPreference.preference.shipment.isDisableChangeCourier) {
+                shipping.copy(serviceErrorMessage = FAIL_GET_RATES_ERROR_MESSAGE, isApplyLogisticPromo = false, logisticPromoShipping = null)
+            } else {
+                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+            }
             orderShipment.value = _orderShipment
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
@@ -275,7 +289,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             clearAllPromoFromLastRequest()
-            calculateTotal(forceButtonState = OccButtonState.NORMAL)
+            calculateTotal(forceButtonState = if (_orderShipment.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
             globalEvent.value = newGlobalEvent
             updateCart()
         }
@@ -418,6 +432,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun updateCart() {
         launch(executorDispatchers.immediate) {
             cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, _orderShipment, _orderPayment)
+        }
+    }
+
+    private fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
+        launch(executorDispatchers.immediate) {
+            cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, orderShipment, _orderPayment)
         }
     }
 
@@ -576,7 +596,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), isDisabled = false, state = OccButtonState.NORMAL)
-        calculateTotal(forceButtonState = OccButtonState.NORMAL)
+        calculateTotal(forceButtonState = if (_orderShipment.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
     }
 
     fun calculateTotal(forceButtonState: OccButtonState? = null) {

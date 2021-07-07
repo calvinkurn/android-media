@@ -417,7 +417,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 adapter.notifyItemChanged(adapter.preferenceIndex)
                 adapter.notifyItemChanged(adapter.insuranceIndex)
             }
-            if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
+            if (orderPreference?.preference?.shipment?.isDisableChangeCourier == false && it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
             }
         }
@@ -744,7 +744,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun goToPinpoint(address: OrderProfileAddress?) {
+    private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
         address?.let {
             val locationPass = LocationPass()
             locationPass.cityName = it.cityName
@@ -755,7 +755,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
             intent.putExtras(bundle)
             startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
-            viewModel.changePinpoint()
+            if (shouldUpdatePinpointFlag) {
+                viewModel.changePinpoint()
+            }
         }
     }
 
@@ -978,6 +980,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
                 })
             }
+        }
+
+        override fun choosePinpoint(address: OrderProfileAddress) {
+            goToPinpoint(address, false)
         }
 
         override fun choosePayment(profile: OrderProfile) {

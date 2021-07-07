@@ -38,6 +38,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         if (hasInvalidQuantity || !_orderPreference.isValid) {
             return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
         }
+        if (!shouldButtonStateEnable(shipping, orderCart)) {
+            return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
+        }
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.immediate) {
             var totalProductPrice = 0.0
