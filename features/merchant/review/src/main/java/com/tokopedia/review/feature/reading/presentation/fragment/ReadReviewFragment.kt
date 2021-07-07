@@ -152,7 +152,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
     }
 
-    override fun onChevronClicked() {
+    override fun onHeaderClicked() {
         if (statisticsBottomSheet == null) {
             statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(getReviewStatistics(), getSatisfactionRate())
         }

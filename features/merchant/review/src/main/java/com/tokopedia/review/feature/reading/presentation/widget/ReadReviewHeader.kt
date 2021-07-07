@@ -143,8 +143,8 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
-        chevron?.setOnClickListener {
-            readReviewHeaderListener.onChevronClicked()
+        setOnClickListener {
+            readReviewHeaderListener.onHeaderClicked()
         }
     }
 
