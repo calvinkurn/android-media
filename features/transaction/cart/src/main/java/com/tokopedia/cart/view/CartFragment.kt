@@ -3547,13 +3547,30 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         cartAdapter.addItem(startIndex, cartShopHolderData)
                         val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(false, shopGroupAvailableData)
                         cartAdapter.addItem(startIndex + 1, collapsedProductAccordion)
-                        onNeedToInsertMultipleViewItem(startIndex, shopGroupAvailableData.cartItemDataList.size + 1)
+                        onNeedToInsertMultipleViewItem(startIndex, 2)
                         break@loop
                     }
                 }
             }
         } else {
+            cartListData?.let {
+                cartAdapter.removeExpandedAvailableItems(accordionIndex)
+                onNeedToRemoveMultipleViewItem(accordionIndex - 1, 2)
 
+                loop@ for (shopGroupAvailableData in it.shopGroupAvailableDataList) {
+                    if (shopGroupAvailableData.cartString == data.cartString) {
+                        val startIndex = accordionIndex - 1
+                        val shopSimple = cartViewHolderDataMapper.mapCartShopSimpleHolderData(shopGroupAvailableData)
+                        cartAdapter.addItem(startIndex, shopSimple)
+                        val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
+                        cartAdapter.addItem(startIndex + 1, collapsedProductList)
+                        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(true, shopGroupAvailableData)
+                        cartAdapter.addItem(startIndex + 2, collapsedProductAccordion)
+                        onNeedToInsertMultipleViewItem(startIndex, 3)
+                        break@loop
+                    }
+                }
+            }
         }
     }
 

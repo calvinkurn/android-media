@@ -1389,4 +1389,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val shopIndex = accordionIndex - 2
         cartDataList.subList(shopIndex, accordionIndex + 1).clear()
     }
+
+    fun removeExpandedAvailableItems(accordionIndex: Int) {
+        val shopIndex = accordionIndex - 1
+        cartDataList.subList(shopIndex, accordionIndex + 1).clear()
+    }
 }
