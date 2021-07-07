@@ -35,6 +35,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     val errorInquiry: LiveData<Throwable>
         get() = errorInquiryMutable
 
+    private var errorWriteMutable = SingleLiveEvent<Throwable>()
+    val errorWrite: LiveData<Throwable>
+        get() = errorWriteMutable
+
     private var tapcashInquiryMutable = SingleLiveEvent<EmoneyInquiry>()
     val tapcashInquiry: LiveData<EmoneyInquiry>
         get() = tapcashInquiryMutable
@@ -120,23 +124,23 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val writeResultString = NFCUtils.toHex(writeResult)
                 if (isCommandFailed(writeResult)) {
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_FAILED"))
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
                 } else if (writeResultString.length == MAX_WRITE_RESULT_SIZE) {
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(writeResultString, 48, 54)))
                 } else if (writeResultString.length == MAX_WRITE_RESULT_SIZE_V6) {
                     recheckBalanceSecurePurse(tapcash, terminalRandomNumber)
                 } else {
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_RESULT_LENGTH"))
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
                 }
             } catch (e: IOException) {
                 isoDep.close()
                 ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISODEP_ISSUE_WRITE_IOException"))
-                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
             }
         } else {
             ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISODEP_ISSUE_WRITE_IS_NOT_CONNECTED"))
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorWriteMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_WRITE_CARD_TAPCASH))
         }
     }
 

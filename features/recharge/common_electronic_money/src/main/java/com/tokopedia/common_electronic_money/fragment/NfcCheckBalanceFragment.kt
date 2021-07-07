@@ -126,6 +126,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             override fun goToHome() {
                 RouteManager.route(context, ApplinkConst.HOME)
             }
+
+            override fun goToHelpTapcash() {
+                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${HELP_TAPCASH}")
+            }
         })
 
         nfcDisabledView.buttonActivateNFC.setOnClickListener {
@@ -187,7 +191,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                             imageUrl: String = "",
                             isButtonShow: Boolean = true,
                             isGlobalErrorShow: Boolean = false,
-                            mandiriGetSocketTimeout: Boolean = false
+                            mandiriGetSocketTimeout: Boolean = false,
+                            tapCashWriteFailed: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
         emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
@@ -207,7 +212,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         } else {
             tapETollCardView.showInitialState()
             tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
-                    imageUrl, isButtonShow, mandiriGetSocketTimeout)
+                    imageUrl, isButtonShow, mandiriGetSocketTimeout, tapCashWriteFailed)
         }
 
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)
@@ -335,6 +340,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         private const val SUCCESS_CLOSE_BTN = "success"
         private const val FAILED_CLOSE_BTN = "failed"
         private const val NOT_SUPPORT_CLOSE_BTN = "not support"
+
+        private const val HELP_TAPCASH = "https://www.tokopedia.com/help"
 
     }
 }

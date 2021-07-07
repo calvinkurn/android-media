@@ -183,7 +183,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             tapETollCardView.setIssuerId(it)
         })
 
-        tapcashBalanceViewModel.errorCardMessage.observe(this, Observer {
+        tapcashBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer {
             showError(ErrorHandler.getErrorMessage(context, it),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
                     resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
@@ -191,7 +191,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             )
         })
 
-        tapcashBalanceViewModel.errorInquiry.observe(this, Observer { throwable ->
+        tapcashBalanceViewModel.errorInquiry.observe(viewLifecycleOwner, Observer { throwable ->
             context?.let {
                 val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
                 if((throwable is SocketTimeoutException)){
@@ -216,7 +216,19 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        tapcashBalanceViewModel.tapcashInquiry.observe(this, Observer {
+        tapcashBalanceViewModel.errorWrite.observe(viewLifecycleOwner, Observer { throwable ->
+            context?.let { context ->
+                showError(ErrorHandler.getErrorMessage(context, throwable),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_tapcash_write_error_desc),
+                        resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                        isButtonShow = true,
+                        isGlobalErrorShow = false,
+                        tapCashWriteFailed = true
+                )
+            }
+        })
+
+        tapcashBalanceViewModel.tapcashInquiry.observe(viewLifecycleOwner, Observer {
             it.error?.let { error ->
                 when (error.status) {
                     0 -> showCardLastBalance(it)
