@@ -28,6 +28,7 @@
     <string name="emoney_nfc_error_title">Mungkin server kami sibuk atau internet kamu ada masalah. Coba lagi, yuk.</string>
     <string name="emoney_nfc_timeout_socket_error">Maaf, e-money kamu lagi ada perbaikan</string>
     <string name="emoney_nfc_timeout_socket_error_title">Tampaknya pihak penyedia e-money sedang ada kendala sistem. Coba lagi nanti, ya.</string>
+    <string name="emoney_nfc_ticker_desc"><![CDATA[Butuh bantuan update saldo TapCash BNI? <a href="https://www.tokopedia.com/help">Hubungi Tokopedia Care</a>]]></string>
 
     <string name="emoney_nfc_inactive_link">https://images.tokopedia.net/img/emoney_revamp_nfc_inactive_fourx.png</string>
     <string name="emoney_nfc_not_found">https://images.tokopedia.net/img/emoney_revamp_device_not_nfc.png</string>

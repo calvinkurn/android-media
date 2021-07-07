@@ -102,7 +102,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
                 writeBalance(data, terminalRandomNumber)
             } else {
-                tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data))
+                tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data, isCheckBalanceTapcash = true))
             }
         }) {
             ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_UPDATE_BALANCE:${it.message}"))

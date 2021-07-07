@@ -3,10 +3,14 @@ package com.tokopedia.common_electronic_money.compoundview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import org.jetbrains.annotations.NotNull
 
@@ -18,6 +22,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val eTollCardInfoView: ETollCardInfoView
+    private val tickerTapcash: Ticker
     private val buttonTopup: UnifyButton
     private val textLabelProgressTitle: Typography
     private val textLabelProgressMessage: Typography
@@ -41,6 +46,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         val view = View.inflate(context, R.layout.view_emoney_update_balance_result, this)
 
         eTollCardInfoView = view.findViewById(R.id.view_etoll_card_info)
+        tickerTapcash = view.findViewById(R.id.ticker_tap_cash)
         buttonTopup = view.findViewById(R.id.button_topup)
         textLabelProgressTitle = view.findViewById(R.id.text_label_progress_title)
         textLabelProgressMessage = view.findViewById(R.id.text_label_progress_message)
@@ -49,6 +55,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showCardInfoFromApi(inquiryBalanceModel: EmoneyInquiry) {
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
+        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.VISIBLE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
             eTollCardInfoView.visibility = View.VISIBLE
@@ -60,6 +67,17 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
                     listener.onClick(inquiryBalanceModel.attributesEmoneyInquiry.operatorId,
                             inquiryBalanceModel.attributesEmoneyInquiry.issuer_id)
                 }
+            }
+
+            tickerTapcash.apply {
+                setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    }
+
+                    override fun onDismiss() {}
+                })
             }
         }
     }
@@ -86,6 +104,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.showLoading()
         buttonTopup.visibility = View.GONE
+        tickerTapcash.visibility = View.GONE
     }
 
     override fun setVisibility(visibility: Int) {
