@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,8 @@ import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTra
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
+import com.tokopedia.profilecompletion.common.ColorUtils
+import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
@@ -79,6 +82,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private var chancesChangeName = "0"
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -227,6 +235,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_ADD_GENDER -> {
                         onSuccessAddGender(data)
                     }
+                    REQUEST_CODE_CHANGE_EMAIL -> {
+                        onSuccessChangeEmail(data)
+                    }
                 }
             }
             else -> {
@@ -260,6 +271,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessEditPhone(data: Intent?) {
         view?.run {
             Toaster.showNormal(this, getString(R.string.success_change_phone_number), Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun onSuccessChangeEmail(data: Intent?) {
+        view?.run {
+            Toaster.make(this, getString(R.string.change_email_change_success), Snackbar.LENGTH_LONG)
         }
     }
 
@@ -541,10 +558,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
             appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
         }.build().toString()
 
-        RouteManager.route(
-                context,
-                ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(url, "UTF-8"))
-        )
+        val intent = ProfileSettingWebViewActivity.createIntent(requireContext(), url)
+        startActivityForResult(intent, REQUEST_CODE_CHANGE_EMAIL)
     }
 
     private fun renderNameField(profileCompletionData: ProfileCompletionData) {
@@ -605,7 +620,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
-        const val REQUEST_CODE_EDIT_EMAIL = 202 //No Implementation yet
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
 
@@ -614,6 +628,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_EMAIL = 302
         const val REQUEST_CODE_ADD_PHONE = 303
         const val REQUEST_CODE_ADD_GENDER = 304
+        const val REQUEST_CODE_CHANGE_EMAIL = 305
 
         const val REMOTE_KEY_CHANGE_NAME = "android_customer_change_public_name"
 

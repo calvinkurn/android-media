@@ -29,6 +29,7 @@ repositories {
 }
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
@@ -50,19 +51,18 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.deviceFingerprint)
     implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.akamaiBotLib)
-
+    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.profileCommon)
-    implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.seamlessLoginCommon)
     implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.features.localizationchooseaddress)
@@ -100,6 +100,7 @@ dependencies {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.dagger
+
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -115,6 +116,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.testDependencies.kotlinMockito2
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
@@ -147,6 +149,10 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.espressoIntents
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMock
+    androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
+
 }
 
 project.ext {

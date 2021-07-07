@@ -74,11 +74,6 @@ class OrderSummaryPageActivityRemoveProfileTest {
                     closeButtonVisible = true
             )
 
-//            Deprecated Test (will remove on next iteration)
-//            assertProfileRevampWording("Template Beli Langsung")
-//
-//            assertProfileRevampActionWording("Pilih template lain")
-
             assertAddressRevamp(
                     addressName = "Address 1 - User 1 (1)",
                     addressDetail = "Address Street 1, District 1, City 1, Province 1 1",

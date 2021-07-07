@@ -17,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -42,8 +43,12 @@ class FlightCancellationReasonViewModel @Inject constructor(
             } ?: false
         }
 
-    private val mutableCanNavigateToNextStep = MutableLiveData<Boolean>()
-    val canNavigateToNextStep: LiveData<Boolean>
+    /*
+        First Boolean is for state of Can Navigate To Next Step, True or False
+        Second Boolean is for should notify UI or not (to fix Navigation with LiveData problem)
+     */
+    private val mutableCanNavigateToNextStep = MutableLiveData<Pair<Boolean, Boolean>>()
+    val canNavigateToNextStep: LiveData<Pair<Boolean, Boolean>>
         get() = mutableCanNavigateToNextStep
 
     private val mutableAttachmentErrorString = MutableLiveData<Result<Pair<Int, Any>>>()
@@ -59,7 +64,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
         get() = mutableViewAttachmentModelList
 
     init {
-        mutableCanNavigateToNextStep.postValue(false)
+        mutableCanNavigateToNextStep.postValue(Pair(false, false))
         mutableAttachmentErrorStringRes.postValue(DEFAULT_STRING_RES_ERROR)
     }
 
@@ -128,17 +133,28 @@ class FlightCancellationReasonViewModel @Inject constructor(
 
                 if (attachmentMandatory && isValidAttachmentLength) {
                     uploadAttachmentAndBuildModel()
-                    mutableCanNavigateToNextStep.postValue(true)
+                    mutableCanNavigateToNextStep.postValue(Pair(first = true, second = true))
                 } else {
-                    mutableCanNavigateToNextStep.postValue(false)
+                    mutableCanNavigateToNextStep.postValue(Pair(first = false, second = true))
                 }
             } else {
                 buildCancellationWrapperModel()
-                mutableCanNavigateToNextStep.postValue(true)
+                mutableCanNavigateToNextStep.postValue(Pair(first = true, second = true))
             }
         }) {
             it.printStackTrace()
             mutableAttachmentErrorString.postValue(Fail(it))
+        }
+    }
+
+    fun disableNextButtonNotifyState() {
+        launch(dispatcherProvider.main) {
+            if (mutableCanNavigateToNextStep.value != null) {
+                mutableCanNavigateToNextStep.value =
+                        Pair(mutableCanNavigateToNextStep.value!!.first, false)
+            } else {
+                mutableCanNavigateToNextStep.value = Pair(first = false, second = false)
+            }
         }
     }
 
@@ -175,7 +191,8 @@ class FlightCancellationReasonViewModel @Inject constructor(
             for (passenger in cancellation.passengerModelList) {
                 val passengerAttachmentModel = FlightCancellationPassengerAttachmentModel(
                         passenger.passengerId, getPassengerName(passenger), passenger.relationId)
-                if (!uniquePassenger.contains(passengerAttachmentModel) && passenger.type == FlightBookingPassenger.ADULT) {
+                if (!uniquePassenger.contains(passengerAttachmentModel) &&
+                        passenger.type == FlightBookingPassenger.ADULT.value) {
                     uniquePassenger.add(passengerAttachmentModel)
                 }
             }
@@ -251,7 +268,7 @@ class FlightCancellationReasonViewModel @Inject constructor(
         for (cancellation in cancellationWrapperModel.cancellationList) {
             for (passenger in cancellation.passengerModelList) {
                 if (!uniquePassenger.contains(passenger.passengerId) &&
-                        passenger.type == FlightBookingPassenger.ADULT) {
+                        passenger.type == FlightBookingPassenger.ADULT.value) {
                     uniquePassenger.add(passenger.passengerId)
                 }
             }

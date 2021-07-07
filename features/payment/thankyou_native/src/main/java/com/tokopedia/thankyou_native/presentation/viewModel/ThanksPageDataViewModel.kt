@@ -9,13 +9,13 @@ import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
-import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.GetDefaultAddressUseCase
 import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,7 +33,7 @@ class ThanksPageDataViewModel @Inject constructor(
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
     val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
-    val topTickerLiveData = MutableLiveData<Result<ThankPageTopTickerData>>()
+    val topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
     val defaultAddressLiveData = MutableLiveData<Result<DefaultChosenAddressData>>()
 
     fun getThanksPageData(paymentId: Long, merchant: String) {

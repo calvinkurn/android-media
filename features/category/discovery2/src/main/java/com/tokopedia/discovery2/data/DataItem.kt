@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.filter.common.data.Filter
@@ -54,6 +55,9 @@ data class DataItem(
 
         @SerializedName("code")
         val code: String? = "",
+
+        @SerializedName("dep_id")
+        val depID:String? = "",
 
         @SerializedName("mobile_url")
         val mobileUrl: String? = "",
@@ -372,6 +376,9 @@ data class DataItem(
 
         @SerializedName("campaign_code")
         var campaignCode: String? = null,
+
+        @SerializedName("badges")
+        var badges: List<Badges?>? = null,
 
         var shopAdsClickURL: String? = "",
 

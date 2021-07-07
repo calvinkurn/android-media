@@ -8,11 +8,11 @@ import org.junit.Before
 import org.junit.Test
 
 class TokopointsHomeRepositoryTest {
-    lateinit var repository: TokopointsHomeRepository
+    lateinit var repository: TokopointsHomeUsecase
 
     @Before
     fun setUp() {
-        repository = TokopointsHomeRepository("tp_section_new",
+        repository = TokopointsHomeUsecase("tp_section_new",
                 "tp_homepage_section",
                 "tp_gql_reward",
                 "tp_gql_usersaving")

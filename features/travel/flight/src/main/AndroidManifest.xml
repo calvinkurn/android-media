@@ -56,6 +56,11 @@
             android:name=".cancellation.presentation.activity.FlightCancellationPassengerActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".cancellation_navigation.presentation.FlightCancellationActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -126,11 +131,6 @@
         <activity
             android:name=".cancellation.presentation.activity.FlightCancellationChooseReasonActivity"
             android:label="@string/flight_cancellation_reason_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
-            android:name=".detail.view.activity.FlightInvoiceActivity"
-            android:label="@string/flight_order_invoice_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity

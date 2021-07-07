@@ -25,7 +25,8 @@ import com.tokopedia.flight.cancellation.presentation.bottomsheet.FlightCancella
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationReasonViewModel
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment.Companion.EXTRA_CANCELLATION_MODEL
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
@@ -48,7 +49,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
     private lateinit var adapter: FlightCancellationAttachmentAdapter
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.FLIGHT_CANCELLATION_STEP_TWO
+    override fun getScreenName(): String = FlightAnalyticsScreenName.FLIGHT_CANCELLATION_STEP_TWO
 
     override fun initInjector() {
         getComponent(FlightCancellationComponent::class.java).inject(this)
@@ -117,7 +118,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
 
         cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
-            if (it) {
+            if (it.first) {
                 cancellationReasonViewModel.trackOnNext()
                 navigateToReviewPage()
             }
@@ -315,7 +316,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         fun newInstance(cancellationWrapperModel: FlightCancellationWrapperModel): FlightCancellationReasonFragment =
                 FlightCancellationReasonFragment().also {
                     it.arguments = Bundle().apply {
-                        putParcelable(FlightCancellationReasonActivity.EXTRA_CANCELLATION_MODEL, cancellationWrapperModel)
+                        putParcelable(EXTRA_CANCELLATION_MODEL, cancellationWrapperModel)
                     }
                 }
     }

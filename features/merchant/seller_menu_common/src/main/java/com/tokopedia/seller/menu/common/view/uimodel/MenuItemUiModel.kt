@@ -9,14 +9,12 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 
 open class MenuItemUiModel(
     open val title: String = "",
-    open val drawableReference: Int? = null,
     private val clickApplink: String? = null,
     eventActionSuffix: String = "",
     settingTypeInfix: String = "",
     open val trackingAlias: String? = null,
     open val iconUnify: Int? = null,
     open var notificationCount: Int = 0,
-    val isNewItem: Boolean = false,
     open val clickAction: () -> Unit = {}
 ) : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 
@@ -71,7 +69,9 @@ open class MenuItemUiModel(
             }
 
     val isNoIcon: Boolean
-        get() = drawableReference == null && iconUnify == null
+        get() = iconUnify == null
+
+    var clickSendTracker: () -> Unit = {}
 
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)

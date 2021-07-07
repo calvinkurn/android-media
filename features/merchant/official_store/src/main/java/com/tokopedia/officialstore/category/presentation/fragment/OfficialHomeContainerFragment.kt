@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
@@ -38,7 +39,7 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
-import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
+import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -67,10 +68,6 @@ class OfficialHomeContainerFragment
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
         const val KEY_CATEGORY = "key_category"
 
-        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-
     }
     private val queryHashingKey = "android_do_query_hashing"
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
@@ -91,6 +88,7 @@ class OfficialHomeContainerFragment
     private var chooseAddressView: OSChooseAddressWidgetView? = null
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
+    private var selectedCategory: Category? = null
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -169,7 +167,10 @@ class OfficialHomeContainerFragment
         if(dy == 0) return
 
         tabLayout?.adjustTabCollapseOnScrolled(dy)
-        chooseAddressView?.adjustViewCollapseOnScrolled(dy)
+        chooseAddressView?.adjustViewCollapseOnScrolled(
+                dy = dy,
+                whenWidgetGone = {osDivider.gone()},
+                whenWidgetShow = {osDivider.show()})
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -216,7 +217,7 @@ class OfficialHomeContainerFragment
         chooseAddressData.setLocalCacheModel(localCacheModel)
         chooseAddressView?.updateChooseAddressInitializedState(false)
         getChooseAddressWidget()?.updateWidget()
-        fetchOSCategory()
+        updateCurrentFragmentData()
     }
 
     override fun onChooseAddressServerDown() {
@@ -225,6 +226,17 @@ class OfficialHomeContainerFragment
 
     private fun removeChooseAddressWidget() {
         chooseAddressView?.gone()
+    }
+
+    private fun updateCurrentFragmentData() {
+        var currentTabPos: Int = -1
+        selectedCategory?.let {
+            currentTabPos = tabLayout?.getPositionBasedOnCategoryId(it.categoryId) ?: -1
+        }
+        if (currentTabPos != -1) {
+            val currentFragment = tabAdapter.getCurrentFragment(currentTabPos) as? OfficialHomeFragment
+            currentFragment?.forceLoadData()
+        }
     }
 
     private fun fetchOSCategory() {
@@ -249,7 +261,7 @@ class OfficialHomeContainerFragment
         })
     }
 
-    private fun getSelectedCategory(officialStoreCategories: OfficialStoreCategories): Int {
+    private fun getSelectedCategoryId(officialStoreCategories: OfficialStoreCategories): Int {
         officialStoreCategories.categories.forEachIndexed { index, category ->
             if (keyCategory !== "0" && category.categoryId == keyCategory) {
                 return index
@@ -265,8 +277,9 @@ class OfficialHomeContainerFragment
         }
         tabAdapter.notifyDataSetChanged()
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
-        val categorySelected = getSelectedCategory(officialStoreCategories)
+        val categorySelected = getSelectedCategoryId(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
+        selectedCategory = tabAdapter.categoryList.getOrNull(tabLayout?.getTabAt(categorySelected)?.position.toZeroIfNull())
 
         if(!officialStoreCategories.isCache){
             tabAdapter.categoryList.forEachIndexed { index, category ->
@@ -282,8 +295,9 @@ class OfficialHomeContainerFragment
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
-                chooseAddressView?.forceExpandView()
+                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categoryReselected?.let {
+                    selectedCategory = categoryReselected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
@@ -292,8 +306,9 @@ class OfficialHomeContainerFragment
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
-                chooseAddressView?.forceExpandView()
+                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categorySelected?.let {
+                    selectedCategory = categorySelected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
@@ -415,7 +430,7 @@ class OfficialHomeContainerFragment
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false

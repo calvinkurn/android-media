@@ -16,12 +16,12 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
+import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
@@ -62,21 +62,24 @@ class LoginEmailPhoneViewModelTest {
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
-    val statusPinUseCase = mockk<StatusPinUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
+    val registerCheckFingerprintUseCase = mockk<RegisterCheckFingerprintUseCase>(relaxed = true)
+    val loginFingerprintUseCase = mockk<LoginFingerprintUseCase>(relaxed = true)
 
     lateinit var viewModel: LoginEmailPhoneViewModel
 
 
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
+    private var registerCheckFingerprintObserver = mockk<Observer<Result<RegisterCheckFingerprint>>>(relaxed = true)
     private var activateUserObserver = mockk<Observer<Result<ActivateUserData>>>(relaxed = true)
     private var discoverObserver = mockk<Observer<Result<DiscoverDataModel>>>(relaxed = true)
     private var getFacebookObserver = mockk<Observer<Result<FacebookCredentialData>>>(relaxed = true)
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToSecurityQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var loginToken = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
-    private var loginTokenV2 = mockk<Observer<Result<LoginTokenPojoV2>>>(relaxed = true)
+    private var loginTokenV2 = mockk<Observer<Result<LoginToken>>>(relaxed = true)
+    private var loginFingerprint = mockk<Observer<Result<LoginToken>>>(relaxed = true)
 
     private var loginTokenFacebookPhoneObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var loginTokenFacebookObserver = mockk<Observer<Result<LoginToken>>>(relaxed = true)
@@ -88,7 +91,6 @@ class LoginEmailPhoneViewModelTest {
     private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
-    private var statusPinObserver = mockk<Observer<Result<StatusPinData>>>(relaxed = true)
 
     private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
     private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
@@ -97,7 +99,6 @@ class LoginEmailPhoneViewModelTest {
     private val mockFragment = mockk<Fragment>(relaxed = true)
     private val mockCallbackManager = mockk<CallbackManager>(relaxed = true)
     private val messageException = MessageErrorException("error bro")
-    private val stringError = "Error bro"
     private val accessToken = mockk<AccessToken>(relaxed = true)
     private val phone = "0822424112312"
 
@@ -115,11 +116,12 @@ class LoginEmailPhoneViewModelTest {
             loginTokenUseCase,
             getProfileUseCase,
             tickerInfoUseCase,
-            statusPinUseCase,
             getAdminTypeUseCase,
             loginTokenV2UseCase,
             generatePublicKeyUseCase,
             dynamicBannerUseCase,
+            registerCheckFingerprintUseCase,
+            loginFingerprintUseCase,
             userSession,
             CoroutineTestDispatchersProvider
         )
@@ -142,7 +144,8 @@ class LoginEmailPhoneViewModelTest {
         viewModel.goToActivationPage.observeForever(goToActivationPage)
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
-        viewModel.getStatusPinResponse.observeForever(statusPinObserver)
+        viewModel.registerCheckFingerprint.observeForever(registerCheckFingerprintObserver)
+        viewModel.loginBiometricResponse.observeForever(loginFingerprint)
     }
 
     private val throwable = Throwable("Error")
@@ -157,9 +160,7 @@ class LoginEmailPhoneViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterCheckPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
 
         viewModel.registerCheck(testId)
 
@@ -171,9 +172,7 @@ class LoginEmailPhoneViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerCheck(testId)
 
@@ -191,9 +190,7 @@ class LoginEmailPhoneViewModelTest {
 
         val testId = "123456"
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterCheckPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
 
         viewModel.registerCheck(testId)
 
@@ -366,7 +363,7 @@ class LoginEmailPhoneViewModelTest {
         verify {
             RsaUtils.encrypt(any(), any(), true)
             loginTokenV2UseCase.setParams(any(), any(), any())
-            loginTokenV2.onChanged(Success(responseToken))
+            loginTokenV2.onChanged(Success(responseToken.loginToken))
         }
     }
 
@@ -392,23 +389,6 @@ class LoginEmailPhoneViewModelTest {
         /* Then */
         verify {
             loginTokenV2.onChanged(Fail(throwable))
-        }
-    }
-
-    @Test
-    fun `on Login Email smart lock`() {
-        /* When */
-        val responseToken = mockk<LoginTokenPojo>(relaxed = true)
-
-        every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
-            (secondArg() as LoginTokenSubscriber).onSuccessLoginToken(responseToken)
-        }
-
-        viewModel.loginEmail(email, password, true)
-
-        /* Then */
-        verify {
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK
         }
     }
 
@@ -885,32 +865,79 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
-    fun `on Success check status pin`() {
+    fun `on Success Register Check Fingerprint`() {
         /* When */
-        val statusPinData = StatusPinData()
-        val response = StatusPinPojo(data = statusPinData)
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
 
-        coEvery { statusPinUseCase.executeOnBackground() } returns response
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
 
-        viewModel.checkStatusPin()
+        viewModel.registerCheckFingerprint()
 
         /* Then */
-        verify {
-            statusPinObserver.onChanged(Success(response.data))
-        }
+        verify { registerCheckFingerprintObserver.onChanged(Success(response)) }
     }
 
     @Test
-    fun `on Failed check status pin`() {
-        /* When */
-        coEvery { statusPinUseCase.executeOnBackground() } throws throwable
+    fun `on Failed Register Check Fingerprint`() {
 
-        viewModel.checkStatusPin()
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        viewModel.registerCheckFingerprint()
 
         /* Then */
-        verify {
-            statusPinObserver.onChanged(Fail(throwable))
+        MatcherAssert.assertThat(viewModel.registerCheckFingerprint.value, CoreMatchers.instanceOf(Fail::class.java))
+        assertEquals((viewModel.registerCheckFingerprint.value as Fail).throwable.message, throwable.message)
+    }
+
+    @Test
+    fun `on Register check Fingerprint has Errors`() {
+        /* When */
+        val responseData = RegisterCheckFingerprintResult(isRegistered = false, errorMessage = "error")
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
         }
+
+        viewModel.registerCheckFingerprint()
+
+        /* Then */
+        MatcherAssert.assertThat(viewModel.registerCheckFingerprint.value, CoreMatchers.instanceOf(Fail::class.java))
+        MatcherAssert.assertThat((viewModel.registerCheckFingerprint.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
+    }
+
+    @Test
+    fun `on Success Login Fingerprint`() {
+        /* When */
+        val responseToken = LoginToken(accessToken = "abc123", refreshToken = "azzz", tokenType = "12")
+
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<(LoginToken) -> Unit>(2).invoke(responseToken)
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        verify { loginFingerprint.onChanged(Success(responseToken)) }
+    }
+
+    @Test
+    fun `on Failed Login Fingerprint`() {
+
+        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+            arg<(Throwable) -> Unit>(3).invoke(throwable)
+        }
+
+        viewModel.loginTokenBiometric("test", "1234")
+
+        /* Then */
+        MatcherAssert.assertThat(viewModel.loginBiometricResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        assertEquals((viewModel.loginBiometricResponse.value as Fail).throwable.message, throwable.message)
     }
 
     @Test

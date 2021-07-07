@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
+apply from: "../../../compile-unit-test.gradle"
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -10,6 +11,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
         jcenter()
@@ -42,42 +44,32 @@ android {
 dependencies {
 
     //Features
-    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sessioncommon)
+    implementation project(rootProject.ext.features.loginphone)
 
     //Libraries
-    implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     //Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.dialog
 
     //Tkpd Internal Libs Dependencies
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     //Support Libs Dependencies
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.supportLibDependencies.supportV4
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
     //Misc Dependencies
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.biometric
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

@@ -9,8 +9,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_tips_bulb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/product_add_edit_ic_tips_bulb" />
@@ -44,5 +44,15 @@
         android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_tips_bulb" />
+
+    <include
+        android:id="@+id/layout_tooltip_shimmer"
+        layout="@layout/add_edit_product_tooltip_card_selectable_shimmer"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_tooltip_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

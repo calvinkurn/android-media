@@ -23,6 +23,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_TOKEN = "token"
     const val PARAM_ACTION = "action"
     const val PARAM_IS_SMART_LOGIN = "isSmartLogin"
+    const val PARAM_IS_SMART_REGISTER = "isSmartRegister"
     const val PARAM_IS_PENDING = "isPending"
     const val PARAM_LOGIN_TYPE = "loginType"
     const val PARAM_IS_SQ_CHECK = "isSqCheck"
@@ -233,6 +234,24 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/otp-push-notif-setting
     const val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
 
+    // FingerprintSettingActivity
+    // tokopedia-android-internal://global/biometric-setting
+    const val BIOMETRIC_SETTING = "$INTERNAL_GLOBAL/biometric-setting"
+
+    // VerifyFingerprintActivity
+    // tokopedia-android-internal://global/verify-fingerprint
+    const val VERIFY_BIOMETRIC = "$INTERNAL_GLOBAL/verify-fingerprint"
+
+    // LoginByQrActivity
+    // tokopedia-android-internal://global/qr-login
+    @JvmField
+    val QR_LOGIN = "$INTERNAL_GLOBAL/qr-login"
+
+    // LoginByQrResultActivity
+    // tokopedia-android-internal://global/qr-login-result
+    @JvmField
+    val QR_LOGIN_RESULT = "$INTERNAL_GLOBAL/qr-login-result"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     const val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
@@ -433,6 +452,10 @@ object ApplinkConstInternalGlobal {
     // HomeAccountUserActivity
     // tokopedia-android-internal://global/new-home-account
     const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
+
+    // ChooseAccountFingerprintActivity
+    // tokopedia-android-internal://global/choose-account-fingerprint
+    const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"
 
     //SeamlessActivity
     const val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"

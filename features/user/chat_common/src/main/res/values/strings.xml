@@ -63,4 +63,7 @@
 
     <string name="is_typing">"lagi ngetik"</string>
 
+    <string name="white_color_hex">#ffffff</string>
+    <string name="white_color_hex_simpler">#fff</string>
+
 </resources>

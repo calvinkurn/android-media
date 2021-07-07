@@ -5,4 +5,6 @@
     <string name="title_orderhistory_empty_stock">Stok habis</string>
     <string name="title_orderhistory_success_atc">Produk berhasil dimasukkan ke Keranjang Belanja</string>
     <string name="cta_orderhistory_success_atw">Lihat</string>
+
+    <string name="orderhistory_label_empty_stock_color">#80000000</string>
 </resources>

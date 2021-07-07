@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -31,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.CountdownTimeView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.*
@@ -45,7 +47,10 @@ import com.tokopedia.flight.booking.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
-import com.tokopedia.flight.common.util.*
+import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightFlowUtil
+import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
@@ -56,8 +61,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -75,6 +78,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
@@ -309,9 +315,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun mapThrowableToFlightError(message: String): FlightError {
         return try {
-            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY) {
+            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL.value.toString() ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY.value.toString() ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY.value.toString()) {
                 val error = FlightError(message)
                 error.head = getString(R.string.flight_booking_general_error_title)
                 error.message = getString(R.string.flight_booking_general_error_subtitle)
@@ -434,12 +440,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setUpTimer(timeStamp: Date) {
-        orderDueTimeStampString = FlightDateUtil.dateToString(timeStamp, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
-        countdown_timeout.setListener {
-            if (context != null) {
-                refreshCart()
-            } else needRefreshCart = true
-        }
+        orderDueTimeStampString = timeStamp.toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+        countdown_timeout.setListener(object : CountdownTimeView.OnActionListener {
+            override fun onFinished() {
+                if (context != null) {
+                    refreshCart()
+                } else needRefreshCart = true
+            }
+        })
         countdown_timeout.cancel()
         countdown_timeout.setExpiredDate(timeStamp)
         countdown_timeout.start()
@@ -604,8 +612,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         getComponent(FlightBookingComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking_v3, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        splitCompat()
+        return inflater.inflate(R.layout.fragment_flight_booking_v3, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -631,7 +641,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.setCartId(cartId)
 
         orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
-        if (orderDueTimeStampString.isNotEmpty()) setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
+        if (orderDueTimeStampString.isNotEmpty()) setUpTimer(orderDueTimeStampString.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z))
 
         val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
         renderProfileData(profileData)
@@ -651,6 +661,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.setAmenityPriceData(amenityPriceData)
 
         refreshCart()
+    }
+
+    private fun splitCompat() {
+        activity?.let {
+            SplitCompat.installActivity(it)
+        }
     }
 
     private fun initialize() {
@@ -739,12 +755,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
                         intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
-                        requestCode = REQUEST_CODE_PROMO_LIST
+                        requestCode = COUPON_EXTRA_LIST_ACTIVITY_RESULT
                     } else {
                         intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
                         intent.putExtra(COUPON_EXTRA_IS_USE, true)
                         intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                        requestCode = REQUEST_CODE_PROMO_DETAIL
+                        requestCode = COUPON_EXTRA_DETAIL_ACTIVITY_RESULT
                     }
                     intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
                     startActivityForResult(intent, requestCode)
@@ -766,10 +782,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun randomLoadingSubtitle(): List<String> {
-        var list = listOf(getString(com.tokopedia.flight.R.string.flight_booking_loading_text_1),
-                getString(com.tokopedia.flight.R.string.flight_booking_loading_text_2),
-                getString(com.tokopedia.flight.R.string.flight_booking_loading_text_3),
-                getString(com.tokopedia.flight.R.string.flight_booking_loading_text_4))
+        val list = listOf(getString(R.string.flight_booking_loading_text_1),
+                getString(R.string.flight_booking_loading_text_2),
+                getString(R.string.flight_booking_loading_text_3),
+                getString(R.string.flight_booking_loading_text_4))
         return list.shuffled()
     }
 
@@ -777,15 +793,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
         try {
             if (bookingViewModel.getCartId().isEmpty()) {
                 val list = randomLoadingSubtitle()
-                layout_loading.visibility = View.VISIBLE
-                tv_loading_subtitle.text = list[0]
-                delay(2000L)
-                tv_loading_subtitle.text = list[1]
-                delay(2000L)
-                tv_loading_subtitle.text = list[2]
-                delay(2000L)
-                layout_loading.visibility = View.GONE
-                layout_shimmering.visibility = View.VISIBLE
+                if (list.isNotEmpty()) {
+                    layout_loading.visibility = View.VISIBLE
+                    tv_loading_subtitle.text = list[0]
+                    delay(2000L)
+                    tv_loading_subtitle.text = list[1]
+                    delay(2000L)
+                    tv_loading_subtitle.text = list[2]
+                    delay(2000L)
+                    layout_loading.visibility = View.GONE
+                    layout_shimmering.visibility = View.VISIBLE
+                }
             }
         } catch (e: Throwable) {
         }
@@ -826,9 +844,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
     @SuppressLint("DialogUnifyUsage")
     private fun showErrorDialog(e: FlightError, action: () -> Unit) {
         if (activity != null) {
-            if (e.id != null) {
+            if (e.id.isNotEmpty()) {
                 val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
-                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME) renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
+                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
+                    renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
                     showErrorFullPage(e)
                 } else {
@@ -966,20 +985,22 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showLoadingDialog() {
         context?.let {
             val list = randomLoadingSubtitle()
-            if (!::loadingDialog.isInitialized || !loadingDialog.isShowing) {
-                loadingDialog = DialogUnify(it, 0, 0)
-                loadingDialog.setUnlockVersion()
-                loadingDialog.setCancelable(false)
-                loadingDialog.setOverlayClose(false)
+            if (list.isNotEmpty()) {
+                if (!::loadingDialog.isInitialized || !loadingDialog.isShowing) {
+                    loadingDialog = DialogUnify(it, 0, 0)
+                    loadingDialog.setUnlockVersion()
+                    loadingDialog.setCancelable(false)
+                    loadingDialog.setOverlayClose(false)
 
-                val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
-                loadingDialog.setChild(loadingView)
-                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
-                loadingText.text = list[0]
+                    val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+                    loadingDialog.setChild(loadingView)
+                    loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
+                    loadingText.text = list[0]
 
-                loadingDialog.show()
-            } else {
-                loadingText.text = list[0]
+                    loadingDialog.show()
+                } else {
+                    loadingText.text = list[0]
+                }
             }
         }
     }
@@ -987,14 +1008,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun finishActivityToHomepage() {
         showLoadingDialog()
         activity?.let {
-            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY)
+            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY.value)
         }
     }
 
     private fun finishActivityToSearchPage() {
         showLoadingDialog()
         activity?.let {
-            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE)
+            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE.value)
         }
     }
 

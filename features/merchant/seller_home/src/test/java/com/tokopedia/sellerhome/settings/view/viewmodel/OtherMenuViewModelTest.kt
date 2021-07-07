@@ -1,11 +1,15 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.constant.END_PERIOD
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
@@ -27,7 +31,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.*
+import org.junit.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -47,6 +51,9 @@ class OtherMenuViewModelTest {
     lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
 
     @RelaxedMockK
+    lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+
+    @RelaxedMockK
     lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
 
     @RelaxedMockK
@@ -61,7 +68,7 @@ class OtherMenuViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    protected lateinit var isToasterAlreadyShownField: Field
+    private lateinit var isToasterAlreadyShownField: Field
 
     private lateinit var mViewModel: OtherMenuViewModel
 
@@ -75,6 +82,7 @@ class OtherMenuViewModelTest {
                         getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
                         getShopOperationalUseCase,
+                        getShopInfoPeriodUseCase,
                         userSession,
                         remoteConfig
                 )
@@ -82,8 +90,9 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `success get all setting shop info data`() = runBlocking {
+        val userShopInfoWrapper = UserShopInfoWrapper(shopType = ShopType.OfficialStore)
         val partialShopInfoSuccess = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                ShopType.OfficialStore,
+                userShopInfoWrapper,
                 anyLong(),
                 anyString()
         )
@@ -137,7 +146,7 @@ class OtherMenuViewModelTest {
 
             mockViewModel.getAllSettingShopInfo(true)
 
-            coVerify {
+            verify {
                 mockViewModel["checkDelayErrorResponseTrigger"]()
             }
 
@@ -239,6 +248,24 @@ class OtherMenuViewModelTest {
         }
 
         assert(mViewModel.isFreeShippingActive.observeAwaitValue() == true)
+    }
+
+    @Test
+    fun `getShopPeriodType should success`() {
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = END_PERIOD)
+        coEvery {
+            getShopInfoPeriodUseCase.executeOnBackground()
+        } returns shopInfoPeriodUiModel
+
+        mViewModel.getShopPeriodType()
+
+        coVerify {
+            getShopInfoPeriodUseCase.executeOnBackground()
+        }
+
+        val actualResult = (mViewModel.shopPeriodType.observeAwaitValue() as Success).data
+        assert(mViewModel.shopPeriodType.observeAwaitValue() is Success)
+        assert(actualResult == shopInfoPeriodUiModel)
     }
 
     @Test

@@ -4,7 +4,7 @@
   android:shape="rectangle">
   
   <corners android:radius="@dimen/layout_lvl1" />
-  <solid android:color="@color/Neutral_N0"/>
+  <solid android:color="@color/Unify_Static_White"/>
   
   <padding
     android:bottom="@dimen/layout_lvl1"
@@ -14,5 +14,5 @@
   
   <stroke
     android:width="@dimen/spacing_lvl1"
-    android:color="#A6FFFFFF" />
+    android:color="@color/Unify_Static_White_68" />
 </shape>

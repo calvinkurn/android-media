@@ -167,7 +167,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(it.throwable.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                is Fail -> closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
             }
         })
 
@@ -176,12 +176,19 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             renderCartBasedOnParamState()
         })
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
+            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
         })
 
-        viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) onFailedCancelVoucher(it.throwable)
+        viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.defaultEmptyPromoMessage.isNotEmpty()) {
+                        checkoutBottomViewWidget.promoButtonTitle = it.data.defaultEmptyPromoMessage
+                    }
+                }
+                is Fail -> onFailedCancelVoucher(it.throwable)
+            }
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
@@ -251,10 +258,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
         sendGetCartAndCheckoutAnalytics()
 
-        cartInfo.attributes.userInputPrice.run {
-            if (maxPaymentPlain != 0.0 && minPaymentPlain != 0.0) {
-                renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
-            }
+        if (cartInfo.attributes.isOpenAmount) {
+            renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
         }
 
         renderMyBillsLayout(cartInfo)
@@ -361,11 +366,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
-        var message: String = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-        if (!throwable.message.isNullOrEmpty()) {
-            message = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-        showToastMessage(message)
+        checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.ACTIVE
+        showToastMessage(ErrorHandler.getErrorMessage(activity, throwable))
     }
 
     private fun showToastMessage(message: String) {
@@ -486,10 +488,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             val moreInfoText: Typography = moreInfoView.findViewById(R.id.egold_tooltip)
             moreInfoText.setPadding(0, 0, 0,
                     resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4))
-            moreInfoText.text = fintechProductInfo.tooltipText
+            moreInfoText.text = MethodChecker.fromHtml(fintechProductInfo.tooltipText)
 
             val moreInfoBottomSheet = BottomSheetUnify()
-            moreInfoBottomSheet.setTitle(fintechProductInfo.title)
+            moreInfoBottomSheet.setTitle(MethodChecker.fromHtml(fintechProductInfo.title).toString())
             moreInfoBottomSheet.isFullpage = false
             moreInfoBottomSheet.setChild(moreInfoView)
             moreInfoBottomSheet.clearAction()
@@ -566,7 +568,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onResetPromoDiscount() {
         digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
-        viewModel.cancelVoucherCart()
+        viewModel.cancelVoucherCart(getPromoData().promoCode, getString(R.string.digital_checkout_error_remove_coupon_message))
     }
 
     private fun navigateToPromoListPage() {
@@ -597,7 +599,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
-        private const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
