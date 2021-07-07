@@ -119,15 +119,32 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
                 0, NotificationOrderListViewHolder::class.java
             )
         )
-        NotifcenterAssertion.assertNotifOrderFirstCardText(
-            "Transaksi berlangsung"
-        )
-        NotifcenterAssertion.assertNotifOrderSecondCardText(
-            "Lihat semua"
+    }
+
+    @Test
+    fun should_placed_first_when_rendered_first_instead_of_notification() {
+        // Given
+        val delay = 150L
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.response = notifOrderListUseCase.defaultResponse
+            notifcenterDetailUseCase.setResponseWithDelay(
+                delay, notifcenterDetailUseCase.defaultResponse
+            )
+        }
+        startInboxActivity()
+
+        // When
+        // Need to make sure that order list are rendered first, wait for it.
+        waitForIt(delay * 2)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                0, NotificationOrderListViewHolder::class.java
+            )
         )
     }
 
-    // TODO: should placed first when rendered first instead of notification
     // TODO: should render notification empty state when notification remote data is empty
 
 }
