@@ -36,9 +36,6 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
 
     override val toolbarPageName = "TokoNow Category"
-    override fun cdListName(): String {
-        return String.format(TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME, tokoNowCategoryViewModel.categoryIdTracking)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,6 +188,10 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
         CategoryTracking.sendChooseVariantClickEvent(getViewModel().categoryL1)
 
         super.onProductChooseVariantClicked(productItemDataView)
+    }
+
+    override fun cdListName(): String {
+        return String.format(TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME, tokoNowCategoryViewModel.categoryIdTracking)
     }
 
     override fun sendIncreaseQtyTrackingEvent(productId: String) {

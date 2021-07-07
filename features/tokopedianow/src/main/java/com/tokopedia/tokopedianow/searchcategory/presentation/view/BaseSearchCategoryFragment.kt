@@ -129,8 +129,6 @@ abstract class BaseSearchCategoryFragment:
             return height + padding
         }
 
-    protected abstract fun cdListName(): String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -608,6 +606,8 @@ abstract class BaseSearchCategoryFragment:
                 startActivitResult = this::startActivityForResult,
         )
     }
+
+    protected abstract fun cdListName(): String
 
     override fun onProductNonVariantQuantityChanged(
             productItemDataView: ProductItemDataView,

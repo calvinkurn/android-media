@@ -42,9 +42,6 @@ class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
-    override fun cdListName(): String {
-        return TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,6 +196,10 @@ class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.id)
 
         super.onProductChooseVariantClicked(productItemDataView)
+    }
+
+    override fun cdListName(): String {
+        return TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME
     }
 
     override fun onBannerClick(channelModel: ChannelModel, applink: String) {
