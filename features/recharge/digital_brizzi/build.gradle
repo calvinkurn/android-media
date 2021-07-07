@@ -20,7 +20,7 @@ buildscript {
 }
 
 dependencies {
-    implementation files('libs/brizzi-release-prod-1.3.1.aar')
+    implementation rootProject.ext.tkpdInternalLibDependencies.brizzi
 
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.commonElectronicMoney)

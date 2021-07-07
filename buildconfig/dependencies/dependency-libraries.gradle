@@ -23,7 +23,14 @@ ext {
             analyticGTMUtil         : "com.tokopedia.analytic:gtmutil:0.0.2",
             gqlquery_annotation     : "com.tokopedia.gql_query_annotation:gqlquery_annotation:0.0.21",
             gqlquery_annotation_processor       : "com.tokopedia.gqlquery_annotation_processor:gqlquery_annotation_processor:0.0.21",
-            lint                    : "com.tokopedia.library:lint:0.0.13"
+            lint                    : "com.tokopedia.library:lint:0.0.13",
+            dataVisor               : "com.tokopedia.sec:vangogh:0.0.1@aar",
+            secUtil                 : "com.tokopedia.sec:java_util:0.0.1",
+            secUtilObs              : "com.tokopedia.sec:tkpd_util_obs:0.0.1",
+            brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
+            alivcCorePusher         : "com.tokopedia.play_broadcaster:alivc-core-pusher:1.0.0",
+            alivcReporter           : "com.tokopedia.play_broadcaster:AlivcReporter:1.2@aar",
+            livePusher              : "com.tokopedia.play_broadcaster:live-pusher:3.6.1@aar"
     ]
 
     // Sort and categorize alphabetically by folder name

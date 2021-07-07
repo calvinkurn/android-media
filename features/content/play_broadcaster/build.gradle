@@ -102,9 +102,9 @@ dependencies {
 //        exclude group: 'com.alivc'
 //    }
 
-    implementation files('libs/alivc-core-pusher.jar')
-    implementation files('libs/AlivcReporter-1.2.aar')
-    implementation files('libs/live-pusher-3.6.1.aar')
+    implementation rootProject.ext.tkpdInternalLibDependencies.alivcCorePusher
+    implementation rootProject.ext.tkpdInternalLibDependencies.alivcReporter
+    implementation rootProject.ext.tkpdInternalLibDependencies.livePusher
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
