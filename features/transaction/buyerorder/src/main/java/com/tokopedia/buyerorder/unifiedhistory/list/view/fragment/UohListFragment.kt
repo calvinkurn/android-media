@@ -311,6 +311,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         initialLoad()
                     }
                 }
+            } else {
+                initialLoad()
             }
         }
     }
