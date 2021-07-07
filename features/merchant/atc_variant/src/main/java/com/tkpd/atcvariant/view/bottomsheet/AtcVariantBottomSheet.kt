@@ -359,7 +359,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
                 shopType = variantAggregatorData?.shopType ?: "",
                 shopName = variantAggregatorData?.simpleBasicInfo?.shopName ?: "",
-                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatter() ?: "",
+                categoryName = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
                 categoryId = variantAggregatorData?.simpleBasicInfo?.category?.getCategoryIdFormatted() ?: "",
                 isFreeOngkir = variantAggregatorData?.getIsFreeOngkirByBoType(productId) ?: false,
                 pageSource = aggregatorParams?.pageSource ?: "",
@@ -531,7 +531,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
             viewModel.hitAtc(buttonAction,
                     sharedData?.shopId?.toIntOrZero() ?: 0,
-                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatter() ?: "",
+                    viewModel.getVariantAggregatorData()?.simpleBasicInfo?.category?.getCategoryNameFormatted() ?: "",
                     userSessionInterface.userId,
                     sharedData?.minimumShippingPrice ?: 0,
                     sharedData?.trackerAttribution ?: "",

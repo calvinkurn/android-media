@@ -81,7 +81,7 @@ data class Category(
         val title: String = ""
 ) {
 
-    fun getCategoryNameFormatter(): String {
+    fun getCategoryNameFormatted(): String {
         return detail.map {
             it.name
         }.joinToString("/", postfix = "/ ${id}")

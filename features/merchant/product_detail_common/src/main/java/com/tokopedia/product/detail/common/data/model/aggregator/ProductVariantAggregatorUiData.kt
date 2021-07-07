@@ -31,7 +31,7 @@ data class ProductVariantAggregatorUiData(
     fun getIsFreeOngkirByBoType(productId: String): Boolean {
         val boType = boData.firstOrNull {
             it.productId == productId
-        }?.boType
+        }?.boType ?: ProductDetailCommonConstant.NO_BEBAS_ONGKIR
 
         return boType != ProductDetailCommonConstant.NO_BEBAS_ONGKIR
     }
