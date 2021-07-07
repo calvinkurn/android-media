@@ -29,6 +29,7 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
@@ -86,6 +87,7 @@ class TopupBillsFavoriteNumberFragment :
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
     private lateinit var clientNumberType: String
     private lateinit var dgCategoryIds: ArrayList<String>
+    private lateinit var operatorList: HashMap<String, TelcoAttributesOperator>
     private lateinit var localCacheHandler: LocalCacheHandler
     protected lateinit var inputNumberActionType: InputNumberActionType
 
@@ -102,11 +104,14 @@ class TopupBillsFavoriteNumberFragment :
         return TopupBillsFavoriteNumberFragment::class.java.simpleName
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
         arguments?.run {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
+            operatorList = arguments.getSerializable(ARG_PARAM_TELCO_OPERATOR_LIST)
+                    as HashMap<String, TelcoAttributesOperator>
         }
     }
 
@@ -587,6 +592,7 @@ class TopupBillsFavoriteNumberFragment :
 
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_TELCO_OPERATOR_LIST = "ARG_PARAM_TELCO_OPERATOR_LIST"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val COACH_MARK_START_DELAY: Long = 200
         const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
@@ -595,6 +601,7 @@ class TopupBillsFavoriteNumberFragment :
         private const val DEFAULT_TOTAL_TRANSACTION = 0
 
         fun newInstance(clientNumberType: String, number: String,
+                        operatorList: HashMap<String, TelcoAttributesOperator>,
                         digitalCategoryIds: ArrayList<String>
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
@@ -602,6 +609,7 @@ class TopupBillsFavoriteNumberFragment :
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
+            bundle.putSerializable(ARG_PARAM_TELCO_OPERATOR_LIST, operatorList)
             fragment.arguments = bundle
             return fragment
         }

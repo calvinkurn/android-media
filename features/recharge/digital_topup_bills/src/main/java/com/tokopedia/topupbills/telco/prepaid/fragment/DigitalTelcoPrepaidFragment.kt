@@ -24,7 +24,10 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -84,6 +87,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
     private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
+    private var telcoOperatorList = HashMap<String, TelcoAttributesOperator>()
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -385,6 +389,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
                 showProducts = true
+                saveTelcoOperator(this.operatorData.rechargeCatalogPrefixSelect)
                 val selectedOperator = this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                     telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
@@ -400,6 +405,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             telcoClientNumberWidget.setErrorInputNumber(
                     getString(R.string.telco_number_error_not_found))
         }
+    }
+
+    private fun saveTelcoOperator(rechargeCatalogPrefixSelect: RechargeCatalogPrefixSelect) {
+        val operatorList = HashMap<String, TelcoAttributesOperator>()
+
+        rechargeCatalogPrefixSelect.prefixes.forEach {
+            if (!operatorList.containsKey(it.operator.id)) {
+                operatorList[it.operator.id] = it.operator.attributes
+            }
+        }
+
+        telcoOperatorList = operatorList
     }
 
     private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
@@ -472,6 +489,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     TopupBillsFavoriteNumberActivity.getCallingIntent(it,
                         ClientNumberType.TYPE_INPUT_TEL,
                         clientNumber,
+                        telcoOperatorList,
                         arrayListOf(
                                 TelcoCategoryType.CATEGORY_PULSA.toString(),
                                 TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
