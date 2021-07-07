@@ -21,8 +21,8 @@
             android:layout_marginEnd="@dimen/hotel_12dp"
             android:layout_marginRight="@dimen/hotel_12dp"
             app:icon_name="CALENDAR"
-            app:icon_color_light_enable="@color/Unify_NN700"
-            app:icon_color_night_enable="@color/Unify_NN700"/>
+            app:icon_color_light_enable="@color/Neutral_N400"
+            app:icon_color_night_enable="@color/Neutral_N400"/>
 
         <LinearLayout
             android:layout_width="@dimen/layout_lvl0"

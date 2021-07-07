@@ -62,8 +62,8 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination"
                         app:icon_name="LOCATION_FILLED"
-                        app:icon_color_light_enable="@color/Unify_NN700"
-                        app:icon_color_night_enable="@color/Unify_NN700"/>
+                        app:icon_color_light_enable="@color/Neutral_N400"
+                        app:icon_color_night_enable="@color/Neutral_N400"/>
 
                     <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_destination"

@@ -19,8 +19,8 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_gravity="center"
             app:icon_name="LOCATION_FILLED"
-            app:icon_color_light_enable="@color/Unify_NN700"
-            app:icon_color_night_enable="@color/Unify_NN700"/>
+            app:icon_color_light_enable="@color/Neutral_N400"
+            app:icon_color_night_enable="@color/Neutral_N400"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_policy_name"

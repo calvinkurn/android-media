@@ -220,8 +220,8 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:icon_name="SHARE_MOBILE"
-                            app:icon_color_light_enable="@color/Unify_NN700"
-                            app:icon_color_night_enable="@color/Unify_NN700"/>
+                            app:icon_color_light_enable="@color/Neutral_N400"
+                            app:icon_color_night_enable="@color/Neutral_N400"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
