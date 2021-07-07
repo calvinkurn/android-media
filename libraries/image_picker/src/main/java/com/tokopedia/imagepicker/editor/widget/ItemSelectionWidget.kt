@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker.editor.widget
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -8,15 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.adapter.EditorItemSelectionAdapter
-
-data class ItemSelection(
-    val name: String = "",
-    val preview: String = "",
-    val placeholderText: String = "",
-    val placeholderResId: Int = 0,
-    val itemType: Int = 0,
-    var isSelected: Boolean = false
-)
+import com.tokopedia.imagepicker.editor.data.ItemSelection
 
 class ItemSelectionWidget : FrameLayout {
 
@@ -58,6 +51,10 @@ class ItemSelectionWidget : FrameLayout {
         )
 
         recyclerView?.adapter = adapter
+    }
+
+    fun setData(item: ItemSelection) {
+        setData(listOf(item), null)
     }
 
 }
