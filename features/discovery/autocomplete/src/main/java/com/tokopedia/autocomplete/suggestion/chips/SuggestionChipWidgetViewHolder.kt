@@ -40,6 +40,7 @@ class SuggestionChipWidgetViewHolder(
                     applink = it.applink,
                     url = it.url,
                     title = it.title,
+                    searchTerm = it.searchTerm,
                     dimension90 = dimension90,
                     position = position
             )
@@ -53,6 +54,7 @@ class SuggestionChipWidgetViewHolder(
                 applink = applink,
                 url = url,
                 title = title,
+                searchTerm = searchTerm,
                 dimension90 = dimension90,
                 position = position
         )
