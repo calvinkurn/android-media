@@ -51,7 +51,7 @@ object AtcCommonMapper {
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false
-                    shippingPrice = shippingMinPrice.roundToInt()
+                    shippingPrice = shippingMinPrice.roundToIntOrZero()
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
