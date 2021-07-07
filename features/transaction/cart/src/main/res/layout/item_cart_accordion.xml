@@ -35,6 +35,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:text="Lihat Selengkapnya" />
 
         <com.tokopedia.unifycomponents.ImageUnify

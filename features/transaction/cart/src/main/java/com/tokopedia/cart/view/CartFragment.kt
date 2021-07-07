@@ -2475,7 +2475,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         for (shopGroupAvailableData in cartListData.shopGroupAvailableDataList) {
             if (shopGroupAvailableData.cartItemDataList.size > 0) {
                 if (shopGroupAvailableData.isTokoNow) {
-                    renderCollapsedAvailableCartItems(shopGroupAvailableData)
+                    if (cartListData.shopGroupAvailableDataList.size > 1) {
+                        renderCollapsedAvailableCartItems(shopGroupAvailableData)
+                        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(true, shopGroupAvailableData)
+                        cartAdapter.addItem(collapsedProductAccordion)
+                    } else {
+                        renderExpandedAvailableCartItems(shopGroupAvailableData)
+                        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(false, shopGroupAvailableData)
+                        cartAdapter.addItem(collapsedProductAccordion)
+                    }
                 } else {
                     renderExpandedAvailableCartItems(shopGroupAvailableData)
                 }
@@ -2493,8 +2501,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addItem(shopSimple)
         val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
         cartAdapter.addItem(collapsedProductList)
-        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(true, shopGroupAvailableData)
-        cartAdapter.addItem(collapsedProductAccordion)
     }
 
     private fun renderCartUnavailableItems(cartListData: CartListData) {

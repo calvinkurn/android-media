@@ -13,8 +13,10 @@ class CartAccordionViewHolder(val viewBinding: ItemCartAccordionBinding) : Recyc
 
     fun bind(cartAccordionHolderData: CartAccordionHolderData) {
         if (cartAccordionHolderData.isCollapsed) {
+            viewBinding.imageChevron.rotation = 0f
             viewBinding.textAccordion.text = cartAccordionHolderData.showMoreWording
         } else {
+            viewBinding.imageChevron.rotation = 180f
             viewBinding.textAccordion.text = cartAccordionHolderData.showLessWording
         }
     }
