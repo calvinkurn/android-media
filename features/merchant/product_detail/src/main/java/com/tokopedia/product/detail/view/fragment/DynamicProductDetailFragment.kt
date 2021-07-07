@@ -2948,7 +2948,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
-                        shippingPrice = viewModel.shippingMinimumPrice.roundToInt()
+                        shippingPrice = viewModel.shippingMinimumPrice.roundToIntOrZero()
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
@@ -3302,7 +3302,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
         val tradeinParam = viewModel.tradeInParams
         viewModel.getDynamicProductInfoP1?.let {
-            tradeinParam.setPrice(it.data.price.value.roundToInt())
+            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
             tradeinParam.productId = it.basic.getProductId()
             tradeinParam.productName = it.data.name
         }
@@ -3316,7 +3316,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val tradeinParam = viewModel.tradeInParams
 
         viewModel.getDynamicProductInfoP1?.let {
-            tradeinParam.setPrice(it.data.price.value.roundToInt())
+            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
             tradeinParam.productId = it.basic.getProductId()
             tradeinParam.productName = it.data.name
             tradeinParam.origin = viewModel.getMultiOriginByProductId().getOrigin()

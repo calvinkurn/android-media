@@ -58,7 +58,7 @@ object VariantMapper {
             productFsIsActive = productFsIsActive,
             productFsImageUrl = freeOngkirImgUrl,
             priceBefore = priceBefore,
-            priceBeforeInt = priceBeforeDouble.roundToInt(),
+            priceBeforeInt = priceBeforeDouble.roundToIntOrZero(),
             dropPercentage = dropPercentage,
             isActive = isActive,
             remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
