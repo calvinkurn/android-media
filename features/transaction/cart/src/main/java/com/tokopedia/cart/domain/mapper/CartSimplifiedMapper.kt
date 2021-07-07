@@ -191,7 +191,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                                           actionsData: List<ActionData>): ShopGroupAvailableData {
         return ShopGroupAvailableData().let {
             it.isChecked = availableGroup.checkboxState
-            it.isError = false
             it.errorTitle = ""
             it.shopName = availableGroup.shop.shopName
             it.shopId = availableGroup.shop.shopId
@@ -316,7 +315,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isDisableAllProducts = isDisabledAllProduct
             when (shopGroupData) {
                 is ShopGroupAvailableData -> {
-                    it.isParentHasErrorOrWarning = !(!shopGroupData.isError && !shopGroupData.isWarning)
+                    it.isParentHasErrorOrWarning = shopGroupData.isWarning
                     it.shouldValidateWeight = shopGroupData.shouldValidateWeight
                 }
                 is ShopGroupWithErrorData -> {

@@ -294,8 +294,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Also calculate total weight on each shop
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
-            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
-                    cartShopHolderData.shopGroupAvailableData?.isError == false) {
+            if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null) {
                 var shopWeight = 0.0
                 if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
                     cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
@@ -320,19 +319,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var errorProductCount = 0
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null) {
-                if (cartShopHolderData.shopGroupAvailableData?.isError == false) {
-                    if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
-                        cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
-                            for (cartItemHolderData in it) {
-                                if (cartItemHolderData.cartItemData.isError) {
-                                    errorProductCount++
-                                }
+                if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
+                    cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.cartItemData.isError) {
+                                errorProductCount++
                             }
                         }
                     }
-                } else {
-                    errorProductCount += cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.size
-                            ?: 0
                 }
             }
         }

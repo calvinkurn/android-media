@@ -4,8 +4,10 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -78,9 +80,9 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onCollapseAvailableItem(accordionIndex: Int, cartString: String)
+    fun onCollapseAvailableItem(position: Int)
 
-    fun onExpandAvailableItem(accordionIndex: Int, cartString: String)
+    fun onExpandAvailableItem(position: Int)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 

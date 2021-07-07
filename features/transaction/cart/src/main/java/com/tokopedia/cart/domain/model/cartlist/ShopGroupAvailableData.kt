@@ -10,7 +10,6 @@ data class ShopGroupAvailableData(
 
         var cartItemHolderDataList: MutableList<CartItemHolderData> = ArrayList(),
         var isChecked: Boolean = false,
-        var isError: Boolean = false,
         var errorTitle: String = "",
         var errorDescription: String = "",
         var isWarning: Boolean = false,

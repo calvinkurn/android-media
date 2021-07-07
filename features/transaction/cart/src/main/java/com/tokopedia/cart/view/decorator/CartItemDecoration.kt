@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.view.viewholder.*
-import com.tokopedia.cart.view.viewholder.now.CartShopSimpleViewHolder
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import javax.inject.Inject
@@ -40,7 +39,6 @@ class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
             }
             is CartTickerErrorViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
             is CartShopViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
-            is CartShopSimpleViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
             is CartSectionHeaderViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
             is ShipmentSellerCashbackViewHolder -> outRect.top = context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_6)?.toInt() ?: 0
             is DisabledReasonViewHolder -> {

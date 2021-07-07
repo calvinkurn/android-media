@@ -10,6 +10,10 @@ class CartShopHolderData : Parcelable {
     var isAllSelected: Boolean = false
         private set
     var isPartialSelected: Boolean = false
+    var isCollapsed: Boolean = false
+    var isCollapsible: Boolean = false
+    var showMoreWording: String = ""
+    var showLessWording: String = ""
 
     fun setAllItemSelected(allSelected: Boolean) {
         this.isAllSelected = allSelected

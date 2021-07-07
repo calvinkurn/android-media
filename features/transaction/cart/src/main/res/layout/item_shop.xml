@@ -5,6 +5,7 @@
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <include
@@ -49,9 +50,9 @@
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
                     android:layout_marginEnd="@dimen/dp_4"
+                    tools:ignore="ContentDescription"
                     tools:src="@drawable/ic_badge_shop_official"
-                    tools:visibility="visible"
-                    tools:ignore="ContentDescription" />
+                    tools:visibility="visible" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_shop_name"
@@ -178,5 +179,48 @@
         android:id="@+id/rv_cart_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <View
+        android:id="@+id/separator_accordion"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_accordion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_accordion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/dp_4"
+            android:textColor="@color/Unify_GN500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Lihat Selengkapnya" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_chevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/unify_chips_ic_chevron_selected" />
+
+    </LinearLayout>
+
 
 </LinearLayout>

@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.now.CartCollapsedProductViewHolder
 
 class CartCollapsedProductAdapter(val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var cartCollapsedProductHolderDataList: List<CartCollapsedProductHolderData> = arrayListOf()
+    var cartCollapsedProductHolderDataList: List<CartItemHolderData> = arrayListOf()
     var parentPosition: Int = RecyclerView.NO_POSITION
 
     override fun getItemViewType(position: Int): Int {

@@ -12,13 +12,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
-import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductListHolderData
-import com.tokopedia.cart.view.uimodel.now.CartShopSimpleHolderData
 import com.tokopedia.cart.view.viewholder.*
-import com.tokopedia.cart.view.viewholder.now.CartAccordionViewHolder
-import com.tokopedia.cart.view.viewholder.now.CartCollapsedProductListViewHolder
-import com.tokopedia.cart.view.viewholder.now.CartShopSimpleViewHolder
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
@@ -251,9 +245,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
             is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
-            is CartShopSimpleHolderData -> CartShopSimpleViewHolder.LAYOUT
-            is CartCollapsedProductListHolderData -> CartCollapsedProductListViewHolder.LAYOUT
-            is CartAccordionHolderData -> CartAccordionViewHolder.LAYOUT
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
@@ -287,18 +278,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription)
-            }
-            CartShopSimpleViewHolder.LAYOUT -> {
-                val binding = ItemCartShopSimpleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartShopSimpleViewHolder(binding)
-            }
-            CartCollapsedProductListViewHolder.LAYOUT -> {
-                val binding = ItemCartCollapsedListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartCollapsedProductListViewHolder(binding, actionListener)
-            }
-            CartAccordionViewHolder.LAYOUT -> {
-                val binding = ItemCartAccordionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartAccordionViewHolder(binding, actionListener)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -389,18 +368,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
-            }
-            CartShopSimpleViewHolder.LAYOUT -> {
-                val data = cartDataList[position] as CartShopSimpleHolderData
-                (holder as CartShopSimpleViewHolder).bind(data)
-            }
-            CartCollapsedProductListViewHolder.LAYOUT -> {
-                val data = cartDataList[position] as CartCollapsedProductListHolderData
-                (holder as CartCollapsedProductListViewHolder).bind(data)
-            }
-            CartAccordionViewHolder.LAYOUT -> {
-                val data = cartDataList[position] as CartAccordionHolderData
-                (holder as CartAccordionViewHolder).bind(data)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
@@ -744,24 +711,22 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         var checkedCount = 0
         for (any in cartDataList) {
             if (any is CartShopHolderData) {
-                if (any.shopGroupAvailableData?.isError == false) {
-                    if (any.isAllSelected) {
-                        checkedCount += any.shopGroupAvailableData?.cartItemDataList?.size ?: 0
-                    } else if (any.isPartialSelected) {
-                        any.shopGroupAvailableData?.cartItemDataList?.let {
-                            for (cartItemHolderData in it) {
-                                if (cartItemHolderData.isSelected) {
-                                    checkedCount++
-                                    if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData.isError) {
-                                        canProcess = false
-                                        break
-                                    }
+                if (any.isAllSelected) {
+                    checkedCount += any.shopGroupAvailableData?.cartItemDataList?.size ?: 0
+                } else if (any.isPartialSelected) {
+                    any.shopGroupAvailableData?.cartItemDataList?.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.isSelected) {
+                                checkedCount++
+                                if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData.isError) {
+                                    canProcess = false
+                                    break
                                 }
                             }
                         }
-                        if (!canProcess) {
-                            break
-                        }
+                    }
+                    if (!canProcess) {
+                        break
                     }
                 }
             }

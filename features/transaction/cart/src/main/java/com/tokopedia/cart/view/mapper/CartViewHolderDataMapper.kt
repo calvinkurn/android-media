@@ -5,92 +5,64 @@ import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData
 import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
 import com.tokopedia.cart.view.uimodel.*
-import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
-import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductHolderData
-import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductListHolderData
-import com.tokopedia.cart.view.uimodel.now.CartShopSimpleHolderData
 import javax.inject.Inject
 
 class CartViewHolderDataMapper @Inject constructor() {
 
-    fun mapCartShopSimpleHolderData(shopGroupAvailableData: ShopGroupAvailableData): CartShopSimpleHolderData {
-        return CartShopSimpleHolderData().apply {
-            isTokoNow = shopGroupAvailableData.isTokoNow
-            isChecked = shopGroupAvailableData.isChecked
-            shopName = shopGroupAvailableData.shopName
-            shopBadgeUrl = shopGroupAvailableData.shopTypeInfo.shopBadge
-            imageFulfilmentUrl = shopGroupAvailableData.fulfillmentBadgeUrl
-            shopLocation = shopGroupAvailableData.fulfillmentName
-            estimatedTimeArrival = shopGroupAvailableData.estimatedTimeArrival
-            preOrderInfo = shopGroupAvailableData.preOrderInfo
-            freeShippingUrl = shopGroupAvailableData.freeShippingBadgeUrl
-            incidentInfo = shopGroupAvailableData.incidentInfo
-        }
-    }
-
-    fun mapCartCollapsedProductListHolderData(shopGroupAvailableData: ShopGroupAvailableData): CartCollapsedProductListHolderData {
-        val tmpCartCollapsedProductHolderDataList = mutableListOf<CartCollapsedProductHolderData>()
-        shopGroupAvailableData.cartItemDataList.forEach {
-            val data = mapCartCollapsedProductHolderData(it)
-            tmpCartCollapsedProductHolderDataList.add(data)
-        }
-        return CartCollapsedProductListHolderData().apply {
-            cartCollapsedProductHolderDataList = tmpCartCollapsedProductHolderDataList
-        }
-    }
-
-    fun mapAccordionHolderData(isCollapsed: Boolean, availableData: ShopGroupAvailableData): CartAccordionHolderData {
-        var showMoreWording = ""
-        val showLessWording = "Tampilkan Lebih Sedikit"
-        val itemCount = availableData.cartItemDataList.size
-        showMoreWording = if (itemCount > 10) {
-            val exceedItemCount = itemCount - 10
-            "+$exceedItemCount lainnya"
-        } else {
-            "Lihat selengkapnya"
-        }
-
-        return CartAccordionHolderData().apply {
-            cartString = availableData.cartString
-            this.showMoreWording = showMoreWording
-            this.showLessWording = showLessWording
-            this.isCollapsed = isCollapsed
-        }
-    }
-
-    fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData): CartShopHolderData {
-        return CartShopHolderData().apply {
-            if (shopGroupAvailableData.isError) {
-                setAllItemSelected(false)
+    fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData, isMultipleShop: Boolean): CartShopHolderData {
+        if (shopGroupAvailableData.isTokoNow) {
+            return if (isMultipleShop) {
+                mapCartShopHolderData(
+                        shopGroupAvailableData = shopGroupAvailableData,
+                        isCollapsible = true,
+                        isCollapsed = true
+                )
             } else {
-                if (shopGroupAvailableData.isChecked) {
-                    setAllItemSelected(true)
-                } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
-                    shopGroupAvailableData.cartItemDataList.let {
-                        for (cartItemHolderData in it) {
-                            if (cartItemHolderData.isSelected) {
-                                isPartialSelected = true
-                                break
-                            }
+                mapCartShopHolderData(
+                        shopGroupAvailableData = shopGroupAvailableData,
+                        isCollapsible = true,
+                        isCollapsed = false
+                )
+            }
+        } else {
+            return mapCartShopHolderData(
+                    shopGroupAvailableData = shopGroupAvailableData,
+                    isCollapsible = false,
+                    isCollapsed = false
+            )
+        }
+    }
+
+    private fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData, isCollapsible: Boolean, isCollapsed: Boolean): CartShopHolderData {
+        return CartShopHolderData().apply {
+            if (shopGroupAvailableData.isChecked) {
+                setAllItemSelected(true)
+            } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
+                shopGroupAvailableData.cartItemDataList.let {
+                    for (cartItemHolderData in it) {
+                        if (cartItemHolderData.isSelected) {
+                            isPartialSelected = true
+                            break
                         }
                     }
                 }
             }
             this.shopGroupAvailableData = shopGroupAvailableData
-        }
-    }
-
-    private fun mapCartCollapsedProductHolderData(cartItemHolderData: CartItemHolderData): CartCollapsedProductHolderData {
-        return CartCollapsedProductHolderData().apply {
-            cartId = cartItemHolderData.cartItemData.originData.cartId.toString()
-            cartString = cartItemHolderData.cartItemData.originData.cartString
-            isChecked = cartItemHolderData.isSelected
-            productId = cartItemHolderData.cartItemData.originData.productId
-            productImageUrl = cartItemHolderData.cartItemData.originData.productImage
-            productName = cartItemHolderData.cartItemData.originData.productName
-            productPrice = cartItemHolderData.cartItemData.originData.pricePlanInt
-            productQuantity = cartItemHolderData.cartItemData.updatedData.quantity
-            productVariantName = cartItemHolderData.cartItemData.originData.variant
+            this.isCollapsible = isCollapsible
+            this.isCollapsed = isCollapsed
+            if (isCollapsible) {
+                var showMoreWording = ""
+                val showLessWording = "Tampilkan Lebih Sedikit"
+                val itemCount = shopGroupAvailableData.cartItemDataList.size
+                showMoreWording = if (itemCount > 10) {
+                    val exceedItemCount = itemCount - 10
+                    "+$exceedItemCount lainnya"
+                } else {
+                    "Lihat selengkapnya"
+                }
+                this.showMoreWording = showMoreWording
+                this.showLessWording = showLessWording
+            }
         }
     }
 
