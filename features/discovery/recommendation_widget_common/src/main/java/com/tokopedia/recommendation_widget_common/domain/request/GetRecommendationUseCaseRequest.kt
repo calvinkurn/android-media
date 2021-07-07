@@ -21,6 +21,15 @@ internal class GetRecommendationUseCaseRequest {
                         prevPage
                         hasNext
                       }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                      }
                       recommendation {
                         id
                         name
@@ -101,6 +110,15 @@ internal class GetRecommendationUseCaseRequest {
                        pageName
                        pagination{
                             hasNext
+                       }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
                        }
                        recommendation {
                            id

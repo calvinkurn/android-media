@@ -88,7 +88,7 @@ class ProductAdsListViewModelTest {
         every { userSession.shopId } returns "2"
         every { topAdsGetListProductUseCase.execute(any(), any()) } throws expected
 
-        viewModel.productList("", "", "", "", 0, 0,
+        viewModel.productList("", "", "", "", 0, 0, "",
                 onSuccess = { _, _ -> },
                 onEmpty = {},
                 onError = onError
@@ -112,7 +112,7 @@ class ProductAdsListViewModelTest {
                 onEmpty()
             }
         }
-        viewModel.productList("", "", "", "", 0, 0,
+        viewModel.productList("", "", "", "", 0, 0, "",
                 onSuccess = { _, _ -> },
                 onEmpty = onEmpty,
                 onError = {})
@@ -136,7 +136,7 @@ class ProductAdsListViewModelTest {
                 onSuccess(data.topadsGetListProduct.data, data.topadsGetListProduct.eof)
             }
         }
-        viewModel.productList("", "eid", "", "", 0, 0,
+        viewModel.productList("", "eid", "", "", 0, 0, "",
                 onSuccess = onSuccess,
                 onEmpty = { },
                 onError = {})

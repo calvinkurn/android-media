@@ -56,6 +56,7 @@ buildscript {
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
         classpath "com.newrelic.agent.android:agent-gradle-plugin:5.28.1"
+        classpath "com.gradle:gradle-enterprise-gradle-plugin:3.6.3"
     }
 }
 

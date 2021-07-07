@@ -19,6 +19,8 @@ dependencies {
         exclude module: 'answers-shim'
     }
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {

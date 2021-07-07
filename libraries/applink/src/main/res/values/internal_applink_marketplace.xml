@@ -22,8 +22,6 @@
     <string name="path_checkout" translatable="false">/checkout</string>
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
-    <string name="path_preference_list" translatable="false">/preference-list</string>
-    <string name="path_preference_edit" translatable="false">/preference-edit</string>
     <string name="path_one_click_checkout" translatable="false">/one-click-checkout</string>
 
     <string name="path_gold_merchant_statistic_dashboard" translatable="false">/gold-merchant-statistic-dashboard</string>
