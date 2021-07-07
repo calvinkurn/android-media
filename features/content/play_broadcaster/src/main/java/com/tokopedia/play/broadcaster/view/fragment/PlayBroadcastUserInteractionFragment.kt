@@ -31,6 +31,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
@@ -78,6 +79,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
+    private val interactiveView by viewComponent { BroadcastInteractiveViewComponent(it) }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -138,6 +140,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.title)
         }
+
+        //TODO("Mock")
+        interactiveView.setSchedule("Giveaway Tesla", 10000) {
+            interactiveView.setLive(15000) {}
+        }
+        interactiveView.show()
     }
 
     private fun setupInsets(view: View) {

@@ -25,6 +25,9 @@
     <color name="play_dms_broadcast_schedule_info">#FFFFFF</color>
     <color name="play_dms_broadcast_schedule_divider">#66FFFFFF</color>
 
+    <!--Engagement Tools-->
+    <color name="play_dms_broadcast_interactive_live_title">#40454C</color>
+
     <color name="play_dms_N700_68">#AD31353B</color>
     <color name="play_dms_N700_96">#F531353B</color>
     <color name="play_dms_N150">#B5BBC5</color>
