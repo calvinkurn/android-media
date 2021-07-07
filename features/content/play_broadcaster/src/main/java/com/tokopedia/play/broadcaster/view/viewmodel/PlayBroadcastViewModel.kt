@@ -11,12 +11,15 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -29,8 +32,15 @@ import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
+import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
+import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.isScheduled
+import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
@@ -54,10 +64,15 @@ class PlayBroadcastViewModel @Inject constructor(
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
         private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
+        private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
+        private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
+        private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
         private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val playSocket: PlayBroadcastSocket,
         private val playBroadcastMapper: PlayBroadcastMapper,
+        private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+        private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
         private val countDownTimer: PlayCountDownTimer
 ) : ViewModel() {
 
@@ -104,6 +119,10 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
+    val observableInteractiveState: LiveData<BroadcastInteractiveState>
+        get() = _observableInteractiveState
+    val observableLeaderboardInfo: LiveData<PlayLeaderboardInfoUiModel>
+        get() = _observableLeaderboardInfo
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -124,6 +143,8 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherState = MutableLiveData<PlayLivePusherState>()
     private val _observableLiveDurationState = MutableLiveData<PlayTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
+    private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
+    private val _observableLeaderboardInfo = MutableLiveData<PlayLeaderboardInfoUiModel>()
 
     private val livePusher = livePusherBuilder.build()
 
@@ -385,6 +406,50 @@ class PlayBroadcastViewModel @Inject constructor(
 
     fun pauseLiveStream() {
         liveStateProcessor.onPause()
+    }
+
+    fun onOpenLiveStreamPage() {
+        viewModelScope.launchCatchError(block = {
+            val interactiveResponse = getInteractiveConfigUseCase.apply {
+                setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
+            }.executeOnBackground()
+            val interactiveConfig = playBroadcastMapper.mapInteractiveConfig(interactiveResponse)
+
+            if (interactiveConfig.isActive) {
+                try {
+                    val currentInteractiveResponse = getCurrentInteractiveUseCase.apply {
+                        setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+                    }.executeOnBackground()
+                    val currentInteractive = channelInteractiveMapper.mapInteractive(currentInteractiveResponse.data.interactive)
+                    when (val status = currentInteractive.timeStatus) {
+                        is PlayInteractiveTimeStatus.Scheduled -> {
+                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Schedule(timeToStartInMs = status.timeToStartInMs, durationInMs = status.interactiveDurationInMs, title = currentInteractive.title)
+                        }
+                        is PlayInteractiveTimeStatus.Live -> {
+                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Live(remainingTimeInMs = status.remainingTimeInMs)
+                        }
+                        is PlayInteractiveTimeStatus.Finished -> {
+                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
+                            try {
+                                val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
+                                val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse)
+                                _observableLeaderboardInfo.value = leaderboard
+                                _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious)
+                            } catch (e: Throwable) {
+                                _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
+                            }
+                        }
+                        else -> {
+                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
+                        }
+                    }
+                } catch (e: Throwable) {
+                    _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
+                }
+            } else {
+                _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
+            }
+        }) {}
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {

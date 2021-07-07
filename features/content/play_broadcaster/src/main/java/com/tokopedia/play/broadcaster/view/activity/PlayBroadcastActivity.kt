@@ -12,11 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
@@ -46,16 +47,11 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by mzennis on 19/05/20.
@@ -73,12 +69,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
-
-    private val job = SupervisorJob()
-    private val scope = object: CoroutineScope {
-        override val coroutineContext: CoroutineContext
-            get() = job + dispatcher.immediate
-    }
 
     private lateinit var viewModel: PlayBroadcastViewModel
 
@@ -146,11 +136,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.pauseLiveStream()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancelChildren()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -462,7 +447,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun doWhenResume(block: () -> Unit) {
-        scope.launch {
+        lifecycleScope.launch {
             awaitResume()
             block()
         }

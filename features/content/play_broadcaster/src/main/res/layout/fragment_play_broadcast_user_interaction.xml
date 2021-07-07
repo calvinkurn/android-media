@@ -78,6 +78,16 @@
         app:srcCompat="@drawable/ic_play_inventory_disabled"
         />
 
+    <FrameLayout
+        android:id="@+id/view_play_interactive"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintBottom_toBottomOf="@id/iv_product_tag"
+        app:layout_constraintEnd_toStartOf="@id/iv_share_link"
+        app:layout_constraintStart_toEndOf="@id/iv_product_tag"
+        />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_share_link"
         android:layout_width="@dimen/layout_lvl6"
@@ -111,6 +121,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

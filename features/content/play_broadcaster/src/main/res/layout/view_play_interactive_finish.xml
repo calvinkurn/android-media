@@ -2,10 +2,12 @@
 <com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_interactive_finish"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N700_44"
-    app:cornerRadius="@dimen/play_interactive_loading_radius">
+    app:cornerRadius="@dimen/play_interactive_loading_radius"
+    >
 
     <FrameLayout
         android:id="@+id/fl_interactive_winner"
@@ -17,22 +19,26 @@
         android:background="@drawable/bg_play_interactive_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_play_interactive_crown" />
+            android:src="@drawable/ic_play_interactive_crown"
+            />
 
     </FrameLayout>
 
     <include
+        android:id="@+id/view_play_interactive_init"
         layout="@layout/view_play_interactive_init"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintStart_toEndOf="@id/fl_interactive_winner"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

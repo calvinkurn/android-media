@@ -1,9 +1,9 @@
-package com.tokopedia.play.data.interactive
+package com.tokopedia.play_common.domain.model.interactive
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by jegul on 28/06/21
+ * Created by jegul on 07/07/21
  */
 data class GetCurrentInteractiveResponse(
         @SerializedName("playInteractiveGetCurrentInteractive")

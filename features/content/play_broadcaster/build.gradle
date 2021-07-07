@@ -32,7 +32,9 @@ android {
         experimental = true
     }
 
-    viewBinding.enabled = true
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
