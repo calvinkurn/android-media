@@ -66,29 +66,4 @@ object CatalogViewActions {
             uiController?.loopMainThreadUntilIdle()
         }
     }
-
-//    fun validate(gtmLogDbSource: GtmLogDBSource,
-//                 targetContext: Context,
-//                 fileName: String) {
-//        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-//                hasAllSuccess())
-//    }
-
-    fun setVisibility(visibility: Int): ViewAction {
-        return object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return ViewMatchers.isEnabled()
-            }
-
-            override fun getDescription(): String {
-                return "Set view visibility"
-            }
-
-            override fun perform(uiController: UiController, view: View) {
-                uiController.loopMainThreadUntilIdle()
-                view.visibility = visibility
-                uiController.loopMainThreadUntilIdle()
-            }
-        }
-    }
 }

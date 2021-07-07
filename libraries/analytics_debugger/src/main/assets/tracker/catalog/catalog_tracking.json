@@ -1,0 +1,22 @@
+{
+  "readme": "Catalog Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "catalog page",
+      "eventAction": "click catalog image",
+      "event": "clickCatalog",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "catalog page",
+      "eventAction": "drag the knob",
+      "event": "clickCatalog",
+      "eventLabel": ".*"
+    }
+  ]
+}
