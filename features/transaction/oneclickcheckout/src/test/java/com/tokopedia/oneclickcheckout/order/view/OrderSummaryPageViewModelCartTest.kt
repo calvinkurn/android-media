@@ -42,7 +42,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Atc Occ External Success`() {
         // Given
-        coEvery { addToCartOccExternalUseCase.get().setParams(any(), any()).executeOnBackground() } returns AddToCartOccMultiDataModel(status = "OK", data = AddToCartOccMultiData(success = 1))
+        coEvery { addToCartOccMultiExternalUseCase.get().setParams(any(), any()).executeOnBackground() } returns AddToCartOccMultiDataModel(status = "OK", data = AddToCartOccMultiData(success = 1))
 
         // When
         orderSummaryPageViewModel.atcOcc("1")
@@ -56,7 +56,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         every { userSessionInterface.userId } returns "123"
         val errorMessage = "error"
-        coEvery { addToCartOccExternalUseCase.get().setParams(any(), any()).executeOnBackground() } returns AddToCartOccMultiDataModel(errorMessage = arrayListOf(errorMessage), data = AddToCartOccMultiData(success = 0))
+        coEvery { addToCartOccMultiExternalUseCase.get().setParams(any(), any()).executeOnBackground() } returns AddToCartOccMultiDataModel(errorMessage = arrayListOf(errorMessage), data = AddToCartOccMultiData(success = 0))
 
         // When
         orderSummaryPageViewModel.atcOcc("1")
@@ -70,7 +70,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         every { userSessionInterface.userId } returns "123"
         val response = Throwable()
-        coEvery { addToCartOccExternalUseCase.get().setParams(any(), any()).executeOnBackground() } throws response
+        coEvery { addToCartOccMultiExternalUseCase.get().setParams(any(), any()).executeOnBackground() } throws response
 
         // When
         orderSummaryPageViewModel.atcOcc("1")

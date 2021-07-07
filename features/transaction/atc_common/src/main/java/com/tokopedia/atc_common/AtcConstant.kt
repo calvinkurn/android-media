@@ -7,4 +7,6 @@ object AtcConstant {
     const val MUTATION_ATC_OCC = "atcOccMutation"
     const val MUTATION_ATC_OCC_EXTERNAL = "atcOccExternalMutation"
     const val MUTATION_ATC_EXTERNAL = "MUTATION_ATC_EXTERNAL"
+
+    const val ERROR_PARAMETER_NOT_INITIALIZED = "Parameters has not been initialized!"
 }

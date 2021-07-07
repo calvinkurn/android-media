@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase.coroutine
 
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartOccMultiExternalGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.analytics.AddToCartOccExternalAnalytics
@@ -13,22 +14,14 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartOccExternalUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
-//                                                      private val addToCartDataMapper: AddToCartDataMapper,
-                                                      private val addToCartExternalDataMapper: AddToCartExternalDataMapper,
-                                                      private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartOccMultiDataModel>() {
+class AddToCartOccMultiExternalUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                           private val addToCartExternalDataMapper: AddToCartExternalDataMapper,
+                                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartOccMultiDataModel>() {
 
-    private var productId: String? = null
     private var productIds: List<String>? = null
     private var userId: String? = null
 
-//    fun setParams(productId: String, userId: String): AddToCartOccExternalUseCase {
-//        this.productId = productId
-//        this.userId = userId
-//        return this
-//    }
-
-    fun setParams(productIds: List<String>, userId: String): AddToCartOccExternalUseCase {
+    fun setParams(productIds: List<String>, userId: String): AddToCartOccMultiExternalUseCase {
         this.productIds = productIds
         this.userId = userId
         return this
@@ -41,14 +34,15 @@ class AddToCartOccExternalUseCase @Inject constructor(private val graphqlReposit
      * @see AddToCartOccMultiDataModel.isStatusError
      *
      * @throws RuntimeException("Parameters has not been initialized!") when params is null
-     * @see AddToCartOccExternalUseCase.setParams
+     * @see AddToCartOccMultiExternalUseCase.setParams
      */
     override suspend fun executeOnBackground(): AddToCartOccMultiDataModel {
-//        val sentParams = productId ?: throw RuntimeException("Parameters has not been initialized!")
-        val sentParams = productIds ?: throw RuntimeException("Parameters has not been initialized!")
-        val userId = userId ?: throw RuntimeException("Parameters has not been initialized!")
+        val sentParams = productIds ?: throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
+        val userId = userId ?: throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
+        if (sentParams.isEmpty()) {
+            throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
+        }
 
-//        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC, AddToCartOccExternalGqlResponse::class.java, getParams(sentParams))
         val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC, AddToCartOccMultiExternalGqlResponse::class.java, getParams(sentParams))
         val addToCartOccExternalGqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiExternalGqlResponse>()
 
