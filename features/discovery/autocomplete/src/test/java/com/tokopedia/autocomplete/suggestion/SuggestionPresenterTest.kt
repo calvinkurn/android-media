@@ -112,7 +112,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     expectedPosition++
                 }
                 is SuggestionChipWidgetDataView -> {
-                    visitable.assertBaseSuggestionDataView(SUGGESTION_DOUBLE_LINE, expectedItem, dimension90)
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_CHIP_WIDGET, expectedItem, dimension90)
                     visitable.assertSuggestionChipWidgetDataView(expectedItem.suggestionChildItems)
                     expectedPosition++
                 }

@@ -131,7 +131,7 @@
       },
       {
         "template": "list_chips",
-        "type": "list_chips",
+        "type": "related_keywords",
         "applink": "",
         "url": "",
         "title": "",
@@ -148,57 +148,57 @@
         },
         "child_items": [
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Daging&source=universe&st=product",
             "url": "/search?q=Daging&source=universe&st=product",
             "title": "Daging"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Telur&source=universe&st=product",
             "url": "/search?q=Telur&source=universe&st=product",
             "title": "Telur"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Susu&source=universe&st=product",
             "url": "/search?q=Susu&source=universe&st=product",
             "title": "Susu"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Bahan+Makanan+Kering&source=universe&st=product",
             "url": "/search?q=Bahan+Makanan+Kering&source=universe&st=product",
             "title": "Bahan Makanan Kering"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Makanan+Jadi&source=universe&st=product",
             "url": "/search?q=Makanan+Jadi&source=universe&st=product",
             "title": "Makanan Jadi"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Mie+Pasta&source=universe&st=product",
             "url": "/search?q=Mie+Pasta&source=universe&st=product",
             "title": "Mie Pasta"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Makanan+Ringan&source=universe&st=product",
             "url": "/search?q=Makanan+Ringan&source=universe&st=product",
             "title": "Makanan Ringan"
           },
           {
-            "template": "list_chips",
-            "type": "chip",
+            "template": "",
+            "type": "",
             "applink": "tokopedia://search?q=Buah+Segar&source=universe&st=product",
             "url": "/search?q=Buah+Segar&source=universe&st=product",
             "title": "Buah Segar"
