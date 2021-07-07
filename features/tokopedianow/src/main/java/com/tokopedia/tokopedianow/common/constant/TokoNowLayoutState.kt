@@ -1,15 +1,15 @@
-package com.tokopedia.tokopedianow.home.constant
+package com.tokopedia.tokopedianow.common.constant
 
 import androidx.annotation.IntDef
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
-        HomeLayoutState.SHOW,
-        HomeLayoutState.LOADING,
-        HomeLayoutState.HIDE,
-        HomeLayoutState.LOAD_MORE
+    TokoNowLayoutState.SHOW,
+    TokoNowLayoutState.LOADING,
+    TokoNowLayoutState.HIDE,
+    TokoNowLayoutState.LOAD_MORE
 )
-annotation class HomeLayoutState {
+annotation class TokoNowLayoutState {
     companion object {
         const val SHOW = 1
         const val LOADING = 2

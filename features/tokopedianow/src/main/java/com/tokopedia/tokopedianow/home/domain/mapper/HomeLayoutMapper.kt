@@ -5,7 +5,8 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.CATEGORY
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.LEGO_3_IMAGE
@@ -97,16 +98,16 @@ object HomeLayoutMapper {
     }
 
     fun List<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
-        item: HomeCategoryGridUiModel,
+        item: TokoNowCategoryGridUiModel,
         response: List<CategoryResponse>?
     ): List<HomeLayoutItemUiModel> {
         return updateItemById(item.visitableId) {
             if (!response.isNullOrEmpty()) {
                 val categoryList = mapToCategoryList(response)
-                val layout = item.copy(categoryList = categoryList, state = HomeLayoutState.SHOW)
+                val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             } else {
-                val layout = item.copy(categoryList = null, state = HomeLayoutState.HIDE)
+                val layout = item.copy(categoryList = null, state = TokoNowLayoutState.HIDE)
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
         }
