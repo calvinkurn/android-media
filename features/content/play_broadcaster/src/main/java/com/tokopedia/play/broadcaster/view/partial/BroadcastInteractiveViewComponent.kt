@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveFinishView
+import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveInitView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLiveView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLoadingView
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -13,9 +14,32 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class BroadcastInteractiveViewComponent(
         container: ViewGroup,
+        listener: Listener
 ) : ViewComponent(container, R.id.view_play_interactive) {
 
     private val parent = rootView as ViewGroup
+
+    private val initView = object : InteractiveInitView.Listener {
+        override fun onCreateNewGameClicked(view: InteractiveInitView) {
+            listener.onNewGameClicked(this@BroadcastInteractiveViewComponent)
+        }
+    }
+
+    private val loadingListener = object : InteractiveLoadingView.Listener {
+        override fun onCreateNewGameClicked(view: InteractiveLoadingView) {
+            listener.onNewGameClicked(this@BroadcastInteractiveViewComponent)
+        }
+    }
+
+    private val finishListener = object : InteractiveFinishView.Listener {
+        override fun onCreateNewGameClicked(view: InteractiveFinishView) {
+            listener.onNewGameClicked(this@BroadcastInteractiveViewComponent)
+        }
+    }
+
+    fun setInit() = setChildView { InteractiveInitView(parent.context) }.apply {
+        setListener(initView)
+    }
 
     fun setSchedule(
             title: String,
@@ -43,13 +67,20 @@ class BroadcastInteractiveViewComponent(
         )
     }
 
-    fun setLoading() = setChildView { InteractiveLoadingView(parent.context) }
+    fun setLoading() = setChildView { InteractiveLoadingView(parent.context) }.apply {
+        setListener(loadingListener)
+    }
 
-    fun setFinish() = setChildView { InteractiveFinishView(parent.context) }
+    fun setFinish() = setChildView { InteractiveFinishView(parent.context) }.apply {
+        setListener(finishListener)
+    }
 
     private fun removeListener() {
         val firstChild = parent.getChildAt(0) ?: return
         when (firstChild) {
+            is InteractiveInitView -> firstChild.setListener(null)
+            is InteractiveLoadingView -> firstChild.setListener(null)
+            is InteractiveFinishView -> firstChild.setListener(null)
             else -> {}
         }
     }
@@ -63,5 +94,10 @@ class BroadcastInteractiveViewComponent(
             parent.addView(view)
             view
         } else firstChild
+    }
+
+    interface Listener {
+
+        fun onNewGameClicked(view: BroadcastInteractiveViewComponent)
     }
 }

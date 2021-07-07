@@ -15,11 +15,26 @@ class InteractiveFinishView : RoundedConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    private val binding: ViewPlayInteractiveFinishBinding = ViewPlayInteractiveFinishBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+    )
+
+    private var mListener: Listener? = null
+
     init {
-        ViewPlayInteractiveFinishBinding.inflate(
-                LayoutInflater.from(context),
-                this,
-                true
-        )
+        binding.viewPlayInteractiveInit.root.setOnClickListener {
+            mListener?.onCreateNewGameClicked(this)
+        }
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    interface Listener {
+
+        fun onCreateNewGameClicked(view: InteractiveFinishView)
     }
 }

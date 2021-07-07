@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -44,6 +45,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 /**
@@ -79,7 +81,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
-    private val interactiveView by viewComponent { BroadcastInteractiveViewComponent(it) }
+    private val interactiveView by viewComponent {
+        BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
+            override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
+                //TODO("Mock")
+                Toaster.build(requireView(), "New game clicked").show()
+            }
+        })
+    }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -142,15 +151,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         //TODO("Mock")
-        interactiveView.setSchedule("Giveaway Tesla", 10000) {
-            interactiveView.setLive(15000) {
-                interactiveView.setLoading()
-                view?.postDelayed({
-                    interactiveView.setFinish()
-                }, 3000)
-            }
-        }
-        interactiveView.show()
+//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+//            interactiveView.show()
+//
+//            interactiveView.setInit()
+//            delay(5000)
+//            interactiveView.setSchedule("Giveaway Tesla", 10000) {
+//                interactiveView.setLive(15000) {
+//                    interactiveView.setLoading()
+//                    view?.postDelayed({
+//                        interactiveView.setFinish()
+//                    }, 3000)
+//                }
+//            }
+//        }
     }
 
     private fun setupInsets(view: View) {

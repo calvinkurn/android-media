@@ -18,14 +18,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular_white" />
+        app:loader_type="circular_white"
+        />
 
     <include
+        android:id="@+id/view_play_interactive_init"
         layout="@layout/view_play_interactive_init"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintStart_toEndOf="@id/loader_interactive_winner"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
