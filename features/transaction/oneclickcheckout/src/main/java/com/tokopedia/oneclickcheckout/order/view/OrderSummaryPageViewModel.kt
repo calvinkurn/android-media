@@ -73,9 +73,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
 
+    private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
-    private var getCartJob: Job? = null
+    private var calculateJob: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -214,13 +215,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (result.overweight != null) {
             orderShop.overweight = result.overweight
             orderShopData.value = orderShop
-            orderProfile.value = orderProfile.value.copy(enable = false)
             orderTotal.value = OrderTotal()
             orderPromo.value = orderPromo.value.copy(isDisabled = true)
         } else {
             orderShop.overweight = 0.0
             orderShopData.value = orderShop
-            orderProfile.value = orderProfile.value.copy(enable = true)
             orderPromo.value = orderPromo.value.copy(isDisabled = false)
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
@@ -600,7 +599,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun calculateTotal(forceButtonState: OccButtonState? = null) {
-        launch(executorDispatchers.immediate) {
+        calculateJob?.cancel()
+        calculateJob = launch(executorDispatchers.immediate) {
+            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference,
                     _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value,
                     forceButtonState, orderPromo.value)

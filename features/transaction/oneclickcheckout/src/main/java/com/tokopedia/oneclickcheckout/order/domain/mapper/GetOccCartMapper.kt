@@ -197,7 +197,7 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {
         return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.recommendationServiceId, shipment.recommendationSpId, shipment.isFreeShippingSelected,
-        true, true, CourierSelectionError("error dong", "ada masalah nih"))
+        false, false, CourierSelectionError("error dong", "ada masalah nih"))
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {

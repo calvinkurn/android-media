@@ -33,16 +33,16 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment,
                                validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
                                orderTotal: OrderTotal, forceButtonState: OccButtonState?, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
-        val hasInvalidQuantity = orderCart.products.find { !it.isError && it.quantity.orderQuantity <= 0 } != null
-        var payment = _orderPayment
-        if (hasInvalidQuantity || !_orderPreference.isValid) {
-            return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
-        }
-        if (!shouldButtonStateEnable(shipping, orderCart)) {
-            return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
-        }
         OccIdlingResource.increment()
-        val result = withContext(executorDispatchers.immediate) {
+        val result = withContext(executorDispatchers.default) {
+            val hasInvalidQuantity = orderCart.products.find { !it.isError && it.quantity.orderQuantity <= 0 } != null
+            var payment = _orderPayment
+            if (hasInvalidQuantity || !_orderPreference.isValid) {
+                return@withContext payment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
+            }
+            if (!shouldButtonStateEnable(shipping, orderCart)) {
+                return@withContext payment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
+            }
             var totalProductPrice = 0.0
             var totalPurchaseProtectionPrice = 0
             for (product in orderCart.products) {
@@ -66,7 +66,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             subtotal -= shippingDiscount
             val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
 
-            var currentState = forceButtonState ?: orderTotal.buttonState
+            var currentState = forceButtonState ?: OccButtonState.NORMAL
             if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {
                 currentState = OccButtonState.DISABLE
             }
