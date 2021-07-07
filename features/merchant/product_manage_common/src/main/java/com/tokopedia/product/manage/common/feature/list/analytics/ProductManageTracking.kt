@@ -344,13 +344,13 @@ object ProductManageTracking {
         productId: String,
         shopId: String
     ) {
-        val label = if (isMain) {
+        var label = if (isMain) {
             "${ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN} - $source"
         } else {
             ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
         }
-        var eventAction = ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
-        eventAction = eventAction.plus(" - $productId - $shopId")
+        label = label.plus(" - $productId - $shopId")
+        val eventAction = ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
         eventProductManage(eventAction, label)
     }
 
