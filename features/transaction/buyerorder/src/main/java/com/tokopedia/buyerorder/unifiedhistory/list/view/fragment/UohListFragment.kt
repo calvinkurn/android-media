@@ -452,7 +452,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 UohUtils.hideKeyBoard(search_bar.context, view)
-                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
+                val inputLength = search_bar?.searchBarTextField?.text?.length ?: 0
+                if (inputLength in 1 until MIN_KEYWORD_CHARACTER_COUNT) {
                     showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                 } else {
                     triggerSearch()
