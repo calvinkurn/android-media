@@ -24,8 +24,6 @@ object ProductDetailConstant {
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
 
-    const val URL_YOUTUBE = "https://www.youtube.com/watch?v="
-
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
@@ -85,7 +83,6 @@ object ProductDetailConstant {
 
     //Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
-    const val PRODUCT_INFO = "product_info"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
     const val REVIEW = "review"

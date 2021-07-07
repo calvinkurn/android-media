@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -42,15 +41,6 @@ object ProductDetailUtil {
     private const val MAX_CHAR = 140
     private const val ALLOW_CLICK = true
 
-    fun reviewDescFormatterOld(context: Context, review: String): Pair<CharSequence?, Boolean> {
-        return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
-            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
-            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
-        } else {
-            Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
-        }
-    }
-
     fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
         return if (formattedText.length > MAX_CHAR) {
@@ -60,18 +50,6 @@ object ProductDetailUtil {
             Pair(formattedText, !ALLOW_CLICK)
         }
     }
-
-    fun generateDescriptionData(productInfo: DynamicProductInfoP1, textDescription: String) = DescriptionData(
-            basicId = productInfo.basic.productID,
-            basicName = productInfo.getProductName,
-            basicPrice = productInfo.data.price.value.toFloat(),
-            shopName = productInfo.basic.shopName,
-            thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
-            basicDescription = textDescription,
-            videoUrlList = productInfo.data.youtubeVideos.map { it.url },
-            isOfficial = productInfo.data.isOS,
-            isGoldMerchant = productInfo.data.isPowerMerchant)
-
 }
 
 fun String.boldOrLinkText(isLink: Boolean, context: Context,
@@ -167,22 +145,6 @@ internal fun Long.getRelativeDateByHours(context: Context): String {
         context.getString(R.string.shop_chat_speed_in_days_with_icon, hourInput / dayInHours)
     } else {
         context.getString(R.string.shop_chat_speed_in_hours_with_icon, hourInput)
-    }
-}
-
-internal fun String.isGivenDateIsBelowThan24H(): Boolean {
-    return try {
-        val endDate = Date(this.toLongOrZero() * 1000)
-        val now = System.currentTimeMillis()
-        val diff = (endDate.time - now).toFloat()
-        if (diff < 0) {
-            //End date is out dated
-            false
-        } else {
-            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
-        }
-    } catch (e: Throwable) {
-        false
     }
 }
 

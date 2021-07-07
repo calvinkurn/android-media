@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductInfoDataModel
 import com.tokopedia.product.detail.view.adapter.ProductDetailInfoAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.info.util.ProductDetailInfoConstant

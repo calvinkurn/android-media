@@ -42,9 +42,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val basicContentMap: ProductContentDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_CONTENT] as? ProductContentDataModel
 
-    val productInfoMap: ProductInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_INFO] as? ProductInfoDataModel
-
     val productDiscussionMostHelpfulMap: ProductDiscussionMostHelpfulDataModel?
         get() = mapOfData[ProductDetailConstant.DISCUSSION_FAQ] as? ProductDiscussionMostHelpfulDataModel
 
@@ -163,12 +160,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
-            updateData(ProductDetailConstant.PRODUCT_INFO, loadInitialData) {
-                productInfoMap?.run {
-                    youtubeVideos = it.data.youtubeVideos
-                }
-            }
-
             updateData(ProductDetailConstant.PRODUCT_WHOLESALE_INFO, loadInitialData) {
                 productWholesaleInfoMap?.run {
                     val minPrice = it.data.wholesale?.minByOrNull { it.price.value }?.price?.value
@@ -233,18 +224,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.VARIANT_OPTIONS) {
             productNewVariantDataModel?.run {
                 isVariantError = true
-            }
-        }
-    }
-
-    fun updateDataInstallment(context: Context?, financingData: PDPInstallmentRecommendationData, isOs: Boolean) {
-        updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO) {
-            productInstallmentInfoMap?.run {
-                subtitle = String.format(context?.getString(R.string.new_installment_template)
-                        ?: "",
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                (if (isOs) financingData.data.osMonthlyPrice
-                                else financingData.data.monthlyPrice).roundToLong(), false))
             }
         }
     }

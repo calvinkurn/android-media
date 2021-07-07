@@ -6,13 +6,9 @@
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
     <string name="merchant_product_detail_shipping">Detail Pengiriman</string>
-    <string name="label_pre_order">Waktu Preorder</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
-    <string name="label_product_desc">Deskripsi Produk</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
-    <string name="transition_video_horizontal_scroll">transition_video_horizontal_scroll</string>
-    <string name="transition_description">description_transition</string>
     <string name="title_activity_product_detail">Rincian Produk</string>
     <string name="template_cashback">Cashback %1$s%%</string>
     <string name="template_price">%1$s%2$s</string>
@@ -31,7 +27,6 @@
     <string name="action_preorder">PreOrder</string>
     <string name="label_oke_pdp">Oke</string>
     <string name="label_ends_in">Berakhir dalam</string>
-    <string name="label_product_sold_out">Terjual habis! Cek barang lainnya yuk</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
@@ -69,7 +64,6 @@
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
     <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
-    <string name="label_no_description">TIDAK ADA DESKRIPSI</string>
 
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
@@ -150,8 +144,6 @@
     <string name="view_single_text__template_builder">%1s orang melihat barang ini</string>
     <string name="label_buyer_photos">Foto Pembeli</string>
 
-    <string name="slider_counter_builder">%1$d/%2$d</string>
-
     // Discussion Most Helpful
     <string name="product_detail_discussion_title">Diskusi Paling Membantu</string>
     <string name="product_detail_discussion_see_all">Lihat Semua (%d)</string>
@@ -218,10 +210,6 @@
 
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
-    <string name="content_desc_title_info">text info produk %1s</string>
-    <string name="content_desc_desc_info">text deskripsi info produk %1s</string>
-    <string name="content_desc_title_product_desc_label">text header deskripsi produk</string>
-    <string name="content_desc_title_product_info_label">text header informasi produk</string>
     <string name="content_desc_btnAddToWishlist">button tambahkan ke wishlist</string>
     <string name="content_desc_txt_main_price">text harga %1d</string>
     <string name="content_desc_fab_detail_pdp">button wishlist</string>

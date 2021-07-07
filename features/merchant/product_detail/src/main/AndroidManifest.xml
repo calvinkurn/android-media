@@ -51,11 +51,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name="com.tokopedia.product.info.view.ProductFullDescriptionActivity"
-            android:label="@string/label_product_desc"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-
         <activity android:name=".imagepreview.view.activity.ImagePreviewPdpActivity"
             android:label="@string/label_image_preview_pdp"
             android:screenOrientation="portrait"

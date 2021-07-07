@@ -835,16 +835,6 @@ object DynamicProductDetailTracking {
 
         }
 
-        fun eventButtonChatShopClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_PAGE_CHAT,
-                    productInfo?.basic?.productID ?: "")
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_BUTTON_CHAT)
-        }
-
         fun eventButtonChatClicked(productInfo: DynamicProductInfoP1?) {
             if (productInfo?.basic?.productID?.isEmpty() == true) return
             val mapEvent = TrackAppUtils.gtmData(

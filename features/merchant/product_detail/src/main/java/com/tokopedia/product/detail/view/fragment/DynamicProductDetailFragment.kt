@@ -129,7 +129,6 @@ import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
-import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
@@ -662,39 +661,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
-        context?.let {
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, youtubeVideos.map { it.url }, index))
-            } else {
-                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + youtubeVideos[index].url)))
-                } catch (e: Throwable) {
-                }
-            }
-        }
-    }
-
     override fun getApplicationContext(): Application? {
         return activity?.application
     }
 
     override fun getLifecycleFragment(): Lifecycle {
         return lifecycle
-    }
-
-    override fun gotoDescriptionTab(textDescription: String, componentTrackDataModel: ComponentTrackDataModel) {
-        viewModel.getDynamicProductInfoP1?.let {
-            val data = ProductDetailUtil.generateDescriptionData(it, textDescription)
-            context?.let { ctx ->
-                startActivity(ProductFullDescriptionActivity.createIntent(ctx, data))
-                activity?.overridePendingTransition(R.anim.pull_up, 0)
-                DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            }
-        }
     }
 
     /**
