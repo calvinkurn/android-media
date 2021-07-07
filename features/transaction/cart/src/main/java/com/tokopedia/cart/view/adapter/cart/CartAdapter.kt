@@ -298,7 +298,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
             CartAccordionViewHolder.LAYOUT -> {
                 val binding = ItemCartAccordionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartAccordionViewHolder(binding)
+                return CartAccordionViewHolder(binding, actionListener)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -486,8 +486,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         cartDataList.add(any)
     }
 
+    fun addItem(index: Int, any: Any) {
+        cartDataList.add(index, any)
+    }
+
     fun addItems(anyList: List<Any>) {
         cartDataList.addAll(anyList)
+    }
+
+    fun addItems(index: Int = -1, anyList: List<Any>) {
+        cartDataList.addAll(index, anyList)
     }
 
     fun addNotAvailableShop(disabledShopHolderData: DisabledShopHolderData) {
@@ -1377,4 +1385,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return false
     }
 
+    fun removeCollapsedAvailableItems(accordionIndex: Int) {
+        val shopIndex = accordionIndex - 2
+        cartDataList.subList(shopIndex, accordionIndex + 1).clear()
+    }
 }

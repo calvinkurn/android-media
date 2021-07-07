@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -77,7 +78,9 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onUnavailableItemAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
+    fun onToggleAvailableItemAccordion(data: CartAccordionHolderData, accordionIndex: Int)
+
+    fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
 
@@ -90,4 +93,5 @@ interface ActionListener {
     fun onNeedToGoneLocalizingAddressWidget()
 
     fun onLocalizingAddressUpdatedFromWidget()
+
 }

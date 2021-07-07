@@ -73,6 +73,7 @@ import com.tokopedia.cart.view.mapper.CartViewHolderDataMapper
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -1794,8 +1795,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         loadRecommendation()
     }
 
-    private fun updateStateAfterFinishGetCartList(it: CartListData) {
-        this.cartListData = it
+    private fun updateStateAfterFinishGetCartList(cartListData: CartListData) {
+        this.cartListData = cartListData
         endlessRecyclerViewScrollListener.resetState()
         refreshHandler?.finishRefresh()
         cartAdapter.resetData()
@@ -3095,12 +3096,39 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         notifyBottomCartParent()
     }
 
+    private fun onNeedToInserViewItem(position: Int) {
+        if (position == RecyclerView.NO_POSITION) return
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemInserted(position) }
+        } else {
+            cartAdapter.notifyItemInserted(position)
+        }
+    }
+
+    private fun onNeedToInsertMultipleViewItem(positionStart: Int, itemCount: Int) {
+        if (positionStart == RecyclerView.NO_POSITION) return
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemRangeInserted(positionStart, itemCount) }
+        } else {
+            cartAdapter.notifyItemRangeInserted(positionStart, itemCount)
+        }
+    }
+
     private fun onNeedToRemoveViewItem(position: Int) {
         if (position == RecyclerView.NO_POSITION) return
         if (binding?.rvCart?.isComputingLayout == true) {
             binding?.rvCart?.post { cartAdapter.notifyItemRemoved(position) }
         } else {
             cartAdapter.notifyItemRemoved(position)
+        }
+    }
+
+    private fun onNeedToRemoveMultipleViewItem(positionStart: Int, itemCount: Int) {
+        if (positionStart == RecyclerView.NO_POSITION) return
+        if (binding?.rvCart?.isComputingLayout == true) {
+            binding?.rvCart?.post { cartAdapter.notifyItemRangeRemoved(positionStart, itemCount) }
+        } else {
+            cartAdapter.notifyItemRangeRemoved(positionStart, itemCount)
         }
     }
 
@@ -3506,7 +3534,30 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 
-    override fun onUnavailableItemAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String) {
+    override fun onToggleAvailableItemAccordion(data: CartAccordionHolderData, accordionIndex: Int) {
+        if (data.isCollapsed) {
+            cartListData?.let {
+                cartAdapter.removeCollapsedAvailableItems(accordionIndex)
+                onNeedToRemoveMultipleViewItem(accordionIndex - 2, 3)
+
+                loop@ for (shopGroupAvailableData in it.shopGroupAvailableDataList) {
+                    if (shopGroupAvailableData.cartString == data.cartString) {
+                        val startIndex = accordionIndex - 2
+                        val cartShopHolderData = cartViewHolderDataMapper.mapCartShopHolderData(shopGroupAvailableData)
+                        cartAdapter.addItem(startIndex, cartShopHolderData)
+                        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(false, shopGroupAvailableData)
+                        cartAdapter.addItem(collapsedProductAccordion)
+                        onNeedToInsertMultipleViewItem(startIndex, shopGroupAvailableData.cartItemDataList.size + 1)
+                        break@loop
+                    }
+                }
+            }
+        } else {
+
+        }
+    }
+
+    override fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String) {
         cartPageAnalytics.eventClickAccordionButtonOnUnavailableProduct(userSession.userId, buttonWording)
         data.isCollapsed = !data.isCollapsed
         unavailableItemAccordionCollapseState = data.isCollapsed

@@ -3,9 +3,10 @@ package com.tokopedia.cart.view.viewholder.now
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartAccordionBinding
+import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
 
-class CartAccordionViewHolder(val viewBinding: ItemCartAccordionBinding) : RecyclerView.ViewHolder(viewBinding.root) {
+class CartAccordionViewHolder(val viewBinding: ItemCartAccordionBinding, val actionListener: ActionListener) : RecyclerView.ViewHolder(viewBinding.root) {
 
     companion object {
         var LAYOUT = R.layout.item_cart_accordion
@@ -18,6 +19,13 @@ class CartAccordionViewHolder(val viewBinding: ItemCartAccordionBinding) : Recyc
         } else {
             viewBinding.imageChevron.rotation = 180f
             viewBinding.textAccordion.text = cartAccordionHolderData.showLessWording
+        }
+
+        itemView.setOnClickListener {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                actionListener.onToggleAvailableItemAccordion(cartAccordionHolderData, position)
+            }
         }
     }
 

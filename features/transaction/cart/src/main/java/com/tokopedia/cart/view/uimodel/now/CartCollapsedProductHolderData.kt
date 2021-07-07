@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.uimodel.now
 
 data class CartCollapsedProductHolderData(
+        var isChecked: Boolean = false,
         var productId: String = "",
         var productImageUrl: String = "",
         var productName: String = "",

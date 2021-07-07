@@ -51,6 +51,7 @@ class CartViewHolderDataMapper @Inject constructor() {
         }
 
         return CartAccordionHolderData().apply {
+            cartString = availableData.cartString
             this.showMoreWording = showMoreWording
             this.showLessWording = showLessWording
             this.isCollapsed = isCollapsed
@@ -81,6 +82,7 @@ class CartViewHolderDataMapper @Inject constructor() {
 
     private fun mapCartCollapsedProductHolderData(cartItemHolderData: CartItemHolderData): CartCollapsedProductHolderData {
         return CartCollapsedProductHolderData().apply {
+            isChecked = cartItemHolderData.isSelected
             productId = cartItemHolderData.cartItemData.originData.productId
             productImageUrl = cartItemHolderData.cartItemData.originData.productImage
             productName = cartItemHolderData.cartItemData.originData.productName
