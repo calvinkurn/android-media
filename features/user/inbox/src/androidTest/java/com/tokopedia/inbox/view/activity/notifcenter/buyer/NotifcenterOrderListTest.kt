@@ -60,7 +60,6 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         startInboxActivity()
 
         // Then
-        waitForIt(5000)
         NotifcenterAssertion.assertRecyclerviewItem(
             hasViewHolderItemAtPosition(
                 0, NotificationOrderListViewHolder::class.java
@@ -74,7 +73,31 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should update currently visible cached order list with counter when finished loading remote data
+    @Test
+    fun should_update_currently_visible_cached_order_list_with_counter_when_finished_loading_remote_data() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.setCache(
+                notifOrderListUseCase.cacheResponse, RoleType.BUYER
+            )
+            notifOrderListUseCase.response = notifOrderListUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                0, NotificationOrderListViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertNotifOrderFirstCardText(
+            "Transaksi berlangsung"
+        )
+        NotifcenterAssertion.assertNotifOrderSecondCardText(
+            "Lihat semua"
+        )
+    }
+
     // TODO: should placed first when notification rendered first
     // TODO: should placed first when rendered first instead of notification
     // TODO: should render notification empty state when notification remote data is empty
