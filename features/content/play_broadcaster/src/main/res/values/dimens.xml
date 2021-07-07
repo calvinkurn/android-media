@@ -93,4 +93,5 @@
     <dimen name="play_interactive_time_radius">100dp</dimen>
     <dimen name="play_interactive_gift_width">27dp</dimen>
     <dimen name="play_interactive_gift_height">29dp</dimen>
+    <dimen name="play_interactive_setup_top_margin">100dp</dimen>
 </resources>

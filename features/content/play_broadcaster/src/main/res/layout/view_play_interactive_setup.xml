@@ -15,6 +15,8 @@
         android:layout_marginTop="@dimen/play_dp_12"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:gravity="center"
+        android:maxLength="25"
+        android:imeOptions="actionNext"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,27 +33,55 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_interactive_start_in"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_dp_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:text="@string/play_interactive_setup_start_in"
+            app:layout_constraintEnd_toStartOf="@id/cl_timer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="small" />
 
-        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-            android:id="@+id/timer_interactive_setup"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
+        <com.tokopedia.play_common.view.RoundedConstraintLayout
+            android:id="@+id/cl_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/layout_lvl0"
+            android:background="@color/Unify_Static_White"
+            app:cornerRadius="@dimen/play_dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_interactive_start_in"
-            app:layout_constraintTop_toTopOf="parent"
-            app:timer_unify_single_showClockIcon="true"
-            app:timer_unify_single_variant="informative" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icon_clock"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:src="@drawable/iconunify_clock"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/Unify_R500" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:textColor="@color/Unify_R500"
+                app:layout_constraintBottom_toBottomOf="@id/icon_clock"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/icon_clock"
+                app:layout_constraintTop_toTopOf="@id/icon_clock"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="05 menit 00 detik" />
+
+        </com.tokopedia.play_common.view.RoundedConstraintLayout>
 
     </com.tokopedia.play_common.view.RoundedConstraintLayout>
 

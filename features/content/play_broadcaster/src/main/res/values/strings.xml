@@ -179,9 +179,9 @@
     <string name="album">Album</string>
 
     <string name="play_interactive_create_game">Buat Game Hadiah</string>
+    <string name="play_interactive_title_default">Giveaway </string>
     <string name="play_interactive_time_picker_title">Atur waktu mulai</string>
     <string name="play_interactive_time_picker_apply"><![CDATA[Terapkan & Mulai]]></string>
-    <string name="play_interactive_time_picker_value">%d Menit</string>
     <string name="play_interactive_setup_start_in">Dimulai dalam:</string>
     <string name="play_interactive_live_end_in">Berakhir dalam:</string>
     <string name="play_interactive_live">Game sedang dimulai</string>
