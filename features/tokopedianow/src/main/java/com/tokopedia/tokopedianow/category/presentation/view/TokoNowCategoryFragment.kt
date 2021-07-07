@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
@@ -35,6 +36,9 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
 
     override val toolbarPageName = "TokoNow Category"
+    override fun cdListName(): String {
+        return String.format(TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME, tokoNowCategoryViewModel.categoryIdTracking)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

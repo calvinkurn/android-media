@@ -24,6 +24,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME
 import javax.inject.Inject
 
 class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
@@ -41,6 +42,9 @@ class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
+    override fun cdListName(): String {
+        return TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

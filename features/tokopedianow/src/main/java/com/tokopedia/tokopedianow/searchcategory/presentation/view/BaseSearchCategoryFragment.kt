@@ -129,6 +129,8 @@ abstract class BaseSearchCategoryFragment:
             return height + padding
         }
 
+    protected abstract fun cdListName(): String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -602,7 +604,7 @@ abstract class BaseSearchCategoryFragment:
                 pageSource = "tokonow",
                 isTokoNow = true,
                 shopId = productItemDataView.shop.id,
-                trackerCdListName = productItemDataView.getCdListName,
+                trackerCdListName = cdListName(),
                 startActivitResult = this::startActivityForResult,
         )
     }

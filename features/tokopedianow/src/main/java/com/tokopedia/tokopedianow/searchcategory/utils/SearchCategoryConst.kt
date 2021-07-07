@@ -14,3 +14,6 @@ internal const val CATEGORY_TOKONOW = "category_tokonow"
 internal const val CATEGORY_TOKONOW_DIRECTORY = "category_tokonow_directory"
 internal const val TOKONOW_SEARCH = "tokonow_search"
 internal const val TOKONOW_CATEGORY = "tokonow_category"
+
+internal const val TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME = "/tokonow - search page"
+internal const val TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME = "/tokonow - category - %s"
