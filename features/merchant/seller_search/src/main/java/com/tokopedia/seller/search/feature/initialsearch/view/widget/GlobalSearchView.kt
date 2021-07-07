@@ -162,7 +162,7 @@ class GlobalSearchView : BaseCustomView {
 
     private fun btnBackHome() {
         actionUpBtn?.setOnClickListener {
-            searchViewListener?.onBackButtonSearchBar()
+            searchViewListener?.onBackButtonSearchBar(searchBarView?.searchBarTextField?.text?.trim()?.toString().orEmpty())
             KeyboardHandler.DropKeyboard(activity, searchBarView?.searchBarTextField)
             activity?.finish()
         }
@@ -170,7 +170,7 @@ class GlobalSearchView : BaseCustomView {
 
     interface GlobalSearchViewListener {
         fun onQueryTextChangeListener(keyword: String)
-        fun onBackButtonSearchBar()
+        fun onBackButtonSearchBar(keyword: String)
     }
 
     interface SearchTextBoxListener {

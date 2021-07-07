@@ -1,32 +1,29 @@
 package com.tokopedia.loginphone.chooseaccount.viewmodel
 
+import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant
 import com.tokopedia.loginphone.chooseaccount.domain.subscriber.LoginFacebookSubscriber
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,33 +36,23 @@ class ChooseAccountViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getAccountsListUseCase: GraphqlUseCase<AccountListPojo>
+    lateinit var getAccountsListUseCase: GraphqlUseCase<AccountsDataModel>
     @RelaxedMockK
     lateinit var loginTokenUseCase: LoginTokenUseCase
     @RelaxedMockK
-    lateinit var getProfileUseCase: GetProfileUseCase
-    @RelaxedMockK
-    lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
-    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
-    lateinit var getAccountListFBResponseObserver: Observer<Result<AccountList>>
+    lateinit var getAccountListDataModelFBResponseObserver: Observer<Result<AccountListDataModel>>
     @RelaxedMockK
-    lateinit var getAccountListPhoneResponseObserver: Observer<Result<AccountList>>
+    lateinit var getAccountListDataModelPhoneResponseObserver: Observer<Result<AccountListDataModel>>
     @RelaxedMockK
     lateinit var loginPhoneNumberResponseObserver: Observer<Result<LoginToken>>
     @RelaxedMockK
-    lateinit var getUserInfoResponseObserver: Observer<Result<ProfileInfo>>
+    lateinit var goToActivationPageObserver: Observer<Result<MessageErrorException>>
     @RelaxedMockK
-    lateinit var goToActivationPageObserver: Observer<MessageErrorException>
-    @RelaxedMockK
-    lateinit var goToSecurityQuestionObserver: Observer<String>
-    @RelaxedMockK
-    lateinit var showLocationAdminPopUpObserver: Observer<Result<Boolean>>
+    lateinit var goToSecurityQuestionObserver: Observer<Result<String>>
 
     private lateinit var viewmodel: ChooseAccountViewModel
-
-    private val testDispatcher = TestCoroutineDispatcher()
 
     private val rawQueries = mapOf(
             ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST to ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST
@@ -78,10 +65,8 @@ class ChooseAccountViewModelTest {
                 getAccountsListUseCase,
                 userSession,
                 loginTokenUseCase,
-                getProfileUseCase,
-                getAdminTypeUseCase,
                 rawQueries,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -104,7 +89,7 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Success login token phone with sq check`() {
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onGoToSecurityQuestion.invoke()
@@ -113,17 +98,17 @@ class ChooseAccountViewModelTest {
         viewmodel.loginTokenPhone("", "", "123")
 
         verify { goToSecurityQuestionObserver.onChanged(any()) }
-        assert(viewmodel.goToSecurityQuestion.value is String)
+        assert(viewmodel.securityQuestion.value is Success)
 
-        val result = viewmodel.goToSecurityQuestion.value as String
+        val result = (viewmodel.securityQuestion.value as Success).data
         assert(result == "123")
     }
 
     @Test
     fun `Failed login token phone`() {
         viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
-        viewmodel.goToActivationPage.observeForever(goToActivationPageObserver)
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.activationPage.observeForever(goToActivationPageObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onErrorLoginToken.invoke(throwable)
@@ -140,7 +125,7 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Failed login token phone and go to activation page`() {
-        viewmodel.goToActivationPage.observeForever(goToActivationPageObserver)
+        viewmodel.activationPage.observeForever(goToActivationPageObserver)
 
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onGoToActivationPage.invoke(messageErrorException)
@@ -149,9 +134,9 @@ class ChooseAccountViewModelTest {
         viewmodel.loginTokenPhone("", "", "")
 
         verify { goToActivationPageObserver.onChanged(any()) }
-        assert(viewmodel.goToActivationPage.value is MessageErrorException)
+        assert(viewmodel.activationPage.value is Success)
 
-        val result = viewmodel.goToActivationPage.value as MessageErrorException
+        val result = (viewmodel.activationPage.value as Success).data
         assertEquals(messageErrorException, result)
     }
 
@@ -174,7 +159,7 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Success login token fb with sq check`() {
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
             secondArg<LoginFacebookSubscriber>().onGoToSecurityQuestion.invoke()
@@ -183,17 +168,17 @@ class ChooseAccountViewModelTest {
         viewmodel.loginTokenFacebook("", "", "123")
 
         verify { goToSecurityQuestionObserver.onChanged(any()) }
-        assert(viewmodel.goToSecurityQuestion.value is String)
+        assert(viewmodel.securityQuestion.value is Success)
 
-        val result = viewmodel.goToSecurityQuestion.value as String
+        val result = (viewmodel.securityQuestion.value as Success).data
         assert(result == "123")
     }
 
     @Test
     fun `Failed login token fb`() {
         viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
-        viewmodel.goToActivationPage.observeForever(goToActivationPageObserver)
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.activationPage.observeForever(goToActivationPageObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
             secondArg<LoginFacebookSubscriber>().onErrorLoginToken.invoke(throwable)
@@ -210,24 +195,24 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Success get account list phone`() {
-        viewmodel.getAccountListPhoneResponse.observeForever(getAccountListPhoneResponseObserver)
+        viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountListPojo) -> Unit>().invoke(successGetAccountsListResponse)
+            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
         }
 
         viewmodel.getAccountListPhoneNumber("", "")
 
-        verify { getAccountListPhoneResponseObserver.onChanged(any<Success<AccountList>>()) }
-        assert(viewmodel.getAccountListPhoneResponse.value is Success)
+        verify { getAccountListDataModelPhoneResponseObserver.onChanged(any<Success<AccountListDataModel>>()) }
+        assert(viewmodel.getAccountListDataModelPhoneResponse.value is Success)
 
-        val result = viewmodel.getAccountListPhoneResponse.value as Success<AccountList>
-        assert(result.data == successGetAccountsListResponse.accountList)
+        val result = viewmodel.getAccountListDataModelPhoneResponse.value as Success<AccountListDataModel>
+        assert(result.data == SUCCESS_GET_ACCOUNTS_LIST_RESPONSE.accountListDataModel)
     }
 
     @Test
     fun `Failed get account list phone`() {
-        viewmodel.getAccountListPhoneResponse.observeForever(getAccountListPhoneResponseObserver)
+        viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
@@ -235,33 +220,33 @@ class ChooseAccountViewModelTest {
 
         viewmodel.getAccountListPhoneNumber("", "")
 
-        verify { getAccountListPhoneResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getAccountListPhoneResponse.value is Fail)
+        verify { getAccountListDataModelPhoneResponseObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getAccountListDataModelPhoneResponse.value is Fail)
 
-        val result = viewmodel.getAccountListPhoneResponse.value as Fail
+        val result = viewmodel.getAccountListDataModelPhoneResponse.value as Fail
         assertEquals(throwable, result.throwable)
     }
 
     @Test
     fun `Success get account list fb`() {
-        viewmodel.getAccountListFBResponse.observeForever(getAccountListFBResponseObserver)
+        viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountListPojo) -> Unit>().invoke(successGetAccountsListResponse)
+            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
         }
 
         viewmodel.getAccountListFacebook("")
 
-        verify { getAccountListFBResponseObserver.onChanged(any<Success<AccountList>>()) }
-        assert(viewmodel.getAccountListFBResponse.value is Success)
+        verify { getAccountListDataModelFBResponseObserver.onChanged(any<Success<AccountListDataModel>>()) }
+        assert(viewmodel.getAccountListDataModelFBResponse.value is Success)
 
-        val result = viewmodel.getAccountListFBResponse.value as Success<AccountList>
-        assert(result.data == successGetAccountsListResponse.accountList)
+        val result = viewmodel.getAccountListDataModelFBResponse.value as Success<AccountListDataModel>
+        assert(result.data == SUCCESS_GET_ACCOUNTS_LIST_RESPONSE.accountListDataModel)
     }
 
     @Test
     fun `Failed get account list fb`() {
-        viewmodel.getAccountListFBResponse.observeForever(getAccountListFBResponseObserver)
+        viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
@@ -269,80 +254,11 @@ class ChooseAccountViewModelTest {
 
         viewmodel.getAccountListFacebook("")
 
-        verify { getAccountListFBResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getAccountListFBResponse.value is Fail)
+        verify { getAccountListDataModelFBResponseObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getAccountListDataModelFBResponse.value is Fail)
 
-        val result = viewmodel.getAccountListFBResponse.value as Fail
+        val result = viewmodel.getAccountListDataModelFBResponse.value as Fail
         assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `Success get user info`() {
-        viewmodel.getUserInfoResponse.observeForever(getUserInfoResponseObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
-        }
-
-        viewmodel.getUserInfo()
-
-        verify { getUserInfoResponseObserver.onChanged(any<Success<ProfileInfo>>()) }
-        assert(viewmodel.getUserInfoResponse.value is Success)
-
-        val result = viewmodel.getUserInfoResponse.value as Success<ProfileInfo>
-        assert(result.data == successGetUserInfoResponse.profileInfo)
-    }
-
-    @Test
-    fun `Failed get user info`() {
-        viewmodel.getUserInfoResponse.observeForever(getUserInfoResponseObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile.invoke(throwable)
-        }
-
-        viewmodel.getUserInfo()
-
-        verify { getUserInfoResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getUserInfoResponse.value is Fail)
-
-        val result = viewmodel.getUserInfoResponse.value as Fail
-        assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `when getUserInfo success should set show location admin pop up true`() {
-        viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().getAdminTypeUseCase?.let { getAdminTypeUseCase = it }
-            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
-        }
-
-        viewmodel.getUserInfo()
-
-        val expectedLocationAdmin = true
-        val actualLocationAdmin = (viewmodel.showAdminLocationPopUp.value as? Success)?.data
-
-        verify { showLocationAdminPopUpObserver.onChanged(any<Success<Boolean>>()) }
-        assertEquals(expectedLocationAdmin, actualLocationAdmin)
-    }
-
-    @Test
-    fun `when getUserInfo error should set show location admin pop up fail`() {
-        viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
-        }
-
-        viewmodel.getUserInfo()
-
-        val expectedError = throwable
-        val actualError = (viewmodel.showAdminLocationPopUp.value as? Fail)?.throwable
-
-        verify { showLocationAdminPopUpObserver.onChanged(any<Success<Boolean>>()) }
-        assertEquals(expectedError, actualError)
     }
 
     companion object {
@@ -350,9 +266,9 @@ class ChooseAccountViewModelTest {
                 "/success_login_token_sq_check_false.json",
                 LoginTokenPojo::class.java
         )
-        private val successGetAccountsListResponse: AccountListPojo = FileUtil.parse(
+        private val SUCCESS_GET_ACCOUNTS_LIST_RESPONSE: AccountsDataModel = FileUtil.parse(
                 "/success_get_account_list.json",
-                AccountListPojo::class.java
+                AccountsDataModel::class.java
         )
         private val successGetUserInfoResponse: ProfilePojo = FileUtil.parse(
                 "/success_get_user_info.json",

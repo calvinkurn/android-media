@@ -1,28 +1,32 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.response.Data
-import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import io.mockk.verifyOrder
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import rx.Observable
 import rx.Subscriber
 
-object PinpointMapPresenterTest : Spek({
+class PinpointMapPresenterTest {
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
     val getDistrictUseCase: GetDistrictUseCase = mockk(relaxUnitFun = true)
     val revGeoCodeUseCase: RevGeocodeUseCase = mockk(relaxUnitFun = true)
@@ -31,137 +35,127 @@ object PinpointMapPresenterTest : Spek({
     val view: PinpointMapView = mockk(relaxed = true)
     lateinit var presenter: PinpointMapPresenter
 
-    beforeEachTest {
-        presenter = PinpointMapPresenter(getDistrictUseCase, revGeoCodeUseCase,
-                districtBoundUseCase, districtBoundMapper)
+    @Before
+    fun setup() {
+        presenter = PinpointMapPresenter(getDistrictUseCase, revGeoCodeUseCase, districtBoundUseCase, districtBoundMapper)
         presenter.attachView(view)
     }
 
-    Feature("detach") {
-        Scenario("detached") {
-            When("detached") {
-                presenter.detachView()
-            }
-            Then("usecases are unsubscribed") {
-                verify {
-                    getDistrictUseCase.unsubscribe()
-                    revGeoCodeUseCase.unsubscribe()
-                    districtBoundUseCase.unsubscribe()
-                }
-            }
+    @Test
+    fun `get success district`() {
+        val successModel = GetDistrictDataUiModel(
+                districtId = 1)
+
+        every { getDistrictUseCase.execute(any())
+        } answers {
+            Observable.just(successModel)
+        }
+
+        presenter.getDistrict("123")
+
+        verifyOrder {
+            view.onSuccessPlaceGetDistrict(successModel)
         }
     }
 
-    Feature("get district") {
-        Scenario("get succcess district") {
-            val successModel = GetDistrictDataUiModel(
-                    districtId = 1
-            )
-            Given("usecase gives success") {
-                every { getDistrictUseCase.execute(any()) } returns Observable.just(successModel)
-            }
-            When("executed") {
-                presenter.getDistrict("123")
-            }
-            Then("on success is called") {
-                verify {
-                    view.onSuccessPlaceGetDistrict(successModel)
-                }
-            }
+    @Test
+    fun `autofill`() {
+        presenter.autoFill(-6.175794, 106.826457, 5.0f)
+
+        verifyOrder {
+            view.showUndetectedDialog()
         }
     }
 
-    Feature("auto fill") {
-        Scenario("has default lat long") {
-            When("executed with default lat long") {
-                presenter.autoFill(-6.175794, 106.826457, 5.0f)
-            }
-            Then("view shows undetected dialog") {
-                verify {
-                    view.showUndetectedDialog()
-                }
-            }
+    @Test
+    fun `autofill succcess`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
+
+        every { revGeoCodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
         }
 
-        Scenario("success") {
-            val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf())
-            Given("success response") {
-                every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
-            }
-            When("executed") {
-                presenter.autoFill(0.1, 0.1, 0.0f)
-            }
-            Then("on success is called") {
-                verify { view.onSuccessAutofill(keroMaps.data) }
-            }
-        }
+        presenter.autoFill(0.1, 0.1, 0.0f)
 
-        Scenario("success with foreign country") {
-            val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi di luar Indonesia."))
-            Given("response with foreign location error") {
-                every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
-            }
-            When("executed") {
-                presenter.autoFill(0.1, 0.1, 0.0f)
-            }
-            Then("view shows out of reach dialog") {
-                verify { view.showOutOfReachDialog() }
-            }
-        }
-
-        Scenario("success with not found location") {
-            val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"))
-            Given("response with location not found error") {
-                every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
-            }
-            When("executed") {
-                presenter.autoFill(0.1, 0.1, 0.0f)
-            }
-            Then("view shows out of reach dialog") {
-                verify { view.showLocationNotFoundCTA() }
-            }
+        verifyOrder {
+            view.onSuccessAutofill(keroMaps.data)
         }
     }
 
-    Feature("district boundary") {
-        Scenario("success") {
-            val anyGql = GraphqlResponse(null, null, false)
-            val listBoundaries = mutableListOf(LatLng(12.4, 12.5))
-            val response = DistrictBoundaryResponseUiModel(
-                    geometry = DistrictBoundaryGeometryUiModel(listBoundaries)
-            )
-            Given("success response") {
-                every { districtBoundUseCase.execute(any(), any()) } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(anyGql)
-                }
-                every { districtBoundMapper.map(anyGql) } returns response
-            }
+    @Test
+    fun `autofill success with foreign country`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi di luar Indonesia."))
+        every { revGeoCodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
+        }
 
-            When("executed") {
-                presenter.getDistrictBoundary(0, "asdn", 0)
-            }
+        presenter.autoFill(0.1, 0.1, 0.0f)
 
-            Then("view shows boundary") {
-                verify { view.showBoundaries(listBoundaries) }
-            }
+        verifyOrder {
+            view.showOutOfReachDialog()
         }
     }
 
-    Feature("get unnamed") {
-        Scenario("set") {
-            val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
-            var result: SaveAddressDataModel? = null
-            Given("set address") {
-                presenter.setAddress(address)
-            }
-            When("retrieved") {
-                result = presenter.getUnnamedRoadModelFormat()
-            }
-            Then("Unnamed road is removed") {
-                assertFalse(result?.formattedAddress?.contains("Unnamed Road") ?: true)
-                assertEquals(result?.formattedAddress, result?.selectedDistrict)
-            }
+    @Test
+    fun `autofill success with not found location`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"))
+        every { revGeoCodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
         }
 
+        presenter.autoFill(0.1, 0.1, 0.0f)
+
+        verifyOrder {
+            view.showLocationNotFoundCTA()
+        }
     }
-})
+
+    @Test
+    fun `district boundary success`() {
+        val anyGql = GraphqlResponse(null, null, false)
+        val listBoundaries = mutableListOf(LatLng(12.4, 12.5))
+        val response = DistrictBoundaryResponseUiModel(
+                geometry = DistrictBoundaryGeometryUiModel(listBoundaries)
+        )
+
+        every { districtBoundUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<GraphqlResponse>>().onNext(anyGql)
+        }
+
+        every { districtBoundMapper.map(anyGql)
+        } returns response
+
+        presenter.getDistrictBoundary(0, "asdn", 0)
+
+        verifyOrder {
+            view.showBoundaries(listBoundaries)
+        }
+    }
+
+    @Test
+    fun `get unnamed road` () {
+        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+        val result: SaveAddressDataModel?
+
+        presenter.setAddress(address)
+        result = presenter.getUnnamedRoadModelFormat()
+
+        Assert.assertFalse(result.formattedAddress.contains("Unnamed Road"))
+        Assert.assertEquals(result.formattedAddress, result.selectedDistrict)
+    }
+
+    @Test
+    fun `detach`() {
+        presenter.detachView()
+
+        verifyOrder {
+            getDistrictUseCase.unsubscribe()
+            revGeoCodeUseCase.unsubscribe()
+            districtBoundUseCase.unsubscribe()
+        }
+    }
+}

@@ -4,16 +4,17 @@
     <string name="payment_label_how_to_pay">Cara Pembayaran</string>
     <string name="payment_label_cancel_transaction">Batalkan Transaksi</string>
     <string name="payment_label_change_bca_user_id">Ubah KlikBCA User ID</string>
-    <string name="payment_label_change_account_detail">Ubah Akun Bank</string>
-    <string name="payment_label_upload_proof">Unggah Bukti Pembayaran</string>
+    <string name="payment_label_change_account_detail">Ubah Rekening Pengirim</string>
+    <string name="payment_label_upload_proof">Upload Bukti Pembayaran</string>
     <string name="payment_label_klikbcaid">KlikBCA ID</string>
     <string name="payment_label_payment_code">Kode Pembayaran</string>
     <string name="payment_label_virtual_account_number">Nomor Virtual Account</string>
     <string name="payment_label_total">Total</string>
     <string name="payment_label_method_payment">Metode Pembayaran</string>
     <string name="payment_label_close">Tutup</string>
-    <string name="payment_title_yes">Ya</string>
-    <string name="payment_label_no">Tidak</string>
+    <string name="payment_cancel_yes">Ya, Batalkan</string>
+    <string name="payment_cancel_back">Kembali</string>
+    <string name="payment_cancel_title_default">Yakin ingin batalkan transaksi?</string>
     <string name="payment_label_helper_change_click_bca">User ID KlikBCA Anda saat ini adalah %1$s</string>
     <string name="payment_label_hint_click_bca_user_id">KlikBCA User ID</string>
     <string name="payment_label_use">Terapkan</string>
@@ -68,19 +69,20 @@
     <string name="pms_hwp_bank_account_number_copy">Nomor rekening berhasil disalin.</string>
     <string name="pms_hwp_code_copy_success">Kode Pembayaran berhasil disalin.</string>
     <string name="pms_hwp_va_copy_success">Nomor virtual account berhasil disalin.</string>
-    <string-array name="payment_list_bank_name">
-        <item>BCA</item>
-        <item>MANDIRI</item>
-        <item>BNI</item>
-        <item>BRI</item>
-        <item>CIMB</item>
-    </string-array>
 
-    <string-array name="payment_list_bank_code">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-    </string-array>
+    <string name="pms_htp_redirect_label">Lihat Cara Bayar</string>
+    <string name="pms_deferred_payment_card_title">Belanja</string>
+    <string name="pms_deferred_combined_payment_card_title">Transaksi Gabungan</string>
+    <string name="pms_deferred_payment_expire_title">Bayar Sebelum</string>
+    <string name="pms_deferred_payment_waiting_label">Menunggu verifikasi</string>
+
+    <string name="pms_deferred_payment_empty_title">Belum ada transaksi</string>
+    <string name="pms_deferred_payment_empty_subtitle">Yuk, mulai belanja dan penuhi berbagai kebutuhanmu di Tokopedia.</string>
+    <string name="pms_deferred_payment_empty_action">Mulai Belanja</string>
+    <string name="pms_title_bottomsheet_dest_bank">Pilih Bank Tujuan</string>
+    <string name="pms_payment_cancel">Batalkan</string>
+    <string name="pms_payment_detail">Detail</string>
+    <string name="pms_payment_item_heading">Transaksi %1$d - %2$s</string>
+
+
 </resources>
