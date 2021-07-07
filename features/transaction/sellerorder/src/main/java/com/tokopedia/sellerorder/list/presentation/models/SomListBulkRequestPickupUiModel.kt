@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.list.presentation.models
 data class SomListBulkRequestPickupUiModel (
         val `data`: Data = Data(),
         val errors: List<ErrorBulkRequestPickup> = listOf(),
-        val status: Int
+        val status: Int? = null
 ) {
     data class Data(
             val jobId: String = "",

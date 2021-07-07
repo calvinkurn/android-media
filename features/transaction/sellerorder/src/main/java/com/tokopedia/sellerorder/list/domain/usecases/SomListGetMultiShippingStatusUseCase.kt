@@ -22,12 +22,12 @@ class SomListGetMultiShippingStatusUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(useCache: Boolean): MultiShippingStatusUiModel {
         val cacheStrategy = getCacheStrategy(useCache)
-        val gqlRequest = GraphqlRequest(MULTI_SHIPPING_STATUS_QUERY, SomListGetMultiShippingResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(MULTI_SHIPPING_STATUS_QUERY, SomListGetMultiShippingResponse.Data::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListGetMultiShippingResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<SomListGetMultiShippingResponse.Data.MpLogisticMultiShippingStatus>()
+            val response = gqlResponse.getData<SomListGetMultiShippingResponse.Data>()
             return mapper.mapResponseToUiModel(response)
         } else {
             throw RuntimeException(errors.joinToString(", ") { it.message })

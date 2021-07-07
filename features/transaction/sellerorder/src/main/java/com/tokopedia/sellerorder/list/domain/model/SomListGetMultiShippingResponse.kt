@@ -36,8 +36,10 @@ data class SomListGetMultiShippingResponse(
         )
 
         data class ErrorMultiShippingStatus(
+                @Expose
                 @SerializedName("message")
                 val message: String = "",
+                @Expose
                 @SerializedName("order_id")
                 val orderId: Long = 0
         )

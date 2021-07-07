@@ -697,10 +697,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
     }
 
-    override fun onBulksRequestPickupButtonClicked() {
-        viewModel.bulkRequestPickup(getSelectedOrderIds())
-    }
-
     override fun onMenuItemClicked(keyAction: String) {
         when (keyAction) {
             KEY_PRINT_AWB -> {
@@ -714,7 +710,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 }
             }
             KEY_REQUEST_PICKUP -> {
-
+                viewModel.bulkRequestPickup(getSelectedOrderIds())
             }
         }
     }
@@ -1088,6 +1084,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     showErrorBulkRequestPickupStatus()
                 }
                 is ServerFail -> {
+                    bulkRequestPickupDialog?.dismiss()
                     showGlobalError(it.throwable)
                 }
                 is ShowLoading -> {
@@ -1107,7 +1104,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
                         somListBulkProcessOrderBottomSheet?.dismiss()
                     }
-                    initBulkRequestPickupDialog()
                 }
                 is Fail -> {
                     showErrorBulkRequestPickup()
@@ -1172,11 +1168,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun showErrorBulkRequestPickup() {
         bulkRequestPickupDialog?.run {
             setTitle(getString(R.string.som_list_bulk_request_pickup_title_fail))
-            setDescription(getString(R.string.som_list_bulk_request_pickup_desc_fail_all_validation))
-            setPrimaryButton(getString(R.string.som_list_bulk_request_pickup_title_fail)) {
+            setDescription(getString(R.string.som_list_bulk_request_pickup_desc_fail_error))
+            setPrimaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_primary_button_partial_success_can_retry)) {
                 viewModel.bulkRequestPickup(getSelectedOrderIds())
             }
-            setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_desc_fail_error)) {
+            setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
                 dismiss()
             }
             showFailed()
@@ -1198,6 +1194,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showProgressBulkRequestPickupDialog(orderCount: Long) {
+        initBulkRequestPickupDialog()
         bulkRequestPickupDialog?.run {
             hidePrimaryButton()
             hideSecondaryButton()
@@ -1379,6 +1376,13 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun getSelectedOrderIds(): List<String> {
         return adapter.data.filterIsInstance<SomListOrderUiModel>()
                 .filter { it.isChecked }
+                .map { it.orderId }
+    }
+
+    private fun getSelectedOrderIdsRequestPickup(): List<String> {
+        return adapter.data.filterIsInstance<SomListOrderUiModel>()
+                .filter { it.isChecked }
+                .filter { it.buttons.all { button -> button.key == KEY_REQUEST_PICKUP } }
                 .map { it.orderId }
     }
 

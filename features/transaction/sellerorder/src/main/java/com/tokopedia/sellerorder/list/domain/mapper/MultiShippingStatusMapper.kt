@@ -7,14 +7,15 @@ import javax.inject.Inject
 
 class MultiShippingStatusMapper @Inject constructor() {
 
-    fun mapResponseToUiModel(response: SomListGetMultiShippingResponse.Data.MpLogisticMultiShippingStatus): MultiShippingStatusUiModel {
+    fun mapResponseToUiModel(response: SomListGetMultiShippingResponse.Data): MultiShippingStatusUiModel {
+        val multiShippingResponse = response.mpLogisticMultiShippingStatus
         return MultiShippingStatusUiModel(
-                total_order = response.totalOrder.toLongOrZero(),
-                processed = response.processed.toLongOrZero(),
-                success = response.success.toLongOrZero(),
-                fail = response.fail.toLongOrZero(),
-                listFail = response.listFail,
-                listError = response.listError.map {
+                total_order = multiShippingResponse.totalOrder.toLongOrZero(),
+                processed = multiShippingResponse.processed.toLongOrZero(),
+                success = multiShippingResponse.success.toLongOrZero(),
+                fail = multiShippingResponse.fail.toLongOrZero(),
+                listFail = multiShippingResponse.listFail,
+                listError = multiShippingResponse.listError.map {
                     MultiShippingStatusUiModel.ErrorMultiShippingStatusUiModel(
                             message = it.message,
                             orderId = it.orderId

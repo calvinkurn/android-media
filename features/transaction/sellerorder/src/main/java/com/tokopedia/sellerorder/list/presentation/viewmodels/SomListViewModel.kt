@@ -195,8 +195,8 @@ class SomListViewModel @Inject constructor(
                     if (it.data.success == it.data.total_order && orderIdsRequestPickup.size.toLong() == it.data.total_order) {
                         // case 2 When All Orders Success
                         bulkRequestPickupFinalResult.postValue(AllSuccess(it.data.success))
-                    } else if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
-                        retryCount++
+                    } else if (it.data.total_order != it.data.processed && retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
+                        retryRequestPickup++
                         getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
                     } else {
                         // case 4 When partial success but there's failed
@@ -223,7 +223,7 @@ class SomListViewModel @Inject constructor(
                 is Fail -> {
                     val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
                     if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
-                        retryCount++
+                        retryRequestPickup++
                         getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
                     } else {
                         //Case 7 will happen when there's a server error/down from BE
