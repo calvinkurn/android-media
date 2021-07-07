@@ -359,10 +359,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         startTimeTextField?.textFieldInput?.apply {
             inputType = InputType.TYPE_NULL
             setText(OperationalHoursUtil.formatDateTimeWithDefaultTimezone(opsHour.startTime))
-            setOnClickListener { setupStartTimePicker() }
+            setOnClickListener { setupStartTimePicker(opsHour.startTime) }
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus && visibility == View.VISIBLE) {
-                    setupStartTimePicker()
+                    setupStartTimePicker(opsHour.startTime)
                 }
             }
         }
@@ -371,10 +371,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         endTimeTextField?.textFieldInput?.apply {
             inputType = InputType.TYPE_NULL
             setText(OperationalHoursUtil.formatDateTimeWithDefaultTimezone(opsHour.endTime))
-            setOnClickListener { setupEndTimePicker() }
+            setOnClickListener { setupEndTimePicker(opsHour.startTime, opsHour.endTime) }
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus && visibility == View.VISIBLE) {
-                    setupEndTimePicker()
+                    setupEndTimePicker(opsHour.startTime, opsHour.endTime)
                 }
             }
         }
@@ -437,24 +437,26 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         }
     }
 
-    private fun setupEndTimePicker() {
+    private fun setupEndTimePicker(currentStartTime: String, currentEndTime: String) {
         context?.let { ctx ->
 
-            val minEndHour = OperationalHoursUtil.getHourFromFormattedTime(currentSelectedStartTime).toInt()
-            val minEndMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentSelectedStartTime).toInt()
+            val startTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentStartTime).toInt()
+            val startTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentStartTime).toInt()
+            val endTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentEndTime).toInt()
+            val endTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentEndTime).toInt()
 
             // create instance
             endTimePicker = DateTimePickerUnify(
                     context = ctx,
                     minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set minimum end time +1 hour from start time
-                        set(Calendar.HOUR_OF_DAY, minEndHour)
-                        set(Calendar.MINUTE, minEndMinute + 5)
+                        set(Calendar.HOUR_OF_DAY, startTimeHour)
+                        set(Calendar.MINUTE, startTimeMinute + 5)
                     },
                     defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set default selected end time same with minimum
-                        set(Calendar.HOUR_OF_DAY, minEndHour)
-                        set(Calendar.MINUTE, minEndMinute + 5)
+                        set(Calendar.HOUR_OF_DAY, endTimeHour)
+                        set(Calendar.MINUTE, endTimeMinute)
                     },
                     maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
@@ -491,8 +493,11 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         }
     }
 
-    private fun setupStartTimePicker() {
+    private fun setupStartTimePicker(currentStartTime: String) {
         context?.let { ctx ->
+
+            val startTimeHour = OperationalHoursUtil.getHourFromFormattedTime(currentStartTime).toInt()
+            val startTimeMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentStartTime).toInt()
 
             // create instance
             startTimePicker = DateTimePickerUnify(
@@ -501,7 +506,11 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         set(Calendar.HOUR_OF_DAY, MIN_OPEN_HOUR)
                         set(Calendar.MINUTE, MIN_OPEN_MINUTE)
                     },
-                    defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)),
+                    defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
+                        // set default selected end time same with minimum
+                        set(Calendar.HOUR_OF_DAY, startTimeHour)
+                        set(Calendar.MINUTE, startTimeMinute)
+                    },
                     maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
                         set(Calendar.MINUTE, MAX_CLOSE_MINUTE)

@@ -39,6 +39,8 @@
     <string name="shop_close_note">Catatan</string>
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
+    <string name="shop_operational_hour_seller_edu_production">https://seller.tokopedia.com/edu/atur-jadwal-toko/</string>
+    <string name="shop_operational_hour_seller_edu_revamp">https://seller.tokopedia.com/edu/jadwal-toko/</string>
     <string name="shop_operational_hour_title_set_hour">Atur jam buka-tutup toko</string>
     <string name="shop_operational_hour_title_holiday">Atur jadwal toko libur</string>
     <string name="shop_operational_hour_desc_holiday">Pembeli tidak dapat membeli produkmu selama tokomu libur. Pastikan pesanan yang sudah masuk tetap diproses, ya. Waktu mulai libur mengikuti zona WIB.</string>

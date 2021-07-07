@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
@@ -90,6 +91,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         private const val NO_HOLIDAY_DATE = "0"
         private const val REQUEST_CODE_SET_OPS_HOUR = 100
         private const val AB_TEST_EXPERIMENT_KEY_OPS_HOUR = "operational_hour"
+        private const val AB_TEST_EXPERIMENT_NO_KEY = "no_key"
+        private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
     }
 
     @Inject
@@ -127,7 +130,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private var shopAbTestPlatform: ShopAbTestPlatform? = null
     private var isNeedToShowToaster: Boolean = false
-    private var isShopOnHoliday: Boolean = false
+    private var isShopClosed: Boolean = false
+    private var isShopOnScheduledHoliday: Boolean = false
     private var isShouldShowHolidaySchedule: Boolean = false
     private var isActionEdit: Boolean = false
     private var isCloseNow: Boolean = false
@@ -141,6 +145,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var selectedEndDate = Date()
     private var existingStartDate = Date()
     private var existingEndDate = Date()
+    private var sellerEducationUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,15 +216,25 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             fetch(object : RemoteConfig.Listener {
                 override fun onComplete(remoteConfig: RemoteConfig?) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val variantType = getString(AB_TEST_EXPERIMENT_KEY_OPS_HOUR, "")
-                        if (variantType.isEmpty() || variantType != AB_TEST_EXPERIMENT_KEY_OPS_HOUR) {
-                            // redirect to old shop ops hour settings
-                            startActivity(ShopEditScheduleActivity.createIntent(requireContext(), cacheIdForOldFragment))
-                            activity?.finish()
+                        val variantType = getString(AB_TEST_EXPERIMENT_KEY_OPS_HOUR, AB_TEST_EXPERIMENT_NO_KEY)
+                        if (variantType == AB_TEST_EXPERIMENT_NO_KEY) {
+                            // no experiment / successfully deleted, by default render new page
+                            sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_production)
+                            getInitialData()
                         }
                         else {
-                            // stay to this new page
-                            getInitialData()
+                            if (variantType.isEmpty() || variantType != AB_TEST_EXPERIMENT_KEY_OPS_HOUR) {
+                                // user not get the experiment yet,
+                                // redirect to old shop ops hour settings
+                                sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_production)
+                                startActivity(ShopEditScheduleActivity.createIntent(requireContext(), cacheIdForOldFragment))
+                                activity?.finish()
+                            }
+                            else {
+                                // user get new experiment
+                                sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_revamp)
+                                getInitialData()
+                            }
                         }
                     }
                 }
@@ -344,6 +359,10 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
+            rightIcons?.get(0)?.setOnClickListener {
+                // go to seller education page
+                RouteManager.route(context, String.format(WEBVIEW_APPLINK_FORMAT, ApplinkConst.WEBVIEW, sellerEducationUrl))
+            }
         }
     }
 
@@ -367,7 +386,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 val statusInfo = opsHourListUiModel.statusInfo
 
                 // holiday schedule is on going
-                isShopOnHoliday = statusInfo.shopStatus == ShopStatusDef.CLOSED
+                isShopClosed = statusInfo.shopStatus == ShopStatusDef.CLOSED
 
                 // should show upcoming holiday section if available
                 isShouldShowHolidaySchedule = holidayInfo.closeDetail.startDate != NO_HOLIDAY_DATE && holidayInfo.closeDetail.endDate != NO_HOLIDAY_DATE
@@ -394,12 +413,13 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 }
                 isAutoOpenSchBottomSheet = false
 
-                if (isShopOnHoliday) {
+                if (isShopClosed) {
                     if (holidayInfo.closeDetail.status == 0 || holidayInfo.closeDetail.status == 1) {
                         // closed because operational hours
                         renderHolidaySection(isClosedBySchedule = false)
                     } else {
                         // closed because holiday schedule
+                        isShopOnScheduledHoliday = true
                         renderHolidaySection(isClosedBySchedule = true)
                     }
                 } else {
@@ -432,7 +452,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         }
 
         // observe set operational hours
-        observe(shopSettingsOperationalHoursViewModel.setShopOperationalHoursData) { result ->
+        observe(shopSettingsOperationalHoursViewModel.setShopOperationalHoursData) {
             getInitialData()
         }
 
@@ -475,7 +495,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun renderHolidaySection(isClosedBySchedule: Boolean = false) {
         // render holiday switcher container
-        shopIsOnHolidayContainer?.shouldShowWithAction(isShopOnHoliday) {
+        shopIsOnHolidayContainer?.shouldShowWithAction(isShopClosed) {
             // set "until" end date text
             shopIsOnHolidayEndDateText?.shouldShowWithAction(isClosedBySchedule) {
                 shopIsOnHolidayEndDateText?.text = getString(
@@ -486,7 +506,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // set holiday switcher
             shopIsOnHolidaySwitcher?.apply {
-                isChecked = isShopOnHoliday
+                isChecked = isShopClosed
                 setOnCheckedChangeListener { _, isChecked ->
                     if (!isChecked) {
                         showConfirmDialogForOpenShopNow(isClosedBySchedule)
@@ -571,7 +591,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // if shop is on scheduled holiday, seller can only edit the end date
             // so we disable the start date text field
-            if (!isShopOnHoliday) {
+            if (isShopClosed && !isShopOnScheduledHoliday) {
                 isEnabled = true
                 requestFocus()
             }
@@ -592,7 +612,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                             calendarUnifyStart = calendarUnifyStart,
                             calendarUnifyEnd = calendarUnifyEnd,
                             isChooseStartDate = false,
-                            selectedDate = if (isActionEdit && isShopOnHoliday) selectedEndDate else null
+                            selectedDate = if (isActionEdit && isShopClosed) selectedEndDate else null
                     )
                     calendarUnifyEnd?.calendarPickerView?.adapter?.notifyDataSetChanged()
                 }
@@ -603,7 +623,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // if shop is on scheduled holiday, seller can only edit the end date
             // so we enable the text field and requesting for focus
-            if (!isShopOnHoliday) {
+            if (isShopClosed && !isShopOnScheduledHoliday) {
                 isEnabled = false
             }
             else {
@@ -614,7 +634,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     }
 
     private fun setupCloseNowCheckboxBottomSheet() {
-        checkBoxCloseNow?.shouldShowWithAction(!isShopOnHoliday) {
+        checkBoxCloseNow?.shouldShowWithAction(!isShopOnScheduledHoliday) {
             checkBoxCloseNow?.apply {
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
@@ -776,7 +796,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 },
                 secondaryCTAListener = {
                     shopIsOnHolidaySwitcher?.isChecked = true
-                },
+                }
         )?.apply {
             setOnDismissListener { shopIsOnHolidaySwitcher?.isChecked = true }
             show()
