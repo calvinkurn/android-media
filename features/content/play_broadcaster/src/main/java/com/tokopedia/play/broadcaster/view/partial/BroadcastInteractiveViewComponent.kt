@@ -3,7 +3,9 @@ package com.tokopedia.play.broadcaster.view.partial
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveFinishView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLiveView
+import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLoadingView
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -40,6 +42,10 @@ class BroadcastInteractiveViewComponent(
                 )
         )
     }
+
+    fun setLoading() = setChildView { InteractiveLoadingView(parent.context) }
+
+    fun setFinish() = setChildView { InteractiveFinishView(parent.context) }
 
     private fun removeListener() {
         val firstChild = parent.getChildAt(0) ?: return

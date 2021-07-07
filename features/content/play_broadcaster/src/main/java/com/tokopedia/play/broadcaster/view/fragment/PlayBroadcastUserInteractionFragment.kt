@@ -143,7 +143,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         //TODO("Mock")
         interactiveView.setSchedule("Giveaway Tesla", 10000) {
-            interactiveView.setLive(15000) {}
+            interactiveView.setLive(15000) {
+                interactiveView.setLoading()
+                view?.postDelayed({
+                    interactiveView.setFinish()
+                }, 3000)
+            }
         }
         interactiveView.show()
     }
