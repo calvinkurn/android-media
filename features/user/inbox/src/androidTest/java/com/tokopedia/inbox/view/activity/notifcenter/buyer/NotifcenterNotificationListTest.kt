@@ -11,7 +11,7 @@ import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
-class NotifcenterNotificationList : InboxNotifcenterTest() {
+class NotifcenterNotificationListTest : InboxNotifcenterTest() {
 
     private val TITLE_NEW_LIST = "Terbaru"
     private val TITLE_EARLIER = "Sebelumnya"

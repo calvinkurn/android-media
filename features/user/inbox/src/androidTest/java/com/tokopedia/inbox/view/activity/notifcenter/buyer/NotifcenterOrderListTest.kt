@@ -10,7 +10,7 @@ import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
-class NotifcenterOrderList : InboxNotifcenterTest() {
+class NotifcenterOrderListTest : InboxNotifcenterTest() {
 
     @Test
     fun should_show_order_list_when_success_load_order_list_with_no_cache() {
