@@ -88,8 +88,8 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

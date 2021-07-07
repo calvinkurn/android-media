@@ -66,8 +66,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation project(rootProject.ext.libraries.unitTest)
-    testImplementation project(rootProject.ext.libraries.commonNetwork)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 }
 
 project.ext {
