@@ -87,7 +87,7 @@ class ImageUploadAdapter(var context: Context) : RecyclerView.Adapter<ImageUploa
         if (list[position].isSelected) {
             holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
-            holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
 
