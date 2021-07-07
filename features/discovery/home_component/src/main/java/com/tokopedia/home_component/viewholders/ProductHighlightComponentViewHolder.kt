@@ -10,15 +10,16 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.mapper.ProductHighlightModelMapper
 import com.tokopedia.home_component.model.ChannelBanner
+import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
-import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
 import java.util.*
 
@@ -126,5 +127,18 @@ class ProductHighlightComponentViewHolder(
         if (channelDataModel != null) {
             masterProductCardListView?.setProductModel(channelDataModel)
         }
+        grid?.let { setDealsProductCard(channel, it) }
     }
+
+    private fun setDealsProductCard(channel: ChannelModel, grid: ChannelGrid) {
+        if (!isCacheData) {
+            masterProductCardListView?.addOnImpressionListener(channel) {
+                productHighlightListener?.onProductCardImpressed(channel, grid, adapterPosition)
+            }
+        }
+        masterProductCardListView?.setOnClickListener {
+            productHighlightListener?.onProductCardClicked(channel, grid, adapterPosition, grid.applink)
+        }
+    }
+
 }
