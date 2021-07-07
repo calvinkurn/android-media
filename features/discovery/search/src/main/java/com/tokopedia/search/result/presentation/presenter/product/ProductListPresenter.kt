@@ -1308,7 +1308,7 @@ class ProductListPresenter @Inject constructor(
                                 labelGroupDataList = product.labelGroupDataList,
                                 position = index + 1,
                                 alternativeKeyword = option.title,
-                                carouselProductType = determineInspirationCarouselProductType(type, option)
+                                carouselProductType = determineInspirationCarouselProductType(type, option),
                         )
                     }
             )
