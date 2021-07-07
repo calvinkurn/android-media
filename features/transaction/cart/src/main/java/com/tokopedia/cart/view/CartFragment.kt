@@ -70,7 +70,7 @@ import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
 import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.di.DaggerCartComponent
 import com.tokopedia.cart.view.mapper.RecentViewMapper
-import com.tokopedia.cart.view.mapper.ViewHolderDataMapper
+import com.tokopedia.cart.view.mapper.CartViewHolderDataMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
@@ -162,7 +162,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var cartPageAnalytics: CheckoutAnalyticsCart
 
     @Inject
-    lateinit var viewHolderDataMapper: ViewHolderDataMapper
+    lateinit var cartViewHolderDataMapper: CartViewHolderDataMapper
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -1899,7 +1899,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                 if (ChooseAddressUtils.isRollOutUser(it)) {
                     val cartChooseAddressHolderData = CartChooseAddressHolderData()
-                    cartAdapter.addChooseAddressWidget(cartChooseAddressHolderData)
+                    cartAdapter.addItem(cartChooseAddressHolderData)
                 }
             }
         }
@@ -2014,7 +2014,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderTickerAnnouncement(cartListData: CartListData) {
         val tickerData = cartListData.tickerData
         if (tickerData.isValid(CART_PAGE)) {
-            cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id, tickerData.message))
+            cartAdapter.addItem(TickerAnnouncementHolderData(tickerData.id, tickerData.message))
         }
     }
 
@@ -2461,32 +2461,62 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (cartListData.isError && cartListData.shopGroupAvailableDataList.isNotEmpty()) {
             val cartItemTickerErrorHolderData = CartItemTickerErrorHolderData()
             cartItemTickerErrorHolderData.cartTickerErrorData = cartListData.cartTickerErrorData
-            cartAdapter.addCartTickerError(cartItemTickerErrorHolderData)
+            cartAdapter.addItem(cartItemTickerErrorHolderData)
         }
     }
 
     private fun renderCheckboxGlobal(cartListData: CartListData) {
         if (cartListData.shopGroupAvailableDataList.isNotEmpty()) {
-            cartAdapter.addSelectAll(CartSelectAllHolderData(cartListData.isAllSelected))
+            cartAdapter.addItem(CartSelectAllHolderData(cartListData.isAllSelected))
         }
     }
 
     private fun renderCartAvailableItems(cartListData: CartListData) {
-        cartAdapter.addAvailableDataList(cartListData.shopGroupAvailableDataList)
+        for (shopGroupAvailableData in cartListData.shopGroupAvailableDataList) {
+            if (shopGroupAvailableData.cartItemDataList.size > 0) {
+                if (shopGroupAvailableData.isTokoNow) {
+                    val shopSimple = cartViewHolderDataMapper.mapCartShopSimpleHolderData(shopGroupAvailableData)
+                    cartAdapter.addItem(shopSimple)
+                    val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
+                    cartAdapter.addItem(collapsedProductList)
+                } else {
+                    val cartShopHolderData = CartShopHolderData()
+                    cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
+                    if (shopGroupAvailableData.isError) {
+                        cartShopHolderData.setAllItemSelected(false)
+                    } else {
+                        if (shopGroupAvailableData.isChecked) {
+                            cartShopHolderData.setAllItemSelected(true)
+                        } else if (shopGroupAvailableData.cartItemDataList.size > 1) {
+                            shopGroupAvailableData.cartItemDataList.let {
+                                for (cartItemHolderData in it) {
+                                    if (cartItemHolderData.isSelected) {
+                                        cartShopHolderData.isPartialSelected = true
+                                        break
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    cartShopHolderData.shopGroupAvailableData = shopGroupAvailableData
+                    cartAdapter.addItem(cartShopHolderData)
+                }
+            }
+        }
     }
 
     private fun renderCartUnavailableItems(cartListData: CartListData) {
         if (cartListData.unavailableGroupData.isNotEmpty()) {
             var showAccordion = false
-            cartAdapter.addNotAvailableHeader(
-                    viewHolderDataMapper.mapDisabledItemHeaderHolderData(cartListData.cartTickerErrorData.errorCount)
+            cartAdapter.addItem(
+                    cartViewHolderDataMapper.mapDisabledItemHeaderHolderData(cartListData.cartTickerErrorData.errorCount)
             )
             if (!showAccordion && cartListData.unavailableGroupData.size > 1) {
                 showAccordion = true
             }
             cartListData.unavailableGroupData.forEach {
-                val disabledReasonHolderData = viewHolderDataMapper.mapDisabledReasonHolderData(it)
-                cartAdapter.addNotAvailableReason(disabledReasonHolderData)
+                val disabledReasonHolderData = cartViewHolderDataMapper.mapDisabledReasonHolderData(it)
+                cartAdapter.addItem(disabledReasonHolderData)
                 if (!showAccordion && it.shopGroupWithErrorDataList.size > 1) {
                     showAccordion = true
                 }
@@ -2496,17 +2526,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if (!showAccordion && cartItemHolderDataList.size > 1) {
                             showAccordion = true
                         }
-                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shop, it.title))
+                        cartAdapter.addNotAvailableShop(cartViewHolderDataMapper.mapDisabledShopHolderData(shop, it.title))
                         for ((index, value) in cartItemHolderDataList.withIndex()) {
-                            cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
+                            cartAdapter.addItem(cartViewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
                         }
                     }
                 }
             }
 
             if (showAccordion) {
-                val accordionHolderData = viewHolderDataMapper.mapDisabledAccordionHolderData(cartListData)
-                cartAdapter.addNotAvailableAccordion(accordionHolderData)
+                val accordionHolderData = cartViewHolderDataMapper.mapDisabledAccordionHolderData(cartListData)
+                cartAdapter.addItem(accordionHolderData)
                 collapseOrExpandDisabledItem(accordionHolderData)
 
                 if (!accordionCollapseState) {
@@ -2519,7 +2549,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderCartEmptyDefault() {
         val cartEmptyHolderData = buildCartEmptyHolderData()
-        cartAdapter.addCartEmptyData(cartEmptyHolderData)
+        cartAdapter.addItem(cartEmptyHolderData)
     }
 
     private fun buildCartEmptyHolderData(): CartEmptyHolderData {
@@ -2536,7 +2566,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val cartEmptyWithPromoHolderData = buildCartEmptyWithPromoHolderData(lastApplyData)
 
         // analytics
-        cartAdapter.addCartEmptyData(cartEmptyWithPromoHolderData)
+        cartAdapter.addItem(cartEmptyWithPromoHolderData)
         val listPromos = getAllPromosApplied(lastApplyData)
         PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
     }
