@@ -32,8 +32,8 @@ class ItemDetailPerformanceViewHolder(view: View,
         with(itemView) {
             setupItemDetailPerformance(element)
 
-            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(com.tokopedia.shop.score.R.string.desc_calculation_open_seller_app)) == true) {
-                getString(com.tokopedia.shop.score.R.string.desc_calculation_open_seller_app)
+            val titleBottomSheet = if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
+                getString(R.string.desc_calculation_open_seller_app)
             } else {
                 if (element?.titleDetailPerformance?.contains(AND_TEXT) == true) {
                     element.titleDetailPerformance.replace(AND_TEXT, AND_SYMBOL)
@@ -88,7 +88,7 @@ class ItemDetailPerformanceViewHolder(view: View,
             if (element?.colorValueDetailPerformance?.isNotBlank() == true && element.valueDetailPerformance != MINUS_SIGN) {
                 tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
-            tvPerformanceTarget?.text = getString(com.tokopedia.shop.score.R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
+            tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
         }
     }
 
