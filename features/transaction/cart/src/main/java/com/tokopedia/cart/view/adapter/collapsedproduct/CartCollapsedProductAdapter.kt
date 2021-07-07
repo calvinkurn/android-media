@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
-import com.tokopedia.cart.view.uimodel.new.CartCollapsedProductHolderData
-import com.tokopedia.cart.view.viewholder.new.CartCollapsedProductViewHolder
+import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductHolderData
+import com.tokopedia.cart.view.viewholder.now.CartCollapsedProductViewHolder
 
-class CartCollapsedProductAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CartCollapsedProductAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var cartCollapsedProductHolderDataList: List<CartCollapsedProductHolderData> = arrayListOf()
 

@@ -1,12 +1,13 @@
-package com.tokopedia.cart.view.viewholder.new
+package com.tokopedia.cart.view.viewholder.now
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
-import com.tokopedia.cart.view.uimodel.new.CartCollapsedProductHolderData
+import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBinding) : RecyclerView.ViewHolder(viewBinding.root) {
 
@@ -15,12 +16,18 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     fun bind(cartCollapsedProductHolderData: CartCollapsedProductHolderData) {
-        renderProductImage(cartCollapsedProductHolderData)
+        renderImage(cartCollapsedProductHolderData)
         renderVariant(cartCollapsedProductHolderData)
+        renderPrice(cartCollapsedProductHolderData)
         renderQuantity(cartCollapsedProductHolderData)
     }
 
-    private fun renderProductImage(cartCollapsedProductHolderData: CartCollapsedProductHolderData) {
+    private fun renderPrice(cartCollapsedProductHolderData: CartCollapsedProductHolderData) {
+        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartCollapsedProductHolderData.productPrice, false)
+        viewBinding.textProductPrice.text = productPrice
+    }
+
+    private fun renderImage(cartCollapsedProductHolderData: CartCollapsedProductHolderData) {
         ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartCollapsedProductHolderData.productImageUrl)
     }
 

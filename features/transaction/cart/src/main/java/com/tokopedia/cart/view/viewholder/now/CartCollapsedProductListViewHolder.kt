@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view.viewholder.new
+package com.tokopedia.cart.view.viewholder.now
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -6,12 +6,15 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartCollapsedListBinding
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
-import com.tokopedia.cart.view.uimodel.new.CartCollapsedProductListHolderData
+import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductListHolderData
+import kotlin.math.min
 
 class CartCollapsedProductListViewHolder(val viewBinding: ItemCartCollapsedListBinding) : RecyclerView.ViewHolder(viewBinding.root) {
 
+    val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_40)?.toInt() ?: 0
+    val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
     var cartCartCollapsedProductAdapter = CartCollapsedProductAdapter()
-    var cartHorizontalItemDecoration = CartHorizontalItemDecoration()
+    var cartHorizontalItemDecoration = CartHorizontalItemDecoration(paddingLeft, paddingRight)
 
     companion object {
         var LAYOUT = R.layout.item_cart_collapsed_list
@@ -25,7 +28,8 @@ class CartCollapsedProductListViewHolder(val viewBinding: ItemCartCollapsedListB
     }
 
     private fun renderCollapsedItems(cartCollapsedProductListHolderData: CartCollapsedProductListHolderData) {
-        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.subList(0, 9)
+        val maxIndex = min(MAXIMUM_ITEM - 1, cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.size - 1)
+        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         viewBinding.recyclerView.layoutManager = layoutManager
         viewBinding.recyclerView.adapter = cartCartCollapsedProductAdapter

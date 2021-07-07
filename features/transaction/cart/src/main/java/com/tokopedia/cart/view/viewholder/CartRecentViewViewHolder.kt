@@ -33,7 +33,8 @@ class CartRecentViewViewHolder(private val binding: ItemCartRecentViewBinding, v
         if (itemDecorationCount > 0) {
             binding.rvRecentView.removeItemDecorationAt(0)
         }
-        binding.rvRecentView.addItemDecoration(CartHorizontalItemDecoration())
+        val padding = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
+        binding.rvRecentView.addItemDecoration(CartHorizontalItemDecoration(padding, padding))
         binding.rvRecentView.scrollToPosition(element.lastFocussPosition)
         if (!element.hasSentImpressionAnalytics) {
             listener?.onRecentViewImpression()

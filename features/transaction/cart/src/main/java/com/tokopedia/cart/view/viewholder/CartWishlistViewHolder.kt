@@ -45,7 +45,8 @@ class CartWishlistViewHolder(private val binding: ItemCartWishlistBinding, val l
             if (itemDecorationCount > 0) {
                 removeItemDecorationAt(0)
             }
-            addItemDecoration(CartHorizontalItemDecoration())
+            val padding = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
+            addItemDecoration(CartHorizontalItemDecoration(padding, padding))
             listener?.onWishlistImpression()
             element.hasInitializeRecyclerView = true
         }

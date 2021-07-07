@@ -1,10 +1,10 @@
-package com.tokopedia.cart.view.viewholder.new
+package com.tokopedia.cart.view.viewholder.now
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartShopSimpleBinding
-import com.tokopedia.cart.view.uimodel.new.CartShopSimpleHolderData
+import com.tokopedia.cart.view.uimodel.now.CartShopSimpleHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -40,8 +40,8 @@ class CartShopSimpleViewHolder(val viewBinding: ItemCartShopSimpleBinding) : Rec
             viewBinding.imageFreeShipping.show()
             viewBinding.separatorFreeShipping.show()
         } else {
-            viewBinding.imageFreeShipping.show()
-            viewBinding.separatorFreeShipping.show()
+            viewBinding.imageFreeShipping.gone()
+            viewBinding.separatorFreeShipping.gone()
         }
     }
 
@@ -51,8 +51,8 @@ class CartShopSimpleViewHolder(val viewBinding: ItemCartShopSimpleBinding) : Rec
             viewBinding.labelIncident.show()
             viewBinding.separatorIncident.show()
         } else {
-            viewBinding.labelIncident.show()
-            viewBinding.separatorIncident.show()
+            viewBinding.labelIncident.gone()
+            viewBinding.separatorIncident.gone()
         }
     }
 
@@ -69,7 +69,7 @@ class CartShopSimpleViewHolder(val viewBinding: ItemCartShopSimpleBinding) : Rec
 
     private fun renderFulfillment(cartShopSimpleHolderData: CartShopSimpleHolderData) {
         viewBinding.textShopLocation.text = cartShopSimpleHolderData.shopLocation
-        if (cartShopSimpleHolderData.imageFulfilmentUrl.isNotBlank()) {
+        if (!cartShopSimpleHolderData.isTokoNow && cartShopSimpleHolderData.imageFulfilmentUrl.isNotBlank()) {
             ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageFulfillment, cartShopSimpleHolderData.imageFulfilmentUrl)
             viewBinding.imageFulfillment.show()
         } else {

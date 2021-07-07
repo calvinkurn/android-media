@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view.uimodel.new
+package com.tokopedia.cart.view.uimodel.now
 
 data class CartShopSimpleHolderData(
         var isTokoNow: Boolean = false,

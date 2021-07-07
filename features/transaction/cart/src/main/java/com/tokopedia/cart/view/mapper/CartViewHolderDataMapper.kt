@@ -1,12 +1,53 @@
 package com.tokopedia.cart.view.mapper
 
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData
 import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductHolderData
+import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductListHolderData
+import com.tokopedia.cart.view.uimodel.now.CartShopSimpleHolderData
 import javax.inject.Inject
 
-class ViewHolderDataMapper @Inject constructor() {
+class CartViewHolderDataMapper @Inject constructor() {
+
+    fun mapCartShopSimpleHolderData(shopGroupAvailableData: ShopGroupAvailableData): CartShopSimpleHolderData {
+        return CartShopSimpleHolderData().apply {
+            isTokoNow = shopGroupAvailableData.isTokoNow
+            isChecked = shopGroupAvailableData.isChecked
+            shopName = shopGroupAvailableData.shopName
+            shopBadgeUrl = shopGroupAvailableData.shopTypeInfo.shopBadge
+            imageFulfilmentUrl = shopGroupAvailableData.fulfillmentBadgeUrl
+            shopLocation = shopGroupAvailableData.fulfillmentName
+            estimatedTimeArrival = shopGroupAvailableData.estimatedTimeArrival
+            preOrderInfo = shopGroupAvailableData.preOrderInfo
+            freeShippingUrl = shopGroupAvailableData.freeShippingBadgeUrl
+            incidentInfo = shopGroupAvailableData.incidentInfo
+        }
+    }
+
+    fun mapCartCollapsedProductListHolderData(shopGroupAvailableData: ShopGroupAvailableData): CartCollapsedProductListHolderData {
+        val tmpCartCollapsedProductHolderDataList = mutableListOf<CartCollapsedProductHolderData>()
+        shopGroupAvailableData.cartItemDataList.forEach {
+            val data = mapCartCollapsedProductHolderData(it)
+            tmpCartCollapsedProductHolderDataList.add(data)
+        }
+        return CartCollapsedProductListHolderData().apply {
+            cartCollapsedProductHolderDataList = tmpCartCollapsedProductHolderDataList
+        }
+    }
+
+    private fun mapCartCollapsedProductHolderData(cartItemHolderData: CartItemHolderData): CartCollapsedProductHolderData {
+        return CartCollapsedProductHolderData().apply {
+            productId = cartItemHolderData.cartItemData.originData.productId
+            productImageUrl = cartItemHolderData.cartItemData.originData.productImage
+            productName = cartItemHolderData.cartItemData.originData.productName
+            productPrice = cartItemHolderData.cartItemData.originData.pricePlanInt
+            productQuantity = cartItemHolderData.cartItemData.updatedData.quantity
+            productVariantName = cartItemHolderData.cartItemData.originData.variant
+        }
+    }
 
     fun mapDisabledItemHeaderHolderData(disabledProductCount: Int): DisabledItemHeaderHolderData {
         return DisabledItemHeaderHolderData(
