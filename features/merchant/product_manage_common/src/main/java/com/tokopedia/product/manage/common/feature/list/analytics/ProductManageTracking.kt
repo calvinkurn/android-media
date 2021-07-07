@@ -337,17 +337,21 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_STOCK_CAMPAIGN withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationSaveStock(isVariant: Boolean,
-                                      isMain: Boolean,
-                                      source: String
+    fun eventClickAllocationSaveStock(
+        isVariant: Boolean,
+        isMain: Boolean,
+        source: String,
+        productId: String,
+        shopId: String
     ) {
-        val label =
-                if (isMain) {
-                    "${ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN} - $source"
-                } else {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
-                }
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant, label)
+        val label = if (isMain) {
+            "${ProductManageDataLayer.EVENT_LABEL_ALLOCATION_MAIN} - $source"
+        } else {
+            ProductManageDataLayer.EVENT_LABEL_ALLOCATION_CAMPAIGN
+        }
+        var eventAction = ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_SAVE_STOCK withAllocationType isVariant
+        eventAction = eventAction.plus(" - $productId - $shopId")
+        eventProductManage(eventAction, label)
     }
 
     fun eventClickPreviewVariantProduct() {
