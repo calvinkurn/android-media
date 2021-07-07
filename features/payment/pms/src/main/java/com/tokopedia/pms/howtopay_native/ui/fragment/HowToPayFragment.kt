@@ -149,13 +149,13 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun setInstructionList(data: HowToPayData) {
         data.helpPageData?.channelList?.let { channelList ->
-            if (channelList.size > 1) {
-                addMultipleChannelAdapter(channelList)
-            } else {
+            if (data.isOfflineStore == true || data.isManualTransfer == true) {
                 addSingleChannelInstruction(
                     channelList.getOrNull(0)?.channelSteps
                         ?: arrayListOf()
                 )
+            } else {
+                addMultipleChannelAdapter(channelList)
             }
         }
     }

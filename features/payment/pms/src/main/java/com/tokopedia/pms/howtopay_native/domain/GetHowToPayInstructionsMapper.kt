@@ -26,6 +26,8 @@ class GetHowToPayInstructionsMapper @Inject constructor() : UseCase<HowToPayData
             .getObject(KEY_HTP_RESPONSE) as HowToPayGqlResponse
         htpResponse.howToPayData.let { htpData ->
             val howToPayChannelData = getHowToPay(htpData.helpPageJSON)
+            //auto expand first channel
+            howToPayChannelData.channelList.getOrNull(0)?.isExpanded = true
             htpData.helpPageData = howToPayChannelData
             return htpData
         }
