@@ -177,7 +177,6 @@ import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.math.roundToInt
 
 /**
  * Separator Rule

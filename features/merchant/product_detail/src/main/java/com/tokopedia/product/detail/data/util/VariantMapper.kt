@@ -10,7 +10,6 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.util.toDate
-import kotlin.math.roundToInt
 
 /**
  * Created by Yehezkiel on 2020-02-26
