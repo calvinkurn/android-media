@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.state
 import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 
 /**
@@ -10,10 +11,9 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
  */
 data class PlayViewerNewUiState(
         val interactive: PlayInteractiveUiState = PlayInteractiveUiState.NoInteractive,
-        val followStatus: PlayFollowStatusUiState = PlayFollowStatusUiState.NotFollowable,
+        val followStatus: PlayPartnerFollowStatus = PlayPartnerFollowStatus.NotFollowable,
         val partnerName: String = "",
-        val showWinningBadge: Boolean = false,
-        val winnerLeaderboard: List<PlayLeaderboardUiModel> = emptyList(),
+        val leaderboard: PlayLeaderboardUiState = PlayLeaderboardUiState(),
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState> = emptyMap()
 )
 
@@ -28,7 +28,6 @@ sealed class PlayInteractiveUiState {
 
     data class Ongoing(
             val timeRemainingInMs: Long,
-            val title: String,
     ) : PlayInteractiveUiState()
 
     data class Finished(
@@ -36,8 +35,7 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 }
 
-sealed class PlayFollowStatusUiState {
-
-    data class Followable(val isFollowing: Boolean) : PlayFollowStatusUiState()
-    object NotFollowable : PlayFollowStatusUiState()
-}
+data class PlayLeaderboardUiState(
+        val showBadge: Boolean = false,
+        val winnerList: List<PlayLeaderboardUiModel> = emptyList()
+)

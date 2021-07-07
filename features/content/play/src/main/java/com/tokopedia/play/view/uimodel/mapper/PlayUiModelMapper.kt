@@ -9,13 +9,12 @@ import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfo
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -48,9 +47,9 @@ class PlayUiModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusFromResponse(input)
     }
 
-    fun mapPartnerInfo(input: ShopInfo) = PlayPartnerFollowInfoUiModel(
-            isFollowable = userSession.shopId != input.shopCore.shopId,
-            isFollowed = input.favoriteData.alreadyFavorited == 1
+    fun mapPartnerInfo(input: ShopInfo) = PlayPartnerFollowInfo(
+            isOwnShop = userSession.shopId == input.shopCore.shopId,
+            isFollowing = input.favoriteData.alreadyFavorited == 1
     )
 
     fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {

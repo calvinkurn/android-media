@@ -41,6 +41,7 @@ import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -66,7 +67,6 @@ import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.state.PlayFollowStatusUiState
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.*
@@ -87,6 +87,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -298,12 +299,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onFollowButtonClicked(view: ToolbarViewComponent) {
         playViewModel.submitAction(ClickFollowAction)
-//        doClickFollow(partnerId, action)
     }
 
     override fun onPartnerNameClicked(view: ToolbarViewComponent) {
         playViewModel.submitAction(ClickPartnerNameAction)
-//        openPartnerPage(partnerId, type)
     }
 
     override fun onCartButtonClicked(view: ToolbarViewComponent) {
@@ -835,11 +834,14 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeUiState() {
-        playViewModel.uiState.observe(viewLifecycleOwner, CachedObserver { prevState, state ->
-            renderInteractiveView(isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.bottomInsets)
-            renderWinnerBadgeView(state.showWinningBadge, state.bottomInsets)
-            renderToolbarView(state.followStatus, state.partnerName)
-        })
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.bottomInsets)
+                renderWinnerBadgeView(state.leaderboard.showBadge, state.bottomInsets)
+                renderToolbarView(state.followStatus, state.partnerName)
+            }
+        }
     }
 
     private fun observeUiEvent() {
@@ -859,7 +861,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         interactiveWinnerBadgeView?.hideCoachMark()
                     }
                     is OpenPageEvent -> {
-                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode)
+                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
                     }
                 }
             }
@@ -946,12 +948,6 @@ class PlayUserInteractionFragment @Inject constructor(
         playNavigation.onBackPressed(isSystemBack = false)
     }
 
-    private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
-        //TODO("Follow analytic")
-        analytic.clickFollowShop(partnerId.toString(), action.value)
-        viewModel.doFollow(partnerId, action)
-    }
-
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
@@ -974,30 +970,12 @@ class PlayUserInteractionFragment @Inject constructor(
         getBottomSheetInstance().show(childFragmentManager)
     }
 
-    private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
-        if (partnerType == PartnerType.Shop) openShopPage(partnerId)
-        else if (partnerType == PartnerType.Buyer) openProfilePage(partnerId)
-    }
-
-    private fun openShopPage(partnerId: Long) {
-        analytic.clickShop(partnerId.toString())
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
-    }
-
-    private fun openProfilePage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.PROFILE, partnerId.toString(), pipMode = true)
-    }
-
     private fun doClickChatBox() {
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
     private fun doClickLike(shouldLike: Boolean) {
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
-    }
-
-    private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
-        viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
     }
 
     private fun shouldOpenCartPage() {
@@ -1022,7 +1000,6 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
-            is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }
     }
 
@@ -1392,7 +1369,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderInteractiveView(
             isStateChanged: Boolean,
             state: PlayInteractiveUiState,
-            followStatus: PlayFollowStatusUiState,
+            followStatus: PlayPartnerFollowStatus,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
     ) {
         if (isStateChanged) {
@@ -1414,7 +1391,7 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         }
 
-        interactiveView?.showFollowMode(followStatus is PlayFollowStatusUiState.Followable && !followStatus.isFollowing)
+        interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)
 
         when {
             bottomInsets.isAnyShown -> {
@@ -1437,7 +1414,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderToolbarView(
-            followStatus: PlayFollowStatusUiState,
+            followStatus: PlayPartnerFollowStatus,
             partnerName: String
     ) {
         toolbarView.setFollowStatus(followStatus)
