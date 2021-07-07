@@ -86,6 +86,11 @@ class PlayInteractiveLeaderboardViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
-        fun onChatWinnerButtonClicked(view: PlayInteractiveLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int)
+        fun onChatWinnerButtonClicked(
+            view: PlayInteractiveLeaderboardViewComponent,
+            winner: PlayWinnerUiModel,
+            position: Int
+        ) {
+        }
     }
 }

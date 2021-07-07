@@ -210,10 +210,6 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    override fun onChatWinnerButtonClicked(view: PlayInteractiveLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int) {
-
-    }
-
     /**
      * Private methods
      */

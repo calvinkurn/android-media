@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.view
 
-import android.graphics.Canvas
 import android.graphics.Outline
 import android.graphics.Path
 import android.graphics.RectF
