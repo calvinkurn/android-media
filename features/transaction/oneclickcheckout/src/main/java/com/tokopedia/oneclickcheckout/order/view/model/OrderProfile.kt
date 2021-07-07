@@ -11,7 +11,10 @@ data class OrderProfile(
         val address: OrderProfileAddress = OrderProfileAddress(),
         val payment: OrderProfilePayment = OrderProfilePayment(),
         val shipment: OrderProfileShipment = OrderProfileShipment()
-)
+) {
+    val isValidProfile: Boolean
+        get() = address.addressId > 0 && payment.gatewayCode.isNotEmpty()
+}
 
 data class OrderProfileAddress(
         val addressId: Long = 0,

@@ -49,7 +49,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source))
                 return@withContext ResultGetOccCart(
                         orderCart = orderData.cart,
-                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference, true),
+                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
+                        orderProfile = orderData.preference,
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
@@ -61,6 +62,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),
+                        orderProfile = OrderProfile(),
                         orderPayment = OrderPayment(),
                         orderPromo = OrderPromo(),
                         globalEvent = null,
@@ -73,9 +75,9 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         return result
     }
 
-    fun generateUpdateCartParam(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
+    fun generateUpdateCartParam(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
         val orderProduct = orderCart.products.firstOrNull()
-        if (orderPreference.isValid && orderPreference.preference.address.addressId > 0 && orderProduct != null) {
+        if (orderProfile.isValidProfile && orderProduct != null) {
             val cart = UpdateCartOccCartRequest(
                     orderProduct.cartId,
                     orderProduct.quantity.orderQuantity,
@@ -85,7 +87,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                     orderShipment.getRealShipperProductId(),
                     orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
             )
-            var metadata = orderPreference.preference.payment.metadata
+            var metadata = orderProfile.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
                 try {
@@ -102,11 +104,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             }
             val realServiceId = orderShipment.getRealServiceId()
             val profile = UpdateCartOccProfileRequest(
-                    orderPreference.preference.profileId.toString(),
-                    orderPreference.preference.payment.gatewayCode,
+                    orderProfile.profileId.toString(),
+                    orderProfile.payment.gatewayCode,
                     metadata,
-                    if (realServiceId == 0) orderPreference.preference.shipment.serviceId else realServiceId,
-                    orderPreference.preference.address.addressId.toString()
+                    if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
+                    orderProfile.address.addressId.toString()
             )
             return UpdateCartOccRequest(arrayListOf(cart), profile)
         }
@@ -117,10 +119,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         return (orderShipment.getRealShipperId() <= 0 || orderShipment.getRealShipperProductId() <= 0)
     }
 
-    suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment) {
+    suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment) {
         withContext(executorDispatchers.io) {
             try {
-                val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)?.copy(
+                val param = generateUpdateCartParam(orderCart, orderProfile, orderShipment, orderPayment)?.copy(
                         skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment)
                 )
                 if (param != null) {
@@ -200,6 +202,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
 class ResultGetOccCart(
         var orderCart: OrderCart,
         var orderPreference: OrderPreference,
+        var orderProfile: OrderProfile,
         var orderPayment: OrderPayment,
         var orderPromo: OrderPromo,
         var globalEvent: OccGlobalEvent?,

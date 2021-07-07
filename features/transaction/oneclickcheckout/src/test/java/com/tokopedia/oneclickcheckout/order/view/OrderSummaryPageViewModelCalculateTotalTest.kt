@@ -17,9 +17,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -33,7 +33,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = false)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -47,15 +47,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)), shop = OrderShop(errors = listOf("error")))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -63,9 +63,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 0), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -79,15 +79,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service", serviceErrorMessage = "error")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service", serviceErrorMessage = "error")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -95,15 +95,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment()
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment()
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1000.0, 1000.0, 0.0), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(), OccButtonState.DISABLE), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -111,9 +111,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -127,9 +127,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10), productPrice = 1000, wholesalePrice = listOf(WholesalePrice(qtyMin = 10, prdPrc = 100)))))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -143,9 +143,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, wholesalePrice = listOf(WholesalePrice(qtyMin = 5, prdPrc = 100)))))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -159,16 +159,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, minimumAmount = 10000)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(OrderPaymentErrorData("Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData("Belanjaanmu kurang dari min. transaksi ${orderSummaryPageViewModel.orderPayment.value.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
     @Test
@@ -176,16 +176,16 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 10)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
-        assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel._orderPayment.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderPaymentErrorData("Belanjaanmu melebihi limit transaksi ${orderSummaryPageViewModel.orderPayment.value.gatewayName}.", "Ubah", OrderPaymentErrorData.ACTION_CHANGE_PAYMENT), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
     @Test
@@ -193,15 +193,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000, isOvoOnlyCampaign = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, minimumAmount = 10000, isOvoOnlyCampaign = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -209,15 +209,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, minimumAmount = 10000, specificGatewayCampaignOnlyType = 2)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, minimumAmount = 10000, specificGatewayCampaignOnlyType = 2)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -225,15 +225,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10, isOvoOnlyCampaign = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 10, isOvoOnlyCampaign = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -241,15 +241,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, maximumAmount = 10, specificGatewayCampaignOnlyType = 2)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, maximumAmount = 10, specificGatewayCampaignOnlyType = 2)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -257,18 +257,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
         val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(phoneNumber = OrderPaymentOvoActionData(isRequired = true, errorMessage = errorMessage))
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, ovoData = orderPaymentOvoAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_MISSING_PHONE, isOvo = true)
@@ -280,18 +280,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
         val walletAdditionalData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true, phoneNumber = OrderPaymentWalletActionData(isRequired = true, errorMessage = errorMessage))
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, walletData = walletAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_MISSING_PHONE)
@@ -303,18 +303,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
         val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(phoneNumber = OrderPaymentOvoActionData(isRequired = true, errorMessage = errorMessage))
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, isOvoOnlyCampaign = true, ovoData = orderPaymentOvoAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_MISSING_PHONE, isOvo = true)
@@ -326,18 +326,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val errorMessage = "error no phone"
         val walletAdditionalData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true, phoneNumber = OrderPaymentWalletActionData(isRequired = true, errorMessage = errorMessage))
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, specificGatewayCampaignOnlyType = 2, walletData = walletAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_MISSING_PHONE)
@@ -349,20 +349,20 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val errorTicker = "error aktivasi"
         val callbackUrl = "url"
         val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(activation = OrderPaymentOvoActionData(isRequired = true, buttonTitle = buttonTitle, errorTicker = errorTicker), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, ovoData = orderPaymentOvoAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl, isOvo = true)
@@ -374,19 +374,19 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val callbackUrl = "url"
         val walletAdditionalData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true, activation = OrderPaymentWalletActionData(isRequired = true, buttonTitle = buttonTitle), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, walletData = walletAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
@@ -398,19 +398,19 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val callbackUrl = "url"
         val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(activation = OrderPaymentOvoActionData(isRequired = true, buttonTitle = buttonTitle), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, isOvoOnlyCampaign = true, ovoData = orderPaymentOvoAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl, isOvo = true)
@@ -422,19 +422,19 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val callbackUrl = "url"
         val walletAdditionalData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true, activation = OrderPaymentWalletActionData(isRequired = true, buttonTitle = buttonTitle), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, specificGatewayCampaignOnlyType = 2, walletData = walletAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
@@ -446,8 +446,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val errorTicker = "error topup"
         val errorMessage = "error"
@@ -455,13 +455,13 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         val isHideDigital = 1
         val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(topUp = OrderPaymentOvoActionData(buttonTitle = buttonTitle, errorTicker = errorTicker, errorMessage = errorMessage, isHideDigital = isHideDigital), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, ovoData = orderPaymentOvoAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = isHideDigital, isOvo = true)
@@ -473,21 +473,21 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val errorMessage = "error"
         val callbackUrl = "url"
         val isHideDigital = true
         val walletAdditionalData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true, topUp = OrderPaymentWalletActionData(buttonTitle = buttonTitle, errorMessage = errorMessage, isHideDigital = isHideDigital), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, walletData = walletAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = 1)
@@ -499,21 +499,21 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val errorMessage = "error"
         val callbackUrl = "url"
         val isHideDigital = 1
         val orderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(topUp = OrderPaymentOvoActionData(buttonTitle = buttonTitle, errorMessage = errorMessage, isHideDigital = isHideDigital), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE, isOvoOnlyCampaign = true, ovoData = orderPaymentOvoAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = isHideDigital, isOvo = true)
@@ -525,21 +525,21 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val buttonTitle = "button"
         val errorMessage = "error"
         val callbackUrl = "url"
         val isHideDigital = false
         val walletAdditionalData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true, topUp = OrderPaymentWalletActionData(buttonTitle = buttonTitle, errorMessage = errorMessage, isHideDigital = isHideDigital), callbackUrl = callbackUrl)
         val orderPayment = OrderPayment(isEnable = true, walletAmount = 10, specificGatewayCampaignOnlyType = 2, walletData = walletAdditionalData)
-        orderSummaryPageViewModel._orderPayment = orderPayment
+        orderSummaryPageViewModel.orderPayment.value = orderPayment
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
                 walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = 0)
@@ -551,15 +551,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10000, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, walletAmount = 10000, gatewayCode = OrderSummaryPageViewModel.OVO_GATEWAY_CODE)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -567,15 +567,15 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, walletAmount = 10000, walletData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, walletAmount = 10000, walletData = OrderPaymentWalletAdditionalData(enableWalletAmountValidation = true))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -583,18 +583,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val message = "error"
         val button = "button"
         val action = "action"
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)))
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(message, button, action), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
@@ -603,18 +603,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val message = "error"
         val button = "button"
         val action = "action"
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)), isDisablePayButton = true)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)), isDisablePayButton = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(message, button, action), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
@@ -623,18 +623,18 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
         val message = "error"
         val button = "button"
         val action = "action"
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)), errorMessage = OrderPaymentErrorMessage(message = "cc error", button = OrderPaymentErrorMessageButton(text = "cc button")))
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, revampErrorMessage = OrderPaymentRevampErrorMessage(message = message, button = OrderPaymentRevampErrorMessageButton(text = button, action = action)), errorMessage = OrderPaymentErrorMessage(message = "cc error", button = OrderPaymentErrorMessageButton(text = "cc button")))
 
         // When
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentErrorData(message, button, action), orderSummaryPageViewModel.orderPayment.value.errorData)
     }
 
@@ -664,8 +664,8 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                 )))
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 2000, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo,
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 2000, isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo,
                 logisticPromoShipping = ShippingCourierUiModel().apply {
                     productData = ProductData().apply {
                         shipperProductId = 1
@@ -675,7 +675,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                     insurancePrice = 100
                 },
                 isCheckInsurance = true, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -711,9 +711,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
                         availableTerms = listOf(
@@ -729,7 +729,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.NORMAL, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(listOf(
                 OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 23.0, monthlyAmount = 1523.0, isEnable = true, isSelected = true),
                 OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isEnable = true),
@@ -743,9 +743,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)), shop = OrderShop(isOfficial = 1))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
                         availableTerms = listOf(
@@ -761,7 +761,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1515.0, 1000.0, 500.0, paymentFee = 15.0), OccButtonState.NORMAL, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1515.0, 1000.0, 500.0, paymentFee = 15.0), OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(listOf(
                 OrderPaymentInstallmentTerm(term = 0, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 100, fee = 15.0, monthlyAmount = 1515.0, isEnable = true, isSelected = true),
                 OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 15.0, monthlyAmount = 505.0, isEnable = true),
@@ -774,9 +774,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
                         availableTerms = listOf(
@@ -791,7 +791,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.DISABLE, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test
@@ -799,9 +799,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000)))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
                         availableTerms = listOf(
@@ -816,7 +816,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.NORMAL, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
+        assertEquals(OrderTotal(OrderCost(1523.0, 1000.0, 500.0, paymentFee = 23.0), OccButtonState.NORMAL, OccButtonType.PAY), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(OrderPaymentInstallmentTerm(term = 3, mdr = 1.5f, mdrSubsidize = 0.5f, minAmount = 1000, fee = 23.0, monthlyAmount = 508.0, isSelected = true, isEnable = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
     }
 
@@ -825,9 +825,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED))))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -841,9 +841,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 2), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_TICKED))))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -857,9 +857,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_UNTICKED))))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()
@@ -873,9 +873,9 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(quantity = QuantityUiModel(orderQuantity = 1), productPrice = 1000, purchaseProtectionPlanData = PurchaseProtectionPlanData(protectionPricePerProduct = 1000, stateChecked = PurchaseProtectionPlanData.STATE_EMPTY))))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(isValid = true)
-        orderSummaryPageViewModel._orderShipment = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 500, shipperProductId = 1, serviceName = "service")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When
         orderSummaryPageViewModel.calculateTotal()

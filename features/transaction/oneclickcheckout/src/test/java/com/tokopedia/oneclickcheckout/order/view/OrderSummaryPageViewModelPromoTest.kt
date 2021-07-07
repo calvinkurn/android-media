@@ -27,8 +27,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Generate Promo Request With Insurance`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true, insuranceData = helper.firstCourierFirstDuration.productData.insurance)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isCheckInsurance = true, insuranceData = helper.firstCourierFirstDuration.productData.insurance)
 
         // When
         val promoRequest = orderSummaryPageViewModel.generatePromoRequest()
@@ -41,8 +41,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Generate Promo Request With Insurance Checked And No Data`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isCheckInsurance = true)
 
         // When
         val promoRequest = orderSummaryPageViewModel.generatePromoRequest()
@@ -55,11 +55,11 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Generate Validate Use Promo Request With Last Apply And Bbo`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
         val promoCode = "123"
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(codes = listOf(promoCode),
                 voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode))))
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true, logisticPromoViewModel = helper.logisticPromo, logisticPromoShipping = helper.firstCourierSecondDuration)
 
         // When
         val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
@@ -73,10 +73,10 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Generate Validate Use Promo Request With Invalid Last Apply And No Bbo`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val promoCode = "123"
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode, uniqueId = promoCode))))
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(logisticPromoViewModel = null, logisticPromoTickerMessage = null)
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(logisticPromoViewModel = null, logisticPromoTickerMessage = null)
 
         // When
         val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
@@ -90,11 +90,11 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Generate Validate Use Promo Request With Multiple Last Apply`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
         val promoCode = "123"
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(lastApply = LastApplyUiModel(
                 voucherOrders = listOf(LastApplyVoucherOrdersItemUiModel(code = promoCode), LastApplyVoucherOrdersItemUiModel(code = promoCode))))
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         val promoRequest = orderSummaryPageViewModel.generateValidateUsePromoRequest()
@@ -108,8 +108,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Cart Promo Success Without Promo`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
@@ -129,8 +129,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Cart Promo Success With BBO`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK"))
@@ -156,8 +156,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Cart Promo Got Prompt`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
@@ -172,8 +172,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Cart Promo Error`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val response = Throwable()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
 
@@ -188,8 +188,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Update Cart Promo Invalid Preference State`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.updateCartPromo { _, _, _ -> }
@@ -202,8 +202,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Validate Use Promo Success`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
@@ -224,8 +224,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Validate Use Promo Error`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(Throwable())
@@ -242,8 +242,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Validate Use Promo Error Akamai`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         val exception = AkamaiErrorException("")
@@ -265,8 +265,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Validate Use Promo Red State Released`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(response)
@@ -288,8 +288,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Validate Use Promo Benefit Decreased`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green"), benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(finalBenefitAmount = 10),
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(messageUiModel = MessageUiModel(state = "green")))))
@@ -313,8 +313,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Final Validate Use Promo Global Code Success`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "green")))
@@ -339,8 +339,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Final Validate Use Promo Voucher Success`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val promoType = "type"
@@ -366,8 +366,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Final Validate Use Promo Red State`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode), messageUiModel = MessageUiModel(state = "red")))
@@ -389,8 +389,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Final Validate Use Promo Red State Voucher`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val promoCode = "abc"
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(codes = listOf(promoCode),
@@ -415,8 +415,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Final Validate Use Promo Red State Multiple Voucher`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
@@ -443,8 +443,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         val shopBadge = "shop_badge.png"
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(shopBadge = shopBadge))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val response = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
@@ -468,8 +468,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Final Validate Use Promo Error Akamai`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = OrderShop(isGold = 1))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val lastResponse = ValidateUsePromoRevampUiModel(promoUiModel = PromoUiModel(
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(
@@ -494,8 +494,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Cancel Ineligible Promo Checkout Success`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
         every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
@@ -516,8 +516,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
     fun `Cancel Ineligible Promo Checkout Error`() {
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
         val response = Throwable()
         every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.error(response)

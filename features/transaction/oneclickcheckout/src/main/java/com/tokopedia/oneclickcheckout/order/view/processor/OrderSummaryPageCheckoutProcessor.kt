@@ -49,7 +49,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                            orderCart: OrderCart,
                            products: List<OrderProduct>,
                            shop: OrderShop,
-                           pref: OrderPreference,
+                           profile: OrderProfile,
                            orderShipment: OrderShipment,
                            orderTotal: OrderTotal,
                            userId: String,
@@ -70,8 +70,8 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                     ))
                 }
             }
-            val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
-                    pref.preference.address.addressId,
+            val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
+                    profile.address.addressId,
                     listOf(
                             ShopProduct(
                                     shopId = shop.shopId,
@@ -95,7 +95,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                 val checkoutOccData = checkoutOccUseCase.executeSuspend(param)
                 if (checkoutOccData.status.equals(STATUS_OK, true)) {
                     if (checkoutOccData.result.success == 1 || checkoutOccData.result.paymentParameter.redirectParam.url.isNotEmpty()) {
-                        var paymentType = pref.preference.payment.gatewayName
+                        var paymentType = profile.payment.gatewayName
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                         }

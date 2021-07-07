@@ -51,21 +51,21 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     var orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
         private set
 
-    val orderShop: OrderShop
-        get() = orderCart.shop
-    val orderShopData: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
+//    val orderShop: OrderShop
+//        get() = orderCart.shop
+    val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
 
     val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
 
-    var _orderPreference: OrderPreference = OrderPreference()
+    var orderPreferenceData: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
 
     val orderProfile: OccMutableLiveData<OrderProfile> = OccMutableLiveData(OrderProfile(enable = false))
 
-    var _orderShipment: OrderShipment = OrderShipment()
+//    var _orderShipment: OrderShipment = OrderShipment()
     val orderShipment: OccMutableLiveData<OrderShipment> = OccMutableLiveData(OrderShipment())
 
-    var _orderPayment: OrderPayment = OrderPayment()
+//    var _orderPayment: OrderPayment = OrderPayment()
     val orderPayment: OccMutableLiveData<OrderPayment> = OccMutableLiveData(OrderPayment())
 
     val orderTotal: OccMutableLiveData<OrderTotal> = OccMutableLiveData(OrderTotal())
@@ -81,7 +81,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var hasSentViewOspEe = false
 
     fun getCurrentShipperId(): Int {
-        return _orderShipment.getRealShipperId()
+        return orderShipment.value.getRealShipperId()
     }
 
     fun getPaymentProfile(): String {
@@ -103,8 +103,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun isInvalidAddressState(preference: OrderProfile, addressState: AddressState): Boolean {
-        return preference.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
+    private fun isInvalidAddressState(profile: OrderProfile, addressState: AddressState): Boolean {
+        return profile.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
     }
 
     fun getOccCart(isFullRefresh: Boolean, source: String) {
@@ -114,37 +114,37 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val result = cartProcessor.getOccCart(source)
             addressState.value = result.addressState
             orderCart = result.orderCart
-            orderShopData.value = orderShop
+            orderShop.value = orderCart.shop
             orderProducts.value = orderCart.products
-            orderProfile.value = result.orderPreference.preference
-            _orderPreference = result.orderPreference
-            orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
-                OccState.FirstLoad(_orderPreference)
+            orderProfile.value = result.orderProfile
+            orderPreferenceData = result.orderPreference
+            orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderProfile, result.addressState)) {
+                OccState.FirstLoad(result.orderPreference)
             } else {
                 OccState.Failed(Failure(result.throwable))
             }
             if (isFullRefresh) {
-                _orderShipment = OrderShipment()
-                orderShipment.value = _orderShipment
+                orderShipment.value = OrderShipment()
+//                orderShipment.value = _orderShipment
             }
-            _orderPayment = result.orderPayment
-            orderPayment.value = _orderPayment
+            orderPayment.value = result.orderPayment
+//            orderPayment.value = _orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
             orderPromo.value = result.orderPromo
             result.globalEvent?.also {
                 globalEvent.value = it
             }
-            if (orderCart.products.isNotEmpty() && _orderPreference.preference.address.addressId > 0) {
+            if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 // TODO: 06/07/21 validate tokonow pinpoint
-                if (_orderPreference.preference.shipment.isDisableChangeCourier && _orderPreference.preference.address.hasNoPinpoint) {
-                    _orderShipment = _orderShipment.copy(serviceName = "", needPinpoint = true)
+                if (result.orderProfile.shipment.isDisableChangeCourier && result.orderProfile.address.hasNoPinpoint) {
+                    orderShipment.value = orderShipment.value.copy(serviceName = "", needPinpoint = true)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 } else {
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                     getRatesSuspend()
                 }
-            } else if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
+            } else if (result.throwable == null && !isInvalidAddressState(result.orderProfile, result.addressState)) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
         }
@@ -168,9 +168,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
-                if (_orderPreference.preference.shipment.isDisableChangeCourier && _orderPreference.preference.address.hasNoPinpoint) {
+                if (orderProfile.value.shipment.isDisableChangeCourier && orderProfile.value.address.hasNoPinpoint) {
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                } else if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0) {
+                } else if (orderProfile.value.isValidProfile) {
                     getRates()
                 }
             }
@@ -178,9 +178,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun reloadRates() {
-        if (_orderPreference.isValid && _orderPreference.preference.address.addressId > 0 && orderTotal.value.buttonState != OccButtonState.LOADING) {
-            _orderShipment = _orderShipment.copy(serviceName = null)
-            orderShipment.value = _orderShipment
+        if (orderProfile.value.isValidProfile && orderTotal.value.buttonState != OccButtonState.LOADING) {
+            orderShipment.value = orderShipment.value.copy(serviceName = null)
+//            orderShipment.value = _orderShipment
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             debounceJob?.cancel()
             updateCart()
@@ -196,10 +196,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private suspend fun getRatesSuspend() {
         // validate order error
-        val result = if (orderShop.errors.isNotEmpty()) {
-            logisticProcessor.generateOrderErrorResultRates(_orderPreference)
+        val result = if (orderShop.value.errors.isNotEmpty()) {
+            logisticProcessor.generateOrderErrorResultRates(orderProfile.value)
         } else {
-            logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, orderShop.shopShipment)
+            logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderShop.value.shopShipment)
         }
         if (result.clearOldPromoCode.isNotEmpty()) {
             clearOldLogisticPromo(result.clearOldPromoCode)
@@ -208,18 +208,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment)
             return
         }
-        _orderShipment = result.orderShipment
-        orderShipment.value = _orderShipment
+        orderShipment.value = result.orderShipment
+//        orderShipment.value = _orderShipment
         sendViewOspEe()
         sendPreselectedCourierOption(result.preselectedSpId)
         if (result.overweight != null) {
-            orderShop.overweight = result.overweight
-            orderShopData.value = orderShop
+//            orderShop.overweight = result.overweight
+            orderShop.value = orderShop.value.copy(overweight = result.overweight)
             orderTotal.value = OrderTotal()
             orderPromo.value = orderPromo.value.copy(isDisabled = true)
         } else {
-            orderShop.overweight = 0.0
-            orderShopData.value = orderShop
+//            orderShop.overweight = 0.0
+            orderShop.value = orderShop.value.copy(overweight = 0.0)
             orderPromo.value = orderPromo.value.copy(isDisabled = false)
             if (result.orderShipment.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
@@ -265,8 +265,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             if (isApplied && resultValidateUse != null) {
                 val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                 if (newShipment != null) {
-                    _orderShipment = newShipment
-                    orderShipment.value = _orderShipment
+                    orderShipment.value = newShipment
+//                    orderShipment.value = _orderShipment
                     validateUsePromoRevampUiModel = resultValidateUse
                     globalEvent.value = OccGlobalEvent.Normal
                     updatePromoState(resultValidateUse.promoUiModel)
@@ -274,12 +274,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     return@launch
                 }
             }
-            _orderShipment = if (_orderPreference.preference.shipment.isDisableChangeCourier) {
+            orderShipment.value = if (orderProfile.value.shipment.isDisableChangeCourier) {
                 shipping.copy(serviceErrorMessage = FAIL_GET_RATES_ERROR_MESSAGE, isApplyLogisticPromo = false, logisticPromoShipping = null)
             } else {
                 shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
             }
-            orderShipment.value = _orderShipment
+//            orderShipment.value = _orderShipment
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
                 globalEvent.value = OccGlobalEvent.Normal
@@ -288,48 +288,49 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             clearAllPromoFromLastRequest()
-            calculateTotal(forceButtonState = if (_orderShipment.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
+            calculateTotal(forceButtonState = if (orderShipment.value.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
             globalEvent.value = newGlobalEvent
             updateCart()
         }
     }
 
     fun clearBboIfExist() {
-        val logisticPromoViewModel = _orderShipment.logisticPromoViewModel
-        if (logisticPromoViewModel != null && _orderShipment.isApplyLogisticPromo && _orderShipment.logisticPromoShipping != null) {
+        val logisticPromoViewModel = orderShipment.value.logisticPromoViewModel
+        if (logisticPromoViewModel != null && orderShipment.value.isApplyLogisticPromo && orderShipment.value.logisticPromoShipping != null) {
             clearOldLogisticPromo(logisticPromoViewModel.promoCode)
         }
     }
 
     private fun resetBbo() {
-        _orderShipment = logisticProcessor.resetBbo(_orderShipment)
-        orderShipment.value = _orderShipment
+        orderShipment.value = logisticProcessor.resetBbo(orderShipment.value)
+//        orderShipment.value = _orderShipment
     }
 
     fun chooseCourier(chosenShippingCourierViewModel: ShippingCourierUiModel) {
-        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, _orderShipment)
+        val newOrderShipment = logisticProcessor.chooseCourier(chosenShippingCourierViewModel, orderShipment.value)
         newOrderShipment?.let {
             clearBboIfExist()
-            _orderShipment = it
-            orderShipment.value = _orderShipment
+            orderShipment.value = it
+//            orderShipment.value = _orderShipment
             validateUsePromo()
             updateCart()
         }
     }
 
     fun setInsuranceCheck(checked: Boolean) {
-        if (_orderShipment.getRealShipperProductId() > 0 && _orderShipment.isCheckInsurance != checked) {
-            _orderShipment = _orderShipment.copy(isCheckInsurance = checked)
+        if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.isCheckInsurance != checked) {
+            orderShipment.value.isCheckInsurance = checked
+//            _orderShipment = _orderShipment.copy(isCheckInsurance = checked)
             calculateTotal(forceButtonState = null)
         }
     }
 
     fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-        val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, _orderShipment)
+        val newOrderShipment = logisticProcessor.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint, orderShipment.value)
         newOrderShipment?.let {
             clearBboIfExist()
-            _orderShipment = it
-            orderShipment.value = _orderShipment
+            orderShipment.value = it
+//            orderShipment.value = _orderShipment
             sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
             if (it.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
@@ -341,8 +342,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun changePinpoint() {
-        if (_orderShipment.needPinpoint) {
-            _orderShipment = _orderShipment.copy(needPinpoint = false)
+        if (orderShipment.value.needPinpoint) {
+            orderShipment.value.needPinpoint = false
+//            _orderShipment = _orderShipment.copy(needPinpoint = false)
         }
     }
 
@@ -354,28 +356,27 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     return@launch
                 }
             }
-            val op = _orderPreference
-            if (!op.isValid) {
+            if (!orderProfile.value.isValidProfile) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            val result = logisticProcessor.savePinpoint(op.preference.address, longitude, latitude, userSession.userId, userSession.deviceId)
+            val result = logisticProcessor.savePinpoint(orderProfile.value.address, longitude, latitude, userSession.userId, userSession.deviceId)
             globalEvent.value = result
         }
     }
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
         launch(executorDispatchers.immediate) {
-            val shipping = _orderShipment
-            val shippingRecommendationData = _orderShipment.shippingRecommendationData
+            val shipping = orderShipment.value
+            val shippingRecommendationData = orderShipment.value.shippingRecommendationData
             if (shippingRecommendationData != null) {
                 globalEvent.value = OccGlobalEvent.Loading
                 val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
                     val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                     if (newShipment != null) {
-                        _orderShipment = newShipment
-                        orderShipment.value = _orderShipment
+                        orderShipment.value = newShipment
+//                        orderShipment.value = _orderShipment
                     }
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
@@ -430,30 +431,29 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updateCart() {
         launch(executorDispatchers.immediate) {
-            cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, _orderShipment, _orderPayment)
+            cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
         }
     }
 
     private fun updateCartWithCustomShipment(orderShipment: OrderShipment) {
         launch(executorDispatchers.immediate) {
-            cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, orderShipment, _orderPayment)
+            cartProcessor.updateCartIgnoreResult(orderCart, orderProfile.value, orderShipment, orderPayment.value)
         }
     }
 
     private fun generateUpdateCartParam(): UpdateCartOccRequest? {
-        return cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
+        return cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
     }
 
     private fun shouldSkipShippingValidationWhenUpdateCart(): Boolean {
-        return cartProcessor.shouldSkipShippingValidationWhenUpdateCart(_orderShipment)
+        return cartProcessor.shouldSkipShippingValidationWhenUpdateCart(orderShipment.value)
     }
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
             globalEvent.value = OccGlobalEvent.Loading
-            val shop = orderShop
-            val pref = _orderPreference
-            if (pref.isValid && _orderShipment.getRealShipperProductId() > 0) {
+            val shop = orderShop.value
+            if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
                 val param = generateUpdateCartParam()
                 if (param != null) {
                     if (validateSelectedTerm()) {
@@ -461,7 +461,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         finalUpdateJob = launch(executorDispatchers.immediate) {
                             val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
                             if (isSuccess) {
-                                finalValidateUse(orderCart.products, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                                finalValidateUse(orderCart.products, shop, orderProfile.value, onSuccessCheckout, skipCheckIneligiblePromo)
                                 return@launch
                             }
                             globalEvent.value = errorGlobalEvent
@@ -474,7 +474,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun finalValidateUse(products: List<OrderProduct>, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
+    private fun finalValidateUse(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         val validateUsePromoRequest = generateValidateUsePromoRequest()
         if (!skipCheckIneligiblePromo && promoProcessor.hasPromo(validateUsePromoRequest)) {
             launch(executorDispatchers.immediate) {
@@ -483,20 +483,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
                     if (isSuccess) {
-                        doCheckout(products, shop, pref, onSuccessCheckout)
+                        doCheckout(products, shop, profile, onSuccessCheckout)
                         return@launch
                     }
                 }
                 globalEvent.value = newGlobalEvent
             }
         } else {
-            doCheckout(products, shop, pref, onSuccessCheckout)
+            doCheckout(products, shop, profile, onSuccessCheckout)
         }
     }
 
-    private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
+    private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, pref, _orderShipment, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile, orderShipment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {
@@ -509,7 +509,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         globalEvent.value = OccGlobalEvent.Loading
         launch(executorDispatchers.immediate) {
             val (isSuccess, newGlobalEvent) = promoProcessor.cancelIneligiblePromoCheckout(ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
-            if (isSuccess && _orderPreference.isValid) {
+            if (isSuccess && orderProfile.value.isValidProfile) {
                 finalUpdate(onSuccessCheckout, true)
                 return@launch
             }
@@ -534,23 +534,23 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun generatePromoRequest(): PromoRequest {
-        return promoProcessor.generatePromoRequest(orderCart, _orderShipment, lastValidateUsePromoRequest, orderPromo.value)
+        return promoProcessor.generatePromoRequest(orderCart, orderShipment.value, lastValidateUsePromoRequest, orderPromo.value)
     }
 
     fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true): ValidateUsePromoRequest {
-        val validateUsePromoRequest = promoProcessor.generateValidateUsePromoRequest(shouldAddLogisticPromo, lastValidateUsePromoRequest, orderCart, _orderShipment, orderPromo.value)
+        val validateUsePromoRequest = promoProcessor.generateValidateUsePromoRequest(shouldAddLogisticPromo, lastValidateUsePromoRequest, orderCart, orderShipment.value, orderPromo.value)
         lastValidateUsePromoRequest = validateUsePromoRequest
         return validateUsePromoRequest
     }
 
     private fun generateValidateUsePromoRequestWithBbo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String? = null): ValidateUsePromoRequest {
-        val validateUsePromoRequest = promoProcessor.generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode, lastValidateUsePromoRequest, orderCart, _orderShipment, orderPromo.value)
+        val validateUsePromoRequest = promoProcessor.generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode, lastValidateUsePromoRequest, orderCart, orderShipment.value, orderPromo.value)
         lastValidateUsePromoRequest = validateUsePromoRequest
         return validateUsePromoRequest
     }
 
     fun generateBboPromoCodes(): ArrayList<String> {
-        return promoProcessor.generateBboPromoCodes(_orderShipment)
+        return promoProcessor.generateBboPromoCodes(orderShipment.value)
     }
 
     fun validateUsePromo() {
@@ -595,18 +595,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), isDisabled = false, state = OccButtonState.NORMAL)
-        calculateTotal(forceButtonState = if (_orderShipment.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
+        calculateTotal(forceButtonState = if (orderShipment.value.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
     }
 
     fun calculateTotal(forceButtonState: OccButtonState? = null) {
         calculateJob?.cancel()
         calculateJob = launch(executorDispatchers.immediate) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference,
-                    _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value,
+            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, orderProfile.value,
+                    orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value,
                     forceButtonState, orderPromo.value)
-            _orderPayment = newOrderPayment
-            orderPayment.value = _orderPayment
+            orderPayment.value = newOrderPayment
+//            orderPayment.value = _orderPayment
             orderTotal.value = newOrderTotal
         }
     }
@@ -614,7 +614,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
         launch(executorDispatchers.immediate) {
             var param = generateUpdateCartParam()
-            val creditCard = _orderPayment.creditCard
+            val creditCard = orderPayment.value.creditCard
             if (param == null) {
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
@@ -641,7 +641,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     it.isSelected = it.term == selectedInstallmentTerm.term
                     it.isError = false
                 }
-                _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
+                orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
                 calculateTotal(forceButtonState = OccButtonState.NORMAL)
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
@@ -675,15 +675,15 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun validateSelectedTerm(): Boolean {
-        val creditCard = _orderPayment.creditCard
+        val creditCard = orderPayment.value.creditCard
         val selectedTerm = creditCard.selectedTerm
         val hasEnableTerm = creditCard.availableTerms.indexOfFirst { it.isEnable } > -1
         if (selectedTerm != null && !selectedTerm.isEnable && hasEnableTerm) {
             val availableTerms = creditCard.availableTerms
             availableTerms.forEach { it.isError = true }
             selectedTerm.isError = true
-            _orderPayment = _orderPayment.copy(creditCard = creditCard.copy(selectedTerm = selectedTerm, availableTerms = availableTerms))
-            orderPayment.value = _orderPayment
+            orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedTerm, availableTerms = availableTerms))
+//            orderPayment.value = _orderPayment
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             globalEvent.value = OccGlobalEvent.Error(errorMessage = INSTALLMENT_INVALID_MIN_AMOUNT)
             return false
@@ -700,7 +700,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
-            orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, _orderPreference.preference.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
+            orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, orderProfile.value.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
             for (product in orderCart.products) {
                 if (product.purchaseProtectionPlanData.isProtectionAvailable) {
                     orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, "", product.purchaseProtectionPlanData.protectionTitle)
@@ -730,21 +730,21 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 setPromoDetails("")
                 setProductType("")
                 setCartId(orderProduct.cartId)
-                setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
-                setSpid(_orderShipment.getRealShipperProductId().toString())
+                setBuyerAddressId(orderProfile.value.address.addressId.toString())
+                setSpid(orderShipment.value.getRealShipperProductId().toString())
                 setCodFlag(false)
                 setCornerFlag(false)
-                setIsFullfilment(orderShop.isFulfillment)
-                setShopIdDimension(orderShop.shopId.toString())
-                setShopNameDimension(orderShop.shopName)
-                setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)
+                setIsFullfilment(orderShop.value.isFulfillment)
+                setShopIdDimension(orderShop.value.shopId.toString())
+                setShopNameDimension(orderShop.value.shopName)
+                setShopTypeDimension(orderShop.value.isOfficial, orderShop.value.isGold)
                 setCategoryId(orderProduct.categoryId)
-                if (_orderShipment.getRealShipperProductId() > 0) {
-                    setShippingPrice(_orderShipment.getRealShippingPrice().toString())
+                if (orderShipment.value.getRealShipperProductId() > 0) {
+                    setShippingPrice(orderShipment.value.getRealShippingPrice().toString())
                 } else {
                     setShippingPrice("")
                 }
-                setShippingDuration(_orderShipment.serviceDuration)
+                setShippingDuration(orderShipment.value.serviceDuration)
                 setCampaignId(orderProduct.campaignId)
                 saveData()
             }
@@ -752,18 +752,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun consumeForceShowOnboarding() {
-        val onboarding = _orderPreference.onboarding
+        val onboarding = orderPreferenceData.onboarding
         if (onboarding.isForceShowCoachMark) {
-            _orderPreference = _orderPreference.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
+            orderPreferenceData = orderPreferenceData.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
             globalEvent.value = OccGlobalEvent.Normal
         }
     }
 
     private fun configureForceShowOnboarding() {
-        val onboarding = _orderPreference.onboarding
+        val onboarding = orderPreferenceData.onboarding
         if (onboarding.isForceShowCoachMark) {
-            val preference = _orderPreference.preference
-            if (preference.address.addressId > 0 && _orderShipment.isValid()) {
+            if (orderProfile.value.isValidProfile && orderShipment.value.isValid()) {
                 forceShowOnboarding(onboarding)
             }
         }

@@ -38,16 +38,16 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: CoroutineDispatchers) {
 
-    private fun generateRatesParam(orderCart: OrderCart, orderPreference: OrderPreference, listShopShipment: List<ShopShipment>): Pair<RatesParam?, Double> {
-        val (shipping, overweight) = generateShippingParam(orderCart, orderPreference)
+    private fun generateRatesParam(orderCart: OrderCart, orderProfile: OrderProfile, listShopShipment: List<ShopShipment>): Pair<RatesParam?, Double> {
+        val (shipping, overweight) = generateShippingParam(orderCart, orderProfile)
         if (shipping == null) return null to overweight
         return RatesParam.Builder(listShopShipment, shipping).build().apply {
             occ = "1"
         } to 0.0
     }
 
-    private fun generateShippingParam(orderCart: OrderCart, orderPreference: OrderPreference): Pair<ShippingParam?, Double> {
-        val address = orderPreference.preference.address
+    private fun generateShippingParam(orderCart: OrderCart, orderProfile: OrderProfile): Pair<ShippingParam?, Double> {
+        val address = orderProfile.address
         val orderShop = orderCart.shop
         val orderProducts = orderCart.products
         val orderKero = orderCart.kero
@@ -136,17 +136,17 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return data
     }
 
-    suspend fun getRates(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>): ResultRates {
+    suspend fun getRates(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>): ResultRates {
         OccIdlingResource.increment()
         val result: ResultRates = withContext(executorDispatchers.io) {
             try {
-                val (param, overweight) = generateRatesParam(orderCart, orderPreference, listShopShipment)
+                val (param, overweight) = generateRatesParam(orderCart, orderProfile, listShopShipment)
                 if (param == null) {
                     // overweight
                     return@withContext ResultRates(
                             orderShipment = OrderShipment(
-                                    serviceName = orderPreference.preference.shipment.serviceName,
-                                    serviceDuration = orderPreference.preference.shipment.serviceDuration,
+                                    serviceName = orderProfile.shipment.serviceName,
+                                    serviceDuration = orderProfile.shipment.serviceDuration,
                                     serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
                                     shippingRecommendationData = null
                             ),
@@ -156,7 +156,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 val shippingRecommendationData = ratesUseCase.execute(param)
                         .map { mapShippingRecommendationData(it, orderShipment, listShopShipment) }
                         .toBlocking().single()
-                val profileShipment = orderPreference.preference.shipment
+                val profileShipment = orderProfile.shipment
                 var shipping = orderShipment
                 val currPromo = if (shipping.isApplyLogisticPromo) shipping.logisticPromoViewModel?.promoCode
                         ?: "" else ""
@@ -220,8 +220,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             } catch (t: Throwable) {
                 return@withContext ResultRates(
                         OrderShipment(
-                                serviceName = orderPreference.preference.shipment.serviceName,
-                                serviceDuration = orderPreference.preference.shipment.serviceDuration,
+                                serviceName = orderProfile.shipment.serviceName,
+                                serviceDuration = orderProfile.shipment.serviceDuration,
                                 serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
                                 shippingRecommendationData = null
                         ),
@@ -443,11 +443,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return if (eta != null && eta.errorCode == 0) eta.textEtaSummarize else null
     }
 
-    fun generateOrderErrorResultRates(orderPreference: OrderPreference): ResultRates {
+    fun generateOrderErrorResultRates(orderProfile: OrderProfile): ResultRates {
         return ResultRates(
                 orderShipment = OrderShipment(
-                        serviceName = orderPreference.preference.shipment.serviceName,
-                        serviceDuration = orderPreference.preference.shipment.serviceDuration,
+                        serviceName = orderProfile.shipment.serviceName,
+                        serviceDuration = orderProfile.shipment.serviceDuration,
                         serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
                         shippingRecommendationData = null
                 )

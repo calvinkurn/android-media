@@ -7,6 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerD
 data class OrderPreference(
         val ticker: TickerData? = null,
         val onboarding: OccMainOnboarding = OccMainOnboarding(),
-        val preference: OrderProfile = OrderProfile(),
-        val isValid: Boolean = false,
+//        val preference: OrderProfile = OrderProfile(),
+        val hasValidProfile: Boolean = false
+//        val isValid: Boolean = false,
 ): OrderItem

@@ -14,7 +14,7 @@ data class OrderShipment(
         val shippingEta: String? = null,
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
-        val needPinpoint: Boolean = false,
+        var needPinpoint: Boolean = false,
         val shipperName: String? = null,
         val shipperId: Int? = null,
         val shipperProductId: Int? = null,
@@ -28,7 +28,7 @@ data class OrderShipment(
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insuranceData: InsuranceData? = null,
-        val isCheckInsurance: Boolean = false
+        var isCheckInsurance: Boolean = false
 ) {
     fun isValid(): Boolean {
         return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()

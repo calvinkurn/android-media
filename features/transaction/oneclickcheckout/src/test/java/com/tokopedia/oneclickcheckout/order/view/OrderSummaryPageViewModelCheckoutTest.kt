@@ -30,8 +30,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -54,8 +54,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With Transaction Id`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -78,8 +78,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         val paymentType = "paymentType"
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(payment = OrderProfilePayment(gatewayName = paymentType)), isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment(gatewayName = paymentType, gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -101,8 +101,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With Transaction Id And Default Payment Type`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -124,8 +124,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With Transaction Id As Last Query`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -147,8 +147,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With Invalid Transaction Id Value`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -169,8 +169,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With Invalid Transaction Id Query`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -191,8 +191,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success Using Insurance`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment.copy(isCheckInsurance = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isCheckInsurance = true)
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -213,8 +213,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success Mode 0`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.PAY)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -237,8 +237,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success Mode 1`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL, buttonType = OccButtonType.CHOOSE_PAYMENT)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -261,8 +261,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success Using Promos`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -292,7 +292,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout On Invalid Shipping State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -307,8 +307,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout On Invalid Preference State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(payment = OrderProfilePayment())
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -323,8 +323,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout On Invalid Address Id`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = OrderProfile(), isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = OrderProfile()
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -345,9 +345,9 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 "express_checkout_param" : {}
             }
         """.trimIndent()))
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(selectedTerm = OrderPaymentInstallmentTerm()))
+        orderSummaryPageViewModel.orderProfile.value = preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(selectedTerm = OrderPaymentInstallmentTerm()))
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -362,7 +362,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout On Invalid Button State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.LOADING)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -377,8 +377,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Error Prompt`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -398,8 +398,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -419,8 +419,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Price Change Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -439,8 +439,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Unknown Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -460,8 +460,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Unknown Error Default Message`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -480,8 +480,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Status Error`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -501,8 +501,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Status Error Default Message`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -521,8 +521,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Failed`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
@@ -542,13 +542,11 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout With Some Disable Installment`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
-                payment = OrderProfilePayment(
-                        metadata = """{"express_checkout_param":{"installment_term":"3"}}""")),
-                isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+                payment = OrderProfilePayment(metadata = """{"express_checkout_param":{"installment_term":"3"}}""", gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
                         availableTerms = listOf(
@@ -573,13 +571,11 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout With All Disable Installment`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
-                payment = OrderProfilePayment(
-                        metadata = """{"express_checkout_param":{"installment_term":"3"}}""")),
-                isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+                payment = OrderProfilePayment(metadata = """{"express_checkout_param":{"installment_term":"3"}}""", gatewayCode = "payment"))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel._orderPayment = OrderPayment(isEnable = true,
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true,
                 creditCard = OrderPaymentCreditCard(
                         numberOfCards = OrderPaymentCreditCardsNumber(1, 0, 1),
                         availableTerms = listOf(
@@ -608,8 +604,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With PPP Ticked`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(
                 purchaseProtectionPlanData = PurchaseProtectionPlanData(
                         isProtectionAvailable = true,
@@ -635,8 +631,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout Success With PPP Unticked`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
-        orderSummaryPageViewModel._orderShipment = helper.orderShipment
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(
                 purchaseProtectionPlanData = PurchaseProtectionPlanData(
                         isProtectionAvailable = true,

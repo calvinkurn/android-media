@@ -113,7 +113,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
     }
 
-    private var orderPreference: OrderPreference? = null
+    private var orderProfile: OrderProfile? = null
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
         try {
@@ -315,7 +315,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun observeOrderShop() {
-        viewModel.orderShopData.observe(viewLifecycleOwner) {
+        viewModel.orderShop.observe(viewLifecycleOwner) {
             adapter.shop = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
@@ -366,7 +366,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         viewModel.orderPreference.observe(viewLifecycleOwner) {
             when (it) {
                 is OccState.FirstLoad -> {
-                    orderPreference = it.data
                     binding.loaderContent.animateGone()
                     binding.globalError.animateGone()
                     view?.also { _ ->
@@ -379,8 +378,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         } else {
                             adapter.notifyItemRangeChanged(0, 2)
                         }
-                        if (it.data.preference.address.addressId > 0 &&
-                                it.data.preference.payment.gatewayCode.isNotEmpty()) {
+                        if (it.data.hasValidProfile) {
                             binding.rvOrderSummaryPage.show()
                             binding.layoutNoAddress.root.animateGone()
                         } else {
@@ -417,8 +415,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 adapter.notifyItemChanged(adapter.preferenceIndex)
                 adapter.notifyItemChanged(adapter.insuranceIndex)
             }
-            if (orderPreference?.preference?.shipment?.isDisableChangeCourier == false && it?.needPinpoint == true && orderPreference?.preference?.address != null) {
-                goToPinpoint(orderPreference?.preference?.address)
+            if (orderProfile?.shipment?.isDisableChangeCourier == false && it?.needPinpoint == true && orderProfile?.address != null) {
+                goToPinpoint(orderProfile?.address)
             }
         }
     }

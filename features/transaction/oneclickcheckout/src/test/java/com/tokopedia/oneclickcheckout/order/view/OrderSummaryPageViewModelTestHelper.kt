@@ -80,7 +80,9 @@ class OrderSummaryPageViewModelTestHelper {
 
     val shipment = OrderProfileShipment(serviceId = 1)
 
-    val preference = OrderProfile(address = address, shipment = shipment)
+    val payment = OrderProfilePayment(gatewayCode = "payment")
+
+    val preference = OrderProfile(address = address, shipment = shipment, payment = payment)
 
     val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
             serviceName = firstDuration.serviceData.serviceName,

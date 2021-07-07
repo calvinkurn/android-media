@@ -30,14 +30,14 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return "$MAXIMUM_AMOUNT_ERROR_MESSAGE $gatewayName."
     }
 
-    suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment,
+    suspend fun calculateTotal(orderCart: OrderCart, orderProfile: OrderProfile, shipping: OrderShipment,
                                validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
                                orderTotal: OrderTotal, forceButtonState: OccButtonState?, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
             val hasInvalidQuantity = orderCart.products.find { !it.isError && it.quantity.orderQuantity <= 0 } != null
             var payment = _orderPayment
-            if (hasInvalidQuantity || !_orderPreference.isValid) {
+            if (hasInvalidQuantity || !orderProfile.isValidProfile) {
                 return@withContext payment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
             }
             if (!shouldButtonStateEnable(shipping, orderCart)) {
