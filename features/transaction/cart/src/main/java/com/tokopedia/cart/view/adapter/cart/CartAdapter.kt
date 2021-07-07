@@ -12,9 +12,11 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
 import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductListHolderData
 import com.tokopedia.cart.view.uimodel.now.CartShopSimpleHolderData
 import com.tokopedia.cart.view.viewholder.*
+import com.tokopedia.cart.view.viewholder.now.CartAccordionViewHolder
 import com.tokopedia.cart.view.viewholder.now.CartCollapsedProductListViewHolder
 import com.tokopedia.cart.view.viewholder.now.CartShopSimpleViewHolder
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
@@ -125,7 +127,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
             }
 
-            cartItemDataList.addAll(collapsedCartItemData)
+            cartItemDataList.addAll(collapsedUnavailableCartItemData)
 
             return cartItemDataList
         }
@@ -165,12 +167,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
             }
 
-            cartItemDataList.addAll(collapsedCartItemData)
+            cartItemDataList.addAll(collapsedUnavailableCartItemData)
 
             return cartItemDataList
         }
 
-    val collapsedCartItemData: List<CartItemData>
+    val collapsedUnavailableCartItemData: List<CartItemData>
         get() {
             val cartItemDataList = ArrayList<CartItemData>()
             loop@ for (data in tmpCollapsedUnavailableItem) {
@@ -251,6 +253,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
             is CartShopSimpleHolderData -> CartShopSimpleViewHolder.LAYOUT
             is CartCollapsedProductListHolderData -> CartCollapsedProductListViewHolder.LAYOUT
+            is CartAccordionHolderData -> CartAccordionViewHolder.LAYOUT
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
@@ -292,6 +295,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             CartCollapsedProductListViewHolder.LAYOUT -> {
                 val binding = ItemCartCollapsedListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartCollapsedProductListViewHolder(binding)
+            }
+            CartAccordionViewHolder.LAYOUT -> {
+                val binding = ItemCartAccordionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return CartAccordionViewHolder(binding)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val binding = HolderItemCartTickerErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -390,6 +397,10 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             CartCollapsedProductListViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartCollapsedProductListHolderData
                 (holder as CartCollapsedProductListViewHolder).bind(data)
+            }
+            CartAccordionViewHolder.LAYOUT -> {
+                val data = cartDataList[position] as CartAccordionHolderData
+                (holder as CartAccordionViewHolder).bind(data)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
@@ -1081,7 +1092,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 }
             }
 
-            errorItemCount += collapsedCartItemData.size
+            errorItemCount += collapsedUnavailableCartItemData.size
 
             if (errorItemCount > 0) {
                 // Goes here if unavailable item still exist

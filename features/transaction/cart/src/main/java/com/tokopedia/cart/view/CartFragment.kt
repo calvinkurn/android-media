@@ -69,8 +69,8 @@ import com.tokopedia.cart.view.compoundview.CartToolbarView
 import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
 import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.di.DaggerCartComponent
-import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.CartViewHolderDataMapper
+import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
@@ -211,7 +211,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isKeyboardOpened = false
     private var initialPromoButtonPosition = 0f
     private var recommendationPage = 1
-    private var accordionCollapseState = true
+    private var unavailableItemAccordionCollapseState = true
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
     private var isNavToolbar = false
@@ -1323,7 +1323,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         // If unavailable item > 1 and state is collapsed, then expand first
         var forceExpand = false
-        if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
+        if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
             collapseOrExpandDisabledItem()
             forceExpand = true
         }
@@ -2493,6 +2493,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addItem(shopSimple)
         val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
         cartAdapter.addItem(collapsedProductList)
+        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(true, shopGroupAvailableData)
+        cartAdapter.addItem(collapsedProductAccordion)
     }
 
     private fun renderCartUnavailableItems(cartListData: CartListData) {
@@ -2529,7 +2531,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 cartAdapter.addItem(accordionHolderData)
                 collapseOrExpandDisabledItem(accordionHolderData)
 
-                if (!accordionCollapseState) {
+                if (!unavailableItemAccordionCollapseState) {
                     accordionHolderData.isCollapsed = false
                     collapseOrExpandDisabledItem(accordionHolderData)
                 }
@@ -3338,7 +3340,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             // If unavailable item > 1 and state is collapsed, then expand first
             var forceExpand = false
-            if (cartAdapter.allDisabledCartItemData.size > 1 && accordionCollapseState) {
+            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
                 collapseOrExpandDisabledItem()
                 forceExpand = true
             }
@@ -3498,17 +3500,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 
-    override fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String) {
+    override fun onUnavailableItemAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String) {
         cartPageAnalytics.eventClickAccordionButtonOnUnavailableProduct(userSession.userId, buttonWording)
         data.isCollapsed = !data.isCollapsed
-        accordionCollapseState = data.isCollapsed
+        unavailableItemAccordionCollapseState = data.isCollapsed
         collapseOrExpandDisabledItem(data)
     }
 
     private fun collapseOrExpandDisabledItem() {
         cartAdapter.getDisabledAccordionHolderData()?.let {
             it.isCollapsed = !it.isCollapsed
-            accordionCollapseState = it.isCollapsed
+            unavailableItemAccordionCollapseState = it.isCollapsed
             collapseOrExpandDisabledItem(it)
         }
     }

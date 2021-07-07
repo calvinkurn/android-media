@@ -5,6 +5,7 @@ import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupWithErrorData
 import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
 import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.now.CartAccordionHolderData
 import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductHolderData
 import com.tokopedia.cart.view.uimodel.now.CartCollapsedProductListHolderData
 import com.tokopedia.cart.view.uimodel.now.CartShopSimpleHolderData
@@ -35,6 +36,24 @@ class CartViewHolderDataMapper @Inject constructor() {
         }
         return CartCollapsedProductListHolderData().apply {
             cartCollapsedProductHolderDataList = tmpCartCollapsedProductHolderDataList
+        }
+    }
+
+    fun mapAccordionHolderData(isCollapsed: Boolean, availableData: ShopGroupAvailableData): CartAccordionHolderData {
+        var showMoreWording = ""
+        val showLessWording = "Tampilkan Lebih Sedikit"
+        val itemCount = availableData.cartItemDataList.size
+        showMoreWording = if (itemCount > 10) {
+            val exceedItemCount = itemCount - 10
+            "+$exceedItemCount lainnya"
+        } else {
+            "Lihat selengkapnya"
+        }
+
+        return CartAccordionHolderData().apply {
+            this.showMoreWording = showMoreWording
+            this.showLessWording = showLessWording
+            this.isCollapsed = isCollapsed
         }
     }
 

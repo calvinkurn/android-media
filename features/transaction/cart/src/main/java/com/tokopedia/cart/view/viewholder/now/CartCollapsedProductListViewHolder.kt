@@ -23,12 +23,7 @@ class CartCollapsedProductListViewHolder(val viewBinding: ItemCartCollapsedListB
     }
 
     fun bind(cartCollapsedProductListHolderData: CartCollapsedProductListHolderData) {
-        renderCollapsedItems(cartCollapsedProductListHolderData)
-        renderAccordion(cartCollapsedProductListHolderData)
-    }
-
-    private fun renderCollapsedItems(cartCollapsedProductListHolderData: CartCollapsedProductListHolderData) {
-        val maxIndex = min(MAXIMUM_ITEM - 1, cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.size - 1)
+        val maxIndex = min(MAXIMUM_ITEM, cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.size)
         cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         viewBinding.recyclerView.layoutManager = layoutManager
@@ -38,17 +33,6 @@ class CartCollapsedProductListViewHolder(val viewBinding: ItemCartCollapsedListB
             viewBinding.recyclerView.removeItemDecorationAt(0)
         }
         viewBinding.recyclerView.addItemDecoration(cartHorizontalItemDecoration)
-    }
-
-    private fun renderAccordion(cartCollapsedProductListHolderData: CartCollapsedProductListHolderData) {
-        if (cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.size > MAXIMUM_ITEM) {
-            val exceedItemCount = cartCollapsedProductListHolderData.cartCollapsedProductHolderDataList.size - MAXIMUM_ITEM
-            val accordionText = "+$exceedItemCount lainnya"
-            viewBinding.textAccordion.text = accordionText
-        } else {
-            val accordionText = "Lihat selengkapnya"
-            viewBinding.textAccordion.text = accordionText
-        }
     }
 
 }
