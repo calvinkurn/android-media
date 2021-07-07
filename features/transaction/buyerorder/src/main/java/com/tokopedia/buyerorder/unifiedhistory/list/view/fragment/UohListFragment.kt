@@ -308,11 +308,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (result == 1) {
                     if (resultMsg != null) {
                         showToaster(resultMsg, Toaster.TYPE_NORMAL)
+                        initialLoad()
                     }
                 }
-            }
-            if (resultCode == Activity.RESULT_OK) {
-                initialLoad()
             }
         }
     }
