@@ -38,8 +38,8 @@
                 android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:layout_marginRight="@dimen/spacing_lvl2"
                 app:icon_name="CALENDAR"
-                app:icon_color_light_enable="@color/Neutral_N400"
-                app:icon_color_night_enable="@color/Neutral_N400"
+                app:icon_color_light_enable="@color/hotel_dms_icon_color"
+                app:icon_color_night_enable="@color/hotel_dms_icon_color"
                 android:contentDescription="@string/hotel_sticky_calendar_content_desc"/>
 
             <com.tokopedia.unifyprinciples.Typography

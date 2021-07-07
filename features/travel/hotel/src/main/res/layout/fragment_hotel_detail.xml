@@ -220,8 +220,8 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:icon_name="SHARE_MOBILE"
-                            app:icon_color_light_enable="@color/Neutral_N400"
-                            app:icon_color_night_enable="@color/Neutral_N400"/>
+                            app:icon_color_light_enable="@color/hotel_dms_icon_color"
+                            app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
