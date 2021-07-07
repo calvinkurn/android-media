@@ -28,13 +28,9 @@ import javax.inject.Inject
  */
 class PlayInteractionViewModel @Inject constructor(
         private val postLikeUseCase: PostLikeUseCase,
-        private val postFollowPartnerUseCase: PostFollowPartnerUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers,
 ) : ViewModel() {
-
-    private val _observableFollowPartner = MutableLiveData<Result<Boolean>>()
-    val observableFollowPartner: LiveData<Result<Boolean>> = _observableFollowPartner
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
@@ -58,18 +54,5 @@ class PlayInteractionViewModel @Inject constructor(
                 postLikeUseCase.executeOnBackground()
             }
         }) {}
-    }
-
-    fun doFollow(shopId: Long, action: PartnerFollowAction) {
-        viewModelScope.launchCatchError(block = {
-            val response = withContext(dispatchers.io) {
-                postFollowPartnerUseCase.params = PostFollowPartnerUseCase.createParam(shopId.toString(), action)
-                postFollowPartnerUseCase.executeOnBackground()
-            }
-
-            _observableFollowPartner.value = Success(response)
-        }) {
-            if (it !is CancellationException) _observableFollowPartner.value = Fail(it)
-        }
     }
 }

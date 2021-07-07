@@ -2,7 +2,6 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
-import com.tokopedia.play.data.dto.interactive.PlayInteractiveModel
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
@@ -10,7 +9,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
@@ -37,8 +36,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
-                    interactiveInfo = mapInteractiveInfo(),
-                    lastUiState = mapLastUiState(it.partner)
+                    leaderboardInfo = mapLeaderboardInfo()
             )
         }
     }
@@ -51,10 +49,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             backgroundUrl = configResponse.roomBackground.imageUrl
     )
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerBasicInfoUiModel(
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
             id = partnerResponse.id.toLongOrZero(),
             name = htmlTextTransformer.transform(partnerResponse.name),
             type = PartnerType.getTypeByValue(partnerResponse.type),
+            status = PlayPartnerFollowStatus.Unknown,
     )
 
     private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
@@ -198,13 +197,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayStatusType.Active
     }
 
-    private fun mapInteractiveInfo() = PlayInteractiveModel.Incomplete(
-            hasInteractive = true
-    )
-
-    private fun mapLastUiState(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayViewerNewUiState(
-            partnerName = partnerResponse.name
-    )
+    private fun mapLeaderboardInfo() = PlayLeaderboardUiState()
 
     companion object {
         private const val MS_PER_SECOND = 1000

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
@@ -23,6 +24,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
@@ -46,6 +48,7 @@ import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewCo
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -506,8 +509,10 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private fun observeUiState() {
-        playViewModel.uiState.observe(viewLifecycleOwner) { state ->
-            renderLeaderboardView(state.winnerLeaderboard)
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.uiState.withCache().collectLatest { (_, state) ->
+                renderLeaderboardView(state.leaderboard.winnerList)
+            }
         }
     }
 

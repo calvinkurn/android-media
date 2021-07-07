@@ -6,7 +6,7 @@ import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfo
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,7 +20,7 @@ class PlayViewerPartnerRepositoryImpl @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
 ) : PlayViewerPartnerRepository {
 
-    override suspend fun getPartnerFollowInfo(partnerId: Long): PlayPartnerFollowInfoUiModel = withContext(dispatchers.io) {
+    override suspend fun getPartnerFollowInfo(partnerId: Long): PlayPartnerFollowInfo = withContext(dispatchers.io) {
         val partnerInfo = getPartnerInfoUseCase.apply {
             params = GetPartnerInfoUseCase.createParam(partnerId)
         }.executeOnBackground()

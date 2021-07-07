@@ -23,9 +23,6 @@ class PlayViewModelRobotResult(
     val totalViewResult: PlayTotalViewResult
         get() = PlayTotalViewResult(viewModel.observableTotalViews.getOrAwaitValue())
 
-    val partnerInfoResult: PlayPartnerInfoResult
-        get() = PlayPartnerInfoResult(viewModel.observablePartnerInfo.getOrAwaitValue())
-
     val cartInfoResult: PlayCartInfoResult
         get() = PlayCartInfoResult(viewModel.observableCartInfo.getOrAwaitValue())
 

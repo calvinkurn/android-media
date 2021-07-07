@@ -12,10 +12,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.state.PlayFollowStatusUiState
+import com.tokopedia.play.view.uimodel.recom.PlayCartInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.count
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -73,8 +73,8 @@ class ToolbarViewComponent(
     }
 
 
-    fun setFollowStatus(followStatus: PlayFollowStatusUiState) {
-        if (followStatus is PlayFollowStatusUiState.Followable) {
+    fun setFollowStatus(followStatus: PlayPartnerFollowStatus) {
+        if (followStatus is PlayPartnerFollowStatus.Followable) {
             tvFollow.text = getString(
                     if (followStatus.isFollowing) R.string.play_following
                     else R.string.play_follow

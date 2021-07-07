@@ -6,19 +6,11 @@ import kotlin.contracts.contract
 /**
  * Created by jegul on 28/06/21
  */
-sealed class PlayInteractiveModel {
-
-    abstract val hasInteractive: Boolean
-
-    data class Incomplete(override val hasInteractive: Boolean) : PlayInteractiveModel()
-    data class Complete(override val hasInteractive: Boolean, ) : PlayInteractiveModel()
-}
-
 data class PlayCurrentInteractiveModel(
-        val id: Long,
-        val type: InteractiveType,
-        val title: String,
-        val timeStatus: PlayInteractiveTimeStatus
+        val id: Long = 0L,
+        val type: InteractiveType = InteractiveType.Unknown,
+        val title: String = "",
+        val timeStatus: PlayInteractiveTimeStatus = PlayInteractiveTimeStatus.Unknown,
 )
 
 enum class InteractiveType(val type: Int) {
