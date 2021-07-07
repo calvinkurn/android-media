@@ -33,6 +33,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
@@ -297,7 +298,8 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun onSearchBarClicked() {
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery())
+        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery(), pageSource)
         moveToAutoCompleteActivity()
     }
 

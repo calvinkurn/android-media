@@ -295,7 +295,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        var imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        var imagePickerResult = arrayListOf("pict1.0","pict2","pict3")
         var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
         var editted = arrayListOf(false,false,true)
 

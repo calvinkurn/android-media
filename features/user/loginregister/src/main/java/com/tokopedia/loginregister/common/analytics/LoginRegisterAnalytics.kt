@@ -942,6 +942,26 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
+    fun eventSuccessLoginFromChooseAccount(actionLoginMethod: String, isFromRegister: Boolean) {
+        if (isFromRegister) {
+            if (actionLoginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) {
+                TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                        Event.CLICK_REGISTER,
+                        Category.REGISTER_PAGE,
+                        Action.CLICK_ON_BUTTON_FACEBOOK,
+                        Label.REGISTER_SUCCESS))
+            }
+        } else {
+            // old tracker from choose account flow
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    Category.LOGIN_WITH_PHONE,
+                    Action.LOGIN_SUCCESS,
+                    Label.TOKOCASH
+            ))
+        }
+    }
+
     /* Tracker no.9 */
     fun trackClickBiometricLoginBtn(){
         val data = TrackAppUtils.gtmData(
@@ -1057,5 +1077,24 @@ class LoginRegisterAnalytics @Inject constructor(
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
+
+        object Event {
+            const val CLICK_REGISTER = "clickRegister"
+        }
+
+        object Category {
+            const val LOGIN_WITH_PHONE = "login with phone"
+            const val REGISTER_PAGE = "register page"
+        }
+
+        object Action {
+            const val LOGIN_SUCCESS = "login success"
+            const val CLICK_ON_BUTTON_FACEBOOK = "click on button facebook"
+        }
+
+        object Label {
+            const val TOKOCASH = "Tokocash"
+            const val REGISTER_SUCCESS = "register success"
+        }
     }
 }

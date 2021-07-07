@@ -7,14 +7,13 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.tokopedia.imagepicker.R
-import com.tokopedia.imagepicker.editor.widget.ItemSelection
+import com.tokopedia.imagepicker.editor.data.ItemSelection
 import com.tokopedia.imagepicker.videorecorder.utils.hide
 import com.tokopedia.imagepicker.videorecorder.utils.show
+import com.tokopedia.imagepicker.videorecorder.utils.visible
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 
 class EditorItemSelectionAdapter constructor(
     private val items: List<ItemSelection> = mutableListOf(),
@@ -65,30 +64,41 @@ class EditorItemSelectionAdapter constructor(
         private val txtItem = itemView.findViewById<TextView>(R.id.txt_item)
 
         fun bind(item: ItemSelection?) {
-            if (item == null) return
-            if (item.placeholderText.isNotEmpty()) txtPlaceholder.show()
-            if (item.isSelected) viewSelection.show() else viewSelection.hide()
-
-            txtPlaceholder.text = item.placeholderText.take(6)
-            txtItem.text = item.name
-
-            imgItemSelection.loadImage(item.preview)
-
-            if (item.placeholderResId != 0) {
-                imgItemPlaceholder.loadImage(item.placeholderResId)
-                imgItemPlaceholder.show()
-            }
-        }
-
-        private fun AppCompatImageView.loadImage(data: Any) {
             val radius = context.resources.getDimensionPixelSize(R.dimen.image_editor_rounded)
 
-            Glide.with(context)
-                .load(data)
-                .apply(RequestOptions().transform(
-                    CenterCrop(),
-                    RoundedCorners(radius)
-                )).into(this)
+            if (item == null) return
+            if (item.isSelected) viewSelection.show() else viewSelection.hide()
+
+            txtItem.text = item.name
+
+            imgItemSelection.loadImageRounded(
+                item.preview,
+                radius.toFloat()
+            ) {
+                centerCrop()
+            }
+
+            // visible the placeholder bitmap by bitmap or resourceId
+            imgItemPlaceholder.visible(
+                item.placeholderBitmap != null ||
+                        item.placeholderResId != 0
+            )
+
+            // handling the placeholder of item
+            when {
+                item.placeholderBitmap != null -> {
+                    imgItemPlaceholder.loadImageRounded(item.placeholderBitmap, radius.toFloat()) {
+                        centerCrop()
+                    }
+                }
+                item.placeholderResId != 0 -> {
+                    imgItemPlaceholder.loadImage(item.placeholderResId)
+                }
+                item.placeholderText.isNotEmpty() -> {
+                    txtPlaceholder.show()
+                    txtPlaceholder.text = item.placeholderText.take(6)
+                }
+            }
         }
 
         companion object {
