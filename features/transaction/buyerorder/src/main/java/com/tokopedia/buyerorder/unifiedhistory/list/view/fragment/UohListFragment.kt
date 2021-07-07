@@ -446,6 +446,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         search_bar?.searchBarIcon?.setOnClickListener {
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
             search_bar?.searchBarTextField?.text?.clear()
+            resetFocusEditText()
             triggerSearch()
         }
 
@@ -456,6 +457,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (inputLength in 1 until MIN_KEYWORD_CHARACTER_COUNT) {
                     showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                 } else {
+                    resetFocusEditText()
                     triggerSearch()
                 }
                 true
@@ -463,6 +465,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
 
         addEndlessScrollListener()
+    }
+
+    private fun resetFocusEditText() {
+        search_bar?.searchBarTextField?.apply {
+            isFocusableInTouchMode = false
+            isFocusable = false
+            isFocusableInTouchMode = true
+            isFocusable = true
+        }
     }
 
     private fun getLimitDate(): GregorianCalendar {
