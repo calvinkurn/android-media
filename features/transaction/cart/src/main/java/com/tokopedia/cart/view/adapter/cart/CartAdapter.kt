@@ -294,7 +294,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             }
             CartCollapsedProductListViewHolder.LAYOUT -> {
                 val binding = ItemCartCollapsedListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return CartCollapsedProductListViewHolder(binding)
+                return CartCollapsedProductListViewHolder(binding, actionListener)
             }
             CartAccordionViewHolder.LAYOUT -> {
                 val binding = ItemCartAccordionBinding.inflate(LayoutInflater.from(parent.context), parent, false)

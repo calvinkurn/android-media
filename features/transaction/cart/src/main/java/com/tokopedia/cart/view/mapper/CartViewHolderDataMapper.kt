@@ -82,6 +82,8 @@ class CartViewHolderDataMapper @Inject constructor() {
 
     private fun mapCartCollapsedProductHolderData(cartItemHolderData: CartItemHolderData): CartCollapsedProductHolderData {
         return CartCollapsedProductHolderData().apply {
+            cartId = cartItemHolderData.cartItemData.originData.cartId.toString()
+            cartString = cartItemHolderData.cartItemData.originData.cartString
             isChecked = cartItemHolderData.isSelected
             productId = cartItemHolderData.cartItemData.originData.productId
             productImageUrl = cartItemHolderData.cartItemData.originData.productImage

@@ -78,7 +78,9 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onToggleAvailableItemAccordion(data: CartAccordionHolderData, accordionIndex: Int)
+    fun onCollapseAvailableItem(accordionIndex: Int, cartString: String)
+
+    fun onExpandAvailableItem(accordionIndex: Int, cartString: String)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 

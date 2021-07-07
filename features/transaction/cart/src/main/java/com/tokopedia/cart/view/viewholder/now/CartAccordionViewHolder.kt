@@ -24,7 +24,11 @@ class CartAccordionViewHolder(val viewBinding: ItemCartAccordionBinding, val act
         itemView.setOnClickListener {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                actionListener.onToggleAvailableItemAccordion(cartAccordionHolderData, position)
+                if (cartAccordionHolderData.isCollapsed) {
+                    actionListener.onExpandAvailableItem(position, cartAccordionHolderData.cartString)
+                } else {
+                    actionListener.onCollapseAvailableItem(position, cartAccordionHolderData.cartString)
+                }
             }
         }
     }

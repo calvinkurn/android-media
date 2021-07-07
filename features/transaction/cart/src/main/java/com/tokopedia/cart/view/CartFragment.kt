@@ -3534,41 +3534,41 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 
-    override fun onToggleAvailableItemAccordion(data: CartAccordionHolderData, accordionIndex: Int) {
-        if (data.isCollapsed) {
-            cartListData?.let {
-                cartAdapter.removeCollapsedAvailableItems(accordionIndex)
-                onNeedToRemoveMultipleViewItem(accordionIndex - 2, 3)
+    override fun onCollapseAvailableItem(accordionIndex: Int, cartString: String) {
+        cartListData?.let {
+            cartAdapter.removeExpandedAvailableItems(accordionIndex)
+            onNeedToRemoveMultipleViewItem(accordionIndex - 1, 2)
 
-                loop@ for (shopGroupAvailableData in it.shopGroupAvailableDataList) {
-                    if (shopGroupAvailableData.cartString == data.cartString) {
-                        val startIndex = accordionIndex - 2
-                        val cartShopHolderData = cartViewHolderDataMapper.mapCartShopHolderData(shopGroupAvailableData)
-                        cartAdapter.addItem(startIndex, cartShopHolderData)
-                        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(false, shopGroupAvailableData)
-                        cartAdapter.addItem(startIndex + 1, collapsedProductAccordion)
-                        onNeedToInsertMultipleViewItem(startIndex, 2)
-                        break@loop
-                    }
+            loop@ for (shopGroupAvailableData in it.shopGroupAvailableDataList) {
+                if (shopGroupAvailableData.cartString == cartString) {
+                    val startIndex = accordionIndex - 1
+                    val shopSimple = cartViewHolderDataMapper.mapCartShopSimpleHolderData(shopGroupAvailableData)
+                    cartAdapter.addItem(startIndex, shopSimple)
+                    val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
+                    cartAdapter.addItem(startIndex + 1, collapsedProductList)
+                    val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(true, shopGroupAvailableData)
+                    cartAdapter.addItem(startIndex + 2, collapsedProductAccordion)
+                    onNeedToInsertMultipleViewItem(startIndex, 3)
+                    break@loop
                 }
             }
-        } else {
-            cartListData?.let {
-                cartAdapter.removeExpandedAvailableItems(accordionIndex)
-                onNeedToRemoveMultipleViewItem(accordionIndex - 1, 2)
+        }
+    }
 
-                loop@ for (shopGroupAvailableData in it.shopGroupAvailableDataList) {
-                    if (shopGroupAvailableData.cartString == data.cartString) {
-                        val startIndex = accordionIndex - 1
-                        val shopSimple = cartViewHolderDataMapper.mapCartShopSimpleHolderData(shopGroupAvailableData)
-                        cartAdapter.addItem(startIndex, shopSimple)
-                        val collapsedProductList = cartViewHolderDataMapper.mapCartCollapsedProductListHolderData(shopGroupAvailableData)
-                        cartAdapter.addItem(startIndex + 1, collapsedProductList)
-                        val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(true, shopGroupAvailableData)
-                        cartAdapter.addItem(startIndex + 2, collapsedProductAccordion)
-                        onNeedToInsertMultipleViewItem(startIndex, 3)
-                        break@loop
-                    }
+    override fun onExpandAvailableItem(accordionIndex: Int, cartString: String) {
+        cartListData?.let {
+            cartAdapter.removeCollapsedAvailableItems(accordionIndex)
+            onNeedToRemoveMultipleViewItem(accordionIndex - 2, 3)
+
+            loop@ for (shopGroupAvailableData in it.shopGroupAvailableDataList) {
+                if (shopGroupAvailableData.cartString == cartString) {
+                    val startIndex = accordionIndex - 2
+                    val cartShopHolderData = cartViewHolderDataMapper.mapCartShopHolderData(shopGroupAvailableData)
+                    cartAdapter.addItem(startIndex, cartShopHolderData)
+                    val collapsedProductAccordion = cartViewHolderDataMapper.mapAccordionHolderData(false, shopGroupAvailableData)
+                    cartAdapter.addItem(startIndex + 1, collapsedProductAccordion)
+                    onNeedToInsertMultipleViewItem(startIndex, 2)
+                    break@loop
                 }
             }
         }
