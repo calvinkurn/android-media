@@ -15,7 +15,7 @@ object SellerHomeCommonUtils {
      * Returns list of links contained in given text
      */
     fun extractUrls(text: String): List<String> {
-        val urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)"
+        val urlRegex = "(((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*))"
         val pattern: Pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE)
         val urlMatcher: Matcher = pattern.matcher(text)
         val containedUrls = mutableListOf<String>()
