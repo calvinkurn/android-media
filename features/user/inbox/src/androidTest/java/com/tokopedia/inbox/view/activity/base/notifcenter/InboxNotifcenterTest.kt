@@ -9,8 +9,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
@@ -18,6 +17,7 @@ import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
 
 abstract class InboxNotifcenterTest : InboxTest() {
@@ -29,6 +29,11 @@ abstract class InboxNotifcenterTest : InboxTest() {
         setupNotifcenterDaggerComponent()
         notifcenterComponent!!.injectMembers(inboxNotifcenterDep)
         inboxNotifcenterDep.init()
+    }
+
+    override fun tearDown() {
+        super.tearDown()
+        inboxNotifcenterDep.tearDown()
     }
 
     override fun onBuildUri(uriBuilder: Uri.Builder) {
@@ -143,6 +148,24 @@ object NotifcenterAssertion {
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.tp_empty_filter)
         ).check(matches(withText(msgRes)))
+    }
+
+    fun assertNotifOrderFirstCardText(msg: String) {
+        onView(
+            allOf(
+                withId(R.id.tp_order_title),
+                isDescendantOfA(withId(R.id.ll_first_card))
+            )
+        ).check(matches(withText(msg)))
+    }
+
+    fun assertNotifOrderSecondCardText(msg: String) {
+        onView(
+            allOf(
+                withId(R.id.tp_order_title),
+                isDescendantOfA(withId(R.id.ll_second_card))
+            )
+        ).check(matches(withText(msg)))
     }
 
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {

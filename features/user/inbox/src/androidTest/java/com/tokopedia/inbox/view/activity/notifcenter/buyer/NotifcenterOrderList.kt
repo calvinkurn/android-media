@@ -3,6 +3,7 @@ package com.tokopedia.inbox.view.activity.notifcenter.buyer
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
@@ -44,7 +45,35 @@ class NotifcenterOrderList : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should show cached version order list when cache data is exist
+    @Test
+    fun should_show_cached_version_order_list_when_cache_data_is_exist() {
+        // Given
+        val delay = 10_000L
+        inboxNotifcenterDep.apply {
+            notifOrderListUseCase.setCache(
+                notifOrderListUseCase.cacheResponse, RoleType.BUYER
+            )
+            notifOrderListUseCase.setResponseWithDelay(
+                delay, notifOrderListUseCase.defaultResponse
+            )
+        }
+        startInboxActivity()
+
+        // Then
+        waitForIt(5000)
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                0, NotificationOrderListViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertNotifOrderFirstCardText(
+            "Cache Transaksi"
+        )
+        NotifcenterAssertion.assertNotifOrderSecondCardText(
+            "Cache All"
+        )
+    }
+
     // TODO: should update currently visible cached order list with counter when finished loading remote data
     // TODO: should placed first when notification rendered first
     // TODO: should placed first when rendered first instead of notification

@@ -34,6 +34,7 @@ class InboxNotifcenterFakeDependency {
 
     fun init() {
         initResponse()
+        initCacheManager()
     }
 
     private fun initResponse() {
@@ -42,6 +43,14 @@ class InboxNotifcenterFakeDependency {
         topAdsRepository.initialize()
         notifcenterFilterUseCase.initialize()
         notifOrderListUseCase.initialize()
+    }
+
+    private fun initCacheManager() {
+        cacheManager.clearCache()
+    }
+
+    fun tearDown() {
+        cacheManager.clearCache()
     }
 
 }
