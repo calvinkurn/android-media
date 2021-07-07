@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.list.domain.model.SomListBulkRequestPickupResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
 import com.tokopedia.sellerorder.list.presentation.models.*
@@ -16,10 +17,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.lang.reflect.Field
@@ -45,6 +45,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     lateinit var bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase
 
     @RelaxedMockK
+    lateinit var bulkRequestPickupUseCase: SomListBulkRequestPickupUseCase
+
+    @RelaxedMockK
+    lateinit var multiShippingStatusUseCase: SomListGetMultiShippingStatusUseCase
+
+    @RelaxedMockK
     lateinit var bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase
 
     @RelaxedMockK
@@ -67,7 +73,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 somRejectOrderUseCase, somRejectCancelOrderUseCase, somEditRefNumUseCase, somValidateOrderUseCase,
                 userSessionInterface, dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase,
                 somListGetWaitingPaymentUseCase, somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase,
-                bulkAcceptOrderStatusUseCase, bulkAcceptOrderUseCase, authorizeAccessUseCase, authorizeMultiAcceptAccessUseCase))
+                bulkAcceptOrderStatusUseCase, bulkAcceptOrderUseCase, bulkRequestPickupUseCase, multiShippingStatusUseCase, authorizeAccessUseCase, authorizeMultiAcceptAccessUseCase))
 
         somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
             isAccessible = true
@@ -455,6 +461,66 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         assert(viewModel.bulkAcceptOrderStatusResult.value == null)
     }
+
+    @Test
+    fun bulkRequestPickup_shouldSuccess() = runBlocking {
+        val orderIds = listOf("0234", "1456", "2678")
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(data = SomListBulkRequestPickupUiModel.Data())
+
+        viewModel.bulkRequestPickup(orderIds)
+
+        coVerify(ordering = Ordering.SEQUENCE) {
+            bulkRequestPickupUseCase.setParams(orderIds)
+            bulkRequestPickupUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
+    }
+
+    @Test
+    fun bulkRequestPickup_shouldFailed() = runBlocking {
+        val orderIds = listOf("0", "1", "2")
+
+        coEvery {
+            bulkAcceptOrderUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.bulkAcceptOrder(orderIds)
+
+        assert(viewModel.bulkAcceptOrderResult.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun getMultiShippingStatus_shouldAllSuccess() = runBlocking {
+        val orderIds = listOf("0", "1", "2")
+        val batchId = "1234566"
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(SomListBulkRequestPickupUiModel.Data(totalOnProcess = 3, jobId = batchId))
+
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } returns MultiShippingStatusUiModel()
+
+        viewModel.bulkRequestPickup(orderIds)
+        multiShippingStatusUseCase.setParams(batchId)
+
+        coVerify {
+            bulkRequestPickupUseCase.setParams(orderIds)
+            bulkRequestPickupUseCase.executeOnBackground()
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
+
+        val bulkRequestPickupFinalResultSuccess = viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is BulkRequestPickupState
+        assert(bulkRequestPickupFinalResultSuccess)
+        assert((viewModel.bulkRequestPickupFinalResult.observeAwaitValue() as BulkRequestPickupState) is AllSuccess)
+    }
+
 
     @Test
     fun getTickers_shouldSuccess() {
