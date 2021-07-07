@@ -51,6 +51,7 @@ import com.tokopedia.payment.presenter.TopPayPresenter
 import com.tokopedia.payment.utils.Constant
 import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
 import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
+import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -107,6 +108,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var hasFinishedFirstLoad: Boolean = false
 
     private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
+
+    private var isPaymentPageLoadingTimeout: Boolean = false
+
+    private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -549,6 +554,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
+            logPaymentPageSuccessAfterTimeOut(url)
             hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
@@ -565,7 +571,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             super.onReceivedError(view, request, error)
             if(isMainPaymentPageTimeOut(request?.url,
                 error?.errorCode?:0)){
-                handleMainPaymentPageTimeOut(view, request, error)
+                handleMainPaymentPageTimeOut(request, error)
             } else {
                 ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
                     mapOf("type" to request?.url.toString(),
@@ -607,22 +613,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
     }
 
-    private fun isMainPaymentPageTimeOut(url: Uri?, errorCode : Int) : Boolean{
-        if(errorCode == WebViewClient.ERROR_TIMEOUT) {
-            url?.let {
-                return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
-            }
-        }
-        return false
-    }
+
 
     @TargetApi(Build.VERSION_CODES.M)
-    private fun handleMainPaymentPageTimeOut(view: WebView?, request: WebResourceRequest?, error: WebResourceError?){
-        ServerLogger.log(Priority.P1, "PAYMENT_PAGE_TIME_OUT",
-            mapOf("type" to request?.url.toString(),
-                "error_code" to error?.errorCode.toString(),
-                "desc" to error?.description?.toString().orEmpty()
-            ))
+    private fun handleMainPaymentPageTimeOut(request: WebResourceRequest?, error: WebResourceError?){
+        isPaymentPageLoadingTimeout = true
+        paymentPageTimeOutLogging.logCurrentPaymentPageTimeOut(request?.url.toString(),
+            error?.errorCode.toString(),
+            error?.description?.toString().orEmpty())
         closePaymentPageOnTimeOut()
     }
 
@@ -638,6 +636,26 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         intent.putExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, true)
         setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
         finish()
+    }
+
+    private fun logPaymentPageSuccessAfterTimeOut(url: String?) {
+        url?.let {
+            if(!isPaymentPageLoadingTimeout
+                && url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment")){
+                paymentPageTimeOutLogging.logPaymentPageSuccessAfterTimeOut(url)
+            }
+        }
+    }
+
+
+
+    private fun isMainPaymentPageTimeOut(url: Uri?, errorCode : Int) : Boolean{
+        if(errorCode == WebViewClient.ERROR_TIMEOUT) {
+            url?.let {
+                return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+            }
+        }
+        return false
     }
 
     private fun getBaseUrlDomainPayment(): String {

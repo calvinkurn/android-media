@@ -1213,7 +1213,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     );
                 }
                 if(data!= null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)){
-                    showToastError(getString(R.string.checkout_label_try_again));
+                    showToastError(getString(R.string.checkout_label_payment_try_again));
                 }
                 break;
             default:
