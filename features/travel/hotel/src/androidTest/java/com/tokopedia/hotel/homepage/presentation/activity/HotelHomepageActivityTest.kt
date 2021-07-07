@@ -28,7 +28,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
@@ -39,6 +38,7 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSea
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.utils.date.DateUtil
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -174,7 +174,7 @@ class HotelHomepageActivityTest {
 
         Thread.sleep(3000)
         val cal = Calendar.getInstance()
-        cal.time = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
+        cal.time = DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time,
                 Calendar.DATE, 2)
         val tomorrowDate = cal[Calendar.DATE]
         try {
