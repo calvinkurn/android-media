@@ -392,7 +392,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -420,7 +420,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -438,7 +438,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -453,7 +453,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
@@ -471,7 +471,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
 
         //then
-        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+        assertEquals(((tapcashBalanceViewModel.errorWrite.value) as Throwable).message, "Maaf, TapCash BNI sedang ada gangguan")
     }
 
     @Test
