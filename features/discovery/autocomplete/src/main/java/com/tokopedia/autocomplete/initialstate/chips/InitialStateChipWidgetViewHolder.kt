@@ -39,7 +39,9 @@ class InitialStateChipWidgetViewHolder(
                     type = it.type,
                     applink = it.applink,
                     url = it.url,
-                    title = it.title
+                    title = it.title,
+                    dimension90 = it.dimension90,
+                    position = it.position
             )
         }
     }
@@ -50,7 +52,9 @@ class InitialStateChipWidgetViewHolder(
                 type = type,
                 applink = applink,
                 url = url,
-                title = title
+                title = title,
+                dimension90 = dimension90,
+                position = position
         )
     }
 }
