@@ -1,7 +1,6 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
@@ -13,8 +12,6 @@ import com.tokopedia.home.beranda.domain.interactor.GetCoroutineWalletBalanceUse
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetWalletAppBalanceUseCase
 import com.tokopedia.home.beranda.domain.model.HomeFlag
-import com.tokopedia.home.beranda.domain.model.walletapp.Balance
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_SUCCESS

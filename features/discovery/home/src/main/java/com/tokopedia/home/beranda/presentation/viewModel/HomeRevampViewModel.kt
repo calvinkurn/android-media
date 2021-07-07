@@ -57,8 +57,6 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -1249,13 +1247,10 @@ open class HomeRevampViewModel @Inject constructor(
                 isUsingWalletApp = {
                     try {
                         walletAppData = getWalletAppData()
-
-                        walletAppData?.let { walletContent ->
-                            if (walletContent.balance.isNotEmpty()) {
-                                homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
-                            } else {
-                                throw IllegalStateException("Wallet is empty")
-                            }
+                        if (walletAppData != null) {
+                            homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
+                        } else {
+                            throw IllegalStateException("Home wallet app data is null")
                         }
                     } catch (e: Exception) {
                         homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
@@ -1342,7 +1337,7 @@ open class HomeRevampViewModel @Inject constructor(
                     try {
                         val walletAppData = getWalletAppData()
                         walletAppData.let { walletContent ->
-                            if (walletContent.balance.isNotEmpty()) {
+                            if (walletContent.walletappGetBalance.balance.isNotEmpty()) {
                                 homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
                                 newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
                             } else {

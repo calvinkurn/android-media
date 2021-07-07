@@ -99,7 +99,6 @@ object QueryHomeWallet {
 
     val walletAppQuery : String = "query walletAppGetBalance(\$partnerCode: String) {\n" +
             "        walletappGetBalance(partnerCode:\$partnerCode) {\n" +
-            "            balances {\n" +
             "                code\n" +
             "                message\n" +
             "                is_linked\n" +
@@ -116,7 +115,6 @@ object QueryHomeWallet {
             "                icon_url\n" +
             "                activation_cta\n" +
             "                wallet_name\n" +
-            "            }\n" +
             "        }\n" +
             "    }"
 }
