@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
@@ -39,8 +40,9 @@ class OrderListMapper @Inject constructor() {
         return orderProduct.map {
             SomListOrderUiModel.OrderProduct(
                     productId = it.productId,
-                    productName = it.productName.capitalize(),
-                    picture = it.picture
+                    productName = it.productName.asCamelCase(),
+                    picture = it.picture,
+                    bundleId = it.bundleId
             )
         }
     }

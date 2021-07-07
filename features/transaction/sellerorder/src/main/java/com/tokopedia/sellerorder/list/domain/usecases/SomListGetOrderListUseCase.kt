@@ -72,6 +72,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                     product_id
                     product_name
                     picture
+                    bundle_id
                   }
                   ticker_info {
                     text

@@ -98,7 +98,10 @@ data class SomListOrderListResponse(
                         val productName: String = "",
                         @SerializedName("picture")
                         @Expose
-                        val picture: String = ""
+                        val picture: String = "",
+                        @SerializedName("bundle_id")
+                        @Expose
+                        val bundleId: Long = 0L,
                 )
 
                 data class Button(

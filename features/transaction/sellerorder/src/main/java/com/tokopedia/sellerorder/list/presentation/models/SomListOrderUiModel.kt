@@ -32,14 +32,18 @@ data class SomListOrderUiModel(
         var searchParam: String,
         var isOpen: Boolean = false
 ) : Visitable<SomListAdapterTypeFactory> {
+
     override fun type(typeFactory: SomListAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }
 
+    fun getTotalProduct() = orderProduct.distinctBy { it.productId }.size
+
     data class OrderProduct(
             val productId: String = "",
             val productName: String = "",
-            val picture: String = ""
+            val picture: String = "",
+            val bundleId: Long = 0L
     )
 
     data class Button(
