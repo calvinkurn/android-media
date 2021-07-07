@@ -5,7 +5,6 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveDurationInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.picker.PickerUnify
@@ -23,7 +22,7 @@ class InteractiveTimePickerViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
-    private val availableDuration = mutableListOf<InteractiveDurationInfoUiModel>()
+    private var availableDuration = listOf<Long>()
 
     init {
         findViewById<TextView>(com.tokopedia.play_common.R.id.tv_sheet_title)
@@ -32,31 +31,34 @@ class InteractiveTimePickerViewComponent(
         findViewById<IconUnify>(com.tokopedia.play_common.R.id.iv_sheet_close).apply {
             setImage(IconUnify.ARROW_BACK)
             setOnClickListener {
-                listener.onCloseButtonClicked(this@InteractiveTimePickerViewComponent)
+                listener.onBackButtonClicked(this@InteractiveTimePickerViewComponent)
             }
         }
 
         findViewById<UnifyButton>(R.id.btn_apply).setOnClickListener {
-            val selectedDuration = availableDuration.firstOrNull { it.formatted == pickerTime.activeValue }
-            if (selectedDuration != null) listener.onApplyButtonClicked(this@InteractiveTimePickerViewComponent, selectedDuration)
+            val selectedDuration = availableDuration[pickerTime.activeIndex]
+            listener.onApplyButtonClicked(this@InteractiveTimePickerViewComponent, selectedDuration)
         }
 
         pickerTime.infiniteMode = false
-        pickerTime.onValueChanged = { value, _ ->
-            val selectedDuration = availableDuration.firstOrNull { it.formatted == value }
-            if (selectedDuration != null) listener.onValuePickerChanged(this@InteractiveTimePickerViewComponent, selectedDuration)
+        pickerTime.onItemClickListener = { _, index ->
+            val selectedDuration = availableDuration[index]
+            listener.onValuePickerChanged(this@InteractiveTimePickerViewComponent, selectedDuration)
         }
     }
 
-    fun setActiveDuration(duration: InteractiveDurationInfoUiModel) {
-        val activePosition = pickerTime.stringData.indexOf(duration.formatted)
-        if (activePosition >= 0) pickerTime.goToPosition(activePosition)
+    fun setActiveDuration(duration: Long) {
+        val activePosition = availableDuration.indexOf(duration)
+        if (activePosition in 0 until pickerTime.stringData.size) {
+            pickerTime.goToPosition(activePosition)
+        } else {
+            if (pickerTime.stringData.size > 0) pickerTime.goToPosition(0)
+        }
     }
 
-    fun setItems(durations: List<InteractiveDurationInfoUiModel>) {
-        availableDuration.clear()
-        availableDuration.addAll(durations)
-        pickerTime.stringData = durations.map { it.formatted }.toMutableList()
+    fun setAvailableDuration(durations: List<Long>) {
+        availableDuration = durations
+        pickerTime.stringData = availableDuration.map { it.toString() }.toMutableList() // TODO: format
     }
 
     override fun show() {
@@ -68,8 +70,8 @@ class InteractiveTimePickerViewComponent(
     }
 
     interface Listener {
-        fun onCloseButtonClicked(view: InteractiveTimePickerViewComponent)
-        fun onValuePickerChanged(view: InteractiveTimePickerViewComponent, selectedDuration: InteractiveDurationInfoUiModel)
-        fun onApplyButtonClicked(view: InteractiveTimePickerViewComponent, selectedDuration: InteractiveDurationInfoUiModel)
+        fun onBackButtonClicked(view: InteractiveTimePickerViewComponent)
+        fun onValuePickerChanged(view: InteractiveTimePickerViewComponent, selectedDuration: Long)
+        fun onApplyButtonClicked(view: InteractiveTimePickerViewComponent, selectedDuration: Long)
     }
 }

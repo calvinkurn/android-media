@@ -32,6 +32,9 @@ class PlayInteractiveLeaderboardViewComponent(
         }
     })
 
+    /**
+     * TODO: please delete
+     */
     private val mockLeaderboardItems = List(5) {
         PlayLeaderboardUiModel(
             title = listOf("Giveaway Kotak Pensil", "Giveaway LCD tv", "Giveaway CD Blackpink").random(),

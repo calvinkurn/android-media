@@ -99,3 +99,9 @@ internal fun String.toDateWithFormat(format: String): Date {
         Date()
     }
 }
+
+internal fun Long.toMinute(): Long = (this % 3600) / 60
+
+internal fun Long.toSecond(): Long = this % 60
+
+
