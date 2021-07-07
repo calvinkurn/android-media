@@ -702,7 +702,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //uncomment this to activate balance widget coachmark
 
         if (!isBalanceWidgetCoachmarkShown(requireContext())) {
-            val balanceWidget = getBalanceWidgetView()
+            val balanceWidget = getTokopointsBalanceWidgetView()
             balanceWidget?.let {
                 this.add(
                         CoachMark2Item(
@@ -710,6 +710,32 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getString(R.string.onboarding_coachmark_wallet_title),
                                 getString(R.string.onboarding_coachmark_wallet_description)
                         )
+                )
+            }
+        }
+
+        if (!isWalletAppCoachmarkShown(requireContext())) {
+            val gopayWidget = getGopayBalanceWidgetView()
+            gopayWidget?.let {
+                this.add(
+                    CoachMark2Item(
+                        gopayWidget,
+                        getString(R.string.home_gopay_coachmark_title),
+                        getString(R.string.home_gopay_coachmark_description)
+                    )
+                )
+            }
+        }
+
+        if (!isWalletApp2CoachmarkShown(requireContext())) {
+            val balanceWidget = getBalanceWidgetView()
+            balanceWidget?.let {
+                this.add(
+                    CoachMark2Item(
+                        balanceWidget,
+                        getString(R.string.home_gopay2_coachmark_title),
+                        getString(R.string.home_gopay2_coachmark_description)
+                    )
                 )
             }
         }
@@ -769,7 +795,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
-    private fun getBalanceWidgetView(): View? {
+    private fun getTokopointsBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
             if (it.itemView.view_balance_widget.isVisible)
@@ -778,8 +804,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
+    private fun getGopayBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            if (it.itemView.view_balance_widget.isVisible)
+                return getBalanceWidgetViewGopayOnly(it.itemView.view_balance_widget)
+        }
+        return null
+    }
+
+    private fun getBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            return view.itemView
+        }
+        return null
+    }
+
     private fun getBalanceWidgetViewTokoPointsOnly(balanceWidgetView: BalanceWidgetView): View? {
         return balanceWidgetView.getTokopointsView()
+    }
+
+    private fun getBalanceWidgetViewGopayOnly(balanceWidgetView: BalanceWidgetView): View? {
+        return balanceWidgetView.getGopayView()
     }
 
     private fun isValidToShowCoachMark(): Boolean {
@@ -903,6 +950,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         //TODO: Register remote config to turn off and on new balance widget
         getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
+        getHomeViewModel().setWalletAppRollence(true)
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }

@@ -67,6 +67,18 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         return -1
     }
 
+    fun getGopayDataPosition(): Int {
+        getItemMap().let {
+            val keys =  it.balanceDrawerItemModels.filterValues { model ->
+                model.drawerItemType == TYPE_WALLET_APP_LINKED || model.drawerItemType == TYPE_WALLET_APP_NOT_LINKED
+            }.keys
+            if (keys.isNotEmpty()) {
+                return keys.first()
+            }
+        }
+        return -1
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_balance_widget, parent, false))
     }

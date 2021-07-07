@@ -85,4 +85,14 @@ class BalanceWidgetView: FrameLayout {
         }
         return null
     }
+
+    fun getGopayView(): View? {
+        val gopayPos = balanceAdapter?.getGopayDataPosition() ?: -1
+        if (gopayPos != -1) {
+            layoutManager?.let {
+                return it.getChildAt(gopayPos)
+            }
+        }
+        return null
+    }
 }

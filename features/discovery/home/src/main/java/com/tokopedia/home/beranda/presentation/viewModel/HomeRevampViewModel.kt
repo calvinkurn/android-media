@@ -215,6 +215,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
     private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
+    private var useWalletApp: Boolean = true
     private var popularKeywordRefreshCount = 1
 
     var currentTopAdsBannerToken: String = ""
@@ -942,6 +943,10 @@ open class HomeRevampViewModel @Inject constructor(
         this.useNewBalanceWidget = useNewBalanceWidget
     }
 
+    fun setWalletAppRollence(useWalletApp: Boolean) {
+        this.useWalletApp = useWalletApp
+    }
+
     fun updateChooseAddressData(homeChooseAddressData: HomeChooseAddressData) {
         this.homeDataModel.setAndEvaluateHomeChooseAddressData(homeChooseAddressData)
     }
@@ -1049,7 +1054,7 @@ open class HomeRevampViewModel @Inject constructor(
         isUsingWalletApp: suspend () -> Unit,
         isUsingOldWallet: suspend () -> Unit
     ) {
-        if (true) {
+        if (useWalletApp) {
             isUsingWalletApp.invoke()
         } else {
             isUsingOldWallet.invoke()
