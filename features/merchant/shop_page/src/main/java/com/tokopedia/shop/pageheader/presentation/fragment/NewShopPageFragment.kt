@@ -32,7 +32,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
@@ -104,6 +106,7 @@ import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -119,7 +122,6 @@ import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMo
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -285,6 +287,7 @@ class NewShopPageFragment :
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
     private var shouldOpenShopNoteBottomSheet: Boolean = false
+    private var shouldAutoRedirectToCreateEtalase: Boolean = false
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(
@@ -351,9 +354,6 @@ class NewShopPageFragment :
     }
 
     private fun initViews(view: View) {
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         setupBottomSheetSellerMigration(view)
@@ -806,6 +806,12 @@ class NewShopPageFragment :
                     }
                     if (lastPathSegment.orEmpty() == PATH_PRODUCT) {
                         shouldOverrideTabToProduct = true
+
+                        // check applink query param if have to auto redirect to create showcase page
+                        val isRedirectToCreateShowcase = getQueryParameter(DeeplinkMapperMerchant.PARAM_CREATE_SHOWCASE).orEmpty()
+                        if (GlobalConfig.isSellerApp() && (isRedirectToCreateShowcase.isNotEmpty() && isRedirectToCreateShowcase.toBoolean())) {
+                            shouldAutoRedirectToCreateEtalase = true
+                        }
                     }
                     if (lastPathSegment.orEmpty() == PATH_FEED) {
                         shouldOverrideTabToFeed = true
@@ -820,6 +826,9 @@ class NewShopPageFragment :
             }
             if (GlobalConfig.isSellerApp()) {
                 shopId = shopViewModel?.userShopId.orEmpty()
+                if (shouldAutoRedirectToCreateEtalase) {
+                    goToCreateEtalase()
+                }
             }
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
@@ -1205,6 +1214,19 @@ class NewShopPageFragment :
         }
     }
 
+    private fun goToCreateEtalase() {
+        val showcaseListIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+        val showcaseListBundle = Bundle().apply {
+            putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
+            putString(ShopShowcaseParamConstant.EXTRA_SELECTED_ETALASE_ID, "")
+            putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, true)
+            putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+            putBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE, true)
+        }
+        showcaseListIntent.putExtra(ShopShowcaseParamConstant.EXTRA_BUNDLE, showcaseListBundle)
+        startActivity(showcaseListIntent)
+    }
+
     private fun onSuccessGetShopPageP1Data(shopPageP1Data: NewShopPageP1HeaderData) {
         isShowFeed = shopPageP1Data.isWhitelist
         createPostUrl = shopPageP1Data.url
@@ -1368,10 +1390,10 @@ class NewShopPageFragment :
         var selectedPosition = viewPager.currentItem
         if (tabLayout.tabCount == 0) {
             if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(HomeProductFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(HomeProductFragment::class.java).orZero()
-                } else {
+                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
                     viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                } else {
+                    selectedPosition
                 }
             }
             if (shouldOverrideTabToReview) {
@@ -1701,7 +1723,9 @@ class NewShopPageFragment :
                             when (shopShare) {
                                 is ShopShareModel.CopyLink -> {
                                     linkerShareData?.url?.let { ClipboardHandler().copyToClipboard((activity as Activity), it) }
-                                    Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
+                                    activity?.runOnUiThread {
+                                        Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                                 is ShopShareModel.Instagram, is ShopShareModel.Facebook -> {
                                     startActivity(shopShare.appIntent?.apply {

@@ -2,10 +2,7 @@ package com.tokopedia.recommendation_widget_common.extension
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.presentation.model.*
 import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsMapper
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -68,7 +65,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                                     specTitle = it.key,
                                     specSummary = it.value
                             )
-                        }
+                        },
                 )
             },
             title = title,
@@ -83,7 +80,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
             nextPage = pagination.nextPage,
             prevPage = pagination.prevPage,
             hasNext = pagination.hasNext,
-            pageName = pageName
+            pageName = pageName,
+            recommendationBanner = campaign.mapToBannerData()
     )
 }
 
@@ -131,4 +129,14 @@ var LABEL_FULFILLMENT: String = "fulfillment"
 
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
     return this.any { it.position == LABEL_FULFILLMENT }
+}
+
+fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
+    assets?.banner?.let {
+        return RecommendationBanner(
+                applink = appLandingPageLink,
+                imageUrl = it.apps
+        )
+    }
+    return null
 }

@@ -10,6 +10,14 @@
         android:text="Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <CheckBox
+        android:id="@+id/fullLoginOption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_small"
+        android:padding="@dimen/margin_small"
+        android:text="use full login module (please add features/user/loginregister when switch to TestApp to use this, or this won't work)" />
     <Button
         android:id="@+id/logoutButton"
         android:text="Logout"
