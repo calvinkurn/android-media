@@ -29,4 +29,11 @@ class SettingFingerprintActivity: BaseSimpleActivity(), HasComponent<LoginFinger
             bundle.putAll(intent.extras)
         return SettingFingerprintFragment.createInstance(bundle)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(fragment is SettingFingerprintFragment) {
+            (fragment as SettingFingerprintFragment).trackBackButton()
+        }
+    }
 }

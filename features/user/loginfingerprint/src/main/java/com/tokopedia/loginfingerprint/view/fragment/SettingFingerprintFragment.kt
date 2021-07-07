@@ -216,6 +216,10 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
         }
     }
 
+    fun trackBackButton() {
+        tracker.trackClickBtnBackAccountSetting()
+    }
+
     companion object {
         const val TAG = "fingerprintSettingScreen"
 
