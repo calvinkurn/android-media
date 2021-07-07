@@ -602,12 +602,12 @@ abstract class BaseSearchCategoryFragment:
                 pageSource = "tokonow",
                 isTokoNow = true,
                 shopId = productItemDataView.shop.id,
-                trackerCdListName = cdListName(),
+                trackerCdListName = getCDListName(),
                 startActivitResult = this::startActivityForResult,
         )
     }
 
-    protected abstract fun cdListName(): String
+    protected abstract fun getCDListName(): String
 
     override fun onProductNonVariantQuantityChanged(
             productItemDataView: ProductItemDataView,

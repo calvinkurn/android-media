@@ -10,6 +10,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
@@ -17,7 +18,6 @@ import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
@@ -190,8 +190,8 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
         super.onProductChooseVariantClicked(productItemDataView)
     }
 
-    override fun cdListName(): String {
-        return String.format(TOKONOW_CATEGORY_ATC_TRACKER_CD_LIST_NAME, tokoNowCategoryViewModel.categoryIdTracking)
+    override fun getCDListName(): String {
+        return String.format(TOKONOW_CATEGORY_ORGANIC, tokoNowCategoryViewModel.categoryIdTracking)
     }
 
     override fun sendIncreaseQtyTrackingEvent(productId: String) {

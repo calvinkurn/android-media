@@ -21,10 +21,10 @@ import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME
 import javax.inject.Inject
 
 class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
@@ -198,8 +198,8 @@ class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         super.onProductChooseVariantClicked(productItemDataView)
     }
 
-    override fun cdListName(): String {
-        return TOKONOW_SEARCH_ATC_TRACKER_CD_LIST_NAME
+    override fun getCDListName(): String {
+        return TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
     }
 
     override fun onBannerClick(channelModel: ChannelModel, applink: String) {
