@@ -27,6 +27,9 @@ data class ProductItemDataView(
     val discountPercentageString
         get() = if (discountPercentage > 0) "$discountPercentage%" else ""
 
+    val getCdListName
+        get() = "/tokonow - searchproduct - organic"
+
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
             typeFactory?.type(this) ?: 0
 

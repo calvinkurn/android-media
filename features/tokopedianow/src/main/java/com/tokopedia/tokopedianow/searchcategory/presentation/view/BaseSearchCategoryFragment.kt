@@ -602,6 +602,7 @@ abstract class BaseSearchCategoryFragment:
                 pageSource = "tokonow",
                 isTokoNow = true,
                 shopId = productItemDataView.shop.id,
+                trackerCdListName = productItemDataView.getCdListName,
                 startActivitResult = this::startActivityForResult,
         )
     }
