@@ -20,7 +20,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
@@ -310,6 +312,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         TopupBillsFavoriteNumberActivity.getCallingIntent(it,
                             ClientNumberType.TYPE_INPUT_TEL,
                             clientNumber,
+                            operatorData,
+                            topupAnalytics.getCategoryName(categoryId),
                             arrayListOf(categoryId.toString())
                         )
                     },

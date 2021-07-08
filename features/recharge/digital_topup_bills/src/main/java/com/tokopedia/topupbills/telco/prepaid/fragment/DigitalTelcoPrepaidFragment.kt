@@ -24,7 +24,10 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
+import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -472,6 +475,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     TopupBillsFavoriteNumberActivity.getCallingIntent(it,
                         ClientNumberType.TYPE_INPUT_TEL,
                         clientNumber,
+                        operatorData,
+                        topupAnalytics.getCategoryName(categoryId),
                         arrayListOf(
                                 TelcoCategoryType.CATEGORY_PULSA.toString(),
                                 TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),

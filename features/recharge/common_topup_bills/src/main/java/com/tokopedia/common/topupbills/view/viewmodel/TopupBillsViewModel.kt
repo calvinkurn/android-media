@@ -172,7 +172,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     fun modifySeamlessFavoriteNumber(
             rawQuery: String,
             mapParam: Map<String, Any>,
-            actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
+            actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType,
+            onFailedDelete: (() -> Unit)? = null
     ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
@@ -188,7 +189,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }) {
             when (actionType) {
                 UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
-                DELETE -> _seamlessFavNumberDeleteData.postValue(Fail(it))
+                DELETE -> {
+                    _seamlessFavNumberDeleteData.postValue(Fail(it))
+                    onFailedDelete?.invoke()
+                }
                 UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }
         }
