@@ -13,6 +13,7 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
@@ -104,5 +105,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        val intent = Intent(this, ProductBundleActivity::class.java)
+        startActivity(intent)
     }
 }

@@ -1,10 +1,19 @@
 <resources>
 
-    <!-- add edit product screen name -->
+    <!-- product bundle screen name -->
     <string name="product_bundle_page_title">Pilih paket</string>
 
+    <string name="text_sold_product_bundle">Terjual %d paket</string>
+
+    <!-- product bundle master -->
+
+    <!-- product bundle detail -->
+
+    <!-- product bundle overview -->
+    <string name="action_buy">Beli Paket</string>
+
     <!-- id -->
-    <item name="product_bundle_info_tag" type="id" />
+    <item name="product_bundle_master_tag" type="id" />
     <item name="product_variant_tag" type="id" />
 
 </resources>

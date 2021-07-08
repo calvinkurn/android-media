@@ -10,55 +10,57 @@ data class GetProductBundleResponse(
 )
 
 data class BundleInfo(
-        @SerializedName("BundleID")
+        @SerializedName("bundleID")
         val bundleID: Long = 0L,
-        @SerializedName("GroupID")
+        @SerializedName("groupID")
         val groupID: Long = 0L,
-        @SerializedName("Name")
+        @SerializedName("name")
         val name: String = "",
-        @SerializedName("Type")
+        @SerializedName("type")
         val type: String = "",
-        @SerializedName("Status")
+        @SerializedName("status")
         val status: String = "",
-        @SerializedName("ShopID")
+        @SerializedName("shopID")
         val shopID: Int = 0,
-        @SerializedName("StartTimeUnix")
+        @SerializedName("startTimeUnix")
         val startTimeUnix: Long = 0L,
-        @SerializedName("StopTimeUnix")
+        @SerializedName("stopTimeUnix")
         val stopTimeUnix: Long = 0L,
-        @SerializedName("BundleItem")
-        val bundleItems: List<BundleItem> = listOf(),
-        @SerializedName("WarehouseID")
+        @SerializedName("warehouseID")
         val warehouseID: Long = 0L,
-        @SerializedName("Quota")
+        @SerializedName("quota")
         val quota: Int = 0,
-        @SerializedName("OriginalQuota")
+        @SerializedName("originalQuota")
         val originalQuota: Int = 0,
-        @SerializedName("MaxOrder")
+        @SerializedName("maxOrder")
         val maxOrder: Int = 0,
+        @SerializedName("bundleItem")
+        val bundleItems: List<BundleItem> = listOf()
 )
 
 data class BundleItem(
-        @SerializedName("ProductID")
+        @SerializedName("productID")
         val productID: Long = 0L,
-        @SerializedName("Name")
+        @SerializedName("name")
         val name: String = "",
-        @SerializedName("PicURL")
+        @SerializedName("picURL")
         val picURL: String = "",
-        @SerializedName("Status")
+        @SerializedName("status")
         val status: String = "",
-        @SerializedName("Quantity")
+        @SerializedName("quantity")
         val quantity: Int = 0,
-        @SerializedName("Selection")
+        @SerializedName("bundlePrice")
+        val bundlePrice: Long = 0L,
+        @SerializedName("stock")
+        val stock: Int = 0,
+        @SerializedName("minOrder")
+        val minOrder: Int = 0,
+        @SerializedName("selection")
         val selections: List<Selection> = listOf(),
         @SerializedName("Children")
         val children: List<Child> = listOf(),
-        @SerializedName("BundlePrice")
-        val bundlePrice: Long = 0L,
-        @SerializedName("Stock")
-        val stock: Int = 0,
-        @SerializedName("MinOrder")
-        val minOrder: Int = 0
+        @SerializedName("originalPrice")
+        val originalPrice: Long = 0L
 )
 
 data class Selection(

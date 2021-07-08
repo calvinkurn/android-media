@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="@dimen/unify_space_16"
     tools:context=".multiple.presentation.fragment.MultipleProductBundleFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -38,8 +39,7 @@
         android:id="@+id/rv_product_bundle_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_font_16"
-        app:layout_constraintBottom_toTopOf="@id/ta_product_bundle_sum"
+        android:layout_marginTop="@dimen/unify_space_4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_sold_product_bundle" />
@@ -57,6 +57,7 @@
         android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:unify_total_amount_cta_text="@string/action_buy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,13 +2,14 @@ package com.tokopedia.product_bundle.multiple.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.product_bundle.R
-import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.view.RoundedCornerImageView
-import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailVariantClickListener
+import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundleDetailVariantClickListener)
+class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundleDetailItemClickListener)
     : RecyclerView.ViewHolder(itemView) {
 
     private var productImageView: RoundedCornerImageView? = null
@@ -19,7 +20,8 @@ class ProductBundleDetailViewHolder(itemView: View, clickListener: ProductBundle
         productNameView = itemView.findViewById(R.id.tv_product_name)
     }
 
-    fun bindData(bundleItem: BundleItem) {
-
+    fun bindData(bundleDetail: ProductBundleDetail) {
+        productImageView?.loadImage(bundleDetail.productImageUrl)
+        productNameView?.text = bundleDetail.productName
     }
 }
