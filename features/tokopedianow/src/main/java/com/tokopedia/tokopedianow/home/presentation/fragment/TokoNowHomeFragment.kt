@@ -63,6 +63,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFacto
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -195,8 +196,13 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
+        } else {
+            setupPadding(miniCartSimplifiedData)
+            val item = adapter.getItem(HomeProductRecomUiModel::class.java)
+            if (item is HomeProductRecomUiModel) {
+                viewModelTokoNow.updateCartItems(miniCartSimplifiedData, item)
+            }
         }
-        setupPadding(miniCartSimplifiedData)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -476,6 +482,10 @@ class TokoNowHomeFragment: Fragment(),
             } else {
                 showEmptyState(EMPTY_STATE_NO_ADDRESS)
             }
+        }
+
+        observe(viewModelTokoNow.miniCartWidgetDataUpdated) {
+            miniCartWidget?.updateData(it)
         }
     }
 

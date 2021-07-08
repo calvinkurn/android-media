@@ -20,5 +20,6 @@ annotation class HomeLayoutType {
         const val CATEGORY = "category_tokonow"
         const val LEGO_3_IMAGE = "lego_3_image"
         const val LEGO_6_IMAGE = "6_image"
+        const val PRODUCT_RECOM = "top_carousel_tokonow"
     }
 }

@@ -2,20 +2,24 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.home.domain.mapper.*
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.isNotStaticLayout
@@ -31,11 +35,12 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -58,13 +63,21 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCart
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
+    val miniCartWidgetDataUpdated: LiveData<MiniCartSimplifiedData>
+        get() = _miniCartWidgetDataUpdated
+    val updatedVisitableIndicesLiveData: LiveData<List<Int>>
+        get() = updatedVisitableIndicesMutableLiveData
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
+    private val _miniCartWidgetDataUpdated = MutableLiveData<MiniCartSimplifiedData>()
+    private val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
 
     private var homeLayoutItemList = listOf<HomeLayoutItemUiModel>()
+    private var cartItemsNonVariant: List<MiniCartItem>? = null
+    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
 
     fun getLoadingState() {
         homeLayoutItemList = addLoadingIntoList()
@@ -112,11 +125,14 @@ class TokoNowHomeViewModel @Inject constructor(
             if (item != null && isLayoutVisible && shouldLoadLayout(item)) {
                 setItemStateToLoading(item)
                 when (val layout = item.layout) {
+                    is HomeCategoryGridUiModel -> {
+                        homeLayoutItemList = getCategoryGridData(layout, warehouseId)
+                    }
                     is HomeComponentVisitable -> {
                         homeLayoutItemList = getGlobalHomeComponent(layout)
                     }
-                    is HomeCategoryGridUiModel -> {
-                        homeLayoutItemList = getCategoryGridData(layout, warehouseId)
+                    is HomeLayoutUiModel -> {
+                        homeLayoutItemList = getGlobalHomeComponent(layout)
                     }
                 }
             }
@@ -145,11 +161,14 @@ class TokoNowHomeViewModel @Inject constructor(
                 if (item != null && shouldLoadLayout(item)) {
                     setItemStateToLoading(item)
                     when (val layout = item.layout) {
+                        is HomeCategoryGridUiModel -> {
+                            homeLayoutItemList = getCategoryGridData(layout, warehouseId)
+                        }
                         is HomeComponentVisitable -> {
                             homeLayoutItemList = getGlobalHomeComponent(layout)
                         }
-                        is HomeCategoryGridUiModel -> {
-                            homeLayoutItemList = getCategoryGridData(layout, warehouseId)
+                        is HomeLayoutUiModel -> {
+                            homeLayoutItemList = getGlobalHomeComponent(layout)
                         }
                     }
 
@@ -219,6 +238,90 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun updateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData, item: HomeProductRecomUiModel) {
+        updateMiniCartWidgetData(miniCartSimplifiedData)
+
+        viewModelScope.launch {
+            updateMiniCartInBackground(miniCartSimplifiedData, item)
+        }
+    }
+
+    private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        _miniCartWidgetDataUpdated.value = miniCartSimplifiedData
+    }
+
+    private suspend fun updateMiniCartInBackground(miniCartSimplifiedData: MiniCartSimplifiedData, item: HomeProductRecomUiModel) {
+        withContext(dispatchers.io) {
+            updateMiniCartProperties(miniCartSimplifiedData)
+
+            if (item.list.isNullOrEmpty()) return@withContext
+
+            val updatedProductIndices = mutableListOf<Int>()
+
+            item.list.forEachIndexed { position, product ->
+                updateProductItemQuantity(position, product, updatedProductIndices)
+            }
+            withContext(dispatchers.main) {
+                updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
+            }
+        }
+    }
+
+    private fun updateMiniCartProperties(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        val cartItemsPartition = splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
+        cartItemsNonVariant = cartItemsPartition.first
+        cartItemsVariantGrouped = cartItemsPartition.second.groupBy { it.productParentId }
+    }
+
+    private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) = miniCartItems.partition {
+        it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
+    }
+
+    private fun updateProductItemQuantity(
+        position: Int,
+        productItem: HomeProductCardUiModel,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        val productId = productItem.id
+        val parentProductId = productItem.parentProductId
+        val nonVariantATC = productItem.productCardModel.nonVariant
+        val variantATC = productItem.productCardModel.variant
+
+        if (nonVariantATC != null) {
+            val quantity = getProductNonVariantQuantity(productId)
+            if (nonVariantATC.quantity != quantity) {
+                productItem.productCardModel = productItem.productCardModel.copy(
+                    nonVariant = productItem.productCardModel.nonVariant?.copy(
+                        quantity = quantity
+                    )
+                )
+                updatedProductIndices.add(position)
+            }
+        } else if (variantATC != null) {
+            val totalQuantity = getProductVariantTotalQuantity(parentProductId)
+            if (variantATC.quantity != totalQuantity) {
+                productItem.productCardModel = productItem.productCardModel.copy(
+                    variant = productItem.productCardModel.variant?.copy(
+                        quantity = totalQuantity
+                    )
+                )
+                updatedProductIndices.add(position)
+            }
+        }
+    }
+
+    private fun getProductNonVariantQuantity(productId: String): Int {
+        val cartItem = cartItemsNonVariant?.find { it.productId == productId }
+        return cartItem?.quantity.orZero()
+    }
+
+    private fun getProductVariantTotalQuantity(parentProductId: String): Int {
+        val cartItemsVariantGrouped = cartItemsVariantGrouped
+        val miniCartItemsWithSameParentId = cartItemsVariantGrouped?.get(parentProductId)
+        val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
+        return totalQuantity.orZero()
+    }
+
     private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
         return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH).data
     }
@@ -245,6 +348,14 @@ class TokoNowHomeViewModel @Inject constructor(
         item: HomeComponentVisitable
     ): List<HomeLayoutItemUiModel> {
         val channelId = item.visitableId()
+        val response = getHomeLayoutDataUseCase.execute(channelId)
+        return homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
+    }
+
+    private suspend fun getGlobalHomeComponent(
+        item: HomeLayoutUiModel
+    ): List<HomeLayoutItemUiModel> {
+        val channelId = item.visitableId
         val response = getHomeLayoutDataUseCase.execute(channelId)
         return homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
     }

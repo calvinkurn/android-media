@@ -25,6 +25,8 @@ class HomeAdapterTypeFactory(
     // region Toko Mart Home Component
     override fun type(uiModel: HomeCategoryGridUiModel): Int = HomeCategoryGridViewHolder.LAYOUT
     override fun type(uiModel: HomeCategoryItemUiModel): Int = HomeCategoryItemViewHolder.LAYOUT
+    override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
+
     override fun type(uiModel: HomeChooseAddressWidgetUiModel): Int = HomeChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
@@ -52,6 +54,7 @@ class HomeAdapterTypeFactory(
             // region Toko Mart Home Component
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view, homeCategoryGridlistener)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view, homeCategoryItemListener)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowListener, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener)

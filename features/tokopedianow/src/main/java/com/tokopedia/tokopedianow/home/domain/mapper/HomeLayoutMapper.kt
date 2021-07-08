@@ -10,6 +10,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.BANNER_
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.CATEGORY
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.LEGO_6_IMAGE
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -18,6 +19,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TIC
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -43,7 +45,8 @@ object HomeLayoutMapper {
         CATEGORY,
         LEGO_3_IMAGE,
         LEGO_6_IMAGE,
-        BANNER_CAROUSEL
+        BANNER_CAROUSEL,
+        PRODUCT_RECOM
     )
 
     fun addLoadingIntoList(): List<HomeLayoutItemUiModel> {
@@ -85,6 +88,15 @@ object HomeLayoutMapper {
         response: HomeLayoutResponse
     ): List<HomeLayoutItemUiModel> {
         return updateItemById(item.visitableId()) {
+            mapToHomeUiModel(response, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun List<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(
+        item: HomeLayoutUiModel,
+        response: HomeLayoutResponse
+    ): List<HomeLayoutItemUiModel> {
+        return updateItemById(item.visitableId) {
             mapToHomeUiModel(response, HomeLayoutItemState.LOADED)
         }
     }
@@ -132,6 +144,7 @@ object HomeLayoutMapper {
             CATEGORY -> mapToCategoryLayout(response, state)
             LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response, state)
             BANNER_CAROUSEL -> mapSliderBannerModel(response, state)
+            PRODUCT_RECOM -> mapProductRecomDataModel(response, state)
             else -> null
         }
     }

@@ -17,6 +17,7 @@ object ConstantKey {
     const val AB_TEST_VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
     const val AB_TEST_VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
-    //applink default
+    //default value
     const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+    const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
 }
