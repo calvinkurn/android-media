@@ -637,7 +637,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
         }
 
-        viewModel.registerCheckFingerprint()
+        checkFingerprintAvailability()
 
         partialActionButton?.text = getString(R.string.next)
         partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
@@ -691,11 +691,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    fun disableFingerprint() {
+    private fun checkFingerprintAvailability() {
+        if(!GlobalConfig.isSellerApp()) {
+            viewModel.registerCheckFingerprint()
+        }
+    }
+
+    private fun disableFingerprint() {
         fingerprint_btn.hide()
     }
 
-    fun enableFingerprint() {
+    private fun enableFingerprint() {
         fingerprint_btn?.apply {
             setLeftDrawableForFingerprint()
             show()
