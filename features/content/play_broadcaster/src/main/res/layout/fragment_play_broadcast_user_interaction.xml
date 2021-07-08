@@ -30,7 +30,7 @@
     <com.tokopedia.play.broadcaster.view.custom.PlayTimerView
         android:id="@+id/view_timer"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/play_stats_info_counter_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,10 +68,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_product_tag"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_light_gray_circle"
         app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,10 +89,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_share_link"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_light_gray_circle"
         app:layout_constraintBottom_toBottomOf="parent"

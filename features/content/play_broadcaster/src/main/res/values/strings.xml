@@ -22,7 +22,7 @@
 
     <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
     <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
-    <string name="play_action_bar_end">End</string>
+    <string name="play_action_bar_end">Akhiri</string>
 
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
     <string name="play_permit_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
