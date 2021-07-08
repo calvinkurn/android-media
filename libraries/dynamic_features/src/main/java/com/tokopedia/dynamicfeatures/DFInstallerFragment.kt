@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
@@ -44,7 +45,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     private var freeInternalStorageBeforeDownload = 0L
     private var startDownloadTimeStamp = 0L
     private var endDownloadTimeStamp = 0L
-    private lateinit var manager: SplitInstallManager
+    private var manager: SplitInstallManager? = null
     private var progressBar: ProgressBar? = null
     private var imageView: ImageView? = null
     private var successInstall = false
@@ -54,6 +55,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     private var downloadTimes = 0
     private var startDownloadPercentage = -1f
     private var moduleSize = 0L
+    private var sessionId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,8 +63,41 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
     }
 
+    /** Listener used to handle changes in state for install requests. */
+    private val listener = SplitInstallStateUpdatedListener { state ->
+        if (state.sessionId() != sessionId) {
+            return@SplitInstallStateUpdatedListener
+        }
+        when (state.status()) {
+            SplitInstallSessionStatus.DOWNLOADING -> {
+                onDownload(state)
+            }
+            SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                /*
+                  This may occur when attempting to download a sufficiently large module.
+
+                  In order to see this, the application has to be uploaded to the Play Store.
+                  Then features can be requested until the confirmation path is triggered.
+                 */
+                onRequireUserConfirmation(state)
+            }
+            SplitInstallSessionStatus.INSTALLED -> {
+                onInstalled()
+            }
+
+            SplitInstallSessionStatus.INSTALLING -> {
+                onInstalling(state)
+            }
+            SplitInstallSessionStatus.FAILED -> {
+                onFailed(state.errorCode().toString())
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+        manager = DFInstaller.getManager(requireContext()) ?: return
+        manager?.registerListener(listener)
         moduleId = arguments?.getString("MODULE_ID").orEmpty()
         fragmentClassPathName = arguments?.getString("CLASS_PATH_NAME").orEmpty()
         val isAutoDownload = true
@@ -74,6 +109,11 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         } else {
 //            showOnBoardingView()
         }
+    }
+
+    override fun onPause() {
+        manager?.unregisterListener(listener)
+        super.onPause()
     }
 
     private fun redirectToDestinationFragment(){
@@ -135,15 +175,15 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
                 // Load and install the requested feature module.
                 startDownloadTimeStamp = System.currentTimeMillis()
-                manager.startInstall(request).addOnSuccessListener {
+                manager?.startInstall(request)?.addOnSuccessListener {
                     if (it == 0) {
                         onInstalled()
                     } else {
-//                        sessionId = it
+                        sessionId = it
                     }
-                }.addOnFailureListener { exception ->
+                }?.addOnFailureListener { exception ->
                     val errorCode = (exception as? SplitInstallException)?.errorCode
-//                    sessionId = null
+                    sessionId = null
 //                    onFailed(errorCode?.toString() ?: exception.toString())
                 }
             }
@@ -212,7 +252,6 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     }
 
     override fun onRequireUserConfirmation(state: SplitInstallSessionState) {
-        TODO("Not yet implemented")
     }
 
     override fun onInstalled() {
@@ -222,22 +261,20 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     }
 
     override fun onInstalling(state: SplitInstallSessionState) {
-        TODO("Not yet implemented")
     }
 
     override fun onFailed(errorString: String) {
-        TODO("Not yet implemented")
     }
 
     override fun getModuleNameView(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun getDeeplink(): String {
-        TODO("Not yet implemented")
+        return  ""
     }
 
     override fun getFallbackUrl(): String {
-        TODO("Not yet implemented")
+       return ""
     }
 }
