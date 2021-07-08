@@ -49,8 +49,8 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         hasInit = true
         clipToPadding = false
         clipChildren = false
-        val view = getChildAt(0) as? RecyclerView
-                ?: throw RuntimeException("RecyclerView should be the first child view.")
+        val view = findViewById<RecyclerView>(R.id.tokonowSearchCategoryRecyclerView)
+                ?: throw RuntimeException("StickySingleHeaderView should has child of RecyclerView.")
         mRecyclerView = view
 
         if (mRecyclerView == null) {

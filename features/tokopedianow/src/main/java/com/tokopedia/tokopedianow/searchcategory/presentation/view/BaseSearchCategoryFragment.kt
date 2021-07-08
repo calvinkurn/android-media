@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -109,6 +110,7 @@ abstract class BaseSearchCategoryFragment:
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
     protected var stickyView: StickySingleHeaderView? = null
+    protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
     protected var contentGroup: Group? = null
@@ -154,6 +156,7 @@ abstract class BaseSearchCategoryFragment:
 
         configureNavToolbar()
         configureStickyView()
+        configureSwipeRefreshLayout()
         configureStatusBar()
         configureRecyclerView()
         observeViewModel()
@@ -166,6 +169,7 @@ abstract class BaseSearchCategoryFragment:
         recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
         miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
         stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
+        swipeRefreshLayout = view.findViewById(R.id.tokonowSearchCategorySwipeRefreshLayout)
         statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
         headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
         contentGroup = view.findViewById(R.id.tokonowSearchCategoryContentGroup)
@@ -302,6 +306,12 @@ abstract class BaseSearchCategoryFragment:
         params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
 
         return params
+    }
+
+    private fun configureSwipeRefreshLayout() {
+        swipeRefreshLayout?.setOnRefreshListener {
+            getViewModel().onViewReloadPage()
+        }
     }
 
     private fun configureStatusBar() {
@@ -656,6 +666,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         loaderUnify?.showWithCondition(isLoadingVisible)
+        swipeRefreshLayout?.isRefreshing = isLoadingVisible
         recyclerView?.showWithCondition(!isLoadingVisible)
     }
 
