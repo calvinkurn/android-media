@@ -10,4 +10,5 @@ object BuyerOrderDetailMiscConstant {
     const val PATH_TOKOPEDIA_CARE = "help"
     const val DAGGER_ATC_QUERY_NAME = "atcMultiQuery"
     const val TICKER_KEY_SHIPPING_INFO = "shipping_info_ticker"
+    const val WAITING_INVOICE_ORDER_ID = "0"
 }

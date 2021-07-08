@@ -11,6 +11,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
         jcenter()
