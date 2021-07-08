@@ -135,7 +135,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 // TODO: 06/07/21 validate tokonow pinpoint
-                if (result.orderProfile.shipment.isDisableChangeCourier && result.orderProfile.address.hasNoPinpoint) {
+                if (result.orderProfile.isDisableChangeCourierAndNeedPinpoint()) {
                     orderShipment.value = orderShipment.value.copy(isLoading = false, serviceName = "", needPinpoint = true)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 } else {

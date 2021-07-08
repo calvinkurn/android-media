@@ -19,6 +19,8 @@ data class ShopDataResponse(
         val isGoldBadge: Boolean = false,
         @SerializedName("is_official")
         val isOfficial: Int = 0,
+        @SerializedName("is_tokonow")
+        val isTokoNow: Boolean = false,
         @SerializedName("postal_code")
         val postalCode: String = "",
         @SerializedName("latitude")

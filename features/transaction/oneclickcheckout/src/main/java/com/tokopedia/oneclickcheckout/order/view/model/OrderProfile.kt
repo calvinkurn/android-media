@@ -14,6 +14,10 @@ data class OrderProfile(
 ) {
     val isValidProfile: Boolean
         get() = address.addressId > 0 && payment.gatewayCode.isNotEmpty()
+
+    fun isDisableChangeCourierAndNeedPinpoint(): Boolean {
+        return shipment.isDisableChangeCourier && address.hasNoPinpoint
+    }
 }
 
 data class OrderProfileAddress(

@@ -12,7 +12,17 @@ data class UpdateCartOccRequest(
         @SerializedName("chosen_address")
         var chosenAddress: ChosenAddress? = null,
         @SerializedName("skip_shipping_validation")
-        val skipShippingValidation: Boolean = false
+        val skipShippingValidation: Boolean = false,
+        @SerializedName("source")
+        val source: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("shipping_id")
+        val shippingId: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("sp_id")
+        val spId: Int = 0,
+        @SerializedName("is_free_shipping_selected")
+        val isFreeShippingSelected: Boolean = false
 )
 
 data class UpdateCartOccCartRequest(
