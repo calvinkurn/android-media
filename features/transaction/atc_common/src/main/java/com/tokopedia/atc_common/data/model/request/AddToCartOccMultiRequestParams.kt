@@ -3,12 +3,11 @@ package com.tokopedia.atc_common.data.model.request
 data class AddToCartOccMultiRequestParams(
         var carts: List<AddToCartOccMultiCartParam>,
         var lang: String = "id",
-        var source: String = SOURCE_OTHERS,
+        var source: String = SOURCE_PDP,
 ) {
     companion object {
         const val SOURCE_PDP = "pdp"
         const val SOURCE_MINICART = "minicart"
-        const val SOURCE_OTHERS = "others"
     }
 }
 

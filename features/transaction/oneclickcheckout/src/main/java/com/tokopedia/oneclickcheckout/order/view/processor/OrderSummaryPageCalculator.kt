@@ -11,12 +11,15 @@ import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.ceil
 
 class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                      private val executorDispatchers: CoroutineDispatchers) {
+
+    val total: MutableSharedFlow<Pair<OrderPayment, OrderTotal>> = MutableSharedFlow()
 
     private fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
         return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() /*&& !orderCart.product.quantity.isStateError*/)
@@ -197,6 +200,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             }
             return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
+        total.emit(result)
         OccIdlingResource.decrement()
         return result
     }

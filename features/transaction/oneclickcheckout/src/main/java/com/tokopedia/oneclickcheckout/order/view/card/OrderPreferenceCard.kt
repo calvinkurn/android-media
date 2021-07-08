@@ -75,7 +75,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         binding.apply {
             if (!profile.enable) {
                 renderDisabledShipping()
-            } else if (shipping?.serviceName == null) {
+            } else if (shipping == null || shipping.isLoading || shipping.serviceName == null) {
                 renderLoadingShipping()
             } else if (!profile.shipment.isDisableChangeCourier) {
                 loaderShipping.gone()

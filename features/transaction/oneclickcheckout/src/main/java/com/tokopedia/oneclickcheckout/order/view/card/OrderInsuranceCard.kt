@@ -17,9 +17,9 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         const val VIEW_TYPE = 5
     }
 
-    fun setupInsurance(insuranceData: InsuranceData?, productId: String) {
+    fun setupInsurance(insuranceData: InsuranceData?, isShipmentLoading: Boolean, productId: String) {
         binding.apply {
-            if (insuranceData != null) {
+            if (insuranceData != null && !isShipmentLoading) {
                 if (insuranceData.insurancePrice > 0) {
                     tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false).removeDecimalSuffix()
                     tvInsurancePrice.visible()

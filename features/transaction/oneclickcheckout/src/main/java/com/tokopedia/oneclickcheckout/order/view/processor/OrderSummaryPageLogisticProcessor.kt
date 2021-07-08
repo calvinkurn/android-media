@@ -145,6 +145,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     // overweight
                     return@withContext ResultRates(
                             orderShipment = OrderShipment(
+                                    isLoading = false,
                                     serviceName = orderProfile.shipment.serviceName,
                                     serviceDuration = orderProfile.shipment.serviceDuration,
                                     serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
@@ -165,7 +166,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
 
                 if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {
                     return@withContext ResultRates(
-                            OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null),
+                            OrderShipment(isLoading = false, serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null),
                             currPromo,
                             null, null, null
                     )
@@ -173,7 +174,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 val shippingDurationUiModels: MutableList<ShippingDurationUiModel> = shippingRecommendationData.shippingDurationViewModels
                 if (shippingDurationUiModels.isEmpty()) {
                     return@withContext ResultRates(
-                            OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null),
+                            OrderShipment(isLoading = false, serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null),
                             currPromo,
                             null, null, null
                     )
@@ -220,6 +221,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             } catch (t: Throwable) {
                 return@withContext ResultRates(
                         OrderShipment(
+                                isLoading = false,
                                 serviceName = orderProfile.shipment.serviceName,
                                 serviceDuration = orderProfile.shipment.serviceDuration,
                                 serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
@@ -245,6 +247,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return Pair(
                     OrderShipment(
+                            isLoading = false,
                             serviceName = shipping.serviceName,
                             serviceDuration = shipping.serviceDuration,
                             serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE,
@@ -255,6 +258,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
             return Pair(
                     OrderShipment(
+                            isLoading = false,
                             serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                             serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                             serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
@@ -281,7 +285,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
         }
         return Pair(
-                shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                shipping.copy(isLoading = false,
+                        shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                         shipperId = selectedShippingCourierUiModel.productData.shipperId,
                         ratesId = selectedShippingCourierUiModel.ratesId,
                         ut = selectedShippingCourierUiModel.productData.unixTime,
@@ -328,7 +333,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             it.isSelected = it.productData.shipperProductId == selectedShippingCourierUiModel.productData.shipperProductId
         }
         return Triple(
-                OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                OrderShipment(isLoading = false,
+                        shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                         shipperId = selectedShippingCourierUiModel.productData.shipperId,
                         ratesId = selectedShippingCourierUiModel.ratesId,
                         ut = selectedShippingCourierUiModel.productData.unixTime,
@@ -375,7 +381,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             // Recommendation Courier not available
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return Triple(
-                    OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
+                    OrderShipment(isLoading = false, serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
                     null,
                     null)
         }
@@ -383,6 +389,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
             return Triple(
                     OrderShipment(
+                            isLoading = false,
                             serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                             serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                             serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
@@ -407,7 +414,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
         }
         return Triple(
-                OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                OrderShipment(isLoading = false,
+                        shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                         shipperId = selectedShippingCourierUiModel.productData.shipperId,
                         ratesId = selectedShippingCourierUiModel.ratesId,
                         ut = selectedShippingCourierUiModel.productData.unixTime,
@@ -446,6 +454,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
     fun generateOrderErrorResultRates(orderProfile: OrderProfile): ResultRates {
         return ResultRates(
                 orderShipment = OrderShipment(
+                        isLoading = false,
                         serviceName = orderProfile.shipment.serviceName,
                         serviceDuration = orderProfile.shipment.serviceDuration,
                         serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
@@ -558,6 +567,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             var newShipping = shipping.copy(
+                    isLoading = false,
                     needPinpoint = flagNeedToSetPinpoint,
                     serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else selectedShippingCourierUiModel.productData.error?.errorMessage,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
@@ -610,7 +620,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
                 val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 return Pair(
-                        shipping.copy(shippingRecommendationData = shippingRecommendationData,
+                        shipping.copy(isLoading = false,
+                                shippingRecommendationData = shippingRecommendationData,
                                 isServicePickerEnable = true,
                                 insuranceData = logisticPromoShipping.productData?.insurance,
                                 serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
@@ -646,7 +657,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             val shippingDuration = shippingRecommendationData.shippingDurationViewModels.first { it.serviceData.serviceId == logisticPromoShipping.serviceData.serviceId }
             shippingDuration.isSelected = true
             shippingDuration.shippingCourierViewModelList.first { it.productData.shipperProductId == logisticPromoShipping.productData.shipperProductId }.isSelected = true
-            return orderShipment.copy(shippingRecommendationData = shippingRecommendationData,
+            return orderShipment.copy(isLoading = false,
+                    shippingRecommendationData = shippingRecommendationData,
                     isApplyLogisticPromo = false,
                     logisticPromoShipping = null,
                     logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")

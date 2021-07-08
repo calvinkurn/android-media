@@ -73,6 +73,8 @@ import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewActivity
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
+import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -85,6 +87,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import dagger.Lazy
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -126,7 +129,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
             }
         } catch (t: Throwable) {
-            t.printStackTrace()
+            Timber.d(t)
         }
     }
 
@@ -268,7 +271,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
-        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getNewOrderPreferenceCardListener(),
+        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getOrderPreferenceCardListener(),
                 getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())
         binding.rvOrderSummaryPage.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrderSummaryPage.adapter = adapter
@@ -893,22 +896,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getNewOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
-
-        fun onAddressChange(addressModel: RecipientAddressModel) {
-            orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
-            viewModel.chooseAddress(addressModel)
-        }
-
-        fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
-            orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
-            viewModel.chooseCourier(shippingCourierViewModel)
-        }
-
-        fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-            orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
-            viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
-        }
+    private fun getOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
 
         override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
             orderSummaryAnalytics.eventChooseBboAsDuration()
@@ -924,7 +912,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
                 AddressListBottomSheet(getAddressCornerUseCase.get(), object : AddressListBottomSheet.AddressListBottomSheetListener {
                     override fun onSelect(addressModel: RecipientAddressModel) {
-                        onAddressChange(addressModel)
+                        orderSummaryAnalytics.eventClickSelectedAddressOption(addressModel.id, userSession.get().userId)
+                        viewModel.chooseAddress(addressModel)
                     }
 
                     override fun onAddAddress(token: Token?) {
@@ -951,7 +940,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
                 ShippingCourierOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingCourierOccBottomSheetListener {
                     override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
-                        onCourierChange(shippingCourierViewModel)
+                        orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
+                        viewModel.chooseCourier(shippingCourierViewModel)
                     }
 
                     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
@@ -970,7 +960,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 ShippingDurationOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingDurationOccBottomSheetListener {
                     override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-                        onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                        orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
+                        viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
                     }
 
                     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
@@ -1332,7 +1323,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun setSourceFromPDP() {
-        source = SOURCE_PDP
+        var sourceArgs = arguments?.getString(QUERY_SOURCE, SOURCE_PDP)
+        if (sourceArgs != SOURCE_PDP && sourceArgs != SOURCE_MINICART) {
+            sourceArgs = SOURCE_PDP
+        }
+        source = sourceArgs
     }
 
     private fun showToasterSuccess() {
@@ -1368,19 +1363,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_ADD_NEW_ADDRESS = 21
 
         const val QUERY_PRODUCT_ID = "product_id"
+        const val QUERY_SOURCE = "source"
 
         private const val NO_ADDRESS_IMAGE = "https://images.tokopedia.net/img/android/cart/ic_occ_no_address.png"
 
-        private const val SOURCE_PDP = "pdp"
         private const val SOURCE_OTHERS = "others"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
         @JvmStatic
-        fun newInstance(productId: String?): OrderSummaryPageFragment {
+        fun newInstance(productId: String?, source: String?): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
                     putString(QUERY_PRODUCT_ID, productId)
+                    putString(QUERY_SOURCE, source)
                 }
             }
         }

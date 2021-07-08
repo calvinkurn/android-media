@@ -7,6 +7,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 
 data class OrderShipment(
+        val isLoading: Boolean = false,
         val serviceName: String? = null,
         val serviceId: Int? = null,
         val serviceDuration: String? = null,

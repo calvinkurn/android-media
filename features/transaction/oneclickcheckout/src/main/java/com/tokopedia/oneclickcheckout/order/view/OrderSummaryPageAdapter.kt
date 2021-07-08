@@ -95,7 +95,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setPayment(payment)
             }
             is OrderInsuranceCard -> {
-                holder.setupInsurance(insurance, product!!.productId.toString())
+                holder.setupInsurance(insurance, shipment.isLoading, product!!.productId.toString())
             }
             is OrderPromoCard -> {
                 holder.setupButtonPromo(promo)
