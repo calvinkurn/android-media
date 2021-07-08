@@ -491,17 +491,17 @@ class TokoNowHomeFragment: Fragment(),
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-            miniCartWidget.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
-            miniCartWidget.show()
+            miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
+            miniCartWidget?.show()
         } else {
-            miniCartWidget.hide()
+            miniCartWidget?.hide()
         }
     }
 
     private fun setupPadding(data: MiniCartSimplifiedData) {
-        miniCartWidget.post {
-            val paddingBottom = if(data.isShowMiniCartWidget) {
-                miniCartWidget.height
+        miniCartWidget?.post {
+            val paddingBottom = if (data.isShowMiniCartWidget) {
+                miniCartWidget?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()

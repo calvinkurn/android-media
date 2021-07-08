@@ -45,9 +45,7 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            initLoadMonitoring()
-        }
+        initLoadMonitoring()
         super.onCreate(savedInstanceState)
         overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
         setupWindowColor()
