@@ -9,7 +9,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".*",
       "eventAction": "view empty favorite number",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+"
     },
     {
@@ -19,7 +19,7 @@
       "event": "digitalGeneralEvent",
       "userId": ".+",
       "eventAction": "view coachmark",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+"
     },
     {
@@ -29,7 +29,7 @@
       "event": "digitalGeneralEvent",
       "userId": ".*",
       "eventAction": "click lanjut transaksi",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -39,7 +39,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".+",
       "eventAction": "click kebab menu",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -49,7 +49,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".+",
       "eventAction": "view edit bottom sheet",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -59,7 +59,7 @@
       "event": "digitalGeneralEvent",
       "userId": ".+",
       "eventAction": "click simpan on edit bottom sheet",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -69,7 +69,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".+",
       "eventAction": "view deletion pop up",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -79,7 +79,7 @@
       "event": "digitalGeneralEvent",
       "userId": ".+",
       "eventAction": "click hapus on deletion pop up",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -89,7 +89,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".+",
       "eventAction": "view deletion success toaster",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     },
     {
@@ -99,7 +99,7 @@
       "event": "digitalGeneralEventIris",
       "userId": ".+",
       "eventAction": "view deletion failed toaster",
-      "sessionIris": ".*",
+      "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     }
   ]
