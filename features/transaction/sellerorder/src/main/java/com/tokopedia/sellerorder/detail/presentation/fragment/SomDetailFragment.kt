@@ -160,6 +160,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var bottomSheetCourierProblems: SomBottomSheetCourierProblem? = null
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
+    private var bottomSheetChangeAwb: SomOrderEditAwbBottomSheet? = null
 
     protected var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
@@ -896,23 +897,27 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionUbahNoResi() {
+        bottomSheetChangeAwb = bottomSheetChangeAwb ?: initSomOrderEditAwbBottomSheet()
         view?.let {
             if (it is ViewGroup) {
-                SomOrderEditAwbBottomSheet(it.context).apply {
-                    setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
-                        override fun onEditAwbButtonClicked(cancelNotes: String) {
-                            doEditAwb(cancelNotes)
-                        }
-                    })
+                bottomSheetChangeAwb?.apply {
                     init(it)
-                    hideKnob()
-                    showCloseButton()
                     show()
                 }
-                return
             }
         }
-        showErrorToaster("Terjadi kesalahan, silahkan coba lagi.")
+    }
+
+    private fun initSomOrderEditAwbBottomSheet(): SomOrderEditAwbBottomSheet? {
+        return context?.let { context ->
+            SomOrderEditAwbBottomSheet(context).apply {
+                setListener(object : SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener {
+                    override fun onEditAwbButtonClicked(cancelNotes: String) {
+                        doEditAwb(cancelNotes)
+                    }
+                })
+            }
+        }
     }
 
     private fun doEditAwb(shippingRef: String) {
@@ -1482,6 +1487,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         bottomSheetDismissed = bottomSheetBuyerNoResponse?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetBuyerOtherReason?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetSetDelivered?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetChangeAwb?.dismiss() == true || bottomSheetDismissed
         return bottomSheetDismissed
     }
 
