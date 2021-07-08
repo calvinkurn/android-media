@@ -15,20 +15,19 @@
         android:adjustViewBounds="true"
         android:src="@drawable/ic_play_switch_camera_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl6"
+        android:layout_marginLeft="@dimen/spacing_lvl8"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:layout_marginRight="@dimen/spacing_lvl8"
         android:gravity="center"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintEnd_toStartOf="@+id/iv_close"
-        app:layout_constraintStart_toEndOf="@+id/iv_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
@@ -42,9 +41,9 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
         android:src="@drawable/iconunify_close"
+        app:layout_constraintBottom_toBottomOf="@id/iv_switch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_switch"
-        app:layout_constraintBottom_toBottomOf="@id/iv_switch"
         tools:visibility="visible"
         />
 

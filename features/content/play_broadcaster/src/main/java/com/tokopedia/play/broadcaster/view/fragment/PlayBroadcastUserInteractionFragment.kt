@@ -141,7 +141,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupView() {
-        actionBarView.setupCloseButton(getString(R.string.play_action_bar_end))
+        actionBarView.setActionTitle(getString(R.string.play_action_bar_end))
         ivShareLink.setOnClickListener{
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.title)
