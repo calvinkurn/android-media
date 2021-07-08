@@ -5,18 +5,18 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingEnd="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvBuyerOrderDetailDropShipperLabel"
+        android:id="@+id/tvBuyerOrderDetailCopyableLabel"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:text="@string/label_dropshipper"
+        android:text="@string/label_awb_number"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailCopy"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,28 +24,29 @@
         app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvBuyerOrderDetailDropShipperNameValue"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDropShipperLabel"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Leonardy" />
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icBuyerOrderDetailCopy"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_N700_96"
+        app:icon_name="COPY"
+        app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailCopyableLabel"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailCopyableLabel"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailCopyableLabel" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvBuyerOrderDetailDropShipperPhoneNumberValue"
+        android:id="@+id/tvBuyerOrderDetailCopyableValue"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailDropShipperNameValue"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailCopyableLabel"
         app:typographyType="body_3"
-        tools:text="08123456789" />
+        tools:text="BOOE900142127415" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
