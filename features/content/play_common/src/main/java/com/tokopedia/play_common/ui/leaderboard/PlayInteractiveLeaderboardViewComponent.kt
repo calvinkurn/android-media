@@ -41,7 +41,7 @@ class PlayInteractiveLeaderboardViewComponent(
                     id = "${child + 1}",
                     name = listOf("Nick", "Elon", "Selena", "Suzane", "Eggy").random(),
                     imageUrl = "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg",
-                    allowChat = true
+                    allowChat = { true }
                 )
             },
             otherParticipantText =  if (it%2 == 1) "" else "Dari 100 peserta game"

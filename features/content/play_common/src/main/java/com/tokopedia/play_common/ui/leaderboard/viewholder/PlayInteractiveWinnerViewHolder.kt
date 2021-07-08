@@ -36,7 +36,7 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
 
         handleFirstWinner(winner)
 
-        if (winner.allowChat) {
+        if (winner.allowChat()) {
             iconChat.show()
             iconChat.setOnClickListener { listener.onChatButtonClicked(winner, adapterPosition) }
         } else {

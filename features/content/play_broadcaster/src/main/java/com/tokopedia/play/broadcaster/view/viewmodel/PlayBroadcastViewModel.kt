@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -459,7 +460,7 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
         try {
             val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
-            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse)
+            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusher.pusherState == ApsaraLivePusherState.Stop }
             _observableLeaderboardInfo.value = leaderboard
             _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious)
         } catch (e: Throwable) {

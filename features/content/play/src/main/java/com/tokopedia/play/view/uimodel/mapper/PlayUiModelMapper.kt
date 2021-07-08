@@ -58,6 +58,6 @@ class PlayUiModelMapper @Inject constructor(
     }
 
     fun mapInteractiveLeaderboard(input: GetInteractiveLeaderboardResponse): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapLeaderboard(input)
+        return interactiveLeaderboardMapper.mapLeaderboard(input) { false }
     }
 }

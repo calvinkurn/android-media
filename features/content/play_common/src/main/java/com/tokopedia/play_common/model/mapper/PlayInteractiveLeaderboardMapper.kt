@@ -13,27 +13,27 @@ import javax.inject.Inject
  */
 class PlayInteractiveLeaderboardMapper @Inject constructor() {
 
-    fun mapLeaderboard(response: GetInteractiveLeaderboardResponse) = PlayLeaderboardInfoUiModel(
-            leaderboardWinner = mapLeaderboardWinner(response.data.data),
+    fun mapLeaderboard(response: GetInteractiveLeaderboardResponse, isChatAllowed: () -> Boolean) = PlayLeaderboardInfoUiModel(
+            leaderboardWinner = mapLeaderboardWinner(response.data.data, isChatAllowed),
             totalParticipant = response.data.summary.totalParticipant.toString(),
             config = mapLeaderboardConfig(response.data.config)
     )
 
-    private fun mapLeaderboardWinner(leaderboardsResponse: List<GetInteractiveLeaderboardResponse.Data>): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
+    private fun mapLeaderboardWinner(leaderboardsResponse: List<GetInteractiveLeaderboardResponse.Data>, isChatAllowed: () -> Boolean): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
         PlayLeaderboardUiModel(
                 title = it.title,
-                winners = mapInteractiveWinner(it.winner),
+                winners = mapInteractiveWinner(it.winner, isChatAllowed),
                 otherParticipantText = it.otherParticipantCountText
         )
     }
 
-    private fun mapInteractiveWinner(winnersResponse: List<GetInteractiveLeaderboardResponse.Winner>) = winnersResponse.mapIndexed { index, winner ->
+    private fun mapInteractiveWinner(winnersResponse: List<GetInteractiveLeaderboardResponse.Winner>, isChatAllowed: () -> Boolean) = winnersResponse.mapIndexed { index, winner ->
         PlayWinnerUiModel(
                 rank = index + 1,
                 id = winner.userID.toString(),
                 name = winner.userName,
                 imageUrl = winner.imageUrl,
-                allowChat = GlobalConfig.isSellerApp()
+                allowChat = isChatAllowed
         )
     }
 
