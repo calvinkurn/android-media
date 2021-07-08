@@ -476,7 +476,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         ClientNumberType.TYPE_INPUT_TEL,
                         clientNumber,
                         operatorData,
-                        categoryId,
+                        topupAnalytics.getCategoryName(categoryId),
                         arrayListOf(
                                 TelcoCategoryType.CATEGORY_PULSA.toString(),
                                 TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),

@@ -21,7 +21,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
     protected lateinit var dgCategoryIds: ArrayList<String>
-    protected var currentCategoryId by Delegates.notNull<Int>()
+    protected var currentCategoryName = ""
     protected var operatorData: TelcoCatalogPrefixSelect? = null
 
     override fun getLayoutRes(): Int {
@@ -50,7 +50,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
         extras?.let {
             this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.number = extras.getString(EXTRA_NUMBER, "")
-            this.currentCategoryId = extras.getInt(EXTRA_DG_CATEGORY_ID, 0)
+            this.currentCategoryName = extras.getString(EXTRA_DG_CATEGORY_NAME, "")
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
             this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
         }
@@ -66,27 +66,27 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return TopupBillsFavoriteNumberFragment
-                .newInstance(clientNumberType, number, operatorData, currentCategoryId, dgCategoryIds)
+                .newInstance(clientNumberType, number, operatorData, currentCategoryName, dgCategoryIds)
     }
 
     companion object {
 
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_NUMBER = "EXTRA_NUMBER"
-        const val EXTRA_DG_CATEGORY_ID = "EXTRA_DG_CATEGORY_ID"
+        const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
         const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
 
         fun getCallingIntent(context: Context, clientNumberType: String,
                              number: String, catalogPrefixSelect: TelcoCatalogPrefixSelect,
-                             currentCategoryId: Int, digitalCategoryIds: ArrayList<String>
+                             currentCategoryName: String, digitalCategoryIds: ArrayList<String>
         ): Intent {
             val intent = Intent(context, TopupBillsFavoriteNumberActivity::class.java)
             val extras = Bundle()
             extras.putString(EXTRA_CLIENT_NUMBER, clientNumberType)
             extras.putString(EXTRA_NUMBER, number)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, digitalCategoryIds)
-            extras.putInt(EXTRA_DG_CATEGORY_ID, currentCategoryId)
+            extras.putString(EXTRA_DG_CATEGORY_NAME, currentCategoryName)
             extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, catalogPrefixSelect)
             intent.putExtras(extras)
             return intent

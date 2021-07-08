@@ -313,7 +313,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                             ClientNumberType.TYPE_INPUT_TEL,
                             clientNumber,
                             operatorData,
-                            categoryId,
+                            topupAnalytics.getCategoryName(categoryId),
                             arrayListOf(categoryId.toString())
                         )
                     },

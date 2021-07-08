@@ -126,8 +126,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberEmptyState(categoryId: Int, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventImpressionFavoriteNumberEmptyState(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -141,8 +140,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberCoachmark(categoryId: Int, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventImpressionFavoriteNumberCoachmark(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -156,8 +154,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberContinue(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventClickFavoriteNumberContinue(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -171,8 +168,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberKebabMenu(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventClickFavoriteNumberKebabMenu(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -186,8 +182,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionEditBottomSheet(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventImpressionEditBottomSheet(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -201,8 +196,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberSaveBottomSheet(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventClickFavoriteNumberSaveBottomSheet(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -216,8 +210,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberDeletePopUp(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventImpressionFavoriteNumberDeletePopUp(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -231,8 +224,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberConfirmDelete(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventClickFavoriteNumberConfirmDelete(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
@@ -246,8 +238,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberSuccessDeleteToaster(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventImpressionFavoriteNumberSuccessDeleteToaster(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -261,8 +252,7 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionFavoriteNumberFailedDeleteToaster(categoryId: Int, operatorName: String, userId: String) {
-        val categoryName = getTrackingCategoryName(categoryId)
+    fun eventImpressionFavoriteNumberFailedDeleteToaster(categoryName: String, operatorName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
@@ -274,19 +264,5 @@ class CommonTopupBillsAnalytics {
                         General.Key.USER_ID, userId
                 )
         )
-    }
-
-    private fun getTrackingCategoryName(categoryId: Int): String {
-        return getCategoryName(categoryId).toLowerCase(Locale.getDefault())
-    }
-
-    private fun getCategoryName(categoryId: Int): String {
-        return when (categoryId) {
-            RechargeCategory.ID.PULSA -> RechargeCategory.Name.PULSA
-            RechargeCategory.ID.PAKET_DATA -> RechargeCategory.Name.PAKET_DATA
-            RechargeCategory.ID.ROAMING -> RechargeCategory.Name.ROAMING
-            RechargeCategory.ID.PASCABAYAR -> RechargeCategory.Name.PASCABAYAR
-            else -> throw MessageErrorException("Category ID have to be defined in RechargeCategory")
-        }
     }
 }

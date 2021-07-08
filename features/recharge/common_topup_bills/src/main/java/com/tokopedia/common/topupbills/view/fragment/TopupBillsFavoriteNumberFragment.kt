@@ -62,8 +62,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 import kotlin.properties.Delegates
 
 class TopupBillsFavoriteNumberFragment :
@@ -93,7 +94,7 @@ class TopupBillsFavoriteNumberFragment :
     private lateinit var localCacheHandler: LocalCacheHandler
     protected lateinit var inputNumberActionType: InputNumberActionType
 
-    private var currentCategoryId by Delegates.notNull<Int>()
+    private var currentCategoryName = ""
     private var number: String = ""
 
     private var binding: FragmentFavoriteNumberBinding? = null
@@ -116,7 +117,7 @@ class TopupBillsFavoriteNumberFragment :
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
-            currentCategoryId = arguments.getInt(ARG_PARAM_DG_CURRENT_CATEGORY_ID, 0)
+            currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
         }
 
         operatorData?.rechargeCatalogPrefixSelect?.let { saveTelcoOperator(it) }
@@ -233,7 +234,7 @@ class TopupBillsFavoriteNumberFragment :
         } else {
             numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
             commonTopupBillsAnalytics.eventImpressionFavoriteNumberEmptyState(
-                    currentCategoryId, userSession.userId)
+                    currentCategoryName, userSession.userId)
         }
         binding?.commonTopupbillsFavoriteNumberClue?.run {
             if (clientNumbers.isNullOrEmpty()) hide() else show()
@@ -334,7 +335,7 @@ class TopupBillsFavoriteNumberFragment :
     override fun onContinueClicked() {
         val clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
         commonTopupBillsAnalytics.eventClickFavoriteNumberContinue(
-                currentCategoryId, getOperatorNameByPrefix(clientNumber), userSession.userId
+                currentCategoryName, getOperatorNameByPrefix(clientNumber), userSession.userId
         )
         navigateToPDP(InputNumberActionType.MANUAL)
     }
@@ -417,7 +418,7 @@ class TopupBillsFavoriteNumberFragment :
 
         val operatorName = getOperatorNameById(deletedFavoriteNumber.operatorID)
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberSuccessDeleteToaster(
-                currentCategoryId, operatorName, userSession.userId)
+                currentCategoryName, operatorName, userSession.userId)
     }
 
     private fun onFailedDeleteClientName() {
@@ -498,7 +499,7 @@ class TopupBillsFavoriteNumberFragment :
             }, COACH_MARK_START_DELAY)
         }
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberCoachmark(
-                currentCategoryId, userSession.userId
+                currentCategoryName, userSession.userId
         )
     }
 
@@ -514,7 +515,7 @@ class TopupBillsFavoriteNumberFragment :
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val operatorName = getOperatorNameById(favNumberItem.operatorId)
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
-                currentCategoryId, operatorName, userSession.userId)
+                currentCategoryName, operatorName, userSession.userId)
 
         val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(
                 favNumberItem, this)
@@ -524,7 +525,7 @@ class TopupBillsFavoriteNumberFragment :
     override fun onChangeNameMenuClicked(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val operatorName = getOperatorNameById(favNumberItem.operatorId)
         commonTopupBillsAnalytics.eventImpressionEditBottomSheet(
-                currentCategoryId, operatorName, userSession.userId)
+                currentCategoryName, operatorName, userSession.userId)
 
         val bottomSheet = FavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
         bottomSheet.show(childFragmentManager, "")
@@ -537,7 +538,7 @@ class TopupBillsFavoriteNumberFragment :
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val operatorName = getOperatorNameById(favNumberItem.operatorId)
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
-                currentCategoryId, operatorName, userSession.userId)
+                currentCategoryName, operatorName, userSession.userId)
 
         val isDelete = false
         showShimmering()
@@ -577,14 +578,14 @@ class TopupBillsFavoriteNumberFragment :
 
         val operatorName = getOperatorNameById(favNumberItem.operatorId)
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberDeletePopUp(
-                currentCategoryId, operatorName, userSession.userId
+                currentCategoryName, operatorName, userSession.userId
         )
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         val operatorName = getOperatorNameById(favNumberItem.operatorId)
         commonTopupBillsAnalytics.eventClickFavoriteNumberConfirmDelete(
-                currentCategoryId, operatorName, userSession.userId
+                currentCategoryName, operatorName, userSession.userId
         )
 
         val isDelete = true
@@ -602,7 +603,7 @@ class TopupBillsFavoriteNumberFragment :
                 FavoriteNumberActionType.DELETE
         ) {
             commonTopupBillsAnalytics.eventImpressionFavoriteNumberFailedDeleteToaster(
-                    currentCategoryId, operatorName, userSession.userId
+                    currentCategoryName, operatorName, userSession.userId
             )
         }
     }
@@ -662,8 +663,8 @@ class TopupBillsFavoriteNumberFragment :
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
-        const val ARG_PARAM_DG_CURRENT_CATEGORY_ID = "ARG_PARAM_DG_CURRENT_CATEGORY_ID"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
+        const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val COACH_MARK_START_DELAY: Long = 200
         const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
@@ -672,13 +673,13 @@ class TopupBillsFavoriteNumberFragment :
 
         fun newInstance(clientNumberType: String, number: String,
                         operatorData: TelcoCatalogPrefixSelect?,
-                        currentCategoryId: Int, digitalCategoryIds: ArrayList<String>
+                        categoryName: String, digitalCategoryIds: ArrayList<String>
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
-            bundle.putInt(ARG_PARAM_DG_CURRENT_CATEGORY_ID, currentCategoryId)
+            bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(Locale.getDefault()))
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
             fragment.arguments = bundle
