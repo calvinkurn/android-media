@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleRegistry
 import com.tokopedia.sellerorder.common.domain.model.*
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
@@ -10,10 +12,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     @get:Rule
@@ -43,10 +42,20 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     var orderId = "1234567890"
     var invoice = "INV/20200922/XX/IX/123456789"
 
+    protected lateinit var lifecycle: LifecycleRegistry
+
     @Before
     open fun setUp() {
         MockKAnnotations.init(this)
         listMsg = arrayListOf("msg1")
+        lifecycle = LifecycleRegistry(mockk()).apply {
+            handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        }
+    }
+
+    @After
+    fun finish() {
+        unmockkAll()
     }
 
     @Test

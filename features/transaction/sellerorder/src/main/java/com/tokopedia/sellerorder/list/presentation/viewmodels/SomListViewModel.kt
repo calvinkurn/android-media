@@ -64,7 +64,6 @@ class SomListViewModel @Inject constructor(
     private var retryCount = 0
 
     private var retryRequestPickup = 0
-    private var orderIdsRequestPickup = listOf<String>()
 
     private var getOrderListJob: Job? = null
     private var getFiltersJob: Job? = null
@@ -143,7 +142,7 @@ class SomListViewModel @Inject constructor(
 
     val bulkRequestPickupFinalResult = MediatorLiveData<BulkRequestPickupState>()
 
-    private val _bulkRequestPickupStatusResult = MediatorLiveData<Result<MultiShippingStatusUiModel>>().apply {
+    val bulkRequestPickupStatusResult = MediatorLiveData<Result<MultiShippingStatusUiModel>>().apply {
         addSource(_bulkRequestPickupResult) {
             when (it) {
                 is Success -> {
@@ -185,37 +184,39 @@ class SomListViewModel @Inject constructor(
             }
         }
 
-        bulkRequestPickupFinalResult.addSource(_bulkRequestPickupStatusResult) {
+        bulkRequestPickupFinalResult.addSource(bulkRequestPickupStatusResult) {
             when (it) {
                 is Success -> {
                     val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
                     val orderIdListFail = it.data.listError.map { listError -> listError.orderId.toString() }
-                    val totalNotEligible = orderIdsRequestPickup.size - requestPickupUiModel?.data?.totalOnProcess.orZero()
+                    val totalNotEligible = requestPickupUiModel?.errors?.size?.toLong().orZero()
+                    val totalOrderIds = requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
 
-                    if (it.data.success == it.data.total_order && orderIdsRequestPickup.size.toLong() == it.data.total_order) {
+                    if (it.data.success == it.data.total_order && totalOrderIds == it.data.total_order && it.data.success > 0) {
                         // case 2 When All Orders Success
                         bulkRequestPickupFinalResult.postValue(AllSuccess(it.data.success))
                     } else if (it.data.total_order != it.data.processed && retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
                         retryRequestPickup++
                         getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
                     } else {
-                        // case 4 When partial success but there's failed
-                        if (it.data.success + it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0) {
-                            bulkRequestPickupFinalResult.postValue(PartialSuccess(it.data.success, orderIdListFail))
-                        }
-                        // case 5 when partial success but there's not eligible and failed
-                        else if (it.data.success == requestPickupUiModel?.data?.totalOnProcess && totalNotEligible > 0) {
+                        // case 3 when partial success but there's not eligible and failed
+                        if (it.data.success > 0 && it.data.fail > 0 && totalNotEligible > 0) {
                             bulkRequestPickupFinalResult.postValue(PartialSuccessNotEligibleFail(it.data.success, totalNotEligible, orderIdListFail))
-                        // case 6 when All Fail but there's not eligible
-                        } else if (it.data.fail == requestPickupUiModel?.data?.totalOnProcess && totalNotEligible > 0) {
+                        }
+                        // case 4 when All Fail but there's not eligible
+                        else if (it.data.fail == requestPickupUiModel?.data?.totalOnProcess && totalNotEligible > 0) {
                             bulkRequestPickupFinalResult.postValue(NotEligibleAndFail(totalNotEligible, orderIdListFail))
                         }
-                        //case 3 will happen fail bulk process due to all validation failed
+                        // case 5 When partial success but there's failed
+                        else if (it.data.success + it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0 && totalNotEligible == 0L) {
+                            bulkRequestPickupFinalResult.postValue(PartialSuccess(it.data.success, orderIdListFail))
+                        }
+                        //case 6 will happen fail bulk process due to all validation failed
                         else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_ALL_VALIDATION
                                         || requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_NOT_FOUND)) {
                             bulkRequestPickupFinalResult.postValue(AllValidationFail)
                         } else {
-                            // case 7 when already retry 10x but still its error
+                            //Case 7 will happen when after 10x retry is still fail
                             bulkRequestPickupFinalResult.postValue(FailRetry)
                         }
                     }
@@ -226,7 +227,7 @@ class SomListViewModel @Inject constructor(
                         retryRequestPickup++
                         getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
                     } else {
-                        //Case 7 will happen when there's a server error/down from BE
+                        //Case 8 will happen when there's a server error/down from BE
                         bulkRequestPickupFinalResult.postValue(ServerFail(it.throwable))
                     }
                 }
@@ -288,9 +289,9 @@ class SomListViewModel @Inject constructor(
         launchCatchError(block = {
             delay(wait)
             bulkShippingStatusUseCase.setParams(batchId)
-            _bulkRequestPickupStatusResult.postValue(Success(bulkShippingStatusUseCase.executeOnBackground()))
+            bulkRequestPickupStatusResult.postValue(Success(bulkShippingStatusUseCase.executeOnBackground()))
         }, onError = {
-            _bulkRequestPickupStatusResult.postValue(Fail(it))
+            bulkRequestPickupStatusResult.postValue(Fail(it))
         })
     }
 
@@ -320,8 +321,7 @@ class SomListViewModel @Inject constructor(
 
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
-            bulkRequestPickupFinalResult.postValue(ShowLoading(orderIds.size.toLong()))
-            orderIdsRequestPickup = orderIds
+            bulkRequestPickupFinalResult.value = ShowLoading(orderIds.size.toLong())
             retryRequestPickup = 0
             bulkRequestPickupUseCase.setParams(orderIds)
             _bulkRequestPickupResult.postValue(Success(bulkRequestPickupUseCase.executeOnBackground()))
