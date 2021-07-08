@@ -775,15 +775,11 @@ object DeeplinkDFMapper : CoroutineScope {
     }
 
     @JvmStatic
-    fun checkIfFragmentIsInstalled(className: String): Boolean? {
-        moduleDFMapper.forEach {
-            return if(it.logic(className)){
-                true
-            } else{
-                null
-            }
-        }
-        return null
+    fun checkIfFragmentIsInstalled(context: Context, className: String): Boolean? {
+        val moduleId = moduleDFMapper.firstOrNull {
+            it.logic(className)
+        }?.moduleId.orEmpty()
+        return getSplitManager(context)?.installedModules?.contains(moduleId)
     }
 
     @JvmStatic

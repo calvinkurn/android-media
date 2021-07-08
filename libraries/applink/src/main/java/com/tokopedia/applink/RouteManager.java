@@ -183,13 +183,12 @@ public class RouteManager {
     }
 
     public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
-        boolean isFragmentInstalled = DeeplinkDFMapper.checkIfFragmentIsInstalled(classPathName);
+        boolean isFragmentInstalled = DeeplinkDFMapper.checkIfFragmentIsInstalled(activity, classPathName);
         if (isFragmentInstalled) {
             return instantiateFragment(activity, classPathName, extras);
         } else {
-            return DeeplinkDFMapper.getFragmentDFDownloader(activity,classPathName);
+            return DeeplinkDFMapper.getFragmentDFDownloader(activity, classPathName);
         }
-
     }
 
     private static boolean isClassExist(String className) {
