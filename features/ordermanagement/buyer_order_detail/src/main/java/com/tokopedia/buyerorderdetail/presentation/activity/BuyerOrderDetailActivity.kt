@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
@@ -34,7 +35,32 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
     var buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring? = null
 
     override fun getNewFragment(): Fragment? {
-        return BuyerOrderDetailFragment.newInstance(requireNotNull(intent.extras))
+        val extras = intent.extras ?: createIntentExtrasFromAppLink()
+        return if (extras == null) {
+            finish()
+            null
+        } else {
+            BuyerOrderDetailFragment.newInstance(extras)
+        }
+    }
+
+    /*
+        Posible applink:
+        * tokopedia-android-internal://marketplace//buyer-order-detail?payment_id={paymentID}&cart_string={cartString}
+        * tokopedia-android-internal://marketplace//buyer-order-detail?order_id={orderID}
+     */
+    private fun createIntentExtrasFromAppLink(): Bundle? {
+        return intent.data?.let {
+            Bundle().apply {
+                val params = UriUtil.uriQueryParamsToMap(it)
+                val orderId = params[BuyerOrderDetailCommonIntentParamKey.ORDER_ID].orEmpty()
+                val paymentId = params[BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID].orEmpty()
+                val cartString = params[BuyerOrderDetailIntentParamKey.PARAM_CART_STRING].orEmpty()
+                putString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, orderId)
+                putString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, paymentId)
+                putString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, cartString)
+            }
+        }
     }
 
     override fun getComponent(): BuyerOrderDetailComponent {
