@@ -44,6 +44,7 @@
             android:id="@+id/rv_bom_detail_bundling"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/divider_bom_detail_bundling_top"
             tools:listitem="@layout/item_buyer_order_detail_product_bundling_list_item"
             tools:itemCount="3"/>
@@ -71,6 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:translationY="-1.97dp"
             app:layout_constraintStart_toStartOf="@id/tv_bom_detail_bundling_price_title"
             app:typographyType="heading_6"
             app:layout_constraintTop_toBottomOf="@id/tv_bom_detail_bundling_price_title"

@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ProductListUiModel(
         val productList: List<ProductUiModel>,
+        val productBundlingList: List<ProductBundlingUiModel>,
         val productListHeaderUiModel: ProductListHeaderUiModel
 ) {
     data class ProductListHeaderUiModel(
@@ -44,4 +45,26 @@ data class ProductListUiModel(
             return typeFactory?.type(this).orZero()
         }
     }
+
+    data class ProductBundlingUiModel(
+            val bundleName: String,
+            val totalPrice: String,
+            val totalPriceText: String,
+            val bundleItemList: List<ProductBundlingItemUiModel>,
+    ) : Visitable<BuyerOrderDetailTypeFactory> {
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    data class ProductBundlingItemUiModel(
+            val orderId: String,
+            val orderDetailId: String,
+            val productId: String,
+            val productName: String,
+            val productNote: String,
+            val productThumbnailUrl: String,
+            val quantity: Int,
+            val priceText: String
+    )
 }

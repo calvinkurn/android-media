@@ -54,6 +54,10 @@ class BuyerOrderDetailTypeFactory(
         return ProductViewHolder.LAYOUT
     }
 
+    fun type(productBundlingUiModel: ProductListUiModel.ProductBundlingUiModel): Int {
+        return ProductBundlingViewHolder.LAYOUT
+    }
+
     fun type(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel): Int {
         return ReceiverAddressInfoViewHolder.LAYOUT
     }
@@ -91,6 +95,7 @@ class BuyerOrderDetailTypeFactory(
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
             ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, navigator)
             ReceiverAddressInfoViewHolder.LAYOUT -> ReceiverAddressInfoViewHolder(parent)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)

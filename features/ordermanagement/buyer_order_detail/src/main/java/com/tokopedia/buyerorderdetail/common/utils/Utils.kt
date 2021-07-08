@@ -6,7 +6,11 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
@@ -69,6 +73,12 @@ object Utils {
             STRING_BUTTON_VARIANT_GHOST -> UnifyButton.Variant.GHOST
             STRING_BUTTON_VARIANT_TEXT_ONLY -> UnifyButton.Variant.TEXT_ONLY
             else -> UnifyButton.Variant.FILLED
+        }
+    }
+
+    fun composeItalicNote(productNote: String): SpannableString {
+        return SpannableString(productNote).apply {
+            setSpan(StyleSpan(Typeface.ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 }
