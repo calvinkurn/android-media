@@ -55,6 +55,39 @@ class BuyerOrderDetailNavigator(
         }
     }
 
+    private fun createProductBundleListPayload(productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>): String {
+        return GsonSingleton.instance.toJson(JsonArray(productBundlingList.size).apply {
+            productBundlingList.forEach {
+                add(createProductBundlePayload(it))
+            }
+        })
+    }
+
+    private fun createProductBundlePayload(model: ProductListUiModel.ProductBundlingUiModel): JsonObject {
+        return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_NAME, model.bundleName)
+            add(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_LIST, createProductBundleItemListPayload(model))
+        }
+    }
+
+    private fun createProductBundleItemListPayload(model: ProductListUiModel.ProductBundlingUiModel): JsonArray {
+        return model.bundleItemList.let { list ->
+            JsonArray(list.size).apply {
+                list.forEach {
+                    add(createProductBundleItemPayload(it))
+                }
+            }
+        }
+    }
+
+    private fun createProductBundleItemPayload(model: ProductListUiModel.ProductBundlingItemUiModel): JsonObject {
+        return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_NAME, model.productName)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_THUMBNAIL, model.productThumbnailUrl)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_PRICE, model.priceText)
+        }
+    }
+
     private fun applyTransition() {
         activity.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_right_in_medium, com.tokopedia.resources.common.R.anim.slide_left_out_medium)
     }
@@ -120,6 +153,7 @@ class BuyerOrderDetailNavigator(
                     BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
                     BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
                     BuyerRequestCancellationIntentParamKey.JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),
+                    BuyerRequestCancellationIntentParamKey.JSON_PRODUCT_BUNDLE to createProductBundleListPayload(buyerOrderDetailData.data.productListUiModel.productBundlingList),
                     BuyerOrderDetailCommonIntentParamKey.ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
                     BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
                     BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,

@@ -19,7 +19,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -40,6 +39,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
+import com.tokopedia.buyerorder.detail.data.ProductBundle
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -94,7 +94,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var statusInfo = ""
     private var listProductsSerializable : Serializable? = null
     private var listProductsJsonString : String? = null
+    private var listProductBundlesJsonString : String? = null
     private var listProduct = emptyList<Items>()
+    private var listProductBundle = emptyList<ProductBundle>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -110,6 +112,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private val productListTypeToken by lazy {
         object : TypeToken<List<Items>>() {}.type
     }
+    private val productBundleListTypeToken by lazy {
+        object : TypeToken<List<ProductBundle>>() {}.type
+    }
 
     private val buyerCancellationViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
@@ -124,6 +129,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
                     putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT))
                     putString(BuyerConsts.PARAM_JSON_LIST_PRODUCT, bundle.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT))
+                    putString(BuyerConsts.PARAM_JSON_PRODUCT_BUNDLE, bundle.getString(BuyerConsts.PARAM_JSON_PRODUCT_BUNDLE))
                     putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
                     putString(BuyerConsts.PARAM_URI, bundle.getString(BuyerConsts.PARAM_URI))
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
@@ -148,8 +154,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
             listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT)
             listProductsJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT)
+            listProductBundlesJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_PRODUCT_BUNDLE)
             listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
                 GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
+            } ?: emptyList()
+            listProductBundle = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
+                GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<ProductBundle>
             } ?: emptyList()
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
@@ -578,7 +588,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     GraphqlHelper.loadRawString(resources, R.raw.buyer_request_cancel), it.userId, orderId, "$reasonCode", reasonCancel)
         }
     }
-    
+
     private fun observingRequestCancel() {
         buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -716,9 +726,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setImageDrawable(R.drawable.ic_terkirim)
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
-                activity?.finish()
+            dialog.dismiss()
+            activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+            activity?.finish()
         }
         dialog?.show()
     }

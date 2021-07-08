@@ -9,6 +9,7 @@ object BuyerConsts {
     const val PARAM_SHOP_NAME = "param_shop_name"
     const val PARAM_SERIALIZABLE_LIST_PRODUCT = "param_serializable_list_product"
     const val PARAM_JSON_LIST_PRODUCT = "param_json_list_product"
+    const val PARAM_JSON_PRODUCT_BUNDLE = "param_json_product_bundle"
     const val PARAM_INVOICE = "param_invoice"
     const val INVOICE = "invoice"
     const val PARAM = "param"
@@ -25,6 +26,7 @@ object BuyerConsts {
     const val PARAM_INVOICE_URL = "invoice_url"
     const val PARAM_STATUS_ID = "status_id"
     const val PARAM_STATUS_INFO = "status_info"
+    const val PARAM_PRODUCT_BUNDLE_LIST = "product_bundle_list"
     const val PARAM_CACHE_ID = "cache_id"
     const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"
     const val CANCEL_BUYER_REQUEST_TWO_LAYER = 105
