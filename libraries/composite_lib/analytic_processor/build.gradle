@@ -23,8 +23,8 @@ dependencies {
 }
 
 buildscript {
-
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {

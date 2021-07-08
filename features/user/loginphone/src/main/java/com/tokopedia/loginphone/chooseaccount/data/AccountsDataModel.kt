@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by nisie on 16/04/19.
  */
-data class AccountListPojo(
+data class AccountsDataModel(
         @SerializedName("accountsGetAccountsList")
         @Expose
-        var accountList: AccountList = AccountList()
+        var accountListDataModel: AccountListDataModel = AccountListDataModel()
 )
 
-data class AccountList(
+data class AccountListDataModel(
         @SerializedName("key")
         @Expose
         var key: String = "",
@@ -24,16 +24,16 @@ data class AccountList(
         var msisdn: String = "",
         @SerializedName("users_details")
         @Expose
-        var userDetails: List<UserDetail> = listOf(),
+        var userDetailDataModels: List<UserDetailDataModel> = listOf(),
         @SerializedName("users_count")
         @Expose
         var userCount: Int = 0,
         @SerializedName("errors")
         @Expose
-        var errors: List<Error> = listOf()
+        var errorResponseDataModels: List<ErrorResponseDataModel> = listOf()
 )
 
-data class UserDetail(
+data class UserDetailDataModel(
         @SerializedName("user_id")
         @Expose
         var userId: String = "",
@@ -57,10 +57,10 @@ data class UserDetail(
         var image: String = "",
         @SerializedName("shop_detail")
         @Expose
-        var shopDetail: ShopDetail?
+        var shopDetailDataModel: ShopDetailDataModel?
 )
 
-data class Error(
+data class ErrorResponseDataModel(
         @SerializedName("name")
         @Expose
         var name: String = "",
@@ -69,10 +69,10 @@ data class Error(
         var message: String = ""
 )
 
-data class ShopDetail(
+data class ShopDetailDataModel(
         @SerializedName("id")
         @Expose
-        var id: Int = 0,
+        var shopId: String = "0",
         @SerializedName("name")
         @Expose
         var name: String = "",

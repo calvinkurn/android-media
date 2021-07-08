@@ -24,29 +24,24 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginphone.R
 import com.tokopedia.loginphone.chooseaccount.view.adapter.AccountAdapter
-import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
-import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_choose_login_phone_account.*
 import java.util.*
 
 
-abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountContract.ViewAdapter {
+abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountListener {
 
     protected var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
-    private lateinit var listAccount: RecyclerView
-    protected lateinit var adapter: AccountAdapter
-    private lateinit var toolbarShopCreation: Toolbar
+    protected var adapter: AccountAdapter? = null
+    private var listAccount: RecyclerView? = null
+    private var toolbarShopCreation: Toolbar? = null
 
     abstract fun initObserver()
-    abstract fun onSuccessLogin(userId: String)
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_choose_login_phone_account, parent, false)
@@ -60,8 +55,8 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountCon
     @SuppressLint("WrongConstant")
     private fun prepareView() {
         adapter = AccountAdapter.createInstance(this, ArrayList(), "")
-        listAccount.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        listAccount.adapter = adapter
+        listAccount?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        listAccount?.adapter = adapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,15 +133,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountCon
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    protected fun onSuccessGetUserInfo(profileInfo: ProfileInfo) {
-        onSuccessLogin(profileInfo.userId)
-    }
-
-    protected fun onErrorGetUserInfo(throwable: Throwable) {
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
-        logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
-    }
-
     //Impossible Flow
     protected fun onGoToActivationPage(messageErrorException: MessageErrorException) {
         onErrorLogin(ErrorHandler.getErrorMessage(context, messageErrorException))
@@ -160,30 +146,9 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountCon
         }
     }
 
-    protected fun showLocationAdminPopUp(userSessionInterface: UserSessionInterface) {
-        LocationAdminDialog(context) {
-            userSessionInterface.logoutSession()
-            activity?.onBackPressed()
-        }.show()
-    }
-
-    protected fun showLocationAdminError(error: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, error)
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        dismissLoadingProgress()
-    }
-
-    protected fun setFCM(deviceId: String) {
-        CMPushNotificationManager.instance
-            .refreshFCMTokenFromForeground(deviceId, true)
-    }
-
     companion object {
-        const val MENU_ID_LOGOUT = 111
         const val FACEBOOK_LOGIN_TYPE = "fb"
         const val REQUEST_CODE_PIN_CHALLENGE = 112
-        const val PARAM_IS_2FA_KEY = "KEY_FROM_2FA_CHALLENGE"
-        const val PARAM_IS_2FA = 113
 
         const val OTP_TYPE_AFTER_LOGIN_PHONE = 148
         const val OTP_MODE_PIN = "PIN"
