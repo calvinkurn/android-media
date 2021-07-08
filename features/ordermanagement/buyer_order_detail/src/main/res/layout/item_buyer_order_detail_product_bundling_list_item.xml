@@ -4,7 +4,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/layout_lvl2">
+    android:paddingBottom="@dimen/buyer_order_detail_bundling_card_padding_bottom"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingHorizontal="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_item_bom_detail_bundling_thumbnail"
