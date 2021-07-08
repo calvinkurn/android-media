@@ -21,7 +21,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_image_placeholder="@android:color/transparent"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -15,10 +15,6 @@ data class OccMainOnboarding(
         val onboardingCoachMark: OccOnboardingCoachMark = OccOnboardingCoachMark()
 ) {
         companion object {
-                internal const val COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE = 1
-                internal const val COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE = 2
-                internal const val COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE = 3
-                internal const val COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE = 4
                 internal const val COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE = 5
         }
 }

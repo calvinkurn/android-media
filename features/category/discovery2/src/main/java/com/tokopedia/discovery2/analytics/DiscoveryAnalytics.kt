@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -292,6 +293,49 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_DYNAMIC_BANNER, componentsItem.name
                 ?: EMPTY_STRING)
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[USER_ID] = userID ?: EMPTY_STRING
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+
+    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+                KEY_ID to "${adID}_$shopId",
+                KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
+                KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
+                KEY_POSITION to "1"
+        ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_TDN_BANNER, EMPTY_STRING)
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[USER_ID] = userID ?: EMPTY_STRING
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+                KEY_ID to "${adID}_$shopId",
+                KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
+                KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
+                KEY_POSITION to "1"
+        ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_TDN_BANNER, eventLabel ="$adID - $shopId" )
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
@@ -1118,5 +1162,27 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun getHostTrackingSource(): String {
         return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+    }
+
+    override fun onTopAdsProductItemListener(position: Int, product: Product, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
+        val cpmProductPosition = position - 1
+
+        if (cpmProductPosition >= 0) {
+            if (position == 1) {
+                trackEventImpressionTopAdsShop(components, cpmData)
+                trackTopAdsProductImpression(components, cpmData, components.position, cpmProductPosition, userLoggedIn)
+            } else {
+                trackTopAdsProductImpression(components, cpmData, components.position, cpmProductPosition, userLoggedIn)
+            }
+        }
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
+        val cpmProductPosition = position - 1
+        if (position == 0) {
+            trackClickTopAdsShop(components, cpmData)
+        } else if (cpmProductPosition >= 0) {
+            trackClickTopAdsProducts(components, cpmData, components.position, cpmProductPosition, userLoggedIn)
+        }
     }
 }
