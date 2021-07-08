@@ -407,7 +407,7 @@ class MiniCartWidget @JvmOverloads constructor(
             totalAmount?.apply {
                 setLabelTitle("")
                 setAmount("")
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
+                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
                 amountCtaView.isEnabled = false
                 amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
                 amountCtaView.requestLayout()
@@ -421,7 +421,7 @@ class MiniCartWidget @JvmOverloads constructor(
             totalAmount?.apply {
                 setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
+                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
                 amountCtaView.isEnabled = true
                 amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
                 amountCtaView.requestLayout()
@@ -431,6 +431,16 @@ class MiniCartWidget @JvmOverloads constructor(
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
+        totalAmount?.post {
+            val ellipsis = totalAmount?.amountCtaView?.layout?.getEllipsisCount(0) ?: 0
+            if (ellipsis > 0) {
+                if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
+                    totalAmount?.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_empty)))
+                } else {
+                    totalAmount?.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
+                }
+            }
+        }
     }
 
     private fun setAmountViewLayoutParams() {
