@@ -44,9 +44,9 @@ class SomBottomSheetSetDelivered(
         super.show()
     }
 
-    override fun dismiss() {
+    override fun dismiss(): Boolean {
         dismissKeyboard()
-        super.dismiss()
+        return super.dismiss()
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

@@ -177,9 +177,12 @@ abstract class SomBottomSheet(
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    open fun dismiss() {
+    open fun dismiss(): Boolean {
         requireNotNull(bottomSheetBehavior).apply {
-            if (state != BottomSheetBehavior.STATE_HIDDEN) state = BottomSheetBehavior.STATE_HIDDEN
+            return if (state != BottomSheetBehavior.STATE_HIDDEN) {
+                state = BottomSheetBehavior.STATE_HIDDEN
+                true
+            } else false
         }
     }
 

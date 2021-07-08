@@ -65,4 +65,7 @@ public abstract class TkpdBaseV4Fragment extends Fragment {
         FragmentLifecycleObserver.INSTANCE.onFragmentStop(this);
     }
 
+    public boolean interruptOnBackPressed() {
+        return false;
+    }
 }

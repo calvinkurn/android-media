@@ -285,6 +285,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         connectionMonitor?.end()
     }
 
+    override fun interruptOnBackPressed(): Boolean {
+        return dismissBottomSheets()
+    }
+
     override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {
         showBuyerRequestCancelBottomSheet(it)
     }
@@ -1461,19 +1465,24 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun showBackButton(): Boolean = true
 
-    protected fun dismissBottomSheets() {
+    protected fun dismissBottomSheets(): Boolean {
+        var bottomSheetDismissed = false
         (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
-            if (it.isVisible) it.dismiss()
+            if (it.isVisible) {
+                it.dismiss()
+                bottomSheetDismissed = true
+            }
         }
-        secondaryBottomSheet?.dismiss()
-        orderRequestCancelBottomSheet?.dismiss()
-        somRejectReasonBottomSheet?.dismiss()
-        somProductEmptyBottomSheet?.dismiss()
-        somShopClosedBottomSheet?.dismiss()
-        bottomSheetCourierProblems?.dismiss()
-        bottomSheetBuyerNoResponse?.dismiss()
-        bottomSheetBuyerOtherReason?.dismiss()
-        bottomSheetSetDelivered?.dismiss()
+        bottomSheetDismissed = secondaryBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somRejectReasonBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somProductEmptyBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somShopClosedBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetCourierProblems?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetBuyerNoResponse?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetBuyerOtherReason?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetSetDelivered?.dismiss() == true || bottomSheetDismissed
+        return bottomSheetDismissed
     }
 
     protected fun showToaster(message: String, view: View?, type: Int, action: String = ACTION_OK) {

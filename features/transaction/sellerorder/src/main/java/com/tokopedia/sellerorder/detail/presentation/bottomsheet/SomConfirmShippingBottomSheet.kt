@@ -20,9 +20,10 @@ class SomConfirmShippingBottomSheet(
         }
     }
 
-    override fun dismiss() {
-        super.dismiss()
+    override fun dismiss(): Boolean {
+        val isDismissed = super.dismiss()
         onDismiss()
+        return isDismissed
     }
 
     fun setInfoText(infoText: String) {

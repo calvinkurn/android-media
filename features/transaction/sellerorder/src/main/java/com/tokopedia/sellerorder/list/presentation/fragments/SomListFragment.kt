@@ -408,6 +408,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
     }
 
+    override fun interruptOnBackPressed(): Boolean {
+        return dismissBottomSheets()
+    }
+
     override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
         return EndlessLayoutManagerListener { somListLayoutManager }
     }
@@ -2316,13 +2320,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun showBackButton(): Boolean = !GlobalConfig.isSellerApp()
 
-    protected fun dismissBottomSheets() {
+    protected fun dismissBottomSheets(): Boolean {
+        var bottomSheetDismissed = false
         childFragmentManager.fragments.forEach {
-            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) it.dismiss()
+            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) {
+                it.dismiss()
+                bottomSheetDismissed = true
+            }
         }
-        somListBulkProcessOrderBottomSheet?.dismiss()
-        orderRequestCancelBottomSheet?.dismiss()
-        somOrderEditAwbBottomSheet?.dismiss()
+        bottomSheetDismissed = somListBulkProcessOrderBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = somOrderEditAwbBottomSheet?.dismiss() == true || bottomSheetDismissed
+        return bottomSheetDismissed
     }
 
     protected open fun loadAllInitialData() {
