@@ -32,7 +32,9 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATI
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
 import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_SUCCESS
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
@@ -589,8 +591,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
-                    if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        backToEntryPoint(1, buyerRequestCancelResponse.message.first())
+                    if (buyerRequestCancelResponse.success == RESULT_CODE_SUCCESS && buyerRequestCancelResponse.message.isNotEmpty()) {
+                        backToEntryPoint(RESULT_CODE_SUCCESS, buyerRequestCancelResponse.message.first())
                     } else if (buyerRequestCancelResponse.success == 0) {
                         if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
                             showPopup(buyerRequestCancelResponse.popup)
@@ -640,7 +642,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
             1 -> {
                 // showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
-                backToEntryPoint(1, instantCancelResponse.message)
+                backToEntryPoint(RESULT_CODE_SUCCESS, instantCancelResponse.message)
             }
             2 -> {
                 showPopupWithTwoButtons()
@@ -690,7 +692,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
             setSecondaryCTAClickListener {
                 dismiss()
-                backToEntryPoint(0, "")
+                backToEntryPoint(RESULT_CODE_BACK, "")
             }
         }
         dialog?.show()

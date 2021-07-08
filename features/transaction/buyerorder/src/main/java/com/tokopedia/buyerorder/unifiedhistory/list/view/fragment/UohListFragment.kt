@@ -57,6 +57,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_SUCCESS
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
@@ -305,7 +306,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 val resultMsg = data?.getStringExtra(RESULT_MSG_INSTANT_CANCEL)
                 val result = data?.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1)
-                if (result == 1) {
+                if (result == RESULT_CODE_SUCCESS) {
                     if (resultMsg != null) {
                         showToaster(resultMsg, Toaster.TYPE_NORMAL)
                         initialLoad()

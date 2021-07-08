@@ -116,7 +116,9 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORD
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_SUCCESS;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 import static com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
@@ -1079,13 +1081,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String reason = "";
             if (resultCode == INSTANT_CANCEL_BUYER_REQUEST) {
                 String resultMsg = data.getStringExtra(RESULT_MSG_INSTANT_CANCEL);
-                int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, 1);
-                if (result == 1) {
+                int result = data.getIntExtra(RESULT_CODE_INSTANT_CANCEL, RESULT_CODE_SUCCESS);
+                if (result == RESULT_CODE_SUCCESS) {
                     if (resultMsg != null && getView() != null) {
                         Toaster.build(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
                         }).show();
                     }
-                } else if (result != 0) {
+                } else if (result != RESULT_CODE_BACK) {
                     finishOrderDetail();
                 }
             } else if (resultCode == CANCEL_ORDER_DISABLE) {

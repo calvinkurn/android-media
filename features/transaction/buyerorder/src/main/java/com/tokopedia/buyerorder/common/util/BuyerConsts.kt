@@ -48,6 +48,8 @@ object BuyerConsts {
     const val RESULT_POPUP_TITLE_INSTANT_CANCEL = "result_popup_title_instant_cancel"
     const val RESULT_POPUP_BODY_INSTANT_CANCEL = "result_popup_body_instant_cancel"
     const val INSTANT_CANCEL_BUYER_REQUEST = 100
+    const val RESULT_CODE_SUCCESS = 1
+    const val RESULT_CODE_BACK = 0
 
     const val TICKER_TYPE_ERROR = "error"
     const val TICKER_TYPE_INFORMATION = "info"
