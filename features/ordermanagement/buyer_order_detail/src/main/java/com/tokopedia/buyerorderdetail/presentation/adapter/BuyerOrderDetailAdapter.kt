@@ -20,9 +20,9 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
-        addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel)
-        addTickerSection(orderStatusUiModel.ticker)
-        addThinDividerSection()
+        if ((addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel) || addTickerSection(orderStatusUiModel.ticker)) && orderStatusUiModel.orderStatusInfoUiModel.shouldShow()) {
+            addThinDividerSection()
+        }
         addOrderStatusInfoSection(orderStatusUiModel.orderStatusInfoUiModel)
     }
 
@@ -55,13 +55,14 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlainHeaderSection(headerUiModel: PlainHeaderUiModel) {
-        add(headerUiModel)
+        if (headerUiModel.shouldShow()) add(headerUiModel)
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerSection(tickerUiModel: TickerUiModel) {
-        if (tickerUiModel.description.isNotBlank()) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerSection(tickerUiModel: TickerUiModel): Boolean {
+        return if (tickerUiModel.shouldShow()) {
             add(tickerUiModel)
-        }
+            true
+        } else false
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDashedDividerSection() {
@@ -76,28 +77,31 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         add(ThinDividerUiModel())
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel) {
-        add(orderStatusHeaderUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel): Boolean {
+        return if (orderStatusHeaderUiModel.shouldShow()) {
+            add(orderStatusHeaderUiModel)
+            true
+        } else false
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusInfoSection(orderStatusInfoUiModel: OrderStatusUiModel.OrderStatusInfoUiModel) {
-        add(orderStatusInfoUiModel)
+        if (orderStatusInfoUiModel.shouldShow()) add(orderStatusInfoUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListHeaderSection(productListHeaderUiModel: ProductListUiModel.ProductListHeaderUiModel) {
-        add(productListHeaderUiModel)
+        if (productListHeaderUiModel.shouldShow()) add(productListHeaderUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductListSection(productList: List<ProductListUiModel.ProductUiModel>) {
-        addAll(productList)
+        productList.filter { it.shouldShow() }.also { addAll(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierInfoSection(courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel) {
-        add(courierInfoUiModel)
+        if (courierInfoUiModel.shouldShow()) add(courierInfoUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(courierDriverInfoUiModel: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-        if (courierDriverInfoUiModel.name.isNotBlank()) {
+        if (courierDriverInfoUiModel.shouldShow()) {
             addThinDashedDividerSection()
             add(courierDriverInfoUiModel)
             addThinDashedDividerSection()
@@ -105,31 +109,33 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAwbInfoSection(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel) {
-        if (awbInfoUiModel.awbNumber.isNotBlank()) {
+        if (awbInfoUiModel.shouldShow()) {
             add(awbInfoUiModel)
         }
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel) {
-        add(receiverAddressInfoUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(receiverAddressInfoUiModel: CopyableKeyValueUiModel) {
+        if (receiverAddressInfoUiModel.shouldShow()) {
+            add(receiverAddressInfoUiModel)
+        }
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDropShipperInfoSection(dropShipperInfoUiModel: ShipmentInfoUiModel.DropShipperInfoUiModel) {
-        if (dropShipperInfoUiModel.name.isNotBlank()) {
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDropShipperInfoSection(dropShipperInfoUiModel: CopyableKeyValueUiModel) {
+        if (dropShipperInfoUiModel.shouldShow()) {
             add(dropShipperInfoUiModel)
         }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentMethodSection(paymentMethodInfoItem: PaymentInfoUiModel.PaymentInfoItemUiModel) {
-        add(paymentMethodInfoItem)
+        if (paymentMethodInfoItem.shouldShow()) add(paymentMethodInfoItem)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentInfoSection(paymentInfoItems: List<PaymentInfoUiModel.PaymentInfoItemUiModel>) {
-        addAll(paymentInfoItems)
+        paymentInfoItems.filter { it.shouldShow() }.also { addAll(it) }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPaymentGrandTotalSection(paymentGrandTotal: PaymentInfoUiModel.PaymentGrandTotalUiModel) {
-        add(paymentGrandTotal)
+        if (paymentGrandTotal.shouldShow()) add(paymentGrandTotal)
     }
 
     fun updateItems(newData: BuyerOrderDetailUiModel) {
