@@ -95,7 +95,7 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
         Map<String, String> header = AuthUtil.generateHeadersWithXUserId(
                 path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession);
 
-        //replace organization name, default: Tokopedia
+        //replace with Digital's auth organization key
         header.put(AuthUtil.HEADER_AUTHORIZATION, header.get(AuthUtil.HEADER_AUTHORIZATION)
                 .replace(DEFAULT_TOKOPEDIA_ORGANIZATION_NAME, getDigitalAuthOrganization()));
         return header;
