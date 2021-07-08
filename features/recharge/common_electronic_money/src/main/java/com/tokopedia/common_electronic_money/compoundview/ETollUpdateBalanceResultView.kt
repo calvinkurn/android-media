@@ -55,7 +55,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showCardInfoFromApi(inquiryBalanceModel: EmoneyInquiry) {
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
-        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.VISIBLE
+        tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.GONE
         inquiryBalanceModel.attributesEmoneyInquiry?.let {
             buttonTopup.text = it.buttonText
             eTollCardInfoView.visibility = View.VISIBLE
