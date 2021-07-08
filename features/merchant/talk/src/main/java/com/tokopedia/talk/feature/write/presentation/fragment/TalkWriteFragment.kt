@@ -285,6 +285,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
     }
 
     private fun observeSubmitFormResult() {
+        //TODO
         viewModel.submitFormResult.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
