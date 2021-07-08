@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 
 /**
@@ -14,7 +15,8 @@ data class PlayViewerNewUiState(
         val followStatus: PlayPartnerFollowStatus = PlayPartnerFollowStatus.NotFollowable,
         val partnerName: String = "",
         val leaderboard: PlayLeaderboardUiState = PlayLeaderboardUiState(),
-        val bottomInsets: Map<BottomInsetsType, BottomInsetsState> = emptyMap()
+        val bottomInsets: Map<BottomInsetsType, BottomInsetsState> = emptyMap(),
+        val status: PlayStatusType = PlayStatusType.Active,
 )
 
 sealed class PlayInteractiveUiState {

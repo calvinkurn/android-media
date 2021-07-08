@@ -34,6 +34,11 @@ class InteractiveViewComponent(
         }
     }
 
+    override fun hide() {
+        super.hide()
+        cancelTimer()
+    }
+
     fun setPreStart(
             title: String,
             timeToStartInMs: Long,
@@ -72,6 +77,7 @@ class InteractiveViewComponent(
         val firstChild = parent.getChildAt(0)
         return if (firstChild !is V) {
             removeListener()
+            cancelTimer()
             parent.removeAllViews()
             val view = viewCreator()
             parent.addView(view)
@@ -84,6 +90,14 @@ class InteractiveViewComponent(
         when (firstChild) {
             is InteractivePreStartView -> firstChild.setListener(null)
             is InteractiveTapView -> firstChild.setListener(null)
+        }
+    }
+
+    private fun cancelTimer() {
+        val firstChild = parent.getChildAt(0) ?: return
+        when (firstChild) {
+            is InteractivePreStartView -> firstChild.cancelTimer()
+            is InteractiveTapView -> firstChild.cancelTimer()
         }
     }
 

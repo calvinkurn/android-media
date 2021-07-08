@@ -67,6 +67,7 @@ import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.*
@@ -837,8 +838,8 @@ class PlayUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.bottomInsets)
-                renderWinnerBadgeView(state.leaderboard.showBadge, state.bottomInsets)
+                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.bottomInsets, state.status)
+                renderWinnerBadgeView(state.leaderboard.showBadge, state.bottomInsets, state.status)
                 renderToolbarView(state.followStatus, state.partnerName)
             }
         }
@@ -1371,6 +1372,7 @@ class PlayUserInteractionFragment @Inject constructor(
             state: PlayInteractiveUiState,
             followStatus: PlayPartnerFollowStatus,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+            status: PlayStatusType,
     ) {
         if (isStateChanged) {
             when (state) {
@@ -1400,6 +1402,7 @@ class PlayUserInteractionFragment @Inject constructor(
                  */
                 interactiveView?.invisible()
             }
+            status.isFreeze || status.isBanned -> interactiveView?.hide()
             state is PlayInteractiveUiState.NoInteractive -> interactiveView?.hide()
             else -> interactiveView?.show()
         }
@@ -1407,9 +1410,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderWinnerBadgeView(
             shouldShow: Boolean,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+            status: PlayStatusType,
     ) {
-        if (!bottomInsets.isAnyShown && shouldShow) interactiveWinnerBadgeView?.show()
+        val isFreezeOrBanned = status.isFreeze || status.isBanned
+        if (!bottomInsets.isAnyShown && shouldShow && !isFreezeOrBanned) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
 

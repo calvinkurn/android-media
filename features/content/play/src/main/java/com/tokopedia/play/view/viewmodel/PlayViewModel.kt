@@ -133,6 +133,7 @@ class PlayViewModel @Inject constructor(
 
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
+    private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboard = MutableStateFlow(PlayLeaderboardUiState())
 
@@ -140,24 +141,26 @@ class PlayViewModel @Inject constructor(
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
      */
-    private val isPageFocused: AtomicBoolean = AtomicBoolean(false)
+    private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
             _partnerInfo,
             _bottomInsets,
             _interactive,
-            _leaderboard
-    ) { partnerInfo, bottomInsets, interactive, leaderboard ->
+            _leaderboard,
+            _status
+    ) { partnerInfo, bottomInsets, interactive, leaderboard, status ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
                 bottomInsets = bottomInsets,
                 interactive = interactive,
-                leaderboard = leaderboard
+                leaderboard = leaderboard,
+                status = status
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent.takeWhile { isPageFocused.get() }
+        get() = _uiEvent.takeWhile { isActive.get() }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -307,6 +310,7 @@ class PlayViewModel @Inject constructor(
         }
         addSource(observableStatusInfo) {
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
+            _status.value = it.statusType
         }
         addSource(_observableBottomInsetsState) { insets ->
             _bottomInsets.value = insets
@@ -634,7 +638,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun focusPage(channelData: PlayChannelData) {
-        isPageFocused.compareAndSet(false,true)
+        isActive.compareAndSet(false, true)
 
         focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
@@ -646,7 +650,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
-        isPageFocused.compareAndSet(true, false)
+        isActive.compareAndSet(true, false)
 
         stopJob()
         defocusVideoPlayer(shouldPauseVideo)
@@ -1096,6 +1100,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun doOnForbidden() {
+        isActive.set(false)
+
+        stopInteractive()
         stopWebSocket()
         stopPlayer()
         onKeyboardHidden()

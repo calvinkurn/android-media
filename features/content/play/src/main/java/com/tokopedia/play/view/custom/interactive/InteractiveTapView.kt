@@ -47,6 +47,11 @@ class InteractiveTapView : ConstraintLayout {
         timerTap.resume()
     }
 
+    fun cancelTimer() {
+        timerTap.pause()
+        timerTap.timer?.cancel()
+    }
+
     fun showFollowMode(shouldShow: Boolean) {
         changeMode(
                 if (!shouldShow) Mode.Tap
