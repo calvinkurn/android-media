@@ -1,7 +1,6 @@
 package com.tokopedia.cart.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -19,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ERROR
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -42,6 +40,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             renderCollapsedCartItems(cartShopHolderData)
         } else {
             renderExpandedCartItems(cartShopHolderData)
+            if (cartShopHolderData.clickedCollapsedProductIndex != RecyclerView.NO_POSITION) {
+                scrollToSelectedExpandedProduct(cartShopHolderData.clickedCollapsedProductIndex)
+                cartShopHolderData.clickedCollapsedProductIndex = RecyclerView.NO_POSITION
+            }
         }
         renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
@@ -110,7 +112,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         if (itemDecorationCount > 0) {
             binding.rvCartItem.removeItemDecorationAt(0)
         }
-        val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_40)?.toInt() ?: 0
+        val paddingLeft = itemView.context?.resources?.getDimension(R.dimen.dp_48)?.toInt() ?: 0
         val paddingRight = itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
         binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
     }
@@ -350,6 +352,21 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     layoutWarning.gone()
                     root.gone()
                 }
+            }
+        }
+    }
+
+    private fun scrollToSelectedExpandedProduct(productIndex: Int) {
+        val position = adapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+            binding.rvCartItem.post {
+                val child: View? = binding.rvCartItem.getChildAt(0)
+                val productHeight = child?.height ?: 0
+                val offset = productIndex * productHeight
+                val additionalOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
+                        ?: 0
+                val totalOffset = offset + additionalOffset
+                actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
             }
         }
     }

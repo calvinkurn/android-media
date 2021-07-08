@@ -24,7 +24,7 @@ interface ActionListener {
 
     fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
 
-    fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
+    fun onShopItemCheckChanged(index: Int, checked: Boolean)
 
     fun onCartDataEnableToCheckout()
 
@@ -80,9 +80,13 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onCollapseAvailableItem(position: Int)
+    fun onCollapseAvailableItem(index: Int)
 
-    fun onExpandAvailableItem(position: Int)
+    fun onExpandAvailableItem(index: Int)
+
+    fun onCollapsedProductClicked(parentIndex: Int, clickedProductIndex: Int)
+
+    fun scrollToClickedExpandedProduct(index: Int, offset: Int)
 
     fun onToggleUnavailableItemAccordion(data: DisabledAccordionHolderData, buttonWording: String)
 

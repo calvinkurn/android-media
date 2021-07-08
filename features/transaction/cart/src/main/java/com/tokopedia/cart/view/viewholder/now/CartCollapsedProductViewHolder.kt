@@ -31,8 +31,9 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
         ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.cartItemData.originData.productImage)
         viewBinding.imageProduct.setOnClickListener {
-            if (parentPosition != RecyclerView.NO_POSITION) {
-                actionListener.onExpandAvailableItem(parentPosition)
+            val position = adapterPosition
+            if (parentPosition != RecyclerView.NO_POSITION && position != RecyclerView.NO_POSITION) {
+                actionListener.onCollapsedProductClicked(parentPosition, position)
             }
         }
     }

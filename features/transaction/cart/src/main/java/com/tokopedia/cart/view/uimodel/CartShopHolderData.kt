@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.uimodel
 
 import android.os.Parcelable
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.domain.model.cartlist.ShopGroupAvailableData
 import kotlinx.android.parcel.Parcelize
 
@@ -14,6 +15,7 @@ class CartShopHolderData : Parcelable {
     var isCollapsible: Boolean = false
     var showMoreWording: String = ""
     var showLessWording: String = ""
+    var clickedCollapsedProductIndex: Int = RecyclerView.NO_POSITION
 
     fun setAllItemSelected(allSelected: Boolean) {
         this.isAllSelected = allSelected

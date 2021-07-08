@@ -25,10 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.*
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -1593,11 +1590,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean) {
+    override fun onShopItemCheckChanged(index: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
-        cartAdapter.setShopSelected(itemPosition, checked)
+        cartAdapter.setShopSelected(index, checked)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
-        onNeedToUpdateViewItem(itemPosition)
+        onNeedToUpdateViewItem(index)
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
 
@@ -3511,19 +3508,42 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
 
-    override fun onCollapseAvailableItem(position: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(position)
+    override fun onCollapseAvailableItem(index: Int) {
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
         if (cartShopHolderData != null) {
             cartShopHolderData.isCollapsed = true
-            onNeedToUpdateViewItem(position)
+            onNeedToUpdateViewItem(index)
+            val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+            if (layoutManager != null) {
+                val offset = resources.getDimensionPixelOffset(R.dimen.dp_40)
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, offset)
+            }
         }
     }
 
-    override fun onExpandAvailableItem(position: Int) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(position)
+    override fun onExpandAvailableItem(index: Int) {
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(index)
         if (cartShopHolderData != null) {
             cartShopHolderData.isCollapsed = false
-            onNeedToUpdateViewItem(position)
+            onNeedToUpdateViewItem(index)
+        }
+    }
+
+    override fun onCollapsedProductClicked(parentIndex: Int, clickedProductIndex: Int) {
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentIndex)
+        if (cartShopHolderData != null) {
+            cartShopHolderData.isCollapsed = false
+            cartShopHolderData.clickedCollapsedProductIndex = clickedProductIndex
+            onNeedToUpdateViewItem(parentIndex)
+        }
+    }
+
+    override fun scrollToClickedExpandedProduct(index: Int, offset: Int) {
+        binding?.rvCart?.post {
+            val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
+            if (layoutManager != null) {
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, offset)
+            }
         }
     }
 
