@@ -1,7 +1,7 @@
 package com.tokopedia.category.navbottomsheet.model.raw
 
-const val GQL_CATEGORY_LIST: String = """query AllCategoryQuery(${'$'}categoryId :Int,${'$'}catnav:Boolean) {
-  categoryAllList(categoryID:${'$'}categoryId,catnav:${'$'}catnav) {
+const val GQL_CATEGORY_LIST: String = """query AllCategoryQuery(${'$'}categoryId :Int,${'$'}catnav:Boolean,${'$'}source : String!) {
+  categoryAllList(categoryID:${'$'}categoryId,catnav:${'$'}catnav,source:${'$'}source) {
     categories {
       id
       n:name

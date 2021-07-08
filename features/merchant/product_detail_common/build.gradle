@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -14,6 +15,7 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
 

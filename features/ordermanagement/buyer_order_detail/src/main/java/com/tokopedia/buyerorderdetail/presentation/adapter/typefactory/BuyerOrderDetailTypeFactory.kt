@@ -58,14 +58,6 @@ class BuyerOrderDetailTypeFactory(
         return ProductBundlingViewHolder.LAYOUT
     }
 
-    fun type(receiverAddressInfoUiModel: ShipmentInfoUiModel.ReceiverAddressInfoUiModel): Int {
-        return ReceiverAddressInfoViewHolder.LAYOUT
-    }
-
-    fun type(dropShipperInfoUiModel: ShipmentInfoUiModel.DropShipperInfoUiModel): Int {
-        return DropShipperInfoViewHolder.LAYOUT
-    }
-
     fun type(thickDividerUiModel: ThickDividerUiModel): Int {
         return ThickDividerViewHolder.LAYOUT
     }
@@ -82,12 +74,16 @@ class BuyerOrderDetailTypeFactory(
         return TickerViewHolder.LAYOUT
     }
 
+    fun type(copyableKeyValueUiModel: CopyableKeyValueUiModel): Int {
+        return CopyableKeyValueViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
+            CopyableKeyValueViewHolder.LAYOUT -> CopyableKeyValueViewHolder(parent)
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)
-            DropShipperInfoViewHolder.LAYOUT -> DropShipperInfoViewHolder(parent)
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)
@@ -96,7 +92,6 @@ class BuyerOrderDetailTypeFactory(
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
             ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, navigator)
-            ReceiverAddressInfoViewHolder.LAYOUT -> ReceiverAddressInfoViewHolder(parent)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)

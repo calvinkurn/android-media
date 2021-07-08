@@ -18,13 +18,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -48,8 +46,7 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -65,6 +62,10 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
@@ -129,14 +130,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.checkOutDate = arguments?.getString(EXTRA_PARAM_CHECKOUT) ?: ""
 
             if (hotelHomepageModel.checkInDate.isNotBlank()) {
-                hotelHomepageModel.checkInDateFmt =
-                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+                hotelHomepageModel.checkInDateFmt =  hotelHomepageModel.checkInDate
+                        .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
             if (hotelHomepageModel.checkOutDate.isNotBlank()) {
-                hotelHomepageModel.checkOutDateFmt =
-                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+                hotelHomepageModel.checkOutDateFmt = hotelHomepageModel.checkOutDate
+                        .toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             }
             if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank())
                 hotelHomepageModel.nightCounter = countRoomDuration()
@@ -403,8 +402,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         hotelHomepageModel.checkInDate = updatedCheckInCheckOutDate.first
         hotelHomepageModel.checkOutDate = updatedCheckInCheckOutDate.second
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+        hotelHomepageModel.checkInDateFmt = hotelHomepageModel.checkInDate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
+        hotelHomepageModel.checkOutDateFmt = hotelHomepageModel.checkOutDate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
         hotelHomepageModel.nightCounter = countRoomDuration()
     }
 
@@ -475,18 +474,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
-        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+        hotelHomepageModel.checkInDate = newCheckInDate.toString(DateUtil.YYYY_MM_DD)
+        hotelHomepageModel.checkInDateFmt = newCheckInDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
-        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)) {
-            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
-                    Calendar.DATE, 1)
-            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        if (newCheckInDate >= hotelHomepageModel.checkOutDate.toDate(DateUtil.YYYY_MM_DD)) {
+            val tomorrow = newCheckInDate.addTimeToSpesificDate(Calendar.DATE, 1)
+            hotelHomepageModel.checkOutDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+            hotelHomepageModel.checkOutDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         }
         hotelHomepageModel.nightCounter = countRoomDuration()
 
@@ -494,10 +488,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelHomepageModel.checkOutDate = newCheckOutDate.toString(DateUtil.YYYY_MM_DD)
+        hotelHomepageModel.checkOutDateFmt = newCheckOutDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         hotelHomepageModel.nightCounter = countRoomDuration()
 
         trackRoomDates()
@@ -505,7 +497,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun trackRoomDates() {
-        val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+        val dateRange = DateUtil.getDayDiff(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         trackingHotelUtil.hotelSelectStayDate(context, hotelHomepageModel.checkInDate, dateRange.toInt(), HOMEPAGE_SCREEN_NAME)
     }
 
@@ -590,17 +582,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    if (DeeplinkMapperTravel.isHotelSrpShowMap(this) && DeeplinkMapperTravel.isABTestHotelShowMap()) {
-                        startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
-                    } else {
-                        startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
-                    }
+                    startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
         }
     }
 
-    private fun countRoomDuration(): Long = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
+    private fun countRoomDuration(): Long = DateUtil.getDayDiff(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
 
     private fun loadPromoData() {
         homepageViewModel.getHotelPromo()

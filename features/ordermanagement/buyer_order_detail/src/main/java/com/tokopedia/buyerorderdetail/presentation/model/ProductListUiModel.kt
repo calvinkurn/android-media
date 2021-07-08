@@ -17,9 +17,13 @@ data class ProductListUiModel(
             val shopType: Int,
             val orderId: String,
             val orderStatusId: String
-    ) : Visitable<BuyerOrderDetailTypeFactory> {
+    ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
+        }
+
+        override fun shouldShow(): Boolean {
+            return header.isNotBlank()
         }
     }
 
@@ -40,9 +44,13 @@ data class ProductListUiModel(
             val totalPrice: String,
             val totalPriceText: String,
             val isProcessing: Boolean = false
-    ) : Visitable<BuyerOrderDetailTypeFactory> {
+    ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
+        }
+
+        override fun shouldShow(): Boolean {
+            return true
         }
     }
 

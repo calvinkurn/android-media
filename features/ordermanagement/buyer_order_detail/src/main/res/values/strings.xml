@@ -37,6 +37,9 @@
     <string name="buyer_order_detail_label_invoice">Lihat Invoice</string>
     <string name="buyer_order_detail_error_message_no_product">Tidak ada produk yang dapat ditambahkan ke keranjang!</string>
     <string name="label_call">Hubungi</string>
+    <string name="buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
+    <string name="copy_label_awb_number">bom_awb</string>
+    <string name="copy_label_receiver_address">bom_receiver_address</string>
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
