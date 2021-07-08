@@ -244,7 +244,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         return when (data) {
             is CartSelectAllHolderData -> CartSelectAllViewHolder.LAYOUT
             is CartChooseAddressHolderData -> CartChooseAddressViewHolder.LAYOUT
-            is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
+            is CartShopHolderData -> CartShopViewHolder.LAYOUT
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
@@ -275,7 +275,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val binding = ItemCartChooseAddressBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartChooseAddressViewHolder(binding, actionListener)
             }
-            CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+            CartShopViewHolder.LAYOUT -> {
                 val binding = ItemShopBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return CartShopViewHolder(binding, actionListener, cartItemActionListener, compositeSubscription)
             }
@@ -365,7 +365,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val data = cartDataList[position] as CartChooseAddressHolderData
                 (holder as CartChooseAddressViewHolder).bind(data)
             }
-            CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+            CartShopViewHolder.LAYOUT -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data)
             }
@@ -640,7 +640,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun resetQuantity(position: Int, parentPosition: Int) {
-        if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
+        if (getItemViewType(parentPosition) == CartShopViewHolder.LAYOUT) {
             (cartDataList[parentPosition] as CartShopHolderData).shopGroupAvailableData
                     ?.cartItemDataList?.get(position)?.cartItemData?.updatedData?.resetQuantity()
         }

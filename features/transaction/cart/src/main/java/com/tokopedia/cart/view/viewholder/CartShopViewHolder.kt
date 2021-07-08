@@ -14,6 +14,7 @@ import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdap
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
@@ -36,6 +37,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderWarningItemHeader(cartShopHolderData)
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
+        renderCartItems(cartShopHolderData)
+        renderAccordion(cartShopHolderData)
+        renderCheckBox(cartShopHolderData)
+        renderFulfillment(cartShopHolderData)
+        renderPreOrder(cartShopHolderData)
+        renderIncidentLabel(cartShopHolderData)
+        renderFreeShipping(cartShopHolderData)
+        renderEstimatedTimeArrival(cartShopHolderData)
+        renderMaximumWeight(cartShopHolderData)
+    }
+
+    private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.isCollapsed) {
             renderCollapsedCartItems(cartShopHolderData)
         } else {
@@ -45,14 +58,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 cartShopHolderData.clickedCollapsedProductIndex = RecyclerView.NO_POSITION
             }
         }
-        renderAccordion(cartShopHolderData)
-        renderCheckBox(cartShopHolderData)
-        renderFulfillment(cartShopHolderData)
-        renderPreOrder(cartShopHolderData)
-        renderIncidentLabel(cartShopHolderData)
-        renderFreeShipping(cartShopHolderData)
-        renderEstimatedTimeArrival(cartShopHolderData)
-        renderMaximumWeight(cartShopHolderData)
     }
 
     private fun renderWarningAndError(cartShopHolderData: CartShopHolderData) {
@@ -360,19 +365,32 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val position = adapterPosition
         if (position != RecyclerView.NO_POSITION) {
             binding.rvCartItem.post {
-                val child: View? = binding.rvCartItem.getChildAt(0)
-                val productHeight = child?.height ?: 0
-                val offset = productIndex * productHeight
-                val additionalOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
-                        ?: 0
-                val totalOffset = offset + additionalOffset
-                actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
+                if (binding.llWarningAndError.tickerWarning.isVisible) {
+                    binding.llWarningAndError.tickerWarning.post {
+                        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_16)
+                                ?: 0
+                        val tickerHeight = binding.llWarningAndError.tickerWarning.height
+                        calculateScrollOffset(productIndex, position, tickerHeight + paddingOffset)
+                    }
+                } else {
+                    calculateScrollOffset(productIndex, position, 0)
+                }
             }
         }
     }
 
+    private fun calculateScrollOffset(productIndex: Int, position: Int, tickerHeight: Int) {
+        val child: View? = binding.rvCartItem.getChildAt(0)
+        val productHeight = child?.height ?: 0
+        val offset = productIndex * productHeight
+        val paddingOffset = itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_12)
+                ?: 0
+        val totalOffset = offset + paddingOffset + tickerHeight
+        actionListener.scrollToClickedExpandedProduct(position, totalOffset * -1)
+    }
+
     companion object {
-        val TYPE_VIEW_ITEM_SHOP = R.layout.item_shop
+        val LAYOUT = R.layout.item_shop
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
     }
