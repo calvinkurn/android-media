@@ -10,87 +10,17 @@
       "userId": ".*",
       "eventAction": "view empty favorite number",
       "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
-      "userId": ".*",
-      "eventAction": "view empty favorite number",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
+      "eventLabel": ".+"
     },
     {
       "businessUnit": "recharge",
       "eventCategory": "digital - pdp favorite number",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEvent",
-      "userId": ".*",
+      "userId": ".+",
       "eventAction": "view coachmark",
       "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
-      "userId": ".*",
-      "eventAction": "view edit bottom sheet",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEvent",
-      "userId": ".*",
-      "eventAction": "click simpan on edit bottom sheet",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
-      "userId": ".*",
-      "eventAction": "view deletion pop up",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEvent",
-      "userId": ".*",
-      "eventAction": "click hapus on deletion pop up",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
-      "userId": ".*",
-      "eventAction": "view deletion success toaster",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
-      "userId": ".*",
-      "eventAction": "view deletion failed toaster",
-      "sessionIris": ".*",
-      "eventLabel": ".* - .*"
+      "eventLabel": ".+"
     },
     {
       "businessUnit": "recharge",
@@ -100,7 +30,77 @@
       "userId": ".*",
       "eventAction": "click lanjut transaksi",
       "sessionIris": ".*",
-      "eventLabel": ".* - .*"
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "click kebab menu",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "view edit bottom sheet",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".+",
+      "eventAction": "click simpan on edit bottom sheet",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "view deletion pop up",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".+",
+      "eventAction": "click hapus on deletion pop up",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "view deletion success toaster",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".+",
+      "eventAction": "view deletion failed toaster",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
     }
   ]
 }
