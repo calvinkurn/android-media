@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -40,6 +39,7 @@ import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
 import com.tokopedia.payment.fingerprint.di.FingerprintModule
