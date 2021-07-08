@@ -45,7 +45,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             isLive: Boolean,
             configResponse: ChannelDetailsWithRecomResponse.Config,
     ) = PlayChannelInfoUiModel(
-            channelType = PlayChannelType.Live,
+            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             backgroundUrl = configResponse.roomBackground.imageUrl
     )
 
