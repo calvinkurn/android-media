@@ -24,7 +24,6 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewV
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.fragment_hotel_review.*
 import javax.inject.Inject
 
 /**
@@ -168,17 +167,18 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        
-        if (indonesia_review_switch.isChecked) {
-            emptyModel.urlRes = getString(R.string.hotel_url_no_indonesian_review)
-            emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
-            emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
-        } else {
-            emptyModel.urlRes = getString(R.string.hotel_url_no_review)
-            emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
-            emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
-        }
 
+        binding?.let {
+            if (it.indonesiaReviewSwitch.isChecked) {
+                emptyModel.urlRes = getString(R.string.hotel_url_no_indonesian_review)
+                emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
+                emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
+            } else {
+                emptyModel.urlRes = getString(R.string.hotel_url_no_review)
+                emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
+                emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
+            }
+        }
         return emptyModel
     }
 

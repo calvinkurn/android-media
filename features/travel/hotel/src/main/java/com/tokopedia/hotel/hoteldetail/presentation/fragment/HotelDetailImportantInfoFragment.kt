@@ -5,10 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.databinding.SimpleTextViewCompatItemBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.simple_text_view_compat_item.*
 
 /**
  * @author by furqan on 07/05/19
