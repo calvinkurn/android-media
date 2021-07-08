@@ -4,14 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveLiveBinding
 import com.tokopedia.play_common.view.RoundedConstraintLayout
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import com.tokopedia.unifyprinciples.R as unifyR
 import java.util.*
+import com.tokopedia.play_common.R as commonR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by jegul on 07/07/21
@@ -36,6 +35,10 @@ class InteractiveLiveView : RoundedConstraintLayout {
     }
 
     private fun setScheduledMode(mode: Mode.Scheduled) {
+        binding.timerInteractiveSetup.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+        binding.timerInteractiveSetup.timerFormat = TimerUnifySingle.FORMAT_MINUTE
+        setTimer(mode.timeToStartInMs, mode.onFinished)
+
         binding.tvInteractiveTitle.text = mode.title
         binding.tvInteractiveTimerInfo.text = context.getString(R.string.play_interactive_setup_start_in)
 
@@ -46,14 +49,13 @@ class InteractiveLiveView : RoundedConstraintLayout {
         binding.clTimerContainer.setBackgroundColor(
                 MethodChecker.getColor(context, unifyR.color.Neutral_N75)
         )
-
-        binding.timerInteractiveSetup.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
-        binding.timerInteractiveSetup.timerFormat = TimerUnifySingle.FORMAT_MINUTE
-
-        setTimer(mode.timeToStartInMs, mode.onFinished)
     }
 
     private fun setLiveMode(mode: Mode.Live) {
+        binding.timerInteractiveSetup.timerVariant = TimerUnifySingle.VARIANT_MAIN
+        binding.timerInteractiveSetup.timerFormat = TimerUnifySingle.FORMAT_SECOND
+        setTimer(mode.remainingTimeInMs, mode.onFinished)
+
         binding.tvInteractiveTitle.text = context.getString(R.string.play_interactive_live)
         binding.tvInteractiveTimerInfo.text = context.getString(R.string.play_interactive_live_end_in)
 
@@ -66,11 +68,6 @@ class InteractiveLiveView : RoundedConstraintLayout {
         binding.clTimerContainer.setBackgroundColor(
                 MethodChecker.getColor(context, unifyR.color.Neutral_N75)
         )
-
-        binding.timerInteractiveSetup.timerVariant = TimerUnifySingle.VARIANT_MAIN
-        binding.timerInteractiveSetup.timerFormat = TimerUnifySingle.FORMAT_SECOND
-
-        setTimer(mode.remainingTimeInMs, mode.onFinished)
     }
 
     private fun setTimer(durationInMs: Long, onFinished: () -> Unit) {

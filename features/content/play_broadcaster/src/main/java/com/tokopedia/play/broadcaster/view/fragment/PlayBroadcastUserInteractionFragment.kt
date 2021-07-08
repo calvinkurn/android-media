@@ -522,19 +522,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun handleHasInteractiveState(state: BroadcastInteractiveState.Allowed) {
+
+        fun setLive(timeInMs: Long) {
+            interactiveView.setLive(timeInMs) {
+                parentViewModel.onInteractiveLiveEnded()
+            }
+        }
+
         when (state) {
             is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
             is BroadcastInteractiveState.Allowed.Schedule -> {
                 interactiveView.setSchedule(state.title, state.timeToStartInMs) {
-                    interactiveView.setLive(state.durationInMs) {
-                        //TODO("When Live end")
-                    }
+                    setLive(state.durationInMs)
                 }
             }
             is BroadcastInteractiveState.Allowed.Live -> {
-                interactiveView.setLive(state.remainingTimeInMs) {
-                    //TODO("When Live end")
-                }
+                setLive(state.remainingTimeInMs)
             }
         }
     }

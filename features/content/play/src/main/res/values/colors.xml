@@ -37,6 +37,8 @@
 
     <color name="play_dms_interactive_winner_badge_bg">#AD31353B</color>
 
+    <color name="play_dms_interactive_winning_dialog_subtitle">#D6DFEB</color>
+
     <!--General Color-->
     <color name="play_dms_R100">#FFEAEF</color>
     <color name="play_dms_G300">#82EF95</color>

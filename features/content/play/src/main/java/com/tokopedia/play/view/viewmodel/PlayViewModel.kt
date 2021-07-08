@@ -43,8 +43,8 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -52,6 +52,7 @@ import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
@@ -60,6 +61,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
@@ -132,25 +134,44 @@ class PlayViewModel @Inject constructor(
 
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
+    private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboard = MutableStateFlow(PlayLeaderboardUiState())
+    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardInfoUiModel>(PlayLeaderboardInfoUiModel())
+
+    /**
+     * Until repeatOnLifecycle is available (by updating library version),
+     * this can be used as an alternative to "complete" un-completable flow when page is not focused
+     */
+    private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
             _partnerInfo,
             _bottomInsets,
             _interactive,
-            _leaderboard
-    ) { partnerInfo, bottomInsets, interactive, leaderboard ->
+            _leaderboardInfo,
+            _status
+    ) { partnerInfo, bottomInsets, interactive, leaderboardInfo, status ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
                 bottomInsets = bottomInsets,
                 interactive = interactive,
-                leaderboard = leaderboard
+                showInteractive = when {
+                    /**
+                     * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                     */
+                    bottomInsets.isAnyShown -> ViewVisibility.Invisible
+                    status.isFreeze || status.isBanned -> ViewVisibility.Gone
+                    interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
+                    else -> ViewVisibility.Visible
+                },
+                leaderboards = leaderboardInfo.leaderboardWinners,
+                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty(),
+                status = status
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent
+        get() = _uiEvent.takeWhile { isActive.get() }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -234,7 +255,7 @@ class PlayViewModel @Inject constructor(
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
-                    leaderboardInfo = _leaderboard.value
+                    leaderboardInfo = _leaderboardInfo.value
             )
         }
 
@@ -300,6 +321,7 @@ class PlayViewModel @Inject constructor(
         }
         addSource(observableStatusInfo) {
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
+            _status.value = it.statusType
         }
         addSource(_observableBottomInsetsState) { insets ->
             _bottomInsets.value = insets
@@ -627,6 +649,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun focusPage(channelData: PlayChannelData) {
+        isActive.compareAndSet(false, true)
+
         focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
@@ -637,6 +661,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
+        isActive.compareAndSet(true, false)
+
         stopJob()
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
@@ -859,8 +885,8 @@ class PlayViewModel @Inject constructor(
         _observableQuickReply.value = quickReplyInfo
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardUiState) {
-        _leaderboard.value = leaderboardInfo
+    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+        _leaderboardInfo.value = leaderboardInfo
     }
 
     /**
@@ -1072,7 +1098,7 @@ class PlayViewModel @Inject constructor(
 
             try {
                 val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-                _leaderboard.value = PlayLeaderboardUiState(showBadge = true, winnerList = interactiveLeaderboard.leaderboardWinner)
+                _leaderboardInfo.value = interactiveLeaderboard
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
@@ -1085,6 +1111,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun doOnForbidden() {
+        isActive.set(false)
+
+        stopInteractive()
         stopWebSocket()
         stopPlayer()
         onKeyboardHidden()
@@ -1250,10 +1279,10 @@ class PlayViewModel @Inject constructor(
             )
 
             val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-            val currentLeaderboard = interactiveLeaderboard.leaderboardWinner.first()
-            val userInLeaderboard = currentLeaderboard.winners.find { it.id == userSession.userId }
+            val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
+            val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
 
-            if (userInLeaderboard != null) {
+            if (userInLeaderboard != null && userInLeaderboard.id == userId) {
                 _uiEvent.emit(
                         ShowWinningDialogEvent(
                                 userInLeaderboard.imageUrl,
@@ -1264,7 +1293,7 @@ class PlayViewModel @Inject constructor(
             }
 
             _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboard.value = PlayLeaderboardUiState(showBadge = true, winnerList = interactiveLeaderboard.leaderboardWinner)
+            _leaderboardInfo.value = interactiveLeaderboard
 
             _uiEvent.emit(
                     ShowCoachMarkWinnerEvent(

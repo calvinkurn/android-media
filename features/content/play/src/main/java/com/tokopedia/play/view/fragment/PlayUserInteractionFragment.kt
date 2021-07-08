@@ -32,11 +32,8 @@ import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
-import com.tokopedia.play.util.observer.CachedObserver
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -69,6 +66,7 @@ import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -837,15 +835,15 @@ class PlayUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.bottomInsets)
-                renderWinnerBadgeView(state.leaderboard.showBadge, state.bottomInsets)
+                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
+                renderWinnerBadgeView(state.showWinnerBadge)
                 renderToolbarView(state.followStatus, state.partnerName)
             }
         }
     }
 
     private fun observeUiEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is ShowWinningDialogEvent -> {
@@ -1370,7 +1368,7 @@ class PlayUserInteractionFragment @Inject constructor(
             isStateChanged: Boolean,
             state: PlayInteractiveUiState,
             followStatus: PlayPartnerFollowStatus,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+            visibility: ViewVisibility,
     ) {
         if (isStateChanged) {
             when (state) {
@@ -1393,23 +1391,17 @@ class PlayUserInteractionFragment @Inject constructor(
 
         interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)
 
-        when {
-            bottomInsets.isAnyShown -> {
-                /**
-                 * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
-                 */
-                interactiveView?.invisible()
-            }
-            state is PlayInteractiveUiState.NoInteractive -> interactiveView?.hide()
-            else -> interactiveView?.show()
+        when (visibility) {
+            ViewVisibility.Visible -> interactiveView?.show()
+            ViewVisibility.Invisible -> interactiveView?.invisible()
+            ViewVisibility.Gone -> interactiveView?.hide()
         }
     }
 
     private fun renderWinnerBadgeView(
-            shouldShow: Boolean,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+            shouldShow: Boolean
     ) {
-        if (!bottomInsets.isAnyShown && shouldShow) interactiveWinnerBadgeView?.show()
+        if (shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
 
