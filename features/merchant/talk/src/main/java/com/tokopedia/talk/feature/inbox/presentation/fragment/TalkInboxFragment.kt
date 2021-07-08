@@ -701,13 +701,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         headerTalkInbox.apply {
             setTitle(R.string.title_talk_discuss)
             if (GlobalConfig.isSellerApp()) {
-                if (isNewInbox()) {
-                    addRightIcon(0).apply {
-                        clearImage()
-                        setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
-                        setOnClickListener {
-                            goToSellerSettings()
-                        }
+                addRightIcon(0).apply {
+                    clearImage()
+                    setImageDrawable(com.tokopedia.iconunify.getIconUnifyDrawable(context, IconUnify.SETTING, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                    setOnClickListener {
+                        goToSellerSettings()
                     }
                 }
                 show()
