@@ -46,6 +46,10 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
+    <!--    Dynamic feature for Login Fingerprint-->
+    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
+    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
+
     <!-- Dynamic feature for Groupchat-->
     <string name="play_broadcaster_app_name">Play Broadcaster</string>
 
@@ -68,6 +72,7 @@
 
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
+    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="ovop2p_app_name">Saldo</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
@@ -78,7 +83,6 @@
     <string name="title_digital_topup"><![CDATA[Top-up & Tagihan]]></string>
     <string name="digital_cart_toolbar_title">Checkout</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>

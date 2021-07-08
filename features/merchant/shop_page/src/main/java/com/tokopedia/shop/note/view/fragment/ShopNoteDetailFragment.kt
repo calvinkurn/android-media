@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,16 +23,19 @@ import com.tokopedia.shop.common.util.TextHtmlUtils
 import com.tokopedia.shop.note.NoteUtil
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent
 import com.tokopedia.shop.note.di.module.ShopNoteModule
-import com.tokopedia.shop.note.view.listener.ShopNoteDetailView
-import com.tokopedia.shop.note.view.presenter.ShopNoteDetailPresenter
+import com.tokopedia.shop.note.view.presenter.ShopNoteDetailViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_shop_note_detail.*
 import javax.inject.Inject
 
-class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
+class ShopNoteDetailFragment: BaseDaggerFragment() {
 
-    @Inject lateinit var shopNoteDetailPresenter: ShopNoteDetailPresenter
+    private var shopNoteDetailViewModel: ShopNoteDetailViewModel? = null
     private var shopNoteId: String = ""
     private var shopId: String = ""
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         private const val VIEW_CONTENT = 1
@@ -48,7 +54,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
         super.onCreate(savedInstanceState)
         shopNoteId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_NOTE_ID) ?: ""
         shopId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_ID) ?: ""
-        shopNoteDetailPresenter.attachView(this)
+        shopNoteDetailViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopNoteDetailViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,18 +63,32 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getShopDetail()
+        observeLiveData()
+    }
+
+    private fun observeLiveData() {
+        shopNoteDetailViewModel?.shopNoteDetailData?.observe(viewLifecycleOwner, Observer {
+            when(it){
+                is Success -> {
+                    onSuccessGetShopNoteList(it.data)
+                }
+                is Fail ->{
+                    onErrorGetShopNoteList(it.throwable)
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
+        shopNoteDetailViewModel?.shopNoteDetailData?.removeObservers(this)
         super.onDestroy()
-        shopNoteDetailPresenter.detachView()
     }
 
     override fun getScreenName(): String? = null
 
     private fun getShopDetail(){
         setViewState(VIEW_LOADING)
-        shopNoteDetailPresenter.getShopNoteList(shopId,shopNoteId)
+        shopNoteDetailViewModel?.getShopNoteList(shopId,shopNoteId)
     }
 
     private fun setViewState(viewState: Int) {
@@ -114,7 +134,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
         }
     }
 
-    override fun onErrorGetShopNoteList(e: Throwable?) {
+    private fun onErrorGetShopNoteList(e: Throwable?) {
         setViewState(VIEW_ERROR)
         val textRetryError = view_error_state.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
         val buttonRetryError = view_error_state.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
@@ -122,7 +142,7 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
         buttonRetryError.setOnClickListener { getShopDetail() }
     }
 
-    override fun onSuccessGetShopNoteList(shopNoteDetail: ShopNoteModel?) {
+    private fun onSuccessGetShopNoteList(shopNoteDetail: ShopNoteModel?) {
         setViewState(VIEW_CONTENT)
         shopNoteDetail?.run {
             (activity as AppCompatActivity).supportActionBar?.title = shopNoteDetail.title

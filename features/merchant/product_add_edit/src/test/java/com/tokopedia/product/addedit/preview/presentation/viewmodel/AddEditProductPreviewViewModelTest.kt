@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -26,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import junit.framework.Assert
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -220,12 +222,63 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `When check shouldShowMultiLocationTicker Expect should return expected result`() {
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(true)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(false)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(true)
+        assertTrue(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(false)
+        onGetIsShopAdmin_thenReturn(false)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("")
+        onGetIsMultiLocationShop_thenReturn(false)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(true)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+        viewModel.setProductId("12")
+        onGetIsMultiLocationShop_thenReturn(true)
+        onGetIsShopOwner_thenReturn(true)
+        onGetIsShopAdmin_thenReturn(false)
+        assertFalse(viewModel.shouldShowMultiLocationTicker)
+
+    }
+
+    @Test
     fun `When check product input model Expect should return expected result`() {
         val product = MediatorLiveData<ProductInputModel>()
         product.value = ProductInputModel()
 
         viewModel.productInputModel = product
         assertEquals(product, viewModel.productInputModel)
+    }
+
+    @Test
+    fun `when getMaxProductPhotos, expect correct max product picture`() {
+        every { userSession.isShopOfficialStore } returns true
+        var maxPicture = viewModel.getMaxProductPhotos()
+        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
+
+        every { userSession.isShopOfficialStore } returns false
+        maxPicture = viewModel.getMaxProductPhotos()
+        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
     }
 
     @Test
@@ -242,7 +295,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        var imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        var imagePickerResult = arrayListOf("pict1.0","pict2","pict3")
         var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
         var editted = arrayListOf(false,false,true)
 
@@ -365,6 +418,25 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
         verifyGetShopInfoLocation()
+    }
+
+    @Test
+    fun  `When validate product name and product name unchanged Expect return success result`() = runBlocking {
+        val productName = "testing"
+
+        viewModel.setProductId("123")
+        viewModel.isEditing.getOrAwaitValue()
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = productName)
+        )
+
+        viewModel.validateProductNameInput("not same")
+        val failedResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_ERROR, failedResult.result)
+
+        viewModel.validateProductNameInput(productName)
+        val successResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_SUCCESS, successResult.result)
     }
 
     @Test
@@ -688,6 +760,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetShopId_thenReturnDefault() {
         coEvery { userSession.shopId } returns defaultShopId
+    }
+
+    private fun onGetIsMultiLocationShop_thenReturn(isMultiLocationShop: Boolean) {
+        coEvery { userSession.isMultiLocationShop } returns isMultiLocationShop
     }
 
     private fun onSaveProductDraft_thenFailed() {

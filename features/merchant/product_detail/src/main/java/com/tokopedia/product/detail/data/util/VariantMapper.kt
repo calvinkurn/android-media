@@ -144,7 +144,12 @@ object VariantMapper {
                 isCod = newData?.isCod ?: false
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        return DynamicProductInfoP1(
+            basic = basic,
+            data = data,
+            layoutName = oldData.layoutName,
+            bestSellerContent = oldData.bestSellerContent
+        )
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
@@ -152,8 +157,11 @@ object VariantMapper {
         val data = oldData?.data?.copy(
                 media = media
         )
-        return DynamicProductInfoP1(basic ?: BasicInfo(), data
-                ?: ComponentData(), oldData?.layoutName ?: "")
+        return DynamicProductInfoP1(
+            basic = basic ?: BasicInfo(),
+            data = data ?: ComponentData(),
+            layoutName = oldData?.layoutName ?: "",
+            bestSellerContent = oldData?.bestSellerContent)
     }
 
     fun generateVariantString(variantData:ProductVariantCommon?): String {

@@ -58,6 +58,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -555,7 +557,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun sendProductImpressionTrackingEvent(
             item: ProductItemDataView,
             suggestedRelatedKeyword: String,
-            dimension90: String,
     ) {
         val userId = getUserId()
         val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
@@ -566,7 +567,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
         } ?: ""
 
-        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, dimension90))
+        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams))
         productItemDataViews.add(item)
 
         trackingQueue?.let {
@@ -581,21 +582,27 @@ class ProductListFragment: BaseDaggerFragment(),
         return if (pageTitle.isEmpty()) keyword else pageTitle
     }
 
-    override fun showNetworkError(startRow: Int) {
+    override fun showNetworkError(startRow: Int, throwable: Throwable?) {
         val productListAdapter = productListAdapter ?: return
 
         if (productListAdapter.isListEmpty())
-            showNetworkErrorOnEmptyList()
+            showNetworkErrorOnEmptyList(throwable)
         else
-            showNetworkErrorOnLoadMore()
+            showNetworkErrorOnLoadMore(throwable)
     }
 
-    private fun showNetworkErrorOnEmptyList() {
+    private fun showNetworkErrorOnEmptyList(throwable: Throwable?) {
         hideViewOnError()
-
-        NetworkErrorHelper.showEmptyState(activity, view) {
-            refreshLayout?.visible()
-            reloadData()
+        if (throwable != null) {
+            NetworkErrorHelper.showEmptyState(activity,view, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
+                refreshLayout?.visible()
+                reloadData()
+            }
+        } else {
+            NetworkErrorHelper.showEmptyState(activity, view) {
+                refreshLayout?.visible()
+                reloadData()
+            }
         }
     }
 
@@ -605,13 +612,19 @@ class ProductListFragment: BaseDaggerFragment(),
         refreshLayout?.gone()
     }
 
-    private fun showNetworkErrorOnLoadMore() {
+    private fun showNetworkErrorOnLoadMore(throwable: Throwable?) {
         val searchParameter = searchParameter ?: return
-
-        NetworkErrorHelper.createSnackbarWithAction(activity) {
-            addLoading()
-            presenter?.loadMoreData(searchParameter.getSearchParameterMap())
-        }.showRetrySnackbar()
+        if (throwable!= null) {
+            NetworkErrorHelper.createSnackbarWithAction(activity, ErrorHandler.getErrorMessage(requireContext(), throwable)) {
+                addLoading()
+                presenter?.loadMoreData(searchParameter.getSearchParameterMap())
+            }
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity) {
+                addLoading()
+                presenter?.loadMoreData(searchParameter.getSearchParameterMap())
+            }.showRetrySnackbar()
+        }
     }
 
     private fun getScreenNameId() = SCREEN_SEARCH_PAGE_PRODUCT_TAB
@@ -738,7 +751,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
         val product: Product = createTopAdsProductForTracking(item)
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position)
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, item.dimension90)
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
@@ -807,8 +820,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 product,
                 item.position,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
                 getUserId(),
+                item.dimension90,
         )
     }
 
@@ -816,7 +829,6 @@ class ProductListFragment: BaseDaggerFragment(),
             item: ProductItemDataView,
             userId: String,
             suggestedRelatedKeyword: String,
-            dimension90: String,
     ) {
         val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
         val filterSortParams = searchParameter?.let {
@@ -824,7 +836,7 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
 
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(filterSortParams, dimension90),
+                item.getProductAsObjectDataLayer(filterSortParams),
                 item.isOrganicAds,
                 eventLabel,
                 filterSortParams,
@@ -1527,9 +1539,9 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (isWishlisted)
-            Toaster.build(view, getString(R.string.msg_add_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
         else
-            Toaster.build(view, getString(R.string.msg_remove_wishlist_failed), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
     }
 
     override val isLandingPage: Boolean
@@ -1575,7 +1587,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 broadMatchItemDataView.alternativeKeyword,
                 getUserId(),
-                broadMatchItem
+                broadMatchItem,
         )
     }
 
@@ -1613,7 +1625,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 broadMatchItemDataView.alternativeKeyword,
                 getUserId(),
-                broadMatchItemAsObjectDataLayer
+                broadMatchItemAsObjectDataLayer,
         )
     }
 
@@ -1948,7 +1960,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword)
+        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword, broadMatchDataView.dimension90)
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String) {

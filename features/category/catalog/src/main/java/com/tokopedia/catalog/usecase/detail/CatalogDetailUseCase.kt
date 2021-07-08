@@ -12,20 +12,20 @@ import javax.inject.Inject
 
 class CatalogDetailUseCase @Inject constructor(private val catalogDetailRepository: CatalogDetailRepository) {
 
-    suspend fun getCatalogDetail(catalogID : String ,
+    suspend fun getCatalogDetail(catalogId : String , userId : String, device : String,
                                  catalogDetailDataModel: MutableLiveData<Result<CatalogDetailDataModel>>)  {
-        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogID)
+        val gqlResponse = catalogDetailRepository.getCatalogDetail(catalogId, userId, device)
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
-        if(data != null)
-            catalogDetailDataModel.value = Success(mapIntoModel(data))
+        if(data?.catalogGetDetailModular != null)
+            catalogDetailDataModel.value = Success(mapIntoModel(data.catalogGetDetailModular))
         else{
             catalogDetailDataModel.value = Fail(Throwable("No data found"))
         }
     }
 
-    private fun mapIntoModel(data :  CatalogResponseData) : CatalogDetailDataModel{
-        val components = CatalogDetailMapper.mapIntoVisitable(data.catalogGetDetailModular)
-        val fullSpecificationDataModel = CatalogDetailMapper.getFullSpecificationsModel(data.catalogGetDetailModular)
+    private fun mapIntoModel(catalogGetDetailModular : CatalogResponseData.CatalogGetDetailModular) : CatalogDetailDataModel{
+        val components = CatalogDetailMapper.mapIntoVisitable(catalogGetDetailModular)
+        val fullSpecificationDataModel = CatalogDetailMapper.getFullSpecificationsModel(catalogGetDetailModular)
         return CatalogDetailDataModel(fullSpecificationDataModel,components)
     }
 }

@@ -41,7 +41,7 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.Dig
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -134,13 +134,22 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addRecommendation() {
+        val pgCategoryIds = mutableListOf<Int>()
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    shopOrder.purchaseItemList.forEach { purchaseItem ->
+                        val categoryId = purchaseItem.categoryId.toIntOrNull()
+                        categoryId?.let {
+                            pgCategoryIds.add(it)
+                        }
+                    }
+                }
                 addMarketPlaceRecommendation()
-                addDigitalRecommendation()
+                addDigitalRecommendation(pgCategoryIds, MarketPlaceThankPage)
             }
             is DigitalThankPage -> {
-                addDigitalRecommendation()
+                addDigitalRecommendation(pgCategoryIds, DigitalThankPage)
                 addMarketPlaceRecommendation()
             }
         }
@@ -157,7 +166,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             iRecommendationView?.loadRecommendation(thanksPageData, this)
     }
 
-    private fun addDigitalRecommendation() {
+    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
         val recomContainer = getRecommendationContainer()
         iDigitalRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(digitalRecommendationLayout)
@@ -166,7 +175,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         if (::thanksPageData.isInitialized)
             iDigitalRecommendationView?.loadRecommendation(thanksPageData,
-                    this, digitalRecomTrackingQueue)
+                    this, digitalRecomTrackingQueue, pgCategoryIds, pageType)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -230,18 +239,22 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-
-    private fun setTopTickerData(data: ThankPageTopTickerData) {
-        getTopTickerView()?.apply {
-            visible()
-            tickerTitle = data.tickerTitle ?: ""
-            setTextDescription(data.tickerDescription ?: "")
-            closeButtonVisibility = View.GONE
-            tickerType = when (data.ticketType) {
-                TICKER_WARNING -> Ticker.TYPE_WARNING
-                TICKER_INFO -> Ticker.TYPE_INFORMATION
-                TICKER_ERROR -> Ticker.TYPE_ERROR
-                else -> Ticker.TYPE_INFORMATION
+    private fun setTopTickerData(tickerData: List<TickerData>) {
+        context?.let { context ->
+            getTopTickerView()?.apply {
+                visible()
+                val tickerViewPagerAdapter = TickerPagerAdapter(context, tickerData)
+                addPagerView(tickerViewPagerAdapter, tickerData)
+                tickerViewPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        if (itemData is ThankPageTopTickerData) {
+                            if (itemData.isAppLink()) {
+                                openAppLink(linkUrl.toString())
+                            } else
+                                openWebLink(linkUrl.toString())
+                        }
+                    }
+                })
             }
         }
     }
@@ -332,6 +345,24 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 thanksPageData.paymentID.toString())
         activity?.finish()
     }
+
+    private fun openWebLink(urlStr : String?) {
+        urlStr?.let {
+            activity?.apply {
+                RouteManager.route(this,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlStr))
+            }
+        }
+    }
+
+    private fun openAppLink(appLink: String?) {
+        appLink?.let {
+            activity?.apply {
+                RouteManager.route(this, appLink)
+            }
+        }
+    }
+
 
     override fun launchApplink(applink: String) {
         val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")

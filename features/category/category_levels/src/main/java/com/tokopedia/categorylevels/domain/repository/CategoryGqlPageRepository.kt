@@ -30,6 +30,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["product-list-filter"] = ComponentNames.QuickFilter.componentName
         componentMap["product-list-infinite-scroll"] = ComponentNames.ProductCardRevamp.componentName
         componentMap["static-text"] = ComponentNames.LihatSemua.componentName
+        componentMap["topads"] = ComponentNames.TopadsHeadlineView.componentName
     }
 
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
@@ -73,6 +74,16 @@ class CategoryGqlPageRepository(private val departmentName: String,
             }
         }
         for (component in data.components) {
+            //hardcoded part to be removed when backend developed
+                if(componentMap[component.type] == ComponentNames.CategoryBestSeller.componentName){
+                    components.add(ComponentsItem(
+                            name = ComponentNames.TopadsHeadlineView.componentName,
+                            id = "10",
+                            isSticky = false,
+                            pagePath = data.basicInfo.url,
+                            showFilterCount = false,
+                            renderByDefault = true))
+                }
             val componentsItem = ComponentsItem(
                     name = componentMap[component.type],
                     id = component.id.toString(),

@@ -212,7 +212,7 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                 tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             } else {
                 buttonVariant = UnifyButton.Variant.FILLED
-                tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
         }
     }

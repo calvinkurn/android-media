@@ -1,9 +1,8 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore
 
 import android.app.Application
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,15 +20,15 @@ class LoadMoreViewModel(val application: Application, private val components: Co
         get() = Dispatchers.Main + SupervisorJob()
 
 
-
     fun getViewOrientation() = components.loadForHorizontal
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            if(!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
+            if (!getViewOrientation()) syncData.value = productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
         }, onError = {
-            it.printStackTrace()
+            getComponent(components.parentComponentId, components.pageEndPoint)?.verticalProductFailState = true
+            syncData.value = true
         })
     }
 }

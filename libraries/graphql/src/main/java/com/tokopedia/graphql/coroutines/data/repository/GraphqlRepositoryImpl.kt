@@ -9,6 +9,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
+import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.Dispatchers
@@ -97,6 +98,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 if (error != null && !error.isJsonNull) {
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
                 ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
                         mapOf("type" to "json",
@@ -110,6 +112,8 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
         }
 
         val graphqlResponse = GraphqlResponse(results, errors, isCachedData)
+        //adding http status code
+        graphqlResponse.httpStatusCode = httpStatusCode
 
         if (refreshRequests.isEmpty()) {
             return graphqlResponse
@@ -117,7 +121,6 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
 
         //adding cached request.
         graphqlResponse.refreshRequests = refreshRequests
-
         return graphqlResponse
     }
 
@@ -154,6 +157,7 @@ class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStor
                 requests.remove(copyRequests[i])
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             }
         } catch (jse: JsonSyntaxException) {
             ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",

@@ -19,11 +19,11 @@ public class InboxReputationDetailItemUiModel implements
     private final boolean reviewHasReviewed;
     private final boolean reviewIsEditable;
     private final boolean reviewIsSkippable;
-    private final int shopId;
+    private final long shopId;
     private final ReviewResponseUiModel reviewResponseUiModel;
-    private final int reputationId;
+    private final long reputationId;
     private final boolean reviewIsEdited;
-    private final int reviewerId;
+    private final long reviewerId;
     private final boolean isProductBanned;
     String productId;
     String productName;
@@ -42,7 +42,7 @@ public class InboxReputationDetailItemUiModel implements
     private boolean isProductDeleted;
     private int productStatus;
 
-    public InboxReputationDetailItemUiModel(int reputationId, String productId, String productName,
+    public InboxReputationDetailItemUiModel(long reputationId, String productId, String productName,
                                             String productAvatar,
                                             String productUrl,
                                             String reviewId,
@@ -53,7 +53,7 @@ public class InboxReputationDetailItemUiModel implements
                                             boolean reviewIsEditable,
                                             boolean reviewIsSkippable,
                                             boolean reviewIsSkipped,
-                                            int shopId,
+                                            long shopId,
                                             int tab,
                                             @Nullable ReviewResponseUiModel
                                                     reviewResponseUiModel,
@@ -61,7 +61,7 @@ public class InboxReputationDetailItemUiModel implements
                                             boolean isProductDeleted,
                                             boolean reviewIsEdited,
                                             String revieweeName,
-                                            int reviewerId,
+                                            long reviewerId,
                                             boolean isProductBanned,
                                             int productStatus,
                                             String orderId
@@ -148,7 +148,7 @@ public class InboxReputationDetailItemUiModel implements
         return reviewIsSkippable;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
@@ -160,7 +160,7 @@ public class InboxReputationDetailItemUiModel implements
         return reviewResponseUiModel;
     }
 
-    public int getReputationId() {
+    public long getReputationId() {
         return reputationId;
     }
 
@@ -201,7 +201,7 @@ public class InboxReputationDetailItemUiModel implements
         return revieweeName;
     }
 
-    public int getReviewerId() {
+    public long getReviewerId() {
         return reviewerId;
     }
 

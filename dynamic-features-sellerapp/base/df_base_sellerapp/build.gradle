@@ -11,6 +11,7 @@ repositories{
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -61,6 +62,7 @@ dependencies {
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.layanan)
+    implementation project(rootProject.ext.features.withdraw)
 
     //Content
     implementation project(rootProject.ext.features.playBroadcaster)

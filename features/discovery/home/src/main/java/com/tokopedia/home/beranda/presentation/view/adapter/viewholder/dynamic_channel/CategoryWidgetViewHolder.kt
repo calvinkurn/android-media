@@ -20,9 +20,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.Categ
 import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
+import kotlinx.android.synthetic.main.home_dc_category_widget.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_dc_category_widget.view.home_component_divider_header
 import java.util.*
 
 class CategoryWidgetViewHolder(val view: View, private val categoryListener: HomeCategoryListener) :
@@ -64,6 +67,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                     itemView.context.resources.getDimensionPixelOffset(dimens)
             ))
         }
+        setChannelDivider(channel)
     }
 
     override fun getViewHolderClassName(): String {
@@ -72,6 +76,14 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         CategoryWidgetTracking.sendCategoryWidgetSeeAllClick(channel, categoryListener.userId)
+    }
+
+    private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
+        HomeChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = channel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     class CategoryWidgetItemAdapter(
