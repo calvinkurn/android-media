@@ -104,7 +104,5 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        RouteManager.route(this, "tokopedia://digital/form?category_id=1&menu_id=2&template=telcopre")
-//        RouteManager.route(this, "tokopedia://digital/form?category_id=9&menu_id=3&template=telcopost")
     }
 }
