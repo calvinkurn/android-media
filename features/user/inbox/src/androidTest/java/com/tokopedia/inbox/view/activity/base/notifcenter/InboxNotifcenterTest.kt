@@ -2,11 +2,15 @@ package com.tokopedia.inbox.view.activity.base.notifcenter
 
 import android.content.Intent
 import android.net.Uri
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
-import com.tokopedia.notifcenter.di.module.CommonModule
 
 open class InboxNotifcenterTest : InboxTest() {
 
@@ -40,4 +44,13 @@ open class InboxNotifcenterTest : InboxTest() {
         intent.data = uri?.build()
     }
 
+}
+
+object NotifcenterAssertion {
+    fun assertNotifWidgetMsg(position: Int, msg: String) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_message)
+        ).check(matches(withText(msg)))
+    }
 }
