@@ -50,7 +50,6 @@ import javax.inject.Inject
 const val POST_POSITION = "position"
 const val PARAM_VIDEO_INDEX = "video_index"
 
-
 class VideoDetailFragment :
     BaseDaggerFragment(),
     VideoDetailContract.View,
@@ -206,14 +205,12 @@ class VideoDetailFragment :
         bindHeader(dynamicPostViewModel.header)
         bindCaption(dynamicPostViewModel.caption, dynamicPostViewModel.template.cardpost.body)
         bindFooter(dynamicPostViewModel.footer, dynamicPostViewModel.template.cardpost.footer)
-
-        videoViewModel = if (dynamicPostViewModel.contentList.size > index) {
-            dynamicPostViewModel.contentList[index] as VideoViewModel
-        } else {
-            dynamicPostViewModel.contentList[0] as VideoViewModel
+        if (dynamicPostViewModel.contentList[index] is VideoViewModel) {
+            if (dynamicPostViewModel.contentList.size > index) {
+                videoViewModel = dynamicPostViewModel.contentList[index] as VideoViewModel
+            }
+            initPlayer(videoViewModel.url)
         }
-        initPlayer(videoViewModel.url)
-
     }
 
     override fun showLoading() {

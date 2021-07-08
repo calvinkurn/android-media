@@ -74,6 +74,11 @@ class FeedExoPlayer(val context: Context) {
         exoPlayer.prepare(mediaSource, true, false)
     }
 
+    fun resume() {
+        reset()
+        exoPlayer.playWhenReady = true
+    }
+
     fun stop() {
         exoPlayer.playWhenReady = false
         exoPlayer.stop()

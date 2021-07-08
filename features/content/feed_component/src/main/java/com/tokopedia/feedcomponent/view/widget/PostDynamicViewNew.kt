@@ -752,20 +752,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
                         else {
-                            if (videoPlayer == null) {
-                                videoPlayer = FeedExoPlayer(context)
-                            }
-                            layout_video?.player = videoPlayer?.getExoPlayer()
-                            videoPlayer?.start(media[current].mediaUrl, isMute)
-                            layout_video?.videoSurfaceView?.setOnClickListener {
-                                if (media[current].mediaUrl.isNotEmpty()) {
-                                    videoListener?.onVideoPlayerClicked(
-                                        positionInFeed,
-                                        current,
-                                        postId.toString(),
-                                        media[current].appLink
-                                    )
-                                }
+                            if (videoPlayer != null) {
+                                videoPlayer?.resume()
+                            } else {
+                                val videoItem =
+                                    View.inflate(context, R.layout.item_post_video_new, null)
+                                val param = LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT
+                                )
+                                videoItem?.layoutParams = param
+                                setVideoControl(videoItem, media[current], postId.toString())
                             }
                         }
                     }
@@ -822,6 +819,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia, postId: String) {
+
         videoItem?.run {
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             var time = feedMedia.videoTime
@@ -1030,12 +1028,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
-        videoPlayer?.reset()
+        videoPlayer?.resume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
-        videoPlayer?.stop()
+        videoPlayer?.reset()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

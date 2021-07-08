@@ -52,6 +52,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
+private const val REQUEST_LOGIN = 345
+
 class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.View.ViewHolder,
     MentionAdapterListener {
 
@@ -168,7 +170,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     }
                 }
             } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
+                goToLogin()
             }
             return true
         } else {
@@ -182,7 +184,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     fun reportAction(
-        adapterPosition: Int,
         id: String,
         reasonType: String,
         reasonDesc: String
@@ -209,7 +210,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     context = object : ReportBottomSheet.OnReportOptionsClick {
                         override fun onReportAction(reasonType: String, reasonDesc: String) {
                             reportAction(
-                                adapterPosition,
                                 id,
                                 reasonType,
                                 reasonDesc
@@ -217,17 +217,26 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                         }
                     }).show((context as FragmentActivity).supportFragmentManager, "")
             } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
+                goToLogin()
             }
         }
         sheet.onDelete = {
             if (userSession?.isLoggedIn == true) {
                 onDeleteCommentKol(id, canDeleteComment, adapterPosition)
             } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
-
+                goToLogin()
             }
         }
+    }
+
+    private fun goToLogin() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        requireActivity().startActivityForResult(intent, REQUEST_LOGIN)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setAvatar()
     }
 
     override fun replyToUser(user: MentionableUserViewModel?) {
@@ -445,11 +454,21 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         sendButton?.isClickable = false
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_LOGIN) {
+            setAvatar()
+        }
+    }
+
+    private fun setAvatar() {
+        ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
+    }
+
     private fun prepareView() {
         userSession?.isLoggedIn?.let { feedAnalytics.openCommentDetailPage(it) }
         adapter = KolCommentAdapter(typeFactory)
         val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
-        ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
         if (authorId?.isNotEmpty() == true) {
             if (authorId == userSession?.shopId) {
                 ImageHandler.loadImageCircle2(context, avatarShop, userSession?.shopAvatar)
@@ -466,7 +485,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                     kolComment?.getRawText()
                 )
             } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
+                goToLogin()
             }
         }
         mentionAdapter = MentionableUserAdapter(this)

@@ -125,6 +125,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private static final int OPEN_KOL_PROFILE = 13;
     private static final int OPEN_CONTENT_REPORT = 1310;
     private static final int OPEN_VIDEO_DETAIL = 1311;
+    private static final String PARAM_VIDEO_INDEX = "video_index";
+
 
     private Integer postId;
     private SwipeToRefresh swipeToRefresh;
@@ -868,6 +870,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, String redirectUrl) {
         Intent videoDetailIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.VIDEO_DETAIL, postId);
+        videoDetailIntent.putExtra(PARAM_VIDEO_INDEX, contentPosition);
         startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL);
     }
 
