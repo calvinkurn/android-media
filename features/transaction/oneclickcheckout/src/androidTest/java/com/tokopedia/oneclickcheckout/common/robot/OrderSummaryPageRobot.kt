@@ -2,10 +2,16 @@ package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -13,8 +19,14 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.action.scrollTo
 import com.tokopedia.oneclickcheckout.common.action.swipeUpTop
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 
 fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageRobot().apply(func)
@@ -25,18 +37,39 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
-    fun clickAddProductQuantity(times: Int = 1) {
-        val addButton = onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_add)).perform(scrollTo())
-        for (i in 0 until times) {
-            addButton.perform(click())
-        }
-        Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+    fun clickAddProductQuantity(index: Int = 0, times: Int = 1) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click add product quantity"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val addButton = view.findViewById<View>(com.tokopedia.unifycomponents.R.id.quantity_editor_add)
+                for (i in 0 until times) {
+                    addButton.performClick()
+                }
+                Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+            }
+        }))
     }
 
-    fun clickMinusProductQuantity() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)).perform(scrollTo()).perform(click())
+    fun clickMinusProductQuantity(index: Int = 0, times: Int = 1) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click minus product quantity"
+
+            override fun perform(uiController: UiController?, view: View) {
+                val minusButton = view.findViewById<View>(com.tokopedia.unifycomponents.R.id.quantity_editor_substract)
+                for (i in 0 until times) {
+                    minusButton.performClick()
+                }
+                Thread.sleep(OrderSummaryPageViewModel.DEBOUNCE_TIME)
+            }
+        }))
     }
 
+    @Deprecated("")
     fun clickCloseProfileTicker() {
         onView(withId(R.id.ticker_preference_info)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
@@ -45,33 +78,137 @@ class OrderSummaryPageRobot {
     }
 
     fun clickChangeAddressRevamp(func: (AddressBottomSheetRobot.() -> Unit)? = null) {
-        onView(withId(R.id.btn_change_address)).perform(scrollTo()).perform(click())
-        if (func != null) {
-            AddressBottomSheetRobot().apply(func)
-        }
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item == OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change address"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_change_address).performClick()
+                if (func != null) {
+                    AddressBottomSheetRobot().apply(func)
+                }
+            }
+        }))
     }
 
     fun clickChangeDurationRevamp(func: DurationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_change_duration)).perform(scrollTo()).perform(click())
-        DurationBottomSheetRobot().apply(func)
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item == OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change duration"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_change_duration).performClick()
+                DurationBottomSheetRobot().apply(func)
+            }
+        }))
+//        onView(withId(R.id.btn_change_duration)).perform(scrollTo()).perform(click())
+//        DurationBottomSheetRobot().apply(func)
     }
 
     fun clickChangePaymentRevamp() {
-        onView(withId(R.id.btn_change_payment)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item == OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change payment"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_change_payment).performClick()
+            }
+        }))
+//        onView(withId(R.id.btn_change_payment)).perform(scrollTo()).perform(click())
     }
 
     fun clickChangeCourierRevamp(func: CourierBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.btn_change_courier)).perform(scrollTo()).perform(click())
-        CourierBottomSheetRobot().apply(func)
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item == OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change courier"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.btn_change_courier).performClick()
+                CourierBottomSheetRobot().apply(func)
+            }
+        }))
+//        onView(withId(R.id.btn_change_courier)).perform(scrollTo()).perform(click())
+//        CourierBottomSheetRobot().apply(func)
     }
 
     fun clickShipmentErrorAction(func: DurationBottomSheetRobot.() -> Unit) {
-        onView(withId(R.id.tv_shipping_error_message)).perform(scrollTo()).perform(click())
-        DurationBottomSheetRobot().apply(func)
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item == OrderPreferenceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change address"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.tv_shipping_error_message).performClick()
+                DurationBottomSheetRobot().apply(func)
+            }
+        }))
+//        onView(withId(R.id.tv_shipping_error_message)).perform(scrollTo()).perform(click())
+//        DurationBottomSheetRobot().apply(func)
     }
 
     fun clickInsurance() {
-        onView(withId(R.id.cb_insurance)).perform(scrollTo()).perform(click())
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
+            override fun describeTo(description: Description?) {
+
+            }
+
+            override fun matches(item: Any?): Boolean {
+                return item == OrderInsuranceCard
+            }
+        }, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "click change address"
+
+            override fun perform(uiController: UiController?, view: View) {
+                view.findViewById<View>(R.id.cb_insurance).performClick()
+            }
+        }))
+//        onView(withId(R.id.cb_insurance)).perform(scrollTo()).perform(click())
     }
 
     fun clickApplyShipmentPromoRevamp() {
@@ -127,15 +264,11 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.btn_occ_add_new_address)).perform(click())
     }
 
-    fun assertProductCard(shopName: String,
-                          shopLocation: String,
-                          hasShopLocationImg: Boolean,
-                          hasShopBadge: Boolean,
-                          productName: String,
-                          productPrice: String,
-                          productSlashPrice: String?,
-                          isFreeShipping: Boolean,
-                          productQty: Int) {
+    fun assertShopCard(shopName: String,
+                       shopLocation: String,
+                       hasShopLocationImg: Boolean,
+                       hasShopBadge: Boolean,
+                       isFreeShipping: Boolean) {
         onView(withId(R.id.tv_shop_name)).perform(scrollTo()).check(matches(withText(shopName)))
         onView(withId(R.id.tv_shop_location)).check(matches(withText(shopLocation)))
         onView(withId(R.id.iu_image_fulfill)).check { view, noViewFoundException ->
@@ -146,7 +279,7 @@ class OrderSummaryPageRobot {
                 assertEquals(View.GONE, view.visibility)
             }
         }
-        onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
+        onView(withId(R.id.iv_shop_badge)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (hasShopBadge) {
                 assertEquals(View.VISIBLE, view.visibility)
@@ -154,6 +287,25 @@ class OrderSummaryPageRobot {
                 assertEquals(View.GONE, view.visibility)
             }
         }
+        onView(withId(R.id.iu_free_shipping)).check { view, noViewFoundException ->
+            noViewFoundException?.printStackTrace()
+            if (isFreeShipping) {
+                assertEquals(View.VISIBLE, view.visibility)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
+        }
+    }
+
+    fun assertProductCard(shopName: String,
+                          shopLocation: String,
+                          hasShopLocationImg: Boolean,
+                          hasShopBadge: Boolean,
+                          productName: String,
+                          productPrice: String,
+                          productSlashPrice: String?,
+                          isFreeShipping: Boolean,
+                          productQty: Int) {
         onView(withId(R.id.tv_product_name)).check(matches(withText(productName)))
         onView(withId(R.id.tv_product_price)).check(matches(withText(productPrice)))
         onView(withId(R.id.tv_product_slash_price)).check { view, noViewFoundException ->
@@ -177,7 +329,7 @@ class OrderSummaryPageRobot {
     }
 
     fun assertShopBadge(hasShopBadge: Boolean = true, shopTypeName: String) {
-        onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
+        onView(withId(R.id.iv_shop_badge)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             if (hasShopBadge) {
                 assertEquals(View.VISIBLE, view.visibility)

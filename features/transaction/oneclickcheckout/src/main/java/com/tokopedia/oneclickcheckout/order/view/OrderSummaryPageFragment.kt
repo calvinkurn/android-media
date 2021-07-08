@@ -322,10 +322,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.shop = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(2)
+                    adapter.notifyItemChanged(adapter.shopIndex)
                 }
             } else {
-                adapter.notifyItemChanged(2)
+                adapter.notifyItemChanged(adapter.shopIndex)
             }
         }
     }
@@ -338,15 +338,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.products = it
             when {
                 newSize > oldSize -> {
-                    adapter.notifyItemRangeChanged(3, oldSize)
+                    adapter.notifyItemRangeChanged(adapter.productStartIndex, oldSize)
                     adapter.notifyItemRangeInserted(oldSize, newSize - oldSize)
                 }
                 newSize == oldSize -> {
-                    adapter.notifyItemRangeChanged(3, oldSize)
+                    adapter.notifyItemRangeChanged(adapter.productStartIndex, oldSize)
                 }
                 newSize < oldSize -> {
-                    adapter.notifyItemRangeChanged(3, newSize)
-                    adapter.notifyItemRangeRemoved(3 + newSize, oldSize - newSize)
+                    adapter.notifyItemRangeChanged(adapter.productStartIndex, newSize)
+                    adapter.notifyItemRangeRemoved(adapter.productStartIndex + newSize, oldSize - newSize)
                 }
             }
         }
@@ -376,10 +376,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         adapter.ticker = it.data.ticker
                         if (binding.rvOrderSummaryPage.isComputingLayout) {
                             binding.rvOrderSummaryPage.post {
-                                adapter.notifyItemRangeChanged(0, 2)
+                                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
                             }
                         } else {
-                            adapter.notifyItemRangeChanged(0, 2)
+                            adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
                         }
                         if (it.data.hasValidProfile) {
                             binding.rvOrderSummaryPage.show()

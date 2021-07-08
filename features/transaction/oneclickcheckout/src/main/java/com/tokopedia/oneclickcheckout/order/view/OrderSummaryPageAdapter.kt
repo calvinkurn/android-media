@@ -31,6 +31,10 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var promo: OrderPromo = OrderPromo()
     var total: OrderTotal = OrderTotal()
 
+    val tickerIndex = 0
+    val onboardingIndex = 1
+    val shopIndex = 2
+    val productStartIndex = 3
     val preferenceIndex: Int
         get() = products.size + 3
     val insuranceIndex: Int
