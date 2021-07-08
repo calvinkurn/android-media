@@ -1121,7 +1121,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
                 dismissAndRunAction()
-                selectCheckboxWhenPartialSuccessRequestPickup(orderIdsFail)
             }
             showFailed()
             show()
@@ -1137,7 +1136,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
                 dismissAndRunAction()
-                selectCheckboxWhenPartialSuccessRequestPickup(orderIdsFail)
             }
             showFailed()
             show()
@@ -1153,16 +1151,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
                 dismissAndRunAction()
-                selectCheckboxWhenPartialSuccessRequestPickup(orderIdsFail)
             }
             showFailed()
             show()
         }
-    }
-
-    private fun selectCheckboxWhenPartialSuccessRequestPickup(orderIdsFail: List<String>) {
-        adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.orderId in orderIdsFail }.onEach { it.isChecked = true }
-        adapter.notifyDataSetChanged()
     }
 
     private fun showErrorBulkRequestPickup() {
