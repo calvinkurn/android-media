@@ -464,8 +464,10 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     fun hidePmProCoachmark() {
-        pmProCoachmark?.hideCoachMark()
-        pmProCoachmarkIsShowing = false
+        if (activity?.isFinishing == false && pmProCoachmark?.isShowing == true && pmProCoachmarkIsShowing) {
+            pmProCoachmark?.hideCoachMark()
+            pmProCoachmarkIsShowing = false
+        }
     }
 
     fun scrollToTop() {

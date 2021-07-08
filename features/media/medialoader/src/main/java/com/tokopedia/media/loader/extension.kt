@@ -69,6 +69,17 @@ fun ImageView.loadImageRounded(
 ) = this.setImageResource(resource)
 
 inline fun ImageView.loadImageRounded(
+        data: Bitmap,
+        rounded: Float = DEFAULT_ROUNDED,
+        crossinline properties: Properties.() -> Unit = {}
+) {
+    call(data, Properties()
+            .apply(properties)
+            .setRoundedRadius(rounded)
+    )
+}
+
+inline fun ImageView.loadImageRounded(
         url: String?,
         rounded: Float = DEFAULT_ROUNDED,
         crossinline properties: Properties.() -> Unit = {}
@@ -82,17 +93,16 @@ inline fun ImageView.loadImageRounded(
 inline fun ImageView.loadIcon(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply {
-    apply(properties)
-    useBlurHash(false)
+) = call(url, Properties().apply(properties)
+    .useCache(false)
+    .useBlurHash(false)
 
     /*
-    * loadIcon() extension must be haven't placeholder,
-    * the loader effect should be handled by team by
-    * using own shimmering.
-    * */
-    setPlaceHolder(-1)
-})
+     * loadIcon() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    .setPlaceHolder(-1))
 
 fun ImageView.loadImageTopRightCrop(source: String) {
     if (context.isValid()) {

@@ -19,9 +19,9 @@ interface PlayBroadcastSetupComponent {
 
     fun inject(bottomSheet: ProductSetupBottomSheet)
 
-    fun inject(bottomSheet: ProductEditFragment)
+    fun inject(bottomSheet: TitleAndTagsEditBottomSheet)
 
-    fun inject(bottomSheet: EditCoverTitleBottomSheet)
+    fun inject(bottomSheet: ProductEditFragment)
 
     fun inject(emptyFragment: CoverEditFragment)
 

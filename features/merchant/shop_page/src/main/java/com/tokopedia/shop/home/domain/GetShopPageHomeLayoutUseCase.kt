@@ -47,6 +47,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                 publishDate
                 widgets {
                   widgetID
+                  widgetMasterID
                   layoutOrder
                   name
                   type
@@ -57,6 +58,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    etalaseID
                   }
                   data {
                     ... on DisplayWidget {

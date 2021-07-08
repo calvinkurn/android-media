@@ -710,9 +710,9 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check hotel external appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://hotel"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    fun `check hotel external appLink then should return DF_TRAVEL in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_INTERNAL}://hotel"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_TRAVEL)
     }
 
     @Test
@@ -934,18 +934,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check one click checkout appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/one-click-checkout"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check preference list appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/preference-list"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check preference edit appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/preference-edit"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 

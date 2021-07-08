@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
@@ -46,7 +46,7 @@ class RegistrationTermAdapter(
         fun bind(term: RegistrationTermUiModel) {
             with(itemView) {
                 tvPmTermItemTitle.text = term.title.parseAsHtml()
-                icPmHeaderTermItem.loadImageDrawable(term.resDrawableIcon)
+                icPmHeaderTermItem.loadImage(term.resDrawableIcon)
                 setupTermDescription(term)
             }
         }

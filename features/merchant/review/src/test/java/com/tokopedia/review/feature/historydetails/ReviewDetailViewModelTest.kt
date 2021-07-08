@@ -1,6 +1,9 @@
 package com.tokopedia.review.feature.historydetails
 
-import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.ProductrevGetReviewDetail
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputation
 import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputationResponseWrapper
 import com.tokopedia.review.utils.verifyReviewErrorEquals
@@ -9,14 +12,13 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.*
 
 class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when setFeedbackId should set feedbackId to expected value and getReviewDetail`() {
-        val feedbackId = anyLong()
+        val feedbackId = anyString()
         val expectedNetworkResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedNetworkResponse)
@@ -30,7 +32,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when setFeedbackId but getReviewDetailFail should set feedbackId to expected value and set expected failure`() {
-        val feedbackId = anyLong()
+        val feedbackId = anyString()
         val expectedNetworkResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
@@ -44,7 +46,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetail success should execute expected usecase`() {
-        val feedbackId = anyLong()
+        val feedbackId = anyString()
         val expectedNetworkResponse = ProductrevGetReviewDetailResponseWrapper()
 
         onGetReviewDetails_thenReturn(expectedNetworkResponse)
@@ -57,7 +59,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when getReviewDetail Fail should set expected failure`() {
-        val feedbackId = anyLong()
+        val feedbackId = anyString()
         val expectedNetworkResponse = Throwable()
 
         onGetReviewDetailsFails_thenReturn(expectedNetworkResponse)
@@ -70,7 +72,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when retry() should execute usecase again`() {
-        val feedbackId = anyLong()
+        val feedbackId = anyString()
 
         viewModel.setFeedbackId(feedbackId)
         verifyProductrevGetReviewDetailUseCaseCalled()
@@ -87,7 +89,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when feedback Id live data is not initialized should return 0`() {
-        val expectedFeedbackId = 0L
+        val expectedFeedbackId = ""
         val actualFeedbackId = viewModel.feedbackId
         Assert.assertEquals(expectedFeedbackId, actualFeedbackId)
     }
@@ -158,7 +160,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
         coVerify { inboxReviewInsertReputationUseCase.executeOnBackground() }
     }
 
-    private fun verifyFeedbackIdEquals(feedbackId: Long) {
+    private fun verifyFeedbackIdEquals(feedbackId: String) {
         Assert.assertEquals(feedbackId, viewModel.feedbackId)
     }
 

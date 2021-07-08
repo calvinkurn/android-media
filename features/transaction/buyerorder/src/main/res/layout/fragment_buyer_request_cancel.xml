@@ -364,6 +364,7 @@
             app:text_field_placeholder="@string/tulis_alasan"
             app:text_field_label_static="true"
             app:text_field_label=""
+            app:text_field_message="@string/error_message_buyer_request_cancel_reason_should_not_contains_special_chars"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
