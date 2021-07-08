@@ -845,7 +845,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeUiEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is ShowWinningDialogEvent -> {

@@ -60,6 +60,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
@@ -135,6 +136,12 @@ class PlayViewModel @Inject constructor(
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboard = MutableStateFlow(PlayLeaderboardUiState())
 
+    /**
+     * Until repeatOnLifecycle is available (by updating library version),
+     * this can be used as an alternative to "complete" un-completable flow when page is not focused
+     */
+    private val isPageFocused: AtomicBoolean = AtomicBoolean(false)
+
     val uiState: Flow<PlayViewerNewUiState> = combine(
             _partnerInfo,
             _bottomInsets,
@@ -150,7 +157,7 @@ class PlayViewModel @Inject constructor(
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent
+        get() = _uiEvent.takeWhile { isPageFocused.get() }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -627,6 +634,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun focusPage(channelData: PlayChannelData) {
+        isPageFocused.compareAndSet(false,true)
+
         focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
@@ -637,6 +646,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
+        isPageFocused.compareAndSet(true, false)
+
         stopJob()
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
