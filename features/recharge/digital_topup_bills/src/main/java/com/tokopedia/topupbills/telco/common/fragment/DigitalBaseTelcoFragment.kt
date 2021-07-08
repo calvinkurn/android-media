@@ -16,16 +16,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil.Companion.isSeamlessFavoriteNumber
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
@@ -156,6 +160,37 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
     }
 
+    /**
+     * Param:
+     * -) EXTRA_NUMBER_LIST: old favorite number param
+     * */
+    protected fun navigateFavoriteNumberPage(
+            clientNumber: String,
+            favNumberList: MutableList<TopupBillsFavNumberItem>,
+            dgCategoryIds: ArrayList<String>,
+            categoryName: String
+    ) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
+            val extras = Bundle()
+            extras.putString(EXTRA_CLIENT_NUMBER, ClientNumberType.TYPE_INPUT_TEL)
+            extras.putString(EXTRA_NUMBER, clientNumber)
+            extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
+            extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
+            extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
+
+            /* EXTRA_NUMBER_LIST */
+            extras.putParcelableArrayList(EXTRA_NUMBER_LIST, favNumberList as java.util.ArrayList<out Parcelable>)
+
+            intent.putExtras(extras)
+
+            val requestCode = if (isSeamlessFavoriteNumber(requireContext()))
+                REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER else REQUEST_CODE_DIGITAL_FAVORITE_NUMBER
+
+            startActivityForResult(intent, requestCode)
+        }
+    }
+
     protected fun openContactPicker() {
         val contactPickerIntent = Intent(
                 Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
@@ -186,28 +221,31 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         setInputNumberFromContact(contact?.contactNumber ?: "")
                         setContactNameFromContact(contact?.givenName ?: "")
                     }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
+                } else if (requestCode == REQUEST_CODE_DIGITAL_FAVORITE_NUMBER) {
                     if (data != null) {
                         val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
-                        if (isSeamlessFavoriteNumber) {
-                            val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
-                            handleCallbackAnySearchNumber(
-                                    orderClientNumber.clientName,
-                                    orderClientNumber.clientNumber,
-                                    orderClientNumber.productId.toString(),
-                                    orderClientNumber.categoryId.toString(),
-                                    inputNumberActionType
-                            )
-                        } else {
-                            val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
-                            handleCallbackAnySearchNumber(
-                                    "",
-                                    orderClientNumber.clientNumber,
-                                    orderClientNumber.productId,
-                                    orderClientNumber.categoryId,
-                                    inputNumberActionType
-                            )
-                        }
+                        val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
+                        handleCallbackAnySearchNumber(
+                                "",
+                                orderClientNumber.clientNumber,
+                                orderClientNumber.productId,
+                                orderClientNumber.categoryId,
+                                inputNumberActionType
+                        )
+                    } else {
+                        handleCallbackAnySearchNumberCancel()
+                    }
+                } else if (requestCode == REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER) {
+                    if (data != null) {
+                        val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
+                        val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
+                        handleCallbackAnySearchNumber(
+                                orderClientNumber.clientName,
+                                orderClientNumber.clientNumber,
+                                orderClientNumber.productId.toString(),
+                                orderClientNumber.categoryId.toString(),
+                                inputNumberActionType
+                        )
                     } else {
                         handleCallbackAnySearchNumberCancel()
                     }
@@ -324,8 +362,18 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onSeamlessFavoriteNumbersError(error: Throwable) {
-        // TODO: [Misael] mau isi apa ni, harusnya panggil error handler kah? atau send log
         errorSetFavNumbers()
+    }
+
+    /**
+     * oldCategoryId: Parameter sent to old favorite number query
+     * */
+    fun getFavoriteNumber(categoryIds: List<String>, oldCategoryId: Int) {
+        if (isSeamlessFavoriteNumber(requireContext())) {
+            getSeamlessFavoriteNumbers(categoryIds)
+        } else {
+            getFavoriteNumbers(oldCategoryId)
+        }
     }
 
     override fun onCheckVoucherError(error: Throwable) {
@@ -446,9 +494,17 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     companion object {
-        const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
+        const val REQUEST_CODE_DIGITAL_FAVORITE_NUMBER = 76
+        const val REQUEST_CODE_DIGITAL_SEAMLESS_FAVORITE_NUMBER = 77
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
+
+        const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
+        const val EXTRA_NUMBER = "EXTRA_NUMBER"
+        const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
+        const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
+        const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
+        const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
     }
 }

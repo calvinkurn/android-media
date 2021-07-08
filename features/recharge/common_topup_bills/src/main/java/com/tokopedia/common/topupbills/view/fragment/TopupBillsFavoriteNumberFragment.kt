@@ -141,8 +141,8 @@ class TopupBillsFavoriteNumberFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
-        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
+        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
     }
 
     fun initView() {

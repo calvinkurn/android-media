@@ -24,24 +24,18 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
-import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
-import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -285,16 +279,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getCatalogMenuDetail() {
         onLoadingMenuDetail(true)
         getMenuDetail(TelcoComponentType.TELCO_PREPAID)
-        // TODO: [Misael] Toggle
-        if (isSeamlessFavoriteNumber) {
-            getSeamlessFavoriteNumbers(listOf(
-                    TelcoCategoryType.CATEGORY_PULSA.toString(),
-                    TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                    TelcoCategoryType.CATEGORY_ROAMING.toString()
-            ))
-        } else {
-            getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
-        }
+        getFavoriteNumber(
+                categoryIds = listOf(
+                        TelcoCategoryType.CATEGORY_PULSA.toString(),
+                        TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                        TelcoCategoryType.CATEGORY_ROAMING.toString()
+                ),
+                oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID
+        )
     }
 
     //region Promo and Recommendation
@@ -470,28 +462,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             telcoClientNumberWidget.clearFocusAutoComplete()
 
-            if (isSeamlessFavoriteNumber) {
-                startActivityForResult(activity?.let {
-                    TopupBillsFavoriteNumberActivity.getCallingIntent(it,
-                        ClientNumberType.TYPE_INPUT_TEL,
-                        clientNumber,
-                        operatorData,
-                        topupAnalytics.getCategoryName(categoryId),
-                        arrayListOf(
-                                TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                TelcoCategoryType.CATEGORY_ROAMING.toString()
-                        )
-                    )
-                },
-                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-            } else {
-                startActivityForResult(activity?.let {
-                    DigitalSearchNumberActivity.newInstance(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
-                },
-                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-            }
+            val dgCategoryIds = arrayListOf(
+                    TelcoCategoryType.CATEGORY_PULSA.toString(),
+                    TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                    TelcoCategoryType.CATEGORY_ROAMING.toString()
+            )
+
+            navigateFavoriteNumberPage(clientNumber, favNumberList,
+                    dgCategoryIds, topupAnalytics.getCategoryName(categoryId))
         }
     }
 
