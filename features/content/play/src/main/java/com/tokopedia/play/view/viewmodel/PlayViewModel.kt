@@ -1280,9 +1280,9 @@ class PlayViewModel @Inject constructor(
 
             val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
             val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
-            val userInLeaderboard = currentLeaderboard.winners.find { it.id == userSession.userId }
+            val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
 
-            if (userInLeaderboard != null) {
+            if (userInLeaderboard != null && userInLeaderboard.id == userId) {
                 _uiEvent.emit(
                         ShowWinningDialogEvent(
                                 userInLeaderboard.imageUrl,
