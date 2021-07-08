@@ -96,6 +96,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private var currentCategoryName = ""
     private var number: String = ""
+    private var isNeedShowCoachmark = true
 
     private var binding: FragmentFavoriteNumberBinding? = null
     private var operatorData: TelcoCatalogPrefixSelect? = null
@@ -140,6 +141,7 @@ class TopupBillsFavoriteNumberFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
+        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
     }
 
@@ -240,7 +242,7 @@ class TopupBillsFavoriteNumberFragment :
             if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
 
-        if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
+        if (isNeedShowCoachmark && numberListAdapter.visitables.isNotEmpty()) {
             if (numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
                 showCoachmark()
             }
@@ -493,7 +495,7 @@ class TopupBillsFavoriteNumberFragment :
                     coachMark.showCoachMark(coachMarkItem)
                 }
                 localCacheHandler.apply {
-                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, true)
+                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, false)
                     applyEditor()
                 }
             }, COACH_MARK_START_DELAY)
