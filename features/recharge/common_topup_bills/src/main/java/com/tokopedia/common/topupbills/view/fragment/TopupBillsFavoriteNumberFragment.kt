@@ -62,10 +62,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.properties.Delegates
 
 class TopupBillsFavoriteNumberFragment :
         BaseDaggerFragment(),

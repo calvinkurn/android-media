@@ -3,11 +3,8 @@ package com.tokopedia.common.topupbills.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.*
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.EnhanceEccomerce.Companion.ECOMMERCE
-import com.tokopedia.common.topupbills.data.constant.RechargeCategory
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import java.util.*
 
 class CommonTopupBillsAnalytics {
     fun eventClickUsePromo() {
