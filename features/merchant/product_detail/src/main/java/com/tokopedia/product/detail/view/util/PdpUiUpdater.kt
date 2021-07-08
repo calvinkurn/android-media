@@ -105,6 +105,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val bestSellerData: BestSellerInfoDataModel?
         get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? BestSellerInfoDataModel
 
+    val productDetailInfoData: ProductDetailInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
