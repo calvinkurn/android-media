@@ -359,7 +359,7 @@
     <!-- Reading   -->
     <string name="review_reading_title">Ulasan Pembeli</string>
     <string name="review_reading_bottom_sheet_statistics_description">Dihitung dari jumlah rating positif (bintang 4 dan 5) dibagi dengan total rating.</string>
-    <string name="review_reading_rating_and_review_count">%d rating, %d ulasan</string>
+    <string name="review_reading_rating_and_review_count">%s rating • %s ulasan</string>
     <string name="review_reading_rating_only_count">%d rating (tanpa ulasan)</string>
     <string name="review_reading_header_maximum_score">/5.0</string>
     <string name="review_reading_sort_default">Urutkan</string>

@@ -11,11 +11,38 @@ object ReadReviewTracking {
         tracker.sendScreenAuthenticated(screenName, getOpenScreenCustomDimensMap(productId))
     }
 
-    fun trackOnClickPositiveReviewPercentage(productId: String) {
+    fun trackOnClickPositiveReviewPercentage(positiveReview: String, rating: Int, review: Int, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_POSITIVE_REVIEW_PERCENTAGE,
-                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE, ),
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE, getPercentPositiveReview(positiveReview), rating, review),
+                productId
+        ))
+    }
+
+    fun trackOnFilterClicked(filterName: String, filterValue: String, isActive: Boolean, productId: String) {
+        tracker.sendGeneralEvent(getTrackEventMap(
+                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+                ReadReviewTrackingConstants.EVENT_ACTION_CLICK_FILTER,
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_FILTER, filterName, filterValue, isActive.toString()),
+                productId
+        ))
+    }
+
+    fun trackOnApplyFilterClicked(filterName: String, filterValue: String, isActive: Boolean, productId: String) {
+        tracker.sendGeneralEvent(getTrackEventMap(
+                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+                ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_APPLY_FILTER, filterName, filterValue, isActive.toString()),
+                productId
+        ))
+    }
+
+    fun trackOnApplySortClicked(sortValue: String, productId: String) {
+        tracker.sendGeneralEvent(getTrackEventMap(
+                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+                ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_SORT,
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_APPLY_SORT, sortValue),
                 productId
         ))
     }
@@ -72,6 +99,10 @@ object ReadReviewTracking {
                 "",
                 productId
         ))
+    }
+
+    private fun getPercentPositiveReview(percentPositiveFormatted: String): String {
+        return percentPositiveFormatted.substringBefore("%")
     }
 
     private fun getOpenScreenCustomDimensMap(productId: String): Map<String, String> {

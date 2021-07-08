@@ -10,7 +10,6 @@ object ReviewGalleryTracking {
 
     fun trackOnLikeReviewClicked(feedbackId: String, isLiked: Boolean, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
-                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
                 String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_LIKE, feedbackId, isLiked.toString()),
                 productId
@@ -19,25 +18,23 @@ object ReviewGalleryTracking {
 
     fun trackOnSeeAllClicked(feedbackId: String, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
-                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_SEE_ALL,
                 String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_SEE_ALL, feedbackId),
                 productId
         ))
     }
 
-    fun trackSwipeImage(feedbackId: String, direction: String, imagePosition: Int, totalImages: Int, productId: String) {
+    fun trackSwipeImage(feedbackId: String, previousIndex: Int, currentIndex: Int, totalImages: Int, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
-                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_SWIPE,
-                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_SWIPE, ),
+                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_SWIPE, feedbackId, getImageSwipeDirection(previousIndex, currentIndex), currentIndex, totalImages),
                 productId
         ))
     }
 
-    private fun getTrackEventMap(event: String, eventAction: String, eventLabel: String, productId: String): Map<String, String> {
+    private fun getTrackEventMap(eventAction: String, eventLabel: String, productId: String): Map<String, String> {
         return mapOf(
-                ReviewTrackingConstant.EVENT to event,
+                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReviewTrackingConstant.EVENT_ACTION to eventAction,
                 ReviewTrackingConstant.EVENT_CATEGORY to ReviewGalleryTrackingConstants.EVENT_CATEGORY,
                 ReviewTrackingConstant.EVENT_LABEL to eventLabel,
@@ -45,5 +42,12 @@ object ReviewGalleryTracking {
                 ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
                 ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
         )
+    }
+
+    private fun getImageSwipeDirection(previousIndex: Int, currentIndex: Int): String {
+        if(previousIndex < currentIndex) {
+            return ReviewGalleryTrackingConstants.SWIPE_DIRECTION_RIGHT
+        }
+        return ReviewGalleryTrackingConstants.SWIPE_DIRECTION_LEFT
     }
 }

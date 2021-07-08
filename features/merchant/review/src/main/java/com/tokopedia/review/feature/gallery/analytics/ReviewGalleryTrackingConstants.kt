@@ -7,7 +7,10 @@ object ReviewGalleryTrackingConstants {
 
     const val EVENT_LABEL_CLICK_LIKE = "feedback_id:%s;is_active:%s;"
     const val EVENT_LABEL_CLICK_SEE_ALL = "feedback_id:%s;"
-    const val EVENT_LABEL_CLICK_SWIPE = "feedback_id:%s;direction:%s;image_position:%s;total_image:%s;"
+    const val EVENT_LABEL_CLICK_SWIPE = "feedback_id:%s;direction:%s;image_position:%d;total_image:%d;"
 
     const val EVENT_CATEGORY = "product detail page - review - review image"
+
+    const val SWIPE_DIRECTION_RIGHT = "right"
+    const val SWIPE_DIRECTION_LEFT = "left"
 }

@@ -9,6 +9,7 @@ class SnapPagerScrollListener(private val snapHelper: PagerSnapHelper, private v
     companion object {
         const val NOTIFY_ON_INIT = false
     }
+
     private var snapPosition: Int
 
     init {
@@ -39,9 +40,9 @@ class SnapPagerScrollListener(private val snapHelper: PagerSnapHelper, private v
     private fun notifyListenerIfNeeded(newSnapPosition: Int) {
         if (snapPosition != newSnapPosition) {
             if (NOTIFY_ON_INIT && !hasItemPosition()) {
-                listener.onImageSwiped(newSnapPosition)
+                listener.onImageSwiped(snapPosition, newSnapPosition)
             } else if (hasItemPosition()) {
-                listener.onImageSwiped(newSnapPosition)
+                listener.onImageSwiped(snapPosition, newSnapPosition)
             }
             snapPosition = newSnapPosition
         }

@@ -152,11 +152,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
+        ReadReviewTracking.trackOnLikeClicked(reviewId, isLiked(likeStatus), viewModel.getProductId())
         viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
     }
 
     override fun onHeaderClicked() {
-        ReadReviewTracking.trackOnClickPositiveReviewPercentage(viewModel.getProductId())
+        ReadReviewTracking.trackOnClickPositiveReviewPercentage(getSatisfactionRate(), getRatingAndTopics().rating.totalRating, getRatingAndTopics().rating.totalRatingTextAndImage, viewModel.getProductId())
         if (statisticsBottomSheet == null) {
             statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(getReviewStatistics(), getSatisfactionRate())
         }
@@ -192,6 +193,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onSortSubmitted(selectedSort: ListItemUnify) {
         clearAllData()
+        ReadReviewTracking.trackOnApplySortClicked(selectedSort.listTitleText, viewModel.getProductId())
         reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
         viewModel.setSort(selectedSort.listTitleText)
         showListOnlyLoading()
@@ -532,6 +534,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         } else {
             throwable.printStackTrace()
         }
+    }
+
+    private fun isLiked(likeStatus: Int): Boolean {
+        return likeStatus == LikeDislike.LIKED
     }
 
 }

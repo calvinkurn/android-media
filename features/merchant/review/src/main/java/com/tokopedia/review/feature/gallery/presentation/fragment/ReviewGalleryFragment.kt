@@ -1,10 +1,12 @@
 package com.tokopedia.review.feature.gallery.presentation.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -25,6 +27,7 @@ import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
 import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
@@ -35,8 +38,10 @@ import com.tokopedia.review.feature.gallery.presentation.listener.SnapPagerScrol
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryExpandedReviewBottomSheet
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
+import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -45,6 +50,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         ReviewGalleryImageSwipeListener, ReviewGalleryImageListener, OnBackPressedListener {
 
     companion object {
+        const val REPORT_REVIEW_ACTIVITY_CODE = 200
         fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
             return ReviewGalleryFragment().apply {
                 arguments = Bundle().apply {
@@ -61,6 +67,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private var menuButton: IconUnify? = null
     private var imagesRecyclerView: RecyclerView? = null
     private var reviewDetail: ReviewGalleryReviewDetailWidget? = null
+    private var coordinatorLayout: CoordinatorLayout? = null
     private val adapter by lazy {
         ReviewGalleryImagesAdapter(this)
     }
@@ -89,7 +96,8 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
-    override fun onImageSwiped(index: Int) {
+    override fun onImageSwiped(previousIndex: Int, index: Int) {
+        ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
         reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
     }
 
@@ -128,6 +136,13 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         finishActivity()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REPORT_REVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+            showToaster(getString(R.string.review_reading_success_submit_report))
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     private fun getDataFromArguments() {
         arguments?.getString(ReviewGalleryActivity.EXTRA_CACHE_MANAGER_ID)?.let {
             context?.let { context ->
@@ -147,6 +162,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         menuButton = view.findViewById(R.id.review_gallery_menu_button)
         imagesRecyclerView = view.findViewById(R.id.review_gallery_recyclerview)
         reviewDetail = view.findViewById(R.id.review_gallery_review_detail)
+        coordinatorLayout = view.findViewById(R.id.review_gallery_coordinator_layout)
     }
 
     private fun setupCloseButton() {
@@ -185,6 +201,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike)
                 setLikeButtonClickListener {
+                    ReviewGalleryTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
                     viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
                 }
                 setLikeButtonImage(likeDislike.isLiked())
@@ -235,7 +252,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toLongOrZero())
-        startActivity(intent)
+        startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
     }
 
     private fun hideComponentsButImage() {
@@ -255,6 +272,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun openExpandedReviewBottomSheet() {
+        ReviewGalleryTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
         if (expandedReviewBottomSheet == null) {
             with(productReview) {
                 expandedReviewBottomSheet = ReviewGalleryExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
@@ -279,5 +297,15 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
             if (isLikeValueChange) setResult(Activity.RESULT_OK)
             finish()
         }
+    }
+
+    private fun showToaster(message: String) {
+        coordinatorLayout?.let {
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    private fun isLiked(likeStatus: Int): Boolean {
+        return likeStatus == LikeDislike.LIKED
     }
 }

@@ -52,7 +52,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
-            showReportOptionWithCondition(isReportable, feedbackID, element.shopId)
+            showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
             showAttachedImages(imageAttachments, this, element.shopId)
             setLikeButton(feedbackID, element.shopId, likeDislike)

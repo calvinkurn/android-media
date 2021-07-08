@@ -115,7 +115,7 @@ data class LikeDislike(
 ) {
 
     companion object {
-        private const val LIKED = 1
+        const val LIKED = 1
     }
 
     fun isLiked(): Boolean {
