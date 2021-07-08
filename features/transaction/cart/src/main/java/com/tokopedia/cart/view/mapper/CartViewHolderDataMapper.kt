@@ -11,29 +11,35 @@ class CartViewHolderDataMapper @Inject constructor() {
 
     fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData, isMultipleShop: Boolean): CartShopHolderData {
         if (shopGroupAvailableData.isTokoNow) {
-            return if (isMultipleShop) {
+            return if (isMultipleShop && shopGroupAvailableData.cartItemDataList.size > 1) {
                 mapCartShopHolderData(
                         shopGroupAvailableData = shopGroupAvailableData,
                         isCollapsible = true,
-                        isCollapsed = true
+                        isCollapsed = true,
+                        isShowPin = true
                 )
             } else {
                 mapCartShopHolderData(
                         shopGroupAvailableData = shopGroupAvailableData,
-                        isCollapsible = true,
-                        isCollapsed = false
+                        isCollapsible = false,
+                        isCollapsed = false,
+                        isShowPin = false
                 )
             }
         } else {
             return mapCartShopHolderData(
                     shopGroupAvailableData = shopGroupAvailableData,
                     isCollapsible = false,
-                    isCollapsed = false
+                    isCollapsed = false,
+                    isShowPin = false
             )
         }
     }
 
-    private fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData, isCollapsible: Boolean, isCollapsed: Boolean): CartShopHolderData {
+    private fun mapCartShopHolderData(shopGroupAvailableData: ShopGroupAvailableData,
+                                      isCollapsible: Boolean,
+                                      isCollapsed: Boolean,
+                                      isShowPin: Boolean): CartShopHolderData {
         return CartShopHolderData().apply {
             if (shopGroupAvailableData.isChecked) {
                 setAllItemSelected(true)
@@ -50,6 +56,7 @@ class CartViewHolderDataMapper @Inject constructor() {
             this.shopGroupAvailableData = shopGroupAvailableData
             this.isCollapsible = isCollapsible
             this.isCollapsed = isCollapsed
+            this.isShowPin = isShowPin
             if (isCollapsible) {
                 var showMoreWording = ""
                 val showLessWording = "Tampilkan Lebih Sedikit"

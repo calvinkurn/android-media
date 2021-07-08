@@ -37,6 +37,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderWarningItemHeader(cartShopHolderData)
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
+        renderIconPin(cartShopHolderData)
         renderCartItems(cartShopHolderData)
         renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
@@ -46,6 +47,14 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderFreeShipping(cartShopHolderData)
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
+    }
+
+    private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isShowPin) {
+            binding.iconPin.show()
+        } else {
+            binding.iconPin.gone()
+        }
     }
 
     private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
@@ -82,11 +91,11 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun renderShopBadge(cartShopHolderData: CartShopHolderData) {
         val shopTypeInfoData = cartShopHolderData.shopGroupAvailableData?.shopTypeInfo
         if (shopTypeInfoData?.shopBadge?.isNotBlank() == true) {
-            ImageHandler.loadImageWithoutPlaceholder(binding.imgShopBadge, shopTypeInfoData.shopBadge)
-            binding.imgShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
-            binding.imgShopBadge.show()
+            ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopTypeInfoData.shopBadge)
+            binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopTypeInfoData.title.toLowerCase(Locale("id")))
+            binding.imageShopBadge.show()
         } else {
-            binding.imgShopBadge.gone()
+            binding.imageShopBadge.gone()
         }
     }
 
