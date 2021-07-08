@@ -1,12 +1,17 @@
 package com.tokopedia.tokopoints.view.catalogdetail
 
+import HtmlUrlHelper
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Paint
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.text.Html
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -43,6 +48,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
@@ -410,17 +416,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         btnAction2?.text = data.buttonStr
         btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
-        val tvHowToUse: TkpdWebView = requireView().findViewById(R.id.how_to_use_content)
-        val tvTnc: TkpdWebView = requireView().findViewById(R.id.tnc_content)
+        val tvHowToUse: Typography = requireView().findViewById(R.id.how_to_use_content)
+        val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
         if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
-            tvTnc.loadData(data.tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+            tvTnc.text = HtmlUrlHelper(
+                data.tnc!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
+            tvTnc.movementMethod = LinkMovementMethod.getInstance()
         } else {
             view?.findViewById<Typography>(R.id.tnc)?.hide()
             view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
             tvTnc.hide()
         }
         if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
-            tvHowToUse.loadData(data.howToUse, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+            tvHowToUse.text = HtmlUrlHelper(
+                data.howToUse!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
+            tvHowToUse.movementMethod = LinkMovementMethod.getInstance()
         } else {
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             tvHowToUse.hide()

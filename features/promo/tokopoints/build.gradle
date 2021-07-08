@@ -45,6 +45,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps

@@ -2,8 +2,11 @@ package com.tokopedia.tokopoints.view.util
 
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
+import android.text.Html
 import android.util.DisplayMetrics
 import com.tokopedia.tokopoints.view.model.merchantcoupon.AdInfo
+import com.tokopedia.utils.htmltags.HtmlUtil
 import java.util.*
 
 const val DEFAULT_TIME_STRING = "00 : 00 : 00"
@@ -52,6 +55,14 @@ fun isEventTriggered(context: Context, adInfo: AdInfo): Boolean {
     val setData = PersistentAdsData(context).getAdsSet()
     check = setData?.contains(adInfo?.AdID)
     return check!!
+}
+
+ fun returnTextFromHtml(t: String) : CharSequence{
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        HtmlUtil.fromHtml(t).trim()
+    } else {
+        Html.fromHtml(t).trim()
+    }
 }
 
 
