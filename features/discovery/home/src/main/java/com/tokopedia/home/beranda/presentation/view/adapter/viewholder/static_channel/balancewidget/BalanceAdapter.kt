@@ -193,6 +193,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
 
                             },
                             walletAppAction = {
+                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                    isLinked = it,
+                                    userId = listener?.userId?:""
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -278,6 +282,10 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 itemView.context.startActivity(intentBalanceWallet)
                             },
                             walletAppAction = {
+                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                    isLinked = it,
+                                    userId = listener?.userId?:""
+                                )
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -371,7 +379,7 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                              walletTopupAction: () -> Unit= {},
                                              walletOtherAction: () -> Unit= {},
                                              walletPendingAction: () -> Unit= {},
-                                             walletAppAction: () -> Unit = {}
+                                             walletAppAction: (isLinked: Boolean) -> Unit = {}
         ) {
             setOnClickListener {
                 when (element.drawerItemType) {
@@ -383,7 +391,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                     TYPE_WALLET_WITH_TOPUP -> walletTopupAction.invoke()
                     TYPE_WALLET_OTHER -> walletOtherAction.invoke()
                     TYPE_WALLET_PENDING_CASHBACK -> walletPendingAction.invoke()
-                    TYPE_WALLET_APP_LINKED, TYPE_WALLET_APP_NOT_LINKED -> walletAppAction.invoke()
+                    TYPE_WALLET_APP_LINKED -> walletAppAction.invoke(true)
+                    TYPE_WALLET_APP_NOT_LINKED -> walletAppAction.invoke(false)
                 }
             }
         }

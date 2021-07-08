@@ -18,6 +18,8 @@ object OvoWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_ON_OVO = "click on ovo section"
     private const val ACTION_CLICK_ON_COUPON = "click new coupon"
     private const val ACTION_CLICK_ON_REWARDS = "click tier status"
+    private const val ACTION_CLICK_ON_GOPAY_LINKED = "click on gopay linked"
+    private const val ACTION_CLICK_ON_GOPAY_NOT_LINKED = "click on gopay not linked"
 
     private const val ACTION_CLICK_ON_TOPUP_OVO = "click on top up ovo"
     private const val ACTION_CLICK_ACTIVATE = "click activate"
@@ -143,6 +145,18 @@ object OvoWidgetTracking: BaseTracking() {
                 CurrentSite.KEY, CurrentSite.DEFAULT,
                 BusinessUnit.KEY, BusinessUnit.DEFAULT,
                 UserId.KEY, userId
+        ))
+    }
+
+    fun sendClickOnWalletAppBalanceWidgetTracker(isLinked: Boolean, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
+            Event.KEY, Event.CLICK_HOMEPAGE,
+            Category.KEY, Category.HOMEPAGE_TOKOPOINTS,
+            Action.KEY, if (isLinked) ACTION_CLICK_ON_GOPAY_LINKED else ACTION_CLICK_ON_GOPAY_NOT_LINKED,
+            Label.KEY, Label.NONE,
+            CurrentSite.KEY, CurrentSite.DEFAULT,
+            BusinessUnit.KEY, BusinessUnit.DEFAULT,
+            UserId.KEY, userId
         ))
     }
 
