@@ -5,9 +5,9 @@ package com.tokopedia.play_common.model.ui
  * Created by mzennis on 30/06/21.
  */
 data class PlayLeaderboardInfoUiModel(
-        val leaderboardWinner: List<PlayLeaderboardUiModel>,
-        val totalParticipant: String,
-        val config: PlayLeaderboardConfigUiModel
+        val leaderboardWinners: List<PlayLeaderboardUiModel> = emptyList(),
+        val totalParticipant: String = "",
+        val config: PlayLeaderboardConfigUiModel = PlayLeaderboardConfigUiModel()
 )
 
 data class PlayLeaderboardUiModel(
@@ -25,9 +25,9 @@ data class PlayWinnerUiModel(
 )
 
 data class PlayLeaderboardConfigUiModel(
-        val sellerMessage: String,
-        val winnerMessage: String,
-        val winnerDetail: String,
-        val loserMessage: String,
-        val loserDetail: String,
+        val sellerMessage: String = "",
+        val winnerMessage: String = "",
+        val winnerDetail: String = "",
+        val loserMessage: String = "",
+        val loserDetail: String = "",
 )

@@ -32,11 +32,8 @@ import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
-import com.tokopedia.play.util.observer.CachedObserver
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -67,9 +64,9 @@ import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -838,8 +835,8 @@ class PlayUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.bottomInsets, state.status)
-                renderWinnerBadgeView(state.leaderboard.showBadge, state.bottomInsets, state.status)
+                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
+                renderWinnerBadgeView(state.showWinnerBadge)
                 renderToolbarView(state.followStatus, state.partnerName)
             }
         }
@@ -1371,8 +1368,7 @@ class PlayUserInteractionFragment @Inject constructor(
             isStateChanged: Boolean,
             state: PlayInteractiveUiState,
             followStatus: PlayPartnerFollowStatus,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-            status: PlayStatusType,
+            visibility: ViewVisibility,
     ) {
         if (isStateChanged) {
             when (state) {
@@ -1395,26 +1391,17 @@ class PlayUserInteractionFragment @Inject constructor(
 
         interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)
 
-        when {
-            bottomInsets.isAnyShown -> {
-                /**
-                 * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
-                 */
-                interactiveView?.invisible()
-            }
-            status.isFreeze || status.isBanned -> interactiveView?.hide()
-            state is PlayInteractiveUiState.NoInteractive -> interactiveView?.hide()
-            else -> interactiveView?.show()
+        when (visibility) {
+            ViewVisibility.Visible -> interactiveView?.show()
+            ViewVisibility.Invisible -> interactiveView?.invisible()
+            ViewVisibility.Gone -> interactiveView?.hide()
         }
     }
 
     private fun renderWinnerBadgeView(
-            shouldShow: Boolean,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-            status: PlayStatusType,
+            shouldShow: Boolean
     ) {
-        val isFreezeOrBanned = status.isFreeze || status.isBanned
-        if (!bottomInsets.isAnyShown && shouldShow && !isFreezeOrBanned) interactiveWinnerBadgeView?.show()
+        if (shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
 

@@ -43,8 +43,8 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -52,6 +52,7 @@ import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
@@ -135,7 +136,7 @@ class PlayViewModel @Inject constructor(
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboard = MutableStateFlow(PlayLeaderboardUiState())
+    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardInfoUiModel>(PlayLeaderboardInfoUiModel())
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -147,15 +148,25 @@ class PlayViewModel @Inject constructor(
             _partnerInfo,
             _bottomInsets,
             _interactive,
-            _leaderboard,
+            _leaderboardInfo,
             _status
-    ) { partnerInfo, bottomInsets, interactive, leaderboard, status ->
+    ) { partnerInfo, bottomInsets, interactive, leaderboardInfo, status ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
                 bottomInsets = bottomInsets,
                 interactive = interactive,
-                leaderboard = leaderboard,
+                showInteractive = when {
+                    /**
+                     * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                     */
+                    bottomInsets.isAnyShown -> ViewVisibility.Invisible
+                    status.isFreeze || status.isBanned -> ViewVisibility.Gone
+                    interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
+                    else -> ViewVisibility.Visible
+                },
+                leaderboards = leaderboardInfo.leaderboardWinners,
+                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty(),
                 status = status
         )
     }
@@ -244,7 +255,7 @@ class PlayViewModel @Inject constructor(
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
-                    leaderboardInfo = _leaderboard.value
+                    leaderboardInfo = _leaderboardInfo.value
             )
         }
 
@@ -874,8 +885,8 @@ class PlayViewModel @Inject constructor(
         _observableQuickReply.value = quickReplyInfo
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardUiState) {
-        _leaderboard.value = leaderboardInfo
+    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+        _leaderboardInfo.value = leaderboardInfo
     }
 
     /**
@@ -1087,7 +1098,7 @@ class PlayViewModel @Inject constructor(
 
             try {
                 val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-                _leaderboard.value = PlayLeaderboardUiState(showBadge = true, winnerList = interactiveLeaderboard.leaderboardWinner)
+                _leaderboardInfo.value = interactiveLeaderboard
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
@@ -1268,7 +1279,7 @@ class PlayViewModel @Inject constructor(
             )
 
             val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-            val currentLeaderboard = interactiveLeaderboard.leaderboardWinner.first()
+            val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
             val userInLeaderboard = currentLeaderboard.winners.find { it.id == userSession.userId }
 
             if (userInLeaderboard != null) {
@@ -1282,7 +1293,7 @@ class PlayViewModel @Inject constructor(
             }
 
             _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboard.value = PlayLeaderboardUiState(showBadge = true, winnerList = interactiveLeaderboard.leaderboardWinner)
+            _leaderboardInfo.value = interactiveLeaderboard
 
             _uiEvent.emit(
                     ShowCoachMarkWinnerEvent(

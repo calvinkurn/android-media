@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.model.mapper
 
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
 import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -14,7 +13,7 @@ import javax.inject.Inject
 class PlayInteractiveLeaderboardMapper @Inject constructor() {
 
     fun mapLeaderboard(response: GetInteractiveLeaderboardResponse, isChatAllowed: () -> Boolean) = PlayLeaderboardInfoUiModel(
-            leaderboardWinner = mapLeaderboardWinner(response.data.data, isChatAllowed),
+            leaderboardWinners = mapLeaderboardWinner(response.data.data, isChatAllowed),
             totalParticipant = response.data.summary.totalParticipant.toString(),
             config = mapLeaderboardConfig(response.data.config)
     )
