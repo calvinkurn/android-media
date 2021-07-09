@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,6 +15,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapterFactory
+import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductMccmListViewHolder
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 
@@ -29,6 +31,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     private lateinit var adapter: TelcoProductAdapter
     private lateinit var listener: ActionListener
+    private var hasMccmProduct = false
 
     init {
         val view = View.inflate(context, R.layout.view_telco_product_list, this)
@@ -42,35 +45,40 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     fun renderProductList(productType: Int, showTitle: Boolean, productList: List<TelcoCatalogDataCollection>) {
         val dataCollection = mutableListOf<Visitable<*>>()
         val dataTracking = mutableListOf<TelcoProduct>()
-        productList.map {
-            if (showTitle) {
-                if (it.name.isNotEmpty()) {
-                    dataCollection.add(TelcoCatalogDataCollection(it.name, listOf()))
-                } else {
-                    dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
-                }
-            }
-            dataCollection.addAll(it.products)
-            dataTracking.addAll(it.products)
+
+        dataCollection.addAll(productList.filter { it.isMccm() })
+        if (dataCollection.isNotEmpty()) {
+            hasMccmProduct = true
         }
 
-        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, object : TelcoProductViewHolder.OnClickListener {
-            override fun onClickItemProduct(element: TelcoProduct, position: Int) {
-                val label = getLabelProductItem(element.id)
-                listener.onClickProduct(element, position, label)
+        productList.map {
+            if (!it.isMccm()) {
+                if (showTitle) {
+                    if (it.name.isNotEmpty()) {
+                        dataCollection.add(TelcoCatalogDataCollection(it.name, listOf()))
+                    } else {
+                        dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
+                    }
+                }
+                dataCollection.addAll(it.products)
+                dataTracking.addAll(it.products)
             }
+        }
 
-            override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
-                listener.onSeeMoreProduct(element, position)
-            }
-        }))
+        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, getProductListener(), getMccmListener()))
         recyclerView.adapter = adapter
+
         if (productType == TelcoProductType.PRODUCT_GRID) {
-            recyclerView.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+            val gridLayout = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+            gridLayout.spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int { return if (hasMccmProduct && position == 0) 2 else 1 }
+            }
+            recyclerView.layoutManager = gridLayout
         } else {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = linearLayoutManager
         }
+
         adapter.renderList(dataCollection)
 
         getVisibleProductItemsToUsersTracking(DEFAULT_POS_FIRST_ITEM, DEFAULT_POS_LAST_ITEM, dataTracking)
@@ -82,6 +90,30 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 }
             }
         })
+    }
+
+    private fun getProductListener() = object : TelcoProductViewHolder.OnClickListener {
+        override fun onClickItemProduct(element: TelcoProduct, position: Int) {
+            val label = getLabelProductItem(element.id)
+            listener.onClickProduct(element, position, label)
+            adapter.selectedMccmPosition = -1
+        }
+
+        override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
+            listener.onSeeMoreProduct(element, position)
+        }
+    }
+
+    private fun getMccmListener() = object : TelcoProductMccmListViewHolder.OnClickListener {
+        override fun onClickMccm(element: TelcoProduct, position: Int) {
+            val label = getLabelProductItem(element.id)
+            listener.onClickMccmProduct(element, position, label)
+            adapter.selectedMccmPosition = position
+        }
+
+        override fun onClickLihatDetail(element: TelcoProduct, position: Int) {
+            listener.onSeeMoreProduct(element, position)
+        }
     }
 
     fun calculateProductItemVisibleItemTracking(productList: List<TelcoProduct>) {
@@ -111,7 +143,20 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     fun selectProductItem(position: Int) {
         adapter.selectItemProduct(position)
+        if (hasMccmProduct) {
+            recyclerView.findViewHolderForAdapterPosition(0)?.let {
+                (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(-1)
+            }
+        }
     }
+
+    fun selectMccmProductItem(position: Int) {
+        adapter.selectItemProduct(-1)
+        recyclerView.findViewHolderForAdapterPosition(0)?.let {
+            (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(position)
+        }
+    }
+
 
     fun resetSelectedProductItem() {
         if (::adapter.isInitialized) {
@@ -171,6 +216,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     interface ActionListener {
         fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
+        fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
         fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)

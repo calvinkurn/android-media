@@ -166,6 +166,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
         }
 
+        override fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int, labelList: String) {
+            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+            telcoTelcoProductView.selectMccmProductItem(position)
+        }
+
         override fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int) {
             topupAnalytics.eventClickSeeMore(itemProduct.attributes.categoryId)
 

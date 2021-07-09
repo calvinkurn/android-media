@@ -17,4 +17,6 @@ data class TelcoCatalogDataCollection(
         val products: List<TelcoProduct> = listOf())
     : Parcelable, Visitable<TelcoProductAdapterFactory> {
     override fun type(typeFactoryProduct: TelcoProductAdapterFactory) = typeFactoryProduct.type(this)
+
+    fun isMccm(): Boolean = name == "Flash Sale"
 }

@@ -13,4 +13,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface TelcoProductType {
     int PRODUCT_GRID = 0;
     int PRODUCT_LIST = 1;
+    int PRODUCT_MCCM = 2;
 }
