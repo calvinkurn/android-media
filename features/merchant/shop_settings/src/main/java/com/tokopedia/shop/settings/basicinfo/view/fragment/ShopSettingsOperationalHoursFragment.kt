@@ -130,6 +130,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private var shopAbTestPlatform: ShopAbTestPlatform? = null
     private var isNeedToShowToaster: Boolean = false
+    private var isNeedToShowOpenShopToaster: Boolean = false
     private var isShopClosed: Boolean = false
     private var isShopOnScheduledHoliday: Boolean = false
     private var isShouldShowHolidaySchedule: Boolean = false
@@ -173,11 +174,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         if (requestCode == REQUEST_CODE_SET_OPS_HOUR && resultCode == Activity.RESULT_OK) {
             showLoader()
             getInitialData()
-        }
-        else {
-            isNeedToShowToaster = true
-            setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
-            setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
         }
     }
 
@@ -326,6 +322,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // set click listener for button add holiday schedule
         buttonAddHoliday?.setOnClickListener {
             isActionEdit = false
+            isCloseNow = false
             resetSelectedDates(isActionEdit)
             setupHolidayCalendarPickerBottomSheet()
             showHolidayBottomSheet()
@@ -416,6 +413,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 if (isShopClosed) {
                     if (holidayInfo.closeDetail.status == 0 || holidayInfo.closeDetail.status == 1) {
                         // closed because operational hours
+                            isShopOnScheduledHoliday = false
                         renderHolidaySection(isClosedBySchedule = false)
                     } else {
                         // closed because holiday schedule
@@ -423,7 +421,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         renderHolidaySection(isClosedBySchedule = true)
                     }
                 } else {
+                    isShopOnScheduledHoliday = false
                     renderHolidaySection(isClosedBySchedule = false)
+                    if (isNeedToShowOpenShopToaster) {
+                        isNeedToShowToaster = true
+                    }
                 }
 
                 // update UI for operational hours list section
@@ -438,7 +440,21 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             }
         }
 
-        // observe set shop close info
+        // observe abort shop close schedule
+        observe(shopSettingsOperationalHoursViewModel.shopInfoAbortSchedule) { result ->
+            if (result is Success) {
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_success)
+                setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
+            }
+            if (result is Fail) {
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_failed)
+                setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
+            }
+            isNeedToShowOpenShopToaster = true
+            getInitialData()
+        }
+
+        // observe create shop close schedule
         observe(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule) { result ->
             if (result is Success) {
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_success)
@@ -448,11 +464,20 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
             }
+            isNeedToShowOpenShopToaster = true
             getInitialData()
         }
 
         // observe set operational hours
-        observe(shopSettingsOperationalHoursViewModel.setShopOperationalHoursData) {
+        observe(shopSettingsOperationalHoursViewModel.setShopOperationalHoursData) { result ->
+            if (result is Success) {
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_success)
+                setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
+            }
+            if (result is Fail) {
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_abort_holiday_schedule_failed)
+                setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
+            }
             getInitialData()
         }
 
@@ -518,7 +543,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // render holiday schedule section
         buttonAddHoliday?.showWithCondition(!isShouldShowHolidaySchedule)
         holidayScheduleContainer?.shouldShowWithAction(isShouldShowHolidaySchedule) {
-            autoChatTicker?.visible()
             tvShopHolidaySchedule?.apply {
                 text = getString(
                         R.string.shop_operational_hour_list_textview,
@@ -591,7 +615,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // if shop is on scheduled holiday, seller can only edit the end date
             // so we disable the start date text field
-            if (isShopClosed && !isShopOnScheduledHoliday) {
+            if (!isShopClosed || !isShopOnScheduledHoliday) {
                 isEnabled = true
                 requestFocus()
             }
@@ -623,10 +647,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // if shop is on scheduled holiday, seller can only edit the end date
             // so we enable the text field and requesting for focus
-            if (isShopClosed && !isShopOnScheduledHoliday) {
-                isEnabled = false
-            }
-            else {
+            if (isShopClosed && isShopOnScheduledHoliday) {
                 isEnabled = true
                 requestFocus()
             }
@@ -662,6 +683,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                             text.clear()
                             requestFocus()
                         }
+                        endDateTextField?.textFieldInput?.text?.clear()
                     }
                 }
                 isChecked = isCloseNow
@@ -845,5 +867,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         loader?.gone()
         opsHourContainer?.visible()
         headerOpsHour?.visible()
+        autoChatTicker?.visible()
     }
 }

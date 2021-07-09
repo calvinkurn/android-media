@@ -69,6 +69,8 @@
     <string name="shop_operational_hour_set_holiday_schedule_title">Jadwal Toko Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_success">Jadwal libur berhasil ditambahkan</string>
     <string name="shop_operational_hour_set_holiday_schedule_failed">Oops, jadwal tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
+    <string name="shop_operational_hour_abort_holiday_schedule_success">Tokomu sudah buka lagi. Cek jadwal buka tutup-toko hari ini.</string>
+    <string name="shop_operational_hour_abort_holiday_schedule_failed">Oops, gagal buka toko. Cek koneksi dan ulangi lagi, ya.</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan jadwal libur tokomu?</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus jadwal libur toko?</string>
     <string name="shop_operational_hour_abort_shop_holiday_dialog_title">Siap buka toko sekarang?</string>

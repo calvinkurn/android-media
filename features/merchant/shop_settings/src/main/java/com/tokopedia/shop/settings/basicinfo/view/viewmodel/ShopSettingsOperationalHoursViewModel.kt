@@ -44,6 +44,10 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
     val shopInfoCloseSchedule: LiveData<Result<String>>
         get() = _shopInfoCloseSchedule
 
+    private val _shopInfoAbortSchedule = MutableLiveData<Result<String>>()
+    val shopInfoAbortSchedule: LiveData<Result<String>>
+        get() = _shopInfoAbortSchedule
+
     private val _setShopOperationalHoursData = MutableLiveData<Result<SetShopOperationalHours>>()
     val setShopOperationalHoursData: LiveData<Result<SetShopOperationalHours>>
         get() = _setShopOperationalHoursData
@@ -90,9 +94,15 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
                     closeNote = closeNote
             )
             val updateScheduleResponse: String = updateShopScheduleUseCase.getData(requestParams)
-            _shopInfoCloseSchedule.postValue(Success(updateScheduleResponse))
+            when (action) {
+                ShopScheduleActionDef.CLOSED -> _shopInfoCloseSchedule.postValue(Success(updateScheduleResponse))
+                ShopScheduleActionDef.ABORT -> _shopInfoAbortSchedule.postValue(Success(updateScheduleResponse))
+            }
         }) {
-            _shopInfoCloseSchedule.postValue(Fail(it))
+            when (action) {
+                ShopScheduleActionDef.CLOSED -> _shopInfoCloseSchedule.postValue(Fail(it))
+                ShopScheduleActionDef.ABORT -> _shopInfoAbortSchedule.postValue(Fail(it))
+            }
         }
     }
 
