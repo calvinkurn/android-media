@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -451,8 +450,12 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
         searchCategoryAdapter?.submitList(visitableList)
+        if (visitableList.isNotEmpty()) showContent()
+    }
+
+    private fun showContent() {
         loaderUnify?.gone()
-        recyclerView?.visible()
+        stickyView?.visible()
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
