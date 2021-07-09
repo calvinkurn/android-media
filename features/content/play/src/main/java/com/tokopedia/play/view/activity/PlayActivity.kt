@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -11,6 +12,8 @@ import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.CastStateListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -111,11 +114,25 @@ class PlayActivity : BaseActivity(),
     val activeFragment: PlayFragment?
         get() = try { swipeContainerView.getActiveFragment() as? PlayFragment } catch (e: Throwable) { null }
 
+    /**
+     * Cast
+     */
+    private lateinit var castContext: CastContext
+    private val castStateListener = CastStateListener {
+        when(it) {
+            CastState.CONNECTING -> {
+                Log.d("<CAST>", "Cast - Connecting");
+            }
+            CastState.CONNECTED -> {
+                Log.d("<CAST>", "Cast - Connected");
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
 
-        CastContext.getSharedInstance(applicationContext)
+        castContext = CastContext.getSharedInstance(applicationContext)
 
         startPageMonitoring()
         super.onCreate(savedInstanceState)
@@ -137,12 +154,14 @@ class PlayActivity : BaseActivity(),
         orientationManager.enable()
         volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        castContext.addCastStateListener(castStateListener)
     }
 
     override fun onPause() {
         super.onPause()
         orientationManager.disable()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        castContext.removeCastStateListener(castStateListener)
     }
 
     override fun onNewIntent(intent: Intent) {
