@@ -156,6 +156,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

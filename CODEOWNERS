@@ -55,6 +55,7 @@
 /features/merchant/power_merchant_subscribe/            @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail/                      @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
+/features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
 /features/merchant/product_manage_common/               @tokopedia/android-minionstuart-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev
@@ -82,6 +83,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/shop_settings/                       @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
+/features/tokopedianow/                                 @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev
@@ -151,6 +153,7 @@
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
+/features/transaction/minicart/                         @tokopedia/android-minionbob-dev
 /features/logistic/logisticCommon/                		@tokopedia/android-minionbob-dev
 /features/logistic/logisticaddaddress/          		@tokopedia/android-minionbob-dev
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev
@@ -160,6 +163,7 @@
 /features/logistic/editshipping/                        @tokopedia/android-minionbob-dev
 /features/logistic/activation/                          @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
+/features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/ordermanagement/snapshot/                     @tokopedia/android-minionbob-dev
 /features/discovery/home_wishlist/                     	@tokopedia/android-minionbob-dev
 /features/discovery/wishlist_common/                	@tokopedia/android-minionbob-dev
