@@ -62,7 +62,11 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
     @Test
     fun `click category filter to apply filter`() {
         val requestParamsSlot = slot<RequestParams>()
+        val filterParam = createMockFilterParam()
+        val queryParamWithFilter = defaultQueryParamMap + filterParam
+
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
+        `Given search view model`(queryParamWithFilter)
         `Given view already created`()
 
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value
@@ -71,12 +75,19 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
 
         `When category filter selected`(selectedCategoryFilter, true)
 
+        val requestParams = requestParamsSlot.captured
         `Then verify get search first page is called twice`()
         `Then verify request params contains the applied category filter`(
-                requestParamsSlot.captured,
+                requestParams,
                 selectedCategoryFilter
         )
+        `Then verify request params does not contain filters`(requestParams, filterParam)
     }
+
+    private fun createMockFilterParam() = mapOf(
+        SearchApiConst.OFFICIAL to "true",
+        SearchApiConst.FCITY to "1,2#3"
+    )
 
     private fun `When category filter selected`(
             selectedCategoryFilter: CategoryFilterItemDataView,
@@ -103,16 +114,32 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         assertThat(actualParamsValue, shouldBe(selectedCategoryFilter.option.value))
     }
 
+    private fun `Then verify request params does not contain filters`(
+            requestParams: RequestParams,
+            filterParam: Map<String, String>,
+    ) {
+        val tokonowQueryParam = getTokonowQueryParam(requestParams)
+
+        filterParam.forEach { (key, _) ->
+            assertThat(
+                    "Query param should not contain filter key $key",
+                    tokonowQueryParam[key],
+                    nullValue(),
+            )
+        }
+    }
+
     @Test
     fun `click category filter to un-apply filter`() {
         val requestParamsSlot = slot<RequestParams>()
         val selectedCategoryFilterIndex = 2
         val previouslySelectedFilterOption =
                 searchModel.quickFilter.filter[selectedCategoryFilterIndex].options[0]
+        val filterParam = createMockFilterParam()
         val queryParamWithFilter = mapOf(
                 SearchApiConst.Q to defaultKeyword,
                 previouslySelectedFilterOption.key to previouslySelectedFilterOption.value,
-        )
+        ) + filterParam
 
         `Given search view model`(queryParamWithFilter)
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
@@ -125,46 +152,23 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
 
         `When category filter selected`(selectedQuickFilter, false)
 
+        val requestParams = requestParamsSlot.captured
         `Then verify get search first page is called twice`()
-        `Then verify category filter does not contain unapplied filter`(
-                requestParamsSlot.captured,
+        `Then verify request params does not contain unapplied filter`(
+                requestParams,
                 selectedQuickFilter
         )
+        `Then verify request params does not contain filters`(requestParams, filterParam)
     }
 
-    private fun `Then verify category filter does not contain unapplied filter`(
+    private fun `Then verify request params does not contain unapplied filter`(
             requestParams: RequestParams,
             selectedCategoryFilter: CategoryFilterItemDataView
     ) {
         val selectedQuickFilterKey = OptionHelper.getKeyRemoveExclude(selectedCategoryFilter.option)
-        val actualParamsValue = requestParams.parameters[selectedQuickFilterKey]
+        val tokonowQueryParam = getTokonowQueryParam(requestParams)
+        val actualParamsValue = tokonowQueryParam[selectedQuickFilterKey]
 
         assertThat(actualParamsValue, nullValue())
-    }
-
-    @Test
-    fun `apply new click category filter should remove existing category filter`() {
-        val requestParamsSlot = slot<RequestParams>()
-        val queryParamWithCategoryFilter = mapOf(
-                SearchApiConst.Q to defaultKeyword,
-                SearchApiConst.SC to "1324",
-                OptionHelper.EXCLUDE_PREFIX + SearchApiConst.SC to "1333",
-        )
-
-        `Given search view model`(queryParamWithCategoryFilter)
-        `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
-        `Given view already created`()
-
-        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value
-        val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
-        val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
-
-        `When category filter selected`(selectedCategoryFilter, true)
-
-        `Then verify get search first page is called twice`()
-        `Then verify request params contains the applied category filter`(
-                requestParamsSlot.captured,
-                selectedCategoryFilter
-        )
     }
 }

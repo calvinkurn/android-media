@@ -25,6 +25,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.isNotFilterAndSortKey
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -659,13 +660,17 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
-        removeFilterWithExclude(option)
+        resetAllFilterIfExclude(option)
         filter(option, isSelected)
     }
 
-    private fun removeFilterWithExclude(option: Option) {
-        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
+    private fun resetAllFilterIfExclude(option: Option) {
+        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
+
+        if (!isOptionKeyHasExclude) return
+
         queryParamMutable.remove(option.key)
+        queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
         filterController.refreshMapParameter(queryParam)
     }
 
@@ -714,7 +719,15 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
         onViewDismissL3FilterPage()
-        onViewClickCategoryFilterChip(chosenCategoryFilter, true)
+        removeAllCategoryFilter(chosenCategoryFilter)
+        filter(chosenCategoryFilter, true)
+    }
+
+    private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
+        queryParamMutable.remove(chosenCategoryFilter.key)
+        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(chosenCategoryFilter))
+
+        filterController.refreshMapParameter(queryParam)
     }
 
     open fun onViewDismissL3FilterPage() {
@@ -941,10 +954,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onViewRemoveFilter(option: Option) {
-        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
-        if (isOptionKeyHasExclude)
-            removeFilterWithExclude(option)
-
+        resetAllFilterIfExclude(option)
         filter(option, false)
     }
 
