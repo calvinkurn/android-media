@@ -250,7 +250,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
     }
 
@@ -287,7 +287,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
     }
 
@@ -339,7 +339,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -376,7 +376,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -481,7 +481,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.firstCourierFirstDuration.ratesId,
                         ut = helper.firstCourierFirstDuration.productData.unixTime,
                         checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.firstCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
@@ -521,7 +521,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.firstCourierFirstDuration.ratesId,
                         ut = helper.firstCourierFirstDuration.productData.unixTime,
                         checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.firstCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoViewModel = helper.logisticPromo),
@@ -560,7 +560,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.firstCourierFirstDuration.ratesId,
                         ut = helper.firstCourierFirstDuration.productData.unixTime,
                         checksum = helper.firstCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.firstCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.firstCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.firstCourierFirstDuration.productData.price.price,
                         needPinpoint = true,
                         shippingRecommendationData = helper.shippingRecommendationData,
@@ -596,7 +596,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -636,7 +636,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         ratesId = helper.secondCourierFirstDuration.ratesId,
                         ut = helper.secondCourierFirstDuration.productData.unixTime,
                         checksum = helper.secondCourierFirstDuration.productData.checkSum,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance),
                         shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
@@ -671,7 +671,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
-                        insuranceData = helper.secondCourierFirstDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.secondCourierFirstDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -718,7 +718,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         logisticPromoTickerMessage = "Tersedia bbo",
                         logisticPromoViewModel = helper.logisticPromo,
                         isServicePickerEnable = true,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.firstCourierSecondDuration.productData.shipperProductId.toString(), any()) }
@@ -748,7 +748,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
                         shippingRecommendationData = shippingRecommendationData,
                         isServicePickerEnable = true,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         verify(exactly = 1) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.firstCourierSecondDuration.productData.shipperProductId.toString(), any()) }
@@ -783,7 +783,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         shippingRecommendationData = helper.shippingRecommendationData,
                         serviceErrorMessage = error,
                         isServicePickerEnable = true,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -813,7 +813,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         serviceErrorMessage = OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE,
                         needPinpoint = true,
                         isServicePickerEnable = false,
-                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                        insurance = OrderInsurance(helper.firstCourierSecondDuration.productData.insurance)),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
@@ -837,7 +837,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -860,7 +860,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -883,7 +883,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(true, shipping.isServicePickerEnable)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -911,7 +911,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.needPinpoint)
         assertEquals(OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE, shipping.serviceErrorMessage)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -940,7 +940,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(errorMessage, shipping.serviceErrorMessage)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -963,7 +963,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -1150,7 +1150,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(false, secondShipping.isApplyLogisticPromo)
         assertEquals(true, secondShipping.isServicePickerEnable)
         assertEquals(null, secondShipping.logisticPromoShipping)
-        assertEquals(helper.secondCourierFirstDuration.productData.insurance, secondShipping.insuranceData)
+        assertEquals(helper.secondCourierFirstDuration.productData.insurance, secondShipping.insurance.insuranceData)
         assertEquals(helper.secondCourierFirstDuration.productData.shipperProductId, secondShipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
 
@@ -1182,7 +1182,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, shipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, shipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
@@ -1235,7 +1235,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val secondShipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(true, secondShipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierSecondDuration, secondShipping.logisticPromoShipping)
-        assertEquals(helper.firstCourierSecondDuration.productData.insurance, secondShipping.insuranceData)
+        assertEquals(helper.firstCourierSecondDuration.productData.insurance, secondShipping.insurance.insuranceData)
         assertEquals(helper.firstCourierSecondDuration.productData.shipperProductId, secondShipping.getRealShipperProductId())
 
         val secondTotal = orderSummaryPageViewModel.orderTotal.value
@@ -1365,53 +1365,53 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Set Insurance Check`() {
         // Given
-        orderSummaryPageViewModel.orderShipment.value = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = false),
                 shipperProductId = 1, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(true)
 
         // Then
-        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isCheckInsurance)
+        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test
     fun `Set Insurance Uncheck`() {
         // Given
-        orderSummaryPageViewModel.orderShipment.value = OrderShipment(isCheckInsurance = true, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = true),
                 shipperProductId = 1, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(false)
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isCheckInsurance)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test
     fun `Set Insurance Check Using Same State`() {
         // Given
-        orderSummaryPageViewModel.orderShipment.value = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = false),
                 shipperProductId = 1, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(false)
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isCheckInsurance)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test
     fun `Set Insurance Check On Invalid SpId`() {
         // Given
-        orderSummaryPageViewModel.orderShipment.value = OrderShipment(isCheckInsurance = false, insuranceData = InsuranceData(),
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(insurance = OrderInsurance(InsuranceData(), isCheckInsurance = false),
                 shipperProductId = 0, serviceName = "service")
 
         // When
         orderSummaryPageViewModel.setInsuranceCheck(true)
 
         // Then
-        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.isCheckInsurance)
+        assertEquals(false, orderSummaryPageViewModel.orderShipment.value.insurance.isCheckInsurance)
     }
 
     @Test

@@ -75,6 +75,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         return result
     }
 
+    /**
+     * Validate Order Error State
+     *
+     * @return true if order is OK, false if order is error
+     */
+    fun validateOrderError(orderCart: OrderCart): Boolean {
+        return orderCart.shop.errors.isEmpty() && orderCart.products.any { !it.isError }
+    }
+
     fun generateUpdateCartParam(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
         val orderProduct = orderCart.products.firstOrNull()
         if (orderProfile.isValidProfile && orderProduct != null) {

@@ -3,13 +3,47 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonType
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCostCashbackData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardsNumber
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessage
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorMessageButton
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentRevampErrorMessage
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentRevampErrorMessageButton
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
+import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.UsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewModelTest() {
 
     @Test
@@ -671,10 +705,10 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
                         shipperProductId = 1
                     }
                 },
-                insuranceData = InsuranceData().apply {
+                insurance = OrderInsurance(InsuranceData().apply {
                     insurancePrice = 100
-                },
-                isCheckInsurance = true, serviceName = "service")
+                }, isCheckInsurance = true),
+                serviceName = "service")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true)
 
         // When

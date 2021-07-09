@@ -155,7 +155,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 orderShipment.value = orderShipment.value.copy(isLoading = true)
                 debounce()
             } else {
-                calculateTotal(forceButtonState = null)
+                calculateTotal()
             }
         }
     }
@@ -166,7 +166,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
-                if (orderProfile.value.shipment.isDisableChangeCourier && orderProfile.value.address.hasNoPinpoint) {
+                if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
                     orderShipment.value = orderShipment.value.copy(isLoading = false)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 } else if (orderProfile.value.isValidProfile) {
@@ -194,10 +194,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private suspend fun getRatesSuspend() {
         // TODO: 08/07/21 validate order errors
-        val result = if (orderShop.value.errors.isNotEmpty()) {
-            logisticProcessor.generateOrderErrorResultRates(orderProfile.value)
-        } else {
+        val result = if (cartProcessor.validateOrderError(orderCart)) {
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderShop.value.shopShipment)
+        } else {
+            logisticProcessor.generateOrderErrorResultRates(orderProfile.value)
         }
         if (result.clearOldPromoCode.isNotEmpty()) {
             clearOldLogisticPromo(result.clearOldPromoCode)
@@ -220,7 +220,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromo()
             } else {
                 sendViewShippingErrorMessage(result.shippingErrorId)
-                calculateTotal(forceButtonState = OccButtonState.DISABLE)
+                calculateTotal()
             }
         }
         updateCart()
@@ -281,7 +281,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             clearAllPromoFromLastRequest()
-            calculateTotal(forceButtonState = if (orderShipment.value.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
+            calculateTotal()
             globalEvent.value = newGlobalEvent
             updateCart()
         }
@@ -312,7 +312,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.insurance.isCheckInsurance != checked) {
             orderShipment.value.insurance.isCheckInsurance = checked
             orderShipment.value.insurance.isFirstLoad = false
-            calculateTotal(forceButtonState = null)
+            calculateTotal()
         }
     }
 
@@ -326,7 +326,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromo()
                 updateCart()
             } else {
-                calculateTotal(forceButtonState = OccButtonState.DISABLE)
+                calculateTotal()
             }
         }
     }
@@ -376,7 +376,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     validateUsePromoRevampUiModel = resultValidateUse
                 } else {
                     clearAllPromoFromLastRequest()
-                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                    calculateTotal()
                 }
                 globalEvent.value = newGlobalEvent
                 updateCart()
@@ -550,7 +550,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 error != null && isAkamaiError -> {
                     resetBbo()
                     clearAllPromoFromLastRequest()
-                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                    calculateTotal()
                     globalEvent.value = OccGlobalEvent.Error(error)
                 }
                 error != null && !isAkamaiError -> {
@@ -565,7 +565,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 else -> {
                     validateUsePromoRevampUiModel = null
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
-                    calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                    calculateTotal()
                 }
             }
         }
@@ -583,15 +583,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), isDisabled = false, state = OccButtonState.NORMAL)
-        calculateTotal(forceButtonState = if (orderShipment.value.serviceErrorMessage.isNullOrEmpty()) OccButtonState.NORMAL else OccButtonState.DISABLE)
+        calculateTotal()
     }
 
-    fun calculateTotal(forceButtonState: OccButtonState? = null) {
+    fun calculateTotal() {
         launch(executorDispatchers.immediate) {
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, orderProfile.value,
-                    orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value,
-                    forceButtonState, orderPromo.value)
+            calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
         }
     }
 
@@ -635,7 +634,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     it.isError = false
                 }
                 orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
-                calculateTotal(forceButtonState = OccButtonState.NORMAL)
+                calculateTotal()
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
             }
