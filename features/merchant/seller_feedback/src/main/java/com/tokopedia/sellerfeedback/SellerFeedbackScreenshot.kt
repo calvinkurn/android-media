@@ -43,7 +43,10 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
-        processScreenshotTaken(uri)
+        lastTimeCall = System.currentTimeMillis()
+        if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
+            processScreenshotTaken(uri)
+        }
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -68,13 +71,9 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun setScreenShotTaken(uri: Uri) {
-        lastTimeCall = System.currentTimeMillis()
-        if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
-            processScreenshotTaken(uri)
-            SellerFeedbackTracking.Impression.eventViewHomepage()
-            super.onScreenShotTaken(uri)
-            lastTimeUpdate = System.currentTimeMillis()
-        }
+        SellerFeedbackTracking.Impression.eventViewHomepage()
+        super.onScreenShotTaken(uri)
+        lastTimeUpdate = System.currentTimeMillis()
     }
 
     private fun getEnableSellerGlobalFeedbackRemoteConfig(activity: Activity?): Boolean {
