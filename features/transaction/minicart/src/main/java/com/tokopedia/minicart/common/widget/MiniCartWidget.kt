@@ -61,7 +61,8 @@ class MiniCartWidget @JvmOverloads constructor(
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
     private var chatIcon: ImageUnify? = null
-    private var labelUnavailable: Typography? = null
+    private var textCannotProcess: Typography? = null
+    private var textCannotProcessQuantity: Typography? = null
     private var imageChevronUnavailable: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
@@ -73,7 +74,8 @@ class MiniCartWidget @JvmOverloads constructor(
         view = inflate(context, R.layout.widget_mini_cart, this)
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         chatIcon = view?.findViewById(R.id.chat_icon)
-        labelUnavailable = view?.findViewById(R.id.label_unavailable)
+        textCannotProcess = view?.findViewById(R.id.text_cannot_process)
+        textCannotProcessQuantity = view?.findViewById(R.id.text_cannot_process_quantity)
         imageChevronUnavailable = view?.findViewById(R.id.image_chevron_unavailable)
     }
 
@@ -415,8 +417,12 @@ class MiniCartWidget @JvmOverloads constructor(
                 amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
                 amountCtaView.requestLayout()
             }
-            labelUnavailable?.apply {
-                text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
+            textCannotProcess?.apply {
+                text = context.getString(R.string.mini_cart_label_cannot_process)
+                show()
+            }
+            textCannotProcessQuantity?.apply {
+                text = context.getString(R.string.mini_cart_cannot_process_quantity, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
                 show()
             }
             imageChevronUnavailable?.show()
@@ -429,7 +435,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
                 amountCtaView.requestLayout()
             }
-            labelUnavailable?.gone()
+            textCannotProcess?.gone()
             imageChevronUnavailable?.gone()
         }
         setTotalAmountLoading(false)
