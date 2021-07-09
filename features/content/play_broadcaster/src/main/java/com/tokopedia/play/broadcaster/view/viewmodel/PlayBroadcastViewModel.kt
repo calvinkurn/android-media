@@ -463,7 +463,10 @@ class PlayBroadcastViewModel @Inject constructor(
             val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
             val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusher.pusherState == ApsaraLivePusherState.Stop }
             _observableLeaderboardInfo.value = leaderboard
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious)
+            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
+                    leaderboard.config.loserMessage,
+                    leaderboard.config.sellerMessage
+            ))
         } catch (e: Throwable) {
             _observableInteractiveState.value = getNoPreviousInitInteractiveState()
         }

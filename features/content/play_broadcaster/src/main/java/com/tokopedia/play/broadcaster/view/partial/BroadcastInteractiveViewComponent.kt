@@ -51,6 +51,7 @@ class BroadcastInteractiveViewComponent(
         setListener(initView)
         if (showOnBoarding) {
             showCoachMark(
+                    view = rootView,
                     title = getString(R.string.play_interactive_broadcast_onboarding_title),
                     subtitle = getString(R.string.play_interactive_broadcast_onboarding_subtitle)
             )
@@ -87,8 +88,13 @@ class BroadcastInteractiveViewComponent(
         setListener(loadingListener)
     }
 
-    fun setFinish() = setChildView { InteractiveFinishView(parent.context) }.apply {
+    fun setFinish(coachMarkTitle: String, coachMarkSubtitle: String) = setChildView { InteractiveFinishView(parent.context) }.apply {
         setListener(finishListener)
+        showCoachMark(
+                view = getBadgeView(),
+                title = coachMarkTitle,
+                subtitle = coachMarkSubtitle
+        )
     }
 
     fun hideCoachMark() {
@@ -108,6 +114,7 @@ class BroadcastInteractiveViewComponent(
     private inline fun <reified V: View> setChildView(viewCreator: () -> V): V {
         val firstChild = parent.getChildAt(0)
         return if (firstChild !is V) {
+            hideCoachMark()
             removeListener()
             parent.removeAllViews()
             val view = viewCreator()
@@ -116,12 +123,12 @@ class BroadcastInteractiveViewComponent(
         } else firstChild
     }
 
-    private fun showCoachMark(title: String, subtitle: String) {
+    private fun showCoachMark(view: View, title: String, subtitle: String) {
         coachMark.isDismissed = false
         coachMark.showCoachMark(
                 arrayListOf(
                         CoachMark2Item(
-                                rootView,
+                                view,
                                 title,
                                 subtitle
                         )

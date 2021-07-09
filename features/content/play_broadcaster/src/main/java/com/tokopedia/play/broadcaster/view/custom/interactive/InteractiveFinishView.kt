@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.custom.interactive
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveFinishBinding
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 
@@ -28,6 +29,8 @@ class InteractiveFinishView : RoundedConstraintLayout {
             mListener?.onCreateNewGameClicked(this)
         }
     }
+
+    fun getBadgeView(): View = binding.flInteractiveWinner
 
     fun setListener(listener: Listener?) {
         mListener = listener

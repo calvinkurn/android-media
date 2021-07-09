@@ -548,7 +548,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveView.setInit(state.showOnBoarding)
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
-            BroadcastInteractiveInitState.HasPrevious -> interactiveView.setFinish()
+            is BroadcastInteractiveInitState.HasPrevious -> {
+                interactiveView.setFinish(state.title, state.subtitle)
+            }
         }
     }
 
