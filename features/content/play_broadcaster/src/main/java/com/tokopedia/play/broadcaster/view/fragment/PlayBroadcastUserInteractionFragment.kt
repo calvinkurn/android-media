@@ -544,7 +544,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
         when (state) {
-            BroadcastInteractiveInitState.NoPrevious -> interactiveView.setInit()
+            is BroadcastInteractiveInitState.NoPrevious -> {
+                interactiveView.setInit(state.showOnBoarding)
+            }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             BroadcastInteractiveInitState.HasPrevious -> interactiveView.setFinish()
         }
