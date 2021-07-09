@@ -37,6 +37,11 @@ class VideoLoadingComponent(
         showTextOnly()
     }
 
+    fun showLoadingCasting() {
+        ivLoadingText.text = "Connecting to Chromecast"
+        showTextOnly()
+    }
+
     private fun showLoadingWithText() {
         ivLoading.visible()
         ivLoadingText.visible()
