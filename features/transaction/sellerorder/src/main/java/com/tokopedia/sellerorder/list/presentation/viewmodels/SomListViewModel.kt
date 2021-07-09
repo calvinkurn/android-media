@@ -321,7 +321,7 @@ class SomListViewModel @Inject constructor(
 
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
-            bulkRequestPickupFinalResult.value = ShowLoading(orderIds.size.toLong())
+            bulkRequestPickupFinalResult.postValue(ShowLoading(orderIds.size.toLong()))
             retryRequestPickup = 0
             bulkRequestPickupUseCase.setParams(orderIds)
             _bulkRequestPickupResult.postValue(Success(bulkRequestPickupUseCase.executeOnBackground()))
