@@ -26,10 +26,12 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
         fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterBottomSheetType: SortFilterBottomSheetType, selectedFilter: Set<String> = setOf(), selectedSort: String = "", index: Int): ReadReviewFilterBottomSheet {
             return ReadReviewFilterBottomSheet().apply {
                 setTitle(title)
+                this.filterData = filterList
                 this.listener = readReviewFilterBottomSheetListener
                 this.sortFilterBottomSheetType = sortFilterBottomSheetType
+                this.previouslySelectedFilter = selectedFilter
+                this.previouslySelectedSortOption = selectedSort
                 this.index = index
-                sortFilterViewModel.setInitialValues(selectedFilter, selectedSort, filterList)
             }
         }
     }
@@ -39,8 +41,12 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
 
     private var listUnify: ListUnify? = null
     private var submitButton: UnifyButton? = null
+
+    private var filterData: ArrayList<ListItemUnify> = arrayListOf()
     private var sortFilterBottomSheetType: SortFilterBottomSheetType? = null
     private var index: Int = 0
+    private var previouslySelectedFilter: Set<String> = setOf()
+    private var previouslySelectedSortOption: String = ""
     private var listener: ReadReviewFilterBottomSheetListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +71,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        sortFilterViewModel.setInitialValues(previouslySelectedFilter, previouslySelectedSortOption, filterData)
         setListUnifyData()
         if (isSortMode()) {
             setSortItemListener()
