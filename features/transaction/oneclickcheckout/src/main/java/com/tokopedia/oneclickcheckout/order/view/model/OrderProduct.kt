@@ -1,8 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
+        var cartId: String = "",
         var productId: Long = 0,
         var productName: String = "",
         var productPrice: Long = 0,
@@ -19,6 +21,7 @@ data class OrderProduct(
         var weightActual: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),
         var notes: String = "",
+        var isEditingNotes: Boolean = false,
         var cashback: String = "",
         var warehouseId: Long = 0,
         var isPreOrder: Int = 0,
@@ -30,8 +33,10 @@ data class OrderProduct(
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
-        var preOrderDuration: Int = 0
-) {
+        var preOrderDuration: Int = 0,
+        //temp
+        var errorMessage: String = ""
+): OrderItem {
 
     fun getPrice(): Long {
         var finalPrice = productPrice
@@ -44,6 +49,9 @@ data class OrderProduct(
         }
         return finalPrice
     }
+
+    val isError: Boolean
+        get() = errorMessage.isNotBlank()
 }
 
 data class WholesalePrice(

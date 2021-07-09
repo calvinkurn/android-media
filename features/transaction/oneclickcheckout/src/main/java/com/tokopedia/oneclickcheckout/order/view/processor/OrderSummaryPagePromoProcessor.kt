@@ -140,13 +140,19 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = Order()
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
-        ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId, orderCart.product.quantity.orderQuantity))
+        val productDetails: ArrayList<ProductDetail> = ArrayList()
+        orderCart.products.forEach {
+            if (!it.isError) {
+                productDetails.add(ProductDetail(it.productId, it.quantity.orderQuantity))
+            }
+        }
+        ordersItem.product_details = productDetails
         ordersItem.isChecked = true
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
 
-        if (shipping.isCheckInsurance && shipping.insuranceData != null) {
+        if (shipping.insurance.isCheckInsurance && shipping.insurance.insuranceData != null) {
             ordersItem.isInsurancePrice = 1
         } else {
             ordersItem.isInsurancePrice = 0
@@ -200,7 +206,13 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
 
-        ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))
+        val productDetails: ArrayList<ProductDetailsItem> = ArrayList()
+        orderCart.products.forEach {
+            if (!it.isError) {
+                productDetails.add(ProductDetailsItem(it.quantity.orderQuantity, it.productId))
+            }
+        }
+        ordersItem.productDetails = productDetails
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()

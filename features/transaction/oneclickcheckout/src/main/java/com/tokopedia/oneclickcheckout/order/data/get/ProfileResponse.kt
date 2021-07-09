@@ -1,9 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.oneclickcheckout.common.data.model.Address
-import com.tokopedia.oneclickcheckout.common.data.model.Payment
-import com.tokopedia.oneclickcheckout.common.data.model.Shipment
 
 data class ProfileResponse(
         @SerializedName("onboarding_header_message")

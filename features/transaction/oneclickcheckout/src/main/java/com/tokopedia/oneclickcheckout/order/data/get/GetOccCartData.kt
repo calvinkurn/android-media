@@ -6,28 +6,32 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
 data class GetOccCartData(
-        @SerializedName("messages")
-        val messages: CartMessages = CartMessages(),
+        @SerializedName("error_code")
+        val errorCode: String = "",
+        @SerializedName("pop_up_message")
+        val popUpMessage: String = "",
         @SerializedName("tickers")
         val tickers: List<Ticker> = emptyList(),
-        @SerializedName("ticker_message")
-        val tickerMessage: OccTickerMessage = OccTickerMessage(),
         @SerializedName("occ_main_onboarding")
         val occMainOnboarding: OccMainOnboarding = OccMainOnboarding(),
+        @SerializedName("max_char_note")
+        val maxCharNote: Int = 0,
+        @SerializedName("ticker_message")
+        val tickerMessage: OccTickerMessage = OccTickerMessage(),
+        @SerializedName("messages")
+        val messages: CartMessages = CartMessages(),
         @SerializedName("kero_token")
         val keroToken: String = "",
-        @SerializedName("kero_discom_token")
-        val keroDiscomToken: String = "",
         @SerializedName("kero_unix_time")
         val keroUnixTime: String = "",
+        @SerializedName("kero_discom_token")
+        val keroDiscomToken: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("cart_list")
         val cartList: List<CartDataResponse> = emptyList(),
         @SerializedName("profile_index_wording")
         val profileIndex: String = "",
-        @SerializedName("profile_recommendation_wording")
-        val profileRecommendation: String = "",
         @SerializedName("profile")
         val profileResponse: ProfileResponse = ProfileResponse(),
         @SerializedName("promo")
@@ -39,15 +43,7 @@ data class GetOccCartData(
         @SerializedName("error_ticker")
         val errorTicker: String = "",
         @SerializedName("prompt")
-        val prompt: OccPromptResponse = OccPromptResponse(),
-        @SerializedName("occ_revamp")
-        val revamp: OccRevampResponse = OccRevampResponse(),
-        @SerializedName("error_code")
-        val errorCode: String = "",
-        @SerializedName("pop_up_message")
-        val popUpMessage: String = "",
-        @SerializedName("occ_remove_profile")
-        val removeProfile: OccRemoveProfileResponse = OccRemoveProfileResponse()
+        val prompt: OccPromptResponse = OccPromptResponse()
 )
 
 data class CartMessages(
@@ -82,13 +78,4 @@ data class PaymentAdditionalData(
         val changeCcLink: String = "",
         @SerializedName("callback_url")
         val callbackUrl: String = ""
-)
-
-data class OccRevampResponse(
-        @SerializedName("enable")
-        val isEnable: Boolean = false,
-        @SerializedName("total_profile")
-        val totalProfile: Int = 0,
-        @SerializedName("change_template_text")
-        val changeTemplateText: String = ""
 )

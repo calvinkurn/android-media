@@ -80,7 +80,9 @@ class OrderSummaryPageViewModelTestHelper {
 
     val shipment = OrderProfileShipment(serviceId = 1)
 
-    val preference = OrderProfile(address = address, shipment = shipment)
+    val payment = OrderProfilePayment(gatewayCode = "payment")
+
+    val preference = OrderProfile(address = address, shipment = shipment, payment = payment)
 
     val orderShipment = OrderShipment(serviceId = firstDuration.serviceData.serviceId,
             serviceName = firstDuration.serviceData.serviceName,
@@ -93,5 +95,5 @@ class OrderSummaryPageViewModelTestHelper {
 
     val product = OrderProduct(productId = 1, quantity = QuantityUiModel(orderQuantity = 1))
 
-    val orderData = OrderData(cart = OrderCart(product = product), preference = preference)
+    val orderData = OrderData(cart = OrderCart(products = mutableListOf(product)), preference = preference)
 }

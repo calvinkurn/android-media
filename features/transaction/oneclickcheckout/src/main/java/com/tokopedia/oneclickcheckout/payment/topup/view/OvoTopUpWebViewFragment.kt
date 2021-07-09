@@ -5,7 +5,6 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,21 +12,19 @@ import android.view.ViewGroup
 import android.webkit.SslErrorHandler
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
 import com.tokopedia.oneclickcheckout.payment.di.PaymentComponent
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.webview.TkpdWebView
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -42,9 +39,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)[OvoTopUpWebViewViewModel::class.java]
     }
 
-    private var webView: TkpdWebView? = null
-    private var progressBar: LoaderUnify? = null
-    private var globalError: GlobalError? = null
+    private var binding by autoClearedNullable<FragmentPaymentWebViewBinding>()
 
     private var redirectUrl: String? = null
 
@@ -72,13 +67,13 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_payment_web_view, container, false)
+        binding = FragmentPaymentWebViewBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initViews(view)
         initWebView()
 
         observeOvoTopUpUrl()
@@ -86,31 +81,25 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
     }
 
-    private fun initViews(view: View) {
-        webView = view.findViewById(R.id.web_view)
-        progressBar = view.findViewById(R.id.progress_bar)
-        globalError = view.findViewById(R.id.global_error)
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView?.clearCache(true)
-        val webSettings = webView?.settings
-        webSettings?.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            builtInZoomControls = false
-            displayZoomControls = true
-            setAppCacheEnabled(true)
-        }
-        webView?.webViewClient = OvoTopUpWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        binding?.apply {
+            webView.clearCache(true)
+            val webSettings = webView.settings
+            webSettings?.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                builtInZoomControls = false
+                displayZoomControls = true
+                setAppCacheEnabled(true)
+            }
+            webView.webViewClient = OvoTopUpWebViewClient()
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
     }
 
     private fun observeOvoTopUpUrl() {
-        viewModel.ovoTopUpUrl.observe(viewLifecycleOwner, Observer {
+        viewModel.ovoTopUpUrl.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     loadWebView(it.data)
@@ -121,19 +110,23 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
                     }
                 }
                 is OccState.Loading -> {
-                    progressBar?.visible()
-                    globalError?.gone()
-                    webView?.gone()
+                    binding?.apply {
+                        progressBar.visible()
+                        globalError.gone()
+                        webView.gone()
+                    }
                 }
             }
         })
     }
 
     private fun loadWebView(url: String) {
-        val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
-        webView?.loadUrl(newUrl)
-        webView?.visible()
-        globalError?.gone()
+        binding?.apply {
+            val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
+            webView.loadUrl(newUrl)
+            webView.visible()
+            globalError.gone()
+        }
     }
 
     private fun handleError(throwable: Throwable?) {
@@ -165,13 +158,15 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     }
 
     private fun showGlobalError(type: Int) {
-        globalError?.setType(type)
-        globalError?.setActionClickListener {
-            viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
+        binding?.apply {
+            globalError.setType(type)
+            globalError.setActionClickListener {
+                viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
+            }
+            globalError.visible()
+            webView.gone()
+            progressBar.gone()
         }
-        globalError?.visible()
-        webView?.gone()
-        progressBar?.gone()
     }
 
     inner class OvoTopUpWebViewClient : WebViewClient() {
@@ -179,7 +174,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
             handler?.cancel()
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -189,12 +184,12 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
                 activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()
             }
-            progressBar?.visible()
+            binding?.progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
     }
 

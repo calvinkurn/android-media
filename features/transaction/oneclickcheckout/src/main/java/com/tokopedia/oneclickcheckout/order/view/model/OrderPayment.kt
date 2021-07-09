@@ -37,11 +37,6 @@ data class OrderPayment(
     fun getRealFee(): Double {
         return creditCard.selectedTerm?.fee ?: fee
     }
-
-    fun hasCreditCardOption(): Boolean {
-        if (creditCard.numberOfCards.totalCards > 0 && creditCard.numberOfCards.availableCards > 0) return true
-        return false
-    }
 }
 
 data class OrderPaymentErrorMessage(
@@ -146,9 +141,6 @@ data class OrderPaymentWalletAdditionalData(
 ) {
     val isActivationRequired: Boolean
         get() = activation.isRequired
-
-    val isTopUpRequired: Boolean
-        get() = topUp.isRequired
 
     val isPhoneNumberMissing: Boolean
         get() = phoneNumber.isRequired

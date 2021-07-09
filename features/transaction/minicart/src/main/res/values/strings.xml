@@ -1,7 +1,9 @@
 <resources>
     <string name="mini_cart_widget_label_see_cart">Lihat Keranjang</string>
     <string name="mini_cart_widget_label_total_price">Total Harga</string>
+    <string name="mini_cart_widget_label_buy_occ">Beli Langsung (%d)</string>
     <string name="mini_cart_widget_label_buy">Beli (%d)</string>
+    <string name="mini_cart_widget_label_buy_occ_empty">Beli Langsung</string>
     <string name="mini_cart_widget_label_buy_empty">Beli</string>
     <string name="mini_cart_label_product_notes">Tulis Catatan</string>
     <string name="mini_cart_label_product_notes_editable">Catatan untuk barang ini</string>

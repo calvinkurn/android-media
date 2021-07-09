@@ -7,6 +7,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 
 data class OrderShipment(
+        val isLoading: Boolean = false,
         val serviceName: String? = null,
         val serviceId: Int? = null,
         val serviceDuration: String? = null,
@@ -14,7 +15,7 @@ data class OrderShipment(
         val shippingEta: String? = null,
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
-        val needPinpoint: Boolean = false,
+        var needPinpoint: Boolean = false,
         val shipperName: String? = null,
         val shipperId: Int? = null,
         val shipperProductId: Int? = null,
@@ -27,8 +28,7 @@ data class OrderShipment(
         val logisticPromoShipping: ShippingCourierUiModel? = null,
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
-        val insuranceData: InsuranceData? = null,
-        val isCheckInsurance: Boolean = false
+        val insurance: OrderInsurance = OrderInsurance()
 ) {
     fun isValid(): Boolean {
         return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
@@ -73,8 +73,14 @@ data class OrderShipment(
     }
 
     fun getRealInsurancePrice(): Int {
-        return if (isCheckInsurance && insuranceData != null) {
-            insuranceData.insurancePrice
+        return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
+            insurance.insuranceData.insurancePrice
         } else 0
     }
 }
+
+data class OrderInsurance(
+        val insuranceData: InsuranceData? = null,
+        var isCheckInsurance: Boolean = false,
+        var isFirstLoad: Boolean = true
+)

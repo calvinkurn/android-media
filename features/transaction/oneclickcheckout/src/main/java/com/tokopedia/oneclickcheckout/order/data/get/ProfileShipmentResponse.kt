@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.data.model
+package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 

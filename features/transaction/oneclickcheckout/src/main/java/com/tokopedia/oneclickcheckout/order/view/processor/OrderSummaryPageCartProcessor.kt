@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -13,13 +13,12 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>,
+class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiExternalUseCase: Lazy<AddToCartOccMultiExternalUseCase>,
                                                         private val getOccCartUseCase: GetOccCartUseCase,
                                                         private val updateCartOccUseCase: UpdateCartOccUseCase,
                                                         private val executorDispatchers: CoroutineDispatchers) {
@@ -28,11 +27,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val response = atcOccExternalUseCase.get().createObservable(
-                        RequestParams().apply {
-                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
-                            putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userId)
-                        }).toBlocking().single()
+                val response = atcOccMultiExternalUseCase.get().setParams(listOf(productId), userId).executeOnBackground()
                 if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")
@@ -54,13 +49,12 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                 val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source))
                 return@withContext ResultGetOccCart(
                         orderCart = orderData.cart,
-                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.profileIndex,
-                                orderData.profileRecommendation, orderData.preference, true, orderData.removeProfileData),
+                        orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
+                        orderProfile = orderData.preference,
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
                         throwable = null,
-                        revampData = orderData.revampData,
                         addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage)
                 )
             } catch (t: Throwable) {
@@ -68,11 +62,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                 return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),
+                        orderProfile = OrderProfile(),
                         orderPayment = OrderPayment(),
                         orderPromo = OrderPromo(),
                         globalEvent = null,
                         throwable = t,
-                        revampData = OccRevampData(),
                         addressState = AddressState()
                 )
             }
@@ -81,11 +75,20 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         return result
     }
 
-    fun generateUpdateCartParam(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
-        val orderProduct = orderCart.product
-        if (orderPreference.isValid && orderPreference.preference.address.addressId > 0) {
+    /**
+     * Validate Order Error State
+     *
+     * @return true if order is OK, false if order is error
+     */
+    fun validateOrderError(orderCart: OrderCart): Boolean {
+        return orderCart.shop.errors.isEmpty() && orderCart.products.any { !it.isError }
+    }
+
+    fun generateUpdateCartParam(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
+        val orderProduct = orderCart.products.firstOrNull()
+        if (orderProfile.isValidProfile && orderProduct != null) {
             val cart = UpdateCartOccCartRequest(
-                    orderCart.cartId,
+                    orderProduct.cartId,
                     orderProduct.quantity.orderQuantity,
                     orderProduct.notes,
                     orderProduct.productId.toString(),
@@ -93,7 +96,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     orderShipment.getRealShipperProductId(),
                     orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
             )
-            var metadata = orderPreference.preference.payment.metadata
+            var metadata = orderProfile.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
                 try {
@@ -110,11 +113,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
             }
             val realServiceId = orderShipment.getRealServiceId()
             val profile = UpdateCartOccProfileRequest(
-                    orderPreference.preference.profileId.toString(),
-                    orderPreference.preference.payment.gatewayCode,
+                    orderProfile.profileId.toString(),
+                    orderProfile.payment.gatewayCode,
                     metadata,
-                    if (realServiceId == 0) orderPreference.preference.shipment.serviceId else realServiceId,
-                    orderPreference.preference.address.addressId.toString()
+                    if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
+                    orderProfile.address.addressId.toString()
             )
             return UpdateCartOccRequest(arrayListOf(cart), profile)
         }
@@ -125,10 +128,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
         return (orderShipment.getRealShipperId() <= 0 || orderShipment.getRealShipperProductId() <= 0)
     }
 
-    suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, orderPayment: OrderPayment) {
+    suspend fun updateCartIgnoreResult(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment) {
         withContext(executorDispatchers.io) {
             try {
-                val param = generateUpdateCartParam(orderCart, orderPreference, orderShipment, orderPayment)?.copy(
+                val param = generateUpdateCartParam(orderCart, orderProfile, orderShipment, orderPayment)?.copy(
                         skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment)
                 )
                 if (param != null) {
@@ -208,10 +211,10 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
 class ResultGetOccCart(
         var orderCart: OrderCart,
         var orderPreference: OrderPreference,
+        var orderProfile: OrderProfile,
         var orderPayment: OrderPayment,
         var orderPromo: OrderPromo,
         var globalEvent: OccGlobalEvent?,
         var throwable: Throwable?,
-        var revampData: OccRevampData,
         var addressState: AddressState
 )

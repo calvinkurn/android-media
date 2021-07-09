@@ -5,9 +5,13 @@ import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.data.model.response.AddToCartOccExternalGqlResponse
 import com.tokopedia.atc_common.data.model.response.AddToCartOccGqlResponse
 import com.tokopedia.atc_common.data.model.response.DataResponse
+import com.tokopedia.atc_common.data.model.response.occ.AddToCartOccMultiGqlResponse
+import com.tokopedia.atc_common.data.model.response.occ.DataOccMultiResponse
+import com.tokopedia.atc_common.data.model.response.occ.DetailOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.ocs.OcsDataResponse
 import com.tokopedia.atc_common.domain.model.response.*
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
 /**
@@ -82,6 +86,33 @@ class AddToCartDataMapper @Inject constructor() {
             }
 
             addToCartDataModel
+        }
+    }
+
+    fun mapAddToCartOccMultiResponse(response: AddToCartOccMultiGqlResponse): AddToCartOccMultiDataModel {
+        return AddToCartOccMultiDataModel(
+                errorMessage = response.response.errorMessage,
+                status = response.response.status,
+                data = mapAddToCartOccMultiData(response.response.data)
+        )
+    }
+
+    private fun mapAddToCartOccMultiData(dataResponse: DataOccMultiResponse): AddToCartOccMultiData {
+        return AddToCartOccMultiData(
+                success = dataResponse.success,
+                message = dataResponse.message,
+                cart = mapAddToCartOccMultiCartData(dataResponse.detail)
+        )
+    }
+
+    private fun mapAddToCartOccMultiCartData(data: List<DetailOccMultiResponse>): List<AddToCartOccMultiCartData> {
+        return data.map {
+            AddToCartOccMultiCartData(
+                    cartId = it.cartId,
+                    productId = it.productId,
+                    quantity = it.quantity.toIntOrZero(),
+                    shopId = it.shopId
+            )
         }
     }
 
@@ -163,6 +194,28 @@ class AddToCartDataMapper @Inject constructor() {
         dataModel.isTradeIn = it.isTradeIn
         dataModel.message = it.message
         return dataModel
+    }
+
+    fun mapAddToCartOccMultiDataModel(addToCartOccMultiDataModel: AddToCartOccMultiDataModel): AddToCartDataModel {
+        return AddToCartDataModel(
+                errorMessage = ArrayList(addToCartOccMultiDataModel.errorMessage),
+                status = addToCartOccMultiDataModel.status,
+                data = mapDataModel(addToCartOccMultiDataModel.data)
+        )
+    }
+
+    private fun mapDataModel(data: AddToCartOccMultiData): DataModel {
+        val cart = data.cart.firstOrNull() ?: AddToCartOccMultiCartData()
+        return DataModel(
+                success = data.success,
+                cartId = cart.cartId,
+                productId = cart.productId.toLong(),
+                quantity = cart.quantity,
+                notes = cart.notes,
+                shopId = cart.shopId.toLong(),
+                customerId = cart.customerId.toLong(),
+                warehouseId = cart.warehouseId.toLong()
+        )
     }
 
 }

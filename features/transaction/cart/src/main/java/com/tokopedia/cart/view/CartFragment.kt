@@ -1931,7 +1931,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     long = localizationChooseAddressData.longitude,
                     label = String.format("%s %s", localizationChooseAddressData.addressName, localizationChooseAddressData.receiverName),
                     postalCode = localizationChooseAddressData.postalCode,
-                    shopId = localizationChooseAddressData.shopId,
+                    shopId = "11515028",
                     warehouseId = localizationChooseAddressData.warehouseId)
         }
     }

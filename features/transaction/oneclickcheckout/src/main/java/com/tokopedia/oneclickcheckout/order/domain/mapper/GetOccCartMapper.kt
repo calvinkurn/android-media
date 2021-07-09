@@ -2,10 +2,10 @@ package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.oneclickcheckout.common.data.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
@@ -21,30 +21,28 @@ class GetOccCartMapper @Inject constructor() {
     fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
         val cart = data.cartList.first()
         val orderCart = OrderCart().apply {
-            cartId = cart.cartId
             cartString = cart.cartString
             paymentProfile = cart.paymentProfile
-            product = generateOrderProduct(cart.product).apply {
-                quantity = mapQuantity(data)
-                tickerMessage = mapProductTickerMessage(data.tickerMessage)
-                purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
-            }
+            products = arrayListOf(
+                    generateOrderProduct(cart.product).apply {
+                        cartId = cart.cartId
+                        quantity = mapQuantity(data)
+                        tickerMessage = mapProductTickerMessage(data.tickerMessage)
+                        purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
+                    }
+            )
             shop = generateOrderShop(cart)
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
         }
         return OrderData(mapTicker(data.tickers),
                 data.occMainOnboarding,
                 orderCart,
-                data.profileIndex,
-                data.profileRecommendation,
                 mapProfile(data.profileResponse),
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
-                mapOccRevamp(data.revamp),
                 data.errorCode,
-                data.popUpMessage,
-                mapOccRemoveProfile(data.removeProfile))
+                data.popUpMessage)
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -100,6 +98,13 @@ class GetOccCartMapper @Inject constructor() {
             isFulfillment = cart.warehouse.isFulfillment
             fulfillmentBadgeUrl = cart.tokoCabangInfo.badgeUrl
             cityName = if (cart.warehouse.isFulfillment) cart.tokoCabangInfo.message else shop.cityName
+            isFreeOngkirExtra = cart.product.freeShippingExtra.eligible
+            isFreeOngkir = cart.product.freeShipping.eligible
+            freeOngkirImg = when {
+                isFreeOngkirExtra -> cart.product.freeShippingExtra.badgeUrl
+                isFreeOngkir -> cart.product.freeShipping.badgeUrl
+                else -> ""
+            }
         }
     }
 
@@ -186,15 +191,14 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
-        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
-                profileResponse.profileRevampWording, profileResponse.isRecom,
-                profileResponse.profileId, profileResponse.status, profileResponse.enable,
-                profileResponse.message, mapAddress(profileResponse.address), mapPayment(profileResponse.payment),
-                mapShipment(profileResponse.shipment))
+        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent,
+                profileResponse.profileId, profileResponse.enable, profileResponse.message,
+                mapAddress(profileResponse.address), mapPayment(profileResponse.payment), mapShipment(profileResponse.shipment))
     }
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {
-        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.recommendationServiceId, shipment.recommendationSpId, shipment.isFreeShippingSelected)
+        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.recommendationServiceId, shipment.recommendationSpId, shipment.isFreeShippingSelected,
+        false, false, CourierSelectionError("error dong", "ada masalah nih"))
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
@@ -303,14 +307,5 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
-    }
-
-    private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
-        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
-    }
-
-    private fun mapOccRemoveProfile(removeProfileResponse: OccRemoveProfileResponse): OccRemoveProfileData {
-        return OccRemoveProfileData(removeProfileResponse.enable, removeProfileResponse.type,
-                OccRemoveProfileMessageData(removeProfileResponse.message.title, removeProfileResponse.message.description))
     }
 }

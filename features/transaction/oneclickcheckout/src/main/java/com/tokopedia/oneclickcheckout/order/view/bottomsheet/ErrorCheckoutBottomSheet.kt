@@ -1,8 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.bottomsheet
 
-import android.view.View
-import com.tokopedia.empty_state.EmptyStateUnify
-import com.tokopedia.oneclickcheckout.R
+import android.view.LayoutInflater
+import com.tokopedia.oneclickcheckout.databinding.BottomSheetErrorCheckoutBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -13,25 +12,24 @@ class ErrorCheckoutBottomSheet {
 
     fun show(view: OrderSummaryPageFragment, error: CheckoutOccErrorData, listener: Listener) {
         this.listener = listener
-        view.fragmentManager?.let {
+        view.parentFragmentManager.let {
             BottomSheetUnify().apply {
                 showCloseIcon = true
                 showHeader = true
                 setTitle(if (error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) TITLE_PRODUCT_STOCK_EMPTY else TITLE_SHOP_CLOSED)
-                val child = View.inflate(view.context, R.layout.bottom_sheet_error_checkout, null)
-                setupView(child, error)
-                setChild(child)
+                val binding = BottomSheetErrorCheckoutBinding.inflate(LayoutInflater.from(view.context))
+                setupView(binding, error)
+                setChild(binding.root)
                 show(it, null)
             }
         }
     }
 
-    private fun setupView(child: View, error: CheckoutOccErrorData) {
-        val esCheckout = child.findViewById<EmptyStateUnify>(R.id.es_checkout)
-        esCheckout.setImageUrl(if (error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) IMAGE_PRODUCT_STOCK_EMPTY else IMAGE_SHOP_CLOSED)
-        esCheckout.setDescription(error.message)
-        esCheckout.setPrimaryCTAText(ACTION_MESSAGE)
-        esCheckout.setPrimaryCTAClickListener {
+    private fun setupView(binding: BottomSheetErrorCheckoutBinding, error: CheckoutOccErrorData) {
+        binding.esCheckout.setImageUrl(if (error.code == ERROR_CODE_PRODUCT_STOCK_EMPTY) IMAGE_PRODUCT_STOCK_EMPTY else IMAGE_SHOP_CLOSED)
+        binding.esCheckout.setDescription(error.message)
+        binding.esCheckout.setPrimaryCTAText(ACTION_MESSAGE)
+        binding.esCheckout.setPrimaryCTAClickListener {
             listener?.onClickSimilarProduct(error.code)
         }
     }

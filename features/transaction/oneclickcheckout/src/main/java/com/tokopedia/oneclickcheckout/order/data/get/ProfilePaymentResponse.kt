@@ -1,4 +1,4 @@
-package com.tokopedia.oneclickcheckout.common.data.model
+package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
@@ -42,7 +42,7 @@ data class Payment(
         @SerializedName("is_ovo_only_campaign")
         val isOvoOnlyCampaign: Boolean = false,
         @SerializedName("ovo_additional_data")
-        val ovoAdditionalData: OvoAdditionalData= OvoAdditionalData(),
+        val ovoAdditionalData: OvoAdditionalData = OvoAdditionalData(),
         @SerializedName("bid")
         val bid: String = "",
         @SerializedName("specific_gateway_campaign_only_type")

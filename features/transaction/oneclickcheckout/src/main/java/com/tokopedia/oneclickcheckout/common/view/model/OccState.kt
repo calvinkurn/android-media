@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.common.view.model
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt

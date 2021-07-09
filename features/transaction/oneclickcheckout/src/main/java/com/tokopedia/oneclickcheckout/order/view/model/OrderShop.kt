@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 
 data class OrderShop(
         var shopId: Long = 0,
@@ -20,5 +21,15 @@ data class OrderShop(
         var isFulfillment: Boolean = false,
         var fulfillmentBadgeUrl: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),
-        var errors: List<String> = emptyList()
-)
+        var errors: List<String> = emptyList(),
+        var isFreeOngkir: Boolean = false,
+        var isFreeOngkirExtra: Boolean = false,
+        var freeOngkirImg: String = "",
+
+        var unblockingErrorMessage: String = "",
+        var firstProductErrorIndex: Int = -1,
+        var isTokoNow: Boolean = false,
+        var maximumWeight: Int = 0,
+        var maximumWeightWording: String = "",
+        var overweight: Double = 0.0
+): OrderItem

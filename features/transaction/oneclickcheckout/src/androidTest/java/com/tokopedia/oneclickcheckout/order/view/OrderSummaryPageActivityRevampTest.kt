@@ -10,7 +10,15 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.*
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_ADDRESS_2_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_PAYMENT_2_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_RECOMMENDATION_SPID_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_SHIPMENT_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
@@ -57,15 +65,17 @@ class OrderSummaryPageActivityRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProductCard(
+            assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
+                    isFreeShipping = true
+            )
+            assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    isFreeShipping = true,
                     productQty = 1
             )
 
@@ -251,7 +261,7 @@ class OrderSummaryPageActivityRevampTest {
 
         orderSummaryPage {
             clickAddProductQuantity()
-            assertProductQuantity(2)
+            assertProductQuantity(qty = 2)
 
             assertPayment("Rp216.000", "Bayar")
         } pay {
@@ -486,15 +496,17 @@ class OrderSummaryPageActivityRevampTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertProductCard(
+            assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
+                    isFreeShipping = true
+            )
+            assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    isFreeShipping = true,
                     productQty = 1
             )
 
