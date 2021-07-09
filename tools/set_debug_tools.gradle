@@ -11,7 +11,9 @@ task("configDebugTools") {
     } else {
         rootProject.ext.debugToolsEnabled = true
         for ( taskName in taskNames ) {
-            if ( taskName.toLowerCase().contains("release")) {
+            if ( !taskName.toLowerCase().contains("debug") &&
+                    !taskName.toLowerCase().contains("dev") &&
+                    taskName.toLowerCase().contains("release")) {
                 rootProject.ext.debugToolsEnabled = false
                 println("Debug tools set false. Task is release")
                 break
