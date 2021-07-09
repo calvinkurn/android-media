@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.topads_edit_fragment_product_list_edit.*
 import javax.inject.Inject
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
-
+private const val PRODUCT_EDIT_NAME = "android.topads_edit"
 class EditProductFragment : BaseDaggerFragment() {
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
@@ -109,7 +109,7 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(page: Int) {
-        viewModel.getAds(page, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
+        viewModel.getAds(page, arguments?.getString(GROUP_ID), PRODUCT_EDIT_NAME, this::onSuccessGetAds)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,7 +119,7 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun fetchData() {
-        viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID)?.toInt(), this::onSuccessGetAds)
+        viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID), PRODUCT_EDIT_NAME, this::onSuccessGetAds)
     }
 
     private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) {
@@ -214,9 +214,9 @@ class EditProductFragment : BaseDaggerFragment() {
         product?.forEachIndexed { ind, it ->
             val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)
                     ?: "", image?.get(ind) ?: "", name?.get(ind) ?: "")
-            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", "0", 0, dataItem)))
+            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", "0", "0", dataItem)))
             if (!existsOriginal(it)) {
-                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", "0", 0, dataItem))
+                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", "0", "0", dataItem))
             }
         }
         adapter.notifyDataSetChanged()

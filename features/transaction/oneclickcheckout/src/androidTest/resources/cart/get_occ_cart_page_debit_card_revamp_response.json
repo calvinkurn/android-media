@@ -219,6 +219,13 @@
                   "is_official": 0,
                   "os_logo_url": ""
                 },
+                "shop_type_info": {
+                  "shop_tier": 1,
+                  "shop_grade": 0,
+                  "badge": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "badge_svg": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "title": "Power Merchant"
+                },
                 "address_id": 3608,
                 "postal_code": "55212",
                 "latitude": "-7.7932901",

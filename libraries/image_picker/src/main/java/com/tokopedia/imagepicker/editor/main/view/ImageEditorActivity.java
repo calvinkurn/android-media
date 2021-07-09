@@ -1,24 +1,16 @@
 package com.tokopedia.imagepicker.editor.main.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
@@ -32,16 +24,29 @@ import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
+import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
+import com.tokopedia.imagepicker.editor.data.ItemSelection;
+import com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.file.FileUtil;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_EDITOR_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
@@ -69,12 +74,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
     public static final String SAVED_RATIO = "RATIO";
 
-    public static final int MAX_HISTORY_PER_IMAGE = 5;
+    private static final String WATERMARK_REMOTE_CONFIG = "media_watermark_editor_tool";
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
+
+    public static final int MAX_HISTORY_PER_IMAGE = 5;
 
     protected ArrayList<String> extraImageUrls;
     private int minResolution;
-    private ImageEditActionType[] imageEditActionType;
+    private ArrayList<ImageEditActionType> imageEditActionType;
     private String belowMinResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
     private boolean recheckSizeAfterResize;
@@ -101,6 +108,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
     private ImageEditActionMainWidget imageEditActionMainWidget;
+    private ItemSelectionWidget watermarkItemSelection;
     private View editorMainView;
     private View editorControlView;
     private View doneButton;
@@ -110,6 +118,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private View layoutContrast;
     private View layoutCrop;
     private View layoutRotate;
+    private View layoutWatermark;
     protected ProgressDialog progressDialog;
     private TwoLineSeekBar brightnessSeekbar;
     private TwoLineSeekBar contrastSeekbar;
@@ -125,6 +134,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageRatioType defaultRatio;
     private ArrayList<ImageRatioType> imageRatioOptionList;
     private ImageEditCropListWidget imageEditCropListWidget;
+
+    private UserSessionInterface userSession;
+    private RemoteConfig remoteConfig;
+
+    //save state if watermark is rendered
+    private boolean isSetWatermark = false;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -209,6 +224,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         super.onCreate(savedInstanceState);
 
+        userSession = new UserSession(getApplicationContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+
+        remoteConfigEditor();
+
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
 
@@ -219,6 +239,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         View editSaveView = findViewById(R.id.tv_edit_save);
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
+        watermarkItemSelection = findViewById(R.id.watermark_item_selection);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
@@ -226,6 +247,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutRotate = findViewById(R.id.layout_rotate);
         layoutBrightness = findViewById(R.id.layout_brightness);
         layoutContrast = findViewById(R.id.layout_contrast);
+        layoutWatermark = findViewById(R.id.layout_watermark);
         tvActionTitle = findViewById(R.id.tv_action_title);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -267,6 +289,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         trackOpen();
     }
 
+    private void remoteConfigEditor() {
+        if (!remoteConfig.getBoolean(WATERMARK_REMOTE_CONFIG)) {
+            imageEditActionType.remove(ImageEditActionType.ACTION_WATERMARK);
+        }
+    }
+
     private void onCancelEditClicked() {
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (fragment != null) {
@@ -279,7 +307,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     fragment.cancelCropRotateImage();
                     break;
                 case ACTION_WATERMARK:
-                    //TODO undo watermark here
+                    isSetWatermark = false;
+                    fragment.cancelWatermark();
                     break;
                 case ACTION_BRIGHTNESS:
                     fragment.cancelBrightness();
@@ -323,7 +352,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     }
                     break;
                 case ACTION_WATERMARK:
-                    // currently not supported
+                    if (fragment != null) {
+                        fragment.saveWatermarkImage();
+                    }
                     break;
                 case ACTION_BRIGHTNESS:
                     if (fragment != null) {
@@ -500,7 +531,15 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     tvActionTitle.setText(getString(R.string.rotate));
                     break;
                 case ACTION_WATERMARK:
-                    //currently not supported.
+                    if (fragment != null && !isSetWatermark) {
+                        isSetWatermark = true;
+                        fragment.setWatermark();
+                    }
+
+                    hideAllControls();
+                    setLastStateWatermarkImage();
+                    layoutWatermark.setVisibility(View.VISIBLE);
+                    tvActionTitle.setText(getString(R.string.watermark));
                     break;
                 case ACTION_CROP_ROTATE:
                     //currently not supported.
@@ -549,6 +588,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutRotate.setVisibility(View.GONE);
         layoutBrightness.setVisibility(View.GONE);
         layoutContrast.setVisibility(View.GONE);
+        layoutWatermark.setVisibility(View.GONE);
     }
 
     private void setupBrightnessWidget() {
@@ -667,6 +707,30 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         }
     }
 
+    /**
+     * getCurrentBitmap is a method to get bitmap pooling active on gestureImageView from
+     * [ImageEditPreviewFragment], this is for saving last state of bitmap temporarily on memory.
+     * @param bitmap
+     */
+    @Override
+    public void itemSelectionWidgetPreview(Bitmap bitmap) {
+        ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+
+        if (imageEditPreviewFragment == null) return;
+
+        String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
+
+        watermarkItemSelection.setData(
+                ItemSelection.createWithPlaceholderBitmap(
+                        getString(R.string.editor_watermark_item),
+                        preview,
+                        bitmap, // placeholder preview
+                        Constant.TYPE_WATERMARK_TOPED,
+                        true
+                )
+        );
+    }
+
     @Override
     public void setRotateAngle(float angle) {
         // update view when the angle is changed by pinching
@@ -727,6 +791,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         tvContrast.setText(String.valueOf((int) contrastValue - INITIAL_CONTRAST_VALUE));
         if (contrastSeekbar != null && contrastSeekbar.getValue() != contrastValue) {
             contrastSeekbar.setValue(contrastValue);
+        }
+    }
+
+    public void setLastStateWatermarkImage() {
+        ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+
+        if (imageEditPreviewFragment != null) {
+            imageEditPreviewFragment.saveLastStateBitmap();
         }
     }
 
@@ -945,7 +1017,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     currentEditStepIndexList,
                     minResolution,
                     imageRatioTypeDefStepList,
-                    isCirclePreview);
+                    isCirclePreview,
+                    userSession
+            );
             viewPager.setAdapter(imageEditorViewPagerAdapter);
         }
         viewPager.post(new Runnable() {
@@ -1052,7 +1126,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @Override
     public boolean isInEditCropMode() {
         return isInEditMode && (currentEditActionType == ImageEditActionType.ACTION_CROP
-                || currentEditActionType == ImageEditActionType.ACTION_CROP_ROTATE);
+                || currentEditActionType == ImageEditActionType.ACTION_CROP_ROTATE
+                || currentEditActionType == ImageEditActionType.ACTION_WATERMARK);
     }
 
     public void trackOpen() {

@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -50,4 +51,6 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
     implementation project(rootProject.ext.features.flight)
+
+    implementation project(rootProject.ext.features.hotel)
 }

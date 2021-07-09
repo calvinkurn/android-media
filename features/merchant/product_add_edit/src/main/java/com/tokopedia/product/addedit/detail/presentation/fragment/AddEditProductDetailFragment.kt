@@ -318,7 +318,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        setupProductNameValidationBottomsheet()
+        if (RollenceUtil.getProductTitleRollence()) {
+            viewModel.usingNewProductTitleRequest = true
+            setupProductNameValidationBottomsheet()
+        }
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
@@ -830,16 +833,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product photo validation
         productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
-
-        // product name validation
-        val productNameInput = productNameField?.getEditableValue().toString()
-        viewModel.validateProductNameInput(productNameInput)
-        viewModel.isProductNameInputError.value?.run {
-            if (this && !requestedFocus) {
-                productNameField?.requestFocus()
-                requestedFocus = true
-            }
-        }
 
         // product price validation
         val productPriceInput = productPriceField?.getEditableValue().toString().replace(".", "")

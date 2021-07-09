@@ -175,9 +175,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
-        context?.let{
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
         isLoadingInitialData = true
     }
 

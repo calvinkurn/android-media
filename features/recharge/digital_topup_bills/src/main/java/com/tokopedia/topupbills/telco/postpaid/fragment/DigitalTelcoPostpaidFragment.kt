@@ -194,6 +194,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
             //initiate impression promo
             sendImpressionPromo()
+        } else {
+            separator.hide()
+            tabLayout.hide()
         }
     }
 
@@ -321,7 +324,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-                if (userSession.isLoggedIn) {
+                if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
+                    postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
+                } else if (userSession.isLoggedIn) {
                     getEnquiryNumber()
                 } else {
                     navigateToLoginPage()
@@ -426,7 +431,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     validatePhoneNumber(operatorData, postpaidClientNumberWidget)
                 }
             }
-        } catch (exception: Exception) {
+        } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
                     getString(R.string.telco_number_error_not_found))
         }

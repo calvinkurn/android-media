@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -125,14 +126,12 @@ dependencies {
 
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.hotel)
 
     //User
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.kyccentralized)
-    implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.managename)
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.notifCenter)

@@ -2,11 +2,14 @@ package com.tokopedia.imagepicker.editor.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
@@ -26,7 +29,9 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPreviewPresenter.ImageEditPreviewView> {
+
     private CompositeSubscription compositeSubscription;
+
     private PublishSubject<Float> brightnessSubject;
     private PublishSubject<Float> contrastSubject;
 
@@ -48,6 +53,12 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         void onSuccessSaveContrastImage(String filePath);
 
         void onErrorSaveContrastImage(Throwable e);
+
+        void onSuccessGetWatermarkImage(Bitmap bitmap);
+
+        void onSuccessSaveWatermarkImage(String filePath);
+
+        void onErrorWatermarkImage(Throwable e);
     }
 
     public ImageEditPreviewPresenter() {
@@ -172,7 +183,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         Subscription subscription =
                 Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
                     @Override
-                    public Observable<String> call(Bitmap bitmap) {
+                    public Observable<String> call(Bitmap result) {
                         Bitmap resultBitmap = ImageProcessingUtil.contrastBitmap(bitmap, contrastValue);
                         File file = ImageProcessingUtil.writeImageToTkpdPath(resultBitmap, compressFormat);
                         return Observable.just(file.getAbsolutePath());
@@ -242,6 +253,69 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                                 }
                             }
                         });
+        addToComposite(subscription);
+    }
+
+    public void saveCurrentBitmapImage(Bitmap bitmap, final Bitmap.CompressFormat compressFormat) {
+        if (bitmap == null) return;
+
+        Subscription subscription =
+                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Bitmap bitmap) {
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat);
+                        return Observable.just(file.getAbsolutePath());
+                    }
+                })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorWatermarkImage(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(String filePath) {
+                                if (isViewAttached()) {
+                                    if (filePath != null) {
+                                        getView().onSuccessSaveWatermarkImage(filePath);
+                                    } else {
+                                        getView().onErrorWatermarkImage(null);
+                                    }
+                                }
+                            }
+                        });
+        addToComposite(subscription);
+    }
+
+    public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap) {
+        Subscription subscription = Observable.just(
+                // tokopedia's logo
+                BitmapFactory.decodeResource(
+                        getView().getContext().getResources(),
+                        R.drawable.watermark_logo_tokopedia
+                )
+        ).flatMap((Func1<Bitmap, Observable<Bitmap>>) tokopediaLogoBitmap -> {
+            // create watermark with transparent container (empty) bitmap
+            Bitmap watermark = WatermarkBuilder
+                    .create(getView().getContext(), mainBitmap)
+                    .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
+                    .getWatermark()
+                    .getOutputImage();
+
+            return Observable.just(watermark);
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmap -> getView().onSuccessGetWatermarkImage(bitmap));
+
         addToComposite(subscription);
     }
 
