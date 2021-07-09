@@ -2,7 +2,7 @@ package com.tokopedia.sellerfeedback.presentation.util
 
 import android.content.Context
 
-class ScreenshotPreferenceManage(private val context: Context) {
+class ScreenshotPreferenceManager(private val context: Context) {
 
     companion object {
         private const val SHARED_PREF_NAME = "seller_feedback_toaster_pref"

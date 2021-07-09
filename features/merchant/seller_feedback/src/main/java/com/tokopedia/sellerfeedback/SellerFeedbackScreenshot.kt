@@ -13,7 +13,7 @@ import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK
 import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
-import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManage
+import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -34,7 +34,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: WeakReference<Activity>? = null
 
-    private val screenshotPreferenceManage by lazy { ScreenshotPreferenceManage(context) }
+    private val screenshotPreferenceManager by lazy { ScreenshotPreferenceManager(context) }
 
     override val toasterSellerListener = object : ToasterSellerListener {
         override fun showToaster(uri: Uri?, currentActivity: Activity?) {
@@ -58,14 +58,14 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun processScreenshotTaken(uri: Uri) {
-        val date = screenshotPreferenceManage.getDateToaster()
+        val date = screenshotPreferenceManager.getDateToaster()
         if (date.isNotBlank()) {
             if (isDifferentDays(date)) {
-                screenshotPreferenceManage.setDateToaster(getNowDate())
+                screenshotPreferenceManager.setDateToaster(getNowDate())
                 setScreenShotTaken(uri)
             }
         } else {
-            screenshotPreferenceManage.setDateToaster(getNowDate())
+            screenshotPreferenceManager.setDateToaster(getNowDate())
             setScreenShotTaken(uri)
         }
     }
@@ -98,8 +98,8 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private fun isDifferentDays(dateString: String): Boolean {
         return try {
             val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_PREFS, DateFormatUtils.DEFAULT_LOCALE)
-            val joinDate = simpleDateFormat.parse(dateString)
-            val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
+            val targetDate = simpleDateFormat.parse(dateString)
+            val diffInMs: Long = abs(System.currentTimeMillis() - targetDate?.time.orZero())
             val days = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
             return days > 0
         } catch (e: Exception) {
