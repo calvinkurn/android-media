@@ -25,10 +25,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-println("HENDRYTASK ANALYTICS")
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
-println("HENDRYTASK ANALYTICS_NOOP")
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network

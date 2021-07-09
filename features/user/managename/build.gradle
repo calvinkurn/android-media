@@ -26,10 +26,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-println("HENDRYTASK ANALYTICS")
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
-println("HENDRYTASK ANALYTICS_NOOP")
     }
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.graphql)

@@ -30,7 +30,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
-println("HENDRYTASK ANALYTICS")
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
