@@ -36,25 +36,11 @@ class PdpComparisonWidgetViewHolder(
     override fun bind(element: PdpComparisonWidgetDataModel) {
         itemView.comparison_widget.setComparisonWidgetData(
                 element.recommendationWidget,
-                listener.getStickyTitleView(),
                 this@PdpComparisonWidgetViewHolder,
                 RecommendationTrackingModel(
                         androidPageName = PDP_PAGE_NAME,
                         headerTitle = element.recommendationWidget.title
                 ),
-                object : StickyTitleInterface {
-                    override fun onStickyTitleClick(stickyTitleModel: StickyTitleModel) {
-                        view.context?.run {
-                            RouteManager.route(this,
-                                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                                    stickyTitleModel.recommendationItem.productId.toString())
-                        }
-                    }
-
-                    override fun onStickyTitleShow(isShowing: Boolean) {
-
-                    }
-                },
                 listener.getFragmentTrackingQueue()
         )
         this.componentTrackDataModel = getComponentTrackData(element)

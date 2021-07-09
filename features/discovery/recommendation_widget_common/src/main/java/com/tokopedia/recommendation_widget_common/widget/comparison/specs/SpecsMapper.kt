@@ -1,32 +1,48 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison.specs
 
-import android.content.Context
 import android.text.Layout
 import android.text.StaticLayout
 
 import android.text.TextPaint
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
-import com.tokopedia.recommendation_widget_common.widget.comparison.ResponseMockData
 
 object SpecsMapper {
     fun mapToSpecsListModel(
             recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
             parentInEdgeStart: Boolean = false,
-            parentInEdgeEnd: Boolean = false,
-            context: Context,
-            specsConfig: SpecsConfig
+            specsConfig: SpecsConfig,
+            position: Int
     ): SpecsListModel {
         val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
             SpecsModel(
-                specsTitle = it.value.specTitle,
+                specsTitle = if(position == 0) it.value.specTitle else "",
                 specsSummary = it.value.specSummary,
-                bgDrawableRef = getDrawableBasedOnParentPosition(
-                    parentInEdgeStart,
-                    parentInEdgeEnd
+                bgDrawableRef = getDrawableBasedOnParentCompareItemPosition(it.index, recommendationSpecificationLabels.size),
+                bgDrawableColorRef = getColorCompareItem(parentInEdgeStart
                 ),
-                bgDrawableColorRef = getColorBasedOnPosition(
-                    it.index
+                height = 400
+            )
+        }
+        return SpecsListModel(
+            specs = listSpecsModel,
+            specsConfig = specsConfig
+        )
+    }
+
+    fun mapToSpecsListCompareItemModel(
+        recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
+        specsConfig: SpecsConfig,
+        parentInEdgeStart: Boolean = false,
+        position: Int
+    ): SpecsListModel {
+        val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
+            SpecsModel(
+                specsTitle = if(position == 0) it.value.specTitle else "",
+                specsSummary = it.value.specSummary,
+                bgDrawableRef = getDrawableBasedOnParentCompareItemPosition(it.index, recommendationSpecificationLabels.size),
+                bgDrawableColorRef = getColorCompareItem(parentInEdgeStart
                 ),
                 height = 400
             )
@@ -54,11 +70,27 @@ object SpecsMapper {
         return R.drawable.bg_specs
     }
 
-    fun measureSummaryTextHeight(
+    private fun getDrawableBasedOnParentCompareItemPosition(
+        index: Int,
+        size: Int
+    ): Int {
+        if (index == 0) return R.drawable.bg_specs_start_end_top
+        else if (index != size-1) return R.drawable.bg_specs
+        return R.drawable.bg_specs_start_end_bottom
+    }
+
+    private fun getColorCompareItem(parentInEdgeStart: Boolean): Int {
+        return if (parentInEdgeStart) {
+            com.tokopedia.unifyprinciples.R.color.Unify_N50
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Unify_N0
+        }
+    }
+
+    private fun measureSummaryTextHeight(
         text: CharSequence?,
         textSize: Float,
-        textWidth: Int,
-        context: Context
+        textWidth: Int
     ): Int {
         val myTextPaint = TextPaint()
         myTextPaint.isAntiAlias = true
@@ -77,5 +109,20 @@ object SpecsMapper {
             true
         )
         return myStaticLayout.height
+    }
+
+    fun findMaxSummaryText(
+        recommendationItem: List<RecommendationItem>,
+        position: Int,
+        textSize: Float,
+        textWidth: Int
+    ) : Int {
+        var maxHeight = 0
+        for(i in recommendationItem)
+        {
+            val heightText = (measureSummaryTextHeight(i.specs[position].specSummary, textSize, textWidth))
+            if(heightText > maxHeight) maxHeight = heightText
+        }
+        return maxHeight
     }
 }

@@ -5,7 +5,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -24,8 +23,12 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
             comparisonWidgetInterface: ComparisonWidgetInterface,
             recommendationTrackingModel: RecommendationTrackingModel,
             trackingQueue: TrackingQueue?,
-            userSession: UserSessionInterface
+            userSession: UserSessionInterface,
+            position: Int,
+            isComparedItem : Boolean
     ) {
+        if(position ==0 && !isComparedItem)
+            view.visibility = View.INVISIBLE
         view.specsView.setSpecsInfo(comparisonModel.specsModel)
         view.productCardView.setProductModel(comparisonModel.productCardModel)
         if (!comparisonModel.isCurrentItem) {
