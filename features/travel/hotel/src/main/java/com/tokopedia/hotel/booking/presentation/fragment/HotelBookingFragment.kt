@@ -45,6 +45,7 @@ import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
@@ -66,6 +67,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
+import kotlinx.android.synthetic.main.fragment_hotel_booking.container_error
+import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 
@@ -117,7 +121,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     initView()
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
+                    showErrorView(it.throwable)
                 }
             }
             stopTrace()
@@ -279,6 +283,15 @@ class HotelBookingFragment : HotelBaseFragment() {
             })
             (tv_guest_input.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
+    }
+
+    fun showErrorView(e: Throwable?){
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, e,
+                { onErrorRetryClicked() }, global_error)
+        }
+        hideLoadingBar()
     }
 
     private fun initProgressDialog() {
@@ -670,6 +683,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+        container_error.hide()
         bookingViewModel.getCartData(HotelGqlQuery.GET_CART, hotelBookingPageModel.cartId)
     }
 

@@ -29,12 +29,16 @@ import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_hotel_booking.*
 import kotlinx.android.synthetic.main.fragment_hotel_cancellation.*
+import kotlinx.android.synthetic.main.fragment_hotel_cancellation.container_error
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_refund_detail.*
 import kotlinx.android.synthetic.main.layout_hotel_cancellation_summary.*
 import javax.inject.Inject
@@ -75,6 +79,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
 
     override fun onErrorRetryClicked() {
+        container_error.hide()
         showLoadingState()
         getCancellationData()
     }
@@ -114,13 +119,21 @@ class HotelCancellationFragment : HotelBaseFragment() {
                         ErrorHandlerHotel.isOrderNotFound(it.throwable) -> showErrorOrderNotFound()
                         ErrorHandlerHotel.isOrderHasBeenCancelled(it.throwable) -> showErrorOrderHasBeenCancelled()
                         else -> {
-                            hideLoadingState()
-                            showErrorState(it.throwable)
+                            showErrorView(it.throwable)
                         }
                     }
                 }
             }
         })
+    }
+
+    fun showErrorView(e: Throwable?){
+        hideLoadingState()
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, e,
+                { onErrorRetryClicked() }, global_error)
+        }
     }
 
     private fun showErrorOrderNotFound() {

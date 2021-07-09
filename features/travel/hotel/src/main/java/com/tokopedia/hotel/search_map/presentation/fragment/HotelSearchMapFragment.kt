@@ -78,6 +78,7 @@ import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import javax.inject.Inject
 
 /**
@@ -303,11 +304,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun getMinimumScrollableNumOfItems(): Int = MINIMUM_NUMBER_OF_RESULT_LOADED
 
     override fun showGetListError(throwable: Throwable?) {
-        adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
-        adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
-        adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        adapter.errorNetworkModel.onRetryListener = this
-        adapter.showErrorNetwork()
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, throwable,
+                { onRetryClicked() }, global_error)
+        }
+    }
+
+    override fun onRetryClicked() {
+        view?.let {
+            container_error.hide()
+        }
+        super.onRetryClicked()
     }
 
     override fun loadInitialData() {
