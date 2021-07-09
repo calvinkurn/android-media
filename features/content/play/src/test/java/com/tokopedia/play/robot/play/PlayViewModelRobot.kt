@@ -23,6 +23,8 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
@@ -53,7 +55,6 @@ class PlayViewModelRobot(
         getProductTagItemsUseCase: GetProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        playSocket: PlaySocket,
         playSocketToModelMapper: PlaySocketToModelMapper,
         playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -64,7 +65,7 @@ class PlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket,
         interactiveRepo: PlayViewerInteractiveRepository,
         partnerRepo: PlayViewerPartnerRepository,
-        partnerAnalytic: PlayPartnerAnalytic,
+        playAnalytic: PlayNewAnalytic,
 ) {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -95,7 +96,7 @@ class PlayViewModelRobot(
                 playChannelWebSocket,
                 interactiveRepo,
                 partnerRepo,
-                partnerAnalytic
+                playAnalytic
         )
     }
 
@@ -234,7 +235,7 @@ fun givenPlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
         interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true),
         partnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true),
-        partnerAnalytic: PlayPartnerAnalytic = mockk(relaxed = true),
+        playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -262,7 +263,7 @@ fun givenPlayViewModelRobot(
             playChannelWebSocket = playChannelWebSocket,
             interactiveRepo = interactiveRepo,
             partnerRepo = partnerRepo,
-            partnerAnalytic = partnerAnalytic
+            playAnalytic = playAnalytic
     ).apply(fn)
 }
 

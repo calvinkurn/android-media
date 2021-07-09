@@ -1,6 +1,7 @@
 package com.tokopedia.play.helper
 
 import com.tokopedia.play.view.uimodel.mapper.*
+import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface

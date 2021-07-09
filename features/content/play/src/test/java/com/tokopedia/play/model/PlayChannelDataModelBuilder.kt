@@ -2,7 +2,7 @@ package com.tokopedia.play.model
 
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 
 /**
  * Created by jegul on 09/02/21
@@ -32,7 +32,7 @@ class PlayChannelDataModelBuilder {
             quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
             videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
             statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build(),
-            leaderboardInfo: PlayLeaderboardUiState = PlayLeaderboardUiState()
+            leaderboardInfo: PlayLeaderboardInfoUiModel = PlayLeaderboardInfoUiModel()
     ) = PlayChannelData(
             id = id,
             channelInfo = channelInfo,
