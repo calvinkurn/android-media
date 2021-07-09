@@ -15,6 +15,8 @@ import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.di.ProductBundleModule
+import com.tokopedia.product_bundle.common.extension.setSubtitleText
+import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
@@ -22,6 +24,7 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
+import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -60,6 +63,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
+    private var productBundleOverView: TotalAmount? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -73,6 +78,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         setupProductBundleMasterView(view)
         // setup product bundle detail
         setupProductBundleDetailView(view)
+        // setup product bundle overview
+        setupProductBundleOverView(view)
         // simulate get product info api call and conversion from bundle to product bundle master
         val productBundleMasters = viewModel.getProductBundleMasters()
         // render product bundle master chips
@@ -111,6 +118,25 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun setupProductBundleOverView(view: View) {
+        productBundleOverView = view.findViewById(R.id.ta_product_bundle_sum)
+        productBundleOverView?.setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
+    }
+
+    private fun updateProductBundleOverView(productBundleOverView: TotalAmount?,
+                                            totalDiscount: Int,
+                                            totalBundlePrice: Int,
+                                            totalPrice: Int,
+                                            totalSaving: Int) {
+        val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount)
+        val totalBundlePriceText = String.format(getString(R.string.text_price_in_rupiah), totalBundlePrice)
+        val totalPriceText = String.format(getString(R.string.text_price_in_rupiah), totalPrice)
+        val totalSavingText = String.format(getString(R.string.text_price_in_rupiah), totalSaving)
+        productBundleOverView?.setTitleText(totalDiscountText, totalBundlePriceText)
+        productBundleOverView?.amountView?.text = totalPriceText
+        productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
+    }
+
     private fun subscribeToProductBundleInfo() {
         viewModel.getBundleInfoResult.observe(viewLifecycleOwner, Observer { bundleInfo ->
             // render product bundle detail
@@ -120,6 +146,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             // render sold product bundle view
             val soldProductBundle = viewModel.getSoldProductBundle()
             soldProductBundleTextView?.text = String.format(getString(R.string.text_sold_product_bundle), soldProductBundle)
+            // render product bundle overview section
+            val totalPrice = viewModel.calculateTotalPrice(productBundleItems)
+            val totalBundlePrice = viewModel.calculateTotalBundlePrice(productBundleItems)
+            val totalDiscount = viewModel.calculateDiscountPercentage(totalPrice, totalBundlePrice)
+            val totalSaving = viewModel.calculateTotalSaving(totalPrice, totalBundlePrice)
+            updateProductBundleOverView(
+                    productBundleOverView = productBundleOverView,
+                    totalDiscount = totalDiscount,
+                    totalBundlePrice = totalBundlePrice,
+                    totalPrice = totalPrice,
+                    totalSaving = totalSaving
+            )
         })
     }
 

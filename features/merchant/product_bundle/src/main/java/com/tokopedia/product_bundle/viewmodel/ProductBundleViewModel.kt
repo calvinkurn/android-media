@@ -99,7 +99,10 @@ class ProductBundleViewModel @Inject constructor(
                     productName = bundleItem.name,
                     originalPrice = bundleItem.originalPrice,
                     bundlePrice = bundleItem.bundlePrice,
-                    discountPercentage = calculateTotalDiscountPercentage(bundleItem.bundlePrice, bundleItem.originalPrice)
+                    discountAmount = calculateDiscountPercentage(
+                            originalPrice = bundleItem.originalPrice,
+                            bundlePrice = bundleItem.bundlePrice
+                    )
             )
         }
     }
@@ -108,23 +111,23 @@ class ProductBundleViewModel @Inject constructor(
         TODO("add function implementation here")
     }
 
-    fun calculateSoldProductBundle(originalQuota: Int, quota: Int): Int {
+    private fun calculateSoldProductBundle(originalQuota: Int, quota: Int): Int {
         return originalQuota - quota
     }
 
-    fun calculateTotalDiscountPercentage(originalPrice: Long, bundlePrice: Long): Int {
-        return ((originalPrice - bundlePrice) / originalPrice * 100).toInt()
+    fun calculateDiscountPercentage(originalPrice: Int, bundlePrice: Int): Int {
+        return ((originalPrice - bundlePrice) * 100 / originalPrice)
     }
 
-    fun calculateTotalPrice(): Int {
-        TODO("add function implementation here")
+    fun calculateTotalPrice(productBundleItems: List<BundleItem>): Int {
+        return productBundleItems.map { it.originalPrice }.sum()
     }
 
-    fun calculateTotalDiscountedPrice(): Int {
-        TODO("add function implementation here")
+    fun calculateTotalBundlePrice(productBundleItems: List<BundleItem>): Int {
+        return productBundleItems.map { it.bundlePrice }.sum()
     }
 
-    fun calculateTotalSaving(): Int {
-        TODO("add function implementation here")
+    fun calculateTotalSaving(originalPrice: Int, bundlePrice: Int): Int {
+        return originalPrice - bundlePrice
     }
 }

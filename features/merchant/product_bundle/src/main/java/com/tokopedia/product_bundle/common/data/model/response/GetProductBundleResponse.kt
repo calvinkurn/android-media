@@ -50,7 +50,7 @@ data class BundleItem(
         @SerializedName("quantity")
         val quantity: Int = 0,
         @SerializedName("bundlePrice")
-        val bundlePrice: Long = 0L,
+        val bundlePrice: Int = 0,
         @SerializedName("stock")
         val stock: Int = 0,
         @SerializedName("minOrder")
@@ -60,7 +60,7 @@ data class BundleItem(
         @SerializedName("Children")
         val children: List<Child> = listOf(),
         @SerializedName("originalPrice")
-        val originalPrice: Long = 0L
+        val originalPrice: Int = 0
 )
 
 data class Selection(
