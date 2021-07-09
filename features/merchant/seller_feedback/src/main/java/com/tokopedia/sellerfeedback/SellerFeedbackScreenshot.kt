@@ -43,7 +43,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
-
+        processScreenshotTaken(uri)
     }
 
     override fun onActivityResumed(activity: Activity) {
