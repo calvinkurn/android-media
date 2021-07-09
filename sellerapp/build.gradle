@@ -277,7 +277,6 @@ dependencies {
     implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.kyccentralized)
-    implementation project(rootProject.ext.features.telephony_masking)
 
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.attachvoucher)

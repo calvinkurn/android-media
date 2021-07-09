@@ -12,6 +12,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.telephony_masking.analytic.TelephonyAnalytics
 import com.tokopedia.telephony_masking.util.TelephonyMaskingConst
 import com.tokopedia.telephony_masking.util.TelephonyMaskingRedirectionUtil
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -28,7 +29,7 @@ class TelephonyActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        telephonyAnalytics = TelephonyAnalytics(UserSession(this))
+        telephonyAnalytics = TelephonyAnalytics(UserSession(this), TrackApp.getInstance())
         sharedPreference = getSharedPreferences(
                 TelephonyMaskingConst.PREFERENCE_NAME, Context.MODE_PRIVATE)
         numbers = getNumbers()

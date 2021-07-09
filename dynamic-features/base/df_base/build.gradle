@@ -145,6 +145,7 @@ dependencies {
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.inbox)
     implementation project(rootProject.ext.features.loginfingerprint)
+    implementation project(rootProject.ext.features.telephony_masking)
 
     //Transaction
     implementation project(rootProject.ext.features.cart)

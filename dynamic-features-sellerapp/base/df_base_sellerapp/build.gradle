@@ -96,6 +96,7 @@ dependencies {
 //    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.liveness)
     implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.telephony_masking)
 
     implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.shopShowcase)

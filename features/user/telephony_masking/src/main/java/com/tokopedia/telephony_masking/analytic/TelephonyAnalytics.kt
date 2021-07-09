@@ -3,10 +3,10 @@ package com.tokopedia.telephony_masking.analytic
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
-class TelephonyAnalytics(private val userSession: UserSessionInterface) {
-
+class TelephonyAnalytics(
+    private val userSession: UserSessionInterface,
     private val trackApp: TrackApp
-        get() = TrackApp.getInstance()
+) {
 
     fun eventGiveAccess() {
         trackApp.gtm.sendGeneralEvent(getTrackerData(ACTION_CONTACT_US_GIVE_ACCESS))
