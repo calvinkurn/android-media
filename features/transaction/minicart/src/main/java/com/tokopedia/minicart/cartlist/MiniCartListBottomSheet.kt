@@ -407,17 +407,27 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
             if (miniCartWidgetData.totalProductCount == 0) {
                 setAmount("-")
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
+                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
                 amountCtaView.isEnabled = false
                 enableAmountChevron(false)
             } else {
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartWidgetData.totalProductCount))
                 amountCtaView.isEnabled = true
                 enableAmountChevron(true)
             }
             amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
             amountCtaView.requestLayout()
+            post {
+                val ellipsis = amountCtaView.layout?.getEllipsisCount(0) ?: 0
+                if (ellipsis > 0) {
+                    if (miniCartWidgetData.totalProductCount == 0) {
+                        setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_empty)))
+                    } else {
+                        setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+                    }
+                }
+            }
         }
         setTotalAmountLoading(viewBinding, false)
     }
