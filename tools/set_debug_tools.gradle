@@ -1,5 +1,4 @@
 task("configDebugTools") {
-    println("config debug tools")
     if (!rootProject.ext.debugToolsEnabled) {
         // it has already set false, because default is true
         return
