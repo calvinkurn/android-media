@@ -96,6 +96,7 @@ subprojects {
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
+                    substitute module(rootProject.ext.tkpdInternalLibDependencies.fakeresponse) with module(rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp)
                 }
             }
         }

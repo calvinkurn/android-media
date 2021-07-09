@@ -30,6 +30,7 @@ list.each {
 }
 ext.inDevModules = listWithoutColon
 
-print("Modules in Development: \n")
-print(ext.inDevModules)
-print("\n")
+if (ext.useAARForDevBuild) {
+    print("Modules in Development: \n")
+    println(ext.inDevModules)
+}

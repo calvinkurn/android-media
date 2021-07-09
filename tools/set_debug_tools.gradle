@@ -1,5 +1,10 @@
 task("configDebugTools") {
-    if (allowDistributionLocal() == "true") {
+    println("config debug tools")
+    if (!rootProject.ext.debugToolsEnabled) {
+        // it has already set false, because default is true
+        return
+    }
+    if (allowDistributionLocal()) {
         rootProject.ext.debugToolsEnabled = true
         println("Debug tools set true based on buildType Parameter")
         return
@@ -15,19 +20,18 @@ task("configDebugTools") {
                     !taskName.toLowerCase().contains("dev") &&
                     taskName.toLowerCase().contains("release")) {
                 rootProject.ext.debugToolsEnabled = false
-                println("Debug tools set false. Task is release")
+                println("Debug tools set false. Task type is Release.")
                 break
             }
         }
-        println("Debug tools set to true.")
+        if (rootProject.ext.debugToolsEnabled) {
+            println("Debug tools set to true. Task is not releaseProd")
+        }
     }
 }
 
 def allowDistributionLocal() {
-    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
-        return "true";
-    }
-    return "false";
+    return (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp")
 }
 
 preBuild.dependsOn configDebugTools

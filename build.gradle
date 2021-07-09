@@ -71,7 +71,12 @@ apply from: 'buildproj.gradle'
 
 subprojects {
     project.afterEvaluate {
-        if (project.plugins.hasPlugin("android-library")) {
+        def isLibrary = project.plugins.hasPlugin("com.android.library")
+        def isApplication = project.plugins.hasPlugin("com.android.application")
+        if (isLibrary || isApplication) {
+            project.apply from: "$rootDir/tools/set_debug_tools.gradle"
+        }
+        if (isLibrary) {
             project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
     }

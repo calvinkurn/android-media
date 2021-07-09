@@ -24,11 +24,6 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.tooLargeTool
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation projectOrAar(rootProject.ext.libraries.blockCanary)
-    } else {
-        implementation rootProject.ext.libraries.blockCanaryNoOp
-    }
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 }
 

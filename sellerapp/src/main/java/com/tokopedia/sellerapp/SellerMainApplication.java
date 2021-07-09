@@ -13,8 +13,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
@@ -165,7 +163,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
-        initBlockCanary();
         TokoPatch.init(this);
         initSlicePermission();
 
@@ -281,10 +278,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    public void initBlockCanary() {
-        BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     private void registerActivityLifecycleCallbacks() {

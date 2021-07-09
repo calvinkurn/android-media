@@ -9,7 +9,6 @@ apply plugin: 'newrelic'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
-apply from: '../tools/set_debug_tools.gradle'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -388,12 +387,6 @@ dependencies {
 
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
-    }
-
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation projectOrAar(rootProject.ext.libraries.blockCanary)
-    } else {
-        implementation rootProject.ext.libraries.blockCanaryNoOp
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary

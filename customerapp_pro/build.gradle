@@ -9,7 +9,6 @@ apply plugin: 'io.hansel.preprocessor'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
-apply from: '../tools/set_debug_tools.gradle'
 
 def isProduction() {
     return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
