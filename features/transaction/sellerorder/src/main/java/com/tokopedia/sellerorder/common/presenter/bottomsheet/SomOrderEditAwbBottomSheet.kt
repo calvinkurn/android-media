@@ -74,13 +74,6 @@ class SomOrderEditAwbBottomSheet(
         return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
-    override fun dismiss(): Boolean {
-        childViews?.tf_cancel_notes?.rootView?.windowToken?.run {
-            hideKeyboard(context, childViews?.tf_cancel_notes?.rootView)
-        }
-        return super.dismiss()
-    }
-
     private fun handleHideKeyboardWhenClickOnBottomSheet() {
         bottomSheetLayout?.setOnClickListener {
             childViews?.tf_cancel_notes?.clearFocus()

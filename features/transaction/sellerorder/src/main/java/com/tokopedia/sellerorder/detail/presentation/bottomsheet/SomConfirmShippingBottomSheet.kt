@@ -12,7 +12,6 @@ class SomConfirmShippingBottomSheet(
     companion object {
         private val LAYOUT = R.layout.partial_info_layout
     }
-    private var onDismiss: () -> Unit = {}
 
     override fun setupChildView() {
         childViews?.run {
@@ -20,17 +19,7 @@ class SomConfirmShippingBottomSheet(
         }
     }
 
-    override fun dismiss(): Boolean {
-        val isDismissed = super.dismiss()
-        onDismiss()
-        return isDismissed
-    }
-
     fun setInfoText(infoText: String) {
         childViews?.tv_confirm_info?.text = infoText
-    }
-
-    fun setOnDismiss(onDismiss: () -> Unit) {
-        this.onDismiss = onDismiss
     }
 }

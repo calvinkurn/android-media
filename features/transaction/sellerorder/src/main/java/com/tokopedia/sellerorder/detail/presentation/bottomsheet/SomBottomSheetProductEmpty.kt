@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -55,6 +56,8 @@ class SomBottomSheetProductEmpty(
                 orderRejectRequest.reason = tf_extra_notes?.textFieldInput?.text.toString()
                 listener.onDoRejectOrder(orderRejectRequest)
             }
+            btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
+            setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 
@@ -65,6 +68,7 @@ class SomBottomSheetProductEmpty(
 
     override fun onProductCheckChanged() {
         childViews?.btn_primary?.isEnabled = somBottomSheetStockEmptyAdapter.getListProductEmptied().isNotEmpty()
+        childViews.hideKeyboard()
     }
 
     private fun reset() {

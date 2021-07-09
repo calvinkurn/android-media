@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 abstract class SomBottomSheet(
@@ -32,6 +33,7 @@ abstract class SomBottomSheet(
     private var overlayFadeInAnimation: ValueAnimator? = null
     private var bottomSheetBehavior: BottomSheetBehavior<out View>? = null
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
+    private var onDismissed: () -> Unit = {}
 
     protected var bottomSheetLayout: View? = null
     protected var childViews: View? = null
@@ -112,6 +114,7 @@ abstract class SomBottomSheet(
 
                     override fun onAnimationEnd(animation: Animator?) {
                         this@run?.gone()
+                        onDismissed()
                     }
 
                     override fun onAnimationCancel(animation: Animator?) {
@@ -177,7 +180,8 @@ abstract class SomBottomSheet(
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    open fun dismiss(): Boolean {
+    fun dismiss(): Boolean {
+        childViews.hideKeyboard()
         requireNotNull(bottomSheetBehavior).apply {
             return if (state != BottomSheetBehavior.STATE_HIDDEN) {
                 state = BottomSheetBehavior.STATE_HIDDEN
@@ -220,5 +224,9 @@ abstract class SomBottomSheet(
             hideKnob()
         }
         setupChildView()
+    }
+
+    fun setOnDismiss(onDismissed: () -> Unit) {
+        this.onDismissed = onDismissed
     }
 }
