@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.authentication.AuthKeyExt;
 import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
@@ -103,9 +104,9 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
 
     private String getDigitalAuthOrganization() {
         if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
-            return AuthKey.RECHARGE_HMAC_API_ORGANIZATION_STAGING;
+            return AuthKeyExt.RECHARGE_HMAC_API_ORGANIZATION_STAGING;
         } else {
-            return AuthKey.RECHARGE_HMAC_API_ORGANIZATION_PROD;
+            return AuthKeyExt.RECHARGE_HMAC_API_ORGANIZATION_PROD;
         }
     }
 }
