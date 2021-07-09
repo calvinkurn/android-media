@@ -92,6 +92,8 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-ads-identifier') with module("com.google.android.gms:play-services-ads-identifier:${playServiceAds}")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk7') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}")
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-jdk8') with module("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
+                substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
+
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
                 }
