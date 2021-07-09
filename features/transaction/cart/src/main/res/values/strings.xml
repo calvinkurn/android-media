@@ -47,4 +47,5 @@
     <string name="message_no_cart_item_selected">Pilih barang dulu sebelum beli</string>
     <string name="toolbar_page_name_cart">Cart</string>
     <string name="label_cart_ticker_error_action">Lihat</string>
+    <string name="message_icon_pin_onboarding">Belanjaan dari Tokopedia NOW! selalu tampil paling atas.</string>
 </resources>

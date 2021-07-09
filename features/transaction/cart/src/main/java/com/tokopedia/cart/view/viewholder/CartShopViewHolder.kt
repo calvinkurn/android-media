@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemShopBinding
@@ -13,6 +14,8 @@ import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
@@ -31,6 +34,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val actionListener: ActionListener,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
+
+    private val localCacheHandler: LocalCacheHandler by lazy {
+        LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
+    }
 
     fun bindData(cartShopHolderData: CartShopHolderData) {
         renderWarningAndError(cartShopHolderData)
@@ -52,8 +59,29 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.isShowPin) {
             binding.iconPin.show()
+            showIconPinOnboarding()
         } else {
             binding.iconPin.gone()
+        }
+    }
+
+    private fun showIconPinOnboarding() {
+        val hasShownOnboarding = localCacheHandler.getBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, false)
+        if (hasShownOnboarding) return
+
+        itemView.context.let {
+            val onboardingItems = ArrayList<CoachMark2Item>().apply {
+                add(CoachMark2Item(binding.iconPin, it.getString(R.string.message_icon_pin_onboarding), ""))
+            }
+
+            CoachMark2(it).apply {
+                showCoachMark(onboardingItems)
+            }
+
+            localCacheHandler.apply {
+                putBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, true)
+                applyEditor()
+            }
         }
     }
 
@@ -402,6 +430,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val LAYOUT = R.layout.item_shop
 
         const val CHECKBOX_WATCHER_DEBOUNCE_TIME = 500L
+        const val KEY_ONBOARDING_ICON_PIN = "KEY_ONBOARDING_ICON_PIN"
+        const val KEY_HAS_SHOWN_ICON_PIN_ONBOARDING = "KEY_HAS_SHOWN_ICON_PIN_ONBOARDING"
     }
 
 }
