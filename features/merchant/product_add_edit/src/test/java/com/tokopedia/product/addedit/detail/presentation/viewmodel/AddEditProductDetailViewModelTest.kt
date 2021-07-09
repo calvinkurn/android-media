@@ -848,7 +848,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos)
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 2)
     }
 
     @Test
@@ -865,7 +865,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos &&
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == sampleProductPhotos.size &&
                 viewModel.productPhotoPaths.size == 3 &&
                 viewModel.productPhotoPaths[0] == sampleProductPhotos[0].urlThumbnail &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail &&
@@ -886,8 +886,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
-                viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productInputModel.detailInputModel.pictureList.first().picID == sampleProductPhotos[1].picID &&
                 viewModel.productPhotoPaths.size == 1 &&
                 viewModel.productPhotoPaths == imagePickerResult)
@@ -918,7 +917,7 @@ class AddEditProductDetailViewModelTest {
     fun `updateProductPhotos should update image list when user edit a photo`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
-        val imagePickerResult = arrayListOf("local/path/to/editedImage1.jpg", "local/path/to/image2.jpg")
+        val imagePickerResult = arrayListOf("local/path/to/editedImage1.jpg", "local/path/to/image2.0")
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
@@ -928,8 +927,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
-                viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productPhotoPaths.size == 2 &&
                 viewModel.productPhotoPaths[0] == imagePickerResult[0] &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail)
@@ -1443,8 +1441,8 @@ class AddEditProductDetailViewModelTest {
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
-                PictureInputModel(picID = "1", urlOriginal = "url 1", urlThumbnail = "thumb 1", url300 = "300 1"),
-                PictureInputModel(picID = "2", urlOriginal = "url 2", urlThumbnail = "thumb 2", url300 = "300 2")
+                PictureInputModel(picID = "1", urlOriginal = "local/path/to/image1.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+                PictureInputModel(picID = "2", urlOriginal = "local/path/to/image2.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
         )
     }
 

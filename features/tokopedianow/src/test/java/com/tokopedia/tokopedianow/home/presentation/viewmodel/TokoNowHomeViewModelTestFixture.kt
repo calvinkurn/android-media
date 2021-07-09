@@ -24,11 +24,13 @@ import com.tokopedia.tokopedianow.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -52,6 +54,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
     @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -71,6 +75,7 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getTickerUseCase,
                 getMiniCartUseCase,
                 getChooseAddressWarehouseLocUseCase,
+                userSession,
                 CoroutineTestDispatchersProvider
         )
 
@@ -160,6 +165,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getCategoryListUseCase.execute("1", 1) }
     }
 
+    protected fun verifyGetMiniCartUseCaseNotCalled() {
+        verify(exactly = 0) { getMiniCartUseCase.execute(any(), any()) }
+    }
+
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
         coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
     }
@@ -222,5 +231,9 @@ abstract class TokoNowHomeViewModelTestFixture {
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
         }
+    }
+
+    protected fun onGetIsUserLoggedIn_thenReturn(userLoggedIn: Boolean) {
+        every { userSession.isLoggedIn } returns userLoggedIn
     }
 }

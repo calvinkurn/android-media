@@ -68,6 +68,9 @@ object ProductDetailCommonConstant{
     const val TEXT_REMIND_ME = "Cek Wishlist Kamu"
     const val TEXT_SAVE_ATC = "Simpan Perubahan"
 
+    const val KEY_ETALASE = "etalase"
+    const val KEY_CATEGORY = "kategori"
+
     //Button Action
     const val BUY_BUTTON = 1
     const val ATC_BUTTON = 2

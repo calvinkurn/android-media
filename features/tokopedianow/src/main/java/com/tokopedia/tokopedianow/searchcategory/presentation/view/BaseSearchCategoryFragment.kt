@@ -602,9 +602,12 @@ abstract class BaseSearchCategoryFragment:
                 pageSource = "tokonow",
                 isTokoNow = true,
                 shopId = productItemDataView.shop.id,
+                trackerCdListName = getCDListName(),
                 startActivitResult = this::startActivityForResult,
         )
     }
+
+    protected abstract fun getCDListName(): String
 
     override fun onProductNonVariantQuantityChanged(
             productItemDataView: ProductItemDataView,
@@ -614,9 +617,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_lihat)) {
-            RouteManager.route(context, ApplinkConst.CART)
-        }
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_oke))
     }
 
     protected open fun showToaster(

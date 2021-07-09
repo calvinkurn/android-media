@@ -75,13 +75,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
         }
 
         Assert.assertEquals("Merah, M", viewModel.titleVariantName.value)
@@ -109,13 +109,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), false)
         }
     }
 
@@ -124,13 +124,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         }
 
         Assert.assertEquals(viewModel.variantActivityResult.value?.shouldRefreshPreviousPage, true)

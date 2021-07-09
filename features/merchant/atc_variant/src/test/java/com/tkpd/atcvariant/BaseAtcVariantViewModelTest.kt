@@ -79,13 +79,13 @@ abstract class BaseAtcVariantViewModelTest {
 
     fun decideFailValueHitGqlAggregator() {
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
         } throws Throwable()
 
         viewModel.decideInitialValue(ProductVariantBottomSheetParams(), true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
         }
 
         Assert.assertTrue(viewModel.initialData.value is Fail)
@@ -97,13 +97,13 @@ abstract class BaseAtcVariantViewModelTest {
         val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), isTokoNow)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow)
         } returns mockData
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), isTokoNow)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow)
         }
     }
 
