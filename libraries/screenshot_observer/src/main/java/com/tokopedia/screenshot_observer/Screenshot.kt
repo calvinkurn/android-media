@@ -57,6 +57,10 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
     }
 
     fun openBottomSheetFeedback(activity: Activity?, uri: Uri?, className: String) {
+        if (activity == null) {
+            return
+        }
+
         val bottomSheetFeedback = BottomSheetUnify()
         val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
             btn_add_feedback.setOnClickListener {
@@ -132,7 +136,7 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
             cursor = mContentResolver.query(uri, PROJECTION, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
                 val Name = generateScreenshotDataFromCursor(cursor)
-                if (Name != null) {
+                if (Name != null && currentActivity != null) {
                     if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
                     openBottomSheetFeedback(currentActivity, uri, className)
                 }

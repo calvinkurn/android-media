@@ -5,10 +5,12 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,6 +41,7 @@ class OrderStatusHeaderViewHolder(
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
             setupPreOrderLabel(it.preOrder)
+            setupSeeDetailVisibility(it.orderId)
         }
     }
 
@@ -94,5 +97,9 @@ class OrderStatusHeaderViewHolder(
         } else {
             labelBuyerOrderDetailPreOrder?.gone()
         }
+    }
+
+    private fun setupSeeDetailVisibility(orderId: String) {
+        tvBuyerOrderDetailSeeDetail?.showWithCondition(orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
     }
 }

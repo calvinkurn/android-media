@@ -357,9 +357,11 @@ class OtherMenuViewHolder(private val itemView: View,
             }
             else -> null
         }
-        (itemView.findViewById(R.id.shopStatus) as LinearLayout).run {
+        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
             removeAllViews()
-            addView(shopStatusLayout)
+            shopStatusLayout?.let { view ->
+                addView(view)
+            }
         }
     }
 

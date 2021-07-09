@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -44,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -51,7 +53,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemPotentialPMProListener, ItemStatusPowerMerchantProListener {
+        GlobalErrorListener, ItemRegularMerchantListener, ItemPotentialPMProListener, ItemStatusPowerMerchantProListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -67,7 +69,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
                 this, this, this,
-                this, this, this)
+                this, this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -98,9 +100,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, R.color.shop_score_page_dms_background))
-        }
+        setPageBackground()
         setupActionBar()
         setupAdapter()
         onSwipeRefreshShopPerformance()
@@ -252,6 +252,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         }
     }
 
+    /**
+     * ItemRegularMerchantListener
+     */
+    override fun onRMSectionToPMPage() {
+        goToPowerMerchantSubscribe(PARAM_PM)
+    }
+
     private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
         val intent = SellerMigrationActivity.createIntent(context, SellerMigrationFeatureName.FEATURE_SHOP_CASHBACK_VOUCHER, SCREEN_NAME, appLinks)
         startActivity(intent)
@@ -303,6 +310,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      */
     override fun onImpressHelpCenter() {
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
+    }
+
+    private fun setPageBackground() {
+        try {
+            context?.let {
+                activity?.window?.decorView?.setBackgroundColor(it.getResColor(R.color.shop_score_page_dms_background))
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
     }
 
     private fun goToFaqSection() {
