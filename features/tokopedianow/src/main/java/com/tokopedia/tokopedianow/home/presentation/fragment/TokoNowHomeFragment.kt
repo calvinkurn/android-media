@@ -52,7 +52,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
@@ -60,11 +60,11 @@ import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
-import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -80,7 +80,7 @@ class TokoNowHomeFragment: Fragment(),
         TokoNowView,
         HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
-        HomeCategoryGridViewHolder.HomeCategoryGridListener,
+        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
         BannerComponentListener,
         HomeProductRecomViewHolder.HomeProductRecomListener
@@ -111,7 +111,7 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowListener = this,
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
-                homeCategoryGridlistener = this,
+                tokoNowCategoryGridListener = this,
                 bannerComponentListener = this,
                 homeProductRecomListener = this
             ),
@@ -222,8 +222,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onCategoryRetried() {
-        val item = adapter.getItem(HomeCategoryGridUiModel::class.java)
-        if (item is HomeCategoryGridUiModel) {
+        val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
+        if (item is TokoNowCategoryGridUiModel) {
             viewModelTokoNow.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
         }
     }
@@ -527,10 +527,10 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
         when (data.state) {
-            HomeLayoutState.SHOW -> onShowHomeLayout(data)
-            HomeLayoutState.HIDE -> onHideHomeLayout(data)
-            HomeLayoutState.LOADING -> onLoadingHomeLayout(data)
-            HomeLayoutState.LOAD_MORE -> {
+            TokoNowLayoutState.SHOW -> onShowHomeLayout(data)
+            TokoNowLayoutState.HIDE -> onHideHomeLayout(data)
+            TokoNowLayoutState.LOADING -> onLoadingHomeLayout(data)
+            TokoNowLayoutState.LOAD_MORE -> {
                 rvHome?.post {
                     showHomeLayout(data)
                 }

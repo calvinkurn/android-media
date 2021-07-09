@@ -15,7 +15,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -114,7 +114,7 @@ fun createLoadingState(): HomeLayoutListUiModel {
     mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             result = mutableList,
-            state = HomeLayoutState.LOADING
+            state = TokoNowLayoutState.LOADING
     )
 }
 
@@ -126,7 +126,7 @@ fun createEmptyState(id: String): HomeLayoutListUiModel {
     mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             mutableList,
-            state = HomeLayoutState.HIDE
+            state = TokoNowLayoutState.HIDE
     )
 }
 
