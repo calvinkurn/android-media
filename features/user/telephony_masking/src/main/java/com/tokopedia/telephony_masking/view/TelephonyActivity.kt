@@ -20,7 +20,7 @@ import com.tokopedia.user.session.UserSession
  * RouteManager.getIntent(this, [ApplinkConst.TELEPHONY_MASKING]), use startActivityForResult
  * Check the result code in [TelephonyMaskingConst] for other results beside OK and Canceled
  */
-class TelephonyActivity: BaseSimpleActivity() {
+class TelephonyActivity : BaseSimpleActivity() {
 
     private var telephonyAnalytics: TelephonyAnalytics? = null
     private var remoteConfig: RemoteConfig? = null
@@ -31,9 +31,10 @@ class TelephonyActivity: BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         telephonyAnalytics = TelephonyAnalytics(UserSession(this), TrackApp.getInstance())
         sharedPreference = getSharedPreferences(
-                TelephonyMaskingConst.PREFERENCE_NAME, Context.MODE_PRIVATE)
+            TelephonyMaskingConst.PREFERENCE_NAME, Context.MODE_PRIVATE
+        )
         numbers = getNumbers()
-        if(isNumbersInLocalCache()) {
+        if (isNumbersInLocalCache()) {
             onContactAlreadyExist()
         } else {
             deleteNumbersInLocalCache()
@@ -42,8 +43,10 @@ class TelephonyActivity: BaseSimpleActivity() {
     }
 
     private fun showBottomSheet() {
-        TelephonyBottomSheet.show(this,
-                ::onClickGiveAccess, ::onClickNantiSaja, ::onClickClose)
+        TelephonyBottomSheet.show(
+            this,
+            ::onClickGiveAccess, ::onClickNantiSaja, ::onClickClose
+        )
     }
 
     private fun getListNumbers(): List<String> {
@@ -51,18 +54,19 @@ class TelephonyActivity: BaseSimpleActivity() {
     }
 
     private fun getNumbers(): String {
-        if(remoteConfig == null) {
+        if (remoteConfig == null) {
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
         return remoteConfig?.getString(
-                TelephonyMaskingConst.TELEPHONY_MASKING_KEY,
-                TelephonyMaskingConst.CONTACT_NUMBERS_DEFAULT
+            TelephonyMaskingConst.TELEPHONY_MASKING_KEY,
+            TelephonyMaskingConst.CONTACT_NUMBERS_DEFAULT
         ) ?: TelephonyMaskingConst.CONTACT_NUMBERS_DEFAULT
     }
 
     private fun isNumbersInLocalCache(): Boolean {
         val localCacheNumbers: String = sharedPreference?.getString(
-                TelephonyMaskingConst.KEY_LOCAL_NUMBERS, "")?: ""
+            TelephonyMaskingConst.KEY_LOCAL_NUMBERS, ""
+        ) ?: ""
         return numbers == localCacheNumbers
     }
 
@@ -114,8 +118,8 @@ class TelephonyActivity: BaseSimpleActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_CODE) {
-            when(resultCode) {
+        if (requestCode == REQUEST_CODE) {
+            when (resultCode) {
                 RESULT_OK -> onSaveContact()
                 RESULT_CANCELED -> setResult(TelephonyMaskingConst.RESULT_NOT_SAVED)
             }

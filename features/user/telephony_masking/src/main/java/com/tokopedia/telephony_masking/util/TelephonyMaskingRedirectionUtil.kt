@@ -10,7 +10,6 @@ import com.tokopedia.telephony_masking.R
 import com.tokopedia.telephony_masking.util.TelephonyMaskingConst.CONTACT_NAME
 import com.tokopedia.telephony_masking.util.TelephonyMaskingConst.SAVE_EXTRA
 import java.io.ByteArrayOutputStream
-import kotlin.collections.ArrayList
 
 class TelephonyMaskingRedirectionUtil {
 

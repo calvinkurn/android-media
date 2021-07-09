@@ -25,7 +25,7 @@ class TelephonyAnalytics(
     }
 
     private fun getTrackerData(action: String): HashMap<String, Any> {
-        return HashMap<String,Any>().apply {
+        return HashMap<String, Any>().apply {
             put(KEY_EVENT, EVENT_CONTACT_US)
             put(KEY_EVENT_CATEGORY, CATEGORY_CONTACT_US)
             put(KEY_EVENT_ACTION, action)
@@ -46,7 +46,7 @@ class TelephonyAnalytics(
         private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_CURRENT_SITE = "currentSite"
 
-        private const val BUSINESS_UNIT_VALUE= "Customer Excellence"
+        private const val BUSINESS_UNIT_VALUE = "Customer Excellence"
         private const val CURRENT_SITE_VALUE = "tokopediamarketplace"
 
         private const val EVENT_CONTACT_US = "clickContactUs"

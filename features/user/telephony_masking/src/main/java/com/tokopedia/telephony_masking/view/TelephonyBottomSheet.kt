@@ -15,23 +15,29 @@ import com.tokopedia.unifyprinciples.Typography
 object TelephonyBottomSheet {
 
     private const val MAIN_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/user/telephony_allow_contact_access.png"
+        "https://images.tokopedia.net/img/android/user/telephony_allow_contact_access.png"
     private const val TAG = "TelephonyBottomSheet"
 
     fun show(
-            activity: FragmentActivity,
-            onGiveAccessButtonClick: (() -> Unit),
-            onSkipButtonClick: (() -> Unit),
-            onCloseButtonClick: (() -> Unit)
+        activity: FragmentActivity,
+        onGiveAccessButtonClick: (() -> Unit),
+        onSkipButtonClick: (() -> Unit),
+        onCloseButtonClick: (() -> Unit)
     ) {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(
-                activity, R.layout.layout_telephony_bottomsheet, null
+            activity, R.layout.layout_telephony_bottomsheet, null
         )
 
         setupImage(view)
         setupPrivacyText(activity, view)
-        setupButton(view, bottomSheetUnify, onGiveAccessButtonClick, onSkipButtonClick, onCloseButtonClick)
+        setupButton(
+            view,
+            bottomSheetUnify,
+            onGiveAccessButtonClick,
+            onSkipButtonClick,
+            onCloseButtonClick
+        )
 
         bottomSheetUnify.apply {
             showCloseIcon = true
@@ -50,17 +56,20 @@ object TelephonyBottomSheet {
     private fun setupPrivacyText(context: Context, view: View) {
         val privacy = view.findViewById<Typography>(R.id.privacy_telephony)
         privacy.setOnClickListener {
-            RouteManager.route(context,
-                    ApplinkConstInternalGlobal.TERM_PRIVACY, ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY)
+            RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.TERM_PRIVACY,
+                ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
+            )
         }
     }
 
     private fun setupButton(
-            view: View,
-            bottomSheetUnify: BottomSheetUnify,
-            onGiveAccessButtonClick: (() -> Unit),
-            onSkipButtonClick: (() -> Unit),
-            onCloseButtonClick: (() -> Unit)
+        view: View,
+        bottomSheetUnify: BottomSheetUnify,
+        onGiveAccessButtonClick: (() -> Unit),
+        onSkipButtonClick: (() -> Unit),
+        onCloseButtonClick: (() -> Unit)
     ) {
         val saveButton = view.findViewById<UnifyButton>(R.id.telephony_save_button)
         val skipButton = view.findViewById<UnifyButton>(R.id.telephony_skip_button)
