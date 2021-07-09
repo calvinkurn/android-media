@@ -2706,7 +2706,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderErrorToShipmentForm(message: String, ctaText: String) {
         cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed()
         cartPageAnalytics.eventViewErrorWhenCheckout(message)
-        showToastMessageRed(message)
+        showToastMessageRed(message = message,
+                actionText = ctaText,
+                ctaClickListener = View.OnClickListener {
+
+                }
+        )
 
         refreshCart()
     }
