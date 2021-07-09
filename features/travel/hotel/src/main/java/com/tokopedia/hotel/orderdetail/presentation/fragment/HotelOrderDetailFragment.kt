@@ -37,6 +37,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_ORDER_DETAIL
 import com.tokopedia.hotel.evoucher.presentation.activity.HotelEVoucherActivity
@@ -54,6 +55,7 @@ import com.tokopedia.hotel.orderdetail.presentation.widget.HotelContactPhoneBott
 import com.tokopedia.hotel.orderdetail.presentation.widget.HotelRefundBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -63,6 +65,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_order_detail.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.*
 import kotlinx.android.synthetic.main.layout_order_detail_hotel_detail.view.*
 import kotlinx.android.synthetic.main.layout_order_detail_payment_detail.*
@@ -135,8 +138,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     loadingState.visibility = View.GONE
                 }
                 is Fail -> {
-                    showErrorState(it.throwable)
-                    loadingState.visibility = View.GONE
+                    showErrorView(it.throwable)
                 }
             }
             isOrderDetailLoaded = true
@@ -156,7 +158,17 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
 
     override fun onErrorRetryClicked() {
+        container_error.hide()
         getOrderDetailData()
+    }
+
+    fun showErrorView(e: Throwable?){
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, e,
+                { onErrorRetryClicked() }, global_error)
+        }
+        loadingState.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

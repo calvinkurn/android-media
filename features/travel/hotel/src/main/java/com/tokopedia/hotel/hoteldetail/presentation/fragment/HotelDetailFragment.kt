@@ -324,7 +324,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
 
-            showErrorState(e)
             context?.run {
                 ErrorHandlerHotel.getErrorUnify(this, e, { onErrorRetryClicked() },  global_error)
             }

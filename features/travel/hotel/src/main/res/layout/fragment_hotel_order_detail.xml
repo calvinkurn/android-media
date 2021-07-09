@@ -66,9 +66,10 @@
         android:visibility="gone"
         android:background="@color/Unify_N0">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/hotel_50dp"
             android:layout_height="@dimen/hotel_50dp"
+            app:loader_type="circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -77,4 +78,9 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
