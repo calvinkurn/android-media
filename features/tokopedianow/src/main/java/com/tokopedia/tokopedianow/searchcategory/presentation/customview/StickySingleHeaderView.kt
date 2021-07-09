@@ -49,8 +49,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         hasInit = true
         clipToPadding = false
         clipChildren = false
-        val view = findViewById<RecyclerView>(R.id.tokonowSearchCategoryRecyclerView)
-                ?: throw RuntimeException("StickySingleHeaderView should has child of RecyclerView.")
+        val view = getRecyclerView()
         mRecyclerView = view
 
         if (mRecyclerView == null) {
@@ -89,6 +88,21 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             }
         }
         mRecyclerView?.addOnScrollListener(onScrollListener)
+    }
+
+    private fun getRecyclerView(): RecyclerView {
+        val view = getChildAt(0) ?: throw RuntimeException("StickySingleHeaderView should has child of RecyclerView.")
+
+        return if (view !is RecyclerView && view is ViewGroup) view.findRecyclerView() ?: throw RuntimeException("StickySingleHeaderView should has child of RecyclerView.")
+        else view as? RecyclerView ?: throw RuntimeException("StickySingleHeaderView should has child of RecyclerView.")
+    }
+
+    private fun ViewGroup.findRecyclerView(): RecyclerView? {
+        for(i in 0..childCount) {
+            val child: View? = this.getChildAt(i)
+            if (child is RecyclerView) return child
+        }
+        return null
     }
 
     private fun convertPixelsToDp(px: Int, context: Context): Int {
