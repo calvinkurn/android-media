@@ -301,10 +301,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 buyWidget.setVisibilityLayout(false)
             }
 
-            /**
-             * Param:
-             * -) EXTRA_NUMBER_LIST: old favorite number param
-             * */
             override fun onClientNumberHasFocus(clientNumber: String) {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
                 navigateFavoriteNumberPage(clientNumber, favNumberList,
