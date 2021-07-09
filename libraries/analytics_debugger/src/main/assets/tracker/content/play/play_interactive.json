@@ -1,0 +1,38 @@
+{
+  "readme": "Play Viewer - All Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"clickGroupChat",
+      "eventAction":"click follow from engagement tools widget",
+      "eventCategory":"groupchat room",
+      "eventLabel":"\\d+ - (live|vod)",
+      "businessUnit":"play",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId":".*"
+    },
+
+    {
+      "event":"clickGroupChat",
+      "eventAction":"click daftar pemenang on engagement tools widget",
+      "eventCategory":"groupchat room",
+      "eventLabel":"\\d+ - (live|vod)",
+      "businessUnit":"play",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId":".*"
+    },
+
+    {
+      "event":"clickGroupChat",
+      "eventAction":"click tap terus icon",
+      "eventCategory":"groupchat room",
+      "eventLabel":"\\d+ - (live|vod)",
+      "businessUnit":"play",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*",
+      "userId":".*"
+    }
+  ]
+}
