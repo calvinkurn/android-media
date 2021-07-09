@@ -48,18 +48,58 @@ class AddNewAddressRevampTest {
         val screenName = "/user/address/create"
         addAddressRevamp {
             launchWithParam(mActivityTestRule, screenName)
-            searchAddressStreet("Tokopedia")
+            searchAddressStreet(KEYWORD)
             clickAddressStreetItem()
             onClickChooseLocation()
-            fillAddress("Jalan Prof. Dr Satrio 123")
-            fillReceiver("Anonymous")
-            fillPhoneNumber("081299875432")
+            fillAddress(ADDRESS)
+            fillReceiver(RECEIVER)
+            fillPhoneNumber(PHONE)
+        } submit {
+            hasPassedAnalytics(cassavaTestRule, queryPath)
+        }
+    }
+
+
+    @Test
+    fun addAddress_fromCart() {
+        val queryPath = "tracker/logistic/addaddress_cart_revamp.json"
+        val screenName = "/cart/address/create"
+        addAddressRevamp {
+            launchWithParam(mActivityTestRule, screenName)
+            searchAddressStreet(KEYWORD)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            fillAddress(ADDRESS)
+            fillReceiver(RECEIVER)
+            fillPhoneNumber(PHONE)
+        } submit {
+            hasPassedAnalytics(cassavaTestRule, queryPath)
+        }
+    }
+
+    @Test
+    fun addAddress_newUser() {
+        val queryPath = "tracker/logistic/addaddress_new_user_revamp.json"
+        val screenName = "/user/address/create/cart"
+        addAddressRevamp {
+            launchWithParam(mActivityTestRule, screenName)
+            searchAddressStreet(KEYWORD)
+            clickAddressStreetItem()
+            onClickChooseLocation()
+            fillAddress(ADDRESS)
+            fillReceiver(RECEIVER)
+            fillPhoneNumber(PHONE)
         } submit {
             hasPassedAnalytics(cassavaTestRule, queryPath)
         }
     }
 
     companion object {
+        const val KEYWORD = "Tokopedia"
+        const val ADDRESS = "Jalan Prof. Dr Satrio 123"
+        const val RECEIVER = "Anonymous"
+        const val PHONE = "081299875432"
+
         const val AUTOCOMPLETE_KEY = "KeroMapsAutoComplete"
         const val GET_DISTRICT_KEY = "KeroPlacesGetDistrict"
     }

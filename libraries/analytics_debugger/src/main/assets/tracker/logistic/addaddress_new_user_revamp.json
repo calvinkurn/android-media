@@ -1,0 +1,44 @@
+{
+  "mode": "subset",
+  "query": [
+    {
+      "screenName": "/user/address/create/cart"
+    },
+    {
+      "eventCategory": "search page",
+      "eventAction": "click field cari lokasi",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "search page",
+      "eventAction": "click dropdown suggestion alamat",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "pinpoint page",
+      "eventAction": "click pilih lokasi dan lanjut isi alamat",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address positive",
+      "eventAction": "click field alamat",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address positive",
+      "eventAction": "click field nama penerima",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address positive",
+      "eventAction": "click field nomor hp",
+      "eventLabel" : ".*"
+    },
+    {
+      "eventCategory": "add new address positive",
+      "eventAction": "click simpan",
+      "eventLabel" : ".*"
+    }
+  ],
+  "readme": "Logistic Add New Address Revamp user funnel Tracking & verifies CVR"
+}
