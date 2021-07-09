@@ -17,4 +17,6 @@ object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()
 object ClickFollowAction : PlayViewerNewAction()
 object ClickPartnerNameAction : PlayViewerNewAction()
 
+object ClickFollowInteractiveAction : PlayViewerNewAction()
+
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

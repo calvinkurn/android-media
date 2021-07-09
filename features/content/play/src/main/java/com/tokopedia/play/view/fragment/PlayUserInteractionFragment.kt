@@ -437,9 +437,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * Interactive View Component Listener
      */
     override fun onFollowButtonClicked(view: InteractiveViewComponent) {
-        playViewModel.submitAction(ClickFollowAction)
-//        val partnerId = playViewModel.partnerId ?: return
-//        doClickFollow(partnerId, PartnerFollowAction.Follow)
+        playViewModel.submitAction(ClickFollowInteractiveAction)
     }
 
     override fun onTapTapClicked(view: InteractiveViewComponent) {
