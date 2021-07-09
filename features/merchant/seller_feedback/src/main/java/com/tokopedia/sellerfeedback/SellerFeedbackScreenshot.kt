@@ -62,15 +62,15 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         if (date.isNotBlank()) {
             if (isDifferentDays(date)) {
                 screenshotPreferenceManager.setDateToaster(getNowDate())
-                setScreenShotTaken(uri)
+                triggerScreenShotTaken(uri)
             }
         } else {
             screenshotPreferenceManager.setDateToaster(getNowDate())
-            setScreenShotTaken(uri)
+            triggerScreenShotTaken(uri)
         }
     }
 
-    private fun setScreenShotTaken(uri: Uri) {
+    private fun triggerScreenShotTaken(uri: Uri) {
         SellerFeedbackTracking.Impression.eventViewHomepage()
         super.onScreenShotTaken(uri)
         lastTimeUpdate = System.currentTimeMillis()
