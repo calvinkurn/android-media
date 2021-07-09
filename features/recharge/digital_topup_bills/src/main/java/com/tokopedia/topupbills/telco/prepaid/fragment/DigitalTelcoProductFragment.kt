@@ -205,6 +205,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
+        if (filters.isEmpty()) {
+            sortFilter.hide()
+            telcoTelcoProductView.removePaddingTop(false)
+        } else {
+            sortFilter.show()
+            telcoTelcoProductView.removePaddingTop(true)
+        }
+
         if (telcoFilterData.getFilterTags().isEmpty()) {
             telcoFilterData.setFilterTags(filters)
 

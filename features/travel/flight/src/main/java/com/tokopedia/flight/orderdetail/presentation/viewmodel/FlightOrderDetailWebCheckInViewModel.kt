@@ -3,10 +3,8 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
@@ -15,6 +13,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 /**
@@ -36,7 +35,10 @@ class FlightOrderDetailWebCheckInViewModel @Inject constructor(private val order
         val orderData = orderDetailData.value
         if (orderData != null && orderData is Success) {
             val airlineName = if (journey.airlineName.isNotEmpty()) journey.airlineName else "Multi Maskapai"
-            val departureDate = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journey.departureTime)
+            val departureDate = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.YYYYMMDD,
+                    journey.departureTime)
             flightAnalytics.eventClickOnWebCheckIn(
                     "${journey.departureId}${journey.arrivalId} - $airlineName - $departureDate - $orderId",
                     userSession.userId,
@@ -92,12 +94,16 @@ class FlightOrderDetailWebCheckInViewModel @Inject constructor(private val order
 
     private fun getDepartureDateAndTime(journey: FlightOrderDetailJourneyModel): Pair<String, String> {
 
-        val time = "${TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                TravelDateUtil.HH_MM, journey.departureTime)} - ${TravelDateUtil.formatDate(
-                TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.HH_MM, journey.arrivalTime)}"
+        val time = "${
+            DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.HH_MM, journey.departureTime)
+        } - ${
+            DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.HH_MM, journey.arrivalTime)
+        }"
 
         return Pair(
-                TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.EEE_DD_MMM_YY, journey.departureTime),
+                DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.EEE_DD_MMM_YY, journey.departureTime),
                 time
         )
     }

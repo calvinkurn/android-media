@@ -223,15 +223,15 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun getBidForKeywords() {
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        val dummyId: MutableList<Long> = mutableListOf()
+        val dummyId: MutableList<String> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
         viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<Long> = mutableListOf()
+        val dummyId: MutableList<String> = mutableListOf()
         productId.forEach {
-            dummyId.add(it.toLong())
+            dummyId.add(it)
         }
         val suggestionsDefault = java.util.ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))

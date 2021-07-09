@@ -1,8 +1,10 @@
 package com.tokopedia.loginphone.chooseaccount.di
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.domain.usecase.GetAccountListUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -17,4 +19,11 @@ class ChooseAccountUseCaseModule{
     @Provides
     fun provideChooseAccountGraphQlUseCase(graphqlRepository: GraphqlRepository)
         : GraphqlUseCase<AccountListPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    fun provideGetAccountListUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): GetAccountListUseCase {
+        val useCase = GraphqlUseCase<AccountListPojo>(graphqlRepository)
+        return GetAccountListUseCase(useCase, dispatchers)
+    }
+
 }

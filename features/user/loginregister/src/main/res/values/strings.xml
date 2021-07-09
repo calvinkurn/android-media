@@ -70,6 +70,7 @@
     <string name="skip_form">Lewati</string>
     <string name="via_call">atau lewat telepon</string>
     <string name="via_call_short">lewat telepon</string>
+    <string name="error_login_fp_error">Verifikasi gagal, silakan coba lagi.</string>
 
     <string name="tokocash_phone_verification_text">Setelah terverifikasi, TokoCash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
 
