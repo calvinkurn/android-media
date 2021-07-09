@@ -60,7 +60,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.coroutines.Fail
