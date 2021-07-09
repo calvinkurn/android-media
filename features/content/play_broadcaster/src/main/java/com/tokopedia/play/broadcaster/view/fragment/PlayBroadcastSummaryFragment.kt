@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -274,6 +275,14 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     override fun onMetricClicked(view: SummaryInfoViewComponent, metricType: TrafficMetricType) {
-         if (metricType.isGameParticipants) this.view?.showToaster("Lihat Pemenang")
+         if (metricType.isGameParticipants) openInteractiveLeaderboardSheet()
+    }
+
+    private fun openInteractiveLeaderboardSheet() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val leaderBoardBottomSheet = fragmentFactory.instantiate(
+            requireContext().classLoader,
+            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
+        leaderBoardBottomSheet.show(childFragmentManager)
     }
 }
