@@ -54,7 +54,6 @@ class SomBottomSheetBuyerOtherReason(
                 }
             }
             btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
-            setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 

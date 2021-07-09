@@ -71,7 +71,6 @@ class SomBottomSheetCourierProblem(
                 }
             }
             btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
-            setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 

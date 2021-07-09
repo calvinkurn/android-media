@@ -2,7 +2,9 @@ package com.tokopedia.sellerorder.common.presenter
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -38,11 +40,20 @@ abstract class SomBottomSheet(
     protected var bottomSheetLayout: View? = null
     protected var childViews: View? = null
 
+    @SuppressLint("ClickableViewAccessibility")
+    protected val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            childViews?.hideKeyboard()
+        }
+        false
+    }
+
     abstract fun setupChildView()
 
     init {
         val childView = View.inflate(context, childViewsLayoutResourceId, null)
         this.childViews = childView
+        childView.setOnTouchListener(hideKeyboardTouchListener)
     }
 
     private fun showOverlay(view: ViewGroup) {

@@ -15,14 +15,6 @@ abstract class SomBaseRejectOrderBottomSheet(
         bottomSheetTitle: String
 ) : SomBottomSheet(childViewsLayoutResourceId, true, true, false, bottomSheetTitle, context, true) {
 
-    @SuppressLint("ClickableViewAccessibility")
-    protected val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            childViews?.hideKeyboard()
-        }
-        false
-    }
-
     protected fun checkReasonRejectIsNotEmpty(reason: String?): Boolean {
         var isNotEmpty = true
         if (reason.isNullOrEmpty()) isNotEmpty = false

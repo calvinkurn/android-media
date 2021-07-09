@@ -57,7 +57,6 @@ class SomBottomSheetProductEmpty(
                 listener.onDoRejectOrder(orderRejectRequest)
             }
             btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
-            setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 

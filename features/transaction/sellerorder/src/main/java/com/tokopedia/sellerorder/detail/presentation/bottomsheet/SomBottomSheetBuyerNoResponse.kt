@@ -55,7 +55,6 @@ class SomBottomSheetBuyerNoResponse(
                 }
             }
             btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
-            setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 

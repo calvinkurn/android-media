@@ -79,7 +79,6 @@ class SomBottomSheetShopClosed(
                 }
             }
             btn_reject_shop_closed?.setOnTouchListener(hideKeyboardTouchListener)
-            setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 
