@@ -448,8 +448,8 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
-        searchCategoryAdapter?.submitList(visitableList)
         if (visitableList.isNotEmpty()) showContent()
+        searchCategoryAdapter?.submitList(visitableList)
     }
 
     private fun showContent() {
