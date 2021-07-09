@@ -38,7 +38,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     override var listener = object : BottomSheetListener {
         override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
-            SellerFeedbackTracking.Click.eventClickFeedbackButton()
             uri?.let { openFeedbackForm(it) }
         }
     }
@@ -124,9 +123,11 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         view?.run {
             Toaster.build(this, text = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_text),
                     actionText = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_cta_text),
+                    type = Toaster.TYPE_NORMAL,
                     duration = Toaster.LENGTH_SHORT,
                     clickListener = {
                         uri?.let { uri ->
+                            SellerFeedbackTracking.Click.eventClickFeedbackButton()
                             openFeedbackForm(uri)
                         }
                     }
