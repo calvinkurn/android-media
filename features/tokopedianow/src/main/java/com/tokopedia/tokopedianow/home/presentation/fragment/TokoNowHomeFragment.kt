@@ -66,6 +66,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -81,7 +82,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeTickerViewHolder.HomeTickerListener,
         HomeCategoryGridViewHolder.HomeCategoryGridListener,
         MiniCartWidgetListener,
-        BannerComponentListener
+        BannerComponentListener,
+        HomeProductRecomViewHolder.HomeProductRecomListener
 {
 
     companion object {
@@ -110,7 +112,8 @@ class TokoNowHomeFragment: Fragment(),
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
                 homeCategoryGridlistener = this,
-                bannerComponentListener = this
+                bannerComponentListener = this,
+                homeProductRecomListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -232,6 +235,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCategoryClicked(position: Int, categoryId: String) {
         analytics.onClickCategory(position, userSession.userId, categoryId)
     }
+
+    override fun getCarouselRecycledViewPool(): RecyclerView.RecycledViewPool = RecyclerView.RecycledViewPool()
 
     override fun isMainViewVisible(): Boolean = true
 

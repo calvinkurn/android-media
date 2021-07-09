@@ -20,6 +20,7 @@ class HomeAdapterTypeFactory(
         private val homeCategoryGridlistener: HomeCategoryGridViewHolder.HomeCategoryGridListener? = null,
         private val homeCategoryItemListener: HomeCategoryItemViewHolder.HomeCategoryItemListener? = null,
         private val bannerComponentListener: BannerComponentListener? = null,
+        private val homeProductRecomListener : HomeProductRecomViewHolder.HomeProductRecomListener? = null
 ): BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory {
 
     // region Toko Mart Home Component
@@ -54,7 +55,7 @@ class HomeAdapterTypeFactory(
             // region Toko Mart Home Component
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view, homeCategoryGridlistener)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view, homeCategoryItemListener)
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, homeProductRecomListener)
             HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowListener, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener)

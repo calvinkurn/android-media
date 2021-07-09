@@ -4,7 +4,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
 class HomeProductRecomUiModel(
     val id: String,
-    val list: List<HomeProductCardUiModel>
+    val productCards: List<HomeProductCardUiModel>
 ) : HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

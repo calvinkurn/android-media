@@ -2,6 +2,8 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
@@ -16,15 +18,31 @@ object ProductRecomMapper {
     }
 
     private fun convertDataToProductData(channel: ChannelModel): List<HomeProductCardUiModel> {
-        val list :MutableList<HomeProductCardUiModel> = mutableListOf()
+        val productRecom :MutableList<HomeProductCardUiModel> = mutableListOf()
         channel.channelGrids.map { grid ->
-            list.add(HomeProductCardUiModel(
+            var model = HomeProductCardUiModel(
                 id = grid.id,
-                productCardModel = ChannelModelMapper.mapToProductCardModel(grid),
                 parentProductId = grid.parentProductId
-            ))
+            )
+            if (grid.parentProductId == NO_VARIANT_PARENT_PRODUCT_ID) {
+                model = model.copy(
+                    productCardModel = ChannelModelMapper.mapToProductCardModel(grid).copy(
+                        nonVariant = ProductCardModel.NonVariant(
+                            minQuantity = grid.minOrder,
+                            maxQuantity = grid.stock
+                        )
+                    )
+                )
+            } else {
+                model = model.copy(
+                    productCardModel = ChannelModelMapper.mapToProductCardModel(grid).copy(
+                        variant = ProductCardModel.Variant()
+                    )
+                )
+            }
+            productRecom.add(model)
         }
-        return list
+        return productRecom
     }
 
 }

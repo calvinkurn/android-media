@@ -254,11 +254,11 @@ class TokoNowHomeViewModel @Inject constructor(
         withContext(dispatchers.io) {
             updateMiniCartProperties(miniCartSimplifiedData)
 
-            if (item.list.isNullOrEmpty()) return@withContext
+            if (item.productCards.isNullOrEmpty()) return@withContext
 
             val updatedProductIndices = mutableListOf<Int>()
 
-            item.list.forEachIndexed { position, product ->
+            item.productCards.forEachIndexed { position, product ->
                 updateProductItemQuantity(position, product, updatedProductIndices)
             }
             withContext(dispatchers.main) {
