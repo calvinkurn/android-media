@@ -124,13 +124,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
-        app:layout_constraintEnd_toStartOf="@+id/button_delete_cart"
+        app:text_field_label="@string/mini_cart_label_product_notes_editable"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
+        app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
         tools:layout_height="32dp"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_notes"
@@ -154,16 +154,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_6"
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
+        app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
         app:typographyType="body_3"
-        tools:text="Jangan Jangan"
+        tools:text="Jangan Jangan Jangan Jangan Jangan Jangan Jangan "
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -172,15 +172,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_0"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:text="Ubah"
         android:textColor="@color/Unify_GN500"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
+        app:layout_constraintBottom_toBottomOf="@+id/text_notes_filled"
         app:layout_constraintStart_toEndOf="@+id/text_notes_filled"
-        app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
+        app:layout_constraintTop_toTopOf="@+id/text_notes_filled"
         app:typographyType="body_3"
         tools:visibility="visible" />
 
@@ -188,10 +187,9 @@
         android:id="@+id/button_delete_cart"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/dp_16"
         app:icon_name="DELETE"
         app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
-        app:layout_constraintTop_toBottomOf="@+id/layout_product_info" />
+        app:layout_constraintTop_toBottomOf="@+id/text_notes_filled" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_product_unavailable_action"

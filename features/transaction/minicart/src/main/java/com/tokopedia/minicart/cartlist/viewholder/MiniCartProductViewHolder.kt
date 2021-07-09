@@ -228,7 +228,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             if (element.productNotes.isNotBlank()) {
                 renderProductNotesFilled(element)
             } else {
-                renderProductNotesEmpty()
+                renderProductNotesEmpty(element)
             }
         }
     }
@@ -271,21 +271,23 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                         if (element.productNotes.isNotBlank()) {
                             renderProductNotesFilled(element)
                         } else {
-                            renderProductNotesEmpty()
+                            renderProductNotesEmpty(element)
                         }
                         true
                     } else false
                 }
             }
+            adjustButtonDeleteConstraint(element)
         }
     }
 
-    private fun renderProductNotesEmpty() {
+    private fun renderProductNotesEmpty(element: MiniCartProductUiModel) {
         with(viewBinding) {
             textNotes.show()
             textNotesFilled.gone()
             textNotesChange.gone()
             textFieldNotes.gone()
+            adjustButtonDeleteConstraint(element)
         }
     }
 
@@ -297,6 +299,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             textNotesFilled.show()
             textNotesChange.show()
             textNotes.gone()
+            adjustButtonDeleteConstraint(element)
         }
     }
 
@@ -304,13 +307,9 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         with(viewBinding) {
             val padding = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
             val paddingLeftRight = padding * 2
-            buttonDeleteCart.measure(0, 0)
-            val buttonDeleteWidth = buttonDeleteCart.measuredWidth
-            qtyEditorProduct.measure(0, 0)
-            val qtyEditorProductWidth = qtyEditorProduct.measuredWidth
             val textNotesChangeWidth = itemView.resources.getDimensionPixelOffset(R.dimen.dp_40)
             val screenWidth = getScreenWidth()
-            val maxNotesWidth = screenWidth - paddingLeftRight - buttonDeleteWidth - qtyEditorProductWidth
+            val maxNotesWidth = screenWidth - paddingLeftRight
             val noteWidth = maxNotesWidth - textNotesChangeWidth
 
             textNotesFilled.measure(0, 0)
@@ -327,35 +326,40 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            val marginTop = itemView.context.resources.getDimension(R.dimen.dp_16).toInt()
-            if (element.isProductDisabled) {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerProduct)
-                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.text_product_unavailable_action, ConstraintSet.START, 0)
-                if (layoutProductInfo.isVisible) {
-                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
-                } else {
-                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
-                }
-                constraintSet.applyTo(containerProduct)
-            } else {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerProduct)
-                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, 0)
-                if (layoutProductInfo.isVisible) {
-                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
-                } else {
-                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
-                }
-                constraintSet.applyTo(containerProduct)
-            }
-
+            adjustButtonDeleteConstraint(element)
             buttonDeleteCart.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     listener.onDeleteClicked(element)
                 }
             }
             buttonDeleteCart.show()
+        }
+    }
+
+    private fun adjustButtonDeleteConstraint(element: MiniCartProductUiModel) {
+        with(viewBinding) {
+            val marginTop = itemView.context.resources.getDimension(R.dimen.dp_12).toInt()
+            if (element.isProductDisabled) {
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerProduct)
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.text_product_unavailable_action, ConstraintSet.START, 0)
+                if (textFieldNotes.isVisible) {
+                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_field_notes, ConstraintSet.BOTTOM, marginTop)
+                } else {
+                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_notes_filled, ConstraintSet.BOTTOM, marginTop)
+                }
+                constraintSet.applyTo(containerProduct)
+            } else {
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerProduct)
+                constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, 0)
+                if (textFieldNotes.isVisible) {
+                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_field_notes, ConstraintSet.BOTTOM, marginTop)
+                } else {
+                    constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_notes_filled, ConstraintSet.BOTTOM, marginTop)
+                }
+                constraintSet.applyTo(containerProduct)
+            }
         }
     }
 
