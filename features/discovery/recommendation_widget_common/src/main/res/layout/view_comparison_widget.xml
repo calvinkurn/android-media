@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="16dp">
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,14 +44,15 @@
     </LinearLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_7"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_comparison_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingBottom="16dp"
             android:fillViewport="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +62,6 @@
             android:id="@+id/rv_compared_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
             android:background="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -70,26 +70,31 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <LinearLayout
-        android:id="@+id/btn_container"
+        android:id="@+id/btn_collapse"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:gravity="center_vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_13"
+        >
         <com.tokopedia.unifyprinciples.Typography
             android:layout_gravity="bottom"
             android:layout_marginStart="16dp"
-            android:id="@+id/btn_collapse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/light_G500"
             app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:fontFamily="sf"
             tools:text="@string/comparison_see_more_specs"
             android:text="@string/comparison_see_more_specs" />
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_chevron_down_see_more"
-            android:layout_width="@dimen/dp_18"
-            android:layout_height="@dimen/dp_10"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
             app:icon_name="CHEVRON_DOWN"
+            app:icon_color_light_enable="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="@+id/viewFamilyAccount"
             app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
             app:layout_constraintTop_toBottomOf="@+id/viewCompanyAccount" />

@@ -13,7 +13,8 @@ object SpecsMapper {
             recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
             parentInEdgeStart: Boolean = false,
             specsConfig: SpecsConfig,
-            position: Int
+            position: Int,
+            totalItems: Int
     ): SpecsListModel {
         val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
             SpecsModel(
@@ -21,53 +22,15 @@ object SpecsMapper {
                 specsSummary = it.value.specSummary,
                 bgDrawableRef = getDrawableBasedOnParentCompareItemPosition(it.index, recommendationSpecificationLabels.size),
                 bgDrawableColorRef = getColorCompareItem(parentInEdgeStart
-                ),
-                height = 400
+                )
             )
         }
         return SpecsListModel(
             specs = listSpecsModel,
-            specsConfig = specsConfig
+            specsConfig = specsConfig,
+            currentRecommendationPosition = position,
+            totalRecommendations = totalItems
         )
-    }
-
-    fun mapToSpecsListCompareItemModel(
-        recommendationSpecificationLabels: List<RecommendationSpecificationLabels>,
-        specsConfig: SpecsConfig,
-        parentInEdgeStart: Boolean = false,
-        position: Int
-    ): SpecsListModel {
-        val listSpecsModel = recommendationSpecificationLabels.withIndex().map {
-            SpecsModel(
-                specsTitle = if(position == 0) it.value.specTitle else "",
-                specsSummary = it.value.specSummary,
-                bgDrawableRef = getDrawableBasedOnParentCompareItemPosition(it.index, recommendationSpecificationLabels.size),
-                bgDrawableColorRef = getColorCompareItem(parentInEdgeStart
-                ),
-                height = 400
-            )
-        }
-        return SpecsListModel(
-            specs = listSpecsModel,
-            specsConfig = specsConfig
-        )
-    }
-
-    fun getColorBasedOnPosition(position: Int): Int {
-        return if (position % 2 == 0) {
-            com.tokopedia.unifyprinciples.R.color.Unify_N50
-        } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N0
-        }
-    }
-
-    fun getDrawableBasedOnParentPosition(
-        parentInEdgeStart: Boolean,
-        parentInEdgeEnd: Boolean
-    ): Int {
-        if (parentInEdgeStart) return R.drawable.bg_specs_start
-        if (parentInEdgeEnd) return R.drawable.bg_specs_end
-        return R.drawable.bg_specs
     }
 
     private fun getDrawableBasedOnParentCompareItemPosition(
@@ -95,7 +58,6 @@ object SpecsMapper {
         val myTextPaint = TextPaint()
         myTextPaint.isAntiAlias = true
         // this is how you would convert sp to pixels based on screen density
-//        myTextPaint.setTextSize(textSize * context.getResources().getDisplayMetrics().density);
         myTextPaint.textSize = textSize
         val alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
         val spacingMultiplier = 1.0f
@@ -105,7 +67,7 @@ object SpecsMapper {
             textWidth,
             alignment,
             spacingMultiplier,
-            0f,
+            18f,
             true
         )
         return myStaticLayout.height

@@ -24,6 +24,6 @@
         android:id="@+id/specsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="3.2dp"
+        android:paddingTop="@dimen/dimen_difference_card_use_compat_padding"
         />
 </LinearLayout>

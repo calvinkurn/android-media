@@ -28,7 +28,7 @@ class Specs2Adapter(var listModel: SpecsListModel): RecyclerView.Adapter<Specs2I
 
     override fun onBindViewHolder(holder: Specs2ItemViewHolder, position: Int) {
         if (position < listModel.specs.size) {
-            holder.bind(listModel.specs[position], position)
+            holder.bind(listModel.specs[position], position, listModel.currentRecommendationPosition, listModel.totalRecommendations)
         }
     }
 }

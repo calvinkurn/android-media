@@ -33,42 +33,7 @@ object ComparisonWidgetMapper {
 
                 ComparisonModel(
                     specsModel = SpecsMapper.mapToSpecsListModel(
-                        it.value.specs, isEdgeStart, specsConfig, it.index),
-                    productCardModel = it.value.toProductCardModel(),
-                    recommendationItem = it.value,
-                    isCurrentItem = checkIseCurrentItem(it.index)
-                )
-            },
-            comparisonWidgetConfig = ComparisonWidgetConfig(
-                productCardHeight = productCardHeight,
-                collapsedHeight = collapsedHeight
-            )
-        )
-    }
-
-    suspend fun mapToComparisonWidgetCompareItemModel(
-        recommendationWidget: RecommendationWidget,
-        context: Context
-    ): ComparisonListModel {
-        val recommendationItems = recommendationWidget.recommendationItemList
-        val specsConfig = buildSpecsConfig(recommendationItems, context)
-        val listOfProductCardModel = recommendationItems.map {
-            it.toProductCardModel()
-        }
-        val productCardHeight = listOfProductCardModel.getMaxHeightForGridView(
-            context,
-            Dispatchers.IO,
-            context.resources.getDimensionPixelSize(R.dimen.comparison_widget_product_card_width)
-        )
-        val collapsedHeight = productCardHeight + getCollapsedSpecsHeight(specsConfig.heightPositionMap)
-        return ComparisonListModel(
-            recommendationWidget = recommendationWidget,
-            comparisonData = recommendationItems.withIndex().map {
-                val isEdgeStart = it.index == 0
-
-                ComparisonModel(
-                    specsModel = SpecsMapper.mapToSpecsListCompareItemModel(
-                        it.value.specs, specsConfig, isEdgeStart, it.index),
+                        it.value.specs, isEdgeStart, specsConfig, it.index, recommendationItems.size),
                     productCardModel = it.value.toProductCardModel(),
                     recommendationItem = it.value,
                     isCurrentItem = checkIseCurrentItem(it.index)
@@ -109,7 +74,7 @@ object ComparisonWidgetMapper {
                 SpecsMapper.findMaxSummaryText(
                     recommendationItem,
                     i,
-                    textSizeHeight.toFloat(),
+                    26.73f,
                     comparisonWidth
                 )
 

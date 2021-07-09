@@ -40,8 +40,6 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
 
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
-    private var stickyTitleViewBinded: StickyTitleView? = null
-    private var stickyTitleInterface: StickyTitleInterface? = null
     private var adapter: ComparedItemAdapter? = null
     private var comparedAdapter: ComparisonWidgetAdapter? = null
     private var disableScrollTemp: Boolean = false
@@ -129,79 +127,12 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
         }
     }
 
-    fun bindStickyTitleView(stickyTitleInterface: StickyTitleInterface) {
-        stickyTitleViewBinded?.let { stickyTitleView ->
-            comparisonListModel?.let { comparisonListModel ->
-                stickyTitleView.setStickyModelListData(
-                        StickyTitleModelList(
-                                comparisonListModel.comparisonData.map {
-                                    StickyTitleModel(
-                                            title = it.productCardModel.productName,
-                                            recommendationItem = it.recommendationItem
-                                    )
-                                }
-                        ),
-                        stickyTitleInterface,
-                        this
-                )
-
-                rv_comparison_widget.clearOnScrollListeners()
-                rv_comparison_widget.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        if (dx != 0) {
-                            this@ComparisonWidgetView.disableScrollTemp = true
-                            stickyTitleView.scrollX(dx)
-                            this@ComparisonWidgetView.disableScrollTemp = false
-                        }
-                    }
-                })
-                this.stickyTitleViewBinded = stickyTitleView
-                this.stickyTitleInterface = stickyTitleInterface
-            }
-        }
-    }
-
     private fun onSpecDetailsClick(comparisonListModel: ComparisonListModel) {
         if (isExpandingState()) {
             switchToCollapsedState(comparisonListModel.comparisonWidgetConfig.collapsedHeight)
         } else {
             switchToExpandState()
-            setStickyHeaderScrollListener()
         }
-    }
-
-    private fun setStickyHeaderScrollListener() {
-        comparisonListModel?.let {
-            val specOnScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-                val location = IntArray(2)
-                this@ComparisonWidgetView.getLocationOnScreen(location)
-                val X = location[0]
-                val Y = location[1]
-                val elapsedProductCardHeight = -((it.comparisonWidgetConfig.productCardHeight)) + calculateActionBar()
-                if (Y < elapsedProductCardHeight) {
-                    stickyTitleViewBinded?.showStickyTitle()
-                    stickyTitleInterface?.onStickyTitleShow(true)
-                } else {
-                    stickyTitleViewBinded?.hideStickyTitle()
-                    stickyTitleInterface?.onStickyTitleShow(false)
-                }
-            }
-
-            if (this.specOnScrollChangedListener == null) {
-                this.specOnScrollChangedListener = specOnScrollChangedListener
-                rootView.viewTreeObserver.addOnScrollChangedListener(this.specOnScrollChangedListener)
-            }
-        }
-    }
-
-    private fun calculateActionBar(): Int {
-        // Calculate ActionBar height
-        val tv = TypedValue()
-        if (context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-        }
-        return 0
     }
 
     private fun switchToCollapsedState(collapsedHeight: Int) {
@@ -230,7 +161,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
             rootView.rv_compared_item.layoutParams = layoutParamsComparedItem
-            rootView.btn_container.visibility = View.GONE
+            rootView.btn_collapse.visibility = View.GONE
             comparedAdapter?.notifyDataSetChanged()
         }
     }
@@ -240,19 +171,11 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                 rootView.rv_comparison_widget.layoutParams.height == LinearLayout.LayoutParams.WRAP_CONTENT
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (isExpandingState()) {
-            setStickyHeaderScrollListener()
-        }
-    }
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         if (isExpandingState()) {
             rootView.viewTreeObserver.removeOnScrollChangedListener(this.specOnScrollChangedListener)
             this.specOnScrollChangedListener = null
-            stickyTitleViewBinded?.hideStickyTitle()
         }
     }
 

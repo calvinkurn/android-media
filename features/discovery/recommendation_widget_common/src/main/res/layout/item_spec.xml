@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <!--Not using unify typography because this view need to be pre-calculated-->
 <!--    before render. And currently typography have some function in onMeasure-->
 <!--    that can impact its height. So for now its not compatible to use -->
@@ -23,19 +24,21 @@
         android:paddingEnd="@dimen/comparison_specs_margin_end"
         >
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_spec_title"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:layout_width="match_parent"
             android:layout_height="@dimen/comparison_title_text_height"
-            android:textColor="@color/Unify_N700"
+            android:textColor="#F531353B"
             android:lines="1"
-            android:textStyle="bold"
             android:textSize="@dimen/comparison_summary_text_height"/>
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_spec_summary"
+            app:typographyType="body_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700"
+            android:textColor="#F531353B"
             android:textSize="@dimen/comparison_summary_text_height"/>
 
     </LinearLayout>

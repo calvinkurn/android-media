@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison2.specs
 
-import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsAdapter
 import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsListModel
 import android.content.Context
 import android.util.AttributeSet

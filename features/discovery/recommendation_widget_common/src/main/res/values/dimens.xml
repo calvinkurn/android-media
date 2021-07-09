@@ -20,8 +20,10 @@
     <dimen name="comparison_widget_product_card_width">132dp</dimen>
     <dimen name="comparison_widget_product_card_width_measure">126dp</dimen>
     <dimen name="comparison_specs_calculation_width">136dp</dimen>
+    <dimen name="dimen_difference_card_use_compat_padding">3.2dp</dimen>
+    <dimen name="dimen_difference_card_use_compat_padding_view_divider">5dp</dimen>
 
-    <dimen name="comparison_widget_collapsed_height">580dp</dimen>
+    <dimen name="comparison_widget_collapsed_height">463dp</dimen>
 
     <dimen name="sticky_title_height">68dp</dimen>
     <dimen name="widget_comparison_item_width">132dp</dimen>
