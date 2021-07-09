@@ -82,13 +82,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/light_G500"
-            app:typographyWeight="bold"
+            app:typographyType="body_3"
             tools:text="@string/comparison_see_more_specs"
             android:text="@string/comparison_see_more_specs" />
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_chevron_down_see_more"
-            android:layout_width="@dimen/unify_space_24"
-            android:layout_height="@dimen/unify_space_24"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_10"
             app:icon_name="CHEVRON_DOWN"
             app:layout_constraintBottom_toBottomOf="@+id/viewFamilyAccount"
             app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
