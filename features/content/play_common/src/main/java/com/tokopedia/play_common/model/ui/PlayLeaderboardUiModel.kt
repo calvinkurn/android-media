@@ -21,7 +21,8 @@ data class PlayWinnerUiModel(
     val id: String,
     val name: String,
     val imageUrl: String,
-    val allowChat: () -> Boolean
+    val allowChat: () -> Boolean,
+    val topChatMessage: String,
 )
 
 data class PlayLeaderboardConfigUiModel(

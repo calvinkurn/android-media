@@ -214,7 +214,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onChatWinnerButtonClicked(view: PlayInteractiveLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int) {
-
+        //NOT USED in Play Viewer
     }
 
     /**
