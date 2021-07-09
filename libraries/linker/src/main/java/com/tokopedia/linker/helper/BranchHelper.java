@@ -235,7 +235,7 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType())
                 .addCustomDataProperty(LinkerConstants.KEY_USERID, userId)
                 .addCustomDataProperty(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()))
-                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+                .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
     }
