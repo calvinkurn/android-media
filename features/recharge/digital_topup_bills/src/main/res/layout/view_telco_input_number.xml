@@ -63,7 +63,6 @@
                 app:icon_name="CONTACT" />
 
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/view_telco_input_number_prepaid"/>
