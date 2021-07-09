@@ -14,10 +14,12 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.profileCommon)
+    implementation project(rootProject.ext.features.medialoader)
+
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
