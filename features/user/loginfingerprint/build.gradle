@@ -87,8 +87,10 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+println("HENDRYTASK ANALYTICS")
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+println("HENDRYTASK ANALYTICS_NOOP")
     }
 
 }

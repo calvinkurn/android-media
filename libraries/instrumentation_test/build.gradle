@@ -84,6 +84,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+println("HENDRYTASK ANALYTICS")
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.testDependencies.androidRulesVersion
 

@@ -52,8 +52,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.moengageWrapper)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+println("HENDRYTASK ANALYTICS")
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+println("HENDRYTASK ANALYTICS_NOOP")
     }
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
