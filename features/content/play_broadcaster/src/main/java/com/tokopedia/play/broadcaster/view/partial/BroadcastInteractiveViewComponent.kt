@@ -35,6 +35,10 @@ class BroadcastInteractiveViewComponent(
         override fun onCreateNewGameClicked(view: InteractiveFinishView) {
             listener.onNewGameClicked(this@BroadcastInteractiveViewComponent)
         }
+
+        override fun onSeeWinnerClicked(view: InteractiveFinishView) {
+            listener.onSeeWinnerClicked(this@BroadcastInteractiveViewComponent)
+        }
     }
 
     fun setInit() = setChildView { InteractiveInitView(parent.context) }.apply {
@@ -99,5 +103,6 @@ class BroadcastInteractiveViewComponent(
     interface Listener {
 
         fun onNewGameClicked(view: BroadcastInteractiveViewComponent)
+        fun onSeeWinnerClicked(view: BroadcastInteractiveViewComponent)
     }
 }

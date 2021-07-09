@@ -186,4 +186,7 @@
     <string name="play_interactive_live_end_in">Berakhir dalam:</string>
     <string name="play_interactive_live">Game sedang dimulai</string>
     <string name="play_interactive_selected_duration_format">%1$02d menit %2$02d detik</string>
+    <string name="play_interactive_minute">%d Menit </string>
+    <string name="play_interactive_second">%d Detik</string>
+
 </resources>

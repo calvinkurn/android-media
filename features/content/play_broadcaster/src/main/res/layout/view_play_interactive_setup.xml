@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play_common.view.RoundedConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_interactive_setup_width"
+    android:id="@+id/view_interactive_setup"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_interactive">
+    android:background="@drawable/bg_play_interactive"
+    >
 
-    <com.tokopedia.play_common.view.PlayNoImageEditText
+    <com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText
         android:id="@+id/et_interactive_title"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/play_dp_12"
         android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:background="@null"
         android:gravity="center"
-        android:maxLength="25"
         android:imeOptions="actionNext"
+        android:inputType="textCapWords"
+        android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
+        android:textSize="@dimen/fontSize_lvl2"
+        android:text="@string/play_interactive_title_default"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Giveaway" />
+        />
 
     <com.tokopedia.play_common.view.RoundedConstraintLayout
         android:layout_width="match_parent"
@@ -28,21 +34,22 @@
         android:layout_marginTop="@dimen/play_dp_12"
         android:background="@color/Neutral_N75"
         app:cornerRadius="@dimen/play_interactive_time_radius"
-        app:layout_constraintStart_toStartOf="@id/et_interactive_title"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_interactive_title">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_interactive_start_in"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_dp_12"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
             android:text="@string/play_interactive_setup_start_in"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cl_timer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="small" />
 
         <com.tokopedia.play_common.view.RoundedConstraintLayout

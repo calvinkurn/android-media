@@ -20,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -35,7 +36,6 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.model.dto.isScheduled
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -119,6 +119,8 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
+    val observableInteractiveConfig: LiveData<InteractiveConfigUiModel>
+        get() = _observableInteractiveConfig
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
     val observableLeaderboardInfo: LiveData<PlayLeaderboardInfoUiModel>
@@ -143,6 +145,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherState = MutableLiveData<PlayLivePusherState>()
     private val _observableLiveDurationState = MutableLiveData<PlayTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
+    private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo = MutableLiveData<PlayLeaderboardInfoUiModel>()
 
@@ -195,6 +198,20 @@ class PlayBroadcastViewModel @Inject constructor(
         liveStateProcessor.addStateListener(liveStateListener)
         liveStateProcessor.addStateListener(channelLiveStateListener)
         countDownTimer.setListener(countDownTimerListener)
+
+        /**
+         * TODO: Mock
+         */
+//        _observableInteractiveConfig.value = InteractiveConfigUiModel(
+//            isActive = true,
+//            nameGuidelineHeader = "Mau kasih hadiah apa?",
+//            nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
+//            timeGuidelineHeader = "Kapan game-nya mulai?",
+//            timeGuidelineDetail = "Tentukan kapan game dimulai, dan game akan berlangsung selama 10 detik.",
+//            durationInMs = 10000L,
+//            availableStartTimeInMs = listOf(30 * 1000L, 60 * 1000L, 3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+//        )
+//        _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
     }
 
     override fun onCleared() {

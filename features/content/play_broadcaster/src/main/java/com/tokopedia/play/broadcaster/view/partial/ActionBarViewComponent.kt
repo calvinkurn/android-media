@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -15,17 +16,20 @@ import com.tokopedia.unifyprinciples.Typography
 class ActionBarViewComponent(
         container: ViewGroup,
         listener: Listener
-) : ViewComponent(container, R.id.action_bar){
+) : ViewComponent(container, R.id.cl_actionbar){
 
     private val ivClose = findViewById<ImageUnify>(R.id.iv_close)
     private val tvTitle = findViewById<Typography>(R.id.tv_title)
-    private val tvClose = findViewById<Typography>(R.id.tv_close)
+    private val btnClose = findViewById<UnifyButton>(R.id.btn_close)
 
     init {
         findViewById<ImageUnify>(R.id.iv_switch).setOnClickListener { listener.onCameraIconClicked() }
+
         ivClose.setOnClickListener { listener.onCloseIconClicked() }
         ivClose.show()
-        tvClose.hide()
+
+        btnClose.setOnClickListener { listener.onCloseIconClicked() }
+        btnClose.hide()
     }
 
     fun setTitle(label: String) {
@@ -33,8 +37,8 @@ class ActionBarViewComponent(
     }
 
     fun setActionTitle(text: String) {
-        tvClose.text = text
-        tvClose.show()
+        btnClose.text = text
+        btnClose.show()
         ivClose.hide()
     }
 

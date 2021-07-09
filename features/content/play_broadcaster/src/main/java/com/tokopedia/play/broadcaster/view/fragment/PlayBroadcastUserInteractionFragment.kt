@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -25,6 +26,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveS
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -32,17 +34,20 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
-import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
+import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorState
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
-import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -54,18 +59,19 @@ import javax.inject.Inject
 class PlayBroadcastUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
         private val analytic: PlayBroadcastAnalytic
-): PlayBaseBroadcastFragment() {
+): PlayBaseBroadcastFragment(), FragmentWithDetachableView {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private lateinit var viewTimer: PlayTimerView
-    private lateinit var viewStatInfo: PlayStatInfoView
-    private lateinit var ivShareLink: AppCompatImageView
-    private lateinit var ivProductTag: AppCompatImageView
-    private lateinit var pmvMetrics: PlayMetricsView
-    private lateinit var countdownTimer: PlayTimerCountDown
-    private lateinit var loadingView: FrameLayout
-    private lateinit var errorLiveNetworkLossView: View
+    private val viewContainer: ConstraintLayout by detachableView(R.id.cl_broadcast_interaction)
+    private val viewTimer: PlayTimerView by detachableView(R.id.view_timer)
+    private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
+    private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
+    private val ivProductTag: AppCompatImageView by detachableView(R.id.iv_product_tag)
+    private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
+    private val countdownTimer: PlayTimerCountDown by detachableView(R.id.countdown_timer)
+    private val loadingView: FrameLayout by detachableView(R.id.loading_view)
+    private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
@@ -79,13 +85,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
-
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val interactiveView by viewComponent {
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
-                //TODO("Mock")
-                Toaster.build(requireView(), "New game clicked").show()
+                interactiveSetupView.show()
+            }
+
+            override fun onSeeWinnerClicked(view: BroadcastInteractiveViewComponent) {
+                openInteractiveLeaderboardSheet()
+            }
+        })
+    }
+    private val interactiveSetupView by viewComponent {
+        BroadcastInteractiveSetupViewComponent(it, object : BroadcastInteractiveSetupViewComponent.Listener {
+            override fun onApplyButtonClicked(
+                view: BroadcastInteractiveSetupViewComponent,
+                title: String,
+                durationInMs: Long
+            ) {
+                // TODO("Not yet implemented")
             }
         })
     }
@@ -95,6 +114,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
     private lateinit var pauseLiveDialog: DialogUnify
+
+    private val fragmentViewContainer = FragmentViewContainer()
 
     private var toasterBottomMargin = 0
 
@@ -111,9 +132,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
         setupView()
-        setupInsets(view)
+        setupInsets()
         setupObserve()
 
         if (arguments?.getBoolean(KEY_START_COUNTDOWN) == true) {
@@ -124,21 +144,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        actionBarView.rootView.requestApplyInsetsWhenAttached()
-        ivShareLink.requestApplyInsetsWhenAttached()
-        viewTimer.requestApplyInsetsWhenAttached()
+        viewContainer.requestApplyInsetsWhenAttached()
     }
 
-    private fun initView(view: View) {
-        viewTimer = view.findViewById(R.id.view_timer)
-        viewStatInfo = view.findViewById(R.id.view_stat_info)
-        ivShareLink = view.findViewById(R.id.iv_share_link)
-        ivProductTag = view.findViewById(R.id.iv_product_tag)
-        pmvMetrics = view.findViewById(R.id.pmv_metrics)
-        countdownTimer = view.findViewById(R.id.countdown_timer)
-        loadingView = view.findViewById(R.id.loading_view)
-        errorLiveNetworkLossView = view.findViewById(R.id.error_live_view)
-    }
+    override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
     private fun setupView() {
         actionBarView.setActionTitle(getString(R.string.play_action_bar_end))
@@ -168,27 +177,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 //        }
     }
 
-    private fun setupInsets(view: View) {
-        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
-            v.updatePadding(top = insets.systemWindowInsetTop)
-        }
-
-        viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newTopMargin = margin.top + insets.systemWindowInsetTop
-            if (marginLayoutParams.topMargin != newTopMargin) {
-                marginLayoutParams.updateMargins(top = newTopMargin)
-                v.parent.requestLayout()
-            }
-        }
-
-        ivShareLink.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
-                marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                v.parent.requestLayout()
-            }
+    private fun setupInsets() {
+        viewContainer.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
     }
 
@@ -227,7 +218,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return showDialogWhenActionClose()
+        return if (interactiveSetupView.interceptBackPressed()) true
+        else showDialogWhenActionClose()
     }
 
     /**
@@ -507,6 +499,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeInteractiveConfig() {
+        parentViewModel.observableInteractiveConfig.observe(viewLifecycleOwner) { config ->
+            interactiveSetupView.setConfig(config)
+        }
         parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is BroadcastInteractiveState.Forbidden -> {
@@ -545,6 +540,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             BroadcastInteractiveInitState.HasPrevious -> interactiveView.setFinish()
         }
+    }
+
+    private fun openInteractiveLeaderboardSheet() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val leaderBoardBottomSheet = fragmentFactory.instantiate(
+            requireContext().classLoader,
+            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
+        leaderBoardBottomSheet.show(childFragmentManager)
     }
 
     companion object {
