@@ -6,6 +6,7 @@ apply from: "../../../compile-instrument-test.gradle"
 
 buildscript {
     repositories {
+        google()
         maven {
             url "https://maven.google.com"
         }
@@ -43,6 +44,7 @@ android {
 
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -91,6 +93,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.screenRecorder)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.unifyDependencies.icon
