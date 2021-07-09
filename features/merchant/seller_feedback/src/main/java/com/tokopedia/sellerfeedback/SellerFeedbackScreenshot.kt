@@ -36,12 +36,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     private val screenshotPreferenceManage by lazy { ScreenshotPreferenceManage(context) }
 
-    override var listener = object : BottomSheetListener {
-        override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
-            uri?.let { openFeedbackForm(it) }
-        }
-    }
-
     override val toasterSellerListener = object : ToasterSellerListener {
         override fun showToaster(uri: Uri?, currentActivity: Activity?) {
             showToasterSellerFeedback(uri, currentActivity)
