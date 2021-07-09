@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
@@ -43,8 +43,8 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -52,6 +52,7 @@ import com.tokopedia.play_common.model.dto.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
@@ -60,6 +61,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 /**
@@ -88,7 +90,7 @@ class PlayViewModel @Inject constructor(
         private val playChannelWebSocket: PlayChannelWebSocket,
         private val interactiveRepo: PlayViewerInteractiveRepository,
         private val partnerRepo: PlayViewerPartnerRepository,
-        private val partnerAnalytic: PlayPartnerAnalytic,
+        private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -132,25 +134,44 @@ class PlayViewModel @Inject constructor(
 
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
+    private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboard = MutableStateFlow(PlayLeaderboardUiState())
+    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardInfoUiModel>(PlayLeaderboardInfoUiModel())
+
+    /**
+     * Until repeatOnLifecycle is available (by updating library version),
+     * this can be used as an alternative to "complete" un-completable flow when page is not focused
+     */
+    private val isActive: AtomicBoolean = AtomicBoolean(false)
 
     val uiState: Flow<PlayViewerNewUiState> = combine(
             _partnerInfo,
             _bottomInsets,
             _interactive,
-            _leaderboard
-    ) { partnerInfo, bottomInsets, interactive, leaderboard ->
+            _leaderboardInfo,
+            _status
+    ) { partnerInfo, bottomInsets, interactive, leaderboardInfo, status ->
         PlayViewerNewUiState(
                 partnerName = partnerInfo.name,
                 followStatus = partnerInfo.status,
                 bottomInsets = bottomInsets,
                 interactive = interactive,
-                leaderboard = leaderboard
+                showInteractive = when {
+                    /**
+                     * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                     */
+                    bottomInsets.isAnyShown -> ViewVisibility.Invisible
+                    status.isFreeze || status.isBanned -> ViewVisibility.Gone
+                    interactive is PlayInteractiveUiState.NoInteractive -> ViewVisibility.Gone
+                    else -> ViewVisibility.Visible
+                },
+                leaderboards = leaderboardInfo.leaderboardWinners,
+                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty(),
+                status = status
         )
     }
     val uiEvent: Flow<PlayViewerNewUiEvent>
-        get() = _uiEvent
+        get() = _uiEvent.takeWhile { isActive.get() }
 
     val videoOrientation: VideoOrientation
         get() {
@@ -234,7 +255,7 @@ class PlayViewModel @Inject constructor(
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
-                    leaderboardInfo = _leaderboard.value
+                    leaderboardInfo = _leaderboardInfo.value
             )
         }
 
@@ -300,6 +321,7 @@ class PlayViewModel @Inject constructor(
         }
         addSource(observableStatusInfo) {
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
+            _status.value = it.statusType
         }
         addSource(_observableBottomInsetsState) { insets ->
             _bottomInsets.value = insets
@@ -579,6 +601,7 @@ class PlayViewModel @Inject constructor(
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             ClickFollowAction -> handleClickFollow(isFromLogin = false)
+            ClickFollowInteractiveAction -> handleClickInteractiveFollow(isFromLogin = false)
             ClickPartnerNameAction -> handleClickPartnerName()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
         }
@@ -627,6 +650,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun focusPage(channelData: PlayChannelData) {
+        isActive.compareAndSet(false, true)
+
         focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
@@ -637,6 +662,8 @@ class PlayViewModel @Inject constructor(
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
+        isActive.compareAndSet(true, false)
+
         stopJob()
         defocusVideoPlayer(shouldPauseVideo)
         stopWebSocket()
@@ -859,8 +886,8 @@ class PlayViewModel @Inject constructor(
         _observableQuickReply.value = quickReplyInfo
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardUiState) {
-        _leaderboard.value = leaderboardInfo
+    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+        _leaderboardInfo.value = leaderboardInfo
     }
 
     /**
@@ -1072,7 +1099,7 @@ class PlayViewModel @Inject constructor(
 
             try {
                 val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-                _leaderboard.value = PlayLeaderboardUiState(showBadge = true, winnerList = interactiveLeaderboard.leaderboardWinner)
+                _leaderboardInfo.value = interactiveLeaderboard
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
@@ -1085,6 +1112,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun doOnForbidden() {
+        isActive.set(false)
+
+        stopInteractive()
         stopWebSocket()
         stopPlayer()
         onKeyboardHidden()
@@ -1213,9 +1243,25 @@ class PlayViewModel @Inject constructor(
         } catch (ignored: MessageErrorException) {}
     }
 
-    /**
-     * Handle UI Action
-     */
+    private fun doFollowUnfollow(shouldForceFollow: Boolean): PartnerFollowAction? {
+        val channelData = mChannelData ?: return null
+        val shopId = channelData.partnerInfo.id
+
+        val followStatus = _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable ?: return null
+        val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
+        val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
+
+        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
+
+        viewModelScope.launchCatchError(block = {
+            partnerRepo.postFollowStatus(
+                    shopId = shopId.toString(),
+                    followAction = followAction,
+            )
+        }) {}
+
+        return followAction
+    }
 
     /**
      * When pre-start finished, interactive should be played (e.g. TapTap)
@@ -1250,10 +1296,10 @@ class PlayViewModel @Inject constructor(
             )
 
             val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
-            val currentLeaderboard = interactiveLeaderboard.leaderboardWinner.first()
-            val userInLeaderboard = currentLeaderboard.winners.find { it.id == userSession.userId }
+            val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
+            val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
 
-            if (userInLeaderboard != null) {
+            if (userInLeaderboard != null && userInLeaderboard.id == userId) {
                 _uiEvent.emit(
                         ShowWinningDialogEvent(
                                 userInLeaderboard.imageUrl,
@@ -1264,7 +1310,7 @@ class PlayViewModel @Inject constructor(
             }
 
             _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboard.value = PlayLeaderboardUiState(showBadge = true, winnerList = interactiveLeaderboard.leaderboardWinner)
+            _leaderboardInfo.value = interactiveLeaderboard
 
             _uiEvent.emit(
                     ShowCoachMarkWinnerEvent(
@@ -1277,12 +1323,18 @@ class PlayViewModel @Inject constructor(
 
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
+
+        val channelData = mChannelData ?: return
+        playAnalytic.clickWinnerBadge(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
     }
 
     private fun handleTapTapAction() {
         viewModelScope.launch {
             interactiveFlow.emit(Unit)
         }
+
+        val channelData = mChannelData ?: return
+        playAnalytic.clickTapTap(channelId = channelData.id, channelType = channelData.channelInfo.channelType)
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -1294,22 +1346,20 @@ class PlayViewModel @Inject constructor(
      * if false, it depends on the current state
      */
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        viewModelScope.launchCatchError(block = {
-            val channelData = mChannelData ?: return@launchCatchError
-            val shopId = channelData.partnerInfo.id
+        val action = doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+        val channelData = mChannelData ?: return@needLogin
+        val shopId = channelData.partnerInfo.id
+        playAnalytic.clickFollowShop(channelData.id, channelData.channelInfo.channelType, shopId.toString(), action.value)
+    }
 
-            val followStatus = _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable ?: return@launchCatchError
-            val shouldFollow = if (isFromLogin) true else !followStatus.isFollowing
-            val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
-
-            _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
-            partnerAnalytic.clickFollowShop(channelData.id, channelData.channelInfo.channelType, shopId.toString(), followAction.value)
-
-            partnerRepo.postFollowStatus(
-                    shopId = shopId.toString(),
-                    followAction = followAction,
-            )
-        }) {}
+    /**
+     * @param isFromLogin If true, it means follow action will always be follow,
+     * if false, it depends on the current state
+     */
+    private fun handleClickInteractiveFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
+        doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+        val channelData = mChannelData ?: return@needLogin
+        playAnalytic.clickFollowShopInteractive(channelData.id, channelData.channelInfo.channelType)
     }
 
     private fun handleClickPartnerName() {
@@ -1319,7 +1369,7 @@ class PlayViewModel @Inject constructor(
 
             when (partnerInfo.type) {
                 PartnerType.Shop -> {
-                    partnerAnalytic.clickShop(channelData.id, channelData.channelInfo.channelType, channelData.partnerInfo.id.toString())
+                    playAnalytic.clickShop(channelData.id, channelData.channelInfo.channelType, channelData.partnerInfo.id.toString())
                     _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
                 }
                 PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
@@ -1332,6 +1382,7 @@ class PlayViewModel @Inject constructor(
         if (!isSuccess) return
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
+            REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickInteractiveFollow(isFromLogin = true)
             else -> {}
         }
     }
@@ -1362,5 +1413,6 @@ class PlayViewModel @Inject constructor(
          * Request Code When need login
          */
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
+        private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
     }
 }

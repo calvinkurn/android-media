@@ -1,7 +1,7 @@
 package com.tokopedia.play.view.storage
 
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.state.PlayLeaderboardUiState
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 
 /**
  * Created by jegul on 19/01/21
@@ -33,5 +33,5 @@ data class PlayChannelData(
         val quickReplyInfo: PlayQuickReplyInfoUiModel,
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
         val statusInfo: PlayStatusInfoUiModel,
-        val leaderboardInfo: PlayLeaderboardUiState
+        val leaderboardInfo: PlayLeaderboardInfoUiModel,
 )

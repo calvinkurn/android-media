@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
+import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
@@ -73,7 +74,8 @@ class PlayBroadcastViewModel @Inject constructor(
         private val playBroadcastMapper: PlayBroadcastMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
-        private val countDownTimer: PlayCountDownTimer
+        private val countDownTimer: PlayCountDownTimer,
+
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -425,6 +427,10 @@ class PlayBroadcastViewModel @Inject constructor(
         liveStateProcessor.onPause()
     }
 
+    fun onInteractiveLiveEnded() {
+        viewModelScope.launch { onInteractiveFinished() }
+    }
+
     fun onOpenLiveStreamPage() {
         viewModelScope.launchCatchError(block = {
             val interactiveResponse = getInteractiveConfigUseCase.apply {
@@ -433,40 +439,58 @@ class PlayBroadcastViewModel @Inject constructor(
             val interactiveConfig = playBroadcastMapper.mapInteractiveConfig(interactiveResponse)
 
             if (interactiveConfig.isActive) {
-                try {
-                    val currentInteractiveResponse = getCurrentInteractiveUseCase.apply {
-                        setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-                    }.executeOnBackground()
-                    val currentInteractive = channelInteractiveMapper.mapInteractive(currentInteractiveResponse.data.interactive)
-                    when (val status = currentInteractive.timeStatus) {
-                        is PlayInteractiveTimeStatus.Scheduled -> {
-                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Schedule(timeToStartInMs = status.timeToStartInMs, durationInMs = status.interactiveDurationInMs, title = currentInteractive.title)
-                        }
-                        is PlayInteractiveTimeStatus.Live -> {
-                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Live(remainingTimeInMs = status.remainingTimeInMs)
-                        }
-                        is PlayInteractiveTimeStatus.Finished -> {
-                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
-                            try {
-                                val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
-                                val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse)
-                                _observableLeaderboardInfo.value = leaderboard
-                                _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious)
-                            } catch (e: Throwable) {
-                                _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
-                            }
-                        }
-                        else -> {
-                            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
-                        }
-                    }
-                } catch (e: Throwable) {
-                    _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
-                }
+                handleActiveInteractive()
             } else {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
             }
         }) {}
+    }
+
+    private suspend fun handleActiveInteractive() {
+        try {
+            val currentInteractiveResponse = getCurrentInteractiveUseCase.apply {
+                setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+            }.executeOnBackground()
+
+            val currentInteractive = channelInteractiveMapper.mapInteractive(currentInteractiveResponse.data.interactive)
+            when (val status = currentInteractive.timeStatus) {
+                is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(timeToStartInMs = status.timeToStartInMs, durationInMs = status.interactiveDurationInMs, title = currentInteractive.title)
+                is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
+                is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
+                else -> {
+                    _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+                }
+            }
+        } catch (e: Throwable) {
+            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+        }
+    }
+
+    private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {
+        _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Schedule(timeToStartInMs = timeToStartInMs, durationInMs = durationInMs, title = title)
+    }
+
+    private fun onInteractiveLiveStarted(durationInMs: Long) {
+        _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Live(remainingTimeInMs = durationInMs)
+    }
+
+    private suspend fun onInteractiveFinished() {
+        _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
+        try {
+            val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
+            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusher.pusherState == ApsaraLivePusherState.Stop }
+            _observableLeaderboardInfo.value = leaderboard
+            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
+                    leaderboard.config.loserMessage,
+                    leaderboard.config.sellerMessage
+            ))
+        } catch (e: Throwable) {
+            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+        }
+    }
+
+    private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
+        return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(true))
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {

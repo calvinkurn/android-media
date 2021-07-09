@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveFinishView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveInitView
@@ -18,6 +20,10 @@ class BroadcastInteractiveViewComponent(
 ) : ViewComponent(container, R.id.view_play_interactive) {
 
     private val parent = rootView as ViewGroup
+
+    private val coachMark: CoachMark2 = CoachMark2(container.context)
+
+    private val coachMarkAnchorOffset = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private val initView = object : InteractiveInitView.Listener {
         override fun onCreateNewGameClicked(view: InteractiveInitView) {
@@ -41,8 +47,19 @@ class BroadcastInteractiveViewComponent(
         }
     }
 
-    fun setInit() = setChildView { InteractiveInitView(parent.context) }.apply {
+    init {
+        coachMark.contentView.translationY = coachMarkAnchorOffset * -1f
+    }
+
+    fun setInit(showOnBoarding: Boolean) = setChildView { InteractiveInitView(parent.context) }.apply {
         setListener(initView)
+        if (showOnBoarding) {
+            showCoachMark(
+                    view = rootView,
+                    title = getString(R.string.play_interactive_broadcast_onboarding_title),
+                    subtitle = getString(R.string.play_interactive_broadcast_onboarding_subtitle)
+            )
+        }
     }
 
     fun setSchedule(
@@ -75,8 +92,17 @@ class BroadcastInteractiveViewComponent(
         setListener(loadingListener)
     }
 
-    fun setFinish() = setChildView { InteractiveFinishView(parent.context) }.apply {
+    fun setFinish(coachMarkTitle: String, coachMarkSubtitle: String) = setChildView { InteractiveFinishView(parent.context) }.apply {
         setListener(finishListener)
+        showCoachMark(
+                view = getBadgeView(),
+                title = coachMarkTitle,
+                subtitle = coachMarkSubtitle
+        )
+    }
+
+    fun hideCoachMark() {
+        coachMark.dismissCoachMark()
     }
 
     private fun removeListener() {
@@ -92,12 +118,26 @@ class BroadcastInteractiveViewComponent(
     private inline fun <reified V: View> setChildView(viewCreator: () -> V): V {
         val firstChild = parent.getChildAt(0)
         return if (firstChild !is V) {
+            hideCoachMark()
             removeListener()
             parent.removeAllViews()
             val view = viewCreator()
             parent.addView(view)
             view
         } else firstChild
+    }
+
+    private fun showCoachMark(view: View, title: String, subtitle: String) {
+        coachMark.isDismissed = false
+        coachMark.showCoachMark(
+                arrayListOf(
+                        CoachMark2Item(
+                                view,
+                                title,
+                                subtitle
+                        )
+                )
+        )
     }
 
     interface Listener {

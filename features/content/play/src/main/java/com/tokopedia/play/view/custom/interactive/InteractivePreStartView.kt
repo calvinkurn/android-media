@@ -61,6 +61,11 @@ class InteractivePreStartView : RoundedConstraintLayout {
         timerPreStart.resume()
     }
 
+    fun cancelTimer() {
+        timerPreStart.pause()
+        timerPreStart.timer?.cancel()
+    }
+
     fun showFollowButton(shouldShow: Boolean) {
         if (shouldShow) {
             btnInteractiveFollow.show()

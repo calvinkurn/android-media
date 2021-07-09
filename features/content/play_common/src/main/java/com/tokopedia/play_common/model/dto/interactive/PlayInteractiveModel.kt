@@ -52,17 +52,17 @@ sealed class PlayInteractiveTimeStatus {
 
         fun getByValue(status: Int, countdownStartInSec: Int? = null, countdownEndInSec: Int? = null): PlayInteractiveTimeStatus {
             return when (status) {
-                1 -> {
+                0 -> {
                     requireNotNull(countdownStartInSec)
                     requireNotNull(countdownEndInSec)
                     require(countdownEndInSec > countdownStartInSec)
                     Scheduled(countdownStartInSec * 1000L, (countdownEndInSec - countdownStartInSec) * 1000L)
                 }
-                2 -> {
+                1 -> {
                     requireNotNull(countdownEndInSec)
                     Live(countdownEndInSec * 1000L)
                 }
-                3 -> Finished
+                2 -> Finished
                 else -> Unknown
             }
         }

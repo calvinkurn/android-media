@@ -60,7 +60,10 @@ data class GetInteractiveLeaderboardResponse(
             val loserMessage: String = "",
 
             @SerializedName("loserDetail")
-            val loserDetail: String = ""
+            val loserDetail: String = "",
+
+            @SerializedName("topchatMessage")
+            val topChatMessage: String = "",
     )
 
     data class Summary(
