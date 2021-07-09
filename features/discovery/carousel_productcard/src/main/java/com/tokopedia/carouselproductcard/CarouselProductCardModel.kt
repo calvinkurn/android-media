@@ -11,6 +11,8 @@ internal data class CarouselProductCardModel(
     fun getOnItemAddToCartListener() = carouselProductCardListenerInfo.onItemAddToCartListener
     fun getOnItemImpressedListener() = carouselProductCardListenerInfo.onItemImpressedListener
     fun getOnItemThreeDotsClickListener() = carouselProductCardListenerInfo.onItemThreeDotsClickListener
+    fun getOnATCNonVariantClickListener() = carouselProductCardListenerInfo.onATCNonVariantClickListener
+    fun getAddVariantClickListener() = carouselProductCardListenerInfo.onAddVariantClickListener
 
     override fun areItemsTheSame(newItem: BaseCarouselCardModel): Boolean {
         return newItem is CarouselProductCardModel && productCardModel.productName == newItem.productCardModel.productName
