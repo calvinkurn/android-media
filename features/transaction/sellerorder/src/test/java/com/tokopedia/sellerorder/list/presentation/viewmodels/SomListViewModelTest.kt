@@ -606,6 +606,39 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
+    fun bulkRequestPickup_shouldPartialSuccessThereNotEligiblee() = runBlocking {
+        val orderIds = listOf("0", "1", "2", "4", "5")
+        val batchId = "1234566"
+        val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "166760344"))
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "166760347"))
+        }
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 4, jobId = batchId)
+        val multiShippingStatusUiModel = MultiShippingStatusUiModel(success = 4)
+        retryRequestPickup.set(viewModel, 10)
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, errors = failList)
+
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } returns multiShippingStatusUiModel
+
+        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+
+        viewModel.bulkRequestPickup(orderIds)
+
+        coVerify {
+            bulkRequestPickupUseCase.setParams(orderIds)
+            bulkRequestPickupUseCase.executeOnBackground()
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is PartialSuccessNotEligible)
+    }
+
+    @Test
     fun bulkRequestPickup_shouldPartialSuccessThereIsNotEligibleAndFailed() = runBlocking {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"

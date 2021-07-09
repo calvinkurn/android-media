@@ -1090,6 +1090,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is ShowLoading -> {
                     showProgressBulkRequestPickupDialog(it.totalOrder)
                 }
+                is PartialSuccessNotEligible -> {
+                    showPartialSuccessNotEligibleRequestPickup(it.totalSuccess, it.totalNotEligible)
+                }
                 null -> {
                     showErrorBulkRequestPickupStatus()
                 }
@@ -1122,7 +1125,20 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
                 dismissAndRunAction()
             }
-            showFailed()
+            showSuccess()
+            show()
+        }
+    }
+
+    private fun showPartialSuccessNotEligibleRequestPickup(totalSuccess: Long, totalNotEligible: Long) {
+        bulkRequestPickupDialog?.run {
+            setTitle(getString(R.string.som_list_bulk_request_pickup_title_success, totalSuccess.toString()))
+            setDescription(getString(R.string.som_list_bulk_request_pickup_desc_partial_success_not_eligible, totalNotEligible.toString()))
+            setPrimaryButton(getString(R.string.som_buyer_cancellation_cancel_button)) {
+                dismissAndRunAction()
+            }
+            hideSecondaryButton()
+            showSuccess()
             show()
         }
     }
@@ -1137,7 +1153,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
                 dismissAndRunAction()
             }
-            showFailed()
+            showSuccess()
             show()
         }
     }

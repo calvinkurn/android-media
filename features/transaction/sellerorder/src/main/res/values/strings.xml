@@ -290,6 +290,8 @@
     <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Belum ada pesanan yang siap untuk dipick-up.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
+    
+    <string name="som_list_bulk_request_pickup_desc_partial_success_not_eligible">Ada %s pesanan yang tidak bisa dipick-up, nih.</string>
 
     <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_retry_pickup_order">Pick-up %s Pesanan</string>
 

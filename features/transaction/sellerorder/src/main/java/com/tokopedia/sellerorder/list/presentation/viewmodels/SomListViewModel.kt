@@ -211,12 +211,16 @@ class SomListViewModel @Inject constructor(
                         else if (it.data.success + it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0 && totalNotEligible == 0L) {
                             bulkRequestPickupFinalResult.postValue(PartialSuccess(it.data.success, orderIdListFail))
                         }
-                        //case 6 will happen fail bulk process due to all validation failed
+                        // case 6 When Partial success but there's not eligible
+                        else if(it.data.success + it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail == 0L && totalNotEligible > 0) {
+                            bulkRequestPickupFinalResult.postValue(PartialSuccessNotEligible(it.data.success, totalNotEligible))
+                        }
+                        //case 7 will happen fail bulk process due to all validation failed
                         else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_ALL_VALIDATION
                                         || requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_NOT_FOUND)) {
                             bulkRequestPickupFinalResult.postValue(AllValidationFail)
                         } else {
-                            //Case 7 will happen when after 10x retry is still fail
+                            //Case 8 will happen when after 10x retry is still fail
                             bulkRequestPickupFinalResult.postValue(FailRetry)
                         }
                     }
@@ -227,7 +231,7 @@ class SomListViewModel @Inject constructor(
                         retryRequestPickup++
                         getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
                     } else {
-                        //Case 8 will happen when there's a server error/down from BE
+                        //Case 9 will happen when there's a server error/down from BE
                         bulkRequestPickupFinalResult.postValue(ServerFail(it.throwable))
                     }
                 }
