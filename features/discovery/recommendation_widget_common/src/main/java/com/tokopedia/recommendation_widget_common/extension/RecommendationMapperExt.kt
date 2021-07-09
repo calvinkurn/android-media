@@ -138,7 +138,7 @@ fun RecommendationItem.toProductCardModel(
 }
 
 var LABEL_FULFILLMENT: String = "fulfillment"
-var LAYOUTTYPE_HORIZONTAL_ATC: String = "Carousel"
+var LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 
 private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC

@@ -359,6 +359,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeInitialVariantData()
         observeSingleVariantData()
         observeonVariantClickedData()
+        observeATCTokonowData()
         observeDiscussionData()
         observeP2Other()
         observeTopAdsImageData()
@@ -897,11 +898,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int) {
+    override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
         viewModel.onAtcNonVariantQuantityChanged(recomItem, quantity)
     }
 
-    override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int) {
+    override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int) {
         requireContext().let {
             AtcVariantHelper.goToAtcVariant(
                     context = it,
@@ -1390,6 +1391,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeonVariantClickedData() {
         viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
             updateVariantDataToExistingProductData(it)
+        }
+    }
+
+    private fun observeATCTokonowData() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
+            data.doSuccessOrFail({},{
+                logException(it)
+            })
         }
     }
 

@@ -74,6 +74,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -213,6 +214,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
+
+    private val _atcRecomTokonow = MutableLiveData<Result<Boolean>>()
+    val atcRecomTokonow: LiveData<Result<Boolean>> get() = _atcRecomTokonow
+
+    private val _recomTokonowIndicies = SingleLiveEvent<Map<Int, Int>>()
+    val recomTokonowIndicies: LiveData<Map<Int, Int>> get() = _recomTokonowIndicies
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -958,44 +965,63 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun onAtcNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
         if (recomItem.quantity == quantity) return
-        launchCatchError(block = {
-            if (recomItem.quantity == 0) {
-                atcNonVariant(recomItem, quantity)
-            } else {
-                updateCartNonVariant(recomItem, quantity)
-            }
-        }){
-
+        if (recomItem.quantity == 0) {
+            atcNonVariant(recomItem, quantity)
+        } else {
+            updateCartNonVariant(recomItem, quantity)
         }
     }
 
-    private suspend fun atcNonVariant(recomItem: RecommendationItem, quantity: Int) {
-        val param = AddToCartUseCase.getMinimumParams(
-                recomItem.productId.toString(),
-                recomItem.shopId.toString(),
-                quantity
-        )
-        val result = withContext(dispatcher.io) {
-            addToCartUseCase.get().createObservable(param).toBlocking().single()
-        }
-        if (result.isStatusError()) {
-
-        } else {
-            updateMiniCartAfterATC(result)
+    private fun atcNonVariant(recomItem: RecommendationItem, quantity: Int) {
+        launchCatchError(block = {
+            val param = AddToCartUseCase.getMinimumParams(
+                    recomItem.productId.toString(),
+                    recomItem.shopId.toString(),
+                    quantity
+            )
+            val result = withContext(dispatcher.io) {
+                addToCartUseCase.get().createObservable(param).toBlocking().single()
+            }
+            if (result.isStatusError()) {
+                onFailedATC(Throwable(result.status))
+            } else {
+                updateMiniCartAfterATC()
+            }
+        }) {
+            onFailedATC(it)
         }
     }
 
     private fun updateCartNonVariant(recomItem: RecommendationItem, quantity: Int) {
-        _miniCartData.value
+        launchCatchError(block = {
+            val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
+            miniCartItem?.let {
+                val copyOfMiniCartItem = it.copy(quantity = quantity)
+                updateCartUseCase.get().setParams(
+                        miniCartItemList = listOf(copyOfMiniCartItem),
+                        source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+                )
+                val result = updateCartUseCase.get().executeOnBackground()
+
+                if (result.error.isNotEmpty()) {
+                    onFailedATC(Throwable(result.error.firstOrNull() ?: ""))
+                } else {
+                    updateMiniCartAfterATC()
+                }
+            }
+            }) {
+            onFailedATC(it)
+        }
+
     }
 
-    private fun updateMiniCartAfterATC(result: AddToCartDataModel) {
-        updateMiniCartData(
-                productId = result.data.productId.toString(),
-                cartId = result.data.cartId,
-                quantity = result.data.quantity,
-                notes = result.data.notes
-        )
+    private fun updateMiniCartAfterATC() {
+        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
+    }
+
+    private fun onFailedATC(throwable: Throwable) {
+        _atcRecomTokonow.value = throwable.asFail()
+        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
     }
 
     private fun assignTradeinParams() {

@@ -74,11 +74,11 @@ constructor(
     }
 
     fun getRecomTokonowParams(pageNumber: Int,
-                       xSource: String = DEFAULT_VALUE_X_SOURCE,
-                       pageName: String,
-                       productIds: List<String>,
-                       queryParam: String = "",
-                       isTokonow: Boolean = false): RequestParams {
+                              xSource: String = DEFAULT_VALUE_X_SOURCE,
+                              pageName: String,
+                              productIds: List<String>,
+                              queryParam: String = "",
+                              isTokonow: Boolean = false): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
         val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam

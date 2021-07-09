@@ -158,7 +158,8 @@ class ProductRecommendationViewHolder(
                         listener.onAddToCartNonVariantQuantityChangedClick(
                                 recomItem = productRecommendation,
                                 quantity = quantity,
-                                adapterPosition = adapterPosition)
+                                adapterPosition = adapterPosition,
+                                itemPosition = carouselProductCardPosition)
                     }
                 },
                 carouselOnAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
@@ -166,7 +167,8 @@ class ProductRecommendationViewHolder(
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         listener.onAddVariantClick(
                                 recomItem = productRecommendation,
-                                adapterPosition = adapterPosition)
+                                adapterPosition = adapterPosition,
+                                itemPosition = carouselProductCardPosition)
                     }
                 },
                 finishCalculate = {
