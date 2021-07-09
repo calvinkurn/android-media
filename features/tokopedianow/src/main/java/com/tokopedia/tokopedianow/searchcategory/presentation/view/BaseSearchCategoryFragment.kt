@@ -34,8 +34,10 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -113,7 +115,6 @@ abstract class BaseSearchCategoryFragment:
     protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
-    protected var contentGroup: Group? = null
     protected var loaderUnify: LoaderUnify? = null
 
     private var movingPosition = 0
@@ -172,7 +173,6 @@ abstract class BaseSearchCategoryFragment:
         swipeRefreshLayout = view.findViewById(R.id.tokonowSearchCategorySwipeRefreshLayout)
         statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
         headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
-        contentGroup = view.findViewById(R.id.tokonowSearchCategoryContentGroup)
         loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
         container = view.findViewById(R.id.tokonowSearchCategoryContainer)
     }
@@ -309,6 +309,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun configureSwipeRefreshLayout() {
+        swipeRefreshLayout?.isRefreshing = false
         swipeRefreshLayout?.setOnRefreshListener {
             getViewModel().onViewReloadPage()
         }
@@ -450,6 +451,8 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
         searchCategoryAdapter?.submitList(visitableList)
+        loaderUnify?.gone()
+        recyclerView?.visible()
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -665,9 +668,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
-        loaderUnify?.showWithCondition(isLoadingVisible)
         swipeRefreshLayout?.isRefreshing = isLoadingVisible
-        recyclerView?.showWithCondition(!isLoadingVisible)
     }
 
     protected open fun updateRecyclerViewScrollable(isScrollable: Boolean) {
