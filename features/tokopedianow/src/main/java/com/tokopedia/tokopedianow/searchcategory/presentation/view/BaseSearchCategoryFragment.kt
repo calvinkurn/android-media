@@ -308,7 +308,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun configureSwipeRefreshLayout() {
-        swipeRefreshLayout?.isRefreshing = false
         swipeRefreshLayout?.setOnRefreshListener {
             getViewModel().onViewReloadPage()
         }
