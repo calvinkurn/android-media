@@ -188,6 +188,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun getRates() {
         launch(executorDispatchers.immediate) {
             orderShipment.value = orderShipment.value.copy(isLoading = true)
+            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             getRatesSuspend()
         }
     }

@@ -61,10 +61,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cb_insurance" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_insurance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="cb_insurance,tv_insurance,img_bt_insurance_info,tv_insurance_price,space_insurance" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

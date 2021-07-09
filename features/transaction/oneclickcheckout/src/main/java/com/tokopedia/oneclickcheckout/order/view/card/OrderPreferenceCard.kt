@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
@@ -76,7 +77,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         binding.apply {
             if (!profile.enable) {
                 renderDisabledShipping()
-            } else if (shipping == null || shipping.isLoading || shipping.serviceName == null) {
+            } else if (shipping.isLoading || shipping.serviceName == null) {
                 renderLoadingShipping()
             } else if (!profile.shipment.isDisableChangeCourier) {
                 loaderShipping.gone()
@@ -133,19 +134,25 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     private fun renderLoadingShipping() {
         binding.apply {
-            tvShippingDuration.gone()
-            tvShippingDurationEta.gone()
-            btnChangeDuration.gone()
-            tvShippingCourier.gone()
-            tvShippingPrice.gone()
-            tvShippingCourierEta.gone()
-            tvShippingCourierNotes.gone()
-            btnChangeCourier.gone()
-            tvShippingErrorMessage.gone()
-            btnReloadShipping.gone()
-            iconReloadShipping.gone()
-            tickerShippingPromo.gone()
+            setInvisible(tvShippingDuration)
+            setInvisible(tvShippingDurationEta)
+            setInvisible(btnChangeDuration)
+            setInvisible(tvShippingCourier)
+            setInvisible(tvShippingPrice)
+            setInvisible(tvShippingCourierEta)
+            setInvisible(tvShippingCourierNotes)
+            setInvisible(btnChangeCourier)
+            setInvisible(tvShippingErrorMessage)
+            setInvisible(btnReloadShipping)
+            setInvisible(iconReloadShipping)
+            setInvisible(tickerShippingPromo)
             loaderShipping.visible()
+        }
+    }
+
+    private fun setInvisible(view: View) {
+        if (view.isVisible) {
+            view.invisible()
         }
     }
 

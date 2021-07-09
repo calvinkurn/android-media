@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -23,12 +24,6 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         val insuranceData = insurance.insuranceData
         binding.apply {
             if (insuranceData != null && !shipment.isLoading) {
-                if (insuranceData.insurancePrice > 0) {
-                    tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false).removeDecimalSuffix()
-                    tvInsurancePrice.visible()
-                } else {
-                    tvInsurancePrice.gone()
-                }
                 setupListeners(insuranceData, productId)
                 when (insuranceData.insuranceType) {
                     InsuranceConstant.INSURANCE_TYPE_MUST -> {
@@ -36,11 +31,11 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                         cbInsurance.isEnabled = false
                         forceSetChecked(cbInsurance, true)
                         listener.onInsuranceChecked(true)
-                        groupInsurance.visible()
+                        setVisibility(View.VISIBLE)
                     }
                     InsuranceConstant.INSURANCE_TYPE_NO -> {
                         listener.onInsuranceChecked(false)
-                        groupInsurance.gone()
+                        setVisibility(View.GONE)
                     }
                     InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
@@ -57,11 +52,17 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                             forceSetChecked(cbInsurance, insurance.isCheckInsurance)
                             listener.onInsuranceChecked(insurance.isCheckInsurance)
                         }
-                        groupInsurance.visible()
+                        setVisibility(View.VISIBLE)
                     }
                 }
+                if (insuranceData.insurancePrice > 0) {
+                    tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false).removeDecimalSuffix()
+                    tvInsurancePrice.visible()
+                } else {
+                    tvInsurancePrice.gone()
+                }
             } else {
-                groupInsurance.gone()
+                setVisibility(View.INVISIBLE)
             }
         }
     }
@@ -95,6 +96,19 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
             } else {
                 isChecked = newCheck
             }
+        }
+    }
+
+    private fun setVisibility(visibility: Int) {
+        binding.apply {
+            if (visibility == View.INVISIBLE && cbInsurance.visibility == View.GONE) {
+                return
+            }
+            cbInsurance.visibility = visibility
+            tvInsurance.visibility = visibility
+            imgBtInsuranceInfo.visibility = visibility
+            tvInsurancePrice.visibility = visibility
+            spaceInsurance.visibility = if (visibility == View.VISIBLE) View.INVISIBLE else visibility
         }
     }
 
