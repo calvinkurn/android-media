@@ -18,8 +18,8 @@ object OvoWidgetTracking: BaseTracking() {
     private const val ACTION_CLICK_ON_OVO = "click on ovo section"
     private const val ACTION_CLICK_ON_COUPON = "click new coupon"
     private const val ACTION_CLICK_ON_REWARDS = "click tier status"
-    private const val ACTION_CLICK_ON_GOPAY_LINKED = "click on gopay linked"
-    private const val ACTION_CLICK_ON_GOPAY_NOT_LINKED = "click on gopay not linked"
+    private const val ACTION_CLICK_ON_GOPAY_LINKED = "click on gopay section"
+    private const val ACTION_CLICK_ON_GOPAY_NOT_LINKED = "click sambungkan on gopay section"
 
     private const val ACTION_CLICK_ON_TOPUP_OVO = "click on top up ovo"
     private const val ACTION_CLICK_ACTIVATE = "click activate"
