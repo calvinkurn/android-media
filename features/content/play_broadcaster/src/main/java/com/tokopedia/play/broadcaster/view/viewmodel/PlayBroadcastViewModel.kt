@@ -74,7 +74,8 @@ class PlayBroadcastViewModel @Inject constructor(
         private val playBroadcastMapper: PlayBroadcastMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
-        private val countDownTimer: PlayCountDownTimer
+        private val countDownTimer: PlayCountDownTimer,
+
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -440,11 +441,11 @@ class PlayBroadcastViewModel @Inject constructor(
                 is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
                 is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
                 else -> {
-                    _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
+                    _observableInteractiveState.value = getNoPreviousInitInteractiveState()
                 }
             }
         } catch (e: Throwable) {
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
+            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
         }
     }
 
@@ -462,10 +463,17 @@ class PlayBroadcastViewModel @Inject constructor(
             val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
             val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusher.pusherState == ApsaraLivePusherState.Stop }
             _observableLeaderboardInfo.value = leaderboard
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious)
+            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
+                    leaderboard.config.loserMessage,
+                    leaderboard.config.sellerMessage
+            ))
         } catch (e: Throwable) {
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
+            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
         }
+    }
+
+    private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
+        return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(true))
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {

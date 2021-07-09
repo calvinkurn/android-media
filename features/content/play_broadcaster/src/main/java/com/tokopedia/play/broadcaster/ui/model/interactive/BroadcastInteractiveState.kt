@@ -13,9 +13,9 @@ sealed class BroadcastInteractiveState {
     }
 }
 
-enum class BroadcastInteractiveInitState {
+sealed class BroadcastInteractiveInitState {
 
-    NoPrevious,
-    Loading,
-    HasPrevious
+    data class NoPrevious(val showOnBoarding: Boolean) : BroadcastInteractiveInitState()
+    object Loading : BroadcastInteractiveInitState()
+    data class HasPrevious(val title: String, val subtitle: String) : BroadcastInteractiveInitState()
 }
