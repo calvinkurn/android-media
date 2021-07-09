@@ -6,7 +6,7 @@ class ScreenshotPreferenceManage(private val context: Context) {
 
     companion object {
         private const val SHARED_PREF_NAME = "seller_feedback_toaster_pref"
-        private const val HAS_DATE_TOASTER = "has_date_toaster"
+        private const val HAS_DATE_TOASTER = "seller_feedback_date_toaster"
     }
 
     private val sharedPref by lazy {
