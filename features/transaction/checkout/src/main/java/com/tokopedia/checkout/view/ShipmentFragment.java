@@ -3045,15 +3045,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private String getErrorMessage(Throwable throwable) {
-        String errorMessage = throwable.getMessage();
-        if (!(throwable instanceof ResponseErrorException || throwable instanceof AkamaiErrorException)) {
-            errorMessage = ErrorHandler.getErrorMessage(getActivity(), throwable);
-        }
-
-        return errorMessage;
-    }
-
     @Override
     public void logOnErrorLoadCheckoutPage(Throwable throwable) {
         CheckoutLogger.INSTANCE.logOnErrorLoadCheckoutPage(throwable, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
