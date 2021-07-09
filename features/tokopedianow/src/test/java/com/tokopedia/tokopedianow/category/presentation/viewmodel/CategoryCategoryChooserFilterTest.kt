@@ -18,6 +18,7 @@ class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooser
 
         categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
                 tokoNowCategoryViewModel,
+                getProductCountUseCase,
                 this
         )
     }
@@ -38,6 +39,20 @@ class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooser
     @Test
     fun `test category chooser cannot be spammed`() {
         categoryChooserFilterPageTestHelper.`test category chooser cannot be spammed`()
+    }
+
+    @Test
+    fun `test get filter count success from category chooser`() {
+        val mandatoryParams = createMandatoryTokonowQueryParams()
+
+        categoryChooserFilterPageTestHelper.`test get filter count success from category chooser`(mandatoryParams)
+    }
+
+    @Test
+    fun `test get filter count failed from category chooser`() {
+        val mandatoryParams = createMandatoryTokonowQueryParams()
+
+        categoryChooserFilterPageTestHelper.`test get filter count failed from category chooser`(mandatoryParams)
     }
 
     @Test

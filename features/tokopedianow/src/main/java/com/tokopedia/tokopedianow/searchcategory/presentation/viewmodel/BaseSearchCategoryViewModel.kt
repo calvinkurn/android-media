@@ -707,6 +707,11 @@ abstract class BaseSearchCategoryViewModel(
         onGetProductCountSuccess("0")
     }
 
+    open fun onViewGetProductCount(option: Option) {
+        val mapParameter = queryParam + mapOf(option.key to option.value)
+        onViewGetProductCount(mapParameter)
+    }
+
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
         onViewDismissL3FilterPage()
         onViewClickCategoryFilterChip(chosenCategoryFilter, true)

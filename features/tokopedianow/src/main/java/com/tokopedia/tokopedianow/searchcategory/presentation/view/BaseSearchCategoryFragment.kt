@@ -525,6 +525,7 @@ abstract class BaseSearchCategoryFragment:
         )
 
         sortFilterBottomSheet?.setResultCountText(productCountText)
+        categoryChooserBottomSheet?.setResultCountText(productCountText)
     }
 
     protected open fun configureL3BottomSheet(filter: Filter?) {
@@ -552,6 +553,10 @@ abstract class BaseSearchCategoryFragment:
     protected open fun dismissCategoryChooserFilterPage() {
         categoryChooserBottomSheet?.dismiss()
         categoryChooserBottomSheet = null
+    }
+
+    override fun getResultCount(selectedOption: Option) {
+        getViewModel().onViewGetProductCount(selectedOption)
     }
 
     override fun onApplyCategory(selectedOption: Option) {
