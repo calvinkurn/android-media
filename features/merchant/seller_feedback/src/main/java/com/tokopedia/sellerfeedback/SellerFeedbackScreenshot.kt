@@ -70,7 +70,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private fun setScreenShotTaken(uri: Uri) {
         lastTimeCall = System.currentTimeMillis()
         if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
-
             processScreenshotTaken(uri)
             SellerFeedbackTracking.Impression.eventViewHomepage()
             super.onScreenShotTaken(uri)
