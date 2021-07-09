@@ -45,10 +45,6 @@ class OrderSummaryPageActivityRevampTrackingTest {
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
-    private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
-    private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
     @Before
     fun setup() {
@@ -77,7 +73,6 @@ class OrderSummaryPageActivityRevampTrackingTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-
             clickChangeAddressRevamp()
             closeBottomSheet()
 

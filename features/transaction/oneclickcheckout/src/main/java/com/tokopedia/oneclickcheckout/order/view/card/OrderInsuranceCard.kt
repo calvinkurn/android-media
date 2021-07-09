@@ -7,6 +7,7 @@ import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.oneclickcheckout.databinding.CardOrderInsuranceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -17,9 +18,11 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
         const val VIEW_TYPE = 5
     }
 
-    fun setupInsurance(insuranceData: InsuranceData?, isShipmentLoading: Boolean, productId: String) {
+    fun setupInsurance(shipment: OrderShipment, productId: String) {
+        val insurance = shipment.insurance
+        val insuranceData = insurance.insuranceData
         binding.apply {
-            if (insuranceData != null && !isShipmentLoading) {
+            if (insuranceData != null && !shipment.isLoading) {
                 if (insuranceData.insurancePrice > 0) {
                     tvInsurancePrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false).removeDecimalSuffix()
                     tvInsurancePrice.visible()
@@ -42,12 +45,17 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                     InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
                         cbInsurance.isEnabled = true
-                        if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
-                            forceSetChecked(cbInsurance, true)
-                            listener.onInsuranceChecked(true)
-                        } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                            forceSetChecked(cbInsurance, false)
-                            listener.onInsuranceChecked(false)
+                        if (insurance.isFirstLoad) {
+                            if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
+                                forceSetChecked(cbInsurance, true)
+                                listener.onInsuranceChecked(true)
+                            } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
+                                forceSetChecked(cbInsurance, false)
+                                listener.onInsuranceChecked(false)
+                            }
+                        } else {
+                            forceSetChecked(cbInsurance, insurance.isCheckInsurance)
+                            listener.onInsuranceChecked(insurance.isCheckInsurance)
                         }
                         groupInsurance.visible()
                     }

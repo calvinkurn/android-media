@@ -77,7 +77,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                     shopId = shop.shopId,
                                     isPreorder = products.first().isPreOrder,
                                     warehouseId = products.first().warehouseId,
-                                    finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
+                                    finsurance = if (orderShipment.insurance.isCheckInsurance) 1 else 0,
                                     productData = checkoutProducts,
                                     shippingInfo = ShippingInfo(
                                             orderShipment.getRealShipperId(),

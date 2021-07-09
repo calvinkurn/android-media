@@ -12,7 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
@@ -20,33 +24,30 @@ import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
 
-    private lateinit var profile: OrderProfile
-    private var shipment: OrderShipment? = null
-    private var payment: OrderPayment? = null
+    private var profile: OrderProfile = OrderProfile()
+    private var shipment: OrderShipment = OrderShipment()
+    private var payment: OrderPayment = OrderPayment()
 
-    fun setPreference(profile: OrderProfile) {
+    fun setPreferenceData(profile: OrderProfile, shipment: OrderShipment, payment: OrderPayment) {
         this.profile = profile
+        this.shipment = shipment
+        this.payment = payment
         showPreference()
-    }
-
-    fun setShipment(shipment: OrderShipment?) {
-        if (::profile.isInitialized) {
-            this.shipment = shipment
-            showShipping()
-        }
-    }
-
-    fun setPayment(payment: OrderPayment) {
-        if (::profile.isInitialized) {
-            this.payment = payment
-            showPayment()
-        }
     }
 
     private fun showPreference() {

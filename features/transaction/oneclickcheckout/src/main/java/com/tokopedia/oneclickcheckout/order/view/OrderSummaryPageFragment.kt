@@ -407,7 +407,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderShipment() {
         viewModel.orderShipment.observe(viewLifecycleOwner) {
-            adapter.insurance = it?.insuranceData
             adapter.shipment = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {

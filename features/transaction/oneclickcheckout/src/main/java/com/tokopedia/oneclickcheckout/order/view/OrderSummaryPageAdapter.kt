@@ -3,12 +3,31 @@ package com.tokopedia.oneclickcheckout.order.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.oneclickcheckout.databinding.*
+import com.tokopedia.oneclickcheckout.databinding.CardOrderInsuranceBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderPromoBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderShopBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderTickerBinding
+import com.tokopedia.oneclickcheckout.databinding.LayoutOccOnboardingNewBinding
+import com.tokopedia.oneclickcheckout.databinding.LayoutPaymentBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
-import com.tokopedia.oneclickcheckout.order.view.card.*
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderOnboardingCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTickerCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
 class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
@@ -27,7 +46,6 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var profile: OrderProfile = OrderProfile(enable = false)
     var shipment: OrderShipment = OrderShipment()
     var payment: OrderPayment = OrderPayment()
-    var insurance: InsuranceData? = null
     var promo: OrderPromo = OrderPromo()
     var total: OrderTotal = OrderTotal()
 
@@ -94,12 +112,10 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setData(products[position - 3], shop, position - 3)
             }
             is OrderPreferenceCard -> {
-                holder.setPreference(profile)
-                holder.setShipment(shipment)
-                holder.setPayment(payment)
+                holder.setPreferenceData(profile, shipment, payment)
             }
             is OrderInsuranceCard -> {
-                holder.setupInsurance(insurance, shipment.isLoading, product!!.productId.toString())
+                holder.setupInsurance(shipment, product!!.productId.toString())
             }
             is OrderPromoCard -> {
                 holder.setupButtonPromo(promo)

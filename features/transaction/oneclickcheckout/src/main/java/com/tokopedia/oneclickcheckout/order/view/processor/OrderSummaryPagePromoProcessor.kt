@@ -152,7 +152,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
 
-        if (shipping.isCheckInsurance && shipping.insuranceData != null) {
+        if (shipping.insurance.isCheckInsurance && shipping.insurance.insuranceData != null) {
             ordersItem.isInsurancePrice = 1
         } else {
             ordersItem.isInsurancePrice = 0

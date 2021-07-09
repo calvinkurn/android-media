@@ -28,8 +28,7 @@ data class OrderShipment(
         val logisticPromoShipping: ShippingCourierUiModel? = null,
         val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
-        val insuranceData: InsuranceData? = null,
-        var isCheckInsurance: Boolean = false
+        val insurance: OrderInsurance = OrderInsurance()
 ) {
     fun isValid(): Boolean {
         return getRealShipperProductId() > 0 && !serviceName.isNullOrEmpty()
@@ -74,8 +73,14 @@ data class OrderShipment(
     }
 
     fun getRealInsurancePrice(): Int {
-        return if (isCheckInsurance && insuranceData != null) {
-            insuranceData.insurancePrice
+        return if (insurance.isCheckInsurance && insurance.insuranceData != null) {
+            insurance.insuranceData.insurancePrice
         } else 0
     }
 }
+
+data class OrderInsurance(
+        val insuranceData: InsuranceData? = null,
+        var isCheckInsurance: Boolean = false,
+        var isFirstLoad: Boolean = true
+)

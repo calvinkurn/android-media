@@ -53,8 +53,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
     var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
-    var orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
-        private set
+    val orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
 
     val orderShop: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
 
@@ -310,8 +309,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun setInsuranceCheck(checked: Boolean) {
-        if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.isCheckInsurance != checked) {
-            orderShipment.value.isCheckInsurance = checked
+        if (orderShipment.value.getRealShipperProductId() > 0 && orderShipment.value.insurance.isCheckInsurance != checked) {
+            orderShipment.value.insurance.isCheckInsurance = checked
+            orderShipment.value.insurance.isFirstLoad = false
             calculateTotal(forceButtonState = null)
         }
     }
