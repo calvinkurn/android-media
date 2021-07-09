@@ -1,36 +1,29 @@
-task("configDebugTools") {
-    if (!rootProject.ext.debugToolsEnabled) {
-        // it has already set false, because default is true
-        return
-    }
-    if (allowDistributionLocal()) {
-        rootProject.ext.debugToolsEnabled = true
-        println("Debug tools set true based on buildType Parameter")
-        return
-    }
-    def taskNames = project.gradle.startParameter.taskNames
-    if (taskNames==null || taskNames.size() == 0) {
-        rootProject.ext.debugToolsEnabled = true
-        println("Debug tools set true. No task is defined")
-    } else {
-        rootProject.ext.debugToolsEnabled = true
-        for ( taskName in taskNames ) {
-            if ( !taskName.toLowerCase().contains("debug") &&
-                    !taskName.toLowerCase().contains("dev") &&
-                    taskName.toLowerCase().contains("release")) {
-                rootProject.ext.debugToolsEnabled = false
-                println("Debug tools set false. Task type is Release.")
-                break
-            }
-        }
-        if (rootProject.ext.debugToolsEnabled) {
-            println("Debug tools set to true. Task is not releaseProd")
+println("config debug tools")
+if (!rootProject.ext.debugToolsEnabled) {
+    // it has already set false, because default is true
+    return
+}
+if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+    rootProject.ext.debugToolsEnabled = true
+    println("Debug tools set true based on buildType Parameter")
+    return
+}
+def taskNames = project.gradle.startParameter.taskNames
+if (taskNames==null || taskNames.size() == 0) {
+    rootProject.ext.debugToolsEnabled = true
+    println("Debug tools set true. No task is defined")
+} else {
+    rootProject.ext.debugToolsEnabled = true
+    for ( taskName in taskNames ) {
+        if ( !taskName.toLowerCase().contains("debug") &&
+                !taskName.toLowerCase().contains("dev") &&
+                taskName.toLowerCase().contains("release")) {
+            rootProject.ext.debugToolsEnabled = false
+            println("Debug tools set false. Task type is Release.")
+            break
         }
     }
+    if (rootProject.ext.debugToolsEnabled) {
+        println("Debug tools set to true. Task is not releaseProd")
+    }
 }
-
-def allowDistributionLocal() {
-    return (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp")
-}
-
-preBuild.dependsOn configDebugTools

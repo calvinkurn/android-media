@@ -69,13 +69,11 @@ if (hasProperty('buildScan')) {
 
 apply from: 'buildproj.gradle'
 
+apply from: "$rootDir/tools/set_debug_tools.gradle"
+
 subprojects {
     project.afterEvaluate {
         def isLibrary = project.plugins.hasPlugin("com.android.library")
-        def isApplication = project.plugins.hasPlugin("com.android.application")
-        if (isLibrary || isApplication) {
-            project.apply from: "$rootDir/tools/set_debug_tools.gradle"
-        }
         if (isLibrary) {
             project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
         }
