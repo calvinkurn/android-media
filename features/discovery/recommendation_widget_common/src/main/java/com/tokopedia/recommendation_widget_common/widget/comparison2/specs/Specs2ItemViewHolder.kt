@@ -1,12 +1,13 @@
-package com.tokopedia.recommendation_widget_common.widget.comparison.specs
+package com.tokopedia.recommendation_widget_common.widget.comparison2.specs
 
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_spec.view.*
+import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsModel
+import kotlinx.android.synthetic.main.item_spec2.view.*
 
-class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class Specs2ItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     fun bind(specsModel: SpecsModel, position: Int) {
         if(position == 0) view.view_divider.visibility = View.INVISIBLE
         view.tv_spec_title.text = specsModel.specsTitle
