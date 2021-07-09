@@ -43,7 +43,19 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
+
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        currentActivity = WeakReference(activity)
+        super.onActivityResumed(activity)
+    }
+
+    private fun processScreenshotTaken(uri: Uri) {
         val date = screenshotPreferenceManage.getDateToaster()
+        val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
+        //temporary there is no remote config checker for environment test
+        //I think remote config will be checked before check isDifferentDays or process screenshot taken
         if (date.isNotBlank()) {
             if (isDifferentDays(date)) {
                 screenshotPreferenceManage.setDateToaster(getNowDate())
@@ -55,16 +67,11 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         }
     }
 
-    override fun onActivityResumed(activity: Activity) {
-        currentActivity = WeakReference(activity)
-        super.onActivityResumed(activity)
-    }
-
     private fun setScreenShotTaken(uri: Uri) {
         lastTimeCall = System.currentTimeMillis()
         if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
-            val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
-            //temporary there is no remote config checker for environment test
+
+            processScreenshotTaken(uri)
             SellerFeedbackTracking.Impression.eventViewHomepage()
             super.onScreenShotTaken(uri)
             lastTimeUpdate = System.currentTimeMillis()

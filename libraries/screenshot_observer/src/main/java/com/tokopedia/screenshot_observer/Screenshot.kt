@@ -147,11 +147,11 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
             if (cursor != null && cursor.moveToFirst()) {
                 val Name = generateScreenshotDataFromCursor(cursor)
                 if (Name != null && currentActivity != null) {
-                    if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
                     if (GlobalConfig.isSellerApp()) {
                         toasterSellerListener?.showToaster(uri, currentActivity)
                     } else {
                         openBottomSheetFeedback(currentActivity, uri, className)
+                        ScreenshotAnalytics.eventUseScreenshot()
                     }
                 }
             }
