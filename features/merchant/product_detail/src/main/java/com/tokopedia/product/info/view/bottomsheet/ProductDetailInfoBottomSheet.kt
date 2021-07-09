@@ -19,7 +19,6 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -45,7 +44,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheet_product_detail_info.*
 import timber.log.Timber
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -125,23 +123,22 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
     }
 
-    override fun goToApplink(url: String) {
-        val categoryApplink: String = context?.getString(R.string.pdp_category_applink) ?: ""
-
-        when {
-            url.startsWith(categoryApplink) -> {
-                onCategoryClicked(url)
-            }
-            else -> {
-                val uriLink = Uri.parse(url).pathSegments
-
-                if (uriLink.size >= 2 && uriLink[1] == "etalase") {
-                    onEtalaseClicked()
-                } else {
-                    RouteManager.route(context, url)
-                }
-            }
+    override fun goToCategory(url: String) {
+        if (!GlobalConfig.isSellerApp()) {
+            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+                    ?: "")
+            goToApplink(url)
         }
+    }
+
+    override fun goToEtalase(url: String) {
+        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+                ?: "")
+        goToApplink(url)
+    }
+
+    override fun goToApplink(url: String) {
+        RouteManager.route(context, url)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -285,30 +282,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
         }
     }
-
-    private fun onCategoryClicked(url: String) {
-        if (!GlobalConfig.isSellerApp()) {
-            DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                    ?: "")
-            RouteManager.route(context, url)
-        }
-    }
-
-    private fun onEtalaseClicked() {
-        val etalaseId = listener?.getPdpDataSource()?.basic?.menu?.id ?: ""
-        val shopId = listener?.getPdpDataSource()?.basic?.shopID ?: ""
-
-        val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
-            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
-        } else {
-            UriUtil.buildUri(ApplinkConst.SHOP, shopId)
-        })
-
-        DynamicProductDetailTracking.ProductDetailSheet.onEtalaseBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
-                ?: "")
-        startActivity(intent)
-    }
-
 }
 
 interface ProductDetailBottomSheetListener {

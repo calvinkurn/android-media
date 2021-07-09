@@ -84,6 +84,7 @@ object SearchTracking {
     object Misc {
         const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
+        const val TOKONOW_SEARCH_PRODUCT_ATC_VARIANT = "/tokonow - search page"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {

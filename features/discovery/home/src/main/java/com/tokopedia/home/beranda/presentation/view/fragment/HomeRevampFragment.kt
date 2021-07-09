@@ -242,7 +242,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val HOME_SOURCE = "home"
 
         private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light.png"
+        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light_2.png"
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000

@@ -483,7 +483,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on fail update cart throwable tokonow`() = runBlockingTest {
         //fulfil empty data minicart
         `on success get product info non login`()
-        val mockData = UpdateCartV2Data(error = listOf("error gan"), data = Data(message = "sukses update cart"))
         val currentMiniCartMock =  MiniCartItem(productId = "518076293", quantity = 10)
         val updatedQuantity = 5
 
@@ -891,7 +890,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any())
         }
 
         coVerify {
@@ -917,7 +916,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns ProductInfoP3()
 
         coEvery {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any())
         } returns ProductInfoP2UiData(miniCart = if (!hitMiniCart) mutableMapOf() else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap())
 
         coEvery {
@@ -991,7 +990,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
+            getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any())
         }
 
         coVerify {
