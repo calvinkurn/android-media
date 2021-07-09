@@ -827,6 +827,23 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         } else null
     }
 
+    fun getCartShopHolderDataAndIndexByCartId(cartId: String): Int {
+        loop@ for (any in cartDataList) {
+            if (any is CartShopHolderData) {
+                any.shopGroupAvailableData?.cartItemDataList?.let { cartItemHolderDataList ->
+                    innerLoop@ for (cartItemHolderData in cartItemHolderDataList) {
+                        if (cartItemHolderData.cartItemData.originData.cartId.toString() == cartId) {
+                            any.newlyAddedProductCartId = cartId
+                            return cartDataList.indexOf(any)
+                        }
+                    }
+                }
+            }
+        }
+
+        return RecyclerView.NO_POSITION
+    }
+
     fun notifyWishlist(productId: String, isWishlist: Boolean) {
         for (any in cartDataList) {
             if (any is CartWishlistHolderData) {

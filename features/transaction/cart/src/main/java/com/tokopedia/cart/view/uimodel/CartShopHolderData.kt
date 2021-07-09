@@ -17,6 +17,7 @@ class CartShopHolderData : Parcelable {
     var showMoreWording: String = ""
     var showLessWording: String = ""
     var clickedCollapsedProductIndex: Int = RecyclerView.NO_POSITION
+    var newlyAddedProductCartId: String = ""
 
     fun setAllItemSelected(allSelected: Boolean) {
         this.isAllSelected = allSelected

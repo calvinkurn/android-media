@@ -1780,8 +1780,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setGlobalDeleteVisibility()
 
             validateGoToCheckout()
+            scrollToLastAddedProductShop()
 
             renderAdditionalWidget()
+        }
+    }
+
+    private fun scrollToLastAddedProductShop() {
+        val cartId: String = getCartId()
+        if (cartId.isNotBlank()) {
+            val shopIndex = cartAdapter.getCartShopHolderDataAndIndexByCartId(cartId)
+            if (shopIndex != RecyclerView.NO_POSITION) {
+                binding?.rvCart?.smoothScrollToPosition(shopIndex)
+            }
         }
     }
 
