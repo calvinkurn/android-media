@@ -82,8 +82,12 @@ class SummaryInfoViewComponent(
         tvDuration.text = data.duration
     }
 
-    fun setSummaryInfo(dataList: List<TrafficMetricUiModel>) {
-        trafficMetricReportAdapter.setItems(dataList)
+    fun addTrafficMetric(metric: TrafficMetricUiModel, position: Int) {
+        trafficMetricReportAdapter.addItem(position, metric)
+    }
+
+    fun addTrafficMetrics(dataList: List<TrafficMetricUiModel>) {
+        trafficMetricReportAdapter.addItems(dataList)
     }
 
     fun showError(onRetry: () -> Unit) {
