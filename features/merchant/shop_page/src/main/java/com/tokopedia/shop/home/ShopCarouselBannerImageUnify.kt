@@ -73,7 +73,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
     private val reloadIcon = getIconUnifyDrawable(
             context,
             IconUnify.RELOAD,
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
     )
     private val reloadDrawable = LayerDrawable(
             arrayOf(
@@ -136,7 +136,7 @@ class ShopCarouselBannerImageUnify : AppCompatImageView {
         scaleType = ScaleType.FIT_XY
 
         paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
         }
     }

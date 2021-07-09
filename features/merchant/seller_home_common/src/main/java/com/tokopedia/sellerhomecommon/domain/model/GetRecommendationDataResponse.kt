@@ -8,12 +8,12 @@ import com.google.gson.annotations.SerializedName
 
 data class GetRecommendationDataResponse(
         @SerializedName("fetchRecommendationWidgetData")
-        val recommendationWidgetData: RecommendationWidgetModel
+        val recommendationWidgetData: RecommendationWidgetModel? = null
 )
 
 data class RecommendationWidgetModel(
         @SerializedName("data")
-        val data: List<RecommendationWidgetDataModel>
+        val data: List<RecommendationWidgetDataModel> = emptyList()
 )
 
 data class RecommendationWidgetDataModel(
@@ -40,39 +40,41 @@ data class RecommendationDataModel(
 
 data class RecommendationModel(
         @SerializedName("title")
-        val title: String,
+        val title: String? = "",
         @SerializedName("list")
-        val list: List<RecommendationItemModel>
+        val list: List<RecommendationItemModel> = emptyList()
 )
 
 data class RecommendationItemModel(
         @SerializedName("text")
-        val text: String,
+        val text: String? = "",
         @SerializedName("applink")
-        val appLink: String,
+        val appLink: String? = "",
         @SerializedName("type")
-        val type: Int
+        val type: Int? = 0
 )
 
 data class RecommendationTicker(
         @SerializedName("type")
-        val type: Int,
+        val type: Int? = 0,
         @SerializedName("text")
-        val text: String
+        val text: String? = ""
 )
 
 data class RecommendationProgressModel(
         @SerializedName("show")
-        val isShown: Boolean,
+        val isShown: Boolean? = false,
         @SerializedName("text")
-        val text: String,
+        val text: String? = "",
         @SerializedName("bar")
-        val bar: RecommendationBarModel
+        val bar: RecommendationBarModel? = null
 )
 
 data class RecommendationBarModel(
         @SerializedName("value")
-        val value: Int,
+        val value: Int? = 0,
         @SerializedName("maxValue")
-        val maxValue: Int
+        val maxValue: Int? = 0,
+        @SerializedName("valueDisplay")
+        val valueToDisplay: String? = ""
 )

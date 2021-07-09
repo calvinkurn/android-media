@@ -1,0 +1,46 @@
+{
+  "readme": "Change Bank Account Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click ubah detail rekening",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm ubah detail rekening",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click ubah user klikbca",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm ubah user klikbca",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click ubah bukti pembayaran",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    }
+  ]
+}
