@@ -124,11 +124,11 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
         savedUri = uri
         currentActivity?.let {
             if (!allPermissionsGranted(it) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
                 if (GlobalConfig.isSellerApp()) {
                     toasterSellerListener?.showToaster(uri, it)
                 } else {
                     openBottomSheetFeedback(it, uri, className)
+                    ScreenshotAnalytics.eventUseScreenshot()
                 }
             } else {
                 handleItem(uri)

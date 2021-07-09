@@ -24,7 +24,7 @@ import kotlin.math.abs
 class SellerFeedbackScreenshot(private val context: Context) : Screenshot(context.contentResolver) {
 
     companion object {
-        private const val THRESHOLD_TIME = 1000L
+        private const val THRESHOLD_TIME = 2000L
         private const val PATTERN_DATE_PREFS = "yyyy-MM-dd"
     }
 
@@ -36,6 +36,12 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     private val screenshotPreferenceManage by lazy { ScreenshotPreferenceManage(context) }
 
+    override var listener = object : BottomSheetListener {
+        override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
+            uri?.let { openFeedbackForm(it) }
+        }
+    }
+
     override val toasterSellerListener = object : ToasterSellerListener {
         override fun showToaster(uri: Uri?, currentActivity: Activity?) {
             showToasterSellerFeedback(uri, currentActivity)
@@ -43,6 +49,24 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
+        val date = screenshotPreferenceManage.getDateToaster()
+        if (date.isNotBlank()) {
+            if (isDifferentDays(date)) {
+                screenshotPreferenceManage.setDateToaster(getNowDate())
+                setScreenShotTaken(uri)
+            }
+        } else {
+            screenshotPreferenceManage.setDateToaster(getNowDate())
+            setScreenShotTaken(uri)
+        }
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        currentActivity = WeakReference(activity)
+        super.onActivityResumed(activity)
+    }
+
+    private fun setScreenShotTaken(uri: Uri) {
         lastTimeCall = System.currentTimeMillis()
         if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
             val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
@@ -51,11 +75,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
             super.onScreenShotTaken(uri)
             lastTimeUpdate = System.currentTimeMillis()
         }
-    }
-
-    override fun onActivityResumed(activity: Activity) {
-        currentActivity = WeakReference(activity)
-        super.onActivityResumed(activity)
     }
 
     private fun getEnableSellerGlobalFeedbackRemoteConfig(activity: Activity?): Boolean {
@@ -101,19 +120,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun showToasterSellerFeedback(uri: Uri?, currentActivity: Activity?) {
-        val date = screenshotPreferenceManage.getDateToaster()
-        if (date.isNotBlank()) {
-            if (isDifferentDays(date)) {
-                screenshotPreferenceManage.setDateToaster(getNowDate())
-                initToasterSellerFeedback(uri, currentActivity)
-            }
-        } else {
-            screenshotPreferenceManage.setDateToaster(getNowDate())
-            initToasterSellerFeedback(uri, currentActivity)
-        }
-    }
-
-    private fun initToasterSellerFeedback(uri: Uri?, currentActivity: Activity?) {
         val view = currentActivity?.window?.decorView?.rootView
         view?.run {
             Toaster.build(this, text = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_text),
