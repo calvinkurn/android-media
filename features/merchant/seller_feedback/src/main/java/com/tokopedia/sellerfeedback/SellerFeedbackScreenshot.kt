@@ -46,11 +46,9 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
         //temporary there is no remote config checker for environment test
         //I think remote config will be checked before check threshold calculation or process screenshot taken
-        if (enableSellerFeedbackScreenshot) {
-            lastTimeCall = System.currentTimeMillis()
-            if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
-                processScreenshotTaken(uri)
-            }
+        lastTimeCall = System.currentTimeMillis()
+        if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
+            processScreenshotTaken(uri)
         }
     }
 
