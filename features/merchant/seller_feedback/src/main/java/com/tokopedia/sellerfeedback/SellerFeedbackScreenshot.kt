@@ -52,6 +52,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         lastTimeCall = System.currentTimeMillis()
         if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
             val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
+            //temporary there is no remote config checker for environment test
             SellerFeedbackTracking.Impression.eventViewHomepage()
             super.onScreenShotTaken(uri)
             lastTimeUpdate = System.currentTimeMillis()
