@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.network.utils.ErrorHandler
 import kotlinx.android.synthetic.main.item_hotel_fragment_loading_state.view.*
 import kotlinx.android.synthetic.main.item_network_error_view.view.*
 
@@ -27,17 +24,7 @@ abstract class HotelBaseFragment: BaseDaggerFragment() {
                 errorView.global_error.main_retry.visibility = View.GONE
             }
         } catch (exception: Exception) {
-            val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val retryLoad = inflater.inflate(R.layout.item_network_error_view, view?.parent as ViewGroup)
-
-            retryLoad.iv_icon.setImageResource(ErrorHandlerHotel.getErrorImage(e))
-            retryLoad.message_retry.text = ErrorHandlerHotel.getErrorTitle(context, e)
-            retryLoad.sub_message_retry.text = ErrorHandler.getErrorMessage(context, e)
-
-            retryLoad.button_retry.setOnClickListener {
-                retryLoad.main_retry.visibility = View.GONE
-                onErrorRetryClicked()
-            }
+            exception.printStackTrace()
         }
     }
 

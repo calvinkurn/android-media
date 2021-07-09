@@ -324,13 +324,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
 
-            iv_icon.setImageResource(ErrorHandlerHotel.getErrorImage(e))
-            message_retry.text = ErrorHandlerHotel.getErrorTitle(context, e)
-            sub_message_retry.text = ErrorHandler.getErrorMessage(context, e)
-
-            button_retry.setOnClickListener {
-                hideErrorView()
-                onErrorRetryClicked()
+            showErrorState(e)
+            context?.run {
+                ErrorHandlerHotel.getErrorUnify(this, e, { onErrorRetryClicked() },  global_error)
             }
         }
     }
@@ -697,6 +693,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     override fun onErrorRetryClicked() {
+        hideErrorView()
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
                     HotelGqlQuery.PROPERTY_DETAIL,
