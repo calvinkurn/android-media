@@ -89,16 +89,14 @@ class BalanceWidgetView: FrameLayout {
         return GridLayoutManager(itemView.context, spanCount)
     }
 
-    private fun getBalanceWidgetRecyclerView(): RecyclerView? {
+    fun getBalanceWidgetRecyclerView(): RecyclerView? {
         return rvBalance
     }
 
     fun getTokopointsView(): View? {
         val tokopointsPos = balanceAdapter?.getTokopointsDataPosition() ?: -1
         if (tokopointsPos != -1) {
-            layoutManager?.let {
-                return it.getChildAt(tokopointsPos)
-            }
+            return balanceAdapter?.attachedRecyclerView?.findViewHolderForAdapterPosition(tokopointsPos)?.itemView
         }
         return null
     }

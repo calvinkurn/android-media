@@ -71,6 +71,7 @@
 
             <LinearLayout
                 android:id="@+id/layout_search"
+                android:tag="@string/tag_navigation_toolbar_searchbar"
                 tools:visibility="visible"
                 android:visibility="gone"
                 android:gravity="center"

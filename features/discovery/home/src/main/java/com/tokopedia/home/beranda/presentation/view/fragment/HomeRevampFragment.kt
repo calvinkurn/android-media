@@ -174,6 +174,7 @@ import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
+import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -259,6 +260,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var tokopointsCoachmarkPosition: Int? = null
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
@@ -713,6 +715,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getString(R.string.onboarding_coachmark_wallet_description)
                         )
                 )
+                tokopointsCoachmarkPosition = (this.size-1)
             }
         }
     }
@@ -725,8 +728,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachMarkItem.buildHomeCoachmark()
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        coachMarkItem.setCoachmarkShownPref()
+                    override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
+                        if (currentIndex == tokopointsCoachmarkPosition) {
+                            val item = coachMarkItem[currentIndex]
+                            coachmark?.isDismissed = true
+
+                            val tokopointsView = getBalanceWidgetView()
+                            tokopointsView?.let {
+                                item.anchorView = tokopointsView
+                                coachmark?.isDismissed = false
+                                coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
+                            }
+                        }
+                        coachMark2Item.setCoachmarkShownPref()
                     }
                 })
                 //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature

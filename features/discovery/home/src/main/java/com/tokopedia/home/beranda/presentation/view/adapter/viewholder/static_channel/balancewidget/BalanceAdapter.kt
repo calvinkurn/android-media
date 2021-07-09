@@ -48,10 +48,10 @@ class BalanceAdapter(
     diffUtil: DiffUtil.ItemCallback<BalanceDrawerItemModel>
 ): ListAdapter<BalanceDrawerItemModel, BalanceAdapter.Holder>(diffUtil) {
 
+    var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
     fun setItemMap(itemMap: HomeBalanceModel) {
-        this.itemMap = HomeBalanceModel()
         this.itemMap = itemMap
 
         val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
@@ -59,6 +59,11 @@ class BalanceAdapter(
             balanceModelList.add(it.key, it.value)
         }
         submitList(balanceModelList.toMutableList())
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.attachedRecyclerView = recyclerView
     }
 
     fun getItemMap():  HomeBalanceModel {
@@ -98,6 +103,9 @@ class BalanceAdapter(
         fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
             this.listener = listener
             renderTokoPoint(drawerItem)
+            this.itemView.tag = String.format(
+                itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
+            )
             this.isOvoAvailable = isOvoAvailable
         }
 

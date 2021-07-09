@@ -154,7 +154,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
     val context = itemView.context
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
-        iconImage.tag = iconToolbar.id.toString()
+        iconImage.tag = iconToolbar.name
 
         if (iconToolbar.imageRes != null) {
             val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
@@ -213,6 +213,10 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         }
 
         (iconImage.notificationRef.parent as? ViewGroup)?.layoutTransition = LayoutTransition()
+        iconImage.notificationRef.tag =
+            String.format(
+                context.getString(R.string.tag_counter_id), iconToolbar.name
+            )
         iconImage.notificationRef.invisible()
 
         when {
@@ -253,8 +257,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
     val context = itemView.context
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
-        iconImage.tag = iconToolbar.id.toString()
-        iconBadge.tag = constructCounterTagById(iconToolbar.id)
+        iconImage.tag = iconToolbar.name
         iconImage.cancelAnimation()
         iconImage.progress = 0f
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
@@ -287,7 +290,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
         }
     }
 
-    private fun constructCounterTagById(id: Int) =
+    private fun constructCounterTagById(id: String) =
             context.getString(R.string.tag_counter_id) + id
 }
 

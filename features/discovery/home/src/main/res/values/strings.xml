@@ -143,4 +143,5 @@
     <string name="sprint_product_item">Sprint Product Item</string>
 
     <string name="tag_home_nav_toolbar">home_navigation_toolbar</string>
+    <string name="tag_balance_widget">drawerItemType %s</string>
 </resources>
