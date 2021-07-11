@@ -11,7 +11,7 @@ class TimeAdapter(var time: ArrayList<String> = arrayListOf()) : NumberPickerAda
 
     override fun getPosition(vale: String): Int = time.indexOf(vale).clamp(getMinIndex(), getMaxIndex())
 
-    override fun getTextWithMaximumLength(): String = time.maxBy { it.length } ?: ""
+    override fun getTextWithMaximumLength(): String = time.maxByOrNull { it.length } ?: ""
 
     override fun getValue(position: Int): String {
         if (position >= getMinIndex() && position <= getMaxIndex())

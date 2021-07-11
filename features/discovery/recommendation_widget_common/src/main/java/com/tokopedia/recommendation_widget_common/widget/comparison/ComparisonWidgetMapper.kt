@@ -63,7 +63,7 @@ object ComparisonWidgetMapper {
 
     private fun buildSpecsConfig(recommendationItem: List<RecommendationItem>, context: Context): SpecsConfig {
         var specsConfig = SpecsConfig()
-        val maxSpecsSize = recommendationItem.maxBy { it.specs.size }?.specs?.size?:0
+        val maxSpecsSize = recommendationItem.maxByOrNull{ it.specs.size }?.specs?.size?:0
         for (i in 0 until maxSpecsSize) {
             var currentPosition = i
             val text = findMaxSummaryText(recommendationItem, i)

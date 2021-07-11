@@ -11,7 +11,7 @@ class DateAdapter(var date: ArrayList<String> = arrayListOf()) : NumberPickerAda
 
     override fun getPosition(vale: String): Int = date.indexOf(vale).clamp(getMinIndex(), getMaxIndex())
 
-    override fun getTextWithMaximumLength(): String = date.maxBy { it.length } ?: ""
+    override fun getTextWithMaximumLength(): String = date.maxByOrNull { it.length } ?: ""
 
     override fun getValue(position: Int): String {
         if (position >= getMinIndex() && position <= getMaxIndex())

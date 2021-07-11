@@ -107,7 +107,7 @@ object ImageEncryptionUtil {
         val fis = FileInputStream(originalFilePath)
         val fs = FileOutputStream(File(encryptedImagePath))
         val out = CipherOutputStream(fs, aes)
-        out.write(fis.readBytes(1024 * 1024))
+        out.write(fis.readBytes())
         out.flush()
         out.close()
     }

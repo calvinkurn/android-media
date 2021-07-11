@@ -289,7 +289,7 @@ private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int 
         it.add(getSalesRatingFloatHeight(context))
     }
 
-    return credibilitySectionHeightList.max() ?: 0
+    return credibilitySectionHeightList.maxOrNull() ?: 0
 }
 
 private fun ProductCardModel.getRatingHeight(context: Context): Int {

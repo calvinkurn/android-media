@@ -631,7 +631,7 @@ class PlayViewModel @Inject constructor(
                 ?.filter { it.value.isShown }
                 ?.mapValues { it.value as BottomInsetsState.Shown }
                 .orEmpty()
-        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        val entry = shownBottomSheets.minByOrNull { it.value.deepLevel }
         when (entry?.key) {
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()

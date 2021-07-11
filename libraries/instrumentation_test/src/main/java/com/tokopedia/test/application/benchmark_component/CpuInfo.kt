@@ -70,7 +70,7 @@ internal object CpuInfo {
 
         maxFreqHz = coreDirs
                 .filter { it.maxFreqKhz != -1L }
-                .maxBy { it.maxFreqKhz }
+                .maxByOrNull { it.maxFreqKhz }
                 ?.maxFreqKhz?.times(1000) ?: -1
 
         locked = isCpuLocked(coreDirs)
@@ -84,7 +84,7 @@ internal object CpuInfo {
     fun isCpuLocked(coreDirs: List<CoreDir>): Boolean {
         val onlineCores = coreDirs.filter { it.online }
 
-        if (onlineCores.any { it.availableFreqs.max() != onlineCores[0].availableFreqs.max() }) {
+        if (onlineCores.any { it.availableFreqs.maxOrNull() != onlineCores[0].availableFreqs.maxOrNull() }) {
             Log.d(TAG, "Clocks not locked: cores with different max frequencies")
             return false
         }
@@ -94,7 +94,7 @@ internal object CpuInfo {
             return false
         }
 
-        if (onlineCores.any { it.availableFreqs.min() == it.currentMinFreq }) {
+        if (onlineCores.any { it.availableFreqs.minOrNull()() == it.currentMinFreq }) {
             Log.d(TAG, "Clocks not locked: online cores with min freq == min avail freq")
             return false
         }

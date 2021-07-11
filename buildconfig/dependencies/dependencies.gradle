@@ -3,10 +3,10 @@ ext {
     compileSdkVersion = 29
     minSdkVersion = 21
     targetSdkVersion = 29
-    buildToolsVersion = "29.0.2"
+    buildToolsVersion = "30.0.2"
 
     jacocoVersion = "0.8.5"
-    kotlinVersion = "1.4.32"
+    kotlinVersion = "1.5.20"
 
     navigationVersion = "2.3.0"
     lifeCycleVersion = "2.2.0"
@@ -35,7 +35,7 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
-    roomVersion = '2.2.5'
+    roomVersion = '2.3.0'
     sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
     twitter4JVersion = '4.0.7'
@@ -228,8 +228,8 @@ ext {
             rxJavaComputation     : 'io.reactivex:rxjava-computation-expressions:0.21.0',
             multiDex              : "androidx.multidex:multidex:$multiDexVersion",
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
-            dagger                : "com.google.dagger:dagger:2.30.1",
-            daggerCompiler        : "com.google.dagger:dagger-compiler:2.30.1",
+            dagger                : "com.google.dagger:dagger:2.37",
+            daggerCompiler        : "com.google.dagger:dagger-compiler:2.37",
             bcaxcoWidget          : "com.bca.xco.widget:BCAXCOWidget:1.0@aar",
 
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
