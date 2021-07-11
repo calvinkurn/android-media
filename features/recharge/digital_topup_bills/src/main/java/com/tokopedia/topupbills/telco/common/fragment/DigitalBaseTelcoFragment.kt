@@ -173,8 +173,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         context?.let {
             val intent = RouteManager.getIntent(it, CommonTopupBillsUtil.getApplinkFavoriteNumber(it))
             val extras = Bundle()
-            extras.putString(EXTRA_CLIENT_NUMBER, ClientNumberType.TYPE_INPUT_TEL)
-            extras.putString(EXTRA_NUMBER, clientNumber)
+            extras.putString(EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
+            extras.putString(EXTRA_CLIENT_NUMBER, clientNumber)
             extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, dgCategoryIds)
             extras.putString(EXTRA_DG_CATEGORY_NAME, categoryName)
             extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, operatorData)
@@ -500,8 +500,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
 
+        const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
-        const val EXTRA_NUMBER = "EXTRA_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
         const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
