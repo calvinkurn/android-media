@@ -54,7 +54,7 @@
     <string name="common_topup_fav_number_failed_delete_name">Maaf, belum berhasil terhapus. Coba lagi, ya.</string>
     <string name="common_topup_fav_number_toaster_undo_delete">Batalkan</string>
     <string name="common_topup_fav_number_success_undo_delete">Oke, %s nggak jadi dihapus.</string>
-    <string name="common_topup_fav_number_failed_undo_delete">Maaf, %s belum berhasil dikembalikan. Mau coba lagi?</string>
+    <string name="common_topup_fav_number_failed_undo_delete">Maaf, nomor belum berhasil dikembalikan. Mau coba lagi?</string>
     <string name="common_topup_fav_number_failed_fetch">Maaf, Nomor Favorit belum berhasil ditampilkan. Coba refresh, yuk.</string>
     <string name="common_topup_fav_number_failed_fetch_after_update">Maaf, nama belum berhasil ke-update. Coba refresh, yuk.</string>
     <string name="common_topup_fav_number_failed_fetch_after_delete">Maaf, daftar Nomor Favorit belum berhasil ke-update. Coba refresh, yuk.</string>

@@ -215,9 +215,7 @@ class TopupBillsFavoriteNumberFragment :
         topUpBillsViewModel.seamlessFavNumberUndoDeleteData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessUndoDeleteFavoriteNumber(it.data)
-                is Fail -> {
-                    // handled on callback
-                }
+                is Fail -> onFailedUndoDeleteFavoriteNumber()
             }
         })
     }
@@ -235,12 +233,12 @@ class TopupBillsFavoriteNumberFragment :
         getSeamlessFavoriteNumber()
     }
 
-    private fun onFailedUndoDeleteFavoriteNumber(favoriteDetail: UpdateFavoriteDetail) {
+    private fun onFailedUndoDeleteFavoriteNumber() {
         numberListAdapter.setNumbers(
             CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
         view?.let {
             Toaster.build(
-                it, getString(R.string.common_topup_fav_number_failed_undo_delete, favoriteDetail.clientNumber),
+                it, getString(R.string.common_topup_fav_number_failed_undo_delete),
                 Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.common_topup_fav_number_refresh)
             ) { getSeamlessFavoriteNumber() }.show()
         }
@@ -490,9 +488,7 @@ class TopupBillsFavoriteNumberFragment :
                     isDelete = isDelete
                 ),
                 FavoriteNumberActionType.UNDO_DELETE
-            ) {
-                onFailedUndoDeleteFavoriteNumber(favoriteDetail)
-            }
+            )
         }
     }
 

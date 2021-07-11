@@ -203,10 +203,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                     _seamlessFavNumberDeleteData.postValue(Fail(it))
                     onModifyCallback?.invoke()
                 }
-                UNDO_DELETE -> {
-                    _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
-                    onModifyCallback?.invoke()
-                }
+                UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }
         }
     }
