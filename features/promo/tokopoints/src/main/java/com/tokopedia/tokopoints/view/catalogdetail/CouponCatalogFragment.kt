@@ -1,17 +1,13 @@
 package com.tokopedia.tokopoints.view.catalogdetail
 
-import HtmlUrlHelper
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Paint
-import android.os.Build
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.Html
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -52,7 +48,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.webview.TkpdWebView
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
@@ -421,7 +417,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
             tvTnc.text = HtmlUrlHelper(
                 data.tnc!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
-            tvTnc.movementMethod = LinkMovementMethod.getInstance()
+            tvTnc.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.tnc)?.hide()
             view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
@@ -430,7 +426,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
             tvHowToUse.text = HtmlUrlHelper(
                 data.howToUse!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
-            tvHowToUse.movementMethod = LinkMovementMethod.getInstance()
+            tvHowToUse.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             tvHowToUse.hide()
@@ -438,6 +434,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val pointValue: Typography = requireView().findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         updateQuotaValue(data.upperTextDesc as MutableList<String>?)
+        handleQuotaColor()
         //Quota text handling
         if (data.disableErrorMessage.isNullOrEmpty()) {
             disabledError?.hide()
@@ -561,6 +558,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             quota?.visibility = View.GONE
         } else {
             quotaContainer?.show()
+            handleQuotaColor()
             quota?.visibility = View.VISIBLE
             val upperText = StringBuilder()
             for (i in data.indices) {
@@ -572,6 +570,16 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 }
             }
             quota?.text = MethodChecker.fromHtml(upperText.toString())
+        }
+    }
+
+    private fun handleQuotaColor(){
+        if (context.isDarkMode()){
+            quota?.background?.setColorFilter(
+                ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_R700),
+                PorterDuff.Mode.SRC_IN
+            )
+            quota?.setTextColor(ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_N100))
         }
     }
 

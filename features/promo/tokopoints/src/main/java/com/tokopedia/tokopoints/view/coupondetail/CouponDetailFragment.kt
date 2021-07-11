@@ -1,6 +1,5 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
-import HtmlUrlHelper
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -10,7 +9,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +56,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.webview.TkpdWebView
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
@@ -552,7 +549,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     tnc.replace("(\r\n|\n)".toRegex(), "<br />"), it
                 ).spannedString
             }
-            tvTnc?.movementMethod = LinkMovementMethod.getInstance()
+            tvTnc?.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.tnc)?.hide()
             view?.findViewById<View>(R.id.mid_separator)?.hide()
@@ -564,7 +561,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                     howToUse.replace("(\r\n|\n)".toRegex(), "<br />"), it
                 ).spannedString
             }
-            tvHowToUse?.movementMethod = LinkMovementMethod.getInstance()
+            tvHowToUse?.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             view?.findViewById<View>(R.id.mid_separator)?.hide()

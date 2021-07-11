@@ -12,16 +12,19 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import android.view.View
+import androidx.core.text.HtmlCompat
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
 import com.tokopedia.unifycomponents.UrlLinkManager
 import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifyprinciples.getTypeface
+import com.tokopedia.utils.htmltags.HtmlUtil
+import com.tokopedia.utils.htmltags.ListTagHandler
 
 class HtmlUrlHelper(htmlString:String , context: Context) {
     var spannedString: CharSequence? = null
     var urlList: MutableList<UrlLinkManager> = ArrayList()
     init {
-        val spannedHtmlString: Spanned = returnTextFromHtml(htmlString) as Spanned
+        val spannedHtmlString: Spanned = fromHtml(htmlString)
 
         val spanHandler = SpannableStringBuilder(spannedHtmlString)
         val urlListArr = spanHandler.getSpans(0, spannedHtmlString.length, URLSpan::class.java)
@@ -87,5 +90,19 @@ class HtmlUrlHelper(htmlString:String , context: Context) {
         }
 
         spannedString = spanHandler
+    }
+
+    private fun fromHtml(htmlText: String): Spanned {
+        val formattedHtml = htmlText
+            .replace("(?i)<ul[^>]*>".toRegex(), "<${HtmlUtil.UL_TAG}>")
+            .replace("(?i)</ul>".toRegex(), "</${HtmlUtil.UL_TAG}>")
+            .replace("(?i)<ol[^>]*>".toRegex(), "<${HtmlUtil.OL_TAG}>")
+            .replace("(?i)</ol>".toRegex(), "</${HtmlUtil.OL_TAG}>")
+            .replace("(?i)<li[^>]*>".toRegex(), "<${HtmlUtil.LI_TAG}>")
+            .replace("(?i)</li>".toRegex(), "</${HtmlUtil.LI_TAG}>")
+
+        return HtmlCompat.fromHtml(formattedHtml,
+            HtmlCompat.FROM_HTML_MODE_COMPACT, null, ListTagHandler()
+        )
     }
 }
