@@ -100,14 +100,14 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor() : BottomSheetD
         dialog.setOnShowListener {
             val bottomSheetDialog = dialog as BottomSheetDialog
             val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            val maxHeight = (HEIGHT_MULTIPLIER * getScreenHeight()).toInt()
             bottomSheet?.layoutParams = bottomSheet?.layoutParams?.apply {
-                height = (getScreenHeight() * 0.80f).toInt()
+                height = maxHeight
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
             bottomSheet?.let {
                 bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-                bottomSheetBehavior.isHideable = false
-                bottomSheetBehavior.peekHeight = (getScreenHeight() * 0.80f).toInt()
+                bottomSheetBehavior.peekHeight = maxHeight
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
@@ -115,5 +115,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor() : BottomSheetD
 
     companion object {
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
+        private const val HEIGHT_MULTIPLIER = 0.80f
     }
 }
