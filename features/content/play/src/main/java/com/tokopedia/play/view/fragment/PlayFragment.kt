@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -56,14 +55,12 @@ import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.view.uimodel.PlayCastState
-import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -124,19 +121,15 @@ class PlayFragment @Inject constructor(
     private val castStateListener = CastStateListener {
         when(it) {
             CastState.CONNECTING -> {
-                Log.d("<CAST>", "Cast - Connecting")
                 playViewModel.setCastState(PlayCastState.CONNECTING)
             }
             CastState.CONNECTED -> {
-                Log.d("<CAST>", "Cast - Connected")
                 playViewModel.setCastState(PlayCastState.CONNECTED)
             }
             CastState.NOT_CONNECTED -> {
-                Log.d("<CAST>", "Cast - Not Connected")
                 playViewModel.setCastState(PlayCastState.NOT_CONNECTED)
             }
             CastState.NO_DEVICES_AVAILABLE -> {
-                Log.d("<CAST>", "Cast - Not Device Available")
                 playViewModel.setCastState(PlayCastState.NO_DEVICE_AVAILABLE)
             }
         }
