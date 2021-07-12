@@ -22,7 +22,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
         private val moneyInPickupScheduleUseCase: MoneyInPickupScheduleUseCase,
         private val moneyInCourierRatesUseCase: MoneyInCourierRatesUseCase,
         private val moneyInCheckoutUseCase: MoneyInCheckoutUseCase
-) : BaseTradeInViewModel(), CoroutineScope {
+) : BaseMoneyInViewModel(), CoroutineScope {
 
     private val pickupScheduleOptionLiveData = MutableLiveData<Result<GetPickupScheduleOption>>()
     private val courierRatesLiveData = MutableLiveData<Result<RatesV4.Data>>()

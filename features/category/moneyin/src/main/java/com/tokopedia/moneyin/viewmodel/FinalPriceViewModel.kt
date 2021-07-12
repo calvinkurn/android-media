@@ -16,7 +16,7 @@ import javax.inject.Inject
 class FinalPriceViewModel@Inject constructor(
         private var getAddressUseCase: GetAddressUseCase,
         private var diagnosticDataUseCase : DiagnosticDataUseCase
-)  : BaseTradeInViewModel(), LifecycleObserver, CoroutineScope {
+)  : BaseMoneyInViewModel(), LifecycleObserver, CoroutineScope {
     val deviceDiagData: MutableLiveData<DeviceDataResponse> = MutableLiveData()
     val addressLiveData = MutableLiveData<AddressResult>()
     var tradeInParams: TradeInParams? = null

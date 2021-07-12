@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.moneyin.viewcontrollers.ContextInterface
 
-open class BaseTradeInViewModel() : BaseViewModel() {
+open class BaseMoneyInViewModel() : BaseViewModel() {
     protected var progBarVisibility = MutableLiveData<Boolean>()
     protected var warningMessage = MutableLiveData<String>()
     protected var errorMessage = MutableLiveData<String>()

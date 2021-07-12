@@ -100,7 +100,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         val spannableString = SpannableString(terms)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                showtnc()
+                showTnC()
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -120,10 +120,6 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN)
             startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
         }
-    }
-
-    private fun showtnc() {
-        showTnC(MONEYIN_TNC_URL)
     }
 
     private fun setObservers() {
@@ -414,9 +410,8 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         moneyInCheckoutViewModel = viewModel as MoneyInCheckoutViewModel
     }
 
-    override fun getMenuRes(): Int {
-        return -1
-    }
+    override val menuRes: Int
+        get() = -1
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -426,7 +421,6 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         return R.layout.activity_money_in_checkout
     }
 
-    override fun getRootViewId(): Int {
-        return R.id.root_view
-    }
+    override val rootViewId: Int
+        get() = R.id.root_view
 }

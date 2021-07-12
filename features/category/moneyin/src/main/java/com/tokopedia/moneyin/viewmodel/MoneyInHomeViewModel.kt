@@ -21,7 +21,7 @@ class MoneyInHomeViewModel @Inject constructor(
         private val processMessageUseCase: ProcessMessageUseCase,
         private val checkMoneyInUseCase: CheckMoneyInUseCase,
         private val userSession: UserSessionInterface
-) : BaseTradeInViewModel(),
+) : BaseMoneyInViewModel(),
         LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
@@ -29,7 +29,6 @@ class MoneyInHomeViewModel @Inject constructor(
     var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
     var imei: String? = null
-    var finalPrice: String = "-"
 
     override fun doOnCreate() {
         super.doOnCreate()
@@ -62,8 +61,6 @@ class MoneyInHomeViewModel @Inject constructor(
         if (response != null && response.deviceDiagInputRepsponse != null) {
             val result = HomeResult()
             result.isSuccess = true
-            if (tradeInParams.newPrice - diagnostics.tradeInPrice >= 0)
-                finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - diagnostics.tradeInPrice, true)
             if (response.deviceDiagInputRepsponse.isEligible) {
                 if (homeResultData.value?.deviceDisplayName != null) {
                     result.deviceDisplayName = homeResultData.value?.deviceDisplayName ?: ""
@@ -96,6 +93,7 @@ class MoneyInHomeViewModel @Inject constructor(
     }
 
     private fun checkIfElligible(validateTradePDP: ValidateTradePDP?, jsonObject: JSONObject) {
+        progBarVisibility.value = false
         validateTradePDP?.let {
             it.response?.let { validateResponse ->
                 if (validateResponse.isEligible) {
@@ -150,8 +148,6 @@ class MoneyInHomeViewModel @Inject constructor(
         result.isSuccess = true
         result.maxPrice = maxPrice
         result.minPrice = minPrice
-        if (tradeInParams.newPrice - maxPrice >= 0)
-            finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - maxPrice, true)
         if (diagnosedPrice > 0) {
             result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
