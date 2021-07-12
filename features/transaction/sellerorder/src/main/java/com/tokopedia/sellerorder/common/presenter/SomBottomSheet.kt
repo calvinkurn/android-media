@@ -188,7 +188,7 @@ abstract class SomBottomSheet(
     }
 
     open fun show() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        childViews?.post { bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED }
     }
 
     fun dismiss(): Boolean {
