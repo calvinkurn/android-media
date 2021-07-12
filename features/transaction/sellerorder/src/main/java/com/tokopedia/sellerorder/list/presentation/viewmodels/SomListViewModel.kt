@@ -204,15 +204,15 @@ class SomListViewModel @Inject constructor(
                             bulkRequestPickupFinalResult.postValue(PartialSuccessNotEligibleFail(it.data.success, totalNotEligible, orderIdListFail))
                         }
                         // case 4 when All Fail but there's not eligible
-                        else if (it.data.fail == requestPickupUiModel?.data?.totalOnProcess && totalNotEligible > 0) {
+                        else if (it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0 && totalNotEligible > 0) {
                             bulkRequestPickupFinalResult.postValue(NotEligibleAndFail(totalNotEligible, orderIdListFail))
                         }
                         // case 5 When partial success but there's failed
-                        else if (it.data.success + it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0 && totalNotEligible == 0L) {
+                        else if (it.data.success > 0&& it.data.fail > 0 && totalNotEligible == 0L) {
                             bulkRequestPickupFinalResult.postValue(PartialSuccess(it.data.success, orderIdListFail))
                         }
                         // case 6 When Partial success but there's not eligible
-                        else if(it.data.success + it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail == 0L && totalNotEligible > 0) {
+                        else if(it.data.success > 0 && it.data.fail == 0L && totalNotEligible > 0) {
                             bulkRequestPickupFinalResult.postValue(PartialSuccessNotEligible(it.data.success, totalNotEligible))
                         }
                         //case 7 will happen fail bulk process due to all validation failed
