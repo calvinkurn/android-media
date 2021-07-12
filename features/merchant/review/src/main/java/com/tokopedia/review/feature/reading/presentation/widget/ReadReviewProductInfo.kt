@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
-import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography

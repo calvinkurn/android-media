@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reading.analytics
 
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 object ReadReviewTracking {
 
@@ -11,7 +12,7 @@ object ReadReviewTracking {
         tracker.sendScreenAuthenticated(screenName, getOpenScreenCustomDimensMap(productId))
     }
 
-    fun trackOnClickPositiveReviewPercentage(positiveReview: String, rating: Int, review: Int, productId: String) {
+    fun trackOnClickPositiveReviewPercentage(positiveReview: String, rating: Long, review: Long, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_POSITIVE_REVIEW_PERCENTAGE,
@@ -20,20 +21,46 @@ object ReadReviewTracking {
         ))
     }
 
-    fun trackOnFilterClicked(filterName: String, filterValue: String, isActive: Boolean, productId: String) {
+    fun trackOnItemImpressed(feedbackId: String, position: Int, userId: String, countRating: Long, countReview: Long, characterCount: Int, imageCount: Int, trackingQueue: TrackingQueue) {
+        trackingQueue.putEETracking(
+                hashMapOf(
+                        ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+                        ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
+                        ReviewTrackingConstant.EVENT_LABEL to String.format(ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION, countRating, countReview),
+                        ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                        ReadReviewTrackingConstants.KEY_USER_ID to userId,
+                        ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+                        ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+                        ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
+                                ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+                                        ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
+                                                mapOf(
+                                                        ReadReviewTrackingConstants.KEY_ID to feedbackId,
+                                                        ReadReviewTrackingConstants.KEY_CREATIVE to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                                                        ReadReviewTrackingConstants.KEY_NAME to String.format(ReadReviewTrackingConstants.EE_NAME, characterCount, imageCount),
+                                                        ReadReviewTrackingConstants.KEY_POSITION to position.toString()
+                                                )
+                                        )
+                                )
+                        )
+                )
+        )
+    }
+
+    fun trackOnFilterClicked(filterName: String, isActive: Boolean, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_FILTER,
-                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_FILTER, filterName, filterValue, isActive.toString()),
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_FILTER, filterName, isActive.toString()),
                 productId
         ))
     }
 
-    fun trackOnApplyFilterClicked(filterName: String, filterValue: String, isActive: Boolean, productId: String) {
+    fun trackOnApplyFilterClicked(filterName: String, filterValue: String, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReadReviewTrackingConstants.EVENT_CLICK_PDP,
                 ReadReviewTrackingConstants.EVENT_ACTION_CLICK_APPLY_FILTER,
-                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_APPLY_FILTER, filterName, filterValue, isActive.toString()),
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_APPLY_FILTER, filterName, filterValue),
                 productId
         ))
     }

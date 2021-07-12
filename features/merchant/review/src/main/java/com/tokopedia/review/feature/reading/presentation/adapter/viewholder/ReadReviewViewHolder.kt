@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -14,9 +15,9 @@ import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
-import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
@@ -48,6 +49,9 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         with(element.reviewData) {
             if (element.isShopViewHolder) {
                 setProductInfo(element.productImage, element.productName, isReportable, feedbackID, element.shopId)
+            }
+            itemView.addOnImpressionListener(element.impressHolder) {
+                readReviewItemListener.onItemImpressed(feedbackID, adapterPosition, message.length, imageAttachments.size)
             }
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)

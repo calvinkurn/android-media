@@ -6,7 +6,7 @@ import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFrag
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import dagger.Component
 
-@Component(modules = [ReadReviewViewModelModule::class], dependencies = [ReviewComponent::class])
+@Component(modules = [ReadReviewViewModelModule::class, ReadReviewModule::class], dependencies = [ReviewComponent::class])
 @ReadReviewScope
 interface ReadReviewComponent {
     fun inject(readReadReviewFragment: ReadReviewFragment)

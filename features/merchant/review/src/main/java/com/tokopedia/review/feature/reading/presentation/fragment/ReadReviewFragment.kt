@@ -40,13 +40,9 @@ import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapter
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapterTypeFactory
-import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.factory.ReadReviewSortFilterFactory
-import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
-import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterBottomSheetListener
-import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
-import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.listener.*
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
@@ -55,6 +51,7 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilter
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -90,6 +87,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     @Inject
     lateinit var viewModel: ReadReviewViewModel
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     private var reviewReadingCoordinatorLayout: CoordinatorLayout? = null
@@ -106,6 +106,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
+        }
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
@@ -158,6 +165,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
     }
 
+    override fun onItemImpressed(reviewId: String, position: Int, characterCount: Int, imageCount: Int,) {
+        with(getRatingAndTopics().rating) {
+            ReadReviewTracking.trackOnItemImpressed(reviewId, position, viewModel.userId, totalRating, totalRatingTextAndImage, characterCount, imageCount, trackingQueue)
+        }
+    }
+
     override fun onHeaderClicked() {
         ReadReviewTracking.trackOnClickPositiveReviewPercentage(getSatisfactionRate(), getRatingAndTopics().rating.totalRating, getRatingAndTopics().rating.totalRatingTextAndImage, viewModel.getProductId())
         if (statisticsBottomSheet == null) {
@@ -168,26 +181,32 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onFilterWithAttachmentClicked(isActive: Boolean) {
         clearAllData()
+        ReadReviewTracking.trackOnFilterClicked(context?.getString(R.string.review_reading_filter_with_attachment) ?: "", isActive, viewModel.getProductId())
         viewModel.setFilterWithImage(isActive)
         reviewHeader?.updateFilterWithImage()
         showListOnlyLoading()
     }
 
-    override fun onFilterWithTopicClicked(topics: List<ProductTopic>, index: Int) {
+    override fun onFilterWithTopicClicked(topics: List<ProductTopic>, index: Int, isActive: Boolean) {
+        val topicFilterTitle = getString(R.string.review_reading_topic_filter_title)
+        ReadReviewTracking.trackOnFilterClicked(topicFilterTitle, isActive, viewModel.getProductId())
         val filterOptions = readReviewFilterFactory.getTopicFilters(topics)
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this, SortFilterBottomSheetType.TopicFilterBottomSheet, viewModel.getSelectedTopicFilter(), "", index).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(topicFilterTitle, filterOptions, this, SortFilterBottomSheetType.TopicFilterBottomSheet, viewModel.getSelectedTopicFilter(), "", index).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
-    override fun onFilterWithRatingClicked(index: Int) {
+    override fun onFilterWithRatingClicked(index: Int, isActive: Boolean) {
+        val ratingFilterTitle = getString(R.string.review_reading_rating_filter_title)
+        ReadReviewTracking.trackOnFilterClicked(ratingFilterTitle, isActive, viewModel.getProductId())
         val filterOptions = readReviewFilterFactory.getRatingFilters((MAX_RATING downTo MIN_RATING).map { it.toString() })
         activity?.supportFragmentManager?.let {
-            ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this, SortFilterBottomSheetType.RatingFilterBottomSheet, viewModel.getSelectedRatingFilter()
+            ReadReviewFilterBottomSheet.newInstance(ratingFilterTitle, filterOptions, this, SortFilterBottomSheetType.RatingFilterBottomSheet, viewModel.getSelectedRatingFilter()
                     , "", index).show(it, ReadReviewFilterBottomSheet.TAG)
         }
     }
 
-    override fun onFilterSubmitted(selectedFilter: Set<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int) {
+    override fun onFilterSubmitted(filterName: String, selectedFilter: Set<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int) {
         clearAllData()
+        ReadReviewTracking.trackOnApplyFilterClicked(filterName, selectedFilter.joinToString(), viewModel.getProductId())
         viewModel.setFilter(selectedFilter, filterType)
         showListOnlyLoading()
         reviewHeader?.updateFilter(selectedFilter, filterType, index)
@@ -386,14 +405,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
-        if (ratingAndTopics.rating.totalRating == 0) {
+        if (ratingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
             return
         }
         hideError()
         hideFullPageLoading()
-        if (ratingAndTopics.rating.totalRatingTextAndImage == 0 && ratingAndTopics.rating.totalRatingWithImage == 0) {
+        if (ratingAndTopics.rating.totalRatingTextAndImage == 0L && ratingAndTopics.rating.totalRatingWithImage == 0L) {
             emptyRatingOnly?.apply {
                 setRatingData(ratingAndTopics.rating)
                 show()

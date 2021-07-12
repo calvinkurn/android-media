@@ -19,18 +19,23 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReadReviewViewModel @Inject constructor(
         private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
         private val getProductReviewListUseCase: GetProductReviewListUseCase,
         private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
+        private val userSessionInterface: UserSessionInterface,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
         const val INITIAL_PAGE = 1
     }
+
+    val userId: String
+        get() = userSessionInterface.userId
 
     private val _ratingAndTopics = MediatorLiveData<Result<ProductrevGetProductRatingAndTopic>>()
     val ratingAndTopic: LiveData<Result<ProductrevGetProductRatingAndTopic>>

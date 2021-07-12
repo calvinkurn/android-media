@@ -10,6 +10,7 @@ import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadRev
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewLoadingViewHolder
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewViewHolder
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
 
 class ReadReviewAdapterTypeFactory(private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : ReadReviewTypeFactory, BaseAdapterTypeFactory() {
 

@@ -157,7 +157,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     private fun setSubmitFilterButton() {
         submitButton?.setOnClickListener {
             dismiss()
-            listener?.onFilterSubmitted(sortFilterViewModel.getSelectedFilters(), sortFilterBottomSheetType
+            listener?.onFilterSubmitted(this.bottomSheetTitle.text.toString(), sortFilterViewModel.getSelectedFilters(), sortFilterBottomSheetType
                     ?: SortFilterBottomSheetType.RatingFilterBottomSheet, index)
         }
     }
