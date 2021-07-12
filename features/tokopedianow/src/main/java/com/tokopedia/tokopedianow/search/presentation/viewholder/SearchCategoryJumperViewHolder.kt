@@ -26,11 +26,11 @@ class SearchCategoryJumperViewHolder(
     }
 
     private val titleTypography: Typography? by lazy {
-        itemView.findViewById(R.id.tokonowSearchCategoryJumperTitle)
+        itemView.findViewById(R.id.tokoNowSearchCategoryJumperTitle)
     }
 
     private val recyclerView: RecyclerView? by lazy {
-        itemView.findViewById(R.id.tokonowSearchCategoryJumperRecyclerView)
+        itemView.findViewById(R.id.tokoNowSearchCategoryJumperRecyclerView)
     }
 
     private val layoutManager = ChipsLayoutManager
@@ -110,7 +110,7 @@ class SearchCategoryJumperViewHolder(
         }
 
         private val chips: ChipsUnify? by lazy {
-            itemView.findViewById(R.id.tokonowSearchCategoryJumper)
+            itemView.findViewById(R.id.tokoNowSearchCategoryJumperChips)
         }
 
         fun bind(item: CategoryJumperDataView.Item) {
