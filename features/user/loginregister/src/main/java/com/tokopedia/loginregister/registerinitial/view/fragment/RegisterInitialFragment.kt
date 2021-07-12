@@ -89,6 +89,7 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -121,7 +122,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private lateinit var container: ScrollView
     private lateinit var progressBar: RelativeLayout
     private lateinit var tickerAnnouncement: Ticker
-    private lateinit var bannerRegister: ImageView
+    private lateinit var bannerRegister: ImageUnify
     private lateinit var socmedButton: UnifyButton
     private lateinit var bottomSheet: SocmedBottomSheet
     private var socmedButtonsContainer: LinearLayout? = null
@@ -568,16 +569,18 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         for (i in discoverItems.indices) {
             val item = discoverItems[i]
             if (item.id != PHONE_NUMBER) {
-                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                loginTextView.setText(item.name)
-                loginTextView.setImage(item.image)
-                loginTextView.setRoundCorner(10)
+                context?.let {
+                    val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    loginTextView.setText(item.name)
+                    loginTextView.setImage(item.image)
+                    loginTextView.setRoundCorner(10)
 
-                setDiscoverOnClickListener(item, loginTextView)
+                    setDiscoverOnClickListener(item, loginTextView)
 
-                socmedButtonsContainer?.run {
-                    addView(loginTextView, childCount,
-                            layoutParams)
+                    socmedButtonsContainer?.run {
+                        addView(loginTextView, childCount,
+                                layoutParams)
+                    }
                 }
             }
         }

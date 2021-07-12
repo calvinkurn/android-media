@@ -16,4 +16,15 @@
     <dimen name="external_register_190_dp">190dp</dimen>
     <dimen name="external_register_270_dp">270dp</dimen>
 
+    <dimen name="shop_creation_42">42dp</dimen>
+    <dimen name="shop_creation_52">52dp</dimen>
+
+    <dimen name="email_extension_6">6dp</dimen>
+
+    <dimen name="partial_input_3">3dp</dimen>
+    <dimen name="partial_input_minus_5">-5dp</dimen>
+    <dimen name="partial_input_minus_10">-10dp</dimen>
+    <dimen name="partial_input_10">10dp</dimen>
+    <dimen name="partial_input_5">5dp</dimen>
+    <dimen name="partial_input_20">20dp</dimen>
 </resources>

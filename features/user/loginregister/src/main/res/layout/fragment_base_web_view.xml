@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:background="@color/Unify_N0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_gravity="center"
+        android:id="@+id/base_web_view_loader"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
-        android:id="@+id/base_web_view_loader"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
     <WebView
