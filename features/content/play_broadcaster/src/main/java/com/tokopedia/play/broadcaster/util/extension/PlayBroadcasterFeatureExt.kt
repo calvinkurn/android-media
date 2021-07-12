@@ -66,9 +66,9 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .into(this)
 }
 
-internal fun Long.millisToMinute() = TimeUnit.MILLISECONDS.toMinutes(this)
+internal fun Long.millisToMinutes() = TimeUnit.MILLISECONDS.toMinutes(this)
 
-internal fun Long.millisToSecond() =
+internal fun Long.millisToRemainingSeconds() =
     TimeUnit.MILLISECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)
 
 internal fun Date.dayLater(amount: Int): Date {

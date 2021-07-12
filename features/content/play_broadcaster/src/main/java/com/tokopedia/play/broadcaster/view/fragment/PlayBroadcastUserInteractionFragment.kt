@@ -226,12 +226,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * render to ui
      */
-    private fun showCounterDuration(timeLeft: String) {
-        viewTimer.showCounterDuration(timeLeft)
+    private fun showCounterDuration(remainingInMs: Long) {
+        viewTimer.showCounterDuration(remainingInMs)
     }
 
-    private fun showTimeRemaining(minutesUntilFinished: Long) {
-        viewTimer.showTimeRemaining(minutesUntilFinished)
+    private fun showTimeRemaining(remainingInMinutes: Long) {
+        viewTimer.showTimeRemaining(remainingInMinutes)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -453,8 +453,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeLiveDuration() {
         parentViewModel.observableLiveDuration.observe(viewLifecycleOwner, Observer {
             when(it)  {
-                is PlayTimerState.Active -> showCounterDuration(it.remainingTime)
-                is PlayTimerState.AlmostFinish -> showTimeRemaining(it.minutesLeft)
+                is PlayTimerState.Active -> showCounterDuration(it.remainingInMs)
+                is PlayTimerState.AlmostFinish -> showTimeRemaining(it.remainingInMinutes)
                 is PlayTimerState.Finish -> {
                     analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.title)
                     showDialogWhenTimeout()

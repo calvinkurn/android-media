@@ -95,6 +95,7 @@
     <string name="play_live_broadcast_stat_info_default">0</string>
     <string name="play_live_broadcast_time_default">00:00</string>
     <string name="play_live_broadcast_time_left">Sisa %d menit</string>
+    <string name="play_live_broadcast_remaining_duration_format">%1$02d:%2$02d</string>
     <string name="play_live_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
     <string name="play_live_broadcast_dialog_end_desc">Banyak penonton kamu yg akan sedih kalau kamu keluar dari live streaming sekarang.</string>
     <string name="play_live_broadcast_dialog_end_primary">Lanjut Siaran</string>

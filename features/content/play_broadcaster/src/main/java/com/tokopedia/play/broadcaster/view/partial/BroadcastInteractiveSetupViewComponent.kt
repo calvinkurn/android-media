@@ -12,8 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
-import com.tokopedia.play.broadcaster.util.extension.millisToMinute
-import com.tokopedia.play.broadcaster.util.extension.millisToSecond
+import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
+import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
@@ -171,14 +171,14 @@ class BroadcastInteractiveSetupViewComponent(
     private fun setLabelSelectedDuration(durationInMs: Long) {
         activeTimerLbl.text = getString(
             R.string.play_interactive_selected_duration_format,
-            durationInMs.millisToMinute(),
-            durationInMs.millisToSecond()
+            durationInMs.millisToMinutes(),
+            durationInMs.millisToRemainingSeconds()
         )
     }
 
     private fun formatTime(millis: Long): String {
-        val minute = millis.millisToMinute()
-        val second = millis.millisToSecond()
+        val minute = millis.millisToMinutes()
+        val second = millis.millisToRemainingSeconds()
 
         val stringBuilder = StringBuilder()
         if (minute > 0) stringBuilder.append(getString(R.string.play_interactive_minute, minute))

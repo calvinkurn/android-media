@@ -183,7 +183,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val countDownTimerListener = object : PlayCountDownTimer.Listener {
         override fun onCountDownActive(millis: Long) {
-            _observableLiveDurationState.value = PlayTimerState.Active(millis.toString()) // TODO("time format %02d:%02d")
+            _observableLiveDurationState.value = PlayTimerState.Active(millis)
         }
 
         override fun onCountDownAlmostFinish(minutes: Long) {
