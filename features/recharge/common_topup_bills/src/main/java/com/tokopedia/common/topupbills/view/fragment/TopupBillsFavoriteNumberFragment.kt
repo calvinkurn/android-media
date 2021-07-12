@@ -519,8 +519,10 @@ class TopupBillsFavoriteNumberFragment :
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
                 currentCategoryName, operatorName, userSession.userId)
 
+        val shouldShowDelete = clientNumbers.size > 1
+
         val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(
-                favNumberItem, this)
+                favNumberItem, this, shouldShowDelete)
         bottomSheet.show(childFragmentManager, "")
     }
 
