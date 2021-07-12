@@ -201,7 +201,7 @@ class OtherMenuViewHolder(private val itemView: View,
             if (shopOperational.hasShopSettingsAccess) {
                 setOnClickListener {
                     shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
                 }
             }
 

@@ -394,6 +394,32 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     existingEndDate = Date(endHolidayDateMilliseconds)
                     selectedStartDate = existingStartDate
                     selectedEndDate = existingEndDate
+                } else {
+                    // prevent edit flag if there is no existing upcoming date
+                    isActionEdit = false
+                    if (isShopClosed) {
+                        // if shop closed because operational hours
+                        // dont show bottomsheet
+                        isAutoOpenSchBottomSheet = false
+                    }
+                }
+
+                if (isShopClosed) {
+                    if (holidayInfo.closeDetail.status == 0 || holidayInfo.closeDetail.status == 1) {
+                        // closed because operational hours
+                        isShopOnScheduledHoliday = false
+                        renderHolidaySection(isClosedBySchedule = false)
+                    } else {
+                        // closed because holiday schedule
+                        isShopOnScheduledHoliday = true
+                        renderHolidaySection(isClosedBySchedule = true)
+                    }
+                } else {
+                    isShopOnScheduledHoliday = false
+                    renderHolidaySection(isClosedBySchedule = false)
+                    if (isNeedToShowOpenShopToaster) {
+                        isNeedToShowToaster = true
+                    }
                 }
 
                 // check if from applink to auto open the calendar picker
@@ -409,24 +435,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     }
                 }
                 isAutoOpenSchBottomSheet = false
-
-                if (isShopClosed) {
-                    if (holidayInfo.closeDetail.status == 0 || holidayInfo.closeDetail.status == 1) {
-                        // closed because operational hours
-                            isShopOnScheduledHoliday = false
-                        renderHolidaySection(isClosedBySchedule = false)
-                    } else {
-                        // closed because holiday schedule
-                        isShopOnScheduledHoliday = true
-                        renderHolidaySection(isClosedBySchedule = true)
-                    }
-                } else {
-                    isShopOnScheduledHoliday = false
-                    renderHolidaySection(isClosedBySchedule = false)
-                    if (isNeedToShowOpenShopToaster) {
-                        isNeedToShowToaster = true
-                    }
-                }
 
                 // update UI for operational hours list section
                 val opsHourList = opsHourListUiModel.operationalHourList
@@ -615,7 +623,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
             // if shop is on scheduled holiday, seller can only edit the end date
             // so we disable the start date text field
-            if (!isShopClosed || !isShopOnScheduledHoliday) {
+            if (!isShopOnScheduledHoliday) {
                 isEnabled = true
                 requestFocus()
             }
