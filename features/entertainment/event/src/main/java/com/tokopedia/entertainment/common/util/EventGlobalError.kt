@@ -43,6 +43,7 @@ object EventGlobalError {
                 defaultAction()
             }
             errorSecondaryAction.hide()
+            errorDescription.hide()
         }
     }
 }
