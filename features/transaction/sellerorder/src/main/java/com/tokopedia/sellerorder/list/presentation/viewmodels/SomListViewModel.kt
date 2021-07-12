@@ -208,7 +208,7 @@ class SomListViewModel @Inject constructor(
                             bulkRequestPickupFinalResult.postValue(NotEligibleAndFail(totalNotEligible, orderIdListFail))
                         }
                         // case 5 When partial success but there's failed
-                        else if (it.data.success > 0&& it.data.fail > 0 && totalNotEligible == 0L) {
+                        else if (it.data.success > 0 && it.data.fail > 0 && totalNotEligible == 0L) {
                             bulkRequestPickupFinalResult.postValue(PartialSuccess(it.data.success, orderIdListFail))
                         }
                         // case 6 When Partial success but there's not eligible
