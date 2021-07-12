@@ -241,14 +241,14 @@ class ProductDetailActivityTest {
     private fun clickVariantTest() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variant_img_container)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
     }
 
     private fun clickSeeGuideSizeChart() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txt_variant_guideline)))
     }
 
     private fun waitForTrackerSent() {

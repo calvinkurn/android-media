@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+repositories {
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        jcenter()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+}
+
+project.ext {
+    artifactId = "localizationchooseaddress_common"
+    groupId = "com.tokopedia.logistic"
+    versionName = "0.0.1"
+    artifactName = "localizationchooseaddress_common-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
+
