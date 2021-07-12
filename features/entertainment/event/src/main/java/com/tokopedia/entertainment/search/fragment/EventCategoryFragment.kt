@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -160,12 +161,24 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     }
 
     private fun observeErrorReport(){
-        viewModel.errorReport.observe(viewLifecycleOwner, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
-                recycler_viewParent.addOnScrollListener(endlessScroll)
-                viewModel.page = "1"
-                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
-            }.showRetrySnackbar()
+        viewModel.errorReport.observe(viewLifecycleOwner, Observer { throwable ->
+//            NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+//                recycler_viewParent.addOnScrollListener(endlessScroll)
+//                viewModel.page = "1"
+//                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
+//            }.showRetrySnackbar()
+
+            view?.let {
+                val snackbar = Snackbar.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_INDEFINITE)
+                snackbar.setAction("Coba Lagi") {
+                    recycler_viewParent.addOnScrollListener(endlessScroll)
+                    viewModel.page = "1"
+                    viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
+                }
+                snackbar.show()
+            }
+//                    NetworkErrorHelper.createSnackbarRedWithAction(activity,
+//                            ErrorHandler.getErrorMessage(context, it)) { getData(CacheType.ALWAYS_CLOUD) }.showRetrySnackbar()
         })
     }
 

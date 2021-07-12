@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -60,12 +61,15 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.ent_search_fragment.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.*
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.*
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.swipe_refresh_layout
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
@@ -355,10 +359,19 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private fun showErrorState(throwable: Throwable, isVerify: Boolean){
         swipe_refresh_layout.isRefreshing = false
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
-            showViewBottom(false)
-            loadData()
-        }.showRetrySnackbar()
+//        NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
+//            showViewBottom(false)
+//            loadData()
+//        }.showRetrySnackbar()
+
+        view?.let {
+            val snackbar = Snackbar.make(it, errorMessage, Snackbar.LENGTH_INDEFINITE)
+            snackbar.setAction("Coba Lagi") {
+                showViewBottom(false)
+                loadData()
+            }
+            snackbar.show()
+        }
         if(!isVerify) {
             renderList(listOf())
             activity?.txtUbah?.visibility = View.GONE
