@@ -10,6 +10,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -59,6 +60,10 @@ private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProduct
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
+private const val MAX_FEED_SIZE = 6
+private const val MAX_FEED_SIZE_SMALL = 3
+private const val LAST_FEED_POSITION = 5
+private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
 private val scopeDef = CoroutineScope(Dispatchers.Default)
 private var productVideoJob: Job? = null
@@ -184,7 +189,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.like,
             feedXCard.id.toIntOrZero(),
             feedXCard.typename,
-            feedXCard.followers.isFollowed
+            feedXCard.followers.isFollowed,
+            feedXCard.author.id
         )
     }
 
@@ -330,7 +336,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun bindLike(like: FeedXLike, id: Int, type: String, isFollowed: Boolean) {
+    private fun bindLike(like: FeedXLike, id: Int, type: String, isFollowed: Boolean, shopId: String) {
         if (like.isLiked) {
             val colorGreen =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
@@ -376,7 +382,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-            listener?.onLikeClick(positionInFeed, id, like.isLiked, type, isFollowed)
+            listener?.onLikeClick(positionInFeed,
+                id,
+                like.isLiked,
+                type,
+                isFollowed,
+                shopId = shopId)
         }
     }
 
@@ -675,7 +686,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                     isLiked = false,
                                                     feedXCard.typename,
                                                     feedXCard.followers.isFollowed,
-                                                    type = true
+                                                    type = true,
+                                                    feedXCard.author.id
                                                 )
                                             }
 
@@ -948,12 +960,24 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         gridList.adapter = adapter
         setGridListPadding(feedXCard.products.size)
+
+        val totalProducts = feedXCard.products.size
+        var totalProductsImpressed = totalProducts
+        if (totalProducts > MAX_FEED_SIZE) {
+            totalProductsImpressed = LAST_FEED_POSITION
+
+        } else if (totalProducts < MAX_FEED_SIZE && totalProducts > MAX_FEED_SIZE_SMALL) {
+            totalProductsImpressed = LAST_FEED_POSITION_SMALL
+        }
+        Log.e("TAG", "size" + totalProducts + " " + totalProductsImpressed)
+        var listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
+
         imagePostListener.userProductImpression(
             positionInFeed,
             feedXCard.id,
             feedXCard.typename,
             feedXCard.author.id,
-            feedXCard.products
+            listToBeImpressed
         )
     }
 
@@ -986,7 +1010,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             positionInFeed,
             feedXCard.typename,
             feedXCard.followers.isFollowed,
-            feedXCard.author.id
+            feedXCard.author.id,
+            feedXCard.products
         )
     }
 
