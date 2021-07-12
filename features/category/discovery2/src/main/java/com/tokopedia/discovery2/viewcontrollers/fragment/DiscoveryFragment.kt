@@ -116,7 +116,7 @@ class DiscoveryFragment :
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
-    private var shouldShowChooseAddressWidget:Boolean = true
+    private var shouldShowChooseAddressWidget: Boolean = true
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -135,7 +135,7 @@ class DiscoveryFragment :
     private var userAddressData: LocalCacheModel? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-    private var lastVisibleComponent : ComponentsItem? = null
+    private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
 
     companion object {
@@ -619,7 +619,7 @@ class DiscoveryFragment :
         }
     }
 
-    private fun hideGlobalError(){
+    private fun hideGlobalError() {
         globalError.hide()
     }
 
@@ -848,9 +848,7 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
-        if(screenScrollPercentage > 0){
-            getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
-        }
+        getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
     }
 

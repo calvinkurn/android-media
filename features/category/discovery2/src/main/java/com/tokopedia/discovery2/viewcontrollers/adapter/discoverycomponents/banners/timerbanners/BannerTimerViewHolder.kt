@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.parsedColor
@@ -57,9 +58,20 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
         constraintSet.applyTo(constraintLayout)
         configureTimerUI()
         constraintLayout.setOnClickListener {
-            bannerTimerViewModel.onBannerClicked(it.context)
+            handleUIClick(it)
         }
     }
+
+    private fun handleUIClick(view: View) {
+        when (view) {
+            constraintLayout -> {
+                bannerTimerViewModel.getApplink()?.let {
+                    RouteManager.route(context, it)
+                }
+            }
+        }
+    }
+
 
     private fun configureTimerUI() {
         bannerTimerViewModel.getComponent().let {

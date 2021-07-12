@@ -27,6 +27,7 @@ repositories {
 }
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
@@ -37,12 +38,12 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.iris)
-    implementation project(rootProject.ext.libraries.irisSession)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.iris)
+    implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.firebase.core
 
@@ -65,15 +66,16 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.logisticCommon)
-    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
+    implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//
     //-------------------------------------------------------------------//
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl

@@ -7,11 +7,11 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailRouteModel
 import com.tokopedia.flight.search.presentation.util.FlightSearchCache
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.include_header_detail_flight.view.*
 import kotlinx.android.synthetic.main.item_flight_detail.view.*
 
@@ -33,18 +33,26 @@ class FlightOrderCancellationDetailRouteViewHolder(
             airline_name.text = element.airlineName
             airline_code.text = String.format("%s - %s", element.airlineId, element.flightNumber)
             setRefundableInfo(element)
-            departure_time.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    FlightDateUtil.FORMAT_TIME_DETAIL, element.departureTime)
-            departure_date.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, element.departureTime)
+            departure_time.text = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.HH_MM,
+                    element.departureTime)
+            departure_date.text = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.FORMAT_DATE,
+                    element.departureTime)
             setColorCircle()
             setDepartureInfo(element)
 
             flight_time.text = element.duration
-            arrival_time.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    FlightDateUtil.FORMAT_TIME_DETAIL, element.arrivalTime)
-            arrival_date.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                    FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, element.arrivalTime)
+            arrival_time.text = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.HH_MM,
+                    element.arrivalTime)
+            arrival_date.text = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.FORMAT_DATE,
+                    element.arrivalTime)
             setArrivalInfo(element)
             setPNR(element.pnr)
 
@@ -133,7 +141,7 @@ class FlightOrderCancellationDetailRouteViewHolder(
                 transitTag = flightSearchCache.getInternationalTransitTag()
             }
 
-            var arrivalAirport: String = if (!TextUtils.isEmpty(route.arrivalCityName)) {
+            val arrivalAirport: String = if (!TextUtils.isEmpty(route.arrivalCityName)) {
                 arrival_desc_airport_name.text = route.arrivalAirportName
                 arrival_airport_name.text = String.format("%s (%s)", route.arrivalCityName, route.arrivalId)
                 route.arrivalCityName
