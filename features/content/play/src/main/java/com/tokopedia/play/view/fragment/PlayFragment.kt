@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
@@ -16,6 +17,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.CastStateListener
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -111,6 +115,21 @@ class PlayFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play"
 
+    /**
+     * Cast
+     */
+    private lateinit var castContext: CastContext
+    private val castStateListener = CastStateListener {
+        when(it) {
+            CastState.CONNECTING -> {
+                Log.d("<CAST>", "Cast - Connecting")
+            }
+            CastState.CONNECTED -> {
+                Log.d("<CAST>", "Cast - Connected")
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
@@ -120,6 +139,8 @@ class PlayFragment @Inject constructor(
             playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
             processChannelInfo()
         }
+
+        castContext = CastContext.getSharedInstance(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -146,6 +167,7 @@ class PlayFragment @Inject constructor(
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
+        castContext.addCastStateListener(castStateListener)
     }
 
     override fun onPause() {
@@ -155,6 +177,7 @@ class PlayFragment @Inject constructor(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
+        castContext.removeCastStateListener(castStateListener)
         super.onPause()
     }
 

@@ -27,6 +27,7 @@ import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
+import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
@@ -110,6 +111,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
+    val observableCastState: LiveData<PlayCastUiModel>
+        get() = _observableCastState
 
     val videoOrientation: VideoOrientation
         get() {
@@ -244,6 +247,7 @@ class PlayViewModel @Inject constructor(
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
+    private val _observableCastState = MutableLiveData<PlayCastUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
