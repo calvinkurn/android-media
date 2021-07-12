@@ -64,7 +64,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
