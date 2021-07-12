@@ -88,12 +88,20 @@ class ProductRecommendationViewHolder(
     }
 
     override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {
-        if ((payloads.firstOrNull() as? Int) == ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM) {
-            element?.recomWidgetData?.let {
-                initAdapter(element, it, element.cardModel, getComponentTrackData(element))
-                annotationChipAdapter?.submitList(element.filterData ?: listOf())
-                view.loadingRecom.gone()
-                view.rvProductRecom.show()
+        when ((payloads.firstOrNull() as? Int)) {
+            ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM -> {
+                element?.recomWidgetData?.let {
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                    annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                    view.loadingRecom.gone()
+                    view.rvProductRecom.show()
+                }
+            }
+            ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW -> {
+                element?.recomWidgetData?.let {
+                    //need to implement update per card : ask darian about update carousel
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                }
             }
         }
     }

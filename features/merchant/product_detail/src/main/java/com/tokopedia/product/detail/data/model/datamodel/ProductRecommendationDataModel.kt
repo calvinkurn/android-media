@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
@@ -37,6 +38,7 @@ data class ProductRecommendationDataModel(
             recomWidgetData?.title == newData.recomWidgetData?.title
                     && recomWidgetData?.recommendationFilterChips == newData.recomWidgetData?.recommendationFilterChips
                     && areRecomItemTheSame(newData.recomWidgetData)
+                    && areRecomQtyItemTheSame(newData.recomWidgetData)
         } else {
             false
         }
@@ -57,6 +59,12 @@ data class ProductRecommendationDataModel(
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM)
                 return bundle
             }
+            if (!areRecomQtyItemTheSame(newData.recomWidgetData)) {
+                val posList = getRecomPosListNeedToBeUpdated(newData.recomWidgetData)
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW)
+                bundle.putIntArray(ProductDetailConstant.DIFFUTIL_PAYLOAD_EXTRAS, posList.toIntArray())
+                return bundle
+            }
             null
         } else {
             null
@@ -71,6 +79,35 @@ data class ProductRecommendationDataModel(
         }
 
         return recomWidgetData?.recommendationItemList?.hashCode() == newRecomWidgetData?.recommendationItemList?.hashCode()
+    }
+
+    private fun areRecomQtyItemTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
+        if (recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+                && recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size) {
+            val itemSize =recomWidgetData?.recommendationItemList?.size ?: 0
+            for (i in 0 until itemSize) {
+                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList[i].quantity) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun getRecomPosListNeedToBeUpdated(newRecomWidgetData: RecommendationWidget?): MutableList<Int> {
+        val dataList = mutableListOf<Int>()
+        if (recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+                && recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size) {
+            val itemSize =recomWidgetData?.recommendationItemList?.size ?: 0
+            for (i in 0 until itemSize) {
+                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList[i].quantity) {
+                    dataList.add(i)
+                }
+            }
+        }
+        return dataList
     }
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {

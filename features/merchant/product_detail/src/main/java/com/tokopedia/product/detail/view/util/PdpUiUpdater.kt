@@ -694,22 +694,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem>?) {
         miniCart?.let { cartData ->
             mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
-                val productRecom = mapOfData[key] as ProductRecommendationDataModel
-                productRecom.recomWidgetData?.let { recomWidget ->
+                val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
+                productRecom.recomWidgetData?.let { recomData ->
+                    val recomWidget = recomData.copy()
                     if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                        updateData(key) {
-                            var successChangeData = false
-                            recomWidget.recommendationItemList.forEach { recomItem ->
-                                if (cartData.containsKey(recomItem.productId.toString())
-                                        && recomItem.isRecomProductShowVariantAndCart
-                                        && recomItem.quantity != cartData[recomItem.productId.toString()]?.quantity) {
-                                    recomItem.quantity = cartData[recomItem.productId.toString()]?.quantity
-                                            ?: 0
-                                    successChangeData = true
-                                }
+                        var successChangeData = false
+                        val dataList = recomWidget.copyRecomItemList()
+                        dataList.forEach { recomItem ->
+                            if (cartData.containsKey(recomItem.productId.toString())
+                                    && recomItem.isRecomProductShowVariantAndCart
+                                    && recomItem.quantity != cartData[recomItem.productId.toString()]?.quantity) {
+                                recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity ?: 0)
+                                successChangeData = true
                             }
-                            if (successChangeData) {
-                                productRecom.cardModel = recomWidget.recommendationItemList.toProductCardModels(false)
+                        }
+                        if (successChangeData) {
+                            updateData(key) {
+                                val newData = copyPDPRecomByKey(key)
+                                newData.cardModel = dataList.toProductCardModels(false)
+                                newData.recomWidgetData?.recommendationItemList = dataList
+                                mapOfData.remove(key)
+                                mapOfData[key] = newData
                             }
                         }
                     }
@@ -756,6 +761,17 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
         updateAction.invoke()
+    }
+
+    private fun copyPDPRecomByKey(key: String): ProductRecommendationDataModel {
+        val data = mapOfData[key] as ProductRecommendationDataModel
+        return ProductRecommendationDataModel(
+                type = data.type,
+                name = data.name,
+                recomWidgetData = data.recomWidgetData?.copy(),
+                filterData = data.filterData,
+                cardModel = data.cardModel,
+                position = data.position)
     }
 
 }

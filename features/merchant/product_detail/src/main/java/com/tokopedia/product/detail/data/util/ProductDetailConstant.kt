@@ -53,7 +53,10 @@ object ProductDetailConstant {
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
+    const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW = 1234
+    const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW_ITEM_POS_LIST = 1235
     const val DIFFUTIL_PAYLOAD = "payload"
+    const val DIFFUTIL_PAYLOAD_EXTRAS = "payload_extras"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2

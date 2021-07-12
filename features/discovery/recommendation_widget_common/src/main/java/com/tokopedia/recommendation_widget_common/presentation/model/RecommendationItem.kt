@@ -143,7 +143,7 @@ data class RecommendationItem(
         result = HASH_CODE * result + isGold.hashCode()
         result = HASH_CODE * result + isOfficial.hashCode()
         result = HASH_CODE * result + dimension61.hashCode()
-        result = HASH_CODE * result + productId.hashCode()
+        result = HASH_CODE * result + parentID.hashCode()
         result = HASH_CODE * result + isRecomProductShowVariantAndCart.hashCode()
         return result
     }
@@ -159,7 +159,6 @@ data class RecommendationItem(
     fun updateItemCurrentStock(quantity: Int) {
         this.quantity = quantity
     }
-
 }
 
 data class RecommendationSpecificationLabels(var specTitle: String = "", val specSummary: String = "")
