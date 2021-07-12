@@ -262,18 +262,20 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun registerCheck(id: String) {
-        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
-            val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
+        launchCatchError(coroutineContext, {
+            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK]?.let { query ->
+                val params = mapOf(RegisterInitialQueryConstant.PARAM_ID to id)
+                registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
+                registerCheckUseCase.setRequestParams(params)
+                registerCheckUseCase.setGraphqlQuery(query)
+                idlingResourceProvider?.increment()
+                val response = registerCheckUseCase.executeOnBackground()
+                onSuccessRegisterCheck().invoke(response)
 
-            registerCheckUseCase.setTypeClass(RegisterCheckPojo::class.java)
-            registerCheckUseCase.setRequestParams(params)
-            registerCheckUseCase.setGraphqlQuery(query)
-            idlingResourceProvider?.increment()
-            registerCheckUseCase.execute(
-                    onSuccessRegisterCheck(),
-                    onFailedRegisterCheck()
-            )
-        }
+            }
+        }, {
+            onFailedRegisterCheck().invoke(it)
+        })
     }
 
     private fun createRegisterBasicParams(
@@ -298,20 +300,19 @@ class RegisterInitialViewModel @Inject constructor(
             fullname: String,
             validateToken: String
     ){
-        rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
-            val params = createRegisterBasicParams(email, password, fullname, validateToken)
-            userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
-            registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
-            registerRequestUseCase.setRequestParams(params)
-            registerRequestUseCase.setGraphqlQuery(query)
-            registerRequestUseCase.execute(
-                {
-                    onSuccessRegisterRequest(it.data)
-                }, {
-                    onFailedRegisterRequest(it)
-                }
-            )
-        }
+        launchCatchError(coroutineContext, {
+            rawQueries[RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST]?.let { query ->
+                val params = createRegisterBasicParams(email, password, fullname, validateToken)
+                userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+                registerRequestUseCase.setTypeClass(RegisterRequestPojo::class.java)
+                registerRequestUseCase.setRequestParams(params)
+                registerRequestUseCase.setGraphqlQuery(query)
+                val response = registerRequestUseCase.executeOnBackground()
+                onSuccessRegisterRequest(response.data)
+            }
+        }, {
+            onFailedRegisterRequest(it)
+        })
     }
 
     fun registerRequestV2(

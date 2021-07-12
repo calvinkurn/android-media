@@ -125,6 +125,7 @@
     <string name="label_drop_off_cta">Cari Indomaret</string>
     <string name="checkout_label_per_insurance_price">per barang</string>
     <string name="label_ticker_trade_in">Tukar Tambah</string>
+    <string name="checkout_label_payment_try_again">Oops, sedang terjadi kendala. Coba lagi atau kembali dalam beberapa saat.</string>
     <string name="checkout_label_reload_shipping">Refresh</string>
     <string name="checkout_shipping">Pengiriman</string>
     <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
