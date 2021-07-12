@@ -540,7 +540,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }else if(state == TickerCheckoutView.State.FAILED){
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
             view?.let { v ->
-                Toaster.build(v, "Maaf, belum berhasil hapus kupon. Coba lagi, yuk!", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                Toaster.build(v, getString(R.string.hotel_error_cancel_promo), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                         getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
             }
         }

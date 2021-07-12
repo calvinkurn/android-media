@@ -309,4 +309,5 @@
     <string name="hotel_sticky_calendar_content_desc">Hotel calendar</string>
     <string name="hotel_review_booking_logo">Booking.com logo</string>
     <string name="hotel_search_map_max_radius_info">Area terlalu luas, zoom in lagi ya</string>
+    <string name="hotel_error_cancel_promo">Maaf, belum berhasil hapus kupon. Coba lagi, yuk!</string>
 </resources>
