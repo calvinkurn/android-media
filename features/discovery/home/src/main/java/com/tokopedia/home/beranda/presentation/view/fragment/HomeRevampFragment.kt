@@ -661,20 +661,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
-        //add navigation
-        if (!isNavigationCoachmarkShown(requireContext())) {
-            val globalNavIcon = navToolbar?.getGlobalNavIconView()
-            globalNavIcon?.let {
-                this.add(
-                        CoachMark2Item(
-                                globalNavIcon,
-                                getString(R.string.onboarding_coachmark_title),
-                                getString(R.string.onboarding_coachmark_description)
-                        )
-                )
-            }
-        }
-
         //inbox
         if (!isInboxCoachmarkShown(requireContext())) {
             val inboxIcon = navToolbar?.getInboxIconView()
@@ -744,6 +730,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     )
                     gopayAccountCoachmarkPosition = (this.size-1)
                 }
+            }
+        }
+
+        //add navigation
+        if (!isNavigationCoachmarkShown(requireContext())) {
+            val globalNavIcon = navToolbar?.getGlobalNavIconView()
+            globalNavIcon?.let {
+                this.add(
+                    CoachMark2Item(
+                        globalNavIcon,
+                        getString(R.string.onboarding_coachmark_title),
+                        getString(R.string.onboarding_coachmark_description)
+                    )
+                )
             }
         }
     }
