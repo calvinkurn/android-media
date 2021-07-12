@@ -13,7 +13,6 @@ buildscript {
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
-        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
