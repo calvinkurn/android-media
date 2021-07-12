@@ -307,18 +307,26 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_ON_MAIN_STOCK withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationProductStatus(isVariant: Boolean,
-                                          isOn: Boolean,
-                                          source: String = ""
+    fun eventClickAllocationProductStatus(
+        isVariant: Boolean,
+        isOn: Boolean,
+        source: String = "",
+        productId: String = "",
+        shopId: String = ""
     ) {
-        var label =
-                if (isOn) {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_ON
-                } else {
-                    ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
-                }
-        if(source.isNotEmpty()) label = "$label - $source"
-        eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant, label)
+        var label = if (isOn) {
+            ProductManageDataLayer.EVENT_LABEL_ALLOCATION_ON
+        } else {
+            ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
+        }
+        if (source.isNotEmpty()) label = "$label - $source"
+        if (productId.isNotEmpty() && shopId.isNotEmpty()) {
+            label = label.plus(" - $productId - $shopId")
+        }
+        eventProductManage(
+            ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant,
+            label
+        )
     }
 
     fun eventClickAllocationDecreaseStock(isVariant: Boolean, label: String = "") {
