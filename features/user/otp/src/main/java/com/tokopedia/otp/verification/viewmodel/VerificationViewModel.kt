@@ -20,7 +20,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 01/06/20.
  */
 
-class VerificationViewModel @Inject constructor(
+open class VerificationViewModel @Inject constructor(
         private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
         private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
         private val otpValidateUseCase: OtpValidateUseCase,

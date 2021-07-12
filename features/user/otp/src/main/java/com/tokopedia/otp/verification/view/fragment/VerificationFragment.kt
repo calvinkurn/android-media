@@ -326,6 +326,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         when {
             otpValidateData.success -> {
+                // tracker auto submit success
+                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 done = true
                 trackSuccess()
                 resetCountDown()
@@ -338,8 +340,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     putString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, viewBound.pin?.value.toString())
                 }
                 redirectAfterValidationSuccessful(bundle)
-                // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData, modeListData, true)
             }
             otpValidateData.errorMessage.isNotEmpty() -> {
                 onFailedOtpValidate(MessageErrorException(otpValidateData.errorMessage))
@@ -361,7 +361,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun redirectAfterValidationSuccessful(bundle: Bundle) {
+    open fun redirectAfterValidationSuccessful(bundle: Bundle) {
         if ((activity as VerificationActivity).isResetPin2FA) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
@@ -373,7 +373,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         } else {
             activity?.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
         }
-        activity?.finish()
+        finishFragment()
     }
 
     protected open fun onFailedOtpValidate(throwable: Throwable) {
@@ -586,6 +586,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 countdown
         )
         viewBound.pin?.pinMessage = MethodChecker.fromHtml(text)
+    }
+
+    open fun finishFragment() {
+        activity?.finish()
     }
 
     companion object {

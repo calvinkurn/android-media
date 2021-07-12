@@ -4,10 +4,13 @@
   "query" : [
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - search result page",
+      "eventCategory": "top nav",
       "eventAction": "click search box",
       "eventLabel": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*",
+      "currentSite": "tokopediamarketplace",
+      "businessUnit": "search"
     }
   ]
 }

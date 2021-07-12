@@ -16,6 +16,9 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.getDayDiffFromToday
+import com.tokopedia.utils.date.toDate
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -23,7 +26,7 @@ import kotlin.collections.HashMap
 /**
  * @author by furqan on 11/06/2021
  */
-class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDateUtil) {
+class FlightAnalytics @Inject constructor() {
 
     fun eventOpenScreen(screenName: String) {
         val mapOpenScreen = mapOf(
@@ -148,12 +151,14 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
                                 homepageModel.flightPassengerViewModel?.infant ?: 0,
                                 homepageModel.flightClass?.title
                                         ?: FlightAnalyticsDefaults.CLASS_EKONOMI,
-                                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                                        FlightDateUtil.YYYYMMDD, homepageModel.departureDate ?: ""),
-                                if (homepageModel.isOneWay) "" else String.format(" - %s",
-                                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                                                FlightDateUtil.YYYYMMDD, homepageModel.returnDate
-                                                ?: ""))
+                                DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                                        DateUtil.YYYYMMDD,
+                                        homepageModel.departureDate ?: ""),
+                                if (homepageModel.isOneWay) ""
+                                else String.format(" - %s", DateUtil.formatDate(
+                                        DateUtil.YYYY_MM_DD,
+                                        DateUtil.YYYYMMDD,
+                                        homepageModel.returnDate ?: ""))
                         ),
                         screenName = screenName,
                         userId = userId
@@ -211,11 +216,11 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
                                 searchPassModel.flightPassengerModel.children,
                                 searchPassModel.flightPassengerModel.infant,
                                 searchPassModel.flightClass.title,
-                                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                                        FlightDateUtil.YYYYMMDD, searchPassModel.departureDate),
+                                DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                                        DateUtil.YYYYMMDD, searchPassModel.departureDate),
                                 if (searchPassModel.isOneWay) "" else String.format(" - %s",
-                                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                                                FlightDateUtil.YYYYMMDD, searchPassModel.returnDate))
+                                        DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                                                DateUtil.YYYYMMDD, searchPassModel.returnDate))
                         ),
                         customMap = hashMapOf(
                                 FlightAnalyticsKeys.FROM to if (searchPassModel.departureAirport.airportCode.isEmpty()) {
@@ -228,15 +233,15 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
                                 } else {
                                     searchPassModel.arrivalAirport.airportCode
                                 },
-                                FlightAnalyticsKeys.DEPARTURE_DATE to FlightDateUtil.formatDate(
-                                        FlightDateUtil.DEFAULT_FORMAT,
-                                        FlightDateUtil.YYYYMMDD,
+                                FlightAnalyticsKeys.DEPARTURE_DATE to DateUtil.formatDate(
+                                        DateUtil.YYYY_MM_DD,
+                                        DateUtil.YYYYMMDD,
                                         searchPassModel.departureDate),
                                 FlightAnalyticsKeys.DEPARTURE_DATE_FORMATTED to searchPassModel.departureDate,
                                 FlightAnalyticsKeys.RETURN_DATE to if (searchPassModel.isOneWay) ""
-                                else FlightDateUtil.formatDate(
-                                        FlightDateUtil.DEFAULT_FORMAT,
-                                        FlightDateUtil.YYYYMMDD,
+                                else DateUtil.formatDate(
+                                        DateUtil.YYYY_MM_DD,
+                                        DateUtil.YYYYMMDD,
                                         searchPassModel.returnDate),
                                 FlightAnalyticsKeys.RETURN_DATE_FORMATTED to if (searchPassModel.isOneWay) ""
                                 else searchPassModel.returnDate,
@@ -295,9 +300,9 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
                                 searchPassData.flightPassengerModel.children,
                                 searchPassData.flightPassengerModel.infant,
                                 searchPassData.flightClass.title,
-                                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassData.departureDate),
-                                if (searchPassData.isOneWay) "" else String.format(" - %s", FlightDateUtil.formatDate(
-                                        FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassData.returnDate))
+                                DateUtil.formatDate(DateUtil.YYYY_MM_DD, DateUtil.YYYYMMDD, searchPassData.departureDate),
+                                if (searchPassData.isOneWay) "" else String.format(" - %s", DateUtil.formatDate(
+                                        DateUtil.YYYY_MM_DD, DateUtil.YYYYMMDD, searchPassData.returnDate))
                         ),
                         screenName = FlightAnalyticsScreenName.SEARCH,
                         userId = userId
@@ -887,16 +892,15 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
         val totalPriceChild = detailModel.childNumericPrice * detailModel.countChild
         val totalPriceInfant = detailModel.infantNumericPrice * detailModel.countInfant
 
-        val layoverDayDiff: Long = FlightDateUtil.countDayDifference(
-                FlightDateUtil.YYYYMMDD,
-                FlightDateUtil.formatDate(
-                        FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        FlightDateUtil.YYYYMMDD,
+        val layoverDayDiff: Long = DateUtil.getDayDiff(
+                DateUtil.formatDate(
+                        DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                        DateUtil.YYYY_MM_DD,
                         detailModel.routeList[0].departureTimestamp
                 ),
-                FlightDateUtil.formatDate(
-                        FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        FlightDateUtil.YYYYMMDD,
+                DateUtil.formatDate(
+                        DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                        DateUtil.YYYY_MM_DD,
                         detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp
                 )
         )
@@ -910,7 +914,7 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
                     putString(FlightAnalyticsKeys.BRAND, detailModel.routeList[0].airlineName)
                     putString(FlightAnalyticsKeys.ITEM_CATEGORY, FlightAnalyticsDefaults.FLIGHT_FIRST_CAPITAL)
                     putInt(FlightAnalyticsKeys.QUANTITY, detailModel.countAdult + detailModel.countChild + detailModel.countInfant)
-                    putString(FlightAnalyticsKeys.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, detailModel.routeList[0].departureTimestamp))
+                    putString(FlightAnalyticsKeys.DIMENSION66, DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.YYYYMMDD, detailModel.routeList[0].departureTimestamp))
                     putString(FlightAnalyticsKeys.DIMENSION67, if (isOneWay) "oneway" else "roundtrip")
                     putString(FlightAnalyticsKeys.DIMENSION68, flightClass)
                     putString(FlightAnalyticsKeys.DIMENSION69, "")
@@ -1003,8 +1007,8 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
         label.append(airlines.joinToString(separator = ","))
 
         if (journeyModel.routeList.isNotEmpty()) {
-            val timeResult = "${flightDateUtil.getDayDiff(journeyModel.routeList[0].departureTimestamp)} - " +
-                    "${flightDateUtil.getDayDiff(journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp)}"
+            val timeResult = "${journeyModel.routeList[0].departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()} - " +
+                    "${journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
             label.append(" - $timeResult")
         }
 
@@ -1038,8 +1042,8 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
         result.append(airlines.joinToString(separator = ","))
 
         if (journeyModel.routeList.isNotEmpty()) {
-            val timeResult = "${flightDateUtil.getDayDiff(journeyModel.routeList[0].departureTimestamp)} - " +
-                    "${flightDateUtil.getDayDiff(journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp)}"
+            val timeResult = "${journeyModel.routeList[0].departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()} - " +
+                    "${journeyModel.routeList[journeyModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
             result.append(" - $timeResult")
         }
 
@@ -1084,7 +1088,7 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
             putString(FlightAnalyticsKeys.VARIANT, "$totalAdultPrice - $totalChildPrice - $totalInfantPrice")
             putInt(FlightAnalyticsKeys.INDEX, position)
             putInt(FlightAnalyticsKeys.POSITIONS, position)
-            putString(FlightAnalyticsKeys.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyModel.routeList[0].departureTimestamp))
+            putString(FlightAnalyticsKeys.DIMENSION66, DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.YYYYMMDD, journeyModel.routeList[0].departureTimestamp))
             putString(FlightAnalyticsKeys.DIMENSION67, if (searchPassDataViewModel.isOneWay) "oneway" else "roundtrip")
             putString(FlightAnalyticsKeys.DIMENSION68, searchPassDataViewModel.flightClass.title.toLowerCase(Locale.getDefault()))
             putString(FlightAnalyticsKeys.DIMENSION69, "")
@@ -1137,7 +1141,7 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
             putString(FlightAnalyticsKeys.VARIANT, "$totalAdultPrice - $totalChildPrice - $totalInfantPrice")
             putInt(FlightAnalyticsKeys.INDEX, position)
             putInt(FlightAnalyticsKeys.POSITIONS, position)
-            putString(FlightAnalyticsKeys.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyModel.routeList[0].departureTimestamp))
+            putString(FlightAnalyticsKeys.DIMENSION66, DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.YYYYMMDD, journeyModel.routeList[0].departureTimestamp))
             putString(FlightAnalyticsKeys.DIMENSION67, if (searchPassData.isOneWay) "oneway" else "roundtrip")
             putString(FlightAnalyticsKeys.DIMENSION68, searchPassData.flightClass.title.toLowerCase(Locale.getDefault()))
             putString(FlightAnalyticsKeys.DIMENSION69, "")
@@ -1159,8 +1163,8 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
         if (detailModel.routeList.isNotEmpty()) {
             val airlines = detailModel.routeList[0].airlineName.toLowerCase(Locale.getDefault())
             stringBuilder.append(airlines)
-            val timeResult = "${flightDateUtil.getDayDiff(detailModel.routeList[0].departureTimestamp)} - " +
-                    "${flightDateUtil.getDayDiff(detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp)}"
+            val timeResult = "${detailModel.routeList[0].departureTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()} - " +
+                    "${detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).getDayDiffFromToday()}"
             stringBuilder.append(" - $timeResult")
         }
         stringBuilder.append(" - ${transformRefundableLabel(detailModel.isRefundable)}")

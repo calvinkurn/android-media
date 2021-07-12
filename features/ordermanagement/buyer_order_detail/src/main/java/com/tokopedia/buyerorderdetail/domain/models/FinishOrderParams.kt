@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 
 data class FinishOrderParams(
         @SerializedName("order_id")
@@ -22,6 +23,6 @@ data class FinishOrderParams(
 ) {
     fun isValid(): Boolean {
         val numericRegex = Regex("\\d+")
-        return orderId.matches(numericRegex) && orderId != "0" && userId.matches(numericRegex) && userId != "0"
+        return orderId.matches(numericRegex) && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID && userId.matches(numericRegex) && userId != "0"
     }
 }
