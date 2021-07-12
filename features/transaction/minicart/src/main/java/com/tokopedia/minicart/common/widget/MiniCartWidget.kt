@@ -409,38 +409,16 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
-            totalAmount?.apply {
-                setLabelTitle("")
-                setAmount("")
-                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
-                amountCtaView.isEnabled = false
-                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-                amountCtaView.requestLayout()
-            }
-            textCannotProcess?.apply {
-                text = context.getString(R.string.mini_cart_label_cannot_process)
-                show()
-            }
-            textCannotProcessQuantity?.apply {
-                text = context.getString(R.string.mini_cart_cannot_process_quantity, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
-                show()
-            }
-            imageChevronUnavailable?.show()
+            renderUnavailableWidget(miniCartSimplifiedData)
         } else {
-            totalAmount?.apply {
-                setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
-                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
-                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
-                amountCtaView.isEnabled = true
-                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
-                amountCtaView.requestLayout()
-            }
-            textCannotProcess?.gone()
-            textCannotProcessQuantity?.gone()
-            imageChevronUnavailable?.gone()
+            renderAvailableWidget(miniCartSimplifiedData)
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
+        renderTotalAmountCtaText(miniCartSimplifiedData)
+    }
+
+    private fun renderTotalAmountCtaText(miniCartSimplifiedData: MiniCartSimplifiedData) {
         totalAmount?.post {
             val ellipsis = totalAmount?.amountCtaView?.layout?.getEllipsisCount(0) ?: 0
             if (ellipsis > 0) {
@@ -451,6 +429,40 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        totalAmount?.apply {
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
+            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy_occ), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
+            amountCtaView.isEnabled = true
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
+        }
+        textCannotProcess?.gone()
+        textCannotProcessQuantity?.gone()
+        imageChevronUnavailable?.gone()
+    }
+
+    private fun renderUnavailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        totalAmount?.apply {
+            setLabelTitle("")
+            setAmount("")
+            setCtaText(context.getString(R.string.mini_cart_widget_label_buy_occ_empty))
+            amountCtaView.isEnabled = false
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
+        }
+        textCannotProcess?.apply {
+            text = context.getString(R.string.mini_cart_label_cannot_process)
+            show()
+        }
+        textCannotProcessQuantity?.apply {
+            text = context.getString(R.string.mini_cart_cannot_process_quantity, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
+            show()
+        }
+        imageChevronUnavailable?.show()
     }
 
     private fun setAmountViewLayoutParams() {
