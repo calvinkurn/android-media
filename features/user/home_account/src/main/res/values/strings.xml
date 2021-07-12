@@ -48,6 +48,7 @@
     <string name="menu_account_title_dark_mode">Dark Mode</string>
     <string name="menu_account_title_quality_setting">Kualitas Gambar</string>
     <string name="menu_account_title_clear_cache">Bersihkan Cache</string>
+    <string name="menu_account_title_screen_recorder">Perekam Layar</string>
     <string name="menu_account_title_about_us">Kenali Tokopedia</string>
     <string name="menu_account_title_terms">Syarat dan Ketentuan</string>
     <string name="menu_account_title_privacy_policy">Kebijakan Privasi</string>
@@ -71,6 +72,7 @@
     <string name="menu_account_desc_dark_mode">Aktifkan dark mode di Tokopedia</string>
     <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
     <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
+    <string name="menu_account_desc_screen_recorder">Lampiran video untuk laporan kendala</string>
 
     <string name="new_home_account_go_to_wishlist">Lihat Wishlist</string>
     <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>

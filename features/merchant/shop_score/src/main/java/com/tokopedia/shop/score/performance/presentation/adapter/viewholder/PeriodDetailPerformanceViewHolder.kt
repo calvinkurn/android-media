@@ -2,7 +2,6 @@ package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.content.res.Resources
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getResColor
 
