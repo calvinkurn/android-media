@@ -41,9 +41,9 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
 
     public String getDigitalAuthKey() {
         if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
-            return AuthKey.RECHARGE_HMAC_API_KEY_STAGING;
+            return AuthKeyExt.RECHARGE_HMAC_API_KEY_STAGING;
         } else {
-            return AuthKey.RECHARGE_HMAC_API_KEY_PROD;
+            return AuthKeyExt.RECHARGE_HMAC_API_KEY_PROD;
         }
     }
 

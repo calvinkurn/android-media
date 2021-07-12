@@ -5,7 +5,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 project.ext {
     artifactId = 'authentication'
     groupId = 'com.tokopedia.authentication.ext'
-    versionName = "1.0.0"
+    versionName = "1.0.1"
     artifactName = "authentication_ext-release"
 }
 
