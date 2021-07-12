@@ -42,6 +42,10 @@ class VerificationViewModel @Inject constructor(
     val otpValidateResult: LiveData<Result<OtpValidateData>>
         get() = _otpValidateResult
 
+    private val _onClearedViewModel = MutableLiveData<Unit>()
+    val onClearedViewModel: LiveData<Unit>
+        get() = _onClearedViewModel
+
     fun getVerificationMethod2FA(
             otpType: String,
             validateToken: String,
@@ -230,5 +234,10 @@ class VerificationViewModel @Inject constructor(
             _otpValidateResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
         })
+    }
+
+    public override fun onCleared() {
+        _onClearedViewModel.value = Unit
+        super.onCleared()
     }
 }

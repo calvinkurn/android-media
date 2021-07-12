@@ -3,7 +3,10 @@ package com.tokopedia.otp.verification.viewmodel
 import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.otp.verification.domain.data.*
+import com.tokopedia.otp.verification.domain.data.OtpRequestData
+import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
+import com.tokopedia.otp.verification.domain.data.OtpValidateData
+import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.usecase.*
@@ -53,6 +56,9 @@ class VerificationViewModelTest {
 
     @RelaxedMockK
     lateinit var otpValidateResultObserver: Observer<Result<OtpValidateData>>
+
+    @RelaxedMockK
+    lateinit var onClearedViewModelObserver: Observer<Unit>
 
     private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
@@ -240,6 +246,16 @@ class VerificationViewModelTest {
         assertEquals(throwable, result.throwable)
     }
 
+    @Test
+    fun `On clear view model`() {
+        viewmodel.onClearedViewModel.observeForever(onClearedViewModelObserver)
+
+        viewmodel.onCleared()
+
+        verify { onClearedViewModelObserver.onChanged(any()) }
+        assert(viewmodel.onClearedViewModel.value is Unit)
+    }
+
     companion object {
         private val successGetVerificationMethodResponse: OtpModeListPojo = FileUtil.parse(
                 "/success_get_verification_method.json",
@@ -254,5 +270,6 @@ class VerificationViewModelTest {
                 OtpRequestPojo::class.java
         )
         private val throwable = Throwable()
+        private val unit = Unit
     }
 }

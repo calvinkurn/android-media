@@ -146,16 +146,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         analytics.trackScreen(screenName)
     }
 
-    override fun onStop() {
-        clearOtpLogin()
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        clearOtpLogin()
-        super.onDestroy()
-    }
-
     override fun onResume() {
         super.onResume()
         showKeyboard()
@@ -261,6 +251,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate(it.throwable)
             }
+        })
+        viewModel.onClearedViewModel.observe(viewLifecycleOwner, Observer {
+            clearOtpLogin()
         })
     }
 

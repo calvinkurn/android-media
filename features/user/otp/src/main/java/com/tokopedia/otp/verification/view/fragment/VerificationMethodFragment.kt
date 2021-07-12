@@ -111,16 +111,6 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         analytics.trackScreen(screenName)
     }
 
-    override fun onStop() {
-        clearOtpLogin()
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        clearOtpLogin()
-        super.onDestroy()
-    }
-
     override fun onBackPressed(): Boolean = true
 
     private fun clearOtpLogin() {
@@ -188,6 +178,9 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 is Success -> onSuccessGetVerificationMethod().invoke(it.data)
                 is Fail -> onFailedGetVerificationMethod().invoke(it.throwable)
             }
+        })
+        viewmodel.onClearedViewModel.observe(viewLifecycleOwner, Observer {
+            clearOtpLogin()
         })
     }
 
