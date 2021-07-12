@@ -97,8 +97,8 @@ fun hasViewHolderOf(
         override fun matchesSafely(item: RecyclerView?): Boolean {
             val itemCount = item!!.adapter!!.itemCount
             for (i in 0 until itemCount) {
-                val adapter = item.findViewHolderForAdapterPosition(i)
-                if (expectedClass.isInstance(adapter)) {
+                val vh = item.findViewHolderForAdapterPosition(i)
+                if (expectedClass.isInstance(vh)) {
                     return true
                 }
             }
