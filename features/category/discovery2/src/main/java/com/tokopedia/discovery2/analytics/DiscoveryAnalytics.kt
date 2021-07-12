@@ -1119,4 +1119,17 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun getHostTrackingSource(): String {
         return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
     }
+
+    override fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to EVENT_CLICK_DISCOVERY,
+                KEY_EVENT_ACTION to SCROLL_DEPTH_RATE,
+                KEY_EVENT_CATEGORY to VALUE_DISCOVERY_PAGE,
+                KEY_EVENT_LABEL to "$screenScrollPercentage%  - ${lastVisibleComponent?.name} - ${lastVisibleComponent?.creativeName}",
+                BUSINESS_UNIT to HOME_BROWSE,
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                PAGE_PATH to pagePath,
+                PAGE_TYPE to pageType)
+        getTracker().sendGeneralEvent(map)
+    }
 }

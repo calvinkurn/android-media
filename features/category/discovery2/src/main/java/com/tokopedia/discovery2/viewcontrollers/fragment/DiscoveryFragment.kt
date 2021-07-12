@@ -135,7 +135,8 @@ class DiscoveryFragment :
     private var userAddressData: LocalCacheModel? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-    private var lastVisiblleComponent : ComponentsItem? = null
+    private var lastVisibleComponent : ComponentsItem? = null
+    private var screenScrollPercentage = 0
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -269,33 +270,31 @@ class DiscoveryFragment :
         val offset = recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
         val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
         val range = recyclerView.computeVerticalScrollRange() // max scroll height
-        val percentage = 100.0f * offset / (range - extent).toFloat()
+        val currentScrollDepth: Int
 
-        Log.d("Percentage", "${Math.round(percentage)}%")
-
-        val percentageWithScreen = 100.0f * (offset  + extent).toFloat() / range
-        Log.d("percentageWithScreen", "${Math.round(percentageWithScreen)}%")
-
-        if(percentage > 0){
-            if(lastVisiblleComponent != null && (lastVisiblleComponent?.name ==
-                            ComponentsList.ProductCardRevamp.componentName || lastVisiblleComponent?.name ==
-                            ComponentsList.ProductCardSprintSale.componentName)){
+        currentScrollDepth = 100 * (offset + extent) / range
+        if (screenScrollPercentage == 0 || currentScrollDepth > screenScrollPercentage) {
+            screenScrollPercentage = currentScrollDepth
+        }
+        if (screenScrollPercentage > 0) {
+            if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSale.componentName)) {
                 return
             }
             val positionArray = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
-            if(positionArray.isNotEmpty()){
+            if (positionArray.isNotEmpty()) {
                 discoveryAdapter.currentList[positionArray.first()]
-                if(discoveryAdapter.currentList.size <= positionArray.first()) return
-                lastVisiblleComponent = discoveryAdapter.currentList[positionArray.first()]
+                if (discoveryAdapter.currentList.size <= positionArray.first()) return
+                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
-                if (lastVisiblleComponent != null && (lastVisiblleComponent?.name ==
-                                ComponentsList.ProductCardRevampItem.componentName || lastVisiblleComponent?.name ==
+                if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                                ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
                                 ComponentsList.ProductCardSprintSaleItem.componentName)) {
-                    lastVisiblleComponent = com.tokopedia.discovery2.datamapper
-                            .getComponent(lastVisiblleComponent!!.parentComponentId,
-                                    lastVisiblleComponent!!.pageEndPoint)
+                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
+                            .getComponent(lastVisibleComponent!!.parentComponentId,
+                                    lastVisibleComponent!!.pageEndPoint)
                 }
-                Log.d("lastVisiblleComponent", "${lastVisiblleComponent?.name}")
             }
 
         }
@@ -849,6 +848,9 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
+        if(screenScrollPercentage > 0){
+            getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
+        }
         openScreenStatus = false
     }
 
