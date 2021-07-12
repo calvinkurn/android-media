@@ -33,12 +33,12 @@ class VideoLoadingComponent(
     }
 
     fun showCasting() {
-        ivLoadingText.text = "Casting to Chromecast"
+        ivLoadingText.text = getString(R.string.play_casting_chromecast)
         showTextOnly()
     }
 
     fun showLoadingCasting() {
-        ivLoadingText.text = "Connecting to Chromecast"
+        ivLoadingText.text = getString(R.string.play_connecting_chromecast)
         showTextOnly()
     }
 

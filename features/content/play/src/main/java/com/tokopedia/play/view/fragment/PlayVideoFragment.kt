@@ -405,7 +405,7 @@ class PlayVideoFragment @Inject constructor(
                     videoLoadingView.hide()
                     it.previousState?.let { previousState ->
                         if(previousState == PlayCastState.CONNECTING || previousState == PlayCastState.CONNECTED)
-                            Toaster.build(view = requireView(), text = "Disconnect from chromecast").show()
+                            Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
                     }
                 }
                 else -> {}

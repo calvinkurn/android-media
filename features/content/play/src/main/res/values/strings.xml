@@ -58,4 +58,8 @@
     <string name="play_action_ok">Oke</string>
     <string name="play_out_of_stock">Stok habis</string>
 
+    <string name="play_connecting_chromecast">Connecting to Chromecast</string>
+    <string name="play_casting_chromecast">Casting to Chromecast</string>
+    <string name="play_disconnect_chromecast">Disconnect from Chromecast</string>
+
 </resources>
