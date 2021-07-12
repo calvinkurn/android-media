@@ -46,15 +46,10 @@
         app:layout_constraintTop_toBottomOf="@id/ll_header_info"
         tools:ignore="RtlHardcoded">
 
-        <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
-            android:id="@+id/fxChat"
+        <com.tokopedia.topchat.chatroom.view.custom.MessageBubbleConstraintLayout
+            android:id="@+id/mb_bubble_msg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/spacing_lvl4"
-            android:paddingTop="@dimen/dp_topchat_10"
-            android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_topchat_10"
-            app:showCheckMark="false" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_reply_container"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@color/red_100"
+        android:paddingBottom="@dimen/dp_topchat_20"
+        app:layout_constraintBottom_toTopOf="@+id/view_border_radius"
+        app:layout_constraintEnd_toEndOf="@+id/view_border_radius"
+        app:layout_constraintStart_toStartOf="@+id/view_border_radius">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_border_radius"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/dp_topchat_20"
+        app:layout_constraintEnd_toEndOf="@+id/fxChat"
+        app:layout_constraintStart_toStartOf="@+id/fxChat"
+        app:layout_constraintTop_toTopOf="@+id/fxChat" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+        android:id="@+id/fxChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</merge>

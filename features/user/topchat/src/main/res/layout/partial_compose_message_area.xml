@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@color/red_100"
         android:paddingBottom="@dimen/dp_topchat_20"
         app:layout_constraintBottom_toTopOf="@+id/view_border_radius"
