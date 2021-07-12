@@ -52,18 +52,12 @@ class LoginEmailPhoneFragmentTest {
     @Test
     fun check_login_events_after_email_password_login() {
         val password = "nopassword"
-        Espresso.onView(ViewMatchers.withId(R.id.register_btn))
-                .perform(click())
-
-        Espresso.onView(ViewMatchers.withId(R.id.password))
-                .perform(ViewActions.typeText("nopassword"))
-
-        Espresso.onView(ViewMatchers.withId(R.id.password))
-                .check(matches(withText(password)))
+        Espresso.onView(ViewMatchers.withId(R.id.register_btn)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.wrapper_password)).perform(ViewActions.typeText("nopassword"))
+        Espresso.onView(ViewMatchers.withId(R.id.wrapper_password)).check(matches(withText(password)))
 
         //perform login with email & password - // LoginEmailPhoneFragment.onEmailExist
-        Espresso.onView(ViewMatchers.withId(R.id.register_btn))
-                .perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.register_btn)).perform(click())
 
         MatcherAssert.assertThat(activityRule.activityResult, ActivityResultMatchers.hasResultCode(Activity.RESULT_OK))
 

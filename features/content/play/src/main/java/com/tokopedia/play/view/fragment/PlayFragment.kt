@@ -28,8 +28,9 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
@@ -40,7 +41,6 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
@@ -49,13 +49,13 @@ import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
 import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -64,7 +64,7 @@ import javax.inject.Inject
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
-        private val dispatchers: CoroutineDispatcherProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val analytic: PlayAnalytic,
 ) :
         TkpdBaseV4Fragment(),
@@ -111,9 +111,13 @@ class PlayFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playParentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayParentViewModel::class.java)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        processChannelInfo()
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            processChannelInfo()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -212,6 +216,14 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.setScaledVideoBottomBounds(bottomMostBounds)
     }
 
+    override fun onAnimationStart(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.startAnimateInsets(isHidingInsets)
+    }
+
+    override fun onAnimationFinish(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         if (playViewModel.videoPlayer.isYouTube) {
@@ -259,7 +271,9 @@ class PlayFragment @Inject constructor(
     }
 
     private fun processChannelInfo() {
-        playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        try {
+            playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        } catch (e: Throwable) {}
     }
 
     //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
@@ -369,9 +383,10 @@ class PlayFragment @Inject constructor(
     private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
-                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+                dismissToaster()
 
                 if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
+                else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
 
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
@@ -411,8 +426,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is PlayPinnedUiModel.PinnedProduct) fragmentBottomSheetView.safeInit()
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner, DistinctObserver {
+            fragmentBottomSheetView.safeInit()
         })
     }
 
@@ -518,7 +533,7 @@ class PlayFragment @Inject constructor(
     }
 
     private fun doAutoSwipe() {
-        playNavigation.navigateToNextPage()
+        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
     }
 
     private fun sendSwipeRoomAnalytic() {

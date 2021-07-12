@@ -1,0 +1,36 @@
+[
+  {
+    "data": {
+      "wallet": {
+        "linked": true,
+        "balance": "Rp10.000.000",
+        "rawBalance": 0,
+        "text": "OVO",
+        "total_balance": "",
+        "raw_total_balance": 0,
+        "hold_balance": "",
+        "raw_hold_balance": 0,
+        "redirect_url": "https://www.tokopedia.com/ovo/api/v1/activate?tokocash=false",
+        "applinks": "tokopedia://navigation/main",
+        "ab_tags": [],
+        "action": {
+          "text": "",
+          "redirect_url": "",
+          "applinks": "",
+          "visibility": ""
+        },
+        "point_balance": "8.000.000",
+        "raw_point_balance": 500,
+        "cash_balance": "Rp 8.000.000",
+        "raw_cash_balance": 0,
+        "wallet_type": "OVO",
+        "help_applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fovo",
+        "tnc_applink": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2Farticle%2Fa-0894",
+        "show_announcement": true,
+        "is_show_topup": false,
+        "topup_applink": "",
+        "topup_limit": 0
+      }
+    }
+  }
+]

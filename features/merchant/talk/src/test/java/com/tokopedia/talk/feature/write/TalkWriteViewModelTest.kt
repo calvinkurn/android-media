@@ -15,9 +15,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import org.junit.Assert
 import org.junit.Test
-import java.lang.Exception
 
 class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
@@ -155,6 +155,33 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
         verifyTalkDeleteTalkErrorEquals(Fail(exception))
     }
 
+    @Test
+    fun `when set isVariantSelected should get expected value`() {
+        val expectedIsVariantSelected = true
+
+        viewModel.isVariantSelected = expectedIsVariantSelected
+
+        Assert.assertEquals(expectedIsVariantSelected, viewModel.isVariantSelected)
+    }
+
+    @Test
+    fun `when set availableVariants should get expected value`() {
+        val availableVariants = "available variants"
+
+        viewModel.availableVariants = availableVariants
+
+        Assert.assertEquals(availableVariants, viewModel.availableVariants)
+    }
+
+    @Test
+    fun `when getUserId should get expected userId`() {
+        val expectedUserId = "102131"
+
+        onGetUserId_thenReturn(expectedUserId)
+
+        Assert.assertEquals(expectedUserId, viewModel.getUserId())
+    }
+
     private fun verifyDiscussionGetWritingFormUseCaseCalled() {
         coVerify { discussionGetWritingFormUseCase.executeOnBackground() }
     }
@@ -177,6 +204,10 @@ class TalkWriteViewModelTest : TalkWriteViewModelTestFixture() {
 
     private fun onTalkCreateNewTalkNetworkFail_thenReturn(exception: Exception) {
         coEvery { discussionSubmitFormUseCase.executeOnBackground() } throws exception
+    }
+
+    private fun onGetUserId_thenReturn(userId: String) {
+        every { userSession.userId } returns userId
     }
 
     private fun verifyTalkCreateNewTalkSuccessEquals(expectedResponse: Success<DiscussionSubmitForm>) {

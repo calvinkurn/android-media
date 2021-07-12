@@ -8,4 +8,9 @@ data class Notifications(
         val inboxCounter: InboxCounter = InboxCounter(),
         @SerializedName("total_cart")
         val totalCart: Int = 0
-)
+) {
+        fun adjustTotalCounterBasedOn(page: Int, isShowBottomNav: Boolean) {
+                inboxCounter.buyer.setCounterAdjuster(page, isShowBottomNav)
+                inboxCounter.seller.setCounterAdjuster(page, isShowBottomNav)
+        }
+}

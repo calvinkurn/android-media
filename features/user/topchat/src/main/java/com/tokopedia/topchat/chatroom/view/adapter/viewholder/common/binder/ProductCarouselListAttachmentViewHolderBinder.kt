@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
@@ -8,6 +9,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselLis
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.custom.ProductCarouselRecyclerView
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 
 object ProductCarouselListAttachmentViewHolderBinder {
@@ -69,5 +71,23 @@ object ProductCarouselListAttachmentViewHolderBinder {
             vh: RecyclerView.ViewHolder
     ) {
         rv?.restoreSavedCarouselState(vh.adapterPosition, listener)
+    }
+
+    fun updateParentMetaData(
+            uiModel: Visitable<*>, lastKnownPosition: Int, adapter: ProductListAdapter
+    ) {
+        val metaData = SingleProductAttachmentContainer.ParentViewHolderMetaData(
+                uiModel, lastKnownPosition
+        )
+        adapter.updateParentMetaData(metaData)
+    }
+
+    fun updateCarouselProductStock(
+            adapter: ProductListAdapter,
+            payload: SingleProductAttachmentContainer.PayloadUpdateStock
+    ) {
+        val productPosition = adapter.findProductPosition(payload.productId)
+        if (productPosition == RecyclerView.NO_POSITION) return
+        adapter.notifyItemChanged(productPosition, payload)
     }
 }

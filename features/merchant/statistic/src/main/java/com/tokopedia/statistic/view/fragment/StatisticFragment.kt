@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -23,10 +24,12 @@ import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
+import com.tokopedia.statistic.analytics.TrackingHelper
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.BAR_CHART_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CARD_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.CAROUSEL_WIDGET_TRACE
@@ -37,6 +40,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTra
 import com.tokopedia.statistic.analytics.performance.StatisticPagePerformanceTraceNameConst.TABLE_WIDGET_TRACE
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.di.StatisticComponent
@@ -58,6 +62,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -67,17 +72,22 @@ import javax.inject.Inject
 class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(), WidgetListener {
 
     companion object {
-        private const val DEFAULT_END_DATE = 1L
+        private const val DEFAULT_START_DATE_NON_REGULAR_MERCHANT = 1L
+        private const val DEFAULT_START_DATE_REGULAR_MERCHANT = 7L
+        private const val DEFAULT_END_DATE_NON_REGULAR_MERCHANT = 0L
+        private const val DEFAULT_END_DATE_REGULAR_MERCHANT = 1L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
-        private const val STATISTIC_PAGE = "statistic_page_source"
+        private const val KEY_STATISTIC_PAGE = "statistic_page_source"
+        private const val KEY_SHOULD_LOAD_DATA_ON_CREATE = "key_should_load_data_on_create"
 
-        fun newInstance(page: StatisticPageUiModel): StatisticFragment {
+        fun newInstance(page: StatisticPageUiModel, shouldLoadDataOnCreate: Boolean): StatisticFragment {
             return StatisticFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(STATISTIC_PAGE, page)
+                    putParcelable(KEY_STATISTIC_PAGE, page)
+                    putBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE, shouldLoadDataOnCreate)
                 }
             }
         }
@@ -96,12 +106,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
-        val defaultStartDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_6.toLong()))
+        val defaultStartDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                statisticPage?.pageTitle != getString(R.string.stc_shop)) {
+            Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_REGULAR_MERCHANT))
+        } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_START_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.startDate
                 ?: defaultStartDate
     }
     private val defaultEndDate by lazy {
-        val defaultEndDate = Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE))
+        val defaultEndDate = if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                statisticPage?.pageTitle != getString(R.string.stc_shop)) {
+            Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_REGULAR_MERCHANT))
+        } else Date(DateTimeUtil.getNPastDaysTimestamp(DEFAULT_END_DATE_NON_REGULAR_MERCHANT))
         return@lazy statisticPage?.dateFilters?.firstOrNull { it.isSelected }?.endDate
                 ?: defaultEndDate
     }
@@ -128,8 +144,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
-        statisticPage?.let { page ->
-            lifecycleScope.launch(Dispatchers.Unconfined) {
+        loadInitialLayoutData {
+            statisticPage?.let { page ->
                 startLayoutNetworkPerformanceMonitoring()
                 mViewModel.getWidgetLayout(page.pageSource)
             }
@@ -219,14 +235,22 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     override fun removeWidget(position: Int, widget: BaseWidgetUiModel<*>) {
-        recyclerView.post {
+        recyclerView?.post {
             adapter.data.remove(widget)
             adapter.notifyItemRemoved(position)
         }
     }
 
-    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
+    override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
         showErrorToaster()
+    }
+
+    override fun getIsShouldRemoveWidget(): Boolean = false
+
+    override fun onRemoveWidget(position: Int) {
+        recyclerView?.post {
+            checkForSectionToBeRemoved(position)
+        }
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
@@ -247,6 +271,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionLineGraphEvent(model, position)
     }
 
+    override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
+        StatisticTracker.sendEmptyStateCtaClickLineGraphEvent(model)
+    }
+
     override fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
         StatisticTracker.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
     }
@@ -258,6 +286,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun sendCarouselCtaClickEvent(dataKey: String) {
         StatisticTracker.sendClickCarouselCtaEvent(dataKey)
     }
+
+    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
         StatisticTracker.sendClickPostItemEvent(dataKey, title)
@@ -287,9 +317,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionDescriptionEvent(descriptionTitle)
     }
 
-    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {
+    override fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, maxSlidePosition: Int, isSlideEmpty: Boolean) {
         val position = adapter.data.indexOf(model)
         StatisticTracker.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
+        getCategoryPage()?.let { categoryPage ->
+            StatisticTracker.sendTableSlideEvent(categoryPage, slideNumber + 1, maxSlidePosition)
+        }
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -297,9 +330,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendPieChartImpressionEvent(model, position)
     }
 
+    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        StatisticTracker.sendPieChartEmptyStateCtaClickEvent(model)
+    }
+
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         StatisticTracker.sendBarChartImpressionEvent(model, position)
+    }
+
+    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
+        StatisticTracker.sendBarChartEmptyStateCtaClickEvent(element)
     }
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
@@ -308,8 +349,53 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
 
+    override fun sendTableFilterClick(element: TableWidgetUiModel) {
+        element.tableFilters.find { it.isSelected }?.let { filterOption ->
+            getCategoryPage()?.let { categoryPage ->
+                StatisticTracker.sendTableFilterClickEvent(categoryPage, filterOption.name)
+            }
+        }
+    }
+
+    override fun sendTableFilterImpression(element: TableWidgetUiModel) {
+        getCategoryPage()?.let { categoryPage ->
+            StatisticTracker.sendTableFilterImpressionEvent(categoryPage)
+        }
+    }
+
+    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val tableFilterBottomSheet = (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
+            recyclerView?.post {
+                val copiedWidget = adapter.data
+                        ?.find { it.dataKey == element.dataKey }
+                        ?.apply { data = null } as? TableWidgetUiModel
+                copiedWidget?.let {
+                    notifyWidgetChanged(it)
+                    fetchTableData(listOf(copiedWidget))
+                }
+            }
+        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+    }
+
     fun setSelectedWidget(widget: String) {
         this.selectedWidget = widget
+    }
+
+    private fun loadInitialLayoutData(action: () -> Unit) {
+        val shouldLoadDataOnCreate = arguments?.getBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE).orFalse()
+        if (shouldLoadDataOnCreate) {
+            action()
+        } else {
+            lifecycleScope.launchWhenResumed {
+                if (isVisible && isFirstLoad) {
+                    action()
+                }
+            }
+        }
     }
 
     private fun setupView() = view?.run {
@@ -326,21 +412,41 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun getPageFromArgs(): StatisticPageUiModel? {
-        return arguments?.getParcelable(STATISTIC_PAGE)
+        return arguments?.getParcelable(KEY_STATISTIC_PAGE)
     }
 
     private fun setDefaultDynamicParameter() {
-        statisticPage?.let {
-            mViewModel.setDateFilter(it.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+        statisticPage?.let { page ->
+            page.dateFilters.firstOrNull { it.isSelected }.let { dateFilter ->
+                if (dateFilter != null) {
+                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, dateFilter.getDateFilterType())
+                } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                        statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+                } else {
+                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_TODAY)
+                }
+            }
         }
     }
 
     private fun setDefaultRange() = view?.run {
-        val headerSubTitle: String = context.getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
-        val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
-        val subTitle = "$headerSubTitle ($startEndDateFmt)"
-
-        setHeaderSubTitle(subTitle)
+        statisticPage?.dateFilters?.firstOrNull { it.isSelected }.let {
+            val headerSubtitle = if (it != null) {
+                it.getHeaderSubTitle(requireContext())
+            } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                    statisticPage?.pageTitle != getString(R.string.stc_shop)) {
+                val headerSubTitle: String = getString(R.string.stc_last_n_days_cc, Const.DAYS_7)
+                val startEndDateFmt = DateFilterFormatUtil.getDateRangeStr(defaultStartDate, defaultEndDate)
+                "$headerSubTitle ($startEndDateFmt)"
+            } else {
+                val startDateMillis = defaultStartDate.time
+                val dateStr = DateTimeUtil.format(startDateMillis, "dd MMMM")
+                val hourStr = DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "HH:00")
+                getString(R.string.stc_today_fmt, dateStr, hourStr)
+            }
+            this@StatisticFragment.headerSubTitle = headerSubtitle
+        }
     }
 
     private fun setHeaderSubTitle(subTitle: String) {
@@ -366,7 +472,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
 
-        with(recyclerView) {
+        recyclerView?.run {
             layoutManager = mLayoutManager
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         }
@@ -428,7 +534,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun fetchTableData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
-        val dataKeys: List<String> = Utils.getWidgetDataKeys<TableWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<TableWidgetUiModel>().map {
+            val tableFilter = it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, tableFilter)
+        }
         performanceMonitoringTableWidget = PerformanceMonitoring.start(TABLE_WIDGET_TRACE)
         mViewModel.getTableWidgetData(dataKeys)
     }
@@ -468,9 +577,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         StatisticTracker.sendSetDateFilterEvent(item.label)
         adapter.data.forEach {
-            if (it !is TickerWidgetUiModel) {
-                it.isLoaded = false
-                it.data = null
+            when(it) {
+                is TickerWidgetUiModel -> { }
+                is SectionWidgetUiModel -> {
+                    it.shouldShow = true
+                }
+                else -> {
+                    it.isLoaded = false
+                    it.data = null
+                }
             }
         }
         adapter.notifyDataSetChanged()
@@ -493,7 +608,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
-        recyclerView.visible()
+        recyclerView?.visible()
         view?.globalErrorStc?.gone()
 
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
@@ -506,7 +621,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         scrollToWidgetBySelectedDataKey()
 
         if (isFirstLoad) {
-            recyclerView.post {
+            recyclerView?.post {
                 requestVisibleWidgetsData()
             }
             isFirstLoad = false
@@ -527,7 +642,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
             val invalidIndex = -1
             if (index != invalidIndex) {
-                recyclerView.post {
+                recyclerView?.post {
                     val offset = 0
                     mLayoutManager.scrollToPositionWithOffset(index, offset)
                 }
@@ -555,11 +670,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
         if (adapter.data.isEmpty()) {
             globalErrorStc.visible()
-            recyclerView.gone()
+            recyclerView?.gone()
         } else {
             showErrorToaster()
             globalErrorStc.gone()
         }
+        swipeRefreshStc.isRefreshing = false
         StatisticLogger.logToCrashlytics(throwable, StatisticLogger.ERROR_LAYOUT)
     }
 
@@ -639,7 +755,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
 
         showErrorToaster()
-        recyclerView.post {
+        recyclerView?.post {
             requestVisibleWidgetsData()
         }
         StatisticLogger.logToCrashlytics(this, "${StatisticLogger.ERROR_WIDGET} $widgetType")
@@ -658,13 +774,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 }
             }
         }
-        recyclerView.post {
+        recyclerView?.post {
             requestVisibleWidgetsData()
         }
     }
 
     private fun notifyWidgetChanged(widget: BaseWidgetUiModel<*>) {
-        recyclerView.post {
+        recyclerView?.post {
             val widgetPosition = adapter.data.indexOf(widget)
             if (widgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(widgetPosition)
@@ -819,7 +935,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun stopPLTPerformanceMonitoring() {
         if (!isPltMonitoringCompleted) {
             isPltMonitoringCompleted = true
-            recyclerView.addOneTimeGlobalLayoutListener {
+            recyclerView?.addOneTimeGlobalLayoutListener {
                 (activity as? StatisticPerformanceMonitoringListener)?.stopPerformanceMonitoring()
             }
         }
@@ -837,4 +953,42 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             WidgetType.BAR_CHART -> performanceMonitoringBarChartWidget?.stopTrace()
         }
     }
+
+    private fun getCategoryPage(): String? {
+        return context?.let {
+            TrackingHelper.getCategoryPage(it, statisticPage?.pageTitle.orEmpty())
+        }
+    }
+
+    private fun checkForSectionToBeRemoved(removedPosition: Int) {
+        val previousWidget = adapter.data.getOrNull(removedPosition - 1)
+        if (previousWidget is SectionWidgetUiModel) {
+            if (adapter.data.getOrNull(removedPosition + 1) == null) {
+                removeEmptySection(removedPosition - 1)
+            } else {
+                var shouldRemoveSection = false
+                adapter.data?.drop(removedPosition + 1)?.forEach { widget ->
+                    when {
+                        widget.isShowEmpty || !widget.isEmpty() -> {
+                            // If we found that the next widget should be shown, then we should not remove the section
+                            return@forEach
+                        }
+                        widget is SectionWidgetUiModel -> {
+                            shouldRemoveSection = true
+                            return@forEach
+                        }
+                    }
+                }
+                if (shouldRemoveSection) {
+                    removeEmptySection(removedPosition - 1)
+                }
+            }
+        }
+    }
+
+    private fun removeEmptySection(position: Int) {
+        (adapter.data.getOrNull(position) as? SectionWidgetUiModel)?.shouldShow = false
+        adapter.notifyItemChanged(position)
+    }
+
 }

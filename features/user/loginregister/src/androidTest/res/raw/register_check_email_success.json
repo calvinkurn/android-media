@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "registerCheck": {
+        "isExist": true,
+        "isPending": false,
+        "status": 1,
+        "registerType": "email",
+        "userID": 1690351,
+        "view": "yoris.prayogo+3@tokopedia.com",
+        "errors": []
+      }
+    }
+  }
+]

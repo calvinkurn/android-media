@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_bg_dark_transparent"
+    android:background="@color/play_dms_bg_dark_transparent"
     tools:visibility="visible">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -14,12 +14,12 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_system_close_default"
-        app:tint="@color/Neutral_N0" />
+        app:tint="@color/Unify_Static_White" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="@dimen/layout_lvl0"
@@ -29,7 +29,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:gravity="center"
         android:text="@string/play_permit_title"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/tv_permit_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
         android:layout_marginRight="@dimen/spacing_lvl6"
         android:gravity="center"
         android:text="@string/play_permit_description"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@+id/view_center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +78,7 @@
             android:layout_marginBottom="@dimen/play_permit_spacing"
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
-            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintBottom_toTopOf="@id/divider"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_play_action_camera_white" />
 
@@ -89,7 +89,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:text="@string/play_permit_allow_camera"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintBottom_toBottomOf="@+id/iv_permit_camera"
             app:layout_constraintStart_toEndOf="@+id/iv_permit_camera"
@@ -101,7 +101,7 @@
             android:layout_height="@dimen/layout_lvl3"
             android:gravity="center"
             android:text="@string/play_permit_active"
-            android:textColor="@color/dark_G500"
+            android:textColor="@color/Unify_G500"
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintBottom_toBottomOf="@+id/text_permit_allow_camera"
             app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +111,7 @@
             android:id="@+id/divider"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/play_permit_divider_height"
-            android:background="@color/play_permit_stroke"
+            android:background="@color/play_dms_permit_stroke"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +124,7 @@
             android:layout_marginTop="@dimen/play_permit_spacing"
             android:scaleType="centerInside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintTop_toBottomOf="@id/divider"
             app:srcCompat="@drawable/ic_play_audio_white" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -134,7 +134,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:text="@string/play_permit_allow_mic"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_Static_White"
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintBottom_toBottomOf="@+id/iv_permit_microphone"
             app:layout_constraintStart_toEndOf="@+id/iv_permit_microphone"
@@ -146,7 +146,7 @@
             android:layout_height="@dimen/layout_lvl3"
             android:gravity="center"
             android:text="@string/play_permit_active"
-            android:textColor="@color/dark_G500"
+            android:textColor="@color/Unify_G500"
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintBottom_toBottomOf="@+id/text_permit_allow_mic"
             app:layout_constraintEnd_toEndOf="parent"

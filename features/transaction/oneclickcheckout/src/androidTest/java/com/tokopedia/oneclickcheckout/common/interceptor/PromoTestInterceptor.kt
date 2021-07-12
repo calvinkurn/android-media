@@ -48,6 +48,8 @@ const val VALIDATE_USE_PROMO_REVAMP_DEFAULT_RESPONSE = "promo/validate_use_promo
 
 const val VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE = "promo/validate_use_promo_revamp_bbo_applied_response.json"
 
+const val VALIDATE_USE_PROMO_REVAMP_BOE_APPLIED_RESPONSE = "promo/validate_use_promo_revamp_boe_applied_response.json"
+
 const val VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE = "promo/validate_use_promo_revamp_cashback_full_applied.json"
 
 const val VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE = "promo/validate_use_promo_revamp_cashback_half_applied.json"

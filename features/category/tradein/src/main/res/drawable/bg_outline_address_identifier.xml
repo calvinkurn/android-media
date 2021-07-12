@@ -2,12 +2,12 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="#daf5db" />
+    <solid android:color="@color/Unify_G200" />
 
     <corners android:radius="10dp" />
 
     <stroke
-        android:color="#daf5db"
+        android:color="@color/Unify_G200"
         android:width="0.8dp" />
 
 </shape>

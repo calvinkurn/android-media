@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingTop="@dimen/setting_status_padding_top"
     android:paddingBottom="@dimen/setting_status_padding_bottom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -33,19 +33,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_R600"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/powerMerchantText"/>
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/powerMerchantLeftStatus"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/setting_tip_bar_enabled"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/leftGuideline"/>
+            app:layout_constraintStart_toEndOf="@id/powerMerchantText"
+            android:text="@string/setting_not_active"/>
 
         <View
             android:id="@+id/badgeBorder"
@@ -59,16 +51,30 @@
             app:layout_constraintDimensionRatio="1:1"
             android:background="@drawable/setting_image_circular"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/powerMerchantIcon"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="@dimen/setting_shop_badge_border_pm_margin"
+            app:icon_name="BADGE_PM_FILLED"
             app:layout_constraintTop_toTopOf="@id/badgeBorder"
             app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
             app:layout_constraintStart_toStartOf="@id/badgeBorder"
             app:layout_constraintEnd_toEndOf="@id/badgeBorder"
             app:srcCompat="@drawable/ic_power_merchant"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/upgradePMText"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="@id/powerMerchantIcon"
+            app:layout_constraintBottom_toBottomOf="@id/powerMerchantIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_G500"
+            android:text="@string/setting_upgrade"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"

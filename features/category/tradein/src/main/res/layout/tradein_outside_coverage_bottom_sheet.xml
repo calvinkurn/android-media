@@ -4,7 +4,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/clr_ae31353b">
+    android:background="@color/Unify_N700_68">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:paddingLeft="@dimen/spacing_lvl8"
                 android:paddingRight="@dimen/spacing_lvl8"
                 android:text="@string/tradein_outside_coverage_heading"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintTop_toBottomOf="@id/deferred_image_view"
                 app:typographyType="heading_2"
                 app:typographyWeight="bold" />
@@ -51,7 +51,7 @@
                 android:paddingLeft="@dimen/spacing_lvl8"
                 android:paddingRight="@dimen/spacing_lvl8"
                 android:text="@string/tradein_outside_coverage_description"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintTop_toBottomOf="@id/heading"
                 app:typographyType="body_2" />
 

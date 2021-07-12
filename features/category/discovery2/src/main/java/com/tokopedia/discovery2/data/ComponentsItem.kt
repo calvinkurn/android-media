@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import java.util.*
 import kotlin.collections.ArrayList
@@ -30,7 +31,7 @@ data class ComponentsItem(
         val title: String? = "",
 
         @SerializedName("lihat_semua")
-        val lihatSemua: LihatSemua? = null,
+        var lihatSemua: LihatSemua? = null,
 
         @SerializedName("properties")
         var properties: Properties? = null,
@@ -58,6 +59,7 @@ data class ComponentsItem(
         var pagePath: String = "",
         var parentComponentId: String = "",
         var parentComponentPosition: Int = 0,
+        var parentFilterComponentId: String? = null,
         var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
         var chipSelectionChange: Boolean = false,
@@ -81,7 +83,11 @@ data class ComponentsItem(
         var tabName: String? = "",
         var isSticky : Boolean = false,
         var description : String? = "",
-        var showFilterCount: Boolean = true,) {
+        var showFilterCount: Boolean = true,
+        var shouldRefreshComponent : Boolean? = null ,
+        var verticalProductFailState: Boolean = false,
+        var userAddressData: LocalCacheModel? = null,
+        var horizontalProductFailState: Boolean = false,) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

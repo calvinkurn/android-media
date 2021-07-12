@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import com.tokopedia.unifyprinciples.Typography;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -45,7 +45,6 @@ import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein.TradeinConstants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
-import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -62,14 +61,14 @@ import static com.tokopedia.tradein.view.viewcontrollers.activity.FinalPriceActi
 public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
-    private TextView mTvPriceElligible;
+    private Typography mTvPriceElligible;
     private ImageView mButtonRemove;
-    private TextView mTvModelName;
-    private TextView mTvHeaderPrice;
-    private TextView mTvInitialPrice;
-    private TextView mTvGoToProductDetails;
-    private TextView mTvNotUpto;
-    private TextView tvIndicateive;
+    private Typography mTvModelName;
+    private Typography mTvHeaderPrice;
+    private Typography mTvInitialPrice;
+    private Typography mTvGoToProductDetails;
+    private Typography mTvNotUpto;
+    private Typography tvIndicateive;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int closeButtonText;
     private int notElligibleText;
@@ -254,10 +253,10 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                                     laku6TradeIn.checkImeiValidation(this, editTextImei.getText().toString());
                                 } else if (editTextImei.getText().length() == 0){
                                     typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
-                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_R600));
                                 } else {
                                     typographyImeiDescription.setText(getString(R.string.wrong_imei_string));
-                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_R600));
                                 }
                             } else {
                                 laku6TradeIn.startGUITest();
@@ -442,7 +441,7 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     private void showDeviceNotElligiblePopup(int messageStringId) {
-        int greenColor = getResources().getColor(com.tokopedia.design.R.color.green_nob);
+        int greenColor = getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -542,7 +541,7 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         TradeInUtils.setImeiNumber(this, editTextImei.getText().toString());
         getPriceFromSDK(this);
         typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
-        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_black));
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
     }
 
     @Override
@@ -555,6 +554,6 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             e.printStackTrace();
         }
         typographyImeiDescription.setText(errorMessage);
-        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_R600));
     }
 }

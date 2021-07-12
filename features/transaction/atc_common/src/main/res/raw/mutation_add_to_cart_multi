@@ -1,5 +1,5 @@
-mutation add_to_cart_multi($param: [AddToCartMultiParam]) {
-  add_to_cart_multi(param: $param) {
+mutation add_to_cart_multi($param: [AddToCartMultiParam],  $chosen_address: ChosenAddressParam) {
+  add_to_cart_multi(param: $param, chosen_address: $chosen_address) {
     error_message
     status
     data{

@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 
 interface InitialStateItemClickListener {
     fun onDeleteRecentSearchItem(item: BaseItemInitialStateSearch)
@@ -9,15 +9,17 @@ interface InitialStateItemClickListener {
 
     fun onRefreshPopularSearch(featureId: String)
 
-    fun onItemClicked(applink: String, webUrl: String)
+    fun onProductLineClicked(item: BaseItemInitialStateSearch)
 
-    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch)
 
     fun onRecentSearchSeeMoreClicked()
 
     fun onRefreshDynamicSection(featureId: String)
 
-    fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+    fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
 
-    fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel)
+    fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
+
+    fun onRecentViewClicked(item: BaseItemInitialStateSearch)
 }

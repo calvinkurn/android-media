@@ -4,7 +4,6 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 
@@ -17,6 +16,7 @@ class PlayProductTagsModelBuilder {
             bottomSheetTitle: String = "abc",
             partnerId: Long = 123L
     ) = PlayProductTagsBasicInfoUiModel(
+            maxFeaturedProducts = 5,
             bottomSheetTitle = bottomSheetTitle,
             partnerId = partnerId
     )
@@ -32,7 +32,7 @@ class PlayProductTagsModelBuilder {
             minQty: Int = 1,
             isFreeShipping: Boolean = false,
             applink: String? = null
-    ) = ProductLineUiModel(
+    ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
             imageUrl = imageUrl,
@@ -52,12 +52,16 @@ class PlayProductTagsModelBuilder {
     ) = MerchantVoucherUiModel(
             type = type,
             title = title,
-            description = description
+            description = description,
+            id = "1",
+            code = "123",
+            copyable = true,
+            highlighted = true
     )
 
     fun buildOriginalProductPrice(
             price: String = "123",
-            priceNumber: Long = 123
+            priceNumber: Double = 123.0
     ) = OriginalPrice(
             price = price,
             priceNumber = priceNumber

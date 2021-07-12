@@ -1,7 +1,7 @@
 package com.tokopedia.brandlist.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.brandlist.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.brandlist.brandlist_category.data.model.Category
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistFeaturedBrandUseCase
@@ -33,7 +33,7 @@ class BrandlistPageViewModelTest {
 
 
     private val viewModel by lazy {
-        BrandlistPageViewModel(getBrandListFeaturedBrandUseCase, getBrandListPopularBrandUseCase, getBrandListAllBrandUseCase, TestDispatcherProvider())
+        BrandlistPageViewModel(getBrandListFeaturedBrandUseCase, getBrandListPopularBrandUseCase, getBrandListAllBrandUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Before

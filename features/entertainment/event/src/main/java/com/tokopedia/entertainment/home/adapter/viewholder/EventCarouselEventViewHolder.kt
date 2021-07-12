@@ -8,9 +8,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
-import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
@@ -23,13 +22,12 @@ import java.util.*
 /**
  * Author errysuprayogi on 27,January,2020
  */
-class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemModel,
-                                                             onSuccess: (EventItemModel) -> Unit,
-                                                             onError: (Throwable) -> Unit) -> Unit),
-                                   val carouselListener: TrackingListener)
-    : HomeEventViewHolder<EventCarouselModel>(itemView) {
+class EventCarouselEventViewHolder(itemView: View,
+                                   val carouselListener: TrackingListener,
+                                   val clickCarouselListener: ClickCarouselListener
+) : AbstractViewHolder<EventCarouselModel>(itemView) {
 
-    var itemAdapter = InnerItemAdapter(action, carouselListener)
+    var itemAdapter = InnerItemAdapter(carouselListener, clickCarouselListener)
 
     init {
         itemView.ent_recycle_view_carousel.apply {
@@ -57,9 +55,9 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
     }
 
-    class InnerItemAdapter(val action: (data: EventItemModel,
-                                        onSuccess: (EventItemModel) -> Unit,
-                                        onError: (Throwable) -> Unit) -> Unit, val carouselListener: TrackingListener)
+    class InnerItemAdapter(val carouselListener: TrackingListener,
+                           val clickCarouselListener: ClickCarouselListener
+    )
         : RecyclerView.Adapter<InnerViewHolder>() {
 
         lateinit var items: List<EventItemModel>
@@ -83,32 +81,15 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
             holder.view.event_title.text = item.title
             holder.view.event_date.text = formatedSchedule(item.date)
             holder.view.event_price.text = item.price
-            if (item.isLiked) {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-            } else {
-                holder.view.iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-            }
             holder.view.setOnClickListener {
                 carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)
-                RouteManager.route(holder.view.context, item.appUrl)
+                clickCarouselListener.redirectCarouselToPDPEvent(item.seoURL)
             }
             holder.view.addOnImpressionListener(item, {
                 carouselListener.impressionTopEventProduct(item, productNames,
                         position + 1)
             })
-            holder.view.iv_favorite.setOnClickListener {
-                action.invoke(item, ::onSuccessPostLiked, ::onErrorPostLiked)
-            }
-        }
-
-        fun onSuccessPostLiked(data: EventItemModel) {
-            notifyItemChanged(pos)
-        }
-
-        fun onErrorPostLiked(throwable: Throwable) {
-            notifyItemChanged(pos)
-            Log.e(TAG, throwable.localizedMessage)
         }
 
         private fun formatedSchedule(schedule: String): String? {
@@ -131,5 +112,7 @@ class EventCarouselEventViewHolder(itemView: View, action: ((data: EventItemMode
 
     class InnerViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-
+    interface ClickCarouselListener{
+        fun redirectCarouselToPDPEvent(applink: String)
+    }
 }

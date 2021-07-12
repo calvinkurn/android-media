@@ -22,16 +22,22 @@ data class GetPostDataModel(
 data class PostDataModel(
         @SerializedName("datakey")
         @Expose
-        val dataKey: String?,
+        val dataKey: String? = "",
         @SerializedName("list")
         @Expose
-        val list: List<PostItemDataModel>?,
+        val list: List<PostItemDataModel>? = emptyList(),
         @SerializedName("cta")
         @Expose
         val cta: PostCtaDataModel? = PostCtaDataModel(),
         @SerializedName("errorMsg")
         @Expose
-        val error: String?
+        val error: String? = "",
+        @SerializedName("emphasizeType")
+        @Expose
+        val emphasizeType: Int? = 0,
+        @SerializedName("showWidget")
+        @Expose
+        val showWidget: Boolean? = true
 )
 
 data class PostItemDataModel(
@@ -49,7 +55,13 @@ data class PostItemDataModel(
         val subtitle: String?,
         @SerializedName("featuredMediaURL")
         @Expose
-        val featuredMediaURL: String?
+        val featuredMediaURL: String?,
+        @SerializedName("stateText")
+        @Expose
+        val stateText: String? = "",
+        @SerializedName("stateMediaURL")
+        @Expose
+        val stateMediaUrl: String? = "",
 )
 
 data class PostCtaDataModel(

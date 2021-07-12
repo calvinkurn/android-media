@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.contract
 
 import android.text.Spanned
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
@@ -23,6 +24,9 @@ interface InboxListContract {
         fun scrollRv()
         fun showChatBotWidget()
         fun hideChatBotWidget()
+        fun showBottomFragment()
+        fun hideBottomFragment()
+        fun showSerVicePriorityBottomSheet()
     }
 
     interface Presenter : InboxBasePresenter {
@@ -37,5 +41,8 @@ interface InboxListContract {
         fun getChatbotApplink(): String
         fun getWelcomeMessage(): CharSequence
         fun getNotifiactionIndiactor(): Boolean
+        fun getBottomFragment(resID: Int): BottomSheetDialogFragment?
+        fun showSerVicePriorityBottomSheet()
+        fun sendGTMClickChatButton()
     }
 }

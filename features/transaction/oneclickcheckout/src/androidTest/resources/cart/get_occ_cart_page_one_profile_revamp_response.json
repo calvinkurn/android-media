@@ -198,6 +198,13 @@
                   "is_official": 1,
                   "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
                 },
+                "shop_type_info": {
+                  "shop_tier": 2,
+                  "shop_grade": 0,
+                  "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                  "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
+                  "title": "Official Store"
+                },
                 "address_id": 3608,
                 "postal_code": "55212",
                 "latitude": "-7.7932901",
@@ -458,6 +465,8 @@
                 "link": "http://pref-ecs.tokopedia.com"
               }
             },
+            "profile_revamp_wording": "Template Beli Langsung",
+            "is_recom": false,
             "profile_id": 1,
             "status": 2,
             "address": {
@@ -619,6 +628,14 @@
             "enable": true,
             "total_profile": 1,
             "change_template_text": "Tambah template"
+          },
+          "occ_remove_profile": {
+            "enable": true,
+            "ui_type": 2,
+            "message": {
+              "title": "",
+              "description": ""
+            }
           }
         }
       }

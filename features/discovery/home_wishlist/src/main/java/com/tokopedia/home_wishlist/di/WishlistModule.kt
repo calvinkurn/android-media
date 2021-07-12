@@ -7,8 +7,6 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
-import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
@@ -44,10 +42,6 @@ open class WishlistModule {
     @Provides
     fun providesGraphqlUsecase(): GraphqlUseCase = GraphqlUseCase()
 
-    @WishlistScope
-    @Provides
-    fun provideWishlistProductionDispatcherProvider(): WishlistDispatcherProvider = WishlistProductionDispatcherProvider()
-
     @Provides
     @WishlistScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
@@ -66,11 +60,11 @@ open class WishlistModule {
 
     @Provides
     @WishlistScope
-    open fun provideGetSingleRecommendationUseCase(graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(graphqlRepository)
+    open fun provideGetSingleRecommendationUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, graphqlRepository)
 
     @Provides
     @WishlistScope
-    fun provideGetRecommendationUseCase(coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(coroutineGqlRepository)
+    fun provideGetRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
 
     @Provides
     @WishlistScope
@@ -97,13 +91,6 @@ open class WishlistModule {
     fun provideSingleProductRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
                     com.tokopedia.recommendation_widget_common.R.raw.query_single_recommendation_widget)
-
-
-    @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)

@@ -1,0 +1,110 @@
+[
+  {
+    "data": {
+      "productrevShopRatingAggregate": {
+        "data": [
+          {
+            "product": {
+              "productID": 1316004648,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/d8239c39-0805-4c2f-a332-d62643ee3121.jpg",
+              "productName": "Pr0duk T3st1n6 S3r4g4m K4ry4w4n"
+            },
+            "rating": 4.5,
+            "reviewCount": 12
+          },
+          {
+            "product": {
+              "productID": 1359748766,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/20/be63e9bd-2823-49af-97b3-c5b7d2517c86.jpg",
+              "productName": "Pr0duc7 73571n6 K3m3j4"
+            },
+            "rating": 4.090909090909091,
+            "reviewCount": 11
+          },
+          {
+            "product": {
+              "productID": 1316189870,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg",
+              "productName": "Pr0duct T3st1n6 Out3r"
+            },
+            "rating": 4.7,
+            "reviewCount": 10
+          },
+          {
+            "product": {
+              "productID": 1316910490,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/ecb22e6d-b169-457b-beba-1faa9ab53db4.jpg",
+              "productName": "Pr0duct t3st1n6 bl0us3"
+            },
+            "rating": 4.7,
+            "reviewCount": 10
+          },
+          {
+            "product": {
+              "productID": 603023765,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/11/6/77816542/77816542_9ccb1675-8b21-4a12-b3b2-0a0eb827f750_800_800",
+              "productName": "Bunga 1"
+            },
+            "rating": 4.555555555555555,
+            "reviewCount": 9
+          },
+          {
+            "product": {
+              "productID": 1316348859,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/b8b9d2d6-79b1-4a10-ba84-9f3befd8f860.jpg",
+              "productName": "Pr0duct T3st1n6 K4c4m4t4 Hit4m"
+            },
+            "rating": 4.666666666666667,
+            "reviewCount": 9
+          },
+          {
+            "product": {
+              "productID": 1286169466,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/26/7bbc82b1-f0d1-475b-93f4-fee748860386.jpg",
+              "productName": "Pr0duct T3st1n6 T4s R4ns3l"
+            },
+            "rating": 4.777777777777778,
+            "reviewCount": 9
+          },
+          {
+            "product": {
+              "productID": 1316907003,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/dd85c13b-fd5d-4eaa-9cb6-34dffba254ee.jpg",
+              "productName": "Pr0duct T3st1n6 dr355"
+            },
+            "rating": 4.888888888888889,
+            "reviewCount": 9
+          },
+          {
+            "product": {
+              "productID": 1316529669,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/c7239383-760c-4a17-bed5-1c455d64e55d.jpg",
+              "productName": "Pr0duct T3st1n6 K4c4m4t4 G4y4"
+            },
+            "rating": 4.555555555555555,
+            "reviewCount": 9
+          },
+          {
+            "product": {
+              "productID": 1316955768,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/5/c50a712b-bb43-45c8-ad83-485cb44bed54.jpg",
+              "productName": "Pr0duct T3st1n6 R4ns3l"
+            },
+            "rating": 4.777777777777778,
+            "reviewCount": 9
+          },
+          {
+            "product": {
+              "productID": 1286179715,
+              "productImageURL": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/26/760007ae-dd97-4628-b076-3c046df05f94.jpg",
+              "productName": "Pr0duct T3st1n6 K3m3j4 Pr14 Sl1m F1t"
+            },
+            "rating": 4.777777777777778,
+            "reviewCount": 9
+          }
+        ],
+        "hasNext": true
+      }
+    }
+  }
+]

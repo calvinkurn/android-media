@@ -48,10 +48,10 @@ class CartHappyFlowTest {
             assertMainContent()
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 0)
-            assertTickerAnnouncementViewHolder(position = 0)
+            assertCartSelectAllViewHolder(0)
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 1)
-            assertCartSelectAllViewHolder(1)
+            assertTickerAnnouncementViewHolder(position = 1)
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
             assertFirstCartShopViewHolder(

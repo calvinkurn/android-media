@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.analytics.HotelPromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailHotelPresenter
+import com.tokopedia.promocheckout.util.ColorUtil
 import javax.inject.Inject
 
 class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
@@ -45,7 +46,10 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailHotelPresenter.checkVoucher(codeCoupon, cartID)
+        context?.run {
+            promoCheckoutDetailHotelPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,  com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            hotelPromoCheckoutAnalytics.hotelApplyPromo(this, codeCoupon, HotelPromoCheckoutAnalytics.HOTEL_BOOKING_SCREEN_NAME)
+        }
     }
 
     override fun onClickCancel() {
@@ -86,6 +90,7 @@ class PromoCheckoutDetailHotelFragment : BasePromoCheckoutDetailFragment() {
 
     companion object {
         val EXTRA_CART_ID = "EXTRA_CART_ID"
+        private val hotelPromoCheckoutAnalytics: HotelPromoCheckoutAnalytics by lazy { HotelPromoCheckoutAnalytics() }
 
         fun createInstance(codeCoupon: String, cartID: String, isUse: Boolean, pageTracking: Int): PromoCheckoutDetailHotelFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailHotelFragment()

@@ -4,11 +4,16 @@ apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
 apply from: 'buildconfig/dependencies/dependency-features.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
+apply from: "buildconfig/aar/local-aar-config.gradle"
+apply from: "buildconfig/aar/local-aar.gradle"
 
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
 
     repositories {
+        maven {
+            url = "$rootDir/localMavenRepository"
+        }
         gradlePluginPortal()
         google()
         maven { url "https://maven.google.com" }
@@ -28,7 +33,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:4.0.1') {
+        classpath ('com.android.tools.build:gradle:4.2.0') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
@@ -50,6 +55,8 @@ buildscript {
         classpath 'org.javassist:javassist:3.20.0-GA'
         classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
+        classpath "com.newrelic.agent.android:agent-gradle-plugin:5.28.1"
+        classpath "com.gradle:gradle-enterprise-gradle-plugin:3.6.3"
     }
 }
 
@@ -62,10 +69,21 @@ if (hasProperty('buildScan')) {
 
 apply from: 'buildproj.gradle'
 
+apply from: "$rootDir/tools/set_debug_tools.gradle"
+
+subprojects {
+    project.afterEvaluate {
+        def isLibrary = project.plugins.hasPlugin("com.android.library")
+        if (isLibrary) {
+            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
+        }
+    }
+}
+
 //Installing Git Hooks
 task installGitHooks {
     doLast {
-        ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+        ("cp " + rootProject.rootDir + "/git_hooks/pre-commit " + rootProject.rootDir + "/.git/hooks/pre-commit").execute()
         Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
     }
 }

@@ -45,9 +45,9 @@ class TradeInFinalPriceDetailsBottomSheet: BottomSheetUnify() {
                 doubleTextView.apply {
                     setTopText(review.substringBefore(":"))
                     setTopTextSize(textSize)
-                    setTopTextColor(MethodChecker.getColor(context, R.color.tradein_clr_AD31353B))
+                    setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     setBottomTextSize(textSize)
-                    setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
+                    setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     setBottomTextStyle("bold")
                     setBottomText(review.substringAfter(":"))
                     setBottomGravity(Gravity.END)

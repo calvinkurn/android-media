@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
 import com.tokopedia.product.detail.data.model.shop.ProductShopShipment
@@ -36,7 +36,7 @@ class CourierTypeFactory: BaseAdapterTypeFactory(){
                         courier_item_name.setFontSize(TextViewCompat.FontSize.TITLE)
                         courier_item_name.text = element.name
                         courier_item_info.text = element.product.map { it.name }.joinToString(", ")
-                        ImageHandler.loadImage(context, courier_item_image, element.image, com.tokopedia.design.R.drawable.ic_loading_image)
+                        courier_item_image.loadIcon(element.image)
                     }
                     else -> {}
                 }

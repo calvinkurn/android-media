@@ -19,7 +19,9 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "list_single_line",
@@ -37,7 +39,9 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "header",
@@ -55,7 +59,9 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "list_double_line",
@@ -73,7 +79,9 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "list_double_line",
@@ -91,14 +99,16 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "header",
         "type": "",
         "applink": "",
         "url": "",
-        "title": "Profil",
+        "title": "Barang di Waktu Indonesia Belanja",
         "subtitle": "",
         "icon_title": "",
         "icon_subtitle": "",
@@ -109,43 +119,49 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
-        "template": "list_double_line",
-        "type": "profile",
-        "applink": "tokopedia://people/6256819",
-        "url": "/people/6256819",
-        "title": "Dwi Samsung",
-        "subtitle": "@dsamsung",
+        "template": "list_product_line",
+        "type": "product",
+        "applink": "tokopedia://product/20100686",
+        "url": "/bgsport/bola-sepak-3",
+        "title": "Sneakers Redknot Koketo York Denim",
+        "subtitle": "Rp126.000",
         "icon_title": "",
         "icon_subtitle": "",
         "shortcut_image": "",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-12.jpg",
+        "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/5/1/625127637/625127637_1d6bddb3-5e33-47b7-9723-f365603182c0_720_720.jpg",
         "url_tracker": "",
         "label": "",
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "20",
+        "original_price": "Rp1.000.000"
       },
       {
-        "template": "list_double_line",
-        "type": "profile",
-        "applink": "tokopedia://people/5853939",
-        "url": "/people/5853939",
-        "title": "power bank samsung",
-        "subtitle": "@powerb",
+        "template": "list_product_line",
+        "type": "product",
+        "applink": "tokopedia://product/20100686",
+        "url": "/bgsport/bola-sepak-3",
+        "title": "Sneakers Air Jordan 1 MID CHICAGO",
+        "subtitle": "Rp2.547.000",
         "icon_title": "",
         "icon_subtitle": "",
         "shortcut_image": "",
-        "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2019/12/2/5853939/5853939_230b5d98-a24c-45c7-b0ef-dfe637cfb838.jpg",
+        "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2019/10/20/298794/298794_0bd710bf-ffe0-4db5-8987-cbaf4a5e2fb4_1067_1067.jpg",
         "url_tracker": "",
         "label": "",
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "list_double_line_without_image",
@@ -163,7 +179,9 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       },
       {
         "template": "list_double_line_without_image",
@@ -181,7 +199,9 @@
         "label_type": "",
         "tracking": {
           "code": ""
-        }
+        },
+        "discount_percentage": "",
+        "original_price": ""
       }
     ]
   },

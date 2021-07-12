@@ -1,24 +1,24 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
+import com.tokopedia.shop.product.domain.interactor.ClaimBenefitMembershipUseCase
+import com.tokopedia.shop.product.domain.interactor.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -49,10 +49,7 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopProductUseCase: GqlGetShopProductUseCase
     @RelaxedMockK
-    @ShopProductGetHighlightProductQualifier
     lateinit var getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>
-    @RelaxedMockK
-    lateinit var deleteShopInfoUseCase: DeleteShopInfoCacheUseCase
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
     @RelaxedMockK
@@ -69,9 +66,12 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
     @RelaxedMockK
     lateinit var getFollowStatusUseCase: GetFollowStatusUseCase
+    @RelaxedMockK
+    lateinit var context: Context
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
+    protected val addressWidgetData: LocalCacheModel = LocalCacheModel()
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }
@@ -94,7 +94,6 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopEtalaseByShopUseCase,
                 getShopProductUseCase,
                 getShopHighlightProductUseCase,
-                deleteShopInfoUseCase,
                 testCoroutineDispatcherProvider,
                 getShopFilterBottomSheetDataUseCase,
                 getShopFilterProductCountUseCase,

@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
@@ -20,8 +22,9 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2020-03-05.
  */
-class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext private val context: Context,
-                                                         private val graphqlUseCase: GraphqlUseCase)
+class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext private val context: Context,
+                                                        private val graphqlUseCase: GraphqlUseCase,
+                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
     : UseCase<ValidateUsePromoRevampUiModel>() {
 
     companion object {
@@ -30,18 +33,19 @@ class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext pri
         const val PARAM_PARAMS = "params"
     }
 
+    private fun getParams(validateUsePromoRequest: ValidateUsePromoRequest): Map<String, Any?> {
+        return mapOf(
+                PARAM_PARAMS to mapOf(
+                        PARAM_PROMO to validateUsePromoRequest
+                ),
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+        )
+    }
+
     override fun createObservable(requestParams: RequestParams?): Observable<ValidateUsePromoRevampUiModel> {
         val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as ValidateUsePromoRequest
-
-        val varPromo = mapOf(
-                PARAM_PROMO to paramValidateUse
-        )
-        val varParams = mapOf(
-                PARAM_PARAMS to varPromo
-        )
-
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_validate_use_promo_revamp), ValidateUseResponse::class.java, varParams)
+                R.raw.mutation_validate_use_promo_revamp), ValidateUseResponse::class.java, getParams(paramValidateUse))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

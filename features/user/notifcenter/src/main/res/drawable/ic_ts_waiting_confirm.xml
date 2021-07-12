@@ -11,5 +11,5 @@
         android:fillColor="#03AC0E" />
     <path
         android:pathData="M28 17.9l-6.4 0v-7.4c0 0 0 0 0 0l0 -0.8c0 -0.6 -0.4 -1 -1 -1h-1.7c-0.6 0 -1 0.4 -1 1v0.8v9.2v0.8c0 0.6 0.4 1 1 1H28c0.6 0 1 -0.4 1 -1v-1.7C29 18.4 28.6 17.9 28 17.9z"
-        android:fillColor="#FFFFFF" />
+        android:fillColor="@color/Unify_N0" />
 </vector>

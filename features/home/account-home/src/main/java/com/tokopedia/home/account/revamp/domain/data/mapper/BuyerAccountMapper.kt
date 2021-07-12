@@ -2,7 +2,6 @@ package com.tokopedia.home.account.revamp.domain.data.mapper
 
 import android.content.Context
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.data.model.tokopointshortcut.ShortcutGroupListItem
@@ -13,6 +12,7 @@ import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
+import com.tokopedia.home.account.revamp.Utils.formatIdrCurrency
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -143,7 +143,7 @@ class BuyerAccountMapper @Inject constructor(
         tokopediaPayViewModel.labelRight = context.getString(R.string.label_tokopedia_pay_deposit)
         tokopediaPayViewModel.isRightSaldo = true
 
-        tokopediaPayViewModel.amountRight = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false)
+        tokopediaPayViewModel.amountRight = formatIdrCurrency(accountDataModel.saldo.deposit)
         tokopediaPayViewModel.applinkRight = ApplinkConstInternalGlobal.SALDO_DEPOSIT
 
         return tokopediaPayViewModel
@@ -191,7 +191,7 @@ class BuyerAccountMapper @Inject constructor(
             return (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
 
         } catch (e: Exception) {
-            false
+            true
         }
     }
 }

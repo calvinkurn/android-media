@@ -1,0 +1,157 @@
+[
+  {
+    "data": {
+      "validate_use_promo_revamp": {
+        "status": "OK",
+        "message": [],
+        "error_code": "200",
+        "code": "200000",
+        "promo": {
+          "global_success": true,
+          "message": {
+            "state": "",
+            "color": "",
+            "text": ""
+          },
+          "success": true,
+          "codes": [],
+          "promo_code_id": 0,
+          "title_description": "Promo ",
+          "discount_amount": 0,
+          "cashback_wallet_amount": 0,
+          "cashback_advocate_referral_amount": 0,
+          "cashback_voucher_description": "",
+          "invoice_description": "",
+          "gateway_id": "71066624823132159",
+          "is_coupon": 0,
+          "coupon_description": "",
+          "is_tokopedia_gerai": false,
+          "voucher_orders": [
+            {
+              "code": "EKSCEPAT",
+              "success": true,
+              "unique_id": "480176-0-2034-4690461",
+              "cart_id": 0,
+              "order_id": 0,
+              "shop_id": 480176,
+              "is_po": 0,
+              "duration": "0",
+              "warehouse_id": 2034,
+              "address_id": 4690461,
+              "type": "logistic",
+              "cashback_wallet_amount": 0,
+              "discount_amount": 10000,
+              "invoice_description": "",
+              "title_description": "Potongan Ongkir Hingga Rp20.000",
+              "message": {
+                "state": "green",
+                "color": "#ade3af",
+                "text": "Kamu dapat potongan ongkir dari Tokopedia"
+              },
+              "benefit_details": [
+                {
+                  "code": "EKSCEPAT",
+                  "type": "",
+                  "order_id": 1,
+                  "unique_id": "480176-0-2034-4690461",
+                  "discount_amount": 10000,
+                  "discount_details": [
+                    {
+                      "amount": 10000,
+                      "data_type": "total_shipping_price"
+                    }
+                  ],
+                  "cashback_amount": 0,
+                  "cashback_details": [],
+                  "promo_type": {
+                    "is_bebas_ongkir": true,
+                    "is_bebas_ongkir_extra": true,
+                    "is_exclusive_shipping": true
+                  },
+                  "benefit_product_details": [
+                    {
+                      "product_id": 15147773,
+                      "cashback_amount": 0,
+                      "cashback_amount_idr": 0,
+                      "discount_amount": 0,
+                      "is_bebas_ongkir": true,
+                      "is_bebas_ongkir_extra": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "benefit_details": [],
+          "benefit_summary_info": {
+            "final_benefit_text": "Total benefit anda: ",
+            "final_benefit_amount": 10000,
+            "final_benefit_amount_str": "Rp10.000",
+            "summaries": [
+              {
+                "description": "Total diskon: ",
+                "type": "discount",
+                "amount_str": "Rp16.000",
+                "amount": 10000,
+                "section_name": "Discount",
+                "section_description": "",
+                "details": [
+                  {
+                    "section_name": "",
+                    "description": "Total Potongan Ongkos Kirim ",
+                    "type": "shipping_discount",
+                    "amount": 10000,
+                    "amount_str": "Rp10.000",
+                    "points": 0,
+                    "points_str": ""
+                  }
+                ]
+              }
+            ]
+          },
+          "clashing_info_detail": {
+            "clash_message": "",
+            "clash_reason": "",
+            "is_clashed_promos": false,
+            "options": []
+          },
+          "tracking_details": [
+            {
+              "product_id": 15147773,
+              "promo_codes_tracking": "EKSCEPAT",
+              "promo_details_tracking": "L:3:16000:green"
+            }
+          ],
+          "tokopoints_detail": {
+            "conversion_rate": {
+              "rate": 0,
+              "points_coefficient": 0,
+              "external_currency_coefficient": 0
+            }
+          },
+          "ticker_info": {
+            "unique_id": "480176-0-2034-4690461",
+            "status_code": 700001,
+            "message": "Success"
+          },
+          "additional_info": {
+            "message_info": {
+              "message": "Makin hemat pakai promo",
+              "detail": ""
+            },
+            "error_detail": {
+              "message": ""
+            },
+            "empty_cart_info": {
+              "image_url": "",
+              "message": "",
+              "detail": ""
+            },
+            "usage_summaries": [],
+            "sp_ids": []
+          }
+        }
+      }
+    }
+  }
+]

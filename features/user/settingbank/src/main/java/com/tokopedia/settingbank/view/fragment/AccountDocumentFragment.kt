@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -100,8 +99,8 @@ class AccountDocumentFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        uploadDocumentViewModel = viewModelProvider.get(UploadDocumentViewModel::class.java)
+        uploadDocumentViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(UploadDocumentViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -116,6 +115,9 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         startObservingViewModels()
         setBankAccountData()
         setDocKycUI()
+        progressBar.setOnClickListener {
+            //no implementation required
+        }
     }
 
     private fun setBankAccountData() {

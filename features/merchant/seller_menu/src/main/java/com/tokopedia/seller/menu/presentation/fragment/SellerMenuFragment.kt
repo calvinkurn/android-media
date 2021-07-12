@@ -12,7 +12,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
+import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
@@ -31,6 +34,7 @@ import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
+import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
@@ -42,7 +46,7 @@ import kotlinx.android.synthetic.main.fragment_seller_menu.*
 import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
-    ShopInfoErrorViewHolder.ShopInfoErrorListener {
+        ShopInfoErrorViewHolder.ShopInfoErrorListener {
 
     companion object {
         private const val SCREEN_NAME = "MA - Akun Toko"
@@ -50,14 +54,25 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     @Inject
     lateinit var viewModel: SellerMenuViewModel
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
 
+    @Inject
+    lateinit var adminPermissionMapper: AdminPermissionMapper
+
+    @Inject
+    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
+
     private var canShowErrorToaster = true
+    private var isNewSeller = false
+    private var shopAge = 0L
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -85,8 +100,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         setupToolbar()
         setupMenuList()
         setupSwipeRefresh()
+        observeShopInfoPeriod()
         observeViewModel()
+        setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
+        viewModel.getShopAccountInfo()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -97,6 +115,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onResume() {
         super.onResume()
         sellerMenuTracker.sendEventOpenScreen(SCREEN_NAME)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        pmShopScoreInterruptHelper.destroy()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -115,6 +138,15 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {}
 
+    override fun onScoreClicked() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, userSession.shopId)
+        sellerMenuTracker.sendShopScoreEntryPoint(isNewSeller)
+    }
+
+    override fun onScoreImpressed() {
+        sellerMenuTracker.impressShopScoreEntryPoint(isNewSeller)
+    }
+
     override fun onSaldoClicked() {
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
@@ -126,20 +158,21 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
+        viewModel.getShopAccountInfo()
         getAllShopInfo()
     }
 
     private fun initInjector() {
         DaggerSellerMenuComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
             showShopInfoLoading()
-            getAllShopInfo()
+            viewModel.getShopAccountInfo()
         }
     }
 
@@ -151,11 +184,31 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         getAllShopInfo()
     }
 
+    private fun observeShopInfoPeriod() {
+        observe(viewModel.shopAccountInfo) {
+            when (it) {
+                is Success -> {
+                    isNewSeller = it.data.isNewSeller
+                    shopAge = it.data.shopAge
+                    getAllShopInfo()
+                }
+                is Fail -> {
+                    ShopScoreReputationErrorLogger.logToCrashlytic(
+                            String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
+                                    ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
+                }
+            }
+        }
+    }
+
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore)
-                is Fail -> showShopInfo(SettingError)
+                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore, it.data.shopAge)
+                is Fail -> {
+                    showShopInfo(SettingError)
+                    ShopScoreReputationErrorLogger.logToCrashlytic(ShopScoreReputationErrorLogger.SHOP_INFO_SETTING_ERROR, it.throwable)
+                }
             }
             swipeRefreshLayout.isRefreshing = false
         }
@@ -191,11 +244,11 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Long = 0, shopAge: Long = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState, shopScore)
+                    adapter.showShopInfo(settingResponseState, shopScore, shopAge)
                     sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
                 }
             }
@@ -212,14 +265,14 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun getAllShopInfo() {
-        viewModel.getAllSettingShopInfo()
+        viewModel.getAllSettingShopInfo(shopAge = shopAge)
         viewModel.getProductCount()
         viewModel.getNotifications()
     }
 
     private fun setupMenuList() {
         context?.let { context ->
-            val menuList = SellerMenuList.create(context, userSession)
+            val menuList = SellerMenuList.create(context, userSession, adminPermissionMapper)
 
             with(listMenu) {
                 adapter = this@SellerMenuFragment.adapter
@@ -232,19 +285,20 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun View.showToasterError(errorMessage: String) {
-        Toaster.make(this,
-            errorMessage,
-            Snackbar.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
-            View.OnClickListener {
-                retryFetchAfterError()
-            })
+        Toaster.build(this,
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry),
+                View.OnClickListener {
+                    retryFetchAfterError()
+                }).show()
     }
 
     private fun retryFetchAfterError() {
         showShopInfoLoading()
-        viewModel.getAllSettingShopInfo(isToasterRetry = true)
+        viewModel.getShopAccountInfo()
+        viewModel.getAllSettingShopInfo(isToasterRetry = true, shopAge = shopAge)
     }
 
     private fun showShopInfoLoading() {
@@ -252,8 +306,9 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun setupScrollToShopSetting() {
-        val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false) ?: false
-        if(isAnchorToShopSetting) {
+        val isAnchorToShopSetting = activity?.intent?.getBooleanExtra(SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_ANCHOR_ACCOUNT_SHOP, false)
+                ?: false
+        if (isAnchorToShopSetting) {
             val shopAccountData = adapter.data.firstOrNull { it is SellerFeatureUiModel }
             if (shopAccountData != null) {
                 val positionShopAccount = adapter.data.indexOf(shopAccountData)
@@ -275,6 +330,12 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 setSupportActionBar(seller_menu_toolbar)
                 seller_menu_toolbar?.title = getString(R.string.title_seller_menu)
             }
+        }
+    }
+
+    private fun setupPMShopScoreInterrupt() {
+        activity?.let {
+            pmShopScoreInterruptHelper.showInterrupt(it, viewLifecycleOwner, childFragmentManager)
         }
     }
 }

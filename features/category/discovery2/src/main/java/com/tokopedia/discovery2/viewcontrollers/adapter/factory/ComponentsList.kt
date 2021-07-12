@@ -23,7 +23,6 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     Tokopoints(R.layout.horizontal_recycler_view_layout, ComponentNames.Tokopoints.componentName),
     TokopointsItem(R.layout.tokopoints_item_layout, ComponentNames.TokopointsItem.componentName),
     LihatSemua(R.layout.lihat_semua, ComponentNames.LihatSemua.componentName),
-    CpmTopAds(R.layout.cpm_topads_layout, ComponentNames.CpmTopAds.componentName),
     YouTubeView(R.layout.youtube_player_view, ComponentNames.Video.componentName),
     ChipsFilterView(R.layout.coming_soon_view, ComponentNames.ChipsFilter.componentName),
     Notifier(R.layout.coming_soon_view, ComponentNames.Notifier.componentName),
@@ -42,7 +41,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     TimerSprintSale(R.layout.discovery_timer_sprint_sale_layout, ComponentNames.TimerSprintSale.componentName),
     ShimmerProductCard(R.layout.discovery_shimmer_product_card_layout, ComponentNames.ShimmerProductCard.componentName),
     Shimmer(R.layout.discovery_shimmer_layout, ComponentNames.Shimmer.componentName),
-    LoadMore(R.layout.discovery_progress_bar_layout, ComponentNames.LoadMore.componentName),
+    LoadMore(R.layout.discovery_product_list_states_layout, ComponentNames.LoadMore.componentName),
     QuickCoupon(R.layout.quick_coupon_layout, ComponentNames.QuickCoupon.componentName),
     BannerCarousel(R.layout.horizontal_recycler_view_lihat, ComponentNames.BannerCarousel.componentName),
     BannerCarouselItemView(R.layout.banner_carousel_item_layout, ComponentNames.BannerCarouselItemView.componentName),
@@ -81,5 +80,15 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Discovery Play Widget
     DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
 
+    DiscoTDNBanner(R.layout.discovery_tdn_banner_view,ComponentNames.DiscoTDNBanner.componentName),
+
+    CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
+    ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
+    //Category Best Seller
+    CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
+
+    //Topads Headline View
+
+    TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
 
 }

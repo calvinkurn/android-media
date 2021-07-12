@@ -51,15 +51,17 @@
             app:layout_constraintTop_toBottomOf="@id/tvSubtitleSimulationInstallment"
             tools:listitem="@layout/credit_card_simulation_info_item" />
 
-        <View
+        <ImageView
             android:id="@+id/offerLabel"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
-            android:background="@drawable/bg_credit_card_installment_interest"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/bg_credit_card_installment_interest"
             app:layout_constraintBottom_toBottomOf="@id/tvAllInstallments"
             app:layout_constraintEnd_toEndOf="@id/tvAllInstallments"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvAllInstallments" />
+            app:layout_constraintTop_toTopOf="@+id/tvAllInstallments"
+            android:contentDescription="Offer Label" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvAllInstallments"

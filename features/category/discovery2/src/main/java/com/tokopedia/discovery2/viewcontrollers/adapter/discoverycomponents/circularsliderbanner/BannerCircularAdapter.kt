@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewHolder
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPagerAdapter
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 
 private const val VIEW_ID_CONSTANT = 100
@@ -29,7 +29,10 @@ class SliderBannerItemViewHolder(itemView: View) : CircularViewHolder(itemView) 
     override fun bind(item: CircularModel, listener: CircularListener) {
         constraintLayout.removeAllViews()
         createImageViewConstrains(item)
-        ImageHandler.loadImage(itemView.context, bannerImageView, item.url, R.color.grey_1100, R.color.grey_1100)
+        bannerImageView.loadImage(item.url) {
+            setPlaceHolder(R.color.grey_1100)
+            setErrorDrawable(R.color.grey_1100)
+        }
         constraintSet.applyTo(constraintLayout)
         bannerImageView.setOnClickListener {
             listener.onClick(adapterPosition)

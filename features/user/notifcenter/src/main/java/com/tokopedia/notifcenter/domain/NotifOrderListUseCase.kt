@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Named
 
-class NotifOrderListUseCase @Inject constructor(
+open class NotifOrderListUseCase @Inject constructor(
         @Named(QUERY_ORDER_LIST)
         private val query: String,
         private val gqlUseCase: GraphqlUseCase<NotifOrderListResponse>,

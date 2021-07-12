@@ -22,6 +22,7 @@ data class TickerWidgetUiModel(
         override var isLoaded: Boolean = false,
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel = WidgetEmptyStateUiModel()
 ) : BaseWidgetUiModel<TickerDataUiModel> {
 
@@ -30,6 +31,10 @@ data class TickerWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<TickerDataUiModel> {
-        return TickerWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return TickerWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<TickerDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

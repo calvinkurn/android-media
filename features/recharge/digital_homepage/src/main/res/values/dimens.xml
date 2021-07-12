@@ -38,4 +38,9 @@
     <dimen name="recharge_custom_product_card_item_width">166dp</dimen>
     <dimen name="recharge_custom_product_shimmering_height">188dp</dimen>
     <dimen name="recharge_custom_product_card_header_card_width">3dp</dimen>
+
+    <dimen name="recharge_custom_image_carousel_height">195dp</dimen>
+    <dimen name="recharge_custom_image_carousel_width">130dp</dimen>
+
+    <dimen name="recharge_subhome_product_card_width">144dp</dimen>
 </resources>

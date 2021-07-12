@@ -1,7 +1,6 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.detail.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -16,7 +15,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class TalkSmartReplyDetailViewModel @Inject constructor(
+class
+TalkSmartReplyDetailViewModel @Inject constructor(
         private val discussionSetSmartReplyTemplateUseCase: DiscussionSetSmartReplyTemplateUseCase,
         private val discussionSetSmartReplySettingsUseCase: DiscussionSetSmartReplySettingsUseCase,
         private val userSession: UserSessionInterface,
@@ -27,13 +27,9 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
     val setSmartReplyResult: LiveData<Result<String>>
         get() = _setSmartReplyResult
 
-    private val _buttonState = MediatorLiveData<TalkSmartReplyDetailButtonState>()
+    private val _buttonState = MutableLiveData<TalkSmartReplyDetailButtonState>(TalkSmartReplyDetailButtonState())
     val buttonState: LiveData<TalkSmartReplyDetailButtonState>
         get() = _buttonState
-
-    private val isReadyTextChanged = MutableLiveData<Boolean>()
-    private val isNotReadyTextChanged = MutableLiveData<Boolean>()
-    private val isSwitchActive = MutableLiveData<Boolean>()
 
     var isSmartReplyOn: Boolean = false
     var messageReady: String = ""
@@ -44,19 +40,6 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
         get() = userSession.shopName
     val shopAvatar: String
         get() = userSession.shopAvatar
-
-    init {
-        _buttonState.value = TalkSmartReplyDetailButtonState()
-        _buttonState.addSource(isReadyTextChanged) {
-            updateIsReadyTextChanged(it)
-        }
-        _buttonState.addSource(isNotReadyTextChanged) {
-            updateIsNotReadyTextChanged(it)
-        }
-        _buttonState.addSource(isSwitchActive) {
-            updateIsSwitchActive(it)
-        }
-    }
 
     fun setSmartReply() {
         launchCatchError(block = {
@@ -95,6 +78,7 @@ class TalkSmartReplyDetailViewModel @Inject constructor(
     fun updateMessageChanged(message: String, isReady: Boolean) {
         if (isReady) {
             updateIsReadyTextChanged(message != originalMessageReady)
+            return
         }
         updateIsNotReadyTextChanged(message != originalMessageNotReady)
     }

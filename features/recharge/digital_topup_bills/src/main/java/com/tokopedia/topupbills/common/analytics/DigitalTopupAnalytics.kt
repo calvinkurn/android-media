@@ -139,11 +139,14 @@ class DigitalTopupAnalytics {
     }
 
     fun eventClickDotsMenuTelco(categoryId: String, userId: String) {
+        var category = getTrackingCategoryName(categoryId.toIntOrNull() ?: 0)
+        if (categoryId.isEmpty()) category = categoryId
+
         val mapEvent = TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.CLICK_DOTS_MENU,
-                "${getTrackingCategoryName(categoryId.toInt())}")
+                category)
         sendGeneralEvent(mapEvent, userId)
     }
 

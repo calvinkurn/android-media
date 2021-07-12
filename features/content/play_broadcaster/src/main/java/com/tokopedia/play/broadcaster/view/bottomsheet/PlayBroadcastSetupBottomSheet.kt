@@ -21,20 +21,20 @@ import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
-import com.tokopedia.play.broadcaster.view.fragment.PlayCoverSetupFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.cover.PlayCoverSetupFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.broadcaster.view.fragment.setup.tags.PlayTitleAndTagsSetupFragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
 import javax.inject.Inject
-
 
 /**
  * Created by jegul on 26/05/20
@@ -44,7 +44,9 @@ class PlayBroadcastSetupBottomSheet(
         PlayBottomSheetCoordinator,
         PlayEtalasePickerFragment.Listener,
         ProductSetupListener,
-        PlayCoverSetupFragment.Listener {
+        PlayCoverSetupFragment.Listener,
+        PlayTitleAndTagsSetupFragment.Listener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -53,7 +55,7 @@ class PlayBroadcastSetupBottomSheet(
     lateinit var fragmentFactory: FragmentFactory
 
     @Inject
-    lateinit var dispatcher: CoroutineDispatcherProvider
+    lateinit var dispatcher: CoroutineDispatchers
 
     @Inject
     lateinit var dialogCustomizer: PlayBroadcastDialogCustomizer
@@ -63,12 +65,18 @@ class PlayBroadcastSetupBottomSheet(
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
-
     private var mListener: SetupResultListener? = null
 
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
+
+    private val pageNavigator: FragmentPageNavigator by lifecycleBound(
+            creator = {
+                FragmentPageNavigator(
+                        fragmentManager = childFragmentManager
+                )
+            }
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -76,9 +84,8 @@ class PlayBroadcastSetupBottomSheet(
                 val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
                 if (currentFragment is PlayBaseSetupFragment && currentFragment.onInterceptBackPressed()) return
 
-                if (!fragmentBreadcrumbs.empty()) {
-                    val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
-                    childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
+                if (childFragmentManager.backStackEntryCount > 1) {
+                    childFragmentManager.popBackStack()
                 } else {
                     cancel()
                     mListener?.onSetupCanceled()
@@ -111,8 +118,7 @@ class PlayBroadcastSetupBottomSheet(
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
-        addBreadcrumb()
-        openFragment(fragmentClass, extras, sharedElements, onFragment)
+        openFragment(fragmentClass, extras, sharedElements)
     }
 
     override fun goBack() {
@@ -139,6 +145,14 @@ class PlayBroadcastSetupBottomSheet(
     }
 
     override suspend fun onCoverSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
+        navigateToFragment(
+                fragmentClass = PlayTitleAndTagsSetupFragment::class.java,
+        )
+
+        return null
+    }
+
+    override suspend fun onTitleAndTagsSetupFinished(dataStore: PlayBroadcastSetupDataStore): Throwable? {
         val error = mListener?.onSetupCompletedWithData(this@PlayBroadcastSetupBottomSheet, dataStore)
         return if (error == null) {
             dismiss()
@@ -154,6 +168,7 @@ class PlayBroadcastSetupBottomSheet(
             is PlayEtalasePickerFragment -> childFragment.setListener(this)
             is PlayEtalaseDetailFragment -> childFragment.setListener(this)
             is PlayCoverSetupFragment -> childFragment.setListener(this)
+            is PlayTitleAndTagsSetupFragment -> childFragment.setListener(this)
         }
     }
 
@@ -208,38 +223,17 @@ class PlayBroadcastSetupBottomSheet(
 
     private fun maxHeight(): Int = getScreenHeight()
 
-    private fun<T: Fragment> openFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit): Fragment {
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        val destFragment = getFragmentByClassName(fragmentClass)
-        destFragment.arguments = extras
-        onFragment(destFragment as T)
-        fragmentTransaction
-                .apply {
-                    sharedElements.forEach {
-                        val transitionName = it.compatTransitionName
-                        if (transitionName != null) addSharedElement(it, transitionName)
-                    }
-
-                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
-                }
-                .replace(R.id.fl_fragment, destFragment, fragmentClass.name)
-                .addToBackStack(fragmentClass.name)
-                .commit()
-
-        return destFragment
-    }
-
-    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return fragmentFactory.instantiate(fragmentClass.classLoader!!, fragmentClass.name)
-    }
-
-    private fun addBreadcrumb() {
-        currentFragment?.let { fragment ->
-            fragmentBreadcrumbs.add(
-                    BreadcrumbsModel(fragment.javaClass, fragment.arguments
-                            ?: Bundle.EMPTY)
-            )
-        }
+    private fun<T: Fragment> openFragment(
+            fragmentClass: Class<out T>,
+            extras: Bundle,
+            sharedElements: List<View>,
+    ) {
+        pageNavigator.navigate(
+                flFragment.id,
+                fragmentClass,
+                extras,
+                sharedElements
+        )
     }
 
     companion object {

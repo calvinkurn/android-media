@@ -13,6 +13,6 @@
         android:top="@dimen/layout_lvl1" />
 
     <stroke
-        android:color="@color/kyc_centralized_A6ffffff"
+        android:color="@color/kyc_dms_border_button"
         android:width="@dimen/kyc_centralized_1"/>
 </shape>

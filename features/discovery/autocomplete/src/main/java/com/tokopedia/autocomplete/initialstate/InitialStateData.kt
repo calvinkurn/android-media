@@ -24,5 +24,6 @@ data class InitialStateData(
         const val INITIAL_STATE_RECENT_SEARCH = "recent_search"
         const val INITIAL_STATE_POPULAR_SEARCH = "popular_search"
         const val INITIAL_STATE_CURATED_CAMPAIGN = "curated_campaign"
+        const val INITIAL_STATE_LIST_PRODUCT_LINE = "list_product_line"
     }
 }

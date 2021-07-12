@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/dp_0"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/Unify_N0">
+
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/showcase_list_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:unify_header_action_text="@string/done_menu_text"
+                app:unify_header_is_show_back_button="true"
+                app:unify_header_is_show_shadow="false"
+                app:unify_header_title="@string/title_toolbar_etalase_toko"
+                app:unify_header_transparent_mode="false" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loading"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
+        app:loader_corner_radius="8dp"
+        app:loader_type="circular" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list_showcase"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_2"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

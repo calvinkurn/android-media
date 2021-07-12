@@ -9,5 +9,6 @@
     <color name="chatbot_color_pink_bg">#fdebec</color>
     <color name="chatbot_seprator_bg_color">#FFFAE6</color>
     <color name="chatbot_color_option_list_text">#F531353B</color>
+    <color name="chatbot_chat_background">#F3F5F8</color>
 
 </resources>

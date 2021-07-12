@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.ResponseGetPromoStackFinal
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
@@ -29,8 +30,7 @@ class CheckPromoStackingCodeFinalUseCase @Inject constructor (@ApplicationContex
     }
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.check_promo_code_final_promostacking), ResponseGetPromoStackFinal::class.java, variables)
+        val graphqlRequest = GraphqlRequest(PromoQuery.promoCheckPromoCodeFinalPromoStacking(), ResponseGetPromoStackFinal::class.java, variables)
         clearRequest()
         addRequest(graphqlRequest)
 

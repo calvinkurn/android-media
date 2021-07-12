@@ -160,7 +160,10 @@ data class Reply(
         val blastId: Long = 0,
         @Expose
         @SerializedName("source")
-        val source: String = ""
+        val source: String = "",
+        @Expose
+        @SerializedName("label")
+        val label: String = ""
 ) {
 
     val attachmentType: Int get(): Int = attachment?.type ?: 0
@@ -192,7 +195,7 @@ data class Attachment(
         val type: Int = 0,
         @Expose
         @SerializedName("attributes")
-        val attributes: String = "",
+        var attributes: String = "",
         @Expose
         @SerializedName("fallback")
         val fallback: Fallback = Fallback()
@@ -217,7 +220,7 @@ data class Fallback(
 data class Block(
         @Expose
         @SerializedName("isPromoBlocked")
-        val isPromoBlocked: Boolean = false,
+        var isPromoBlocked: Boolean = false,
         @Expose
         @SerializedName("isBlocked")
         val isBlocked: Boolean = false,

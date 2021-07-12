@@ -7,8 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -21,20 +20,18 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
-import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.NEW
 import com.tokopedia.contactus.inboxticket2.view.utils.OPEN
 import com.tokopedia.contactus.inboxticket2.view.utils.SOLVED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
+import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.EMOJI_STATE
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentPresenter.Companion.SELECTED_ITEM
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import rx.Subscriber
-import java.lang.reflect.Type
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
@@ -51,7 +48,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                            private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
                            private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
                            private val userSession: UserSessionInterface,
-                           private val defaultDispatcher: CoroutineDispatcher) : InboxDetailContract.Presenter, CustomEditText.Listener, CoroutineScope {
+                           private val dispatcher: CoroutineDispatchers) : InboxDetailContract.Presenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
     var mTicketDetail: Tickets? = null
         get() = field
@@ -90,11 +87,12 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
 
         launchCatchError(
                 block = {
+                    val rating = data?.extras?.getInt(EMOJI_STATE) ?: 0
+                    val reason = data?.getStringExtra(SELECTED_ITEM) ?: ""
                     mView?.showProgressBar()
                     val requestParams = submitRatingUseCase.createRequestParams(mView?.getCommentID()
                             ?: "",
-                            data?.extras?.getInt(EMOJI_STATE) ?: 0,
-                            data?.getStringExtra(SELECTED_ITEM) ?: "")
+                            rating, reason)
 
                     val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
 
@@ -108,6 +106,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                         mView?.showIssueClosed()
                         isIssueClosed = true
                         mView?.updateClosedStatus()
+                        sendGTMEventClickSubmitCsatRating(rating, reason)
                     }
 
                 },
@@ -118,13 +117,34 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
         )
     }
 
-    override fun onDestroy() {}
-
-    override fun getBottomFragment(resID: Int): InboxBottomSheetFragment? {
-        val bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID)
-        bottomFragment?.setPresenter(this)
-        return bottomFragment
+    private fun sendGTMEventClickSubmitCsatRating(rating: Int, reason: String) {
+        val captions = mView?.getActivity()?.resources?.getStringArray(R.array.contactus_csat_caption)
+        val caption = if (rating == 0) "" else captions?.get(rating - 1)
+        val reasonListAsInt =  reason.split(";")
+        val reasonListAsString = getReasonListAsString(reasonListAsInt)
+        val reasonAsString = reasonListAsString.joinToString(";")
+        ContactUsTracking.sendGTMInboxTicket(
+                mView?.getActivity(),
+                InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventClickSubmitCsatRating,
+                "${mTicketDetail?.number} - $caption - $reasonAsString"
+        )
     }
+
+    private fun getReasonListAsString(reasonListAsInt: List<String>): List<String> {
+        val list = arrayListOf<String>()
+        reasonListAsInt.forEach {
+            for (reason in mTicketDetail?.badCsatReasonList ?: listOf<BadCsatReasonListItem>()) {
+                if (reason.id.toString() == it) {
+                    list.add(reason.message ?: "")
+                }
+            }
+        }
+        return list
+    }
+
+    override fun onDestroy() {}
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.action_search) {
@@ -374,7 +394,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                     val files = contactUsUploadImageUseCase.getFile(mView?.imageList)
                     val list = arrayListOf<ImageUpload>()
 
-                    withContext(Dispatchers.IO) {
+                    withContext(dispatcher.io) {
                         list.addAll(contactUsUploadImageUseCase.uploadFile(
                                 userSession.userId,
                                 mView?.imageList,
@@ -438,29 +458,6 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                     it.printStackTrace()
                 })
 
-    }
-
-    override fun setBadRating(position: Int) {
-        if (position in 1..6) {
-            postRatingUseCase.setQueryMap(rateCommentID, no, 1, position, "")
-            mView?.showProgressBar()
-            mView?.toggleTextToolbar(View.VISIBLE)
-            sendRating()
-            ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
-                    InboxTicketTracking.Category.EventInboxTicket,
-                    InboxTicketTracking.Action.EventClickReason,
-                    reasonList[position - 1])
-        }
-    }
-
-    override fun sendCustomReason(customReason: String) {
-        mView?.showSendProgress()
-        postRatingUseCase.setQueryMap(rateCommentID, no, 1, 7, customReason)
-        sendRating()
-        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickReason,
-                customReason)
     }
 
     override fun getNextResult(): Int {
@@ -529,44 +526,11 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                 "")
     }
 
-
-    private fun sendRating() {
-        postRatingUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-            }
-
-            override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
-                mView?.hideProgressBar()
-                mView?.hideSendProgress()
-                val token = object : TypeToken<InboxDataResponse<RatingResponse?>?>() {}.type
-                val res1 = typeRestResponseMap[token]
-                val ticketListResponse: InboxDataResponse<*> = res1?.getData() as InboxDataResponse<*>
-                val ratingResponse = ticketListResponse.data as RatingResponse
-                if (ratingResponse.isSuccess > 0) {
-                    mView?.hideBottomFragment()
-                    mView?.showMessage(mView?.getActivity()?.getString(R.string.thanks_input) ?: "")
-                    if (mTicketDetail?.status == OPEN || mTicketDetail?.status == SOLVED) {
-                        mView?.toggleTextToolbar(View.VISIBLE)
-                    } else {
-                        mView?.showIssueClosed()
-                        mView?.updateClosedStatus()
-                    }
-                } else {
-                    mView?.setSnackBarErrorMessage(ticketListResponse.errorMessage?.get(0)
-                            ?: "", true)
-                    mView?.toggleTextToolbar(View.GONE)
-                }
-            }
-        })
-    }
-
     private fun search(searchText: String) {
         mView?.showProgressBar()
         launchCatchError(
                 block = {
-                    withContext(defaultDispatcher) {
+                    withContext(dispatcher.default) {
                         initializeIndicesList(searchText)
                         next = 0
                         withContext(Dispatchers.Main) {
@@ -629,6 +593,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
 
     override fun onClickEmoji(number: Int) {
         sendGTMEventView()
+        sendGTMEventClick(number)
         mView?.startActivityForResult(ContactUsProvideRatingActivity.getInstance(mView?.getActivity() as Context,
                 number,
                 mView?.getCommentID() ?: "",
@@ -720,6 +685,13 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                 InboxTicketTracking.Category.EventHelpMessageInbox,
                 InboxTicketTracking.Action.EventImpressionOnCsatRating,
                 mView?.ticketID)
+    }
+
+    private fun sendGTMEventClick(number: Int) {
+        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventClickOnCsatRating,
+                "${mTicketDetail?.number} - $number")
     }
 
     override fun getUserId(): String = userSession.userId

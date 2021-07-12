@@ -1,8 +1,11 @@
 package com.tokopedia.topads.dashboard.data.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.common.data.response.Error
+import kotlinx.android.parcel.Parcelize
 
 data class ProductRecommendationModel(
         @SerializedName("topadsGetProductRecommendation")
@@ -16,6 +19,7 @@ data class TopadsGetProductRecommendation(
         val errors: List<Error> = listOf()
 )
 
+@Parcelize
 data class ProductRecommendationData(
         @SerializedName("info")
         val info: String = "",
@@ -23,7 +27,9 @@ data class ProductRecommendationData(
         val nominalId: String = "0",
         @SerializedName("products")
         val products: List<ProductRecommendation> = listOf()
-)
+):Parcelable
+
+@Parcelize
 
 data class ProductRecommendation(
         @SerializedName("product_id")
@@ -41,5 +47,6 @@ data class ProductRecommendation(
         @SerializedName("min_bid")
         val minBid: String = "0",
         var setCurrentBid: Int = 0,
-        var isChecked: Boolean = true
-)
+        var isChecked: Boolean = true,
+        val impressHolder: ImpressHolder = ImpressHolder()
+):Parcelable

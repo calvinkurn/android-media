@@ -1,10 +1,10 @@
 package com.tokopedia.shop.common.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import java.util.HashMap
@@ -16,6 +16,7 @@ class GetFollowStatusUseCase @Inject constructor(
 
     companion object {
         const val SOURCE_NPL_TNC = "npl-tnc"
+        const val SOURCE_SHOP_PAGE = "shop-page"
         const val SOURCE_PDP = "pdp"
         private const val PARAM_INPUT = "input"
         private const val PARAM_SHOP_ID = "shopID"

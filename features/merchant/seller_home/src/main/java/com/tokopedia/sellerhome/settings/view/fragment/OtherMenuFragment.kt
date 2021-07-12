@@ -27,21 +27,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.gm.common.constant.END_PERIOD
+import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
-import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
-import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
+import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
@@ -51,6 +48,8 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
+import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
@@ -61,6 +60,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -70,7 +70,8 @@ import javax.inject.Inject
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
 
     companion object {
-        private const val APPLINK_FORMAT = "%s?url=%s%s"
+        private const val APPLINK_FORMAT = "%s?url=%s"
+        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
 
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
@@ -83,6 +84,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
+        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -98,6 +100,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var sellerHomeConfig: SellerHomeRemoteConfig
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
+    @Inject
+    lateinit var shopOperationalTracker: SettingShopOperationalTracker
+
+    @Inject lateinit var settingPerformanceTracker: SettingPerformanceTracker
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
@@ -153,11 +159,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         setupOffset()
         setupView(view)
         observeLiveData()
-        observeFreeShippingStatus()
+        observeShopPeriod()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this, userSession = userSession)
 
     override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
@@ -206,6 +212,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onRefreshShopInfo() {
         showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getShopPeriodType()
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
@@ -292,9 +299,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Success -> {
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
+                        otherMenuViewModel.getShopOperational()
                     }
                     is Fail -> {
-                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+                        SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
                         showSettingShopInfoState(SettingResponseState.SettingError)
                     }
                 }
@@ -303,6 +311,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 canShowErrorToaster = !isToasterAlreadyShown
             })
         }
+        observeFreeShippingStatus()
+        observeShopOperationalHour()
     }
 
     private fun observeFreeShippingStatus() {
@@ -315,6 +325,45 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private fun observeShopPeriod() {
+        observe(otherMenuViewModel.shopPeriodType) {
+            when (it) {
+                is Success -> {
+                    setTrackerPerformanceMenu(it.data.isNewSeller)
+                }
+                is Fail -> {}
+            }
+        }
+        otherMenuViewModel.getShopPeriodType()
+    }
+
+    private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {
+        val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+        }
+        if (shopPerformanceData != null) {
+            settingPerformanceTracker.impressItemEntryPointPerformance(isNewSeller)
+        }
+        shopPerformanceData?.clickSendTracker = {
+            settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
+    }
+
+    private fun observeShopOperationalHour() {
+        otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
+                is Fail -> {
+                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
+                    SellerHomeErrorHandler.logException(
+                        it.throwable,
+                        ERROR_GET_SHOP_OPERATIONAL_HOUR
+                    )
+                }
+            }
+        })
+    }
+
     private fun populateAdapterData() {
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
@@ -323,65 +372,69 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
                         iconUnify = IconUnify.GRAPH),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        null,
-                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+                        title = resources.getString(R.string.setting_menu_ads_and_shop_promotion),
+                        clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
                         iconUnify = IconUnify.PROMO_ADS),
+                MenuItemUiModel(
+                        title = resources.getString(R.string.setting_menu_performance),
+                        clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
+                        iconUnify = IconUnify.PERFORMANCE,
+                ),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_discussion),
-                        null,
-                        ApplinkConst.TALK,
+                        title = resources.getString(R.string.setting_menu_discussion),
+                        clickApplink = ApplinkConst.TALK,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION,
                         iconUnify = IconUnify.DISCUSSION),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        null,
-                        ApplinkConst.REPUTATION,
+                        title = resources.getString(R.string.setting_menu_review),
+                        clickApplink = ApplinkConst.REPUTATION,
                         eventActionSuffix = SettingTrackingConstant.REVIEW,
                         iconUnify = IconUnify.STAR),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_complaint),
-                        null,
-                        null,
+                        title = resources.getString(R.string.setting_menu_complaint),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT,
                         iconUnify = IconUnify.PRODUCT_INFO
                 ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}")
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
+                PrintingMenuItemUiModel(
+                        title = resources.getString(R.string.setting_menu_product_package),
+                        iconUnify = IconUnify.PACKAGE
+                ) { goToPrintingPage() },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_finance_service),
-                        null,
+                        title = resources.getString(R.string.setting_menu_finance_service),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
                         iconUnify = IconUnify.FINANCE
                 ) {
                     RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
                 },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_seller_education_center),
-                        null,
+                        title = resources.getString(R.string.setting_menu_seller_education_center),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
                         iconUnify = IconUnify.SHOP_INFO
                 ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}")
                     val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_tokopedia_care),
-                        null,
-                        ApplinkConst.CONTACT_US_NATIVE,
+                        title = resources.getString(R.string.setting_menu_tokopedia_care),
+                        clickApplink = ApplinkConst.CONTACT_US_NATIVE,
                         eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
                         iconUnify = IconUnify.CALL_CENTER),
                 DividerUiModel(DividerType.THIN_PARTIAL),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_setting),
-                        null,
-                        null,
+                        title = resources.getString(R.string.setting_menu_setting),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.SETTINGS,
                         iconUnify = IconUnify.SETTING
                 ) {
@@ -442,7 +495,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this, freeShippingTracker, userSession) }
+        context?.let {
+            otherMenuViewHolder = OtherMenuViewHolder(
+                itemView = view,
+                context = it,
+                listener = this,
+                trackingListener = this,
+                freeShippingTracker = freeShippingTracker,
+                shopOperationalTracker = shopOperationalTracker,
+                userSession = userSession
+            )
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
@@ -525,6 +588,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             putExtra(EXTRA_SHOP_ID, userSession.shopId)
         }
         startActivity(shopFavouriteListIntent)
+    }
+
+    private fun goToPrintingPage() {
+        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
+        val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
+        RouteManager.getIntent(context, applink)?.let {
+            context?.startActivity(it)
+        }
     }
 
     private fun isActivityResumed(): Boolean {

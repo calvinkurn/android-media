@@ -24,6 +24,7 @@ import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.common.LoadingDialog
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
@@ -42,7 +43,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class AddPinFragment : BaseDaggerFragment() {
+open class AddPinFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
@@ -75,6 +76,10 @@ class AddPinFragment : BaseDaggerFragment() {
         return view
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -178,20 +183,15 @@ class AddPinFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
-    private fun onSuccessAddPin(addChangePinData: AddChangePinData) {
+    open fun onSuccessAddPin(addChangePinData: AddChangePinData) {
         dismissLoading()
         if (addChangePinData.success) {
             trackingPinUtil.trackSuccessInputConfirmationPin()
-            if (arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA) == true) {
-                activity?.setResult(Activity.RESULT_OK)
-                activity?.finish()
-            } else {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
-                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
-                startActivity(intent)
-                activity?.finish()
-            }
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE)
+            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PinCompleteFragment.SOURCE_ADD_PIN)
+            startActivity(intent)
+            activity?.finish()
         }
     }
 
@@ -302,7 +302,7 @@ class AddPinFragment : BaseDaggerFragment() {
         hideKeyboard()
     }
 
-    private fun dismissLoading() {
+    protected fun dismissLoading() {
         loadingDialog.dismiss()
         showKeyboard()
     }
@@ -322,7 +322,7 @@ class AddPinFragment : BaseDaggerFragment() {
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    fun onBackPressedFromConfirm(): Boolean {
+    open fun onBackPressedFromConfirm(): Boolean {
         return if (isConfirmPin) {
             trackingPinUtil.trackClickBackButtonConfirmation()
             displayInitPin()

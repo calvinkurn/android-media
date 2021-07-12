@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -22,6 +21,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -52,6 +53,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -68,7 +70,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         ReviewSellerPerformanceMonitoringContract {
 
     companion object {
-        private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
+        const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         private const val searchQuery = "search"
         private const val MAX_LENGTH_SEARCH = 3
         private const val BOTTOM_SHEET_SORT_TAG = "bottomSheetSortTag"
@@ -181,6 +183,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        initTickerReviewReminder()
         initSearchBar()
         initViewBottomSheet()
         initChipsSort(view)
@@ -626,7 +629,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    override fun onItemProductReviewClicked(productId: Int, position: Int, imageUrl: String) {
+    override fun onItemProductReviewClicked(productId: String, position: Int, imageUrl: String) {
         tracking.eventClickItemRatingProduct(
                 shopId = userSession.shopId.orEmpty(),
                 productId = productId.toString(),
@@ -761,6 +764,29 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun initTickerReviewReminder() {
+        prefs?.let {
+            if (!it.getBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, false)) {
+                tickerReviewReminder?.apply {
+                    setHtmlDescription(getString(R.string.review_reminder_ticker_description))
+                    setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+                        }
+
+                        override fun onDismiss() {
+                            hide()
+                            it.edit().putBoolean(ReviewConstants.HAS_TICKER_REVIEW_REMINDER, true).apply()
+                        }
+                    })
+                    show()
+                }
+            } else {
+                tickerReviewReminder.hide()
+            }
         }
     }
 }

@@ -8,6 +8,8 @@ import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.changename.viewmodel.ChangeNameViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
+import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,14 +34,17 @@ class ChangeNameViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val graphqlUseCase = mockk<GraphqlUseCase<ChangeNamePojo>>(relaxed = true)
+    val userProfileRoleUseCase = mockk<GraphqlUseCase<UserProfileRoleData>>(relaxed = true)
 
     private val testDispatcher = TestCoroutineDispatcher()
 
     private var observer = mockk<Observer<Result<ChangeNameResult>>>(relaxed = true)
+    private var userProfileObserver = mockk<Observer<Result<ProfileRoleData>>>(relaxed = true)
     lateinit var viewModel: ChangeNameViewModel
 
     private val rawQueries = mapOf(
-            ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME to ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME
+            ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME to ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME,
+            ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE to ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE
     )
 
     private val name = "Yoris Prayogo"
@@ -49,10 +54,12 @@ class ChangeNameViewModelTest {
     fun setUp() {
         viewModel = ChangeNameViewModel(
                 graphqlUseCase,
+                userProfileRoleUseCase,
                 rawQueries,
                 testDispatcher
         )
         viewModel.changeNameResponse.observeForever(observer)
+        viewModel.userProfileRole.observeForever(userProfileObserver)
     }
 
     @Test
@@ -101,5 +108,21 @@ class ChangeNameViewModelTest {
         Assert.assertThat((viewModel.changeNameResponse.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
         assertEquals(changeNamePojo.data.errors[0], (viewModel.changeNameResponse.value as Fail).throwable.message)
         verify(atLeast = 1){ observer.onChanged(any()) }
+    }
+
+    @Test
+    fun `on get user profile - is allowed change name`() {
+        val mockResponse = UserProfileRoleData(ProfileRoleData(isAllowedChangeName = true, chancesChangeName = "10"))
+        every { userProfileRoleUseCase.execute(any(), any()) } answers {
+            firstArg<(UserProfileRoleData) -> Unit>().invoke(mockResponse)
+        }
+
+        viewModel.getUserProfileRole()
+
+        /* Then */
+        verify { userProfileObserver.onChanged(any()) }
+        Assert.assertThat(viewModel.userProfileRole.value, CoreMatchers.instanceOf(Success::class.java))
+        assert((viewModel.userProfileRole.value as Success).data.isAllowedChangeName)
+        assert((viewModel.userProfileRole.value as Success).data.chancesChangeName.toInt() > 0)
     }
 }

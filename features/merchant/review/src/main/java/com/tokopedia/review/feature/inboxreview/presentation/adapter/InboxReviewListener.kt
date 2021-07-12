@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inboxreview.presentation.adapter
 
+import android.view.View
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 
 interface FeedbackInboxReviewListener {
@@ -7,6 +8,8 @@ interface FeedbackInboxReviewListener {
     fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>, feedbackId: String, productId: String, position: Int)
     fun onBackgroundMarginIsReplied(isNotReplied: Boolean)
     fun onInFullReviewClicked(feedbackId: String, productId: String)
+    fun showCoachMark(view: View?)
+    fun hideCoachMark()
 }
 
 interface GlobalErrorStateListener {

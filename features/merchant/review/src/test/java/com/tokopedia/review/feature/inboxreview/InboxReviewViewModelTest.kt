@@ -6,7 +6,9 @@ import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewRespo
 import com.tokopedia.review.feature.inboxreview.domain.response.InboxReviewTabCounterResponse
 import com.tokopedia.review.feature.inboxreview.presentation.model.ListItemRatingWrapper
 import com.tokopedia.review.feature.inboxreview.presentation.model.SortFilterInboxItemWrapper
+import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCounterResponseWrapper
 import com.tokopedia.review.utils.verifyCoroutineFailEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -14,6 +16,7 @@ import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 
 class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
 
@@ -331,6 +334,14 @@ class InboxReviewViewModelTest: InboxReviewViewModelTestTestFixture() {
         verifySuccessGetInboxReviewUseCaseCalled()
         Assert.assertTrue(viewModel.feedbackInboxReviewMediator.value is Success)
         Assert.assertNotNull(viewModel.feedbackInboxReviewMediator.value)
+    }
+
+    @Test
+    fun `when fetch reminder counter success should update estimation value`() {
+        val responseWrapper = ProductrevGetReminderCounterResponseWrapper()
+        coEvery { productrevGetReminderCounterUseCase.executeOnBackground() } returns responseWrapper
+        viewModel.fetchReminderCounter()
+        viewModel.getEstimation().verifyValueEquals(responseWrapper.productrevGetReminderCounter)
     }
 
     private fun onGetInboxReview_thenReturn() {

@@ -67,14 +67,14 @@ internal class ShopPageFragmentPagerAdapter(
 
     private fun getTabInactiveColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_gray_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_N500
         else
             com.tokopedia.unifyprinciples.R.color.Unify_N200
     }
 
     private fun getTabActivateColor(): Int {
         return if (ShopUtil.isUsingNewNavigation())
-            R.color.color_green_shop_tab_new
+            com.tokopedia.unifyprinciples.R.color.Unify_G600
         else
             com.tokopedia.unifyprinciples.R.color.Unify_G500
     }
@@ -94,7 +94,10 @@ internal class ShopPageFragmentPagerAdapter(
     override fun createFragment(position: Int): Fragment = listShopPageTabModel[position].tabFragment
 
     fun getRegisteredFragment(position: Int): Fragment? {
-        return registeredFragments.get(position)
+        return if (listShopPageTabModel.isNotEmpty())
+            listShopPageTabModel.getOrNull(position)?.tabFragment
+        else
+            null
     }
 
     fun setTabData(listShopPageTabModel: List<ShopPageTabModel>) {

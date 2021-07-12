@@ -21,4 +21,13 @@ class StaggeredGridLayoutManagerWrapper(spanCount: Int, orientation: Int) : Stag
             ShopPageExceptionHandler.logExceptionToCrashlytics(ERROR_RECYCLER_VIEW, e)
         }
     }
+
+    override fun scrollVerticallyBy(dy: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
+        return try {
+            return super.scrollVerticallyBy(dy, recycler, state)
+        } catch (e: Exception) {
+            ShopPageExceptionHandler.logExceptionToCrashlytics(ERROR_RECYCLER_VIEW, e)
+            0
+        }
+    }
 }

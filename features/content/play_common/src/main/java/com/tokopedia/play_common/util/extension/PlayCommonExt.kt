@@ -10,6 +10,7 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.Window
 import android.widget.EditText
@@ -19,7 +20,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -48,7 +53,7 @@ suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { co
                         vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
                         else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
-                    cont.resume(Unit)
+                    if (cont.isActive) cont.resume(Unit)
                 }
             }
         }
@@ -70,7 +75,7 @@ suspend inline fun View.awaitNextGlobalLayout() = suspendCancellableCoroutine<Un
                 vto.isAlive -> vto.removeOnGlobalLayoutListener(this)
                 else -> viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-            cont.resume(Unit)
+            if (cont.isActive) cont.resume(Unit)
         }
     }
     cont.invokeOnCancellation {
@@ -142,7 +147,7 @@ suspend inline fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont
                     oldBottom: Int
             ) {
                 view.removeOnLayoutChangeListener(this)
-                cont.resume(Unit)
+                if (cont.isActive) cont.resume(Unit)
             }
         }
 
@@ -157,6 +162,12 @@ val View.globalVisibleRect: Rect
         getGlobalVisibleRect(rect)
         return rect
     }
+
+val View.visibleHeight: Int
+    get() = if (visibility == View.GONE) 0 else height
+
+val View.marginLp: ViewGroup.MarginLayoutParams
+    get() = layoutParams as ViewGroup.MarginLayoutParams
 
 var View.compatTransitionName: String?
     get() {
@@ -177,11 +188,7 @@ fun EditText.setTextFieldColor(@ColorRes color: Int) {
                     color
             ), PorterDuff.Mode.SRC_ATOP)
 
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-        background = drawable
-    } else {
-        setBackgroundDrawable(drawable)
-    }
+    background = drawable
 }
 
 fun Fragment.cleanBackstack() {
@@ -247,4 +254,25 @@ fun Fragment.recreateView() {
             ?.detach(this)
             ?.attach(this)
             ?.commit()
+}
+
+inline fun FragmentManager.commit(
+        allowStateLoss: Boolean = false,
+        body: FragmentTransaction.() -> Unit
+) {
+    val transaction = beginTransaction()
+    transaction.body()
+    if (allowStateLoss) {
+        transaction.commitAllowingStateLoss()
+    } else {
+        transaction.commit()
+    }
+}
+
+val List<GraphqlError>.defaultErrorMessage: String
+    get() = mapNotNull { it.message }.joinToString(separator = ", ")
+
+
+fun dismissToaster() {
+    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
 }

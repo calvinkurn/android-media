@@ -7,8 +7,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
-import org.json.JSONObject
 
 /**
  *
@@ -21,6 +19,9 @@ data class BaseNotificationModel(
 
         @ColumnInfo(name = "notificationId")
         var notificationId: Int = 0,
+
+        @ColumnInfo(name = "elementId")
+        var elementId: String? = "",
 
         @PrimaryKey
         @ColumnInfo(name = "campaignId")
@@ -69,7 +70,7 @@ data class BaseNotificationModel(
         var persistentButtonList: ArrayList<PersistentButton>? = null,
 
         @ColumnInfo(name = "videoPush")
-        var videoPushModel: @RawValue JSONObject? = null,
+        var videoPushModel: String? = null,
 
         @ColumnInfo(name = "subText")
         var subText: String? = null,
@@ -79,6 +80,12 @@ data class BaseNotificationModel(
 
         @ColumnInfo(name = "visualExpandedImg")
         var visualExpandedImageUrl: String? = null,
+
+        @ColumnInfo(name = "visualCollapsedElementId")
+        var visualCollapsedElementId: String? = "",
+
+        @ColumnInfo(name = "visualExpandedElementId")
+        var visualExpandedElementId: String? = "",
 
         @ColumnInfo(name = "carouselIndex")
         var carouselIndex: Int = 0,

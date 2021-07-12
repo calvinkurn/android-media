@@ -2,7 +2,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.RequestParams
@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by jegul on 02/06/20
  */
 class GetSelfEtalaseListUseCase @Inject constructor(
-        dispatcher: CoroutineDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val userSession: UserSessionInterface
 ) : UseCase<List<ShopEtalaseModel>>(

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -16,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -28,8 +30,7 @@ import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
-import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
-import com.tokopedia.entertainment.pdp.activity.EventPDPActivity.Companion.EXTRA_URL_PDP
+import com.tokopedia.entertainment.navigation.EventNavigationActivity
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFacilitiesBottomSheetAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPLocationDetailAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventPDPOpenHourAdapter
@@ -37,11 +38,9 @@ import com.tokopedia.entertainment.pdp.adapter.factory.EventPDPFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter
 import com.tokopedia.entertainment.pdp.common.util.EventShare
-import com.tokopedia.entertainment.pdp.data.Facilities
-import com.tokopedia.entertainment.pdp.data.Outlet
-import com.tokopedia.entertainment.pdp.data.ProductDetailData
-import com.tokopedia.entertainment.pdp.data.ValueBullet
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPModel
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPTabEntity
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getEndDate
@@ -51,7 +50,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.isSchedul
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLatitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventLocationMapper.getLongitude
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventMediaMapper.mapperMediaPDP
-import com.tokopedia.entertainment.pdp.di.EventPDPComponent
+import com.tokopedia.entertainment.pdp.di.DaggerEventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPViewModel
 import com.tokopedia.entertainment.pdp.widget.WidgetEventPDPCarousel
@@ -73,8 +72,8 @@ import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
 import java.util.*
 import javax.inject.Inject
 
-class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener,
-        EventPDPActivity.PDPListener, AppBarLayout.OnOffsetChangedListener {
+class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(), OnBindItemListener
+        ,AppBarLayout.OnOffsetChangedListener {
 
     lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -96,7 +95,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(EventPDPComponent::class.java).inject(this)
+        DaggerEventPDPComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,6 +110,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         initializePerformance()
         TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
+
+        arguments?.let {
+            urlPDP= EventPDPFragmentArgs.fromBundle(it).seo
+        }
+        setHasOptionsMenu(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -124,10 +131,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
-        eventPDPViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
-            productDetailData = it.eventProductDetail.productDetailData
+        eventPDPViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer { eventPDPContentCombined ->
+            productDetailData = eventPDPContentCombined.eventProductDetailEntity.eventProductDetail.productDetailData
             context?.let {
-                renderView(it, productDetailData)
+                renderView(it, eventPDPContentCombined)
                 if(userSession.isLoggedIn){
                     eventPDPViewModel.getWhiteListUser(userSession.userId.toInt(),userSession.email, productDetailData)
                 }
@@ -193,9 +200,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         requestData()
     }
 
-    fun renderView(context: Context, productDetailData: ProductDetailData) {
+    fun renderView(context: Context, combined: EventPDPContentCombined) {
         loadMedia(productDetailData)
-        loadTab(productDetailData)
+        loadTab(productDetailData,
+                eventPDPViewModel.getTabsTitleData(combined,
+                        resources.getString(R.string.ent_pdp_about_this),
+                        resources.getString(R.string.ent_pdp_facilities),
+                        resources.getString(R.string.ent_pdp_detail_lokasi))
+        )
         loadCalendar(context, productDetailData)
         loadPrice(productDetailData)
     }
@@ -280,20 +292,22 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
     }
 
-    private fun loadTab(productDetailData: ProductDetailData) {
+    private fun loadTab(productDetailData: ProductDetailData,
+                        tabsTitle: List<EventPDPTabEntity>) {
 
         container_price.show()
         shimmering_price.gone()
-        (activity as EventPDPActivity).setSupportActionBar(event_pdp_toolbar)
-        (activity as EventPDPActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as EventPDPActivity).supportActionBar?.title = ""
+
+        (activity as EventNavigationActivity).setSupportActionBar(event_pdp_toolbar)
+        (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as EventNavigationActivity).supportActionBar?.title = ""
 
         val navIcon = event_pdp_toolbar.navigationIcon
 
         context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
             navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
         }
-        (activity as EventPDPActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
+        (activity as EventNavigationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         event_pdp_collapsing_toolbar.title = ""
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
@@ -327,16 +341,17 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
+        if(tabsTitle.isNotEmpty()) {
+            widget_event_pdp_tab_section.setRecycleView(rv_event_pdp)
+            widget_event_pdp_tab_section.setDynamicTitle(tabsTitle)
 
-        widget_event_pdp_tab_section.setRecycleView(rv_event_pdp)
-
-        rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                        as LinearLayoutManager).findFirstVisibleItemPosition())
-            }
-        })
+            rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    widget_event_pdp_tab_section.setScrolledSection(checkVisibilityItem())
+                }
+            })
+        }
     }
 
 
@@ -352,6 +367,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun onPause() {
         super.onPause()
         event_pdp_app_bar_layout.removeOnOffsetChangedListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        hideShareLoading()
     }
 
     private fun goToTicketPage(productDetailData: ProductDetailData, selectedDate: String) {
@@ -468,12 +488,15 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     fun share(productDetailData: ProductDetailData) {
-        activity?.run {
-            EventShare(this).shareEvent(productDetailData, { showShareLoading() }, { hideShareLoading() }, this.applicationContext)
+        activity?.let { activity ->
+            context?.let { context ->
+                val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
+                EventShare(activity).shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
+            }
         }
     }
 
-    override fun shareLink() {
+    fun shareLink() {
         share(productDetailData)
     }
 
@@ -501,6 +524,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+            shareLink()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     fun hideShareLoading() {
         event_pdp_pb.hide()
     }
@@ -509,11 +540,17 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         event_pdp_pb.show()
     }
 
+    private fun checkVisibilityItem(): Int{
+        return (rv_event_pdp.layoutManager
+                as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+    }
+
     companion object {
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
         const val ENT_PDP_PERFORMANCE = "et_event_pdp"
         const val GMT = "GMT+7"
+        const val EXTRA_URL_PDP = "EXTRA_URL_PDP"
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101

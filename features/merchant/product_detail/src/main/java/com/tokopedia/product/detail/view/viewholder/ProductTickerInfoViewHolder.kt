@@ -9,13 +9,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.toDateId
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -35,7 +35,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     }
 
     override fun bind(element: ProductTickerInfoDataModel) {
-        if (element.statusInfo == null) {
+        if (element.statusInfo == null || element.isUpcomingType) {
             hideComponent()
         } else {
             componentTrackDataModel = element.getComponentTrackData(adapterPosition)
@@ -67,26 +67,26 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     private fun setupShopInfoTicker(statusInfo: ShopInfo.StatusInfo?, closedInfo: ShopInfo.ClosedInfo?, impressHolder: ImpressHolder) = with(view) {
         shop_ticker_info.show()
         when (statusInfo?.shopStatus) {
-            ProductShopStatusTypeDef.OPEN, ProductShopStatusTypeDef.INACTIVE -> {
+            ShopStatusDef.OPEN, ShopStatusDef.NOT_ACTIVE -> {
                 val statusMessage = getStringRes(R.string.ticker_desc_shop_idle)
                 val statusTitle = getStringRes(R.string.ticker_title_shop_idle)
                 renderShopTicker(statusTitle, statusMessage, null)
                 addImpressionListener(statusMessage, statusTitle, impressHolder)
             }
-            ProductShopStatusTypeDef.CLOSED -> {
+            ShopStatusDef.CLOSED -> {
                 val openDate = closedInfo?.closeDetail?.openDateUnix.toDateId("EEEE, dd MMM yyyy")
                 val statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
                 val statusTitle = getStringRes(R.string.ticker_title_shop_close)
                 addImpressionListener(statusMessage, statusTitle, impressHolder)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
-            ProductShopStatusTypeDef.MODERATED_PERMANENTLY, ProductShopStatusTypeDef.MODERATED -> {
+            ShopStatusDef.MODERATED_PERMANENTLY, ShopStatusDef.MODERATED -> {
                 val statusMessage = if (listener.isOwner()) getStringRes(R.string.ticker_desc_shop_moderated_seller) else getStringRes(R.string.ticker_desc_shop_moderated_buyer)
                 val statusTitle = if (listener.isOwner()) getStringRes(R.string.ticker_title_shop_moderated_seller) else getStringRes(R.string.ticker_title_shop_moderated_buyer)
                 addImpressionListener(statusMessage, statusTitle, impressHolder)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
-            ProductShopStatusTypeDef.INCUBATED -> {
+            ShopStatusDef.INCUBATED -> {
                 val processedMessage = getStringRes(R.string.ticker_desc_shop_incubated)
                 val titleMessage = getStringRes(R.string.ticker_title_shop_incubated)
                 addImpressionListener(processedMessage, titleMessage, impressHolder)

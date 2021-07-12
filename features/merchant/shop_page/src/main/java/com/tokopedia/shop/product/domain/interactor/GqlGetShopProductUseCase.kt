@@ -1,32 +1,27 @@
 package com.tokopedia.shop.product.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shop.common.constant.ShopPageGqlQueryConstant
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
-class GqlGetShopProductUseCase (val gqlQuery: String,
-                                private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopProduct.GetShopProduct>() {
-
+class GqlGetShopProductUseCase @Inject constructor (
+        private val gqlUseCase: MultiRequestGraphqlUseCase
+): UseCase<ShopProduct.GetShopProduct>() {
+  
     var params = mapOf<String, Any>()
-    var isFromCacheFirst: Boolean = true
-    var cacheTime = 0L
-    val request by lazy {
-        GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
-    }
 
     override suspend fun executeOnBackground(): ShopProduct.GetShopProduct {
         gqlUseCase.clearRequest()
-        val gqlCacheStrategyBuilder = GraphqlCacheStrategy.Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD)
-        if (cacheTime != 0L) {
-            gqlCacheStrategyBuilder.setExpiryTime(cacheTime)
-        }
+        val gqlCacheStrategyBuilder = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
         gqlUseCase.setCacheStrategy(gqlCacheStrategyBuilder.build())
-        val gqlRequest = GraphqlRequest(gqlQuery, ShopProduct.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(ShopPageGqlQueryConstant.getShopProductQuery(), ShopProduct.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopProduct.Response::class.java)

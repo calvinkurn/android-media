@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
@@ -15,11 +16,6 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
-import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
-import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
-import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCaseImpl
-import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
@@ -44,10 +40,6 @@ open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
-    fun provideExecutorDispatchers(): ExecutorDispatchers = DefaultDispatchers
-
-    @OrderSummaryPageScope
-    @Provides
     fun provideSchedulerProvider(): SchedulerProvider = MainScheduler()
 
     @OrderSummaryPageScope
@@ -59,12 +51,6 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @OrderSummaryPageScope
     @Provides
     fun provideGetOccCartGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetOccCartGqlResponse> = GraphqlUseCase(graphqlRepository)
-
-    @OrderSummaryPageScope
-    @Provides
-    fun providesGetPreferenceListUseCase(graphqlRepository: GraphqlRepository): GetPreferenceListUseCase {
-        return GetPreferenceListUseCaseImpl(GraphqlUseCase(graphqlRepository), PreferenceModelMapper)
-    }
 
     @OrderSummaryPageScope
     @Provides
@@ -100,8 +86,10 @@ open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
-    fun provideValidateUsePromoRevampUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase): ValidateUsePromoRevampUseCase {
-        return ValidateUsePromoRevampUseCase(context, graphqlUseCase)
+    fun provideValidateUsePromoRevampUseCase(context: Context,
+                                             graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
+                                             chosenAddressRequestHelper: ChosenAddressRequestHelper): ValidateUsePromoRevampUseCase {
+        return ValidateUsePromoRevampUseCase(context, graphqlUseCase, chosenAddressRequestHelper)
     }
 
     @OrderSummaryPageScope

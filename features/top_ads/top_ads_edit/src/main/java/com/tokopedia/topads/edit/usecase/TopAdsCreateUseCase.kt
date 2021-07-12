@@ -1,15 +1,17 @@
 package com.tokopedia.topads.edit.usecase
 
-import android.content.Context
 import android.os.Bundle
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.common.network.domain.RestRequestUseCase
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.response.*
-import com.tokopedia.topads.common.di.ActivityContext
-import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.edit.data.KeySharedModel
+import com.tokopedia.topads.edit.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.ACTION_ADD
@@ -35,46 +37,34 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_PHRASE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_SPECIFIC
 import com.tokopedia.topads.edit.utils.Constants.PRODUCT_ID
 import com.tokopedia.topads.edit.utils.Constants.PUBLISHED
+import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 24/5/20.
  */
 
-class TopAdsCreateUseCase @Inject constructor(@ActivityContext
-                                              val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<FinalAdResponse>(graphqlRepository) {
+@GqlQuery("ManageGroupAdsQuery", MANAGE_GROUP)
+class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) : RestRequestUseCase() {
 
-    private fun getQuery(): String {
-        return GraphqlHelper.loadRawString(context?.resources, R.raw.query_ads_edit_activated_ads)
-    }
 
-    fun setParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>) {
+    fun setParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): RequestParams {
 
+        val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
         variable[INPUT] = convertToParam(dataProduct, dataKeyword, dataGroup)
-        setRequestParams(variable)
-
-    }
-
-    private val cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy
-            .Builder(CacheType.CLOUD_THEN_CACHE).build()
-
-    fun executeQuerySafeMode(onSuccess: (FinalAdResponse) -> Unit, onError: (Throwable) -> Unit) {
-        setTypeClass(FinalAdResponse::class.java)
-        setGraphqlQuery(getQuery())
-        setCacheStrategy(cacheStrategy)
-        execute({
-            onSuccess(it)
-
-        }, onError)
+        param.putAll(variable)
+        return param
     }
 
     private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>): TopadsManageGroupAdsInput {
-//
+        val strategy = dataKeyword[STRATEGIES] as ArrayList<String>?
         val groupName = dataGroup[GROUP_NAME] as? String
-        val priceBidGroup = dataGroup[Constants.PRICE_BID] as? Int
+        val priceBidGroup = dataKeyword[Constants.PRICE_BID] as? Int
         val dailyBudgetGroup = dataGroup[Constants.DAILY_BUDGET] as? Int
         val groupId = dataGroup[Constants.GROUP_ID] as? Int
         val isNameEdited = dataGroup[NAME_EDIT] as? Boolean
@@ -83,11 +73,11 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("deletedProducts")
 
 
-        val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<GetKeywordResponse.KeywordsItem>
+        val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<KeySharedModel>
+        val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<KeySharedModel>
         val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<GetKeywordResponse.KeywordsItem>
         val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
-        val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<GetKeywordResponse.KeywordsItem>
+        val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<KeySharedModel>
 
         //always
         val input = TopadsManageGroupAdsInput()
@@ -108,7 +98,8 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         group?.status = PUBLISHED
         group?.scheduleStart = ""
         group?.scheduleEnd = ""
-        if (isBudgetLimited == true) {
+        group?.strategies = strategy
+        if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
             group?.dailyBudget = dailyBudgetGroup?.toDouble()
@@ -118,7 +109,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         dataAddProduct?.forEach { x ->
             val adOperation = GroupEditInput.Group.AdOperationsItem()
             val ad = GroupEditInput.Group.AdOperationsItem.Ad()
-            ad.productId = x.itemID.toString()
+            ad.productId = x.itemID
             adOperation.ad = ad
             adOperation.action = ACTION_ADD
             productList.add(adOperation)
@@ -126,7 +117,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         dataDeleteProduct?.forEach { productDeleted ->
             val adOperation = GroupEditInput.Group.AdOperationsItem()
             val ad = GroupEditInput.Group.AdOperationsItem.Ad()
-            ad.productId = productDeleted.itemID.toString()
+            ad.productId = productDeleted.itemID
             adOperation.ad = ad
             adOperation.action = ACTION_REMOVE
             productList.add(adOperation)
@@ -136,7 +127,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = posKey.priceBid.toDouble()
-            keyword.id = posKey.keywordId
+            keyword.id = posKey.id
             keyword.status = null
             keyword.tag = null
             keyword.type = null
@@ -150,7 +141,7 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.price_bid = null
-            keyword.id = posKey.keywordId
+            keyword.id = posKey.id
             keyword.tag = null
             keyword.status = null
             keyword.type = null
@@ -163,11 +154,11 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
             val keywordEditInput = KeywordEditInput()
             val keyword = KeywordEditInput.Keyword()
             keyword.source = keyPos.source
-            keyword.id = keyPos.keywordId
+            keyword.id = keyPos.id
             keyword.price_bid = keyPos.priceBid.toDouble()
             keyword.status = ACTIVE
-            keyword.tag = keyPos.tag
-            if (keyPos.type == KEYWORD_TYPE_PHRASE) {
+            keyword.tag = keyPos.name
+            if (keyPos.typeInt == KEYWORD_TYPE_PHRASE) {
                 keyword.type = POSITIVE_PHRASE
             } else {
                 keyword.type = POSITIVE_SPECIFIC
@@ -220,5 +211,21 @@ class TopAdsCreateUseCase @Inject constructor(@ActivityContext
         else
             input.keywordOperation = keywordList
         return input
+    }
+
+    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
+        val tempRequest = ArrayList<RestRequest>()
+        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
+        val query = ManageGroupAdsQuery.GQL_QUERY
+        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
+        val headers = HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restReferralRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+                .setBody(request)
+                .setHeaders(headers)
+                .setRequestType(RequestType.POST)
+                .build()
+        tempRequest.add(restReferralRequest)
+        return tempRequest
     }
 }

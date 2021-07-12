@@ -22,7 +22,7 @@ import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 abstract class BaseToolbarActivity extends BaseActivity {
 
-    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = com.tokopedia.unifyprinciples.R.color.Unify_N700;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
@@ -49,7 +49,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background));
         }
     }
 

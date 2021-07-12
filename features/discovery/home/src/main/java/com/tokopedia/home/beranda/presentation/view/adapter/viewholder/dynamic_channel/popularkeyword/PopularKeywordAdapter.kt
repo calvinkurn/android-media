@@ -67,10 +67,10 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
                 tvCount.text = data.productCount
             } else tvCount.hide()
             itemView.addOnImpressionListener(data.impressHolder) {
-                popularKeywordListener.onPopularKeywordItemImpressed(channel, adapterPosition, data.title, positionInWidget)
+                popularKeywordListener.onPopularKeywordItemImpressed(channel, adapterPosition, data, positionInWidget)
             }
             cardProduct.setOnClickListener{
-                popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel, adapterPosition, data.title, positionInWidget)
+                popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel, adapterPosition, data, positionInWidget)
             }
         }
     }

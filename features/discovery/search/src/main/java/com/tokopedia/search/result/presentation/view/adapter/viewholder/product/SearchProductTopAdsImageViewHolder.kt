@@ -7,16 +7,15 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageViewModel
+import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class SearchProductTopAdsImageViewHolder(
         itemView: View,
         private val topAdsImageViewListener: TopAdsImageViewListener
-): AbstractViewHolder<SearchProductTopAdsImageViewModel>(itemView) {
+): AbstractViewHolder<SearchProductTopAdsImageDataView>(itemView) {
 
     companion object {
         @LayoutRes
@@ -24,7 +23,7 @@ class SearchProductTopAdsImageViewHolder(
         val LAYOUT = R.layout.search_result_product_top_ads_image_view_layout
     }
 
-    override fun bind(element: SearchProductTopAdsImageViewModel?) {
+    override fun bind(element: SearchProductTopAdsImageDataView?) {
         element ?: return
 
         val topAdsImageView = itemView.findViewById<TopAdsImageView?>(R.id.searchProductTopAdsImageView)

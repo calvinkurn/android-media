@@ -1,9 +1,6 @@
 package com.tokopedia.gamification.giftbox.presentation.views
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
+import android.animation.*
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
@@ -30,6 +27,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.Rew
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.RP_0_ONLY
 import com.tokopedia.utils.image.ImageUtils
 
 class RewardContainer @JvmOverloads constructor(
@@ -41,7 +39,7 @@ class RewardContainer @JvmOverloads constructor(
     lateinit var llRewardTextLayout: RelativeLayout
     lateinit var imageGlowCircleSmall: AppCompatImageView
     lateinit var imageGlowCircleLarge: AppCompatImageView
-    lateinit var imageCircleReward: DeferredImageView
+    lateinit var imageGreenGlow: AppCompatImageView
 
     val FADE_OUT_REWARDS_DURATION_TAP_TAP = 600L
     override fun getLayoutId() = R.layout.view_reward_container
@@ -57,8 +55,7 @@ class RewardContainer @JvmOverloads constructor(
         llRewardTextLayout = findViewById(R.id.ll_reward_text)
         imageGlowCircleSmall = findViewById(R.id.image_glow_circle_small)
         imageGlowCircleLarge = findViewById(R.id.image_glow_circle_large)
-        imageCircleReward = findViewById(R.id.image_circle_reward)
-
+        imageGreenGlow = findViewById(R.id.image_green_glow)
         llRewardTextLayout.alpha = 0f
 
         doOnLayout {
@@ -74,6 +71,16 @@ class RewardContainer @JvmOverloads constructor(
             sourceType = typedArray.getInt(R.styleable.RewardContainer_source, RewardSourceType.TAP_TAP)
             typedArray.recycle()
         }
+    }
+
+    fun greenGlowAlphaAnimation(isInfinite: Boolean): ObjectAnimator {
+        val duration = 1400L
+        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(imageGreenGlow, alphaProp)
+        alphaAnim.repeatCount = if (isInfinite) ValueAnimator.INFINITE else 5
+        alphaAnim.repeatMode = ValueAnimator.REVERSE
+        alphaAnim.duration = duration
+        return alphaAnim
     }
 
     override fun setRewards(rewardEntity: GiftBoxRewardEntity, asyncCallback: ((rewardState: Int) -> Unit)) {
@@ -99,11 +106,11 @@ class RewardContainer @JvmOverloads constructor(
                     if (!benefit.color.isNullOrEmpty()) {
                         tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
-                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
+                    GtmEvents.viewRewardsPoints(benefit.benefitType, benefit.text, userSession?.userId)
                     iconUrl = benefit.imageUrl
                 } else if (benefit.benefitType == BenefitType.COUPON) {
                     benefit.referenceID?.let {
-                        GtmEvents.viewRewards(it.toString(), userSession?.userId)
+                        GtmEvents.viewRewards(benefit.benefitType, it.toString(), userSession?.userId)
                     }
                 }
             }
@@ -172,21 +179,6 @@ class RewardContainer @JvmOverloads constructor(
         return Pair(animatorSet, FADE_IN_REWARDS_DURATION_TAP_TAP + FADE_OUT_REWARDS_DURATION_TAP_TAP)
     }
 
-    private fun largeImageRewardAnimation(view: View, duration: Long = 800L): Animator {
-
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(view, alphaProp)
-
-        val scalePropX = PropertyValuesHolder.ofFloat(View.SCALE_X, 0f, 1.3f, 1f)
-        val scalePropY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0f, 1.3f, 1f)
-        val scaleAnim = ObjectAnimator.ofPropertyValuesHolder(view, scalePropX, scalePropY)
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(alphaAnim, scaleAnim)
-        animatorSet.duration = duration
-        return animatorSet
-    }
-
     override fun setFinalTranslationOfCirclesTap(giftBoxTop: Int) {
         val largeY = giftBoxTop + dpToPx(30) - imageGlowCircleLarge.height.toFloat()
         val smallY = largeY + (imageGlowCircleLarge.height - imageGlowCircleSmall.height) / 2f
@@ -232,12 +224,13 @@ class RewardContainer @JvmOverloads constructor(
     }
 
     @Retention(AnnotationRetention.SOURCE)
-    @IntDef(COUPON_ONLY, POINTS_ONLY, COUPON_WITH_POINTS)
+    @IntDef(COUPON_ONLY, POINTS_ONLY, COUPON_WITH_POINTS,RP_0_ONLY)
     annotation class RewardState {
         companion object {
             const val COUPON_ONLY = 1
             const val POINTS_ONLY = 2
             const val COUPON_WITH_POINTS = 3
+            const val RP_0_ONLY = 4
         }
     }
 

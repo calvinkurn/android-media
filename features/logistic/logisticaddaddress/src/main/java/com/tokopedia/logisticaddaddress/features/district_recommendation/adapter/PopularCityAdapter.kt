@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.chips_item.view.*
 import androidx.core.content.ContextCompat
+import com.tokopedia.unifycomponents.ChipsUnify
+import kotlinx.android.synthetic.main.chips_unify_item.view.*
 
 
 /**
@@ -15,15 +17,14 @@ import androidx.core.content.ContextCompat
  */
 class PopularCityAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<PopularCityAdapter.ViewHolder>() {
     var cityList = mutableListOf<String>()
-    private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
-    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }
+    private var lastIndex = -1
 
     interface ActionListener {
         fun onCityChipClicked(city: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_unify_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -33,11 +34,14 @@ class PopularCityAdapter(context: Context?, private var actionListener: ActionLi
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
-        holder.itemView.tv_chips_item.apply {
-            text = cityList[position]
+        holder.itemView.chips_item.apply {
+            chipText = cityList[position]
+            chipType = ChipsUnify.TYPE_NORMAL
+            chipSize = ChipsUnify.SIZE_MEDIUM
             setOnClickListener {
-                background = drawablePressed
-                setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G300))
+                notifyItemChanged(lastIndex)
+                lastIndex = position
+                chipType = ChipsUnify.TYPE_SELECTED
                 actionListener.onCityChipClicked(cityList[position])
             }
         }

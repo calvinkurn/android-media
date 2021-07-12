@@ -2,12 +2,10 @@ package com.tokopedia.officialstore.official.data.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
-import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
@@ -27,7 +25,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class OfficialHomeMapper (
         private val context: Context,
-        private val dispatchers: OfficialStoreDispatcherProvider
+        private val dispatchers: CoroutineDispatchers
 ){
     private val listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
@@ -92,7 +90,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
                         DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
                 )
                 availableLegoBannerScreens = setOf(
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
@@ -105,7 +104,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
                         DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
                 )
             }
 
@@ -116,6 +116,14 @@ class OfficialHomeMapper (
                     when(officialStore.channel.layout) {
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
                             views.add(MixLeftDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
+                            views.add(MixTopDataModel(
+                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND -> {
+                            views.add(FeaturedBrandDataModel(
                                     OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
@@ -200,7 +208,8 @@ class OfficialHomeMapper (
                         ProductCardModel.LabelGroup(
                                 position = label.position,
                                 title = label.title,
-                                type = label.type
+                                type = label.type,
+                                imageUrl = label.imageUrl
                         )
                     },
                     hasThreeDots = false
@@ -212,7 +221,7 @@ class OfficialHomeMapper (
     suspend fun getMaxHeightProductCards(productCardModels: List<ProductCardModel>): Int{
         return productCardModels.getMaxHeightForGridView(
                 context = context,
-                coroutineDispatcher = dispatchers.io(),
+                coroutineDispatcher = dispatchers.io,
                 productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
     }

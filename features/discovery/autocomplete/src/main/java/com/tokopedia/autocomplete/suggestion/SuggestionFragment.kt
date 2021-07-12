@@ -18,10 +18,14 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
-import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardViewModel
+import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
 
@@ -66,8 +70,10 @@ class SuggestionFragment :
             (activity?.application as BaseMainApplication).baseAppComponent
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_suggestion, container, false)
     }
 
@@ -133,7 +139,7 @@ class SuggestionFragment :
         presenter.setIsTyping(isTyping)
     }
 
-    override fun onItemClicked(item: BaseSuggestionViewModel) {
+    override fun onItemClicked(item: BaseSuggestionDataView) {
         presenter.onSuggestionItemClicked(item)
     }
 
@@ -156,7 +162,7 @@ class SuggestionFragment :
         suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
-    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
         presenter.setSearchParameter(searchParameter)
     }
 
@@ -164,32 +170,32 @@ class SuggestionFragment :
         this.suggestionViewUpdateListener = suggestionViewUpdateListener
     }
 
-    override fun trackEventClickKeyword(eventLabel: String) {
-        AutocompleteTracking.eventClickKeyword(eventLabel)
+    override fun trackEventClickKeyword(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickKeyword(eventLabel, dimension90)
     }
 
-    override fun trackEventClickCurated(eventLabel: String, campaignCode: String) {
-        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode)
+    override fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String) {
+        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode, dimension90)
     }
 
-    override fun trackEventClickShop(eventLabel: String) {
-        AutocompleteTracking.eventClickShop(eventLabel)
+    override fun trackEventClickShop(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickShop(eventLabel, dimension90)
     }
 
     override fun trackEventClickProfile(eventLabel: String) {
         AutocompleteTracking.eventClickProfile(eventLabel)
     }
 
-    override fun trackEventClickRecentKeyword(eventLabel: String) {
-        AutocompleteTracking.eventClickRecentKeyword(eventLabel)
+    override fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickRecentKeyword(eventLabel, dimension90)
     }
 
-    override fun onTopShopCardClicked(topShop: SuggestionTopShopCardViewModel) {
-        presenter.onTopShopCardClicked(topShop)
+    override fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView) {
+        presenter.onTopShopCardClicked(topShopData)
     }
 
-    override fun onTopShopSeeMoreClicked(topShop: SuggestionTopShopCardViewModel) {
-        presenter.onTopShopCardClicked(topShop)
+    override fun onTopShopSeeMoreClicked(topShopData: SuggestionTopShopCardDataView) {
+        presenter.onTopShopCardClicked(topShopData)
     }
 
     override fun trackEventClickTopShopCard(eventLabel: String) {
@@ -200,11 +206,33 @@ class SuggestionFragment :
         AutocompleteTracking.eventClickTopShopSeeMore(eventLabel)
     }
 
-    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String) {
-        AutocompleteTracking.eventClickLocalKeyword(eventLabel, userId)
+    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String) {
+        AutocompleteTracking.eventClickLocalKeyword(eventLabel, userId, dimension90)
     }
 
-    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String) {
-        AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId)
+    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String) {
+        AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId, dimension90)
+    }
+
+    override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
+        val productDataLayer = item.getProductLineAsObjectDataLayer()
+        AutocompleteTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
+    }
+
+    override val chooseAddressData: LocalCacheModel
+        get() = context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
+
+    override fun trackTokoNowEventClickCurated(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowCurated(eventLabel)
+    }
+
+    override fun trackTokoNowEventClickKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowKeyword(eventLabel)
     }
 }

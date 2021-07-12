@@ -42,30 +42,13 @@
         app:typographyWeight="bold"
         tools:text="RP2323234423" />
 
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceServiceTax"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:text="@string/thank_invoice_service_fee"
-        android:textColor="@color/Unify_N700_68"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
-        app:typographyType="body_3" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvInvoiceServiceTaxValue"
+    <LinearLayout
+        android:id="@+id/llContainerFeeDetail"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:gravity="end"
-        android:textColor="@color/Unify_N700_68"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvInvoiceServiceTax"
         app:layout_constraintTop_toBottomOf="@id/tvInvoiceTotalBill"
-        app:typographyType="body_3"
-        tools:text="RP2323234423" />
-
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

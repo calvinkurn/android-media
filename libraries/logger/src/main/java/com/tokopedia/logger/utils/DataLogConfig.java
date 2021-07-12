@@ -40,7 +40,9 @@ public class DataLogConfig {
     }
 
     @Nullable
-    public List<String> getTags() { return tags; }
+    public List<String> getTags() {
+        return tags;
+    }
 
     @Nullable
     public List<String> getClientLogs() {

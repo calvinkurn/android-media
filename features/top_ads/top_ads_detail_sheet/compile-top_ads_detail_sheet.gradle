@@ -16,7 +16,6 @@ include 'libraries:tracking_optimizer'
 
 include "tkpdcore"
 include "tkpddesign"
-include "tkpdseller"
 include "tkpdabstraction"
 
 include "features:promo:loyalty_common"
@@ -27,11 +26,9 @@ include ":testapp-features:user:logintestapp"
 include ":libraries:utils"
 include ":libraries:dev_monitoring_tools"
 include "libraries:device_info"
-include "libraries:blockcanary"
 include "libraries:iris_session"
 include "libraries:encryption"
 include "features:top_ads:top_ads_management_common"
-include "tkpdseller"
 include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
 include "libraries:date_picker_range"
@@ -78,6 +75,7 @@ include "libraries:screenshot_observer"
 include "libraries:remoteresourcerequest"
 include "features:common:developer_options"
 include "libraries:image_preview"
+include "features:ordermanagement:orderhistory"
 
 
 

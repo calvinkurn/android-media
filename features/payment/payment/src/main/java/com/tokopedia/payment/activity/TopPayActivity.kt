@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -37,7 +36,10 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
 import com.tokopedia.payment.fingerprint.di.FingerprintModule
@@ -49,6 +51,7 @@ import com.tokopedia.payment.presenter.TopPayPresenter
 import com.tokopedia.payment.utils.Constant
 import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
 import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
+import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -61,7 +64,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
@@ -102,7 +104,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
 
+    // Flag to prevent calling BACK_DIALOG_URL before web view loaded
+    private var hasFinishedFirstLoad: Boolean = false
+
     private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
+
+    private var isPaymentPageLoadingTimeout: Boolean = false
+
+    private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -115,6 +124,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -132,6 +142,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initVar()
         setViewListener()
         setActionVar()
+    }
+
+    private fun setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread {
+                window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
     }
 
     private fun initInjector() {
@@ -192,17 +210,21 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
             scroogeWebView?.let {
-                Toaster.make(it, message)
+                Toaster.build(it, message).show()
             }
         }
     }
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
-        if (isGet) {
+        if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
         }
+    }
+
+    private fun isInsufficientBookingStockUrl(url: String): Boolean {
+        return url.startsWith(INSUFFICIENT_STOCK_URL, ignoreCase = true)
     }
 
     override fun showToastMessageWithForceCloseView(message: String) {
@@ -218,8 +240,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun callbackPaymentCanceled() {
         hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
         val intent = Intent()
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
         setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
         finish()
     }
@@ -234,8 +261,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun callbackPaymentFailed() {
         hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
         val intent = Intent()
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
         setResult(PaymentConstant.PAYMENT_FAILED, intent)
         finish()
     }
@@ -355,7 +387,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onBackPressed() {
         val url = scroogeWebView?.url
-        if (url != null && url.contains(getBaseUrlDomainPayment())) {
+        if (url != null && url.contains(getBaseUrlDomainPayment()) && isHasFinishedFirstLoad()) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
@@ -363,9 +395,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             callbackPaymentCanceled()
         }
     }
+    private fun isHasFinishedFirstLoad(): Boolean {
+        return hasFinishedFirstLoad
+    }
 
     override fun onDestroy() {
         presenter.detachView()
+        scroogeWebView = null
         super.onDestroy()
     }
 
@@ -404,6 +440,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
+                val uri = Uri.parse(url)
+                if (uri.isOpaque) {
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
                         getEnableFingerprintPayment()) {
@@ -514,6 +554,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
+            logPaymentPageSuccessAfterTimeOut(url)
+            hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
         }
@@ -527,7 +569,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request?.url, error?.errorCode, error?.description)
+            if(isMainPaymentPageTimeOut(request?.url,
+                error?.errorCode?:0)){
+                handleMainPaymentPageTimeOut(request, error)
+            } else {
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                    mapOf("type" to request?.url.toString(),
+                            "error_code" to error?.errorCode.toString(),
+                            "desc" to error?.description?.toString().orEmpty()
+                    ))
+            }
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -560,6 +611,51 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             view.stopLoading()
             showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
         }
+    }
+
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun handleMainPaymentPageTimeOut(request: WebResourceRequest?, error: WebResourceError?){
+        isPaymentPageLoadingTimeout = true
+        paymentPageTimeOutLogging.logCurrentPaymentPageTimeOut(request?.url.toString(),
+            error?.errorCode.toString(),
+            error?.description?.toString().orEmpty())
+        closePaymentPageOnTimeOut()
+    }
+
+    private fun closePaymentPageOnTimeOut(){
+        hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
+        val intent = Intent()
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
+        intent.putExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, true)
+        setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
+        finish()
+    }
+
+    private fun logPaymentPageSuccessAfterTimeOut(url: String?) {
+        url?.let {
+            if(!isPaymentPageLoadingTimeout
+                && url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment")){
+                paymentPageTimeOutLogging.logPaymentPageSuccessAfterTimeOut(url)
+            }
+        }
+    }
+
+
+
+    private fun isMainPaymentPageTimeOut(url: Uri?, errorCode : Int) : Boolean{
+        if(errorCode == WebViewClient.ERROR_TIMEOUT) {
+            url?.let {
+                return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+            }
+        }
+        return false
     }
 
     private fun getBaseUrlDomainPayment(): String {
@@ -653,6 +749,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+        private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 

@@ -46,8 +46,9 @@ class GetProductListMetaUseCase @Inject constructor(
                       }
                     }
                   }
+                  status
                 }
-        """.trimIndent()
+        """.trimIndent() //Don't remove `status` field since it's necessary for refresh token flow
         }
     }
 

@@ -137,6 +137,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 replyTime = item.replyTime,
                 imageUrl = pojoAttribute.imageUrl,
                 redirectUrl = pojoAttribute.url,
+                isHideBanner = pojoAttribute.isHideBanner,
                 message = item.msg,
                 blastId = item.blastId,
                 source = item.source

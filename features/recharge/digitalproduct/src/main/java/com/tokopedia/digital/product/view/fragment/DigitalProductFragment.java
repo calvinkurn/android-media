@@ -597,6 +597,17 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showSnackBar(String message) {
+        View view = getView();
+        if (view != null) {
+            Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        } else {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void showSnackBarCallbackCloseView(String message) {
         View view = getView();
         if (view != null) {
@@ -1061,7 +1072,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     private void handleCallBackOperatorChooser(Operator operator) {
-        digitalProductView.renderUpdateOperatorSelected(operator);
+        if (digitalProductView != null) digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
     @Override

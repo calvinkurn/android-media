@@ -42,8 +42,6 @@ interface InboxDetailContract {
         fun onImageSelect(image: ImageUpload)
         fun watcher(): TextWatcher
         fun sendMessage()
-        fun setBadRating(position: Int)
-        fun sendCustomReason(customReason: String)
         fun getNextResult(): Int
         fun getPreviousResult(): Int
         fun getUtils(): Utils

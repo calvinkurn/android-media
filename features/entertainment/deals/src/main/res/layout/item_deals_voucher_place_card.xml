@@ -16,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:ignore="ContentDescription"
+            />
 
         <View
             android:layout_width="match_parent"
@@ -33,7 +35,7 @@
             android:layout_marginStart="@dimen/deals_dp_12"
             android:layout_marginEnd="@dimen/deals_dp_12"
             android:layout_marginRight="@dimen/deals_dp_12"
-            android:textColor="@color/dark_N700_96"
+            android:textColor="@color/Unify_Static_White_96"
             app:layout_constraintBottom_toTopOf="@+id/txt_voucher_place_card_count"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="heading_5"
@@ -49,7 +51,7 @@
             android:layout_marginBottom="@dimen/deals_dp_12"
             android:layout_marginRight="@dimen/deals_dp_12"
             android:layout_marginEnd="@dimen/deals_dp_12"
-            android:textColor="@color/dark_N700_96"
+            android:textColor="@color/Unify_N0_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="body_3"

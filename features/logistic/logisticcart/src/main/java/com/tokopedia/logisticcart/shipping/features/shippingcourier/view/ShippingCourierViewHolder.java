@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
@@ -30,7 +31,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvCourier;
     private TextView tvPriceOrDuration;
-    private ImageView imgCheck;
+    private IconUnify imgCheck;
     private TextView tvPromoPotency;
     private View separator;
     private Label codLabel;
@@ -41,6 +42,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private Typography tvMvcError;
     private ConstraintLayout layoutMvc;
     private FrameLayout flDisableContainer;
+    private Label dynamicPriceLabel;
 
     private int cartPosition;
 
@@ -61,6 +63,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
         layoutMvc = itemView.findViewById(R.id.layout_mvc);
         flDisableContainer = itemView.findViewById(R.id.fl_container);
+        dynamicPriceLabel = itemView.findViewById(R.id.lbl_dynamic_pricing);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -94,6 +97,15 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
+        if (shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData() == null ||
+                shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData().getTextLabel().isEmpty()) {
+            dynamicPriceLabel.setVisibility(View.GONE);
+        } else {
+            dynamicPriceLabel.setVisibility(View.VISIBLE);
+            dynamicPriceLabel.setText(shippingCourierUiModel.getProductData().getFeatures().getDynamicPriceData().getTextLabel());
+        }
+
+
         if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
             layoutMvc.setVisibility(View.VISIBLE);
             flDisableContainer.setForeground(ContextCompat.getDrawable(flDisableContainer.getContext() , R.drawable.fg_enabled_item));
@@ -118,13 +130,13 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
-                tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
-                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+                tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
                 itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierUiModel, cartPosition, true));
             } else {
                 tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
                 tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_R600));
-                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
+                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 itemView.setOnClickListener(null);
             }
         } else {
@@ -149,8 +161,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                 codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
                         getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
             }
-            tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
-            tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
             itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(
                     shippingCourierUiModel, cartPosition, false));
         }

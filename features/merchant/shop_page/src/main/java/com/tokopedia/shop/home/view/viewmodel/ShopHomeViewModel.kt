@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -39,6 +40,9 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -143,13 +147,14 @@ class ShopHomeViewModel @Inject constructor(
     fun getShopPageHomeData(
             shopId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
-            initialProductListData: ShopProduct.GetShopProduct?
+            initialProductListData: ShopProduct.GetShopProduct?,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
-                        getShopPageHomeLayout(shopId)
+                        getShopPageHomeLayout(shopId, widgetUserAddressLocalData)
                     },
                     onError = {
                         _shopHomeLayoutData.postValue(Fail(it))
@@ -160,7 +165,7 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         if(initialProductListData == null)
-                            getProductListData(shopId, 1, shopProductFilterParameter)
+                            getProductListData(shopId, 1, shopProductFilterParameter,widgetUserAddressLocalData)
                         else
                             null
                     },
@@ -206,11 +211,12 @@ class ShopHomeViewModel @Inject constructor(
     fun getNewProductList(
             shopId: String,
             page: Int,
-            shopProductFilterParameter: ShopProductFilterParameter
+            shopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io) {
-                getProductListData(shopId, page, shopProductFilterParameter)
+                getProductListData(shopId, page, shopProductFilterParameter, widgetUserAddressLocalData)
             }
             _productListData.postValue(Success(listProductData))
         }) {
@@ -218,7 +224,7 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun getMerchantVoucherCoupon(shopId: String) {
+    fun getMerchantVoucherCoupon(shopId: String, context: Context?) {
         val result = shopHomeLayoutData.value
         if (result is Success && !result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().isNullOrEmpty()) {
             launchCatchError(dispatcherProvider.io, block = {
@@ -230,9 +236,10 @@ class ShopHomeViewModel @Inject constructor(
                 )
                 val code = response.data?.resultStatus?.code
                 if (code != CODE_STATUS_SUCCESS) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
                     logExceptionToCrashlytics(
                             ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
-                            Throwable(response.data?.resultStatus?.message.toString())
+                            Throwable(errorMessage)
                     )
                 }
                 _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
@@ -300,8 +307,19 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
-    private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {
-        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
+    private suspend fun getShopPageHomeLayout(
+            shopId: String,
+            widgetUserAddressLocalData: LocalCacheModel
+    ): ShopPageHomeLayoutUiModel {
+        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(
+                ShopLayoutWidgetParamsModel().apply {
+                    this.shopId = shopId
+                    districtId = widgetUserAddressLocalData.district_id
+                    cityId = widgetUserAddressLocalData.city_id
+                    latitude = widgetUserAddressLocalData.lat
+                    longitude = widgetUserAddressLocalData.long
+                }
+        )
         return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
                 ShopUtil.isMyShop(shopId, userSessionShopId),
@@ -312,7 +330,8 @@ class ShopHomeViewModel @Inject constructor(
     private suspend fun getProductListData(
             shopId: String,
             page: Int,
-            shopProductFilterParameter: ShopProductFilterParameter
+            shopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ): GetShopHomeProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
@@ -323,6 +342,10 @@ class ShopHomeViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    userDistrictId = widgetUserAddressLocalData.district_id
+                    userCityId = widgetUserAddressLocalData.city_id
+                    userLat = widgetUserAddressLocalData.lat
+                    userLong = widgetUserAddressLocalData.long
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -373,14 +396,14 @@ class ShopHomeViewModel @Inject constructor(
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 
-    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel?): AddToCartDataModel {
+    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
         val requestParams = RequestParams.create().apply {
             putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                    productId = product?.id ?: "",
+                    productId = product.id ?: "",
                     shopId = shopId,
-                    quantity = product?.minimumOrder.toString(),
-                    productName = product?.name ?: "",
-                    price = product?.displayedPrice ?: "",
+                    quantity = product.minimumOrder.toString(),
+                    productName = product.name ?: "",
+                    price = product.displayedPrice ?: "",
                     userId = userId
             ))
         }
@@ -474,10 +497,14 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
+    fun getFilterResultCount(
+            shopId: String,
+            tempShopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
+    ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter)
+                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -485,7 +512,8 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
-            tempShopProductFilterParameter: ShopProductFilterParameter
+            tempShopProductFilterParameter: ShopProductFilterParameter,
+            widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
@@ -495,7 +523,11 @@ class ShopHomeViewModel @Inject constructor(
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
-                tempShopProductFilterParameter.getPmin()
+                tempShopProductFilterParameter.getPmin(),
+                widgetUserAddressLocalData.district_id,
+                widgetUserAddressLocalData.city_id,
+                widgetUserAddressLocalData.lat,
+                widgetUserAddressLocalData.long
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,

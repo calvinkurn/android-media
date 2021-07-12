@@ -82,13 +82,15 @@ object ReviewConstants {
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
     const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
     const val HAS_TICKER_INBOX_REVIEW = "hasTickerInboxReview"
+    const val HAS_TICKER_REVIEW_REMINDER = "hasTickerReviewReminder"
+    const val HAS_COACHMARK_REMINDER_MESSAGE = "hasCoachmarkReminderMessage"
 
     const val ARGS_REPUTATION_ID = "ARGS_REPUTATION_ID"
     const val ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID"
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
-    const val PARAM_UTM_SOURCE = "utm_source"
+    const val PARAM_SOURCE = "source"
     const val EDIT_MODE = true
 
     const val REPUTATION_SCORE_BAD = -1
@@ -129,6 +131,10 @@ object ReviewConstants {
     const val SELLER_REVIEW_REPLY_PLT_PREPARE_METRICS = "seller_review_reply_plt_prepare_metrics"
     const val SELLER_REVIEW_REPLY_PLT_NETWORK_METRICS = "seller_review_reply_plt_network_metrics"
     const val SELLER_REVIEW_REPLY_PLT_RENDER_METRICS = "seller_review_reply_plt_render_metrics"
+
+    const val IV_MORE_FOCUS_SERVICE_PM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_pm@3x.png"
+    const val IV_MORE_FOCUS_SERVICE_RM = "https://images.tokopedia.net/img/android/shop_score/iv_more_focus_shop_service_rm@3x.png"
+    const val IV_MORE_INTEREST_BUYER = "https://images.tokopedia.net/img/android/shop_score/iv_more_interest_buyer@3x.png"
 }
 
 

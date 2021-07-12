@@ -19,7 +19,6 @@ enum class ComponentNames(val componentName: String) {
     Tokopoints("tokopoints"),
     TokopointsItem("tokopoints_item"),
     LihatSemua("lihat_semua"),
-    CpmTopAds("topads"),
     Video("video"),
     Notifier("notifier"),
     TitleImage("title_image"),
@@ -74,8 +73,17 @@ enum class ComponentNames(val componentName: String) {
     BannedView("banned_view"),
 
     //Play Widget View
-    DiscoPlayWidgetView("play_widget")
+    DiscoPlayWidgetView("play_widget"),
 
+    DiscoTDNBanner("tdn_banner"),
 
+    CarouselErrorLoad("carousel_error_load"),
+    ProductListErrorLoad("product_list_error_load"),
+
+    //Category Best Seller
+    CategoryBestSeller("product-card-horizontal-scroll"),
+
+    //Topads Headline View
+    TopadsHeadlineView("topads"),
 
 }

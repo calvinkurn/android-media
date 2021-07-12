@@ -16,28 +16,28 @@ import kotlinx.android.synthetic.main.suggestion_top_shop_widget_layout.view.*
 class SuggestionTopShopWidgetViewHolder(
         itemView: View,
         private val suggestionTopShopListener: SuggestionTopShopListener
-): AbstractViewHolder<SuggestionTopShopWidgetViewModel>(itemView) {
+): AbstractViewHolder<SuggestionTopShopWidgetDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.suggestion_top_shop_widget_layout
     }
 
-    override fun bind(element: SuggestionTopShopWidgetViewModel) {
+    override fun bind(element: SuggestionTopShopWidgetDataView) {
         bindTitle(element)
         bindCards(element)
     }
 
-    private fun bindTitle(element: SuggestionTopShopWidgetViewModel) {
+    private fun bindTitle(element: SuggestionTopShopWidgetDataView) {
         itemView.suggestionTopShopTitle?.shouldShowWithAction(element.title.isNotEmpty()) {
             itemView.suggestionTopShopTitle?.text = element.title
         }
     }
 
-    private fun bindCards(element: SuggestionTopShopWidgetViewModel) {
+    private fun bindCards(element: SuggestionTopShopWidgetDataView) {
         itemView.suggestionTopShopCards?.let {
             it.layoutManager = createLayoutManager()
-            it.adapter = createAdapter(element.listSuggestionTopShopCard)
+            it.adapter = createAdapter(element.listSuggestionTopShopCardData)
 
             if (it.itemDecorationCount == 0) {
                 it.addItemDecoration(createItemDecoration())
@@ -50,11 +50,11 @@ class SuggestionTopShopWidgetViewHolder(
     }
 
     private fun createAdapter(
-            topShopCardList: List<SuggestionTopShopCardViewModel>
+            topShopCardDataList: List<SuggestionTopShopCardDataView>
     ): RecyclerView.Adapter<AbstractViewHolder<*>> {
         val typeFactory = SuggestionTopShopAdapterTypeFactory(suggestionTopShopListener)
         val topShopCardAdapter = TopShopCardAdapter(typeFactory)
-        topShopCardAdapter.addAll(topShopCardList)
+        topShopCardAdapter.addAll(topShopCardDataList)
 
         return topShopCardAdapter
     }

@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.logisticcart.shipping.model.ShipmentData
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -16,6 +15,6 @@ class EgoldAttributeModel(
         var tooltipText: String? = null,
         var isChecked: Boolean = false,
         var buyEgoldValue: Long = 0,
-        var egoldTieringModelArrayList: List<EgoldTieringModel> = emptyList()
-
-) : ShipmentData, Parcelable
+        var egoldTieringModelArrayList: List<EgoldTieringModel> = emptyList(),
+        var isEnabled: Boolean = true
+) : Parcelable

@@ -7,11 +7,15 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 @ExperimentalCoroutinesApi
 object CoroutineTestDispatchers: CoroutineDispatchers {
 
-    internal val coroutineDispatcher = TestCoroutineDispatcher()
+    val coroutineDispatcher = TestCoroutineDispatcher()
 
     override val main = coroutineDispatcher
 
     override val io = coroutineDispatcher
 
     override val default = coroutineDispatcher
+
+    override val immediate = coroutineDispatcher
+
+    override val computation = coroutineDispatcher
 }

@@ -31,7 +31,7 @@ private const val CLICK_ATUR_IKLAN = "click - atur iklan"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: Int) -> Unit),
+                               private var editDone: ((groupId: Int, strategy: String) -> Unit),
                                private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
 
     companion object {
@@ -46,6 +46,13 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
     override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
 
+            if(item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
+                view.img_key.visibility = View.GONE
+                view.key_count.visibility = View.GONE
+            } else {
+                view.img_key.visibility = View.VISIBLE
+                view.key_count.visibility = View.VISIBLE
+            }
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
             view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
             view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
@@ -114,9 +121,13 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
-                editDone.invoke(item.data.groupId)
+                if(item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
+                    editDone.invoke(item.data.groupId, item.data.strategies[0])
+                } else {
+                    editDone.invoke(item.data.groupId, "")
+                }
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
             sheet?.onDeleteClick = {

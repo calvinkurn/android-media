@@ -22,6 +22,7 @@ data class BarChartWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<BarChartDataUiModel> {
 
@@ -30,6 +31,10 @@ data class BarChartWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<BarChartDataUiModel> {
-        return BarChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return BarChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    }
+
+    override fun needToRefreshData(other: BaseWidgetUiModel<BarChartDataUiModel>): Boolean {
+        return dataKey != other.dataKey
     }
 }

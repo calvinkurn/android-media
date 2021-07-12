@@ -11,16 +11,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.beranda.data.mapper.factory.toProductCardModel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.convertData
-import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.helper.toStringFormat
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -134,7 +134,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 val grid = grids[position]
                 holder.thematicCardView.run {
                     applyCarousel()
-                    setProductModel(grid.convertData())
+                    setProductModel(grid.toProductCardModel())
                     setOnClickListener {
                         HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.targetDate?.toStringFormat() ?: "", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))

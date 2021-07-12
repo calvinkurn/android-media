@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="ImagePickerTitleTextAppearance" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/sp_20</item>
-        <item name="android:textColor">@color/Unify_N700_68</item>
-    </style>
-</resources>

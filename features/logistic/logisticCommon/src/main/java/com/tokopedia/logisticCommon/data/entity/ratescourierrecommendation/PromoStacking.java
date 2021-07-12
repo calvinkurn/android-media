@@ -71,6 +71,9 @@ public class PromoStacking {
     @SerializedName("eta")
     @Expose
     private EstimatedTimeArrivalPromo eta;
+    @SerializedName("is_bebas_ongkir_extra")
+    @Expose
+    private boolean isBebasOngkirExtra;
 
     public Integer getIsPromo() {
         return isPromo;
@@ -238,5 +241,9 @@ public class PromoStacking {
 
     public void setEta(EstimatedTimeArrivalPromo eta) {
         this.eta = eta;
+    }
+
+    public boolean isBebasOngkirExtra() {
+        return isBebasOngkirExtra;
     }
 }

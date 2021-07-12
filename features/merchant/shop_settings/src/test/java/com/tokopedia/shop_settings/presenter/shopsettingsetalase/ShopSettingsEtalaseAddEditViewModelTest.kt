@@ -8,10 +8,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 @ExperimentalCoroutinesApi
 class ShopSettingsEtalaseAddEditViewModelTest: ShopSettingsEtalaseTestFixture() {
 

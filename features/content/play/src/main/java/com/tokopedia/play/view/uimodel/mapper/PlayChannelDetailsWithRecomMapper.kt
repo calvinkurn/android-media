@@ -73,7 +73,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         }
 
         return PlayShareInfoUiModel(
-                content = fullShareContent,
+                content = htmlTextTransformer.transform(fullShareContent),
                 shouldShow = shareResponse.isShowButton
                         && shareResponse.redirectUrl.isNotBlank()
                         && isActive
@@ -100,18 +100,19 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = PlayProductTagsUiModel.Incomplete(
             basicInfo = PlayProductTagsBasicInfoUiModel(
                     bottomSheetTitle = configResponse.pinnedProductConfig.bottomSheetTitle,
-                    partnerId = partnerResponse.id.toLongOrZero()
+                    partnerId = partnerResponse.id.toLongOrZero(),
+                    maxFeaturedProducts = DEFAULT_MAX_FEATURED_PRODUCT
             )
     )
 
-    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedMessage(
+    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
             applink = pinnedMessageResponse.redirectUrl,
             partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = pinnedMessageResponse.title,
     )
 
-    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPinnedUiModel.PinnedProduct(
+    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedProductUiModel(
             partnerName = htmlTextTransformer.transform(partnerResponse.name),
             title = configResponse.pinnedProductConfig.pinTitle,
             hasPromo = configResponse.hasPromo,
@@ -197,6 +198,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     companion object {
         private const val MS_PER_SECOND = 1000
+        private const val DEFAULT_MAX_FEATURED_PRODUCT = 5
     }
 
     data class ExtraParams(

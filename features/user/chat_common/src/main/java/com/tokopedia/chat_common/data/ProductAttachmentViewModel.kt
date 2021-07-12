@@ -74,6 +74,9 @@ open class ProductAttachmentViewModel : SendableViewModel,
         }
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
+    var isFulfillment: Boolean = false
+    var urlTokocabang: String = ""
+    var parentId: String = "0"
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
@@ -99,10 +102,13 @@ open class ProductAttachmentViewModel : SendableViewModel,
             rating = attribute.productProfile.rating
             isPreOrder = attribute.productProfile.isPreOrder
             campaignId = attribute.productProfile.campaignId
+            isFulfillment = attribute.productProfile.isFulFillment
+            urlTokocabang = attribute.productProfile.urlTokocabang
             if (variants.isNotEmpty()) {
                 setupVariantsField()
             }
             this.isLoading = false
+            parentId = attribute.productProfile.parentId
         }
     }
 
@@ -399,9 +405,42 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return campaignId == -10000L
     }
 
+    fun isProductCampaign(): Boolean {
+        return campaignId != 0L
+    }
+
+    fun getProductSource(): String {
+        return if (fromBroadcast()) {
+            "broadcast"
+        } else {
+            "buyer attached"
+        }
+    }
+
+    fun getEventLabelImpression(amISeller: Boolean): String {
+        val role = if (amISeller) {
+            "seller"
+        } else {
+            "buyer"
+        }
+        val isWarehouse = if (isFulfillment) {
+            "warehouse"
+        } else {
+            "notwarehouse"
+        }
+        val isCampaign = if (isProductCampaign()) {
+            "campaign"
+        } else {
+            "notcampaign"
+        }
+        return "$role - $productId - $isWarehouse - $isCampaign"
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
         const val statusWarehouse = 3
+
+        const val NO_PRODUCT_ID = "0"
     }
 }

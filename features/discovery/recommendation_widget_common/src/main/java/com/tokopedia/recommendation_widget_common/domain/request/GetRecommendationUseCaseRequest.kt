@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -19,6 +20,15 @@ internal class GetRecommendationUseCaseRequest {
                         nextPage
                         prevPage
                         hasNext
+                      }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
                       }
                       recommendation {
                         id
@@ -53,6 +63,7 @@ internal class GetRecommendationUseCaseRequest {
                             position
                             title
                             type
+                            url
                         }
                         badges {
                           title
@@ -74,6 +85,10 @@ internal class GetRecommendationUseCaseRequest {
                         recommendationType
                         stock
                         isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
                       }
                     }
                   }
@@ -96,6 +111,15 @@ internal class GetRecommendationUseCaseRequest {
                        pagination{
                             hasNext
                        }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                       }
                        recommendation {
                            id
                            name
@@ -110,6 +134,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name
@@ -119,6 +146,12 @@ internal class GetRecommendationUseCaseRequest {
                           labels {
                               title
                               color
+                          }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
                           }
                           badges {
                               title
@@ -130,12 +163,20 @@ internal class GetRecommendationUseCaseRequest {
                               quantityMin
                               priceString
                           }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
                           rating
                           ratingAverage
                           countReview
                           recommendationType
                           stock
                           isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
                        }
                    }
                  }

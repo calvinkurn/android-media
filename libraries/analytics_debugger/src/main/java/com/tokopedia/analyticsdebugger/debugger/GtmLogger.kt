@@ -6,25 +6,37 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.AnalyticsSource
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.analyticsdebugger.debugger.data.repository.GtmRepo
+import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
 import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.config.GlobalConfig
-import rx.Subscriber
-import rx.schedulers.Schedulers
+import kotlinx.coroutines.*
+import timber.log.Timber
 import java.net.URLDecoder
+import kotlin.coroutines.CoroutineContext
 
-class GtmLogger private constructor(private val context: Context) : AnalyticsLogger {
+@Suppress("BlockingMethodInNonBlockingContext")
+class GtmLogger private constructor(private val context: Context) : AnalyticsLogger, CoroutineScope {
 
-    private val gson: Gson by lazy { GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create() }
-    private val dbSource: GtmLogDBSource = GtmLogDBSource(context)
+    override val coroutineContext: CoroutineContext
+        get() = CoroutineName("gtm_logger") + CoroutineExceptionHandler { _, t ->
+            Timber.e(t, "gtm_logger")
+        }
+
+    private val gson: Gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
+    private val dbSource by lazy {
+        val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+        GtmRepo(dao)
+    }
     private val cache: LocalCacheHandler = LocalCacheHandler(context, ANALYTICS_DEBUGGER)
 
     override val isNotificationEnabled: Boolean
         get() = cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false) ?: false
 
     override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source: String) {
-        try {
+        launch {
             val logData = AnalyticsLogData(
                     source = source,
                     name = name,
@@ -33,55 +45,33 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                             .replace("\\+".toRegex(), "%2B"), "UTF-8")
             )
             if (!TextUtils.isEmpty(logData.name) && logData.name != "null") {
-                dbSource.insertAll(logData)
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(defaultSubscriber())
+                dbSource.insert(logData)
             }
 
             if (isNotificationEnabled) {
                 NotificationHelper.show(context, logData)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
 
     }
 
     override fun saveError(errorData: String) {
-        val data = AnalyticsLogData(
-                name = "ERROR GTM V5",
-                data = errorData,
-                source = AnalyticsSource.ERROR
-        )
-        if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
-            NotificationHelper.show(context, data)
+        launch {
+            val logData = AnalyticsLogData(
+                    name = "ERROR GTM V5",
+                    data = errorData,
+                    source = AnalyticsSource.ERROR
+            )
+            dbSource.insert(logData)
+            if (cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)!!) {
+                NotificationHelper.show(context, logData)
+            }
         }
-        dbSource.insertAll(data)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(defaultSubscriber())
     }
 
     override fun enableNotification(status: Boolean) {
         cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, status)
         cache.applyEditor()
-    }
-
-    private fun defaultSubscriber(): Subscriber<in Boolean> {
-        return object : Subscriber<Boolean>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-            }
-
-            override fun onNext(aBoolean: Boolean?) {
-                // no-op
-            }
-        }
     }
 
     companion object {

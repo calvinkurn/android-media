@@ -13,8 +13,6 @@ class DynamicChannelDataModel(
     fun getLayoutType() = when(dynamicChannelData.channel.layout) {
         DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO -> DynamicChannelSprintSaleViewHolder.LAYOUT
         DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL -> DynamicChannelThematicViewHolder.LAYOUT
-        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> DynamicChannelMixLeftViewHolder.LAYOUT
-        DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> DynamicChannelMixTopViewHolder.LAYOUT
         else -> DynamicChannelLegoViewHolder.LAYOUT
     }
 

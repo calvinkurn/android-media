@@ -1,19 +1,36 @@
 package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class AddEditProductShipmentViewModelTest {
 
-    private val coroutineDispatcher = TestCoroutineDispatcher()
+    @get:Rule
+    val instantTaskExcecutorRule = InstantTaskExecutorRule()
+
+    @RelaxedMockK
+    lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
 
     private val viewModel: AddEditProductShipmentViewModel by lazy {
-        AddEditProductShipmentViewModel(coroutineDispatcher)
+        AddEditProductShipmentViewModel(saveProductDraftUseCase, CoroutineTestDispatchersProvider)
+    }
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
     }
 
     @Test
@@ -44,6 +61,18 @@ class AddEditProductShipmentViewModelTest {
 
         isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MAX_WEIGHT_KILOGRAM + 1}", AddEditProductShipmentConstants.UNIT_KILOGRAM)
         Assert.assertFalse(isValid)
+    }
+
+    @Test
+    fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
+        val draftIdResult = 1L
+        val productInputModel = ProductInputModel().apply {
+            productId = 220
+        }
+
+        coEvery { saveProductDraftUseCase.executeOnBackground() } returns draftIdResult
+        viewModel.saveProductDraft(productInputModel)
+        coVerify { saveProductDraftUseCase.executeOnBackground() }
     }
 
     @Test

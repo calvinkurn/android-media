@@ -7,12 +7,14 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLReposit
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
+import com.tokopedia.discovery2.repository.productcards.ProductCardsGQLRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
-import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.FilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
-import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterDiscoveryRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.repository.topads.DiscoveryTopAdsHeadlineRepository
+import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
@@ -34,7 +36,7 @@ class DiscoveryRepoProvider : RepositoryProvider {
     }
 
     override fun provideProductCardsRepository(): ProductCardsRepository {
-        return ProductCardsRestRepository()
+        return ProductCardsGQLRepository()
     }
 
     override fun provideQuickFilterRepository(): QuickFilterRepository {
@@ -42,7 +44,7 @@ class DiscoveryRepoProvider : RepositoryProvider {
     }
 
     override fun provideFilterRepository(): FilterRepository {
-        return FilterRestRepository()
+        return FilterGQLRepository()
     }
 
     override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
@@ -51,6 +53,10 @@ class DiscoveryRepoProvider : RepositoryProvider {
 
     override fun provideEmptyStateRepository(): EmptyStateRepository {
         return DiscoveryEmptyStateRepository()
+    }
+
+    override fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
+        return DiscoveryTopAdsHeadlineRepository()
     }
 
 }

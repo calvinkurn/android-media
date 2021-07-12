@@ -6,10 +6,6 @@ import com.tokopedia.cart.domain.model.cartlist.UnavailableGroupData
 import com.tokopedia.cart.view.uimodel.*
 import javax.inject.Inject
 
-/**
- * Created by Irfan Khoirul on 2019-10-16.
- */
-
 class ViewHolderDataMapper @Inject constructor() {
 
     fun mapDisabledItemHeaderHolderData(disabledProductCount: Int): DisabledItemHeaderHolderData {
@@ -25,29 +21,30 @@ class ViewHolderDataMapper @Inject constructor() {
         }
     }
 
-    fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData): DisabledShopHolderData {
+    fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData, reason: String): DisabledShopHolderData {
         return DisabledShopHolderData(
                 shopId = shopGroupWithErrorData.shopId,
                 shopName = shopGroupWithErrorData.shopName,
-                shopBadgeUrl = shopGroupWithErrorData.shopBadge,
-                isFulfillment = shopGroupWithErrorData.isFulfillment
+                shopBadgeUrl = shopGroupWithErrorData.shopTypeInfoData.shopBadge,
+                isFulfillment = shopGroupWithErrorData.isFulfillment,
+                isTokoNow = shopGroupWithErrorData.isTokoNow,
+                reason = reason
         )
     }
 
     fun mapDisabledItemHolderData(cartItemHolderData: CartItemHolderData, showDivider: Boolean): DisabledCartItemHolderData {
         return DisabledCartItemHolderData(
-                cartId = cartItemHolderData.cartItemData?.originData?.cartId ?: 0,
-                productId = cartItemHolderData.cartItemData?.originData?.productId ?: "0",
-                productImage = cartItemHolderData.cartItemData?.originData?.productImage ?: "",
-                productName = cartItemHolderData.cartItemData?.originData?.productName ?: "",
-                productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
-                        ?: 0.toDouble(),
-                isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
+                cartId = cartItemHolderData.cartItemData.originData.cartId,
+                productId = cartItemHolderData.cartItemData.originData.productId,
+                productImage = cartItemHolderData.cartItemData.originData.productImage,
+                productName = cartItemHolderData.cartItemData.originData.productName,
+                productPrice = cartItemHolderData.cartItemData.originData.pricePlan,
+                isWishlisted = cartItemHolderData.cartItemData.originData.isWishlisted,
                 showDivider = showDivider,
                 data = cartItemHolderData.cartItemData,
                 actionsData = cartItemHolderData.actionsData,
-                selectedUnavailableActionId = cartItemHolderData.cartItemData?.selectedUnavailableActionId ?: 0,
-                selectedUnavailableActionLink = cartItemHolderData.cartItemData?.selectedUnavailableActionLink ?: "",
+                selectedUnavailableActionId = cartItemHolderData.cartItemData.selectedUnavailableActionId,
+                selectedUnavailableActionLink = cartItemHolderData.cartItemData.selectedUnavailableActionLink,
                 errorType = cartItemHolderData.errorType
         )
     }

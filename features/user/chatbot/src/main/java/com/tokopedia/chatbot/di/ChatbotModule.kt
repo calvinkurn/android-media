@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
@@ -74,5 +75,11 @@ class ChatbotModule {
             UploadImageUseCase<ChatbotUploadImagePojo> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession,
                 ChatbotUploadImagePojo::class.java, imageUploaderUtils)
+    }
+
+    @ChatbotScope
+    @Provides
+    fun provideBaseRepository(): BaseRepository {
+        return BaseRepository()
     }
 }

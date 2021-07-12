@@ -14,17 +14,20 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 var discoComponentQuery: MutableMap<String, String?>? = null
 
-fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: MutableMap<String, String?>): DiscoveryPageData {
+fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
+                                   queryParameterMap: MutableMap<String, String?>,
+                                   userAddressData: LocalCacheModel?): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -41,7 +44,9 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryParameterMap: Map<String, String?>) {
+class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
+                              private val queryParameterMap: Map<String, String?>,
+                              private val localCacheModel: LocalCacheModel?) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoveryComponentList(filterSaleTimer(components))
@@ -50,6 +55,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                 if (item.id == targetCompId) {
                     item.rpc_discoQuery = queryParameterMap
                 }
+                item.userAddressData = localCacheModel
+            }
+        } else if (componentList.isNotEmpty()) {
+            componentList.forEach { item ->
+                item.userAddressData = localCacheModel
             }
         }
         return componentList
@@ -98,8 +108,14 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
                     listComponents.add(component)
                 }
             }
+
             ComponentNames.QuickFilter.componentName -> {
-                listComponents.add(component.copy())
+                listComponents.add(component)
+                component.properties?.targetId?.let {
+                    getComponent(it,component.pageEndPoint).apply {
+                        this?.parentFilterComponentId = component.id
+                    }
+                }
             }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
@@ -199,7 +215,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
         return tabChildComponentsItem
     }
 
-    private fun handleAvailableComponents(targetedComponentId: String, tabComponent: ComponentsItem,  tabName: String?): ComponentsItem? {
+    private fun handleAvailableComponents(targetedComponentId: String, tabComponent: ComponentsItem, tabName: String?): ComponentsItem? {
         val pageIdentity = pageInfo.identifier ?: ""
         var tabChildComponentsItem: ComponentsItem? = null
         getComponent(targetedComponentId, pageIdentity)?.let { component1 ->
@@ -236,27 +252,41 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
 
     private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
-        if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0) {
-            listComponents.add(component.copy().apply {
-                setComponentsItem(component.getComponentsItem(), component.tabName)
-            })
-            component.needPagination = true
-            listComponents.addAll(List(10) { ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
-                properties = component.properties
-            } })
-        } else {
+
+        if (component.verticalProductFailState) {
             listComponents.add(component)
             component.getComponentsItem()?.let {
                 listComponents.addAll(getDiscoveryComponentList(it))
             }
-            if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
-                listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
-            } else if (component.getComponentsItem()?.size == 0) {
-                listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
+
+            listComponents.addAll(handleProductState(component, ComponentNames.ProductListErrorLoad.componentName, queryParameterMap))
+        } else {
+            if (component.getComponentsItem().isNullOrEmpty() && component.noOfPagesLoaded == 0 && !component.verticalProductFailState) {
+                listComponents.add(component.copy().apply {
+                    setComponentsItem(component.getComponentsItem(), component.tabName)
+                })
+                component.needPagination = true
+                component.userAddressData = localCacheModel
+                listComponents.addAll(List(10) {
+                    ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
+                        properties = component.properties
+                    }
+                })
+            } else {
+                listComponents.add(component)
+                component.getComponentsItem()?.let {
+                    listComponents.addAll(getDiscoveryComponentList(it))
+                }
+                if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
+                    listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
+                } else if (component.getComponentsItem()?.size == 0) {
+                    listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
+                }
             }
         }
         return listComponents
     }
+
 
     private fun handleProductState(component: ComponentsItem, componentName: String, queryParameterMap: Map<String, String?>? = null): ArrayList<ComponentsItem> {
         val productState: ArrayList<ComponentsItem> = ArrayList()
@@ -284,13 +314,13 @@ fun setComponent(componentId: String, pageName: String, componentsItem: Componen
     }
 }
 
-fun updateComponentsQueryParams(categoryId : String){
+fun updateComponentsQueryParams(categoryId: String) {
     discoComponentQuery?.let {
         it[CATEGORY_ID] = categoryId
     }
 }
 
-fun getPageInfo(pageName: String) : PageInfo {
+fun getPageInfo(pageName: String): PageInfo {
     discoveryPageData[pageName]?.let {
         return it.pageInfo
     }

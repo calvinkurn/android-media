@@ -1,6 +1,8 @@
 package com.tokopedia.checkers
 
 import com.tokopedia.abstraction.processor.beta.ProductListImpressionProduct
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 import java.util.regex.Pattern
 
@@ -19,7 +21,7 @@ object ProductListImpressionChecker {
                     getKlikPattern.matcher(trim_value).find() ||
                     getClickPattern.matcher(trim_value).find())
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_CLICK_CHECK#event Action ${eventAction} get exception $e")
+            ServerLogger.log(Priority.P2, "CHECKER_CLICK_CHECK", mapOf("type" to "event Action $eventAction get exception $e"))
             return true
         }
     }
@@ -28,7 +30,7 @@ object ProductListImpressionChecker {
         try {
             return items.size >= 1
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_IS_BIGGER#get exception $e")
+            ServerLogger.log(Priority.P2, "CHECKER_IS_BIGGER", mapOf("type" to "get exception $e"))
             return true
         }
 
@@ -38,7 +40,7 @@ object ProductListImpressionChecker {
         try {
             return event.contains("view_item_list") || event.contains("view_search_results")
         } catch (e: Exception) {
-            Timber.w("P2#CHECKER_EVENT#event ${event} get exception $e")
+            ServerLogger.log(Priority.P2, "CHECKER_EVENT", mapOf("type" to "event $event get exception $e"))
             return true
         }
     }

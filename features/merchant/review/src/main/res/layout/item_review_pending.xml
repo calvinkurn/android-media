@@ -102,8 +102,8 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_marginTop="@dimen/layout_lvl1"
-            app:labelType="general_light_grey"
-            app:labelTitle="@string/ovo_incentive_review_pending"
+            app:labelType="general_light_green"
+            app:labelTitle="@string/incentive_review_pending"
             app:layout_constraintTop_toBottomOf="@id/reviewPendingStars"
             app:layout_constraintStart_toStartOf="@id/reviewPendingProductName"
             tools:visibility="visible"/>

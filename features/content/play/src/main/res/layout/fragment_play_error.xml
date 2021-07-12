@@ -5,7 +5,7 @@
     android:id="@+id/container_global_error"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/play_background"
+    android:background="@color/play_dms_background"
     android:visibility="gone"
     >
 
@@ -39,7 +39,7 @@
         android:lineHeight="@dimen/sp_20"
         android:maxLines="1"
         android:text="@string/play_title"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/img_back"
         app:layout_constraintStart_toEndOf="@id/img_back"
         app:layout_constraintTop_toTopOf="@id/img_back"

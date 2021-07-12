@@ -25,6 +25,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import kotlinx.android.synthetic.main.fragment_flight_homepage.*
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -54,6 +55,11 @@ class FlightHomepageActivityTest {
             addMockResponse(
                     KEY_CONTAINS_HOMEPAGE_BANNER,
                     InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_banner),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                    KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.flight.test.R.raw.response_mock_data_flight_homepage_travel_video),
                     MockModelConfig.FIND_BY_CONTAINS
             )
             addMockResponse(
@@ -135,6 +141,8 @@ class FlightHomepageActivityTest {
 
     @Test
     fun validateFlightHomepageAnalyticsP2AndBelow() {
+        validateTravelVideoTracking()
+
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
 
         departureAirport()
@@ -210,11 +218,19 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
     }
 
+    fun validateTravelVideoTracking(){
+        Thread.sleep(3000)
+        onView(withId(R.id.flightHomepageVideoBanner)).check(matches(isDisplayed()))
+
+        Thread.sleep(3000)
+        onView(withId(R.id.flightHomepageVideoBanner)).perform(click())
+    }
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_homepage_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_homepage_all.json"
 
-        private const val KEY_CONTAINS_HOMEPAGE_BANNER = "travelCollectiveBanner"
+        private const val KEY_CONTAINS_HOMEPAGE_BANNER = "\"product\": \"FLIGHT\""
+        private const val KEY_CONTAINS_HOMEPAGE_TRAVEL_VIDEO = "\"product\": \"FLIGHTPROMOTIONAL\""
         private const val KEY_CONTAINS_FLIGHT_POPULAR_CITY = "flightPopularCity"
         private const val KEY_CONTAINS_FLIGHT_FARE = "flightFare"
         private const val KEY_CONTAINS_CALENDAR_HOLIDAY = "TravelGetHoliday"

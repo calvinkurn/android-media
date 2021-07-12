@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.detail.presentation.constant
 class AddEditProductDetailConstants {
     companion object {
         const val MAX_PRODUCT_PHOTOS = 5
+        const val MAX_PRODUCT_PHOTOS_OS = 7
         const val MAX_WHOLESALE_PRICES = 5
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
@@ -23,7 +24,6 @@ class AddEditProductDetailConstants {
         const val DEBOUNCE_DELAY_MILLIS = 500L
         const val MIN_PRODUCT_PRICE_LIMIT = 100
         const val MIN_PRODUCT_STOCK_LIMIT = 1
-        const val MAX_PRODUCT_PRICE_LIMIT = 100000000
         const val MAX_PRODUCT_STOCK_LIMIT = 999999
         const val MAX_MIN_ORDER_QUANTITY = 10000
         const val MIN_MIN_ORDER_QUANTITY = 1
@@ -46,5 +46,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_KEY_DETAIL = "request_key_detail"
         const val REQUEST_KEY_SHIPMENT = "request_key_shipment"
         const val BUNDLE_CACHE_MANAGER_ID = "bundle_cache_manager_id"
+        // price recommendation
+        const val PRICE_RECOMMENDATION_BANNER_URL = "https://images.tokopedia.net/img/android/product-add-edit/banner_price_recommendation.png"
     }
 }

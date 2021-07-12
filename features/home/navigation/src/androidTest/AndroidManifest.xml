@@ -22,7 +22,9 @@
     <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
         android:exported="true"
         android:label="Tokopedia"
+        android:resizeableActivity="true"
         android:launchMode="singleTask"
+        android:theme="@style/TokopediaTransparentStatus"
         android:windowSoftInputMode="adjustPan"
         android:screenOrientation="portrait">
 
@@ -30,7 +32,7 @@
           android:name="APPS_HOME"
           android:value="true"/>
 
-      <intent-filter android:autoVerify="true">
+      <intent-filter>
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />

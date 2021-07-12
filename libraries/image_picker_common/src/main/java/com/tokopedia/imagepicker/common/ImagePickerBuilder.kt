@@ -27,11 +27,12 @@ data class ImagePickerBuilder(
     fun isContinueToEditAfterPick() = imagePickerEditorBuilder != null
     fun getMaximumNoPick() = imagePickerMultipleSelectionBuilder?.maximumNoPick ?: 1
     fun getCameraIndex() = imagePickerTab.indexOf(ImagePickerTab.TYPE_CAMERA)
+    fun getGalleryIndex() = imagePickerTab.indexOf(ImagePickerTab.TYPE_GALLERY)
     fun getRatioX() = imageRatioType.getRatioX()
     fun getRatioY() = imageRatioType.getRatioY()
     fun isRecheckSizeAfterResize() = imagePickerEditorBuilder?.recheckSizeAfterResize ?: false
-    fun getImageEditActionType(): Array<ImageEditActionType> = imagePickerEditorBuilder?.imageEditActionType
-            ?: arrayOf()
+    fun getImageEditActionType(): ArrayList<ImageEditActionType> = imagePickerEditorBuilder?.imageEditActionType
+            ?: arrayListOf()
 
     fun isCirclePreview() = imagePickerEditorBuilder?.circlePreview ?: false
     fun getRatioOptionList() = imagePickerEditorBuilder?.imageRatioTypeList ?: arrayListOf()
@@ -39,6 +40,11 @@ data class ImagePickerBuilder(
 
     fun withSimpleEditor():ImagePickerBuilder {
         imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder()
+        return this
+    }
+
+    fun withWatermarkEditor(): ImagePickerBuilder {
+        imagePickerEditorBuilder?.imageEditActionType?.add(ImageEditActionType.ACTION_WATERMARK)
         return this
     }
 
@@ -76,7 +82,7 @@ data class ImagePickerBuilder(
 
 @Parcelize
 data class ImagePickerEditorBuilder(
-        var imageEditActionType: Array<ImageEditActionType>,
+        var imageEditActionType: ArrayList<ImageEditActionType>,
         var circlePreview: Boolean = false,
         var imageRatioTypeList: ArrayList<ImageRatioType>? = null,
         var belowMinResolutionErrorMessage: String = "",
@@ -93,10 +99,12 @@ data class ImagePickerEditorBuilder(
             )
         }
 
-        fun getDefaultEditor() = arrayOf(ImageEditActionType.ACTION_BRIGHTNESS,
-                ImageEditActionType.ACTION_CONTRAST,
-                ImageEditActionType.ACTION_CROP,
-                ImageEditActionType.ACTION_ROTATE)
+        fun getDefaultEditor() = arrayListOf(
+            ImageEditActionType.ACTION_BRIGHTNESS,
+            ImageEditActionType.ACTION_CONTRAST,
+            ImageEditActionType.ACTION_CROP,
+            ImageEditActionType.ACTION_ROTATE
+        )
     }
 }
 
@@ -122,8 +130,6 @@ data class PreviewExtension(
 enum class ImagePickerTab(val value: Int) : Parcelable {
     TYPE_GALLERY(1),
     TYPE_CAMERA(2),
-    TYPE_INSTAGRAM(3),
-    TYPE_RECORDER(4);
 }
 
 @Parcelize

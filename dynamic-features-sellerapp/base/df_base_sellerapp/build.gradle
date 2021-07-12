@@ -11,6 +11,7 @@ repositories{
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -57,58 +58,64 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.sellerapp)
 
-    implementation project(rootProject.ext.features.paymentSetting)
-    implementation project(rootProject.ext.features.productManageList)
-    implementation project(rootProject.ext.features.shopSettings)
-    implementation project(rootProject.ext.features.layanan)
+    implementation projectOrAar(rootProject.ext.features.paymentSetting)
+    implementation projectOrAar(rootProject.ext.features.productManageList)
+    implementation projectOrAar(rootProject.ext.features.shopSettings)
+    implementation projectOrAar(rootProject.ext.features.layanan)
+    implementation projectOrAar(rootProject.ext.features.withdraw)
 
     //Content
-    implementation project(rootProject.ext.features.playBroadcaster)
+    implementation projectOrAar(rootProject.ext.features.playBroadcaster)
 
     //Discovery
-    implementation project(rootProject.ext.features.productCardOptions)
+    implementation projectOrAar(rootProject.ext.features.productCardOptions)
     //Fintech
-//    implementation project(rootProject.ext.features.instantLoan)
-//    implementation project(rootProject.ext.features.saldodetails)
+//    implementation projectOrAar(rootProject.ext.features.instantLoan)
+//    implementation projectOrAar(rootProject.ext.features.saldodetails)
 
     //Merchant
-//    implementation project(rootProject.ext.features.report)
-//    implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.review)
-    implementation project(rootProject.ext.features.reviewProduct)
+//    implementation projectOrAar(rootProject.ext.features.report)
+//    implementation projectOrAar(rootProject.ext.features.shopOpen)
+    implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.review)
+    implementation projectOrAar(rootProject.ext.features.reviewProduct)
 
     //User
-//    implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.managepassword)
-//    implementation project(rootProject.ext.features.profileCompletion)
-    implementation project(rootProject.ext.features.productAddEdit)
-    implementation project(rootProject.ext.features.settingbank)
-    implementation project(rootProject.ext.features.settingnotif)
-    implementation project(rootProject.ext.features.attachinvoice)
-    implementation project(rootProject.ext.features.kyccentralized)
-//    implementation project(rootProject.ext.features.notifCenter)
-    implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.attachvoucher)
-    implementation project(rootProject.ext.features.attachproduct)
-//    implementation project(rootProject.ext.features.topchat)
-    implementation project(rootProject.ext.features.liveness)
-    implementation project(rootProject.ext.features.updateinactivephone)
+//    implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
+    implementation projectOrAar(rootProject.ext.features.managepassword)
+//    implementation projectOrAar(rootProject.ext.features.profileCompletion)
+    implementation projectOrAar(rootProject.ext.features.productAddEdit)
+    implementation projectOrAar(rootProject.ext.features.settingbank)
+    implementation projectOrAar(rootProject.ext.features.settingnotif)
+    implementation projectOrAar(rootProject.ext.features.attachinvoice)
+    implementation projectOrAar(rootProject.ext.features.kyccentralized)
+//    implementation projectOrAar(rootProject.ext.features.notifCenter)
+    implementation projectOrAar(rootProject.ext.features.talk)
+    implementation projectOrAar(rootProject.ext.features.attachvoucher)
+    implementation projectOrAar(rootProject.ext.features.attachproduct)
+//    implementation projectOrAar(rootProject.ext.features.topchat)
+    implementation projectOrAar(rootProject.ext.features.liveness)
+    implementation projectOrAar(rootProject.ext.features.updateinactivephone)
 
-    implementation project(rootProject.ext.features.sellerOnboarding)
-    implementation project(rootProject.ext.features.shopShowcase)
-    implementation project(rootProject.ext.features.voucherCreation)
-    implementation project(rootProject.ext.features.sellerSearch)
-    implementation project(rootProject.ext.features.activation)
-    implementation project(rootProject.ext.features.manageaddress)
-    implementation project(rootProject.ext.features.createpost)
-    implementation project(rootProject.ext.features.kol)
-    implementation project(rootProject.ext.features.notifTroubleshooter)
+    implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
+    implementation projectOrAar(rootProject.ext.features.shopShowcase)
+    implementation projectOrAar(rootProject.ext.features.voucherCreation)
+    implementation projectOrAar(rootProject.ext.features.sellerSearch)
+    implementation projectOrAar(rootProject.ext.features.activation)
+    implementation projectOrAar(rootProject.ext.features.manageaddress)
+    implementation projectOrAar(rootProject.ext.features.createpost)
+    implementation projectOrAar(rootProject.ext.features.kol)
+    implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
 
 //    Merchant
-    implementation project(rootProject.ext.features.shopPage)
-    implementation project(rootProject.ext.features.statistic)
-    implementation project(rootProject.ext.features.sellerMenu)
-    implementation project(rootProject.ext.features.sellerAction)
-    implementation project(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.shopPage)
+    implementation projectOrAar(rootProject.ext.features.statistic)
+    implementation projectOrAar(rootProject.ext.features.sellerMenu)
+    implementation projectOrAar(rootProject.ext.features.sellerAction)
+    implementation projectOrAar(rootProject.ext.features.snapshot)
+
+    // Order Management
+    implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
+
+    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

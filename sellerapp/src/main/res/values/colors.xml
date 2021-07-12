@@ -2,4 +2,5 @@
 <resources>
     <color name="green_ticker">#cde4c3</color>
     <color name="yellow_ticker">#ecdb77</color>
+    <color name="sellerapp_background_splash_screen">#04AC10</color>
 </resources>

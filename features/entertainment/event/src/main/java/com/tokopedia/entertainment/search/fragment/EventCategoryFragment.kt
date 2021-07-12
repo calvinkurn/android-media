@@ -18,10 +18,16 @@ import com.tokopedia.entertainment.common.util.EventQuery.getEventSearchCategory
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
+import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventDetailViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
 import kotlinx.android.synthetic.main.ent_search_category_text.*
 import kotlinx.android.synthetic.main.ent_search_detail_activity.*
@@ -34,7 +40,7 @@ import javax.inject.Inject
  * Author errysuprayogi on 06,March,2020
  */
 
-class EventCategoryFragment : BaseDaggerFragment() {
+class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridListener {
 
     lateinit var categoryTextAdapter: CategoryTextBubbleAdapter
     lateinit var eventGridAdapter : EventGridAdapter
@@ -48,6 +54,9 @@ class EventCategoryFragment : BaseDaggerFragment() {
     @Inject
     lateinit var factory: EventDetailViewModelFactory
     lateinit var viewModel: EventDetailViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     companion object{
         fun newInstance() = EventCategoryFragment()
@@ -92,12 +101,11 @@ class EventCategoryFragment : BaseDaggerFragment() {
         setupCategoryAdapter()
         setupGridAdapter()
         setupRefreshLayout()
-        setupResetFilterButton()
         performanceMonitoring.stopTrace()
     }
 
     private fun setupGridAdapter(){
-        eventGridAdapter = EventGridAdapter()
+        eventGridAdapter = EventGridAdapter(this)
         gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup(){
             override fun getSpanSize(position: Int): Int {
                 if(eventGridAdapter.getItemViewType(position) == eventGridAdapter.VIEW_TYPE_LOADING) return gridLayoutManager.spanCount
@@ -128,10 +136,6 @@ class EventCategoryFragment : BaseDaggerFragment() {
                 viewModel.getData(CacheType.ALWAYS_CLOUD,query = getQueryCategory())
             }
         }
-    }
-
-    private fun setupResetFilterButton(){
-        activity?.resetFilterButton?.apply { setOnClickListener{ resetFilter() } }
     }
 
     private fun getScrollListener(): EndlessRecyclerViewScrollListener{
@@ -223,7 +227,21 @@ class EventCategoryFragment : BaseDaggerFragment() {
         eventGridAdapter.notifyDataSetChanged()
     }
 
-    private fun showOrHideResetFilter(state: Boolean) { activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE }
+    private fun showOrHideResetFilter(state: Boolean) {
+        activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE
+        if (state){
+            activity?.globalerror_category_event?.let {
+                it.errorIllustration.loadImageDrawable(R.drawable.ent_ic_empty_item)
+                it.errorTitle.setText(resources.getString(R.string.ent_search_oops))
+                it.errorDescription.setText(resources.getString(R.string.ent_search_intip_kategori))
+                it.errorAction.setText(resources.getString(R.string.ent_search_reset_filter))
+                it.setActionClickListener {
+                    resetFilter()
+                }
+                it.errorSecondaryAction.hide()
+            }
+        }
+    }
 
     private fun showOrHideParentView(state: Boolean){ activity?.parent_view?.visibility = if(state) View.VISIBLE else View.GONE }
 
@@ -242,4 +260,12 @@ class EventCategoryFragment : BaseDaggerFragment() {
         super.onDestroyView()
     }
 
+    override fun impressionCategory(event: EventGridAdapter.EventGrid, listsEvent: List<EventGridAdapter.EventGrid>, position: Int) {
+        EventCategoryPageTracking.getInstance().impressionGridViewProduct(event, listsEvent, position + 1, userSession.userId)
+    }
+
+    override fun clickCategory(event: EventGridAdapter.EventGrid, listsEvent: List<EventGridAdapter.EventGrid>, position: Int) {
+        EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listsEvent, categoryTextAdapter.listCategory,
+                position + 1, userSession.userId)
+    }
 }

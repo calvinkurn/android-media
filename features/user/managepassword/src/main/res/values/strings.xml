@@ -46,6 +46,7 @@
     <string name="change_password_same_with_old">Kata sandi tidak boleh sama dengan yang lama</string>
     <string name="change_password_confirmation_invalid">Pastikan sama dengan kata sandi baru</string>
     <string name="change_password_insert_not_other_pass">Masukkan kata sandi Tokopedia Anda, bukan kata sandi dari akun aplikasi lain (google/facebook)</string>
-    
-  <string name="message_something_wrong">Terjadi kesalahan</string>
+    <string name="change_password_invalid_length">Kata sandi tidak boleh kurang dari 8 karakter dan tidak lebih dari 32 karakter</string>
+
+    <string name="message_something_wrong">Terjadi kesalahan</string>
 </resources>

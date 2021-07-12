@@ -16,6 +16,15 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
            seeMoreAppLink
            seeMoreUrlLink
            pageName
+           campaign{
+             appLandingPageLink
+             landingPageLink
+             assets {
+               banner{
+                 apps
+               }
+             }
+           }
            recommendation {
                id
                name
@@ -38,6 +47,7 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                 position
                 title
                 type
+                url
                 }
                shop {
                    id
@@ -69,6 +79,10 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
               recommendationType
               stock
               isTopads
+              specificationLabels {
+                                key
+                                value
+              }
            }
        }
      }

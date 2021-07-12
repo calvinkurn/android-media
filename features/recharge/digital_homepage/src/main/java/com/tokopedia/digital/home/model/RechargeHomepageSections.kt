@@ -311,3 +311,20 @@ data class RechargeProductCardCustomBannerModel(val section: RechargeHomepageSec
         } else false
     }
 }
+
+data class RechargeHomepageCarousellModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+    override fun visitableId(): String {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageCarousellModel) {
+            section == b.section
+        } else false
+    }
+
+}

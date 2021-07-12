@@ -3,100 +3,100 @@
   "mode": "exact",
   "query": [
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click view all play",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{\\d*.\\d*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": "\\d*.\\d*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "select_content",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{click on banner play - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"click on banner play - (.+) - (.+)"
     },
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{\\d*.\\d*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": "\\d*.\\d*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "view_item",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "impression on play sgc banner",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{view on banner play - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"view on banner play - (.+) - (.+)"
     },
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{\\d*.\\d*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": "\\d*.\\d*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "select_content",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{click channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"click channel - (.+) - (.+) - (.+) - (.+) - (.+)"
     },
     {
       "promotions": [{
-        "creative_name": "{{.+}}",
-        "creative_slot": "{{\\d*.\\d*}}",
-        "item_id": "{{.+}}",
-        "item_name": "{{.+}}"
+        "creative_name": ".+",
+        "creative_slot": "\\d*.\\d*",
+        "item_id": ".+",
+        "item_name": ".+"
       }],
-      "eventCategory": "{{shop page - (buyer|seller)}}",
+      "eventCategory": "shop page - (buyer|seller)",
       "event": "view_item",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "impression on play sgc channel",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{view channel - (.+) - (.+) - (.+) - (.+) - (.+)}}"
+      "sessionIris": ".+",
+      "eventLabel":"view channel - (.+) - (.+) - (.+) - (.+) - (.+)"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click remind me",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click on remove remind me",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     },
     {
-      "businessUnit": "{{.+}}",
-      "eventCategory": "{{shop page - (buyer|seller)}}",
-      "currentSite": "{{.+}}",
+      "businessUnit": ".+",
+      "eventCategory": "shop page - (buyer|seller)",
+      "currentSite": ".+",
       "event": "clickShopPage",
-      "userId": "{{.*}}",
+      "userId": ".*",
       "eventAction": "click other content",
-      "sessionIris": "{{.+}}",
-      "eventLabel":"{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel":".+"
     }
   ]
 }

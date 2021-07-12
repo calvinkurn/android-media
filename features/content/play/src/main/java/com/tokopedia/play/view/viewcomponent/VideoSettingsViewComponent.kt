@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.IdRes
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.R
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
@@ -94,6 +96,11 @@ class VideoSettingsViewComponent(
     private fun cancelAllAnimation() {
         fadeInFadeOutAnimation.cancel()
         fadeOutAnimation.cancel()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        cancelAllAnimation()
     }
 
     interface Listener {

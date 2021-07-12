@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
@@ -33,6 +34,7 @@ import com.tokopedia.topupbills.telco.prepaid.model.TelcoFilterData
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -107,10 +109,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             categoryId = it.getInt(CATEGORY_ID)
 
             sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
+                clearFilterIfTabNotActive()
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
-                    is Fail -> onErrorProductList()
+                    is Fail -> onErrorProductList(it.throwable)
                 }
             })
 
@@ -171,20 +174,21 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                         itemProduct.attributes.desc,
                         MethodChecker.fromHtml(itemProduct.attributes.detail).toString(),
                         itemProduct.attributes.price,
-                        itemProduct.attributes.productPromo?.newPrice)
+                        itemProduct.attributes.productPromo?.newPrice,
+                        object: DigitalProductBottomSheet.ActionListener {
+                            override fun onClickOnProduct() {
+                                activity?.run {
+                                    telcoTelcoProductView.selectProductItem(position)
+                                    sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+                                    sharedModelPrepaid.setProductAutoCheckout(itemProduct)
+                                    topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
+                                }
+                            }
+                        }
+                )
                 seeMoreBottomSheet.setOnDismissListener {
                     topupAnalytics.eventCloseDetailProduct(itemProduct.attributes.categoryId)
                 }
-                seeMoreBottomSheet.setListener(object : DigitalProductBottomSheet.ActionListener {
-                    override fun onClickOnProduct() {
-                        activity?.run {
-                            telcoTelcoProductView.selectProductItem(position)
-                            sharedModelPrepaid.setProductCatalogSelected(itemProduct)
-                            sharedModelPrepaid.setProductAutoCheckout(itemProduct)
-                            topupAnalytics.pickProductDetail(itemProduct, selectedOperatorName, userSession.userId)
-                        }
-                    }
-                })
                 seeMoreBottomSheet.show(it.supportFragmentManager, "bottom_sheet_product_telco")
 
             }
@@ -201,6 +205,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     private fun renderSortFilter(componentId: Int, filters: List<TelcoFilterTagComponent>) {
+        if (filters.isEmpty()) {
+            sortFilter.hide()
+            telcoTelcoProductView.removePaddingTop(false)
+        } else {
+            sortFilter.show()
+            telcoTelcoProductView.removePaddingTop(true)
+        }
+
         if (telcoFilterData.getFilterTags().isEmpty()) {
             telcoFilterData.setFilterTags(filters)
 
@@ -211,7 +223,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 filterData.add(sortFilterItem)
             }
             sortFilter.addItem(filterData)
-            sortFilter.chipItems.map {
+            sortFilter.chipItems?.map {
                 it.refChipUnify.setChevronClickListener {}
             }
             sortFilter.filterType = SortFilter.TYPE_QUICK
@@ -289,11 +301,27 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onErrorProductList() {
+    private fun clearFilterIfTabNotActive() {
+        if (sharedModelPrepaid.selectedCategoryViewPager.value != null &&
+                sharedModelPrepaid.selectedCategoryViewPager.value != titleProduct) {
+            telcoFilterData.clearAllFilter()
+            sortFilter.chipItems?.map {
+                it.type = ChipsUnify.TYPE_NORMAL
+            }
+        }
+    }
+
+    private fun onErrorProductList(error: Throwable? = null) {
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.show()
         telcoTelcoProductView.hide()
+        error?.let {
+            if (!it.message.isNullOrEmpty()) {
+                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        }
     }
 
     private fun showShimmering() {

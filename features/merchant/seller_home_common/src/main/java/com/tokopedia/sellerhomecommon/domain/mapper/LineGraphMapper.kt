@@ -1,7 +1,8 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.sellerhomecommon.domain.model.LineGraphDataModel
+import com.tokopedia.sellerhomecommon.domain.model.GetLineGraphDataResponse
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.XYAxisUiModel
 import javax.inject.Inject
@@ -10,10 +11,10 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 21/05/20
  */
 
-class LineGraphMapper @Inject constructor() {
+class LineGraphMapper @Inject constructor(): BaseResponseMapper<GetLineGraphDataResponse, List<LineGraphDataUiModel>> {
 
-    fun mapRemoteDataModelToUiDataModel(items: List<LineGraphDataModel>, isFromCache: Boolean): List<LineGraphDataUiModel> {
-        return items.map {
+    override fun mapRemoteDataToUiData(response: GetLineGraphDataResponse, isFromCache: Boolean): List<LineGraphDataUiModel> {
+        return response.getLineGraphData?.widgetData.orEmpty().map {
             LineGraphDataUiModel(
                     dataKey = it.dataKey.orEmpty(),
                     header = it.header.orEmpty(),
@@ -33,7 +34,8 @@ class LineGraphMapper @Inject constructor() {
                                 yVal = xyModel.yVal.orZero()
                         )
                     },
-                    isFromCache = isFromCache
+                    isFromCache = isFromCache,
+                    showWidget = it.showWidget.orFalse()
             )
         }
     }

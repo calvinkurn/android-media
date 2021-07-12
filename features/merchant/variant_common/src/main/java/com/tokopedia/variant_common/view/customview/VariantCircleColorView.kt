@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
@@ -86,7 +87,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun drawInnerCircle(canvas: Canvas?) {
-        if (innerCirclePaint.color == Color.parseColor("#ffffff")) {
+        if (innerCirclePaint.color == ContextCompat.getColor(context, R.color.variant_common_white_dms)) {
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,

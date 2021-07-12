@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.initialstate
 
-import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
@@ -80,7 +80,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val initialStateData = initialStateWithShowMoreResponse.jsonToObject<InitialStateUniverse>().data
         `Given view already get initial state`(initialStateData)
 
-        val item = CuratedCampaignViewModel(
+        val item = CuratedCampaignDataView(
                 imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/8/24/4814934/4814934_8de36a7f-e5e3-4053-8089-1f42cdb17030_1414_1414",
                 applink = "tokopedia://product/20100686",
                 url = "/bgsport/bola-sepak-3",
@@ -95,9 +95,9 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Then verify recent search impressed the hidden item`(initialStateData)
     }
 
-    private fun `Then verify initial state impression is called`(curatedCampaignViewModel: CuratedCampaignViewModel) {
+    private fun `Then verify initial state impression is called`(curatedCampaignDataView: CuratedCampaignDataView) {
         verifyOrder {
-            initialStateView.onCuratedCampaignCardImpressed(curatedCampaignViewModel)
+            initialStateView.onCuratedCampaignCardImpressed(curatedCampaignDataView)
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onSeeMoreRecentSearchImpressed(any())
@@ -106,10 +106,10 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun InitialStateContract.View.onCuratedCampaignCardImpressed(curatedCampaignViewModel: CuratedCampaignViewModel) {
-        val expectedLabel = "${curatedCampaignViewModel.title} - ${curatedCampaignViewModel.applink}"
+    private fun InitialStateContract.View.onCuratedCampaignCardImpressed(curatedCampaignDataView: CuratedCampaignDataView) {
+        val expectedLabel = "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
         val userId = "0"
-        onCuratedCampaignCardImpressed(userId, expectedLabel, curatedCampaignViewModel.type)
+        onCuratedCampaignCardImpressed(userId, expectedLabel, curatedCampaignDataView.type)
     }
 
     private fun `Then verify list impression data`(initialStateData: List<InitialStateData>) {
@@ -121,12 +121,12 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
         val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
         val popularSearchListResponse = getDataLayerForPromo(initialStateData[3].items)
-        val dynamicSectionResponse = getDataLayerForPromo(initialStateCommonData[3].items)
+        val dynamicSectionResponse = getDataLayerForPromo(initialStateData[4].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
-        popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateCommonData[2])
-        dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateCommonData[3])
+        popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateData[3])
+        dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateData[4])
     }
 
     private fun `When see more recent search is clicked`() {
@@ -153,7 +153,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Given view already get initial state`(listInitialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify initial state view do nothing behavior`()
+        `Then verify view interaction for load data failed with exception`()
     }
 
     private fun `Then verify initial state view will call showInitialStateResult behavior`() {

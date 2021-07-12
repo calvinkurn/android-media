@@ -26,6 +26,9 @@ object AccountConstants {
         const val EVENT_CATEGORY = "eventCategory"
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
+        const val EVENT_BUSINESS_UNIT = "businessUnit"
+        const val EVENT_CURRENT_SITE = "currentSite"
+        const val EVENT_USER_ID = "userId"
         const val ECOMMERCE = "ecommerce"
         const val CURRENCY_CODE = "currencyCode"
         const val IDR = "IDR"
@@ -53,6 +56,7 @@ object AccountConstants {
             const val EVENT_CLICK_ACCOUNT = "clickAccount"
             const val EVENT_PRODUCT_CLICK = "productClick"
             const val EVENT_PRODUCT_VIEW = "productView"
+            const val EVENT_CLICK_SETTING = "clickSetting"
         }
 
         object Category {
@@ -60,6 +64,7 @@ object AccountConstants {
             const val CATEGORY_ACCOUNT_PAGE_BUYER = "account page - buyer"
             const val CATEGORY_ACCOUNT_BUYER = "akun saya pembeli"
             const val CATEGORY_OVO_HOMEPAGE = "ovo home page"
+            const val CATEGORY_SETTING_PAGE = "setting page"
         }
 
         object Action {
@@ -69,12 +74,14 @@ object AccountConstants {
             const val ACTION_CLICK_PROFILE = "click - profile page - click profile"
             const val ACTION_VIEW_OVO_HOMEPAGE = "view ovo homepage"
             const val ACTION_CLICK_BALANCE = "click - tokopedia pay - saldo"
+            const val ACTION_CLICK_TOKOPOINTS = "click - tokopedia pay - tokopoints"
             const val ACTION_CLICK_ON_MORE_OPTION = "click on more option"
             const val ACTION_CLICK_REWARD_SECTION = "click reward section"
             const val ACTION_CLICK_ACCOUNT_SETTING_SECTION = "click account settings section"
             const val ACTION_CLICK_APP_SETTING_SECTION = "click on application setting section"
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
+            const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
         }
 
         object Label {
@@ -98,12 +105,22 @@ object AccountConstants {
             const val LABEL_STICKER_TOKOPEDIA = "Sticker Tokopedia"
             const val LABEL_IMAGE_QUALITY = "Kualitas Gambar"
             const val LABEL_CLEAN_CACHE = "Bersihkan Cache"
+            const val LABEL_SCREEN_RECORD = "Perekam Layar"
             const val LABEL_VIEW_MODE = "Mode Tampilan"
             const val LABEL_ABOUT_TOKOPEDIA = "Seputar Tokopedia"
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"
             const val LABEL_TERMS_AND_CONDITIONS = "Syarat dan Ketentuan"
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
+            const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
+        }
+
+        object BusinessUnit {
+            const val USER_PLATFORM_UNIT = "user platform"
+        }
+
+        object CurrentSite {
+            const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
         }
     }
 
@@ -116,11 +133,15 @@ object AccountConstants {
     object Query {
         const val NEW_QUERY_BUYER_ACCOUNT_HOME = "query_account_buyer"
         const val QUERY_USER_REWARDSHORCUT = "query_account_shortcut"
+        const val QUERY_GET_BALANCE = "query_get_balance"
+        const val QUERY_GET_USER_ASSET_CONFIG = "query_get_user_asset_config"
+        const val QUERY_TOKOPOINTS_DRAWER_LIST = "query_tokopoints_drawerr_list"
     }
 
     object Url {
         const val BASE_MOBILE = "https://m.tokopedia.com/"
         const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
+        const val PATH_IP = "intellectual-property-protection"
         const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
         const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
         const val PATH_ABOUT_US = "about"
@@ -128,12 +149,16 @@ object AccountConstants {
         const val KEY_IMAGE_HOST = "image_host"
         const val CDN_URL = "https://ecs7.tokopedia.net"
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
+        const val TOKOPOINTS_ICON = "https://images.tokopedia.net/img/img/phoenix/tokopoints.png"
+        const val SALDO_ICON = "https://images.tokopedia.net/img/android/user/emoney/saldo.png"
+        const val OVO_ICON = "https://images.tokopedia.net/img/android/user/emoney/ovo.png"
     }
 
     object SettingCode {
         const val SETTING_TKPD_PAY_ID = 3
         const val SETTING_TNC_ID = 5
         const val SETTING_PRIVACY_ID = 6
+        const val SETTING_IP = 7
         const val SETTING_OUT_ID = 8
         const val SETTING_SHAKE_ID = 9
         const val SETTING_GEOLOCATION_ID = 98
@@ -145,17 +170,21 @@ object AccountConstants {
         const val SETTING_DEV_OPTIONS = -1
         const val SETTING_APP_REVIEW_ID = 10
         const val SETTING_APP_ADVANCED_CLEAR_CACHE = 20
+        const val SETTING_APP_ADVANCED_SCREEN_RECORD = 21
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
         const val SETTING_OLD_ACCOUNT = 40
         const val SETTING_OVO = 41
         const val SETTING_SALDO = 42
-        const val SETTING_TOKOPOINTS = 43
+        const val SETTING_MORE_MEMBER = 43
         const val SETTING_INSTANT_PAYMENT = 44
         const val SETTING_INSTANT_BUY = 45
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
+        const val SETTING_TOKOPOINTS = 48
+        const val SETTING_QUALITY_SETTING = 49
+        const val SETTING_DARK_MODE = 50
     }
 
     object KEY {

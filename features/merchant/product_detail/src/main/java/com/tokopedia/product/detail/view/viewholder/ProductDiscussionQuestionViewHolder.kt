@@ -4,8 +4,8 @@ import android.view.View
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
@@ -44,7 +44,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
     private fun showInquirerProfilePicture(inquirerThumbnail: String) {
         if(inquirerThumbnail.isNotEmpty()) {
             itemView.productDetailDiscussionInquirerProfilePicture.apply {
-                loadImage(inquirerThumbnail)
+                loadIcon(inquirerThumbnail)
                 show()
             }
         } else {
@@ -89,7 +89,7 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
     private fun showProfilePicture(userThumbNail: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.productDetailDiscussionRespondentProfilePicture.apply {
-                loadImage(userThumbNail)
+                loadIcon(userThumbNail)
                 show()
             }
         } else {

@@ -116,3 +116,17 @@ fun sendEventClickStatisticMenuItem(userId: String) {
 
     TrackApp.getInstance().gtm.sendGeneralEvent(event)
 }
+
+fun sendEventClickPrintingMenuItem(userId: String) {
+    val event = TrackAppUtils.gtmData(
+            SettingTrackingConstant.CLICK_PRINTING,
+            SettingTrackingConstant.OTHERS_TAB,
+            SettingTrackingConstant.ACTION_CLICK_PRINTING,
+            SettingTrackingConstant.LABEL_CLICK_PRINTING
+    )
+    event[SettingTrackingConstant.KEY_BUSINESS_UNIT] = SettingTrackingConstant.PHYSICAL_GOODS
+    event[SettingTrackingConstant.KEY_CURRENT_SITE] = SettingTrackingConstant.TOKOPEDIASELLER
+    event[SettingTrackingConstant.USER_ID] = userId
+
+    TrackApp.getInstance().gtm.sendGeneralEvent(event)
+}

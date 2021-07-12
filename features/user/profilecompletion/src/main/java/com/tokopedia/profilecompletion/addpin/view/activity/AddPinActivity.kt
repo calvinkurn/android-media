@@ -2,7 +2,6 @@ package com.tokopedia.profilecompletion.addpin.view.activity
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -27,10 +26,9 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
  * ade.hadian@tokopedia.com
  */
 
-class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     var enableBackBtn = true
-    var isFrom2FA = false
 
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
@@ -41,10 +39,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
     override fun onCreate(savedInstanceState: Bundle?) {
         intent?.extras?.run {
-            if(getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA)){
-                enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
-                isFrom2FA = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, false)
-            }
+            enableBackBtn = getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, true)
         }
         super.onCreate(savedInstanceState)
         KeyboardHandler.hideSoftKeyboard(this)
@@ -59,14 +54,9 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
     }
 
     override fun onBackPressed() {
-        if (fragment != null && fragment is AddPinFragment) {
+        if (fragment != null) {
             if (!(fragment as AddPinFragment).onBackPressedFromConfirm()) {
-                if (isFrom2FA && enableBackBtn) {
-                    setResult(Activity.RESULT_OK)
-                    finish()
-                } else {
-                    super.onBackPressed()
-                }
+                super.onBackPressed()
             }
         } else {
             super.onBackPressed()
@@ -78,7 +68,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
         toolbar = findViewById(toolbarResourceID)
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
-            if(enableBackBtn) {
+            if (enableBackBtn) {
                 setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
             }
             setDisplayHomeAsUpEnabled(enableBackBtn)
@@ -94,9 +84,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
             setWindowFlag(true)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        }
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)

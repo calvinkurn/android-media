@@ -1,7 +1,7 @@
 query {
   status
   isAuthenticated
-  profile {
+  profile(skipCache: true) {
     name
     full_name
     completion

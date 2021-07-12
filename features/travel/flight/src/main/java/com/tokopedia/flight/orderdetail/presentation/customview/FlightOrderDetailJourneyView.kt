@@ -21,6 +21,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
 
     private var hasETicket: Boolean = false
     private var journeys: List<FlightOrderDetailJourneyModel> = arrayListOf()
+    private var refundableColor: String = ""
 
     init {
         View.inflate(context, R.layout.view_flight_order_detail_journey, this)
@@ -77,7 +78,12 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
 
             if (onwardJourney.refundableInfo) {
                 tgFlightOrderDepartureTicketRefundableStatus.visibility = View.VISIBLE
-                OrderDetailUtils.changeShapeColor(tgFlightOrderDepartureTicketRefundableStatus.background, REFUNDABLE_BACKGROUND_COLOR)
+                try {
+                    refundableColor = "#" + Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50) and  HEX_CODE_TRANSPARENCY)
+                    OrderDetailUtils.changeShapeColor(tgFlightOrderDepartureTicketRefundableStatus.background, refundableColor)
+                }catch (e: Throwable){
+                    e.printStackTrace()
+                }
             } else {
                 tgFlightOrderDepartureTicketRefundableStatus.visibility = View.GONE
             }
@@ -201,8 +207,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
         fun onViewETicketClicked()
     }
 
-    companion object {
-        private const val REFUNDABLE_BACKGROUND_COLOR = "#f3f4f5"
+    companion object{
+        private const val HEX_CODE_TRANSPARENCY: Int = 0x00ffffff
     }
-
 }

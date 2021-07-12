@@ -4,14 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_ADMIN_FEE
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_ADMIN_FEE_POSITION
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_PROMO_CODE_POSITION
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_TOTAL_PAYMENT_POSITION
+import com.tokopedia.digital_checkout.data.PaymentSummary
+import com.tokopedia.digital_checkout.data.PaymentSummary.Payment
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigital
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData.CartItemDigitalWithTitle
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyOtpSuccess
 import com.tokopedia.digital_checkout.data.response.CancelVoucherData
@@ -28,9 +34,8 @@ import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBody
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.exception.ResponseDataNullException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
@@ -42,10 +47,6 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -59,28 +60,24 @@ class DigitalCartViewModel @Inject constructor(
         private val digitalPatchOtpUseCase: DigitalPatchOtpUseCase,
         private val digitalCheckoutUseCase: DigitalCheckoutUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val _cartDigitalInfoData = MutableLiveData<CartDigitalInfoData>()
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
         get() = _cartDigitalInfoData
 
-    private val _cartAdditionalInfoList = MutableLiveData<List<CartItemDigitalWithTitle>>()
-    val cartAdditionalInfoList: LiveData<List<CartItemDigitalWithTitle>>
-        get() = _cartAdditionalInfoList
-
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
+    private val _errorThrowable = MutableLiveData<Fail>()
+    val errorThrowable: LiveData<Fail>
+        get() = _errorThrowable
 
     private val _isNeedOtp = MutableLiveData<String>()
     val isNeedOtp: LiveData<String>
         get() = _isNeedOtp
 
-    private val _isSuccessCancelVoucherCart = MutableLiveData<Result<Boolean>>()
-    val isSuccessCancelVoucherCart: LiveData<Result<Boolean>>
-        get() = _isSuccessCancelVoucherCart
+    private val _cancelVoucherData = MutableLiveData<Result<CancelVoucherData>>()
+    val cancelVoucherData: LiveData<Result<CancelVoucherData>>
+        get() = _cancelVoucherData
 
     private val _totalPrice = MutableLiveData<Double>()
     val totalPrice: LiveData<Double>
@@ -102,18 +99,24 @@ class DigitalCartViewModel @Inject constructor(
     val promoData: LiveData<PromoData>
         get() = _promoData
 
+    private val _payment = MutableLiveData<PaymentSummary>()
+    val payment: LiveData<PaymentSummary>
+        get() = _payment
+
     var requestCheckoutParam = DigitalCheckoutDataParameter()
+
+    private val paymentSummary = PaymentSummary(mutableListOf())
 
     fun getCart(categoryId: String,
                 errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
-            _errorMessage.postValue(errorNotLoginMessage)
+            _errorThrowable.postValue(Fail(MessageErrorException(errorNotLoginMessage)))
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
                     DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
-                    onSuccessGetCart(),
+                    onSuccessGetCart(categoryId),
                     onErrorGetCart()
             )
         }
@@ -141,37 +144,51 @@ class DigitalCartViewModel @Inject constructor(
             }
 
         }) {
-            handleError(it)
+            _showLoading.postValue(false)
+            if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
+            } else _errorThrowable.postValue(Fail(it))
         }
     }
 
-    private fun onSuccessGetCart(): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String): (RechargeGetCart.Response) -> Unit {
         return {
             val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
-            mapDataSuccessCart(mappedCartData)
+            mapDataSuccessCart(mappedCartData, categoryId)
         }
     }
 
     private fun onErrorGetCart(): (Throwable) -> Unit {
         return {
-            handleError(it)
+            _showLoading.postValue(false)
+            _errorThrowable.postValue(Fail(it))
         }
     }
 
-    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData) {
-        analytics.eventCheckout(mappedCartData, userSession.userId)
+    private fun mapDataSuccessCart(mappedCartData: CartDigitalInfoData, categoryId: String) {
+        analytics.eventCheckout(mappedCartData, userSession.userId, categoryId)
 
         requestCheckoutParam = DigitalCheckoutMapper.buildCheckoutData(mappedCartData, userSession.accessToken, requestCheckoutParam)
 
         if (mappedCartData.isNeedOtp) {
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
-            _cartDigitalInfoData.postValue(mappedCartData)
-            _cartAdditionalInfoList.postValue(mappedCartData.additionalInfos)
 
             val pricePlain = mappedCartData.attributes.pricePlain
-            _totalPrice.postValue(pricePlain)
+            _totalPrice.postValue(calculateTotalPrice(pricePlain, mappedCartData.attributes.adminFee,
+                    mappedCartData.attributes.isOpenAmount))
+
+            paymentSummary.summaries.clear()
+            paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+
+            if (mappedCartData.attributes.isOpenAmount && mappedCartData.attributes.adminFee > 0) {
+                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee)))
+            }
+            _payment.postValue(paymentSummary)
+
             requestCheckoutParam.transactionAmount = pricePlain
+
+            _cartDigitalInfoData.postValue(mappedCartData)
 
             val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
             promoData?.let {
@@ -182,73 +199,54 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun handleError(e: Throwable) {
-        if (e is UnknownHostException) {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
-        } else if (e is SocketTimeoutException || e is ConnectException) {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
-        } else if (e is ResponseErrorException) {
-            _errorMessage.postValue(e.message)
-        } else if (e is ResponseDataNullException) {
-            _errorMessage.postValue(e.message)
-        } else if (e is HttpErrorException) {
-            _errorMessage.postValue(e.message)
-        } else {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-        }
-        _showLoading.postValue(false)
+    fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
+        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg),
+                onErrorCancelVoucher(defaultErrorMsg))
     }
 
-    fun cancelVoucherCart() {
-        cancelVoucherUseCase.execute(onSuccessCancelVoucher(), onErrorCancelVoucher())
+    private fun calculateTotalPrice(totalPrice: Double, adminFee: Double, isOpenAmount: Boolean): Double {
+        return if (isOpenAmount) {
+            totalPrice + adminFee
+        } else totalPrice
     }
 
-    private fun onSuccessCancelVoucher(): (CancelVoucherData.Response) -> Unit {
+    private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
         return {
             if (it.response.success) {
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
-                _isSuccessCancelVoucherCart.postValue(Success(true))
+                _cancelVoucherData.postValue(Success(it.response))
             } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
+                _cancelVoucherData.postValue(Fail(MessageErrorException(defaultErrorMsg)))
             }
         }
     }
 
-    private fun onErrorCancelVoucher(): (Throwable) -> Unit {
+    private fun onErrorCancelVoucher(defaultErrorMsg: String): (Throwable) -> Unit {
         return {
-            _isSuccessCancelVoucherCart.postValue(Fail(it))
+            if (it.message.isNullOrEmpty()) {
+                _cancelVoucherData.postValue(Fail(MessageErrorException(defaultErrorMsg)))
+            } else {
+                _cancelVoucherData.postValue(Fail(it))
+            }
         }
     }
 
     private fun onReceivedPromoCode() {
-        resetAdditionalInfoAndTotalPrice()
+        resetCheckoutSummaryPromoAndTotalPrice()
         val promoDataValue = promoData.value?.amount ?: 0
         if (promoDataValue > 0) {
-            val additionals: MutableList<CartItemDigitalWithTitle> = ArrayList(_cartAdditionalInfoList.value
-                    ?: listOf())
-            val items: MutableList<CartItemDigital> = ArrayList()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PRICE, cartDigitalInfoData.value?.attributes?.price
-                    ?: ""))
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
-            val totalPayment = (cartDigitalInfoData.value?.attributes?.pricePlain
-                    ?: 0.0) - promoDataValue.toDouble()
-            items.add(CartItemDigital(DigitalCheckoutConst.AdditionalInfo.STRING_TOTAL_PAYMENT, getStringIdrFormat(totalPayment)))
-            val cartAdditionalInfo = CartItemDigitalWithTitle(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT, items)
-            additionals.add(cartAdditionalInfo)
-            _cartAdditionalInfoList.postValue(additionals)
+            paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+            _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
+        } else {
+            paymentSummary.removeFromSummary(STRING_KODE_PROMO)
+            _payment.postValue(paymentSummary)
         }
     }
 
-    fun resetAdditionalInfoAndTotalPrice() {
-        val additionalInfos = cartAdditionalInfoList.value?.toMutableList() ?: mutableListOf()
-        for ((i, additionalInfo) in additionalInfos.withIndex()) {
-            if (additionalInfo.title.contains(DigitalCheckoutConst.AdditionalInfo.STRING_PAYMENT)) {
-                additionalInfos.removeAt(i)
-                break
-            }
-        }
-        _cartAdditionalInfoList.postValue(additionalInfos)
+    fun resetCheckoutSummaryPromoAndTotalPrice() {
+        paymentSummary.removeFromSummary(STRING_KODE_PROMO)
+        _payment.postValue(paymentSummary)
         _totalPrice.forceRefresh()
     }
 
@@ -256,23 +254,46 @@ class DigitalCartViewModel @Inject constructor(
         requestCheckoutParam.isSubscriptionChecked = isChecked
     }
 
-    fun updateTotalPriceWithFintechProduct(isChecked: Boolean, inputPrice: Double?) {
-        requestCheckoutParam.isFintechProductChecked = isChecked
+    fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, inputPrice: Double?) {
+        if (requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && !isChecked) {
+            //remove
+            requestCheckoutParam.fintechProducts.remove(fintechProduct.tierId)
+        } else if (!requestCheckoutParam.fintechProducts.containsKey(fintechProduct.tierId) && isChecked) {
+            //add
+            requestCheckoutParam.fintechProducts[fintechProduct.tierId] = fintechProduct
+        }
+        updateTotalPriceWithFintechProduct(inputPrice)
+        updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
+    }
 
+    private fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
-            if (isChecked) {
-                val fintechProductPrice = attributes.fintechProduct.getOrNull(0)?.fintechAmount
-                        ?: 0.0
-                totalPrice += fintechProductPrice
+
+            requestCheckoutParam.fintechProducts.forEach { fintech ->
+                totalPrice += fintech.value.fintechAmount
             }
-            _totalPrice.postValue(totalPrice)
+            _totalPrice.postValue(calculateTotalPrice(totalPrice, attributes.adminFee, attributes.isOpenAmount))
         }
     }
 
-    fun setTotalPriceBasedOnUserInput(totalPrice: Double, isFintechProductChecked: Boolean) {
+    fun updateCheckoutSummaryWithFintechProduct(fintechProduct: FintechProduct, isChecked: Boolean) {
+        if (isChecked) {
+            paymentSummary.addToSummary(Payment(fintechProduct.transactionType, getStringIdrFormat(fintechProduct.fintechAmount)))
+        } else {
+            paymentSummary.removeFromSummary(fintechProduct.transactionType)
+        }
+        _payment.postValue(paymentSummary)
+    }
+
+    fun setTotalPriceBasedOnUserInput(totalPrice: Double) {
         requestCheckoutParam.transactionAmount = totalPrice
-        updateTotalPriceWithFintechProduct(isFintechProductChecked, totalPrice)
+        updateTotalPriceWithFintechProduct(totalPrice)
+    }
+
+    fun setSubtotalPaymentSummaryOnUserInput(totalPrice: Double) {
+        paymentSummary.changeSummaryValue(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(totalPrice))
+        _payment.postValue(paymentSummary)
     }
 
     fun proceedToCheckout(digitalIdentifierParam: RequestBodyIdentifier) {
@@ -301,11 +322,25 @@ class DigitalCartViewModel @Inject constructor(
                     val responseCheckoutData = data.data as ResponseCheckout
                     val checkoutData = DigitalCheckoutMapper.mapToPaymentPassData(responseCheckoutData)
 
-                    _showLoading.postValue(false)
                     _paymentPassData.postValue(checkoutData)
 
+                    requestCheckoutParam.fintechProducts.let { fintech ->
+                        if (fintech.isNotEmpty()) {
+                            fintech.values.forEach {
+                                if (it.info.iconUrl.isNotEmpty()) {
+                                    analytics.eventProceedCheckoutTebusMurah(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
+                                } else {
+                                    analytics.eventProceedCheckoutCrossell(it, cartDigitalInfoData.attributes.categoryName, userSession.userId)
+                                }
+                            }
+                        }
+                    }
+
                 }) {
-                    handleError(it)
+                    _showLoading.postValue(false)
+                    if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                        _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
+                    } else _errorThrowable.postValue(Fail(it))
                 }
             }
         }
@@ -333,15 +368,10 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun applyPromoData(promoData: PromoData) {
-        when (promoData.state) {
-            TickerCheckoutView.State.FAILED,
-            TickerCheckoutView.State.EMPTY -> {
-                resetAdditionalInfoAndTotalPrice()
-            }
-            TickerCheckoutView.State.ACTIVE -> {
-                onReceivedPromoCode()
-            }
-            else -> {}
+        if (promoData.state == TickerCheckoutView.State.FAILED || promoData.state == TickerCheckoutView.State.EMPTY) {
+            resetCheckoutSummaryPromoAndTotalPrice()
+        } else if (promoData.state == TickerCheckoutView.State.ACTIVE) {
+            onReceivedPromoCode()
         }
     }
 

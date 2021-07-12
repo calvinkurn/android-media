@@ -86,7 +86,7 @@ data class ProductVariantOptionChild (
     var productPictureViewModelList: List<PictureViewModel>? = ArrayList(),
     @SerializedName("hex")
     @Expose
-    var hex: String = "" // ex; "#bf00ff"
+    var hex: String = ""
 ): Parcelable
 
 @Parcelize

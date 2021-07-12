@@ -16,10 +16,10 @@
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
-        android:textColor="@color/colorSheetText"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_16"
         tools:text="test"/>
     <View android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#DDDDDD" />
+        android:background="@color/Unify_N100" />
 </LinearLayout>

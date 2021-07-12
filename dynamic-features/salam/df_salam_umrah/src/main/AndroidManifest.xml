@@ -6,7 +6,7 @@
         dist:title="@string/df_title_salam_umrah">
         <dist:delivery>
             <dist:on-demand/>
-            <dist:install-time >
+            <dist:install-time>
                 <dist:conditions>
                     <dist:min-sdk dist:value="21"/>
                     <dist:max-sdk dist:value="23"/>

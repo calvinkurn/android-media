@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     android:orientation="vertical"
     tools:visibility="visible">
 
@@ -82,7 +81,6 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_item_price"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

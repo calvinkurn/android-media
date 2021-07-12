@@ -3,10 +3,10 @@ package com.tokopedia.product.detail.view.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -18,8 +18,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                          private val showSeeAll: Boolean = true,
                          private val onOnImageReviewClick: OnImageReviewClick? = null,
                          private val onOnSeeAllReviewClick: OnSeeAllReviewClick? = null,
-                         private val componentTrackDataModel: ComponentTrackDataModel? = null,
-                         private val isNewViewHolder: Boolean = false) :
+                         private val componentTrackDataModel: ComponentTrackDataModel? = null) :
         RecyclerView.Adapter<ImageReviewAdapter.ImageReviewViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageReviewViewHolder {
@@ -33,10 +32,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (
-                (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE - 1 && !isNewViewHolder) ||
-                (showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER - 1 && isNewViewHolder)
-        )  {
+        return if ((showSeeAll && position == TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER - 1))  {
             VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER
         }
         else VIEW_TYPE_IMAGE
@@ -46,7 +42,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
 
         fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
             with(view) {
-                ImageHandler.loadImageRounded(view.context, image_review, item.imageUrlThumbnail, 16F)
+                image_review.loadImageRounded(item.imageUrlThumbnail, 16f)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
                     txt_see_all.text = item.imageCount
@@ -68,7 +64,6 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
     companion object {
         private const val VIEW_TYPE_IMAGE = 77
         private const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88
-        private const val TOTAL_REVIEW_IMAGE_VISIBLE = 4
         private const val TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER = 5
     }
 }

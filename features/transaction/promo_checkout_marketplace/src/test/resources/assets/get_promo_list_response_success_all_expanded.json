@@ -53,7 +53,8 @@
                   "is_selected": false,
                   "is_attempted": false,
                   "radio_check_state": "enabled",
-                  "clashing_infos": []
+                  "clashing_infos": [],
+                  "currency_details_str": "(20.000 TokoPoints)"
                 },
                 {
                   "code": "AATHIRX598GSA7MADK2X7",

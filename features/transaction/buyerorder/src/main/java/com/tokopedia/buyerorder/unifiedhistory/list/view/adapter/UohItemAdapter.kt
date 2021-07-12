@@ -16,6 +16,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import timber.log.Timber
 
@@ -136,7 +138,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             listTypeData[index] = UohTypeData("", TYPE_LOADER)
             notifyItemChanged(index)
         } catch (ex: Exception) {
-            Timber.w("P2#ORDER_HISTORY#error_show;err='${Log.getStackTraceString(ex)}'")
+            ServerLogger.log(Priority.P2, "ORDER_HISTORY", mapOf("type" to "error_show", "err" to Log.getStackTraceString(ex)))
         }
     }
 
@@ -145,7 +147,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
             notifyItemChanged(index)
         } catch (ex: Exception) {
-            Timber.w("P2#ORDER_HISTORY#error_update;err='${Log.getStackTraceString(ex)}'")
+            ServerLogger.log(Priority.P2, "ORDER_HISTORY", mapOf("type" to "error_update", "err" to Log.getStackTraceString(ex)))
         }
     }
 

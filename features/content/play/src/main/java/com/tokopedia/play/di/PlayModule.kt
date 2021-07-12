@@ -2,13 +2,20 @@ package com.tokopedia.play.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.data.websocket.PlaySocket.Companion.KEY_GROUPCHAT_PREFERENCES
+import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
+import com.tokopedia.play.data.websocket.revamp.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
@@ -18,16 +25,15 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play_common.util.coroutine.DefaultCoroutineDispatcherProvider
+import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.constant.VariantConstant
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 import javax.inject.Named
 
 /**
@@ -56,10 +62,6 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providerDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
-
-    @PlayScope
-    @Provides
     fun provideGraphqlRepositoryCase(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
@@ -79,16 +81,17 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    @Named(VariantConstant.QUERY_VARIANT)
+    @Named(QUERY_VARIANT)
     internal fun provideQueryVariant(): String {
         return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
     }
 
     @Provides
     @PlayScope
-    @Named(AtcConstant.MUTATION_ADD_TO_CART)
-    internal fun provideAddToCartMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
+    internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
+                                         atcMapper: AddToCartDataMapper,
+                                         chosenAddressHelper: ChosenAddressRequestHelper): AddToCartUseCase {
+        return AddToCartUseCase(graphqlUseCase, atcMapper, chosenAddressHelper)
     }
 
     @Provides
@@ -131,5 +134,14 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
+    }
+
+    @Provides
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+        return PlayWebSocketImpl(
+                OkHttpClient.Builder(),
+                userSession,
+                dispatchers
+        )
     }
 }

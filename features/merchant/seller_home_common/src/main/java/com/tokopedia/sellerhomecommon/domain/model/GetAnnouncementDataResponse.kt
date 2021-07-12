@@ -24,6 +24,9 @@ data class AnnouncementWidgetDataModel(
         @SerializedName("errorMsg")
         val errorMsg: String? = "",
         @Expose
+        @SerializedName("showWidget")
+        val showWidget: Boolean? = true,
+        @Expose
         @SerializedName("subtitle")
         val subtitle: String? = "",
         @Expose

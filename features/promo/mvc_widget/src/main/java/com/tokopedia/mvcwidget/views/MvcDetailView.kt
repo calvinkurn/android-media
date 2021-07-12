@@ -1,7 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
-import android.content.res.Resources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -34,13 +33,15 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
+    var userSession: UserSession? = null
+
     private val widgetImpression = WidgetImpression()
 
     override fun getWidgetImpression(): WidgetImpression {
         return widgetImpression
     }
 
-    private val adapter = MvcDetailAdapter(arrayListOf(), this)
+    val adapter by lazy { MvcDetailAdapter(arrayListOf(), this) }
 
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
@@ -63,12 +64,11 @@ class MvcDetailView @JvmOverloads constructor(
 
 
     init {
+        userSession = UserSession(context)
         View.inflate(context, R.layout.mvc_detail_view, this)
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
-        rv.layoutParams.height = Resources.getSystem().displayMetrics.heightPixels
-
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
 
@@ -155,7 +155,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, true)
+            Tracker.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -166,7 +166,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleJadiMemberButtonClick()
             }).show()
-            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, false)
+            Tracker.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
@@ -174,7 +174,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, true)
+            Tracker.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -185,7 +185,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleFollowButtonClick()
             }).show()
-            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, false)
+            Tracker.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
@@ -226,7 +226,7 @@ class MvcDetailView @JvmOverloads constructor(
                 }
                 val spannableString2 = SpannableString(sb.toString())
 
-                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.mvcw_red)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
                         ?: "", spannableString2)
                 tempCouponList.add(mvcListItem)
@@ -245,9 +245,9 @@ class MvcDetailView @JvmOverloads constructor(
         adapter.updateList(tempList)
         if(!tempList.isNullOrEmpty()){
             if (response.data?.followWidget?.isShown == true && !response.data?.followWidget.type.isNullOrEmpty()) {
-                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, UserSession(context).userId, this.mvcSource)
+                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, userSession?.userId, this.mvcSource)
             }else{
-                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, UserSession(context).userId, this.mvcSource)
+                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
             }
         }
     }

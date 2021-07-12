@@ -15,11 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
@@ -27,6 +25,7 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelStringUtils
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_PDP
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
@@ -59,6 +58,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.util.*
@@ -126,11 +128,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
             if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
-                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
-                                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD))
                 hotelHomepageModel.checkOutDate = it.getString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE,
-                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
-                                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2).toString(DateUtil.YYYY_MM_DD))
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
                 hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
@@ -159,15 +159,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_ROOM_LIST,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId, source)
         }
 
@@ -305,7 +305,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     hideRoomAvailableContainerBottom()
                     hideRoomNotAvailableContainerBottom()
                     detailViewModel.getRoomWithoutHotelData(
-                            GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                            HotelGqlQuery.PROPERTY_ROOM_LIST,
                             hotelHomepageModel)
                 }
             }
@@ -642,7 +642,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 isAvailable = true
 
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
-                btn_see_room.buttonType = UnifyButton.Type.TRANSACTION
+                btn_see_room.buttonType = UnifyButton.Type.MAIN
                 btn_see_room.setOnClickListener {
                     trackingHotelUtil.hotelChooseViewRoom(context, hotelHomepageModel, hotelId, hotelName, PDP_SCREEN_NAME)
                     context?.run {
@@ -694,15 +694,15 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     override fun onErrorRetryClicked() {
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_ROOM_LIST,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    HotelGqlQuery.PROPERTY_DETAIL,
+                    HotelGqlQuery.PROPERTY_REVIEW,
                     hotelHomepageModel.locId, source)
         }
     }

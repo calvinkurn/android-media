@@ -1,0 +1,99 @@
+[
+  {
+    "data": {
+      "paylater_getActiveProduct": {
+        "product": [
+          {
+            "id": 1,
+            "name": "Kredivo",
+            "subheader": "Yuk, daftar sekarang!",
+            "gateway_code": "KREDIVO",
+            "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+            "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+            "benefit": [
+              {
+                "content": "Bunga 0% untuk bayar dalam 30 hari",
+                "is_highlight": true
+              },
+              {
+                "content": "Tersedia bayar dalam 30 hari atau cicilan 3, 6, dan 12 bulan",
+                "is_highlight": false
+              },
+              {
+                "content": "Daftar 5 menit, waktu persetujuan maksimal 1 x 24 jam",
+                "is_highlight": false
+              },
+              {
+                "content": "Tanpa DP untuk transaksi cicilan",
+                "is_highlight": true
+              },
+              {
+                "content": "Bunga 2.6% untuk bayar dengan cicilan",
+                "is_highlight": false
+              },
+              {
+                "content": "Limit hingga Rp 30 Juta",
+                "is_highlight": true
+              }
+            ],
+            "faq": [
+              {
+                "question": "Bagaimana cara mendaftar di Kredivo?",
+                "answer": "Isi form dengan lengkap selama 5 menit."
+              },
+              {
+                "question": "Berapa lama proses pendaftaran di Kredivo?",
+                "answer": "Maksimal 1x24 jam."
+              }
+            ],
+            "faq_url": "https://www.tokopedia.com/help/article/kredivo",
+            "how_to_use": {
+              "notes": [
+                "Pembayaran dengan Kredivo khusus untuk pengguna yang telah terdaftar"
+              ],
+              "steps": [
+                "Pilih produk yang ingin dibeli / tagihan yang ingin dibayar",
+                "Pilih Kredivo sebagai metode pembayaran",
+                "Tentukan lama pengembalian sesuai kemampuanmu, klik <b>Lanjut</b>",
+                "Login ke akun Kredivo dan klik <b>Bayar</b>"
+              ]
+            },
+            "how_to_apply": {
+              "notes": [
+                "Waktu proses pengajuan sedang mengalami keterlambatan, mohon menunggu 2 x 24 jam."
+              ],
+              "steps": [
+                "Tekan tombol Daftar Sekarang, kamu akan diarahkan menuju formulir pengajuan Kredivo",
+                "Isi foto KTP dan selfie dan lengkapi formulir pengajuan. Lalu kirimkan pengajuan",
+                "Pengajuanmu akan diverifikasi paling lama 1 x 24 jam. Setelah disetujui, Kamu bisa gunakan untuk bertransaksi"
+              ]
+            },
+            "is_able_apply": true,
+            "how_to_action_url": "https://www.tokopedia.com/kredivo"
+          },
+          {
+            "id": 2,
+            "name": "Indodana",
+            "subheader": "",
+            "gateway_code": "INDODANA",
+            "img_light_url": "",
+            "img_dark_url": "",
+            "benefit": [],
+            "faq": [],
+            "faq_url": "",
+            "how_to_use": {
+              "notes": [],
+              "steps": []
+            },
+            "how_to_apply": {
+              "notes": [],
+              "steps": []
+            },
+            "is_able_apply": false,
+            "how_to_action_url": ""
+          }
+        ]
+      }
+    }
+  }
+]

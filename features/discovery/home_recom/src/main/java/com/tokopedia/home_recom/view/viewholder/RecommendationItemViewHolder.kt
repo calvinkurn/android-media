@@ -6,9 +6,8 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
@@ -38,7 +37,7 @@ class RecommendationItemViewHolder(
 
     private fun setupCard(element: RecommendationItemDataModel){
         productCardView.run {
-            setProductModel(setProductCardModel(element.productItem))
+            setProductModel(element.productItem.toProductCardModel(hasThreeDots = true))
 
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
@@ -73,31 +72,4 @@ class RecommendationItemViewHolder(
             }
         }
     }
-
-    private fun setProductCardModel(recommendationItem: RecommendationItem) = ProductCardModel(
-            slashedPrice = recommendationItem.slashedPrice,
-            productName = recommendationItem.name,
-            formattedPrice = recommendationItem.price,
-            productImageUrl = recommendationItem.imageUrl,
-            isTopAds = recommendationItem.isTopAds,
-            isWishlistVisible = true,
-            hasThreeDots = true,
-            isWishlisted = recommendationItem.isWishlist,
-            discountPercentage = recommendationItem.discountPercentage,
-            reviewCount = recommendationItem.countReview,
-            ratingCount = recommendationItem.rating,
-            shopLocation = recommendationItem.location,
-            countSoldRating = recommendationItem.ratingAverage,
-            shopBadgeList = recommendationItem.badgesUrl.map {
-                ProductCardModel.ShopBadge(imageUrl = it
-                        ?: "")
-            },
-            freeOngkir = ProductCardModel.FreeOngkir(
-                    isActive = recommendationItem.isFreeOngkirActive,
-                    imageUrl = recommendationItem.freeOngkirImageUrl
-            ),
-            labelGroupList = recommendationItem.labelGroupList.map {
-                ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
-            }
-    )
 }

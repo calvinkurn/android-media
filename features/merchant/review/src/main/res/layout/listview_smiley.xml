@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="wrap_content"
-              android:id="@+id/main"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:gravity="center"
-              android:layout_margin="@dimen/dp_10"
-              android:padding="@dimen/dp_10"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:layout_margin="@dimen/dp_10"
+    android:padding="@dimen/dp_10"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/smiley"
         android:layout_width="@dimen/smiley_size"
         android:layout_height="@dimen/smiley_size"
+        android:contentDescription="@null"
         tools:src="@drawable/ic_locked2"/>
 
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/smiley_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         tools:text="Smiley"/>
 </LinearLayout>

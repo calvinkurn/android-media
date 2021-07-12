@@ -264,7 +264,7 @@ class ProductManageQuickEditStockFragment(
 
     private fun observeStatus() {
         viewModel.status.observe(viewLifecycleOwner, Observer {
-            val isActive = product?.status == ProductStatus.ACTIVE
+            val isActive = it == ProductStatus.ACTIVE
             quickEditStockActivateSwitch.isChecked = isActive
             product = product?.copy(status = it)
         })

@@ -15,16 +15,17 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHo
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
-import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedRightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftChatMessageViewHolder
@@ -41,7 +42,7 @@ open class TopChatTypeFactoryImpl constructor(
         private val imageAnnouncementListener: ImageAnnouncementListener,
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
         private val imageUploadListener: ImageUploadListener,
-        private val productAttachmentListener: ProductAttachmentListener,
+        private val productAttachmentListener: TopchatProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
         private val invoiceThumbnailListener: InvoiceThumbnailListener,
@@ -51,23 +52,14 @@ open class TopChatTypeFactoryImpl constructor(
         private val searchListener: SearchListener,
         private val broadcastHandlingListener: BroadcastSpamHandlerViewHolder.Listener,
         private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
-        private val reviewListener: ReviewViewHolder.Listener
+        private val reviewListener: ReviewViewHolder.Listener,
+        private val srwBubbleListener: SrwBubbleViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
         imageUploadListener,
         productAttachmentListener
 ), TopChatTypeFactory {
-
-    private val showBroadcastBannerAb = RemoteConfigInstance.getInstance()
-            .abTestPlatform.getString(
-                    BroadcastViewHolder.AB_TEST_KEY,
-                    BroadcastViewHolder.VARIANT_CONTROL
-            )
-
-    private fun shouldHideBanner(): Boolean {
-        return showBroadcastBannerAb == BroadcastViewHolder.VARIANT_NO_BANNER
-    }
 
     // Check if chat bubble first, if not return default impl
     override fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int {
@@ -146,6 +138,10 @@ open class TopChatTypeFactoryImpl constructor(
         return ReviewViewHolder.LAYOUT
     }
 
+    override fun type(srwBubbleUiModel: SrwBubbleUiModel): Int {
+        return SrwBubbleViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
@@ -194,12 +190,27 @@ open class TopChatTypeFactoryImpl constructor(
             BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(
                     parent, imageAnnouncementListener, voucherListener, productAttachmentListener,
                     productCarouselListListener, deferredAttachment, searchListener,
-                    commonListener, adapterListener, chatLinkHandlerListener, shouldHideBanner())
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
-            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
-            BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
-            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
-            ReviewViewHolder.LAYOUT -> ReviewViewHolder(parent, reviewListener, deferredAttachment, adapterListener)
+                    commonListener, adapterListener, chatLinkHandlerListener
+            )
+            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(
+                    parent, chatLinkHandlerListener, commonListener, adapterListener
+            )
+            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(
+                    parent, chatLinkHandlerListener, commonListener, adapterListener
+            )
+            BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(
+                    parent, chatLinkHandlerListener, commonListener, adapterListener
+            )
+            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(
+                    parent, productAttachmentListener, deferredAttachment,
+                    searchListener, commonListener, adapterListener
+            )
+            ReviewViewHolder.LAYOUT -> ReviewViewHolder(
+                    parent, reviewListener, deferredAttachment, adapterListener
+            )
+            SrwBubbleViewHolder.LAYOUT -> SrwBubbleViewHolder(
+                parent, srwBubbleListener, adapterListener
+            )
             else -> createViewHolder(parent, type)
         }
     }

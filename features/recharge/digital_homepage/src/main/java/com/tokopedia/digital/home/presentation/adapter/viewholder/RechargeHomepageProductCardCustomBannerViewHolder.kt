@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
@@ -91,7 +90,6 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
                     }
                     setOnClickListener {
                         listener.onRechargeSectionItemClicked(element)
-                        RouteManager.route(context, element.applink)
                     }
                 }
             }
@@ -119,8 +117,8 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
         itemView.parallax_image.loadImage(section.mediaUrl)
         try {
             if (section.label1.isNotEmpty()) itemView.parallax_background.setBackgroundColor(Color.parseColor(section.label1))
-        } catch (e: Throwable) {
-            itemView.parallax_background.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        } catch (e: IllegalArgumentException) {
+            itemView.parallax_background.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

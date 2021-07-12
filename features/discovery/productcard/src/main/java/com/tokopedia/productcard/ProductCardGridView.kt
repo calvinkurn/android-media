@@ -4,22 +4,42 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_HEIGHT
-import com.tokopedia.productcard.ProductCardModel.Companion.FIRE_WIDTH
-import com.tokopedia.productcard.ProductCardModel.Companion.WORDING_SEGERA_HABIS
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.QUANTITY_EDITOR_DEBOUNCE_IN_MS
+import com.tokopedia.productcard.utils.expandTouchArea
+import com.tokopedia.productcard.utils.getDimensionPixelSize
+import com.tokopedia.productcard.utils.glideClear
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.renderLabelBestSeller
+import com.tokopedia.productcard.utils.renderLabelCampaign
+import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
+
+    private var addToCartClickListener: ((View) -> Unit)? = null
+    private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
+    private var quantityEditorDebounce: QuantityEditorDebounce? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -40,9 +60,16 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+        val isShowCampaign = productCardModel.isShowLabelCampaign()
+        renderLabelCampaign(
+                isShowCampaign,
+                labelCampaignBackground,
+                textViewLabelCampaign,
+                productCardModel
+        )
 
-        renderLabelBestSeller(labelBestSeller, productCardModel)
+        val isShowBestSeller = productCardModel.isShowLabelBestSeller()
+        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
 
         renderOutOfStockView(productCardModel)
 
@@ -50,15 +77,17 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
-        renderProductCardContent(productCardModel)
+        renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
-        renderStockPercentage(productCardModel)
-        renderStockLabel(productCardModel)
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+        renderButtonAddToCart(productCardModel)
+
+        renderQuantityEditorNonVariant(productCardModel)
+
+        renderChooseVariant(productCardModel)
 
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
@@ -81,11 +110,19 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
-        buttonAddToCart?.setOnClickListener(addToCartClickListener)
+        this.addToCartClickListener = addToCartClickListener
+    }
+
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        this.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
+    }
+
+    fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+        buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -103,38 +140,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
-        labelCampaignBackground?.glideClear(context)
-    }
-
-    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                progressBarStock.setProgressIcon(
-                        icon = ContextCompat.getDrawable(context, R.drawable.ic_fire_filled),
-                        width = context.resources.getDimension(FIRE_WIDTH).toInt(),
-                        height = context.resources.getDimension(FIRE_HEIGHT).toInt())
-            }
-            progressBarStock.progressBarColorType = ProgressBarUnify.COLOR_RED
-            progressBarStock.setValue(productCardModel.stockBarPercentage, true)
-        }
-    }
-
-    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-            textViewStockLabel.text = productCardModel.stockBarLabel
-
-            if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_R600))
-            } else if (productCardModel.stockBarLabelColor.isNotEmpty()) {
-                textViewStockLabel.setTextColor(safeParseColor(productCardModel.stockBarLabelColor))
-            } else {
-                textViewStockLabel.setTextColor(MethodChecker.getColor(context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            }
-        }
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
@@ -147,8 +155,152 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         }
     }
 
+    private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
+        val shouldShowAddToCartButton =
+                productCardModel.hasAddToCartButton
+                        || productCardModel.shouldShowAddToCartNonVariantQuantity()
+
+        buttonAddToCart?.shouldShowWithAction(shouldShowAddToCartButton) {
+            buttonAddToCart?.setOnClickListener {
+                if (productCardModel.shouldShowAddToCartNonVariantQuantity())
+                    addToCartNonVariantClick(productCardModel)
+                else
+                    addToCartClickListener?.invoke(it)
+            }
+        }
+
+        if (productCardModel.shouldShowAddToCartNonVariantQuantity())
+            buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
+        else
+            buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
+    }
+
+    private fun addToCartNonVariantClick(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
+        val newValue = nonVariant.minQuantity
+
+        quantityEditorNonVariant?.setValue(newValue)
+        quantityEditorNonVariant?.show()
+        buttonAddToCart?.gone()
+
+        quantityEditorDebounce?.onQuantityChanged(newValue)
+    }
+
+    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
+        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
+
+        configureQuantityEditorDebounce()
+
+        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
+    }
+
+    private fun configureQuantityEditorDebounce() {
+        val onSubscribe = Observable.OnSubscribe<Int> {
+            quantityEditorDebounce = object : QuantityEditorDebounce {
+                override fun onQuantityChanged(quantity: Int) {
+                    it.onNext(quantity)
+                }
+            }
+        }
+
+        val quantityEditorSubscriber = object : Subscriber<Int>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {}
+
+            override fun onNext(quantity: Int?) {
+                if (quantity != null && quantity != 0) {
+                    addToCartNonVariantClickListener?.onQuantityChanged(quantity)
+                }
+            }
+        }
+
+        Observable.unsafeCreate(onSubscribe)
+                .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(quantityEditorSubscriber)
+    }
+
+    private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
+
+        clearValueChangeListener()
+        configureQuantitySettings(nonVariant)
+
+        setAddClickListener {
+            editorChangeQuantity(editText.text.toString().toIntOrZero())
+        }
+
+        setSubstractListener {
+            editorChangeQuantity(editText.text.toString().toIntOrZero())
+        }
+
+        editText.setOnEditorActionListener { _, _, _ ->
+            onQuantityEditorActionEnter(nonVariant)
+            true
+        }
+    }
+
+    private fun QuantityEditorUnify.clearValueChangeListener() {
+        setValueChangedListener { _, _, _ -> }
+    }
+
+    private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
+        val quantity = nonVariant.quantity
+        if (quantity > 0)
+            this.setValue(quantity)
+
+        this.maxValue = nonVariant.maxQuantity
+        this.minValue = nonVariant.minQuantity
+    }
+
+    private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
+        val inputQuantity = editText.text.toString().toIntOrZero()
+
+        addButton.isEnabled = inputQuantity < nonVariant.maxQuantity
+        subtractButton.isEnabled = inputQuantity > nonVariant.minQuantity
+
+        editorChangeQuantity(inputQuantity)
+    }
+
+    private fun editorChangeQuantity(inputQuantity: Int) {
+        quantityEditorDebounce?.onQuantityChanged(inputQuantity)
+
+        dropKeyboard(this)
+    }
+
+    private fun dropKeyboard(view: View) {
+        context?.let { KeyboardHandler.DropKeyboard(it, view) }
+    }
+
+    private fun renderChooseVariant(productCardModel: ProductCardModel) {
+        buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
+
+        textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
+            productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
+        }
+    }
+
+    private fun renderTextVariantQuantity(quantity: Int) {
+        if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
+        else textVariantQuantity?.text = "$quantity pcs"
+    }
+
     override fun getThreeDotsButton(): View? = imageThreeDots
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
+
+    override fun getShopBadgeView(): View? = imageShopBadge
+
+    private interface QuantityEditorDebounce {
+        fun onQuantityChanged(quantity: Int)
+    }
+
+    interface ATCNonVariantListener {
+        fun onQuantityChanged(quantity: Int)
+    }
 
 }

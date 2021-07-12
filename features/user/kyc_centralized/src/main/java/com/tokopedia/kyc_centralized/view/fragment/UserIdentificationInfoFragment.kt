@@ -48,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycCommonUrl
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import javax.inject.Inject
 
 /**
@@ -59,6 +60,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var title: TextView? = null
     private var text: TextView? = null
     private var progressBar: View? = null
+    private var containerMainView: View? = null
     private var mainView: View? = null
     private var button: UnifyButton? = null
     private var clReason: ConstraintLayout? = null
@@ -79,6 +81,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var kycBenefitButton: UnifyButton? = null
     private var kycBenefitCloseButton: ImageButton? = null
     private var defaultStatusBarColor = 0
+    private var allowedSelfie = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -116,6 +119,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun initView(parentView: View) {
         globalErrorView = parentView.findViewById(R.id.fragment_user_identification_global_error)
+        containerMainView = parentView.findViewById(R.id.container_main_view)
         mainView = parentView.findViewById(R.id.main_view)
         image = parentView.findViewById(R.id.main_image)
         title = parentView.findViewById(R.id.title)
@@ -135,6 +139,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         kycBenefitFintech = parentView.findViewById(R.id.image_fintech)
         kycBenefitShield = parentView.findViewById(R.id.image_shiled_star)
         setupKycBenefitImage()
+        containerMainView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -152,6 +157,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    allowedSelfie = it.data.kycProjectInfo.isSelfie
                     if(it.data.kycProjectInfo.status == KYCConstant.STATUS_BLACKLISTED ||
                             it.data.kycProjectInfo.statusName != null && it.data.kycProjectInfo.statusName == "") {
                         onUserBlacklist()
@@ -220,7 +226,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusNotVerified() {
-        setStatusBar(R.color.kyc_centralized_D8F4F3)
+        setStatusBar(com.tokopedia.unifyprinciples.R.color.Unify_T200)
         mainView?.hide()
         kycBenefitLayout?.show()
         kycBenefitButton?.setOnClickListener(onGoToFormActivityButton(KYCConstant.STATUS_NOT_VERIFIED))
@@ -403,6 +409,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private fun goToFormActivity() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
+            intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }
     }
@@ -436,6 +443,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
+        const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
         fun createInstance(isSourceSeller: Boolean, projectid: Int, callback: String?): UserIdentificationInfoFragment {
             val fragment = UserIdentificationInfoFragment()
             val args = Bundle()

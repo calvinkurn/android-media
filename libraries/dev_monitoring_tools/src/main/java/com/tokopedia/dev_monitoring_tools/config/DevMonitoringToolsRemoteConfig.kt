@@ -15,9 +15,11 @@ class DevMonitoringToolsRemoteConfig {
                 val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
                 val dfRemoteConfig = remoteConfig.getString(ANDROID_MAIN_APP_DEV_MONITORING_TOOLS_CONFIG)
                 dfRemoteConfig?.let {
-                    Gson().fromJson(dfRemoteConfig, DevMonitoringToolsConfig::class.java)?.let {
-                        devMonitoringToolsConfig = it
-                    }
+                    try {
+                        Gson().fromJson(dfRemoteConfig, DevMonitoringToolsConfig::class.java)?.let {
+                            devMonitoringToolsConfig = it
+                        }
+                    } catch (e: Exception) { }
                 }
             }
             return devMonitoringToolsConfig ?: DevMonitoringToolsConfig()

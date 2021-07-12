@@ -1,0 +1,27 @@
+{
+  "readme": "Review Detail - click image on product review",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "productId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "screenName": "review detail page",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventCategory": "review detail page",
+      "screenName": "review detail page",
+      "event": "clickReview",
+      "eventAction": "click - image on product review",
+      "sessionIris": ".{1,}",
+      "eventLabel": ".*"
+    }
+  ]
+}
+

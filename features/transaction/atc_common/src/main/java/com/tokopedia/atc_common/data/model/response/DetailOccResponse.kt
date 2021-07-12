@@ -88,6 +88,10 @@ data class DetailOccResponse(
         @Expose
         val isFreeOngkir: Boolean = false,
 
+        @SerializedName("is_free_ongkir_extra")
+        @Expose
+        val isFreeOngkirExtra: Boolean = false,
+
         @SerializedName("tracker_attribution")
         @Expose
         val trackerAttribution: String = ""

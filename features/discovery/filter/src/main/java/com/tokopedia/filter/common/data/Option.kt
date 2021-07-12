@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -32,7 +33,7 @@ class Option(@SerializedName("name")
 
              @SerializedName(value = "total_data", alternate = ["totalData"])
              @Expose
-             private var totalData: String = "",
+             var totalData: String = "",
 
              @SerializedName(value = "val_min", alternate = ["valMin"])
              @Expose
@@ -62,7 +63,25 @@ class Option(@SerializedName("name")
              @Expose
              var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             var inputState: String = "") : Parcelable {
+             var inputState: String = "") : Parcelable, Cloneable {
+
+    public override fun clone(): Option {
+        return Option(
+                name = name,
+                key = key,
+                value = value,
+                inputType = inputType,
+                hexColor = hexColor,
+                metric = metric,
+                totalData = totalData,
+                valMin = valMin,
+                iconUrl = iconUrl,
+                description = description,
+                isPopular = isPopular,
+                isNew = isNew,
+                inputState = inputState
+        )
+    }
 
     val isAnnotation: Boolean
         get() = KEY_ANNOTATION_ID.equals(key)
@@ -83,7 +102,7 @@ class Option(@SerializedName("name")
         get() = Option.INPUT_TYPE_TEXTBOX == inputType
 
     val isPriceRange: Boolean
-        get() = key == KEY_PRICE_RANGE_1 || key == KEY_PRICE_RANGE_2 || key == KEY_PRICE_RANGE_3
+        get() = key == KEY_PRICE_RANGE_1 || key == KEY_PRICE_RANGE_2 || key == KEY_PRICE_RANGE_3 || key == KEY_PRICE_RANGE_4 || key == KEY_PRICE_RANGE_5
 
     val isMinPriceOption: Boolean
         get() = key == KEY_PRICE_MIN
@@ -118,6 +137,8 @@ class Option(@SerializedName("name")
         const val KEY_PRICE_RANGE_1 = "price_range_1"
         const val KEY_PRICE_RANGE_2 = "price_range_2"
         const val KEY_PRICE_RANGE_3 = "price_range_3"
+        const val KEY_PRICE_RANGE_4 = "price_range_4"
+        const val KEY_PRICE_RANGE_5 = "price_range_5"
         const val KEY_CATEGORY = "sc"
         const val KEY_OFFICIAL = "official"
         const val KEY_RATING = "rt"

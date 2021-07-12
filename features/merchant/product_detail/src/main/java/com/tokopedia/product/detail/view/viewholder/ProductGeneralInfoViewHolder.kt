@@ -3,12 +3,13 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 import kotlinx.android.synthetic.main.item_protection_partner_info_detail.view.*
@@ -40,7 +41,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         view.setOnClickListener {
-            listener.onInfoClicked(element.name, getComponentTrackData(element))
+            listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
         }
         renderIcon(element)
     }
@@ -49,11 +50,11 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         pdp_arrow_right?.showWithCondition(element.isApplink)
 
         pdp_icon?.shouldShowWithAction(element.parentIcon.isNotEmpty()) {
-            ImageHandler.LoadImage(view.pdp_icon, element.parentIcon)
+            view.pdp_icon?.loadIcon(element.parentIcon)
         }
 
         view.ic_pdp_additional_info?.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
-            ImageHandler.loadImage(view.context, view.ic_pdp_additional_info, element.additionalIcon, com.tokopedia.design.R.drawable.ic_loading_image)
+            view.ic_pdp_additional_info?.loadIcon(element.additionalIcon)
         }
     }
 

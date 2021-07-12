@@ -19,10 +19,7 @@ class ForgotPinFragment : ChangePinFragment() {
     }
 
     override fun handleInputPin(text: String) {
-        if ((text.length == PIN_LENGTH ||
-                isValidated) &&
-                !isConfirm &&
-                !inputNewPin) {
+        if ((text.length == PIN_LENGTH || isValidated) && !isConfirm && !inputNewPin) {
             handleValidatedAndForgotState(text)
         } else {
             super.handleInputPin(text)

@@ -24,6 +24,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
+import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -35,6 +36,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.constant.Constant
+import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -69,8 +71,6 @@ class ShopPageBuyerAnalyticTest {
 
     @Before
     fun beforeTest() {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        remoteConfig.setString(Constant.TRACKING_QUEUE_SEND_TRACK_NEW_REMOTECONFIGKEY, "true")
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ShopPageAnalyticValidatorHomeTabMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -132,16 +132,16 @@ class ShopPageBuyerAnalyticTest {
                 withText("Tutup"))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.layout_remind_me))
+                withId(R.id.layout_remind_me_un_notified))
+        )).perform(click())
+        Espresso.onView(firstView(AllOf.allOf(
+                withId(R.id.snackbar_btn))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.image_tnc))
         )).perform(click())
         Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.bottom_sheet_close))
-        )).perform(click())
-        Espresso.onView(firstView(AllOf.allOf(
-                withId(R.id.snackbar_btn))
         )).perform(click())
     }
 
@@ -244,13 +244,13 @@ class ShopPageBuyerAnalyticTest {
 
     private fun testClickTabs() {
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(0))
+                .perform(clickTabLayoutPosition(0))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(1))
+                .perform(clickTabLayoutPosition(1))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(2))
+                .perform(clickTabLayoutPosition(2))
         Espresso.onView(firstView(withId(R.id.tabLayout)))
-                .perform(CommonActions.selectTabLayoutPosition(3))
+                .perform(clickTabLayoutPosition(3))
     }
 
     private fun testSelectSortOption() {

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kyc_centralized.domain.GetUserProjectInfoUseCase
-import com.tokopedia.kyc_centralized.util.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class UserIdentificationViewModel @Inject constructor (
         private val getUserProjectInfoUseCase: GetUserProjectInfoUseCase,
-        dispatcher: DispatcherProvider
-): BaseViewModel(dispatcher.io()) {
+        dispatcher: CoroutineDispatchers
+): BaseViewModel(dispatcher.io) {
 
     private val _userProjectInfo = MutableLiveData<Result<KycUserProjectInfoPojo>>()
     val userProjectInfo: LiveData<Result<KycUserProjectInfoPojo>>

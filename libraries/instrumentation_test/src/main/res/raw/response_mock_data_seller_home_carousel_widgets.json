@@ -28,7 +28,8 @@
                 "FeaturedMediaURL": "https://ecs7-p.tokopedia.net/img/cache/500/VxWOnu/2020/10/8/22113e1e-7208-4cca-988f-cb5493b7d868.jpg"
               }
             ],
-            "errorMsg": ""
+            "errorMsg": "",
+            "showWidget": true
           }
         ]
       }

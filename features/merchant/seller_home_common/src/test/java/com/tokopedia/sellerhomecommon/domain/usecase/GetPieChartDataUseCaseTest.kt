@@ -5,6 +5,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.PieChartMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetPieChartDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -48,7 +49,7 @@ class GetPieChartDataUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        getPieChartDataUseCase = GetPieChartDataUseCase(gqlRepository, mapper)
+        getPieChartDataUseCase = GetPieChartDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     @Test

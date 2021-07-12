@@ -1,43 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clipToPadding="false"
-    android:clipChildren="false">
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@id/app_bar_layout"
+    <include layout="@layout/item_shop_note_reorder"/>
+
+    <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp"
-        android:clipToPadding="false"
-        android:clipChildren="false">
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recyclerViewTerms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll"/>
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="@dimen/dp_half"
+        android:background="@color/Unify_N75"
+        android:layout_marginStart="@dimen/dp_16"/>
 
-    <LinearLayout
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:clipChildren="false">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_half"
-            android:background="@drawable/bg_line_separator_thin"
-            android:layout_marginStart="@dimen/dp_16"/>
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:clipChildren="false"/>
-    </LinearLayout>
+        android:clipChildren="false"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

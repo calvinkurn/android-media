@@ -10,6 +10,7 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
@@ -79,33 +80,7 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                     }
                 },
                 productCardModelList = products.map {
-                    ProductCardModel(
-                            slashedPrice = it.productItem.slashedPrice,
-                            productName = it.productItem.name,
-                            formattedPrice = it.productItem.price,
-                            productImageUrl = it.productItem.imageUrl,
-                            isTopAds = it.productItem.isTopAds,
-                            discountPercentage = it.productItem.discountPercentage,
-                            reviewCount = it.productItem.countReview,
-                            ratingCount = it.productItem.rating,
-                            countSoldRating = it.productItem.ratingAverage,
-                            shopLocation = it.productItem.location,
-                            isWishlistVisible = true,
-                            isWishlisted = it.productItem.isWishlist,
-                            shopBadgeList = it.productItem.badgesUrl.map { badgeUrl ->
-                                ProductCardModel.ShopBadge(imageUrl = badgeUrl
-                                        ?: "")
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = it.productItem.isFreeOngkirActive,
-                                    imageUrl = it.productItem.freeOngkirImageUrl
-                            ),
-                            labelGroupList = it.productItem.labelGroupList.map { recommendationLabel ->
-                                ProductCardModel.LabelGroup(
-                                        title = recommendationLabel.title, position = recommendationLabel.position, type = recommendationLabel.type
-                                )
-                            }
-                    )
+                    it.productItem.toProductCardModel()
                 }
 
         )

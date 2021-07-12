@@ -145,7 +145,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
+    public static class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPlaceholder;
         ImageView vFrameImage;
 

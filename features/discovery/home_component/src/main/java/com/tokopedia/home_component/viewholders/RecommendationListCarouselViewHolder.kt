@@ -17,6 +17,7 @@ import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecor
 import com.tokopedia.home_component.listener.RecommendationListCarouselListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -25,10 +26,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.*
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_component_recommendation_list_carousel.view.home_component_divider_header
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -61,6 +63,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val channelConfig = channel.channelConfig
 
         setViewportImpression(element)
+        setChannelDivider(element)
 
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
@@ -151,11 +154,15 @@ class RecommendationListCarouselViewHolder(itemView: View,
         }
     }
 
-    suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        return productCardModelList.getMaxHeightForListView(itemView.context, Dispatchers.Default)
+    private fun setChannelDivider(element: RecommendationListCarouselDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
-    fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
+    private fun mapGridToProductData(grid: ChannelGrid) :ProductCardModel{
         return ProductCardModel(
                 productImageUrl = grid.imageUrl,
                 productName = grid.name,
@@ -164,7 +171,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 formattedPrice = grid.price,
                 hasAddToCartButton = grid.hasBuyButton,
                 isTopAds = grid.isTopads,
-                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again)
+                addToCardText = itemView.context.getString(R.string.home_global_component_buy_again),
+                shopLocation = grid.shop.shopLocation,
+                shopBadgeList = grid.badges.map {
+                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                }
         )
     }
 
@@ -225,7 +236,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 isOutOfStock = recommendation.grid.isOutOfStock,
                                 ratingCount = recommendation.grid.rating,
                                 reviewCount = recommendation.grid.countReview,
-                                countSoldRating = recommendation.grid.ratingFloat
+                                countSoldRating = recommendation.grid.ratingFloat,
+                                shopLocation = recommendation.grid.shop.shopLocation,
+                                shopBadgeList = recommendation.grid.badges.map {
+                                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                                }
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)

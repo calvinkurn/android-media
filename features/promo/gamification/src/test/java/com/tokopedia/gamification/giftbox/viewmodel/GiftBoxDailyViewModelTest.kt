@@ -7,6 +7,7 @@ import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyVi
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import io.mockk.*
 import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
 import org.junit.Before
@@ -14,6 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
+@ExperimentalCoroutinesApi
 class GiftBoxDailyViewModelTest {
 
     lateinit var viewModel: GiftBoxDailyViewModel
@@ -112,17 +114,23 @@ class GiftBoxDailyViewModelTest {
         assertEquals(viewModel.rewardLiveData.value?.status, LiveDataResult.STATUS.ERROR)
     }
 
-//    @Test
+    @Test
     fun setReminderSuccess() {
         prepareViewModel()
-        val remindMeEntity: RemindMeEntity = mockk()
+        val remindMeEntity:RemindMeEntity = RemindMeEntity(GameRemindMe(ResultStatus("200", arrayListOf("message"),""),false))
 
-        coEvery { remindMeUseCase.getRemindMeResponse(remindMeUseCase.getRequestParams(viewModel.about)) } returns remindMeEntity
+        val requestParams:HashMap<String,Any> = mockk()
+        every { remindMeUseCase.getRequestParams(viewModel.about) } returns requestParams
+        coEvery { remindMeUseCase.getRemindMeResponse(requestParams) } returns remindMeEntity
 
-        viewModel.rewardLiveData.observeForever { }
+        val arrayListOfLiveDataResult :ArrayList<LiveDataResult<RemindMeEntity>> = arrayListOf()
+        viewModel.reminderSetLiveData.observeForever {
+            arrayListOfLiveDataResult.add(it)
+        }
         viewModel.setReminder()
 
-        assertEquals(viewModel.reminderSetLiveData.value?.status, LiveDataResult.STATUS.SUCCESS)
+        assertEquals(arrayListOfLiveDataResult[0].status, LiveDataResult.STATUS.LOADING)
+        assertEquals(arrayListOfLiveDataResult[1].status, LiveDataResult.STATUS.SUCCESS)
     }
 
     @Test
@@ -134,6 +142,69 @@ class GiftBoxDailyViewModelTest {
         viewModel.setReminder()
 
         assertEquals(viewModel.reminderSetLiveData.value?.status, LiveDataResult.STATUS.ERROR)
+    }
+
+    @Test
+    fun testUnSetReminderSuccess(){
+        prepareViewModel()
+        assertEquals(viewModel.remindMeJob, null)
+
+        val requestParams:HashMap<String,Any> = mockk()
+        val remindMeEntity:RemindMeEntity = RemindMeEntity(GameRemindMe(ResultStatus("200", arrayListOf("message"),""),false))
+        every { remindMeUseCase.getRequestParams(viewModel.about) } returns requestParams
+        coEvery { remindMeUseCase.getUnSetRemindMeResponse(requestParams) } returns remindMeEntity
+
+        val arrayListOfLiveDataResult :ArrayList<LiveDataResult<RemindMeEntity>> = arrayListOf()
+        viewModel.reminderSetLiveData.observeForever {
+            arrayListOfLiveDataResult.add(it)
+        }
+        viewModel.unSetReminder()
+
+        assertEquals(arrayListOfLiveDataResult[0].status, LiveDataResult.STATUS.LOADING)
+        assertEquals(arrayListOfLiveDataResult[1].status, LiveDataResult.STATUS.SUCCESS)
+    }
+
+    @Test
+    fun testUnSetReminderFail(){
+        prepareViewModel()
+        assertEquals(viewModel.remindMeJob, null)
+
+        val requestParams:HashMap<String,Any> = mockk()
+        every { remindMeUseCase.getRequestParams(viewModel.about) } returns requestParams
+        coEvery { remindMeUseCase.getUnSetRemindMeResponse(requestParams) } throws Exception()
+
+        val arrayListOfLiveDataResult :ArrayList<LiveDataResult<RemindMeEntity>> = arrayListOf()
+        viewModel.reminderSetLiveData.observeForever {
+            arrayListOfLiveDataResult.add(it)
+        }
+        viewModel.unSetReminder()
+
+        assertEquals(arrayListOfLiveDataResult[0].status, LiveDataResult.STATUS.LOADING)
+        assertEquals(arrayListOfLiveDataResult[1].status, LiveDataResult.STATUS.ERROR)
+    }
+
+    @Test
+    fun testAutoApply(){
+        val autoApplyCode = "123"
+        var a = false
+//        prepareRelaxedViewModel()
+        prepareViewModel()
+        val requestParams:HashMap<String,Any> = mockk()
+        every { autoApplyUseCase.getQueryParams(autoApplyCode) } returns requestParams
+
+//        val autoApplyResponse :AutoApplyResponse = AutoApplyResponse(TokopointsSetAutoApply(ResultStatus("", arrayListOf(""),"")))
+        val autoApplyResponse :AutoApplyResponse = mockk()
+        coEvery { autoApplyUseCase.getResponse(requestParams) } returns autoApplyResponse
+        val autoApplySlot = slot<AutoApplyResponse>()
+        viewModel.autoApplycallback = mockk()
+//        every { viewModel.autoApplycallback?.success(capture(autoApplySlot)) } answers {
+//            a = true
+//            return
+//        }
+        viewModel.autoApply(autoApplyCode)
+        coVerify {
+            viewModel.autoApplycallback?.success(autoApplyResponse)
+        }
     }
 
     @After

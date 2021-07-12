@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.stickylogin.R
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 class EllipsizedTextView @JvmOverloads constructor(
         context: Context,
@@ -41,7 +42,7 @@ class EllipsizedTextView @JvmOverloads constructor(
     }
 
     fun setContent(_content: String, _highLight: String) {
-        if (isDarkModeOn()) {
+        if (context.isDarkMode()) {
             onDarkMode()
         } else {
             onLightMode()
@@ -92,8 +93,6 @@ class EllipsizedTextView @JvmOverloads constructor(
     private fun getDefaultEllipsisColor(): Int {
         return textColors.defaultColor
     }
-
-    override fun isDarkModeOn(): Boolean = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     override fun onDarkMode() {
         this.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N100))

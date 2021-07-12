@@ -7,21 +7,21 @@
         <shape>
             <corners android:radius="1dp" />
 
-            <solid android:color="#D6D6D6" />
+            <solid android:color="@color/Unify_N100" />
         </shape>
     </item>
     <item>
         <shape>
             <gradient
                 android:angle="270"
-                android:endColor="#dcdbdb"
-                android:startColor="#ececec" />
+                android:endColor="@color/Unify_N100"
+                android:startColor="@color/Unify_N75" />
 
             <corners android:radius="1dp" />
 
             <stroke
                 android:width="0.5dp"
-                android:color="#AAAAAA" />
+                android:color="@color/Unify_N200" />
 
             <padding
                 android:bottom="8dp"

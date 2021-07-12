@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
@@ -22,11 +21,14 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.CardUnify;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.Locale;
 
 /**
  * @author okasurya on 7/17/18.
@@ -54,10 +56,13 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     private View dividerTwo;
     private AppCompatImageView ivMemberBadge;
     private BuyerCardPresenter buyerCardPresenter;
-    private CardView widget;
+    private CardUnify widget;
     private CardUnify sellerAccountCard;
     private CardUnify sellerOpenShopCard;
     private SellerMenuTracker sellerMenuTracker;
+    private IconUnify iconWarningName;
+
+    private String DEFAULT_NAME = "toppers-";
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -99,6 +104,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         widget = view.findViewById(R.id.cardView);
         sellerAccountCard = view.findViewById(R.id.sellerAccountCard);
         sellerOpenShopCard = view.findViewById(R.id.sellerOpenShopCard);
+        iconWarningName = view.findViewById(R.id.icon_warning_name);
         sellerMenuTracker = new SellerMenuTracker(TrackApp.getInstance().getGTM(), new UserSession(getContext()));
         buyerCardPresenter = new BuyerCardPresenter();
         buyerCardPresenter.attachView(this);
@@ -111,6 +117,11 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     @Override
     public void setName(String name) {
         textUsername.setText(name);
+        if (name.toLowerCase(Locale.ROOT).contains(DEFAULT_NAME)) {
+            iconWarningName.setVisibility(View.VISIBLE);
+        } else {
+            iconWarningName.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -195,6 +206,10 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
             listener.onClick(v);
             sellerMenuTracker.sendEventClickMyShop();
         });
+    }
+
+    public void setOnclickIconWarningName(OnClickListener listener) {
+        iconWarningName.setOnClickListener(listener);
     }
 
     @Override

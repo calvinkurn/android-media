@@ -1,26 +1,24 @@
 package com.tokopedia.play.model
 
-import com.google.android.exoplayer2.ExoPlayer
 import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.recom.PlayLikeInfoUiModel
+import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.state.PlayVideoState
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantCategory
-import io.mockk.mockk
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 
 /**
@@ -979,7 +977,7 @@ class ModelBuilder {
 
     fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
 
-    fun buildProductVariant() = gson.fromJson(productVariant, ProductDetailVariantCommonResponse::class.java)
+    fun buildProductVariant() = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
     fun buildProduct() = gson.fromJson(product, Product::class.java)
 
@@ -990,7 +988,7 @@ class ModelBuilder {
     )
 
     fun buildCartUiModel(
-            product: ProductLineUiModel,
+            product: PlayProductUiModel.Product,
             action: ProductAction,
             bottomInsetsType: BottomInsetsType,
             isSuccess: Boolean = true,
@@ -1039,12 +1037,12 @@ class ModelBuilder {
     )
 
     fun buildVariantSheetUiModel(
-            product: ProductLineUiModel = buildProductLineUiModel(),
+            product: PlayProductUiModel.Product = buildProductLineUiModel(),
             action: ProductAction = ProductAction.Buy,
-            parentVariant: ProductVariantCommon? = null,
+            parentVariant: ProductVariant? = null,
             stockWording: String? = "Stok tersedia",
             listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
+            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf()
     ) = VariantSheetUiModel(
             product = product,
             action = action,
@@ -1052,16 +1050,6 @@ class ModelBuilder {
             stockWording = stockWording,
             listOfVariantCategory = listOfVariantCategory,
             mapOfSelectedVariants = mapOfSelectedVariants
-    )
-
-    fun buildMerchantVoucherUiModel(
-            type: MerchantVoucherType = MerchantVoucherType.Discount,
-            title: String = "Diskon gedean",
-            description: String = "wowaw"
-    ) = MerchantVoucherUiModel(
-            type = type,
-            title = title,
-            description = description
     )
 
     fun buildProductLineUiModel(
@@ -1075,7 +1063,7 @@ class ModelBuilder {
             minQty: Int = 2,
             isFreeShipping: Boolean = true,
             applink: String? = "https://tkp.me"
-    ) = ProductLineUiModel(
+    ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
             imageUrl = imageUrl,
@@ -1094,7 +1082,7 @@ class ModelBuilder {
 
     fun buildOriginalPrice(
             price: String = "Rp120.000",
-            priceNumber: Long = 120000
+            priceNumber: Double = 120000.0
     ) = OriginalPrice(
             price = price,
             priceNumber = priceNumber
@@ -1104,7 +1092,7 @@ class ModelBuilder {
             originalPrice: String = "Rp120.000",
             discountPercent: Int = 10,
             discountedPrice: String = "Rp108.000",
-            discountedPriceNumber: Long = 108000
+            discountedPriceNumber: Double = 108000.0
     ) = DiscountedPrice(
             originalPrice = originalPrice,
             discountPercent = discountPercent,

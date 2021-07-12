@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/settingnotif_img_desc_icon_section"
             app:srcCompat="@drawable/ic_notifsetting_change_email" />
 
         <LinearLayout
@@ -61,7 +62,7 @@
             android:id="@+id/btnChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/unify_G500"
+            android:textColor="@color/Unify_G500"
             android:layout_marginEnd="@dimen/setting_notif_dp_12"
             android:layout_marginBottom="@dimen/setting_notif_dp_14"
             app:layout_constraintBottom_toBottomOf="parent"

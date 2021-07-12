@@ -32,8 +32,8 @@ internal fun GlobalError.productEtalaseEmpty() {
 }
 
 internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
-    this.errorTitle.setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-    this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_white_68))
+    this.errorTitle.setTextColor(ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+    this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))
     this.setType(GlobalError.PAGE_NOT_FOUND)
     this.setActionClickListener { onAction() }
 }

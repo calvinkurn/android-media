@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.flight.common.view.model.EmptyResultModel
-import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
+import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
 
 /**
  * @author by furqan on 19/05/2020

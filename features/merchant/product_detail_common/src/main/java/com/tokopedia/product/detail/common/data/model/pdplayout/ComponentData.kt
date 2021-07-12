@@ -1,8 +1,11 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
         //region General data
@@ -27,10 +30,10 @@ data class ComponentData(
         //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
+        @SerializedName("thematicCampaign")
+        val thematicCampaign: ThematicCampaign = ThematicCampaign(),
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
-        @SerializedName("isFreeOngkir")
-        val isFreeOngkir: IsFreeOngkir = IsFreeOngkir(),
         @SerializedName("isOS")
         val isOS: Boolean = false,
         @SerializedName("isPowerMerchant")
@@ -43,18 +46,21 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
         val stock: Stock = Stock(),
         @SerializedName("variant")
-        val variant: Variant = Variant(),
+        val variant: VariantBasic = VariantBasic(),
         @SerializedName("videos")
         val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
+        @SerializedName("isCOD")
+        val isCod: Boolean = false,
         //endregion
         //region Variant data
         @SerializedName("parentID")
@@ -66,10 +72,23 @@ data class ComponentData(
         @SerializedName("defaultChild")
         val defaultChild: String = "",
         @SerializedName("variants")
-        val variants: List<ProductP1Variant> = listOf(),
+        val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
-        //endregion
+        val children : List<VariantChild> = listOf(),
+        //endregioncopy
+
+        //region best seller data
+        @SerializedName("productID")
+        val productId: String = "",
+        @SerializedName("oneLinerContent")
+        val oneLinerContent: String = "",
+        @SerializedName("linkText")
+        val linkText: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("isVisible")
+        val isVisible: Boolean = true
+        //endregioncopy
 )  {
     companion object{
         private const val PRODUCT_IMAGE_TYPE = "image"
@@ -102,14 +121,6 @@ data class ComponentData(
         return media.find {
             it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
-    }
-
-    fun getFsProductIsActive(): Boolean {
-        return isFreeOngkir.isActive
-    }
-
-    fun getFsProductImageUrl(): String {
-        return isFreeOngkir.imageURL
     }
 
     fun getImagePathExceptVideo(): ArrayList<String>? {

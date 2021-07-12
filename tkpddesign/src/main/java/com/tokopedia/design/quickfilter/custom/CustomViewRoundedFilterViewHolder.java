@@ -30,9 +30,9 @@ public class CustomViewRoundedFilterViewHolder extends ItemFilterViewHolder {
     protected void updateItemColor(boolean selected) {
         layoutBorder.setSelected(selected);
         if (selected) {
-            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.tkpd_main_green));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         } else {
-            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), R.color.font_black_primary_70));
+            filterName.setTextColor(ContextCompat.getColor(filterName.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }
 }

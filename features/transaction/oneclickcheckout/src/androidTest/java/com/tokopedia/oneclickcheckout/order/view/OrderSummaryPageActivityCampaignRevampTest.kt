@@ -59,6 +59,7 @@ class OrderSummaryPageActivityCampaignRevampTest {
             assertProductCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
+                    hasShopLocationImg = false,
                     hasShopBadge = true,
                     productName = "Product1",
                     productPrice = "Rp100.000",
@@ -211,24 +212,6 @@ class OrderSummaryPageActivityCampaignRevampTest {
             assertProfilePaymentInfoRevamp("Pembelian barang Sale ini hanya bisa menggunakan metode pembayaran tertentu.")
             assertProfilePaymentErrorRevamp(message = "OVO Error Ticker", buttonText = null)
             assertPaymentButtonEnable(false)
-        }
-    }
-
-    @Test
-    fun errorFlow_DisableAllProfileInBottomSheet() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SLASH_PRICE_REVAMP_RESPONSE_PATH
-
-        activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-
-        orderSummaryPage {
-            preferenceInterceptor.customGetPreferenceListResponsePath = GET_PREFERENCE_LIST_REVAMP_HALF_DISABLED_RESPONSE_PATH
-            clickAddOrChangePreferenceRevamp {
-                assertPreferenceRevampEnable(0, isEnable = false)
-                assertPreferenceRevampEnable(1, isEnable = false)
-                assertPreferenceRevampEnable(2, isEnable = true)
-                assertPreferenceRevampEnable(3, isEnable = true)
-            }
         }
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatsearch.usecase
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -13,10 +13,10 @@ import kotlin.coroutines.CoroutineContext
 
 class GetSearchContactQueryUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetChatSearchResponse>,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     var isSearching: Boolean = false
 
@@ -31,10 +31,10 @@ class GetSearchContactQueryUseCase @Inject constructor(
             page: Int,
             firstResponse: GetChatSearchResponse
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     if (firstResponse.searchResults.isNotEmpty() && page == 1) {
-                        withContext(dispatchers.Main) {
+                        withContext(dispatchers.main) {
                             onSuccess(firstResponse)
                         }
                         return@launchCatchError
@@ -47,13 +47,13 @@ class GetSearchContactQueryUseCase @Inject constructor(
                         setGraphqlQuery(query)
                     }.executeOnBackground()
                     isSearching = false
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response)
                     }
                 },
                 {
                     isSearching = false
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(it)
                     }
                 }

@@ -126,7 +126,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        with(getRecyclerView(view)) {
+        getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(linearDividerItemDecoration)
         }
@@ -140,9 +140,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             onPromoCodeUse(textInputCoupon.textFieldInput.text.toString())
         }
         if (isCouponActive) {
-            getRecyclerView(view).visibility = View.VISIBLE
+            getRecyclerView(view)?.visibility = View.VISIBLE
         } else {
-            getRecyclerView(view).visibility = View.GONE
+            getRecyclerView(view)?.visibility = View.GONE
         }
     }
 

@@ -1,10 +1,11 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
-import com.tokopedia.search.analytics.SearchEventTracking.NONE
-import com.tokopedia.search.analytics.SearchEventTracking.OTHER
+import com.tokopedia.search.analytics.SearchEventTracking.Companion.NONE
+import com.tokopedia.search.analytics.SearchEventTracking.Companion.OTHER
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -34,6 +35,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
 
     private val keyword = "samsung"
     private val userId = "12345"
+    private val pageSource = SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
     private var searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
         it[SearchApiConst.Q] = keyword
         it[SearchApiConst.START] = "0"
@@ -140,13 +142,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -165,13 +169,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758,65",
                 categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -190,13 +196,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = false.toString(),
                 categoryIdMapping = "",
                 categoryNameMapping = "",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -215,13 +223,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "$previousKeyword - none"
+                relatedKeyword = "$previousKeyword - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -240,13 +250,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -265,7 +277,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -273,7 +286,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
                         "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
-                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -292,14 +306,16 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -318,7 +334,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
@@ -326,7 +343,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
                         "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
-                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -345,13 +363,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -370,13 +390,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -394,13 +416,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$NONE - $NONE"
+                relatedKeyword = "$NONE - $NONE",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, "", expectedGeneralSearchTrackingModel)
@@ -419,13 +443,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -444,13 +470,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         searchProductModel.globalSearchNavigation.data.source,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -469,13 +497,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         OTHER,
                         NONE,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -504,13 +534,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         navSource,
-                        NONE
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -539,13 +571,93 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                         searchProductModel.searchProduct.header.responseCode,
                         NONE,
                         NONE,
-                        pageTitle
+                        pageTitle,
+                        searchProductModel.searchProduct.header.totalData,
                 ),
                 userId = userId,
                 isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
-                relatedKeyword = "none - none"
+                relatedKeyword = "none - none",
+                pageSource = pageSource,
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking Local Search`() {
+        val pageTitle = "Waktu Indonesia Belanja"
+        val navSource = "campaign"
+
+        searchParameter = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = keyword
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+            it[SearchApiConst.SRP_PAGE_TITLE] = pageTitle
+            it[SearchApiConst.NAVSOURCE] = navSource
+            it[SearchApiConst.SRP_PAGE_ID] = "1234"
+        }
+
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventCategory = "${SearchEventTracking.Category.EVENT_TOP_NAV} - $pageTitle",
+                eventLabel = String.format(
+                        SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        NONE,
+                        navSource,
+                        pageTitle,
+                        searchProductModel.searchProduct.header.totalData,
+                ),
+                userId = userId,
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none",
+                pageSource = "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
+                        "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking Search Ref`() {
+        val searchRef = "search ref example"
+
+        searchParameter = mutableMapOf<String, Any>().also {
+            it[SearchApiConst.Q] = keyword
+            it[SearchApiConst.START] = "0"
+            it[SearchApiConst.UNIQUE_ID] = "unique_id"
+            it[SearchApiConst.USER_ID] = productListPresenter.userId
+            it[SearchApiConst.SEARCH_REF] = searchRef
+        }
+
+        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
+                eventLabel = String.format(
+                        SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        NONE,
+                        NONE,
+                        NONE,
+                        searchProductModel.searchProduct.header.totalData,
+                ),
+                userId = userId,
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none",
+                pageSource = searchRef
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)

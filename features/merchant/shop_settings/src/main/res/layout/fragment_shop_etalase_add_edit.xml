@@ -22,6 +22,7 @@
                 android:id="@+id/text_etalase_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:theme="@style/TextDarkMode"
                 app:counterEnabled="true"
                 app:text_field_counter="@integer/shop_note_title_max_counter"
                 app:text_field_input_type="text"
