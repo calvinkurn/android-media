@@ -156,7 +156,11 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun getSeamlessFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>) {
+    fun getSeamlessFavoriteNumbers(
+        rawQuery: String,
+        mapParam: Map<String, Any>,
+        prevActionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType? = null
+    ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
@@ -165,15 +169,21 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
             _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber))
         }) {
-            _seamlessFavNumberData.postValue(Fail(it))
+            val errMsg = when (prevActionType) {
+                UPDATE -> ERROR_FETCH_AFTER_UPDATE
+                DELETE -> ERROR_FETCH_AFTER_DELETE
+                UNDO_DELETE -> ERROR_FETCH_AFTER_UNDO_DELETE
+                else -> it.message
+            }
+            _seamlessFavNumberData.postValue(Fail(Throwable(errMsg)))
         }
     }
 
     fun modifySeamlessFavoriteNumber(
-            rawQuery: String,
-            mapParam: Map<String, Any>,
-            actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType,
-            onFailedDelete: (() -> Unit)? = null
+        rawQuery: String,
+        mapParam: Map<String, Any>,
+        actionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType,
+        onModifyCallback: (() -> Unit)? = null
     ) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
@@ -191,7 +201,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 UPDATE -> _seamlessFavNumberUpdateData.postValue(Fail(it))
                 DELETE -> {
                     _seamlessFavNumberDeleteData.postValue(Fail(it))
-                    onFailedDelete?.invoke()
+                    onModifyCallback?.invoke()
                 }
                 UNDO_DELETE -> _seamlessFavNumberUndoDeleteData.postValue(Fail(it))
             }
@@ -412,6 +422,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
+
+        const val ERROR_FETCH_AFTER_UPDATE = "ERROR_UPDATE"
+        const val ERROR_FETCH_AFTER_DELETE = "ERROR_DELETE"
+        const val ERROR_FETCH_AFTER_UNDO_DELETE = "ERROR_UNDO_DELETE"
 
         const val NULL_RESPONSE = "null response"
 

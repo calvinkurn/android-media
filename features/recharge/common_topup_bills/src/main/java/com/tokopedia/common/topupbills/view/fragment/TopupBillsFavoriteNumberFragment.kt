@@ -52,6 +52,9 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDat
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_DELETE
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UNDO_DELETE
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ERROR_FETCH_AFTER_UPDATE
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -97,6 +100,7 @@ class TopupBillsFavoriteNumberFragment :
     private var currentCategoryName = ""
     private var number: String = ""
     private var isNeedShowCoachmark = true
+    private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentFavoriteNumberBinding? = null
     private var operatorData: TelcoCatalogPrefixSelect? = null
@@ -141,8 +145,8 @@ class TopupBillsFavoriteNumberFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
-        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
+        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
     }
 
     fun initView() {
@@ -197,7 +201,7 @@ class TopupBillsFavoriteNumberFragment :
         topUpBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetFavoriteNumber(it.data.favoriteNumbers)
-                is Fail -> onFailedGetFavoriteNumber()
+                is Fail -> onFailedGetFavoriteNumber(it.throwable)
             }
         })
 
@@ -210,22 +214,34 @@ class TopupBillsFavoriteNumberFragment :
         
         topUpBillsViewModel.seamlessFavNumberUndoDeleteData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessUndoDeleteFavoriteNumber()
+                is Success -> onSuccessUndoDeleteFavoriteNumber(it.data)
                 is Fail -> onFailedUndoDeleteFavoriteNumber()
             }
         })
     }
 
-    private fun onSuccessUndoDeleteFavoriteNumber() {
+    private fun loadData() {
+        getSeamlessFavoriteNumber()
+    }
+
+    private fun onSuccessUndoDeleteFavoriteNumber(favoriteDetail: UpdateFavoriteDetail) {
+        view?.let {
+            Toaster.build(
+                it, getString(R.string.common_topup_fav_number_success_undo_delete, favoriteDetail.clientNumber),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
         getSeamlessFavoriteNumber()
     }
 
     private fun onFailedUndoDeleteFavoriteNumber() {
-
-    }
-
-    private fun loadData() {
-        getSeamlessFavoriteNumber()
+        numberListAdapter.setNumbers(
+            CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
+        view?.let {
+            Toaster.build(
+                it, getString(R.string.common_topup_fav_number_failed_undo_delete),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.common_topup_fav_number_refresh)
+            ) { getSeamlessFavoriteNumber() }.show()
+        }
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
@@ -249,12 +265,35 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    private fun onFailedGetFavoriteNumber() {
+    // TODO: [Misael] ini message yg undo delete n default belom bener
+    private fun onFailedGetFavoriteNumber(err: Throwable) {
         view?.let {
-            Toaster.build(
-                    it, getString(R.string.common_topup_fav_number_failed_fetch_after_update),
-                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.common_topup_fav_number_refresh),
-                    View.OnClickListener { getSeamlessFavoriteNumber() }).show()
+            when (err.message) {
+                ERROR_FETCH_AFTER_UPDATE -> {
+                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch_after_update)
+                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(R.string.common_topup_fav_number_refresh)
+                    ) { getSeamlessFavoriteNumber() }.show()
+                }
+                ERROR_FETCH_AFTER_DELETE -> {
+                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch_after_delete)
+                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(R.string.common_topup_fav_number_refresh)
+                    ) { getSeamlessFavoriteNumber() }.show()
+                }
+                ERROR_FETCH_AFTER_UNDO_DELETE -> {
+                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch_after_undo_delete)
+                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(R.string.common_topup_fav_number_retry)
+                    ) { undoDelete() }.show()
+                }
+                else -> {
+                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch)
+                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                        getString(R.string.common_topup_fav_number_refresh)
+                    ) { getSeamlessFavoriteNumber() }.show()
+                }
+            }
         }
     }
 
@@ -397,26 +436,28 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessUpdateClientName() {
-        getSeamlessFavoriteNumber()
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_success_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
+        getSeamlessFavoriteNumber()
     }
 
     private fun onFailedUpdateClientName() {
+        numberListAdapter.setNumbers(
+            CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_failed_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
     private fun onSuccessDeleteClientName(deletedFavoriteNumber: UpdateFavoriteDetail) {
-        getSeamlessFavoriteNumber()
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_success_delete_name),
                 Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                getString(R.string.common_topup_fav_number_toaster_undo_delete),
-                View.OnClickListener { undoDelete(deletedFavoriteNumber) }).show()
+                getString(R.string.common_topup_fav_number_toaster_undo_delete)
+            ) { undoDelete(deletedFavoriteNumber) }.show()
         }
+        getSeamlessFavoriteNumber()
 
         val operatorName = getOperatorNameById(deletedFavoriteNumber.operatorID)
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberSuccessDeleteToaster(
@@ -424,26 +465,31 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onFailedDeleteClientName() {
+        numberListAdapter.setNumbers(
+            CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
         view?.let {
             Toaster.build(it, getString(R.string.common_topup_fav_number_failed_delete_name), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
-    private fun undoDelete(deletedFavoriteNumber: UpdateFavoriteDetail) {
+    private fun undoDelete(deletedFavoriteNumber: UpdateFavoriteDetail? = null) {
+        val favoriteDetail = deletedFavoriteNumber ?: lastDeletedNumber
         val isDelete = false
         showShimmering()
-        topUpBillsViewModel.modifySeamlessFavoriteNumber(
+        if (favoriteDetail != null) {
+            topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = deletedFavoriteNumber.categoryID,
-                        productId = deletedFavoriteNumber.productID,
-                        clientNumber = deletedFavoriteNumber.clientNumber,
-                        totalTransaction = deletedFavoriteNumber.totalTransaction,
-                        label = deletedFavoriteNumber.label,
-                        isDelete = isDelete
+                    categoryId = favoriteDetail.categoryID,
+                    productId = favoriteDetail.productID,
+                    clientNumber = favoriteDetail.clientNumber,
+                    totalTransaction = favoriteDetail.totalTransaction,
+                    label = favoriteDetail.label,
+                    isDelete = isDelete
                 ),
                 FavoriteNumberActionType.UNDO_DELETE
-        )
+            )
+        }
     }
 
     private fun getSeamlessFavoriteNumber() {
@@ -561,14 +607,21 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun showDeleteConfirmationDialog(favNumberItem: TopupBillsSeamlessFavNumberItem) {
+        val clientDetail = if (favNumberItem.clientName.isNotEmpty()) {
+            Html.fromHtml(
+                getString(R.string.common_topup_fav_number_delete_dialog_with_client_name,
+                    favNumberItem.clientName,
+                    favNumberItem.clientNumber))
+        } else {
+            Html.fromHtml(
+                getString(R.string.common_topup_fav_number_delete_dialog,
+                    favNumberItem.clientNumber))
+        }
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.run {
                 setTitle(getString(R.string.common_topup_fav_number_delete_dialog_title))
-                setDescription(Html.fromHtml(
-                        getString(R.string.common_topup_fav_number_delete_dialog,
-                        favNumberItem.clientName,
-                        favNumberItem.clientNumber)))
+                setDescription(clientDetail)
                 setSecondaryCTAText(getString(R.string.common_topup_fav_number_delete_dialog_cancel))
                 setSecondaryCTAClickListener { dismiss() }
                 setPrimaryCTAText(getString(R.string.common_topup_fav_number_delete_dialog_confirm))

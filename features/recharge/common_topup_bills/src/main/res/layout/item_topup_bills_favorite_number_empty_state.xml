@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/common_topupbills_empty_state_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
         android:src="@drawable/common_topup_ic_empty_state"
         app:layout_constraintTop_toTopOf="@id/common_topupbills_empty_state_title"
         app:layout_constraintBottom_toBottomOf="@id/common_topupbills_empty_state_button"
