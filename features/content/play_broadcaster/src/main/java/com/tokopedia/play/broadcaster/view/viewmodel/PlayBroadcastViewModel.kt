@@ -435,6 +435,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun onInteractiveLiveEnded() {
+        sharedPref.setNotFirstInteractive()
         viewModelScope.launch { onInteractiveFinished() }
     }
 
@@ -519,7 +520,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
-        return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(true))
+        return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(sharedPref.isFirstInteractive()))
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {

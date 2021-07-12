@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.play.broadcaster.R
@@ -10,6 +12,7 @@ import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveInitVie
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLiveView
 import com.tokopedia.play.broadcaster.view.custom.interactive.InteractiveLoadingView
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 07/07/21
@@ -25,8 +28,12 @@ class BroadcastInteractiveViewComponent(
 
     private val coachMarkAnchorOffset = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
     private val initView = object : InteractiveInitView.Listener {
         override fun onCreateNewGameClicked(view: InteractiveInitView) {
+            hideCoachMark()
             listener.onNewGameClicked(this@BroadcastInteractiveViewComponent)
         }
     }
@@ -43,6 +50,7 @@ class BroadcastInteractiveViewComponent(
         }
 
         override fun onSeeWinnerClicked(view: InteractiveFinishView) {
+            hideCoachMark()
             listener.onSeeWinnerClicked(this@BroadcastInteractiveViewComponent)
         }
     }
@@ -53,13 +61,7 @@ class BroadcastInteractiveViewComponent(
 
     fun setInit(showOnBoarding: Boolean) = setChildView { InteractiveInitView(parent.context) }.apply {
         setListener(initView)
-        if (showOnBoarding) {
-            showCoachMark(
-                    view = rootView,
-                    title = getString(R.string.play_interactive_broadcast_onboarding_title),
-                    subtitle = getString(R.string.play_interactive_broadcast_onboarding_subtitle)
-            )
-        }
+        if (showOnBoarding) showOnBoardingCoachMark()
     }
 
     fun setSchedule(
@@ -101,7 +103,18 @@ class BroadcastInteractiveViewComponent(
         )
     }
 
-    fun hideCoachMark() {
+    private fun showOnBoardingCoachMark() {
+        scope.launch {
+            delay(ON_BOARDING_COACH_MARK_DELAY)
+            showCoachMark(
+                view = rootView,
+                title = getString(R.string.play_interactive_broadcast_onboarding_title),
+                subtitle = getString(R.string.play_interactive_broadcast_onboarding_subtitle)
+            )
+        }
+    }
+
+    private fun hideCoachMark() {
         coachMark.dismissCoachMark()
     }
 
@@ -140,9 +153,18 @@ class BroadcastInteractiveViewComponent(
         )
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        job.cancelChildren()
+    }
+
     interface Listener {
 
         fun onNewGameClicked(view: BroadcastInteractiveViewComponent)
         fun onSeeWinnerClicked(view: BroadcastInteractiveViewComponent)
+    }
+
+    companion object {
+        private const val ON_BOARDING_COACH_MARK_DELAY = 3000L
     }
 }
