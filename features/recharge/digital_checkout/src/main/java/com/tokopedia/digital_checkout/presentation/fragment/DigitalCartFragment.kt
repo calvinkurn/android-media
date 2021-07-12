@@ -224,6 +224,12 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun observePromoData() {
         viewModel.promoData.observe(viewLifecycleOwner, Observer {
             viewModel.applyPromoData(it)
+
+            if (getPromoData().state == TickerCheckoutView.State.INACTIVE) {
+                checkoutBottomViewWidget.disableVoucherView()
+                return@Observer
+            }
+
             checkoutBottomViewWidget.promoButtonDescription = getPromoData().description
             if (getPromoData().description.isEmpty()) {
                 renderDefaultEmptyPromoView()
@@ -270,13 +276,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         cartDetailInfoAdapter.setAdditionalInfoItems(cartInfo.additionalInfos)
         containerSeeDetailToggle.visibility = if (cartInfo.additionalInfos.isEmpty()) View.GONE else View.VISIBLE
 
-        if (cartInfo.attributes.isEnableVoucher) {
-            checkoutBottomViewWidget.promoButtonVisibility = View.VISIBLE
-        } else checkoutBottomViewWidget.promoButtonVisibility = View.GONE
-
         if (!digitalSubscriptionParams.isSubscribed) {
             renderPostPaidPopup(cartInfo.attributes.postPaidPopupAttribute)
         }
+    }
+
+    private fun disableVoucherView() {
+        checkoutBottomViewWidget.disableVoucherView()
     }
 
     private fun renderCartBasedOnParamState() {

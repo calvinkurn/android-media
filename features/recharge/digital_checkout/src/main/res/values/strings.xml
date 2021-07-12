@@ -35,4 +35,7 @@
     <string name="digital_checkout_summary_title">Ringkasan Pembayaran</string>
 
     <string name="digital_checkout_error_remove_coupon_message">Oops, belum berhasil hapus kupon. Coba lagi, yuk!</string>
+
+    <string name="digital_checkout_promo_disabled_title">Produk ini sudah pakai promo</string>
+    <string name="digital_checkout_promo_disabled_description">Tidak bisa digabung dengan promo lain</string>
 </resources>

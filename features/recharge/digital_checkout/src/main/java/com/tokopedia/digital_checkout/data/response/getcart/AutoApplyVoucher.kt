@@ -36,6 +36,10 @@ data class AutoApplyVoucher(
         @Expose
         val discountedAmount: Double = 0.0,
 
+        @SerializedName("discounted_amount_label")
+        @Expose
+        val discountedAmountLabel: String = "",
+
         @SerializedName("discounted_price")
         @Expose
         val discountedPrice: String = "",

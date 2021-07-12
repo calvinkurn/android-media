@@ -29,8 +29,14 @@ object DigitalCheckoutMapper {
 
     fun mapToPromoData(cartInfo: CartDigitalInfoData): PromoData? {
         var promoData: PromoData? = null
+        val isEnableVoucher = cartInfo.attributes.isEnableVoucher
+
         cartInfo.attributes.autoApplyVoucher.let {
-            if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
+            if (!isEnableVoucher) {
+                promoData = PromoData(description = it.discountedAmountLabel,
+                        amount = it.discountAmount.toInt(),
+                        state = TickerCheckoutView.State.INACTIVE)
+            } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
                 promoData = PromoData(title = it.title,
                         description = it.messageSuccess,
                         promoCode = it.code,
@@ -93,6 +99,7 @@ object DigitalCheckoutMapper {
                 applyVoucher.code = entity.code
                 applyVoucher.isSuccess = entity.success
                 applyVoucher.discountAmount = entity.discountAmount
+                applyVoucher.discountedAmountLabel = entity.discountedAmountLabel
                 applyVoucher.isCoupon = entity.isCoupon
                 applyVoucher.promoId = entity.promoId.toLongOrZero()
                 applyVoucher.title = entity.titleDescription

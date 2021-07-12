@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital_checkout.R
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -76,5 +79,21 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
 
     fun setCheckoutButtonListener(listener: () -> Unit) {
         btnCheckout.setOnClickListener { listener.invoke() }
+    }
+
+    fun disableVoucherView() {
+        digitalPromoBtnView.state = ButtonPromoCheckoutView.State.INACTIVE
+        val chevronImageView = digitalPromoBtnView.findViewById<ImageView>(R.id.iv_promo_checkout_right)
+        chevronImageView.setImageDrawable(null)
+
+        val titleTextView = digitalPromoBtnView.findViewById<TextView>(R.id.tv_promo_checkout_title)
+        titleTextView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        titleTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_title)
+
+        val descTextView = digitalPromoBtnView.findViewById<TextView>(R.id.tv_promo_checkout_desc)
+        descTextView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        descTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_description)
+
+        digitalPromoBtnView.setOnClickListener { /* do nothing */ }
     }
 }

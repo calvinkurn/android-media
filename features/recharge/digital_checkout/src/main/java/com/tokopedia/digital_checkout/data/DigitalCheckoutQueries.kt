@@ -57,6 +57,7 @@ object DigitalCheckoutQueries {
               discount_amount
               discount_price
               discounted_amount
+              discounted_amount_label
               discounted_price
               title_description
               promo_code_id
