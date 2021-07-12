@@ -29,11 +29,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
-import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -63,6 +59,7 @@ import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
 
@@ -122,7 +119,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         setupBackground()
         setupToolbar()
-        setupStatusBar()
         setupBottomNav()
         setupNavigator()
         setupShadow()
@@ -375,7 +371,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun onBottomNavSelected(page: PageFragment, trackingAction: String) {
         val pageType = page.type
 
-        setupStatusBar()
+        setupStatusBar(pageType)
         showToolbar(pageType)
         setCurrentFragmentType(pageType)
         resetPages(page)
@@ -492,14 +488,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
-    private fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDarkMode()) {
-                requestStatusBarLight()
-            } else {
-                requestStatusBarDark()
+    private fun setupStatusBar(@FragmentType pageType: Int) {
+        if (pageType == FragmentType.OTHER) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (isDarkMode()) {
+                    requestStatusBarLight()
+                } else {
+                    requestStatusBarDark()
+                }
+                statusBarBackground?.show()
             }
-            statusBarBackground?.show()
+        } else {
+            resetSellerHomeSystemUiVisibility()
+            statusBarBackground?.gone()
         }
     }
 
@@ -525,6 +526,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
+        createSahBottomNavVisibilityHandler()
     }
 
     private fun initSellerHomePlt() {
@@ -576,6 +578,47 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
         if (DeviceScreenInfo.isTablet(this)) {
             requestedOrientation = if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun resetSellerHomeSystemUiVisibility() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window?.run {
+                if (isDarkMode()) {
+                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+                } else {
+                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
+        }
+    }
+
+    private fun createSahBottomNavVisibilityHandler() {
+        sahRootLayout?.viewTreeObserver?.addOnPreDrawListener {
+            val heightDiffThreshold = 100
+            val screenHeight = getScreenHeight()
+            val sahRootLayoutHeight = sahRootLayout.measuredHeight
+            val showNavBar = abs(screenHeight - sahRootLayoutHeight) <= heightDiffThreshold
+            if (showNavBar) {
+                // Postpone the show logic so that the bottom nav will show after root layout become
+                // full screen to prevent glitch then continue the drawing process
+                sahRootLayout?.post {
+                    navBarShadow?.show()
+                    sahBottomNav?.show()
+                }
+                true
+            } else {
+                if (navBarShadow?.isVisible != true && sahBottomNav?.isVisible != true) {
+                    // Continue the drawing process because bottom nav is already hidden
+                    true
+                } else {
+                    // To prevent glitch showing keyboard, cancel current drawing process and hide
+                    // the bottom nav first
+                    navBarShadow?.gone()
+                    sahBottomNav?.gone()
+                    false
+                }
+            }
         }
     }
 }
