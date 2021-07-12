@@ -7,6 +7,7 @@ repositories {
 }
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -58,28 +59,28 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
 
-    implementation project(rootProject.ext.libraries.akamaiBotLib)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.commonPayment)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.logisticcart)
-    implementation project(rootProject.ext.features.logisticCommon)
-    implementation project(rootProject.ext.features.localizationchooseaddress)
-    implementation project(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.commonPayment)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    implementation projectOrAar(rootProject.ext.features.logisticcart)
+    implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
@@ -88,8 +89,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.leakCanaryInstrument
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
