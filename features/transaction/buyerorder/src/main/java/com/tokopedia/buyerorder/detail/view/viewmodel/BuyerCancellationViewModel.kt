@@ -7,7 +7,6 @@ import androidx.lifecycle.asLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.common.ResourceProvider
-import com.tokopedia.buyerorder.detail.data.ProductBundle
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonParam
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -18,6 +17,7 @@ import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerProductBundlingUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
 import com.tokopedia.buyerorder.detail.view.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -62,7 +62,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
 
     private val _buyerOrderId: MutableStateFlow<String?> = MutableStateFlow(null)
     @ExperimentalCoroutinesApi
-    val productBundleListLiveData: LiveData<List<ProductBundle>?> = _buyerOrderId.flatMapLatest {
+    val buyerBundlingProductUiModelListLiveData: LiveData<List<BuyerBundlingProductUiModel>?> = _buyerOrderId.flatMapLatest {
         setProductListFlow(it)
     }.asLiveData()
 
@@ -122,7 +122,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         _buyerOrderId.value = orderId
     }
 
-    private fun setProductListFlow(orderId: String?): Flow<List<ProductBundle>?> =
+    private fun setProductListFlow(orderId: String?): Flow<List<BuyerBundlingProductUiModel>?> =
             flow {
                 if (orderId == null) {
                     emit(null)
@@ -131,7 +131,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
                 }
             }.flowOn(dispatcher.io)
 
-    private suspend fun getCancellationProductList(orderId: String): List<ProductBundle>? {
+    private suspend fun getCancellationProductList(orderId: String): List<BuyerBundlingProductUiModel>? {
         buyerProductBundlingUseCase.execute(orderId).let { result ->
             return when(result) {
                 is Success -> result.data

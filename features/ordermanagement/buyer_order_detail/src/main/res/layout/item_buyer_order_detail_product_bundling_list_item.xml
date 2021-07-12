@@ -19,7 +19,7 @@
         android:id="@+id/tv_item_bom_detail_bundling_product_name"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/buyer_order_detail_bundling_name_margin_start"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"

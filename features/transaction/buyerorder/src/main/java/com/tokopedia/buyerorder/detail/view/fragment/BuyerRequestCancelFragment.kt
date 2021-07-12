@@ -39,7 +39,6 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
-import com.tokopedia.buyerorder.detail.data.ProductBundle
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -49,6 +48,7 @@ import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -97,7 +97,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listProductsJsonString : String? = null
     private var listProductBundlesJsonString : String? = null
     private var listProduct = emptyList<Items>()
-    private var listProductBundle: List<ProductBundle>? = null
+    private var listBuyerBundlingProductUiModel: List<BuyerBundlingProductUiModel>? = null
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -114,7 +114,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         object : TypeToken<List<Items>>() {}.type
     }
     private val productBundleListTypeToken by lazy {
-        object : TypeToken<List<ProductBundle>>() {}.type
+        object : TypeToken<List<BuyerBundlingProductUiModel>>() {}.type
     }
 
     private val buyerCancellationViewModel by lazy {
@@ -159,8 +159,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
                 GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
             } ?: emptyList()
-            listProductBundle = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
-                GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<ProductBundle>
+            listBuyerBundlingProductUiModel = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
+                GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<BuyerBundlingProductUiModel>
             }
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
@@ -236,7 +236,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
         }
 
-        if (listProductBundle == null) {
+        if (listBuyerBundlingProductUiModel == null) {
             getProductBundling()
         }
 
@@ -632,7 +632,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     @ExperimentalCoroutinesApi
     private fun observeBuyerProductBundling() {
-        buyerCancellationViewModel.productBundleListLiveData.observe(viewLifecycleOwner) {
+        buyerCancellationViewModel.buyerBundlingProductUiModelListLiveData.observe(viewLifecycleOwner) {
             // TODO: Change onclick listener
         }
     }

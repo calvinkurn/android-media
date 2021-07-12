@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/buyer_order_cancel_bundling_card_padding_bottom_14dp"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingHorizontal="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_item_buyer_order_bundling_thumbnail"
+        android:layout_width="@dimen/buyer_order_cancel_bundling_card_title_margin_start_46dp"
+        android:layout_height="@dimen/buyer_order_cancel_bundling_card_title_margin_start_46dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_buyer_order_bundling_product_name"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@id/tv_item_buyer_order_bundling_product_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_item_buyer_order_bundling_thumbnail"
+        app:layout_constraintTop_toTopOf="@id/iv_item_buyer_order_bundling_thumbnail"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="heading_6"
+        tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_buyer_order_bundling_product_price"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@id/iv_item_buyer_order_bundling_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_item_buyer_order_bundling_product_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_buyer_order_bundling_product_name"
+        app:typographyType="body_3"
+        tools:text="Rp2.000.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

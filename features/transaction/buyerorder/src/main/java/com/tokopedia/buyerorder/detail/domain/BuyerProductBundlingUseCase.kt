@@ -1,29 +1,29 @@
 package com.tokopedia.buyerorder.detail.domain
 
-import com.tokopedia.buyerorder.detail.data.ProductBundle
-import com.tokopedia.buyerorder.detail.data.ProductBundleItem
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.ProductBundleItem
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class BuyerProductBundlingUseCase @Inject constructor(private val useCase: GraphqlUseCase<List<ProductBundle>>) {
+class BuyerProductBundlingUseCase @Inject constructor(private val useCase: GraphqlUseCase<List<BuyerBundlingProductUiModel>>) {
 
     companion object {
         // TODO: Put actual query
         private val QUERY = ""
     }
 
-    suspend fun execute(orderId: String): Result<List<ProductBundle>> {
+    suspend fun execute(orderId: String): Result<List<BuyerBundlingProductUiModel>> {
         // TODO: Execute actual logic
         delay(2000)
         return Success(getDummyProductBundling())
     }
 
-    private fun getDummyProductBundling(): List<ProductBundle> {
+    private fun getDummyProductBundling(): List<BuyerBundlingProductUiModel> {
         return listOf(
-                ProductBundle(
+                BuyerBundlingProductUiModel(
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(

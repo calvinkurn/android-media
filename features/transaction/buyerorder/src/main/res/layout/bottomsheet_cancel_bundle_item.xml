@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/view_buyer_order_bundling_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buyer_order_cancel_bundling_header_height_40dp"
+        android:background="@drawable/bg_rounded_grey_label_buyer"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_buyer_order_bundling_header"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/margin_small"
+        android:layout_marginStart="@dimen/buyer_order_cancel_bundling_header_image_margin_start_14dp"
+        app:srcCompat="@drawable/ic_product_bundling"
+        app:layout_constraintStart_toStartOf="@id/view_buyer_order_bundling_header"
+        app:layout_constraintTop_toTopOf="@id/view_buyer_order_bundling_header"
+        app:layout_constraintBottom_toBottomOf="@id/view_buyer_order_bundling_header"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_buyer_order_bundling_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_small"
+        app:layout_constraintStart_toEndOf="@id/iv_buyer_order_bundling_header"
+        app:layout_constraintTop_toTopOf="@id/view_buyer_order_bundling_header"
+        app:layout_constraintBottom_toBottomOf="@id/view_buyer_order_bundling_header"
+        app:typographyType="heading_6"
+        tools:text="Paket Tahun Baru"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_buyer_order_bundling"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/view_buyer_order_bundling_header"
+        tools:listitem="@layout/bottomsheet_cancel_product_item"
+        tools:itemCount="3"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
