@@ -23,11 +23,13 @@
         android:layout_marginTop="@dimen/dp_24"
         android:text="@string/mini_cart_label_cannot_process"
         android:textColor="@color/Unify_N700"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_cannot_process_quantity"
@@ -35,12 +37,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:textColor="@color/Unify_N700"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/image_chevron_unavailable"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_cannot_process"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="4 Barang" />
+        tools:text="4 Barang"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_chevron_unavailable"

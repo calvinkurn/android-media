@@ -436,6 +436,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 amountCtaView.requestLayout()
             }
             textCannotProcess?.gone()
+            textCannotProcessQuantity?.gone()
             imageChevronUnavailable?.gone()
         }
         setTotalAmountLoading(false)
