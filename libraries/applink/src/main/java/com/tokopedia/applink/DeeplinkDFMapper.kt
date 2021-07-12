@@ -768,7 +768,8 @@ object DeeplinkDFMapper : CoroutineScope {
             // Test
             add(DFP({
                 listOf(
-                        "com.example.test_fragment_df.TestDfFragment"
+                        "com.example.test_fragment_df.TestDfFragment",
+                        "com.tokopedia.shop.score.detail_old.view.fragment.ShopScoreDetailFragment",
                 ).contains(it)
             }, DF_MERCHANT_SELLER, R.string.applink_title_affiliate))
         }

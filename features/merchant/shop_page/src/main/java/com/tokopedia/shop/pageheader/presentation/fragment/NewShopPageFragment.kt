@@ -1404,42 +1404,43 @@ class NewShopPageFragment :
     private fun createListShopPageTabModel(): List<ShopPageTabModel> {
         val listShopPageTabModel  = mutableListOf<ShopPageTabModel>()
         if (isShowHomeTab()) {
-//            getHomeFragment()?.let { homeFragment ->
-//                listShopPageTabModel.add(ShopPageTabModel(
-//                        getString(R.string.shop_info_title_tab_home),
-//                        iconTabHomeInactive,
-//                        iconTabHomeActive,
-//                        homeFragment
-//                ))
-//            }
-            val testFragmentHomeTab = RouteManager.instantiateFragmentDF(
-                    activity as AppCompatActivity,
-                    "com.example.test_fragment_df.TestDfFragment",
-                    null)
-            listShopPageTabModel.add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_home),
-                    iconTabHomeInactive,
-                    iconTabHomeActive,
-                    testFragmentHomeTab
-            ))
+            getHomeFragment()?.let { homeFragment ->
+                listShopPageTabModel.add(ShopPageTabModel(
+                        getString(R.string.shop_info_title_tab_home),
+                        iconTabHomeInactive,
+                        iconTabHomeActive,
+                        homeFragment
+                ))
+            }
         }
-        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
-                shopId,
-                shopPageHeaderDataModel?.shopName.orEmpty(),
-                shopPageHeaderDataModel?.isOfficial ?: false,
-                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
-                shopAttribution,
-                shopRef
-        )
-        shopViewModel?.productListData?.let {
-            shopPageProductFragment.setInitialProductListData(it)
-        }
+//        val shopPageProductFragment = ShopPageProductListFragment.createInstance(
+//                shopId,
+//                shopPageHeaderDataModel?.shopName.orEmpty(),
+//                shopPageHeaderDataModel?.isOfficial ?: false,
+//                shopPageHeaderDataModel?.isGoldMerchant ?: false,
+//                shopPageHeaderDataModel?.shopHomeType.orEmpty(),
+//                shopAttribution,
+//                shopRef
+//        )
+//        shopViewModel?.productListData?.let {
+//            shopPageProductFragment.setInitialProductListData(it)
+//        }
+//        listShopPageTabModel.add(ShopPageTabModel(
+//                getString(R.string.new_shop_info_title_tab_product),
+//                iconTabProductInactive,
+//                iconTabProductActive,
+//                shopPageProductFragment
+//        ))
+        val testFragmentHomeTab = RouteManager.instantiateFragmentDF(
+                activity as AppCompatActivity,
+//                    "com.example.test_fragment_df.TestDfFragment",
+                "com.tokopedia.shop.score.detail_old.view.fragment.ShopScoreDetailFragment",
+                null)
         listShopPageTabModel.add(ShopPageTabModel(
                 getString(R.string.new_shop_info_title_tab_product),
                 iconTabProductInactive,
                 iconTabProductActive,
-                shopPageProductFragment
+                testFragmentHomeTab
         ))
 
         if (isShouldCheckShopType()) {
