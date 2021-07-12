@@ -3,8 +3,11 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
+import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
+import com.tokopedia.tokopedianow.search.presentation.viewholder.SearchCategoryJumperViewHolder
 import com.tokopedia.tokopedianow.search.presentation.viewholder.SearchChooseAddressViewHolder
 import com.tokopedia.tokopedianow.search.presentation.viewholder.SuggestionViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
@@ -28,6 +31,7 @@ class SearchTypeFactoryImpl(
         emptyProductListener: EmptyProductListener,
         private val suggestionListener: SuggestionListener,
         outOfCoverageListener: OutOfCoverageListener,
+        private val categoryJumperListener: CategoryJumperListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
@@ -43,10 +47,15 @@ class SearchTypeFactoryImpl(
         return SuggestionViewHolder.LAYOUT
     }
 
+    override fun type(categoryJumperDataView: CategoryJumperDataView): Int {
+        return SearchCategoryJumperViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             BaseChooseAddressViewHolder.LAYOUT -> SearchChooseAddressViewHolder(view, chooseAddressListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)
+            SearchCategoryJumperViewHolder.LAYOUT -> SearchCategoryJumperViewHolder(view, categoryJumperListener)
             else -> super.createViewHolder(view, type)
         }
     }
