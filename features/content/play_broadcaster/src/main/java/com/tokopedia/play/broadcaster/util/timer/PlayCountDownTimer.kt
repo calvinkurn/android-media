@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.CountDownTimer
 import javax.inject.Inject
-import kotlin.math.max
 
 
 /**
  * Created by mzennis on 25/05/20.
  */
 class PlayCountDownTimer @Inject constructor(private val context: Context) {
+
+    val remainingDurationInMs: Long
+        get() = mRemainingMillis
 
     private var mCountDownTimer: CountDownTimer? = null
     private var mMaxDuration: Long = 0L
@@ -102,8 +104,6 @@ class PlayCountDownTimer @Inject constructor(private val context: Context) {
             }
         }
     }
-
-    private fun getTimeElapsedInMillis(): Long = max(0, mMaxDuration - mRemainingMillis)
 
     private fun defaultCountDownTimeoutConfig() = arrayListOf(
             CountDownTimeout(2),

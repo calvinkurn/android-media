@@ -130,9 +130,10 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<Boolean>>
         get() = _observableCreateInteractiveSession
-
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
+    val suitableInteractiveStartTimes: List<Long>
+        get() = findSuitableInteractiveStartTimeList()
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -159,13 +160,12 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val liveStateListener = object : PlayLiveStateListener {
         override fun onStateChanged(state: PlayLivePusherState) {
+            // TODO("find the best way to trigger engagement tools")
             when (state) {
-                is PlayLivePusherState.Start -> {
-                    startWebSocket()
-                    getInteractiveConfig()
-                }
+                is PlayLivePusherState.Start -> startWebSocket()
                 is PlayLivePusherState.Resume -> if (state.isResumed) resumeTimer()
                 is PlayLivePusherState.Pause -> countDownTimer.pause()
+                is PlayLivePusherState.Recovered -> updateCurrentInteractiveStatus()
                 else -> {}
             }
 
@@ -207,20 +207,6 @@ class PlayBroadcastViewModel @Inject constructor(
         liveStateProcessor.addStateListener(liveStateListener)
         liveStateProcessor.addStateListener(channelLiveStateListener)
         countDownTimer.setListener(countDownTimerListener)
-
-        /**
-         * TODO: Mock
-         */
-//        _observableInteractiveConfig.value = InteractiveConfigUiModel(
-//            isActive = true,
-//            nameGuidelineHeader = "Mau kasih hadiah apa?",
-//            nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
-//            timeGuidelineHeader = "Kapan game-nya mulai?",
-//            timeGuidelineDetail = "Tentukan kapan game dimulai, dan game akan berlangsung selama 10 detik.",
-//            durationInMs = 10000L,
-//            availableStartTimeInMs = listOf(30 * 1000L, 60 * 1000L, 3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
-//        )
-//        _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious)
     }
 
     override fun onCleared() {
@@ -369,9 +355,9 @@ class PlayBroadcastViewModel @Inject constructor(
         sharedPref.setNotFirstStreaming()
     }
 
-    fun startLiveStream(withTimer: Boolean = true) {
+    fun startLiveStream(startTimer: Boolean = true) {
         livePusher.start(ingestUrl)
-        if (withTimer) startCountDownTimer()
+        if (startTimer) startTimer()
         isLiveStarted = true
     }
 
@@ -402,11 +388,13 @@ class PlayBroadcastViewModel @Inject constructor(
         reconnectJob()
     }
 
-    fun startCountDownTimer() {
+    fun startTimer() {
         viewModelScope.launch {
             delay(1000)
             countDownTimer.start()
         }
+        // TODO("find the best way to trigger engagement tools")
+        getInteractiveConfig()
     }
 
     fun continueLiveStream() {
@@ -460,6 +448,12 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private fun findSuitableInteractiveStartTimeList(): List<Long> {
+        val availableDurations = _observableInteractiveConfig.value?.availableStartTimeInMs.orEmpty()
+        val remainingLiveDuration = countDownTimer.remainingDurationInMs
+        return availableDurations.filter { it < remainingLiveDuration }
+    }
+
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveResponse = getInteractiveConfigUseCase.apply {
@@ -474,6 +468,13 @@ class PlayBroadcastViewModel @Inject constructor(
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
             }
         }) {}
+    }
+
+    private fun updateCurrentInteractiveStatus() {
+        viewModelScope.launch {
+            val interactiveConfig = _observableInteractiveConfig.value
+            if (interactiveConfig?.isActive == true) handleActiveInteractive()
+        }
     }
 
     private suspend fun handleActiveInteractive() {

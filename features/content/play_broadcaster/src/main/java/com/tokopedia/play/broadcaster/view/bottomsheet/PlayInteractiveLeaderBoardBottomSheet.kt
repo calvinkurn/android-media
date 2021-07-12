@@ -10,31 +10,51 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
 
 /**
  * Created by mzennis on 06/07/21.
  */
-class PlayInteractiveLeaderBoardBottomSheet @Inject constructor() : BottomSheetDialogFragment() {
+class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
+    private val viewModelFactory: ViewModelFactory,
+) : BottomSheetDialogFragment() {
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
-
+            RouteManager.route(
+                requireContext(),
+                ApplinkConst.TOPCHAT_ROOM_ASKBUYER_WITH_MSG,
+                winner.id,
+                winner.topChatMessage
+            )
         }
     })
 
+    private lateinit var parentViewModel: PlayBroadcastViewModel
+
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,48 +72,34 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor() : BottomSheetD
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView(view)
+
+        observeLeaderboardInfo()
     }
 
     private fun setupView(view: View) {
         with(view) {
-            val rvLeaderboard: RecyclerView = findViewById(com.tokopedia.play_common.R.id.rv_leaderboard)
+            val rvLeaderboard: RecyclerView = findViewById(commonR.id.rv_leaderboard)
 
-            findViewById<TextView>(com.tokopedia.play_common.R.id.tv_sheet_title)
+            findViewById<TextView>(commonR.id.tv_sheet_title)
                 .setText(com.tokopedia.play_common.R.string.play_interactive_leaderboard_title)
 
-            findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
+            findViewById<ImageView>(commonR.id.iv_sheet_close)
                 .setOnClickListener {
                    dismiss()
                 }
 
             rvLeaderboard.adapter = leaderboardAdapter
-
-            /**
-             * TODO: Mock
-             */
-            leaderboardAdapter.setItems(
-                List(2) {
-                    PlayLeaderboardUiModel(
-                        title = listOf("Giveaway Kotak Pensil", "Giveaway LCD tv", "Giveaway CD Blackpink").random(),
-                        winners = if (it%2 == 1) emptyList() else List(5) { child ->
-                            PlayWinnerUiModel(
-                                rank = child + 1,
-                                id = "${child + 1}",
-                                name = listOf("Nick", "Elon", "Selena", "Suzane", "Eggy").random(),
-                                imageUrl = "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg",
-                                allowChat = { true },
-                                topChatMessage = "Selamat"
-                            )
-                        },
-                        otherParticipantText =  if (it%2 == 1) "" else "Dari 100 peserta game"
-                    )
-                }
-            )
         }
     }
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG)
+    }
+
+    private fun observeLeaderboardInfo() {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
+            leaderboardAdapter.setItems(it.leaderboardWinners)
+        })
     }
 
     private fun setupDialog(dialog: Dialog) {

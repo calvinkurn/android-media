@@ -90,6 +90,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val interactiveView by viewComponent {
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
+                interactiveSetupView.setAvailableStartTimes(parentViewModel.suitableInteractiveStartTimes)
                 interactiveSetupView.show()
             }
 
@@ -208,7 +209,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             override fun onFinish() {
                 countdownTimer.gone()
-                parentViewModel.startCountDownTimer()
+                parentViewModel.startTimer()
             }
         })
     }

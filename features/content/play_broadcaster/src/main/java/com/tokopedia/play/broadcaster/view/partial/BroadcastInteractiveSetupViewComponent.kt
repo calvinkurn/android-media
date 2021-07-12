@@ -115,7 +115,7 @@ class BroadcastInteractiveSetupViewComponent(
     fun setConfig(config: InteractiveConfigUiModel) {
         mConfig = config
         setupLabelGuideline(false)
-        setAvailableDuration(config.availableStartTimeInMs)
+        setAvailableStartTimes(config.availableStartTimeInMs)
 
         /**
          * Default value
@@ -123,10 +123,10 @@ class BroadcastInteractiveSetupViewComponent(
         setSelectedDuration(TimeUnit.MINUTES.toMillis(DEFAULT_DURATION_IN_MINUTE))
     }
 
-    // TODO: find suitable duration list based on live duration
-    fun setAvailableDuration(durationInMs: List<Long>) {
+    fun setAvailableStartTimes(durationInMs: List<Long>) {
         mAvailableDuration = durationInMs
         timePicker.stringData = mAvailableDuration.map { formatTime(it) }.toMutableList()
+        setSelectedDuration(durationInMs.first())
     }
 
     fun interceptBackPressed(): Boolean {
@@ -234,6 +234,7 @@ class BroadcastInteractiveSetupViewComponent(
         private const val MIN_LENGTH_CHAR = 3
         private const val MAX_LENGTH_CHAR = 25
 
+        private const val FIRST_INDEX = 0
         private const val DEFAULT_DURATION_IN_MINUTE: Long = 3
     }
 }
