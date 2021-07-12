@@ -22,7 +22,7 @@ class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.review_image_slider_item
-        const val IMAGE_COUNT_DECREMENT = 4
+        const val IMAGE_COUNT_DECREMENT = 4L
     }
 
     private val imageView: ImageView = itemView.findViewById(R.id.review_image_slider_item_image_view)
@@ -70,6 +70,6 @@ class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     }
 
     private fun getProcessedImageCount(imageCount: String): Long {
-        return imageCount.toLongOrZero() - IMAGE_COUNT_DECREMENT
+        return (imageCount.toLongOrZero() - IMAGE_COUNT_DECREMENT)
     }
 }
