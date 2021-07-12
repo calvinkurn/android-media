@@ -747,7 +747,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
-                        //todo
                         pageControl.setCurrentIndicator(current)
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
