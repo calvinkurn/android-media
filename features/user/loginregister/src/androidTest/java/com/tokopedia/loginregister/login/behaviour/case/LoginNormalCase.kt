@@ -19,6 +19,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -31,8 +32,6 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
-import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
-import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
@@ -153,7 +152,7 @@ class LoginNormalCase : LoginBase() {
                 putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
             })
         }
-        intending(hasComponent(VerificationActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(
+        intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 mockVerificationResult
         ))
@@ -185,7 +184,7 @@ class LoginNormalCase : LoginBase() {
     fun openTokopediaCarePage() {
         runTest {
             clickForgotPass()
-            intended(hasComponent(ForgotPasswordActivity::class.java.name))
+            intended(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD))
         }
     }
 
