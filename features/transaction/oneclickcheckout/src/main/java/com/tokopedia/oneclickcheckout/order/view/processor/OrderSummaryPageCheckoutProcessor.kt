@@ -116,7 +116,6 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                                 orderSummaryPageEnhanceECommerce.apply {
                                     dataList.forEach {
                                         setPromoCode(allPromoCodes, it)
-//                                        setShippingPrice(orderShipment.getRealShippingPrice().toString(), it)
                                     }
                                 }.build(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION)
                         )

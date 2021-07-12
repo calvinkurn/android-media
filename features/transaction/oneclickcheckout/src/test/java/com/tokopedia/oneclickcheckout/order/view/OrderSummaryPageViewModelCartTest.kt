@@ -17,12 +17,12 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -295,7 +295,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
-        assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
+        assertEquals(1, orderSummaryPageViewModel.orderShipment.value.getRealShipperId())
         verify(exactly = 1) { ratesUseCase.execute(any()) }
         verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
     }
@@ -303,7 +303,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Update Product Debounce Success`() {
         // Given
-        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(quantity = helper.product.quantity.copy(isStateError = false))))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -341,23 +341,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Product Debounce With Error Quantity Should Not Reload Rates`() {
-        // Given
-        orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart
-
-        // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)), 0)
-        testDispatchers.main.advanceUntilIdle()
-
-        // Then
-        verify(inverse = true) { ratesUseCase.execute(any()) }
-        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
-    }
-
-    @Test
     fun `Update Product Debounce Within Delay Time`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -379,20 +362,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Consume Force Show Onboarding`() {
         // Given
-        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = true))
+        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccOnboarding(isForceShowCoachMark = true))
 
         // When
         orderSummaryPageViewModel.consumeForceShowOnboarding()
 
         // Then
-        assertEquals(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel.orderPreferenceData)
+        assertEquals(OrderPreference(onboarding = OccOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel.orderPreferenceData)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Consume Force Show Onboarding On Invalid State`() {
         // Given
-        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false))
+        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccOnboarding(isForceShowCoachMark = false))
 
         // When
         orderSummaryPageViewModel.consumeForceShowOnboarding()
@@ -796,7 +779,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Force Show Onboarding Revamp With Profile And Failed Get Rates`() {
         // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val onboarding = OccOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
         val profile = OrderProfile(shipment = shipment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, onboarding = onboarding)
@@ -815,7 +798,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Force Show Onboarding Revamp With Profile`() {
         // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val onboarding = OccOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
         val address = OrderProfileAddress(addressId = 1)
         val payment = OrderProfilePayment(gatewayCode = "payment")
@@ -858,7 +841,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Force Show Onboarding Revamp With Profile And Prompt`() {
         // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val onboarding = OccOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
         val address = OrderProfileAddress(addressId = 1)
         val profile = OrderProfile(shipment = shipment, address = address)

@@ -25,11 +25,15 @@ data class OrderShop(
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
         var freeOngkirImg: String = "",
-
         var unblockingErrorMessage: String = "",
         var firstProductErrorIndex: Int = -1,
+        var shopTicker: String = "",
         var isTokoNow: Boolean = false,
         var maximumWeight: Int = 0,
         var maximumWeightWording: String = "",
         var overweight: Double = 0.0
-): OrderItem
+) : OrderItem {
+
+    val isError: Boolean
+        get() = errors.isNotEmpty()
+}

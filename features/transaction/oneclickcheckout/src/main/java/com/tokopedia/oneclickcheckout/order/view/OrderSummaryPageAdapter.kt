@@ -12,7 +12,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderTickerBinding
 import com.tokopedia.oneclickcheckout.databinding.LayoutOccOnboardingNewBinding
 import com.tokopedia.oneclickcheckout.databinding.LayoutPaymentBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboardingResponse
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderOnboardingCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
@@ -21,6 +21,7 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTickerCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
@@ -39,7 +40,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var ticker: TickerData? = null
-    var onboarding: OccMainOnboarding = OccMainOnboarding()
+    var onboarding: OccOnboarding = OccOnboarding()
     var shop: OrderShop = OrderShop()
     var product: OrderProduct? = null
     var products: List<OrderProduct> = emptyList()

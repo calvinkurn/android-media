@@ -1,9 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 
-data class OccMainOnboarding(
+class OccMainOnboardingResponse(
         @SerializedName("force_show_coachmark")
         val isForceShowCoachMark: Boolean = false,
         @SerializedName("show_onboarding_ticker")
@@ -11,16 +10,12 @@ data class OccMainOnboarding(
         @SerializedName("coachmark_type")
         val coachmarkType: Int = 0,
         @SerializedName("onboarding_ticker")
-        val onboardingTicker: OccOnboardingTicker = OccOnboardingTicker(),
+        val onboardingTicker: OccOnboardingTickerResponse = OccOnboardingTickerResponse(),
         @SerializedName("onboarding_coachmark")
-        val onboardingCoachMark: OccOnboardingCoachMark = OccOnboardingCoachMark()
-): OrderItem {
-        companion object {
-                internal const val COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE = 5
-        }
-}
+        val onboardingCoachMark: OccOnboardingCoachMarkResponse = OccOnboardingCoachMarkResponse()
+)
 
-data class OccOnboardingTicker(
+class OccOnboardingTickerResponse(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("message")
@@ -33,14 +28,14 @@ data class OccOnboardingTicker(
         val actionText: String = ""
 )
 
-data class OccOnboardingCoachMark(
+class OccOnboardingCoachMarkResponse(
         @SerializedName("skip_button_text")
         val skipButtonText: String = "",
         @SerializedName("detail")
-        val details: List<OccOnboardingCoachMarkDetail> = emptyList()
+        val details: List<OccOnboardingCoachMarkDetailResponse> = emptyList()
 )
 
-data class OccOnboardingCoachMarkDetail(
+class OccOnboardingCoachMarkDetailResponse(
         @SerializedName("step")
         val step: Int = 0,
         @SerializedName("title")

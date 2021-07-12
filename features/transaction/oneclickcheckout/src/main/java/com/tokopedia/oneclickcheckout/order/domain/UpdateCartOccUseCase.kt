@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -15,7 +16,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import java.util.*
 import javax.inject.Inject
 
-class UpdateCartOccUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
     suspend fun executeSuspend(param: UpdateCartOccRequest): OccPrompt? {

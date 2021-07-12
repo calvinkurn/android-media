@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class ShipmentInformationResponse(
+class ShipmentInformationResponse(
         @SerializedName("shop_location")
         val shopLocation: String = "",
         @SerializedName("estimation")
@@ -15,14 +15,14 @@ data class ShipmentInformationResponse(
         val preorder: PreOrder = PreOrder()
 )
 
-data class FreeShipping(
+class FreeShipping(
         @SerializedName("eligible")
         val eligible: Boolean = false,
         @SerializedName("badge_url")
         val badgeUrl: String = ""
 )
 
-data class PreOrder(
+class PreOrder(
         @SerializedName("is_preorder")
         val isPreorder: Boolean = false,
         @SerializedName("duration")

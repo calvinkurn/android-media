@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
-data class GetOccCartData(
+class GetOccCartData(
         @SerializedName("error_code")
         val errorCode: String = "",
         @SerializedName("pop_up_message")
@@ -13,13 +13,11 @@ data class GetOccCartData(
         @SerializedName("tickers")
         val tickers: List<Ticker> = emptyList(),
         @SerializedName("occ_main_onboarding")
-        val occMainOnboarding: OccMainOnboarding = OccMainOnboarding(),
+        val occMainOnboarding: OccMainOnboardingResponse = OccMainOnboardingResponse(),
         @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
         @SerializedName("ticker_message")
         val tickerMessage: OccTickerMessage = OccTickerMessage(),
-        @SerializedName("messages")
-        val messages: CartMessages = CartMessages(),
         @SerializedName("kero_token")
         val keroToken: String = "",
         @SerializedName("kero_unix_time")
@@ -28,10 +26,8 @@ data class GetOccCartData(
         val keroDiscomToken: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SerializedName("cart_list")
-        val cartList: List<CartDataResponse> = emptyList(),
-        @SerializedName("profile_index_wording")
-        val profileIndex: String = "",
+        @SerializedName("group_shop")
+        val groupShop: List<GroupShopOccResponse> = emptyList(),
         @SerializedName("profile")
         val profileResponse: ProfileResponse = ProfileResponse(),
         @SerializedName("promo")
@@ -46,16 +42,7 @@ data class GetOccCartData(
         val prompt: OccPromptResponse = OccPromptResponse()
 )
 
-data class CartMessages(
-        @SerializedName("ErrorProductAvailableStock")
-        val messageErrorAvailableStock: String = "",
-        @SerializedName("ErrorProductMaxQuantity")
-        val messageErrorMaxQuantity: String = "",
-        @SerializedName("ErrorProductMinQuantity")
-        val messageErrorMinQuantity: String = ""
-)
-
-data class CustomerData(
+class CustomerData(
         @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Long = 0,
@@ -67,7 +54,7 @@ data class CustomerData(
         val msisdn: String = ""
 )
 
-data class PaymentAdditionalData(
+class PaymentAdditionalData(
         @SerializedName("merchant_code")
         val merchantCode: String = "",
         @SerializedName("profile_code")

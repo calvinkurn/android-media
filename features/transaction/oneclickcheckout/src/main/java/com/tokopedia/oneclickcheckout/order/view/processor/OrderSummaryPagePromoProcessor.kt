@@ -74,6 +74,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         }
     }
 
+    fun clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?, oldPromoCode: String) : ValidateUsePromoRequest? {
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.remove(oldPromoCode)
+        }
+        return lastValidateUsePromoRequest
+    }
+
     suspend fun validateUseLogisticPromo(validateUsePromoRequest: ValidateUsePromoRequest, logisticPromoCode: String): Triple<Boolean, ValidateUsePromoRevampUiModel?, OccGlobalEvent> {
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {

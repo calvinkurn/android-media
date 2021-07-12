@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class Shipment(
+class Shipment(
         @SerializedName("service_name")
         val serviceName: String = "",
         @SerializedName("service_id")

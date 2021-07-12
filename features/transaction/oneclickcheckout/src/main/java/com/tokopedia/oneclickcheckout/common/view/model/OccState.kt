@@ -2,8 +2,8 @@ package com.tokopedia.oneclickcheckout.common.view.model
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
@@ -32,7 +32,7 @@ sealed class OccGlobalEvent {
     data class AtcError(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
     data class AtcSuccess(val message: String = ""): OccGlobalEvent()
     data class Prompt(val prompt: OccPrompt): OccGlobalEvent()
-    data class ForceOnboarding(val onboarding: OccMainOnboarding): OccGlobalEvent()
+    data class ForceOnboarding(val onboarding: OccOnboarding): OccGlobalEvent()
     data class UpdateLocalCacheAddress(val addressModel: ChosenAddressModel): OccGlobalEvent()
 }
 

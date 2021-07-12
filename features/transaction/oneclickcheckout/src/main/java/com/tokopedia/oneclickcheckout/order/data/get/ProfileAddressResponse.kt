@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
-data class Address(
+class Address(
         @SuppressLint("Invalid Data Type")
         @SerializedName("address_id")
         val addressId: Long = 0,
@@ -46,7 +46,7 @@ data class Address(
         val tokoNow: AddressTokoNow = AddressTokoNow()
 )
 
-data class AddressTokoNow(
+class AddressTokoNow(
         @SerializedName("shop_id")
         val shopId: String = "",
         @SerializedName("warehouse_id")

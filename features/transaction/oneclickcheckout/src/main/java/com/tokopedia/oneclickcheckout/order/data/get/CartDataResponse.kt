@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 
+@Deprecated("old")
 data class CartDataResponse(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),

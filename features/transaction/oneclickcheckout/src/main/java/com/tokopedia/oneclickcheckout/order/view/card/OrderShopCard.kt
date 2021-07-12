@@ -67,7 +67,7 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
 
     private fun renderShopError() {
         binding.apply {
-            if (shop.errors.isNotEmpty()) {
+            if (shop.isError) {
                 tickerOrderShop.tickerType = Ticker.TYPE_ERROR
                 tickerOrderShop.setHtmlDescription(shop.errors.first())
                 tickerOrderShop.visible()
@@ -84,6 +84,11 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 }
                 tickerOrderShop.gone()
                 occCustomTickerError.visible()
+            } else if (shop.shopTicker.isNotBlank()) {
+                tickerOrderShop.tickerType = Ticker.TYPE_WARNING
+                tickerOrderShop.setHtmlDescription(shop.shopTicker)
+                tickerOrderShop.visible()
+                occCustomTickerError.gone()
             } else {
                 tickerOrderShop.gone()
                 occCustomTickerError.gone()

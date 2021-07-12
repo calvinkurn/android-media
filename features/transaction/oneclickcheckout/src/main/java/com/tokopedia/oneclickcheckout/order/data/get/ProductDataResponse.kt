@@ -2,11 +2,14 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import java.util.*
 
-data class ProductDataResponse(
-        @SerializedName("product_tracker_data")
-        val productTrackerData: ProductTrackerData = ProductTrackerData(),
+class ProductDataResponse(
+        @SerializedName("errors")
+        val errors: List<String> = emptyList(),
+        @SerializedName("cart_id")
+        val cartId: String = "",
         @SerializedName("product_id")
         @SuppressLint("Invalid Data Type")
         val productId: Long = 0,
@@ -62,16 +65,20 @@ data class ProductDataResponse(
         val productFinsurance: Int = 0,
         @SerializedName("warehouse_id")
         @SuppressLint("Invalid Data Type")
-        val wareHouseId: Long = 0,
+        val warehouseId: Long = 0,
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
         @SerializedName("product_preorder")
-        val productPreorder: ProductPreorderResponse = ProductPreorderResponse()
+        val productPreorder: ProductPreorderResponse = ProductPreorderResponse(),
+        @SerializedName("product_tracker_data")
+        val productTrackerData: ProductTrackerData = ProductTrackerData(),
+        @SerializedName("purchase_protection_plan_data")
+        val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse()
 )
 
-data class ProductImage(
+class ProductImage(
         @SerializedName("image_src_200_square")
         val imageSrc200Square: String = ""
 )

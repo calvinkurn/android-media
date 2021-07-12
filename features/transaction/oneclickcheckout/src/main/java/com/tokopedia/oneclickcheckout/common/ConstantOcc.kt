@@ -10,7 +10,7 @@ const val DEFAULT_SUCCESS_MESSAGE = "Success"
 
 const val PAYMENT_LISTING_URL = "PaymentListingUrl"
 
-const val OVO_ACTIVATION_URL = "OvoActivationUrl"
+const val OCC_OVO_ACTIVATION_URL = "OccOvoActivationUrl"
 
 const val WALLET_TYPE_OVO = 1
 

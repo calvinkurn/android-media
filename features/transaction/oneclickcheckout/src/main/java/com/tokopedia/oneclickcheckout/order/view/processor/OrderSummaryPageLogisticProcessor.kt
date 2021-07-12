@@ -455,6 +455,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return ResultRates(
                 orderShipment = OrderShipment(
                         isLoading = false,
+                        isDisabled = true,
                         serviceName = orderProfile.shipment.serviceName,
                         serviceDuration = orderProfile.shipment.serviceDuration,
                         serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,

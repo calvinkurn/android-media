@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase.coroutine
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.data.model.response.atcexternal.AddToCartOccMultiExternalGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
@@ -14,7 +15,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartOccMultiExternalUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class AddToCartOccMultiExternalUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                            private val addToCartExternalDataMapper: AddToCartExternalDataMapper,
                                                            private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartOccMultiDataModel>() {
 

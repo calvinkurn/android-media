@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -13,7 +14,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                             private val mapper: GetOccCartMapper,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
@@ -32,7 +33,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
-            val cart = response.response.data.cartList.firstOrNull()
+            val cart = response.response.data.groupShop.firstOrNull()
             if (!errorMessage.isNullOrEmpty() || cart == null) {
                 throw MessageErrorException(errorMessage ?: DEFAULT_ERROR_MESSAGE)
             }

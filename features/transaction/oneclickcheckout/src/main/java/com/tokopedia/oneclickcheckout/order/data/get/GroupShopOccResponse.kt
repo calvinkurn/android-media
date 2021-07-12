@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 
-data class GroupShopOccResponse(
+class GroupShopOccResponse(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("ShipmentInformationResponse")
@@ -33,7 +33,7 @@ data class GroupShopOccResponse(
         val cartDetails: List<ProductDataResponse> = emptyList()
 )
 
-data class CourierSelectionError(
+class CourierSelectionError(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("description")

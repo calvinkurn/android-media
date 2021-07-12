@@ -61,7 +61,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     }
 
     private fun renderProductTicker() {
-        if (product.isError) {
+        if (product.errorMessage.isNotEmpty()) {
             binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
             binding.tickerOrderProduct.visible()
         } else {
@@ -160,13 +160,8 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.requestFocus()
             tfNote.textFieldInput.textSize = 16f
             tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            tfNote.setCounter(MAX_NOTES_LENGTH)
+            tfNote.setCounter(product.maxCharNote)
             tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-//            tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-//                if (hasFocus) {
-//                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
-//                }
-//            }
             if (noteTextWatcher != null) {
                 tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
             }

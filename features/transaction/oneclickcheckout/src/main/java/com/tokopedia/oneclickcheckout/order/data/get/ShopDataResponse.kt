@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-data class ShopDataResponse(
+class ShopDataResponse(
         @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
         val shopId: Long = 0,
@@ -38,10 +38,16 @@ data class ShopDataResponse(
         @SerializedName("official_store")
         val officialStore: OfficialStore = OfficialStore(),
         @SerializedName("shop_type_info")
-        val shopType: ShopTypeResponse = ShopTypeResponse()
+        val shopType: ShopTypeResponse = ShopTypeResponse(),
+        @SerializedName("shop_ticker")
+        val shopTicker: String = "",
+        @SerializedName("maximum_weight_wording")
+        val maximumWeightWording: String = "",
+        @SerializedName("maximum_shipping_weight")
+        val maximumShippingWeight: Int = 0
 )
 
-data class OccShopShipment(
+class OccShopShipment(
         @SuppressLint("Invalid Data Type")
         @SerializedName("ship_id")
         val shipId: Int = 0,
@@ -57,7 +63,7 @@ data class OccShopShipment(
         val isDropshipEnabled: Int = 0
 )
 
-data class OccShipProd(
+class OccShipProd(
         @SuppressLint("Invalid Data Type")
         @SerializedName("ship_prod_id")
         val shipProdId: Int = 0,
@@ -74,14 +80,14 @@ data class OccShipProd(
         val minimumWeight: Int = 0
 )
 
-data class OfficialStore(
+class OfficialStore(
         @SerializedName("is_official")
         val isOfficial: Int = 0,
         @SerializedName("os_logo_url")
         val osLogoUrl: String = ""
 )
 
-data class GoldMerchant(
+class GoldMerchant(
         @SerializedName("is_gold")
         val isGold: Int = 0,
         @SerializedName("is_gold_badge")
@@ -90,7 +96,7 @@ data class GoldMerchant(
         val goldMerchantLogoUrl: String = ""
 )
 
-data class ShopTypeResponse(
+class ShopTypeResponse(
         @SerializedName("shop_tier")
         val shopTier: Int = 0,
         @SerializedName("badge")

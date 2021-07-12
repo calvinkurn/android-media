@@ -1,10 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
-import com.tokopedia.oneclickcheckout.order.data.get.OnboardingComponentResponse
-
 data class OrderProfile(
-        val onboardingHeaderMessage: String = "",
-        val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
         val profileId: Int = 0,
         val enable: Boolean = true,
         val message: String = "",
