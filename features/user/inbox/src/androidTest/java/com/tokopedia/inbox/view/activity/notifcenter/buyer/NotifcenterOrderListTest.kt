@@ -145,6 +145,4 @@ class NotifcenterOrderListTest : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: should render notification empty state when notification remote data is empty
-
 }
