@@ -113,6 +113,8 @@ class PlayActivity : BaseActivity(),
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
 
+        CastContext.getSharedInstance(applicationContext)
+        
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)

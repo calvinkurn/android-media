@@ -74,6 +74,7 @@ class PlayFragment @Inject constructor(
         private val pageMonitoring: PlayPltPerformanceCallback,
         private val dispatchers: CoroutineDispatchers,
         private val analytic: PlayAnalytic,
+        private val castContext: CastContext
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -120,7 +121,6 @@ class PlayFragment @Inject constructor(
     /**
      * Cast
      */
-    private lateinit var castContext: CastContext
     private val castStateListener = CastStateListener {
         when(it) {
             CastState.CONNECTING -> {
@@ -151,8 +151,6 @@ class PlayFragment @Inject constructor(
             playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
             processChannelInfo()
         }
-
-        castContext = CastContext.getSharedInstance(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
