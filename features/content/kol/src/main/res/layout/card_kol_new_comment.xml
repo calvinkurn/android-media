@@ -41,11 +41,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
             android:textColor="@color/light_N700_96"
-            android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toStartOf="@id/btn_like"
             app:layout_constraintStart_toEndOf="@id/avatar"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             tools:text="     Hakuna Matata! What a wonderful phrase Hakuna Matata! Ain't no passing craze It means no worries For the rest of your days It's our problem-free philosophy Hakuna Matata! " />
 
         <com.tokopedia.unifycomponents.ImageUnify
