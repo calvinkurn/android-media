@@ -89,9 +89,7 @@ class ShopHomeVoucherViewHolder(
 
                 model.data.apply {
                     merchantVoucherWidget?.setData(MvcData(
-                            title = titles?.firstOrNull()?.text ?: "",
-                            subTitle = model.data.subTitle ?: "",
-                            imageUrl = model.data.imageURL ?: ""
+                            model.data.animatedInfoList
                     ),
                             shopId = model.data.shopId ?: "0",
                             isMainContainerSetFitsSystemWindows = false,

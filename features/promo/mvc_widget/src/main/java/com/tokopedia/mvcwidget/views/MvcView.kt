@@ -1,23 +1,13 @@
 package com.tokopedia.mvcwidget.views
 
-import android.app.Activity
 import android.content.Context
-import android.os.Build
-import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
-import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
-import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.Tracker
+import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.htmltags.HtmlUtil
-import kotlinx.coroutines.Runnable
 
 
 /*
@@ -25,13 +15,17 @@ import kotlinx.coroutines.Runnable
 * 2. isMainContainerSetFitsSystemWindows must be true if activity/fragment layout is setFitsSystemWindows(false) or setFitsSystemWindows = false
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
-    lateinit var tvTitle: Typography
-    lateinit var tvSubTitle: Typography
     lateinit var imageChevron: AppCompatImageView
-    lateinit var imageCoupon: AppCompatImageView
+    lateinit var imageCouponBg: AppCompatImageView
+    lateinit var mvcTextContainerFirst: MvcTextContainer
+    lateinit var mvcTextContainerSecond: MvcTextContainer
     lateinit var mvcContainer: View
+
+    lateinit var mvcAnimationHandler: MvcAnimationHandler
+
     var shopId: String = ""
     var isMainContainerSetFitsSystemWindows = false
+
     @MvcSource
     var source: Int = MvcSource.SHOP
 
@@ -39,20 +33,21 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         View.inflate(context, R.layout.mvc_entry_view, this)
         initViews()
         setClicks()
+
+        mvcAnimationHandler = MvcAnimationHandler(mvcTextContainerFirst,mvcTextContainerSecond)
     }
 
     private fun initViews() {
-        tvTitle = this.findViewById(R.id.tvTitle)
-        tvSubTitle = this.findViewById(R.id.tvSubTitle)
         imageChevron = this.findViewById(R.id.image_chevron)
-        imageCoupon = this.findViewById(R.id.image_coupon)
         mvcContainer = this.findViewById(R.id.mvc_container)
+        mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
+        mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
     }
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
             context.startActivity(TransParentActivity.getIntent(context, shopId, this.source))
-            Tracker.userClickEntryPoints(shopId,UserSession(context).userId,this.source)
+            Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source)
         }
     }
 
@@ -60,23 +55,52 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         this.source = source
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         this.shopId = shopId
-        setMVCData(mvcData.title, mvcData.subTitle, mvcData.imageUrl)
+        val iconUrl = mvcData.animatedInfoList?.get(0)?.iconURL
+        val arrayList = arrayListOf<AnimatedInfos>()
+        val animatedInfos1 = AnimatedInfos("First title","First subtitle","$iconUrl")
+        val animatedInfos2 = AnimatedInfos("Second title","Second subtitle","$iconUrl")
+        val animatedInfos3 = AnimatedInfos("Third title","Third subtitle","$$iconUrl")
+        val animatedInfos4 = AnimatedInfos("Fourth title","Fourth subtitle","$$iconUrl")
+        val animatedInfos5 = AnimatedInfos("Fifth title","Fifth subtitle","$$iconUrl")
+        val animatedInfos6 = AnimatedInfos("Sixth title","Sixth subtitle","$$iconUrl")
+        arrayList.add(animatedInfos1)
+        arrayList.add(animatedInfos2)
+        arrayList.add(animatedInfos3)
+        arrayList.add(animatedInfos4)
+        arrayList.add(animatedInfos5)
+        arrayList.add(animatedInfos6)
+        setMVCData(arrayList)
     }
 
-    private fun setMVCData(titles:String, subTitle:String,imageUrl:String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvTitle.text = HtmlUtil.fromHtml(titles).trim()
-        } else {
-            tvTitle.text = Html.fromHtml(titles).trim()
-        }
-        tvSubTitle.text = subTitle
+    private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {
 
-        if (!(context as Activity).isFinishing) {
-            Glide.with(imageCoupon.context)
-                .load(imageUrl)
-                .dontAnimate()
-                .into(imageCoupon)
+        //set initial data
+        if (!animatedInfos.isNullOrEmpty()) {
+            if(animatedInfos.size == 1){
+                val animatedInfo = animatedInfos.first()
+                animatedInfo?.let {
+                    mvcTextContainerFirst.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
+                }
+            }else{
+                mvcAnimationHandler.animatedInfoList = animatedInfos
+                mvcAnimationHandler.animateView()
+            }
+
         }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            tvTitle.text = HtmlUtil.fromHtml(animatedInfos!![0]?.title!!).trim()
+//        } else {
+//            tvTitle.text = Html.fromHtml(animatedInfos!![0]?.title!!).trim()
+//        }
+//        tvSubTitle.text = animatedInfos[0]?.subTitle!!
+//
+//        if (!(context as Activity).isFinishing) {
+//            Glide.with(imageCoupon.context)
+//                .load(animatedInfos[0]?.iconURL!!)
+//                .dontAnimate()
+//                .into(imageCoupon)
+//        }
     }
 
 }

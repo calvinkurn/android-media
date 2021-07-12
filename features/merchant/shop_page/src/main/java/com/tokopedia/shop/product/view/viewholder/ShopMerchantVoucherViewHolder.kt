@@ -26,9 +26,7 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
     override fun bind(model: ShopMerchantVoucherUiModel) {
         model.data?.apply {
             merchantVoucherWidget?.setData(MvcData(
-                    title = titles?.firstOrNull()?.text ?: "",
-                    subTitle = model.data.subTitle ?: "",
-                    imageUrl = model.data.imageURL ?: ""
+                    animatedInfoList = model.data.animatedInfoList,
             ),
                     shopId = model.data.shopId ?: "0",
                     isMainContainerSetFitsSystemWindows = false,

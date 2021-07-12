@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/mvc_container_height"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipChildren="true"
+    android:clipToPadding="true">
 
     <com.tokopedia.mvcwidget.views.ShadowOutlineLayout
         android:elevation="@dimen/mvc_shadow_elevation"
@@ -21,7 +21,7 @@
 
     </com.tokopedia.mvcwidget.views.ShadowOutlineLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:elevation="@dimen/mvc_shadow_elevation"
         android:outlineProvider="none"
         android:id="@+id/mvc_container"
@@ -31,61 +31,95 @@
         android:layout_marginStart="@dimen/dp_0"
         android:layout_marginEnd="@dimen/dp_0"
         android:clipChildren="false">
-
-        <androidx.appcompat.widget.AppCompatImageView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:clipChildren="true"
+            android:clipToPadding="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_3"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/mvc_bg_duplicate" />
+            android:layout_height="match_parent">
 
-        <com.tokopedia.mvcwidget.views.SquareImageView
-            android:id="@+id/image_coupon"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="match_parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="@dimen/dp_48"
-            tools:src="@color/Unify_Y500" />
+            <androidx.appcompat.widget.AppCompatImageView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/dp_3"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/mvc_bg_duplicate" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_6"
-            android:lines="1"
-            android:textColor="@color/Unify_N700"
-            app:layout_constraintLeft_toRightOf="@id/image_coupon"
-            app:layout_constraintRight_toLeftOf="@+id/image_chevron"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            tools:text="Ada Cashback hingga Rp100.000" />
+            <com.tokopedia.mvcwidget.views.SquareImageView
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/dp_3"
+                android:id="@+id/image_coupon_bg"
+                app:srcCompat="@drawable/mvc_ic_intersect"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_height="@dimen/dp_48" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvSubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_6"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            app:typographyType="body_3"
-            android:textColor="@color/Unify_N700"
-            tools:text="Masih ada 6 Kupon Toko lainnya!" />
+            <com.tokopedia.mvcwidget.views.MvcTextContainer
+                android:id="@+id/mvc_text_container_first"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/image_chevron"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image_chevron"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/iconunify_chevron_right"
-            app:tint="@color/Unify_N500" />
+            <com.tokopedia.mvcwidget.views.MvcTextContainer
+                android:id="@+id/mvc_text_container_second"
+                android:translationY="@dimen/dp_48"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/image_chevron"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_chevron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/iconunify_chevron_right"
+                app:tint="@color/Unify_N500" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/tvTitle"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="@dimen/dp_12"-->
+<!--            android:layout_marginTop="@dimen/dp_6"-->
+<!--            android:lines="1"-->
+<!--            android:textColor="@color/Unify_N700"-->
+<!--            app:layout_constraintLeft_toRightOf="@id/image_coupon"-->
+<!--            app:layout_constraintRight_toLeftOf="@+id/image_chevron"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:typographyType="heading_5"-->
+<!--            app:typographyWeight="bold"-->
+<!--            tools:text="Ada Cashback hingga Rp100.000" />-->
+
+<!--        <com.tokopedia.unifyprinciples.Typography-->
+<!--            android:id="@+id/tvSubTitle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="@dimen/dp_6"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tvTitle"-->
+<!--            app:typographyType="body_3"-->
+<!--            android:textColor="@color/Unify_N700"-->
+<!--            tools:text="Masih ada 6 Kupon Toko lainnya!" />-->
+
+
+    </FrameLayout>
 </FrameLayout>

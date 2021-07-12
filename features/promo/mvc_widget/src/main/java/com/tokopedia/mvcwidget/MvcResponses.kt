@@ -68,16 +68,15 @@ data class TokopointsCatalogMVCSummaryResponse(
 
 data class TokopointsCatalogMVCSummary(
         @SerializedName("resultStatus") val resultStatus: ResultStatus?,
-        @SerializedName("titles") val titles: List<Titles?>?,
         @SerializedName("isShown") val isShown: Boolean?,
-        @SerializedName("subTitle") val subTitle: String?,
-        @SerializedName("imageURL") val imageURL: String?,
-        @SerializedName("counterTotal") val counterTotal: Int?
+        @SerializedName("counterTotal") val counterTotal: Int?,
+        @SerializedName("animatedInfos") val animatedInfoList: List<AnimatedInfos?>?
         )
 
-data class Titles(
-        @SerializedName("text") val text: String?,
-        @SerializedName("icon") val icon: String?
+data class AnimatedInfos(
+        @SerializedName("title") val title: String?,
+        @SerializedName("subTitle") val subTitle: String?,
+        @SerializedName("iconURL") val iconURL: String?
 )
 
 data class MembershipRegisterResponse(
