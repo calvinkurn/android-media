@@ -3,9 +3,11 @@ package com.tokopedia.buyerorder.detail.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
+import androidx.lifecycle.asLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.common.ResourceProvider
+import com.tokopedia.buyerorder.detail.data.ProductBundle
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonParam
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -14,11 +16,13 @@ import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelParam
 import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
+import com.tokopedia.buyerorder.detail.domain.BuyerProductBundlingUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
 import com.tokopedia.buyerorder.detail.view.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.usecase.coroutines.Result
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +33,8 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
                                                      private val resourceProvider: ResourceProvider,
                                                      private val getCancellationReasonUseCase: BuyerGetCancellationReasonUseCase,
                                                      private val buyerInstantCancelUseCase: BuyerInstantCancelUseCase,
-                                                     private val buyerRequestCancelUseCase: BuyerRequestCancelUseCase) : BaseViewModel(dispatcher.main) {
+                                                     private val buyerRequestCancelUseCase: BuyerRequestCancelUseCase,
+                                                     private val buyerProductBundlingUseCase: BuyerProductBundlingUseCase) : BaseViewModel(dispatcher.main) {
 
     companion object {
         private const val ALLOWED_BUYER_REQUEST_CANCEL_REASON_INPUT = "^[,.?!\\n A-Za-z0-9]+\$"
@@ -54,6 +59,12 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
 
     private val buyerRequestCancelReasonValidation: MutableLiveData<String> = MutableLiveData()
     private val buyerRequestCancelReasonValidationRegex = Regex(ALLOWED_BUYER_REQUEST_CANCEL_REASON_INPUT)
+
+    private val _buyerOrderId: MutableStateFlow<String?> = MutableStateFlow(null)
+    @ExperimentalCoroutinesApi
+    val productBundleListLiveData: LiveData<List<ProductBundle>?> = _buyerOrderId.flatMapLatest {
+        setProductListFlow(it)
+    }.asLiveData()
 
     init {
         initBuyerRequestCancelReasonValidation()
@@ -105,5 +116,27 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
 
     fun validateBuyerRequestCancelReason(reason: String) {
         buyerRequestCancelReasonValidation.value = reason
+    }
+
+    fun getProductBundlingList(orderId: String?) {
+        _buyerOrderId.value = orderId
+    }
+
+    private fun setProductListFlow(orderId: String?): Flow<List<ProductBundle>?> =
+            flow {
+                if (orderId == null) {
+                    emit(null)
+                } else {
+                    emit(getCancellationProductList(orderId))
+                }
+            }.flowOn(dispatcher.io)
+
+    private suspend fun getCancellationProductList(orderId: String): List<ProductBundle>? {
+        buyerProductBundlingUseCase.execute(orderId).let { result ->
+            return when(result) {
+                is Success -> result.data
+                else -> null
+            }
+        }
     }
 }

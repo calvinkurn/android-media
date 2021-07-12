@@ -64,6 +64,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -96,7 +97,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listProductsJsonString : String? = null
     private var listProductBundlesJsonString : String? = null
     private var listProduct = emptyList<Items>()
-    private var listProductBundle = emptyList<ProductBundle>()
+    private var listProductBundle: List<ProductBundle>? = null
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -160,7 +161,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             } ?: emptyList()
             listProductBundle = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
                 GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<ProductBundle>
-            } ?: emptyList()
+            }
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
@@ -189,6 +190,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         getComponent(OrderDetailsComponent::class.java).inject(this)
     }
 
+    @ExperimentalCoroutinesApi
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -197,6 +199,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         observingInstantCancel()
         observingRequestCancel()
         observeBuyerRequestCancelReasonValidationResult()
+        observeBuyerProductBundling()
 
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -231,6 +234,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             else -> {
                 setLayoutCancelIsAvailable()
             }
+        }
+
+        if (listProductBundle == null) {
+            getProductBundling()
         }
 
     }
@@ -611,12 +618,23 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         })
     }
 
+    private fun getProductBundling() {
+        buyerCancellationViewModel.getProductBundlingList(orderId)
+    }
+
     private fun observeBuyerRequestCancelReasonValidationResult() {
         buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.observe(viewLifecycleOwner, {
             tf_choose_sub_reason_editable?.setMessage(it.inputFieldMessage)
             tf_choose_sub_reason_editable?.setError(it.isError)
             btn_req_cancel?.isEnabled = it.isButtonEnable
         })
+    }
+
+    @ExperimentalCoroutinesApi
+    private fun observeBuyerProductBundling() {
+        buyerCancellationViewModel.productBundleListLiveData.observe(viewLifecycleOwner) {
+            // TODO: Change onclick listener
+        }
     }
 
     private fun submitInstantCancel() {
