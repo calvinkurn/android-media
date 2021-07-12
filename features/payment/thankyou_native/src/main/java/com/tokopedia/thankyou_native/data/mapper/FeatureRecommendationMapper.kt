@@ -6,11 +6,31 @@ import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import org.json.JSONObject
 
 object FeatureRecommendationMapper {
 
     private val gson = Gson()
+
+    fun getTopAdsParams(engineData: FeatureEngineData?): TopAdsRequestParams? {
+        if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
+            engineData.featureEngineItem.forEach { featureEngineItem ->
+                try {
+                    val jsonObject = JSONObject(featureEngineItem.detail)
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_PRODUCT, true)
+                        || jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_USER, true)) {
+                        return gson.fromJson(
+                            featureEngineItem.detail,
+                            TopAdsRequestParams::class.java
+                        )
+                    }
+                } catch (e: Exception) { }
+            }
+        }
+        return null
+    }
 
     fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {
         if (engineData == null)
@@ -20,9 +40,9 @@ object FeatureRecommendationMapper {
             return null
 
         return GyroRecommendation(
-                engineData.title,
-                engineData.description,
-                getGyroRecommendationItemList(engineData.featureEngineItem)
+            engineData.title,
+            engineData.description,
+            getGyroRecommendationItemList(engineData.featureEngineItem)
         )
     }
 
@@ -43,13 +63,17 @@ object FeatureRecommendationMapper {
     }
 
     private fun getFeatureRecommendationListItem(featureEngineItem: FeatureEngineItem): Visitable<*> {
-        val featureListItem = gson.fromJson<GyroRecommendationListItem>(featureEngineItem.detail,
-                GyroRecommendationListItem::class.java)
+        val featureListItem = gson.fromJson<GyroRecommendationListItem>(
+            featureEngineItem.detail,
+            GyroRecommendationListItem::class.java
+        )
         featureListItem.id = featureEngineItem.id
         return featureListItem
     }
 
     const val KEY_TYPE = "type"
     const val TYPE_LIST = "list"
+    const val TYPE_TDN_PRODUCT = "tdn_product"
+    const val TYPE_TDN_USER = "tdn_user"
 
 }

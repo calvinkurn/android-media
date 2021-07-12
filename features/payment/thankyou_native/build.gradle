@@ -76,6 +76,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.features.promotionsTarget)
+    implementation project(rootProject.ext.features.topAdsSdk)
 
 
     implementation project(rootProject.ext.features.localizationchooseaddress)
