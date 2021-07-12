@@ -57,7 +57,7 @@ class LoginNormalCase : LoginBase() {
 //                    putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "082242454504")
 //                })
 //            }
-//            intending(hasComponent(VerificationActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(
+//            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(Instrumentation.ActivityResult(
 //                    Activity.RESULT_OK,
 //                    mockVerificationResult
 //            ))

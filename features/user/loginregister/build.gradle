@@ -47,6 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.seamlessLoginCommon)
     implementation project(rootProject.ext.features.pushNotificationCommon)
     implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation project(rootProject.ext.features.otp)
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.libraries.logger)
 
