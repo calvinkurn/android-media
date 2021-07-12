@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="telephony_masking_label">Telephony Masking</string>
-
     <string name="telephony_title">Lebih mudah kenali nomor\nHP Tokopedia Care</string>
     <string name="telephony_desc">Tim kami mungkin perlu menghubungimu, kasih akses kontak ke Tokopedia untuk menyimpan nomor Tokopedia Care.</string>
     <string name="telephony_privacy">Cek Kebijakan Privasi</string>

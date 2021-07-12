@@ -5,7 +5,7 @@
     <application>
         <activity android:name=".view.TelephonyActivity"
             android:theme="@style/TransparentActivity"
-            android:label="@string/telephony_masking_label">
+            android:label="@string/applink_telephony">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
