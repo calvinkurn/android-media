@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Gallery</string>
     <string name="review_image_slider_by_prefix">oleh</string>
-    <string name="review_image_slider_count">Tersedia %s foto lainnya dari pembeli</string>
+    <string name="review_image_slider_count">Tersedia %o foto lainnya dari pembeli</string>
     <string name="review_image_slider_see_all_images">Lihat di Galeri</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
 </resources>
