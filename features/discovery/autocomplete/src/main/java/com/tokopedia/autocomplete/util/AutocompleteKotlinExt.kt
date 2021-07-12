@@ -1,6 +1,7 @@
 package com.tokopedia.autocomplete.util
 
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -22,4 +23,9 @@ internal fun Map<String, Any>?.getValueString(key: String): String {
     this ?: return ""
 
     return get(key)?.toString() ?: ""
+}
+
+internal fun RecyclerView.addItemDecorationIfNotExists(itemDecoration: RecyclerView.ItemDecoration) {
+    val hasNoItemDecoration = itemDecorationCount == 0
+    if (hasNoItemDecoration) addItemDecoration(itemDecoration)
 }

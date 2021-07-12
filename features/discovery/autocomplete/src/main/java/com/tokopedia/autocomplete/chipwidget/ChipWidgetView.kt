@@ -8,6 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.autocomplete.R
+import com.tokopedia.autocomplete.util.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.autocomplete_chip_widget_view.view.*
@@ -17,6 +18,10 @@ import kotlinx.android.synthetic.main.layout_autocomplete_chip_widget.view.*
 class ChipWidgetView: BaseCustomView {
 
     private var adapter: AutocompleteChipWidgetAdapter? = null
+    private val spacingItemDecoration = ChipSpacingItemDecoration(
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+            context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+    )
 
     constructor(context: Context): super(context) {
         init()
@@ -32,21 +37,6 @@ class ChipWidgetView: BaseCustomView {
 
     private fun init() {
         View.inflate(context, R.layout.autocomplete_chip_widget_view, this)
-        addDefaultItemDecorator()
-    }
-
-    private fun addDefaultItemDecorator() {
-        if (autocompleteChipWidgetRecyclerView.itemDecorationCount > 0) autocompleteChipWidgetRecyclerView.removeItemDecorationAt(0)
-
-        autocompleteChipWidgetRecyclerView.addItemDecoration(createItemDecoration())
-    }
-
-    private fun createItemDecoration() = object: RecyclerView.ItemDecoration() {
-        val spacing = 8.toDp()
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            outRect.right = spacing
-            outRect.bottom = spacing
-        }
     }
 
     fun bindChipWidgetView(
@@ -60,8 +50,12 @@ class ChipWidgetView: BaseCustomView {
     private fun initRecyclerView(listener: AutocompleteChipWidgetViewListener) {
         adapter = AutocompleteChipWidgetAdapter(listener)
 
-        autocompleteChipWidgetRecyclerView?.layoutManager = createLayoutManager()
-        autocompleteChipWidgetRecyclerView?.adapter = adapter
+        autocompleteChipWidgetRecyclerView?.let{
+            it.layoutManager = createLayoutManager()
+            it.isNestedScrollingEnabled = false
+            it.adapter = adapter
+            it.addItemDecorationIfNotExists(spacingItemDecoration)
+        }
     }
 
     private fun submitList(data: List<AutocompleteChipDataView>) {
