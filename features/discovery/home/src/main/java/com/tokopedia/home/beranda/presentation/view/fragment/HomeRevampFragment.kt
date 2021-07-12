@@ -140,6 +140,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_WALLETAPP
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
@@ -235,9 +236,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
-        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
@@ -354,9 +352,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun isNavOld(): Boolean {
+    private fun isUsingWalletApp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
+            getAbTestPlatform().getString(HOME_WALLETAPP, "") == HOME_WALLETAPP
         } catch (e: Exception) {
             e.printStackTrace()
             true
@@ -719,31 +717,33 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         }
 
-        if (!isWalletAppCoachmarkShown(requireContext())) {
-            val gopayWidget = getGopayBalanceWidgetView()
-            gopayWidget?.let {
-                this.add(
-                    CoachMark2Item(
-                        gopayWidget,
-                        getString(R.string.home_gopay_coachmark_title),
-                        getString(R.string.home_gopay_coachmark_description)
+        if (isUsingWalletApp()) {
+            if (!isWalletAppCoachmarkShown(requireContext())) {
+                val gopayWidget = getGopayBalanceWidgetView()
+                gopayWidget?.let {
+                    this.add(
+                        CoachMark2Item(
+                            gopayWidget,
+                            getString(R.string.home_gopay_coachmark_title),
+                            getString(R.string.home_gopay_coachmark_description)
+                        )
                     )
-                )
-                gopayCoachmarkPosition = (this.size-1)
+                    gopayCoachmarkPosition = (this.size-1)
+                }
             }
-        }
 
-        if (!isWalletApp2CoachmarkShown(requireContext())) {
-            val balanceWidget = getBalanceWidgetView()
-            balanceWidget?.let {
-                this.add(
-                    CoachMark2Item(
-                        balanceWidget,
-                        getString(R.string.home_gopay2_coachmark_title),
-                        getString(R.string.home_gopay2_coachmark_description)
+            if (!isWalletApp2CoachmarkShown(requireContext())) {
+                val balanceWidget = getBalanceWidgetView()
+                balanceWidget?.let {
+                    this.add(
+                        CoachMark2Item(
+                            balanceWidget,
+                            getString(R.string.home_gopay2_coachmark_title),
+                            getString(R.string.home_gopay2_coachmark_description)
+                        )
                     )
-                )
-                gopayAccountCoachmarkPosition = (this.size-1)
+                    gopayAccountCoachmarkPosition = (this.size-1)
+                }
             }
         }
     }
@@ -823,6 +823,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
             this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
                 setBalanceWidgetCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.home_gopay_coachmark_title), ignoreCase = true) -> {
+                setWalletAppCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.home_gopay2_coachmark_title), ignoreCase = true) -> {
+                setWalletApp2CoachmarkShown(requireContext())
             }
         }
     }
@@ -993,9 +999,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
         )
 
-        //TODO: Register remote config to turn off and on new balance widget
         getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
-        getHomeViewModel().setWalletAppRollence(true)
+        getHomeViewModel().setWalletAppRollence(isUsingWalletApp())
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -2533,23 +2538,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         get() {
             var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             context?.let {
-                if (isNavOld()) {
-                    if (oldToolbar != null) {
-                        height = oldToolbar?.height
+                navAbTestCondition(
+                    ifNavOld = {
+                        if (oldToolbar != null) {
+                            height = oldToolbar?.height
                                 ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                        oldToolbar?.let {
-                            if (!it.isShadowApplied()) {
-                                height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                            oldToolbar?.let {
+                                if (!it.isShadowApplied()) {
+                                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                                }
                             }
                         }
-                    }
-                } else if (isNavRevamp()) {
-                    navToolbar?.let {
-                        height = navToolbar?.height
+                    },
+                    ifNavRevamp = {
+                        navToolbar?.let {
+                            height = navToolbar?.height
                                 ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                        }
                     }
-                }
+                )
             }
             return height
         }
