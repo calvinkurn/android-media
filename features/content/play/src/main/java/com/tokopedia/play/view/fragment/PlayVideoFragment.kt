@@ -395,11 +395,12 @@ class PlayVideoFragment @Inject constructor(
 
     private fun observeCastState() {
         playViewModel.observableCastState.observe(viewLifecycleOwner, DistinctObserver {
-            if(it == PlayCastUiModel.LOADING) {
-                videoLoadingView.showLoadingCasting()
-            }
-            else if(it == PlayCastUiModel.CONNECTED) {
-                videoLoadingView.showCasting()
+            when(it) {
+                PlayCastUiModel.LOADING -> videoLoadingView.showLoadingCasting()
+                PlayCastUiModel.CONNECTED -> videoLoadingView.showCasting()
+                PlayCastUiModel.NO_DEVICE_AVAILABLE,
+                PlayCastUiModel.NOT_CONNECTED-> videoLoadingView.hide()
+                else -> {}
             }
         })
     }

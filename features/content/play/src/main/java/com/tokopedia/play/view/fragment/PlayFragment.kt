@@ -130,6 +130,14 @@ class PlayFragment @Inject constructor(
                 Log.d("<CAST>", "Cast - Connected")
                 playViewModel.setCastState(PlayCastUiModel.CONNECTED)
             }
+            CastState.NOT_CONNECTED -> {
+                Log.d("<CAST>", "Cast - Not Connected")
+                playViewModel.setCastState(PlayCastUiModel.NOT_CONNECTED)
+            }
+            CastState.NO_DEVICES_AVAILABLE -> {
+                Log.d("<CAST>", "Cast - Not Device Available")
+                playViewModel.setCastState(PlayCastUiModel.NO_DEVICE_AVAILABLE)
+            }
         }
     }
 
