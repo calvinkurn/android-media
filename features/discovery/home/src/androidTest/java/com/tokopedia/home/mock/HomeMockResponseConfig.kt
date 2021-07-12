@@ -35,6 +35,7 @@ internal open class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_PRODUCT_RECOMMENDATION = "productRecommendation"
         const val KEY_CONTAINS_HEADLINE_ADS = "DisplayHeadlineAds"
         const val KEY_CONTAINS_NOTIFICATION = "Notification"
+        const val KEY_CONTAINS_CHIPS = "RecommendationFilterChipsQuery"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -178,6 +179,12 @@ internal open class HomeMockResponseConfig: MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_NOTIFICATION,
             getRawString(context, R.raw.response_mock_data_navigation_notification),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_CONTAINS_CHIPS,
+            getRawString(context, R.raw.response_mock_data_best_seller_chips),
             FIND_BY_CONTAINS
         )
         return this

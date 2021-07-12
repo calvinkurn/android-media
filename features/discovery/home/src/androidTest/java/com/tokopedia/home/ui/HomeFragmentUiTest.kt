@@ -79,7 +79,7 @@ class HomeFragmentUiTest {
         assertNavigationToolbar()
         assertHeader()
         assertHomeContent()
-        assertRecommendationTab()
+        assertHomeInteractionAndRecomTab()
     }
 
     /**
@@ -211,18 +211,17 @@ class HomeFragmentUiTest {
     }
 
     /**
+     * We want to make sure that home is swipeUpAble
      * We want to make sure that the home recommendation tab:
      * - Is showing all the components when the recom viewholder is binded
      */
-    private fun assertRecommendationTab() {
+    private fun assertHomeInteractionAndRecomTab() {
         /**
          * Assert home content to match given mock value
          */
         val homeRecyclerView =
             activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-        while ((homeRecyclerView.layoutManager as? LinearLayoutManager)?.findFirstVisibleItemPosition() != ((homeRecyclerView.adapter?.itemCount
-                ?: 0) - 2)
-        ) {
+        while (homeRecyclerView?.canScrollVertically(1) == true) {
             onView(withId(R.id.home_fragment_recycler_view)).perform(swipeUp())
         }
 
