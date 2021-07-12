@@ -9,8 +9,7 @@
         android:id="@+id/telco_input_number_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/spacing_lvl2"
-        android:layout_marginVertical="@dimen/spacing_lvl3">
+        android:layout_margin="@dimen/layout_lvl1">
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/telco_field_input_number"

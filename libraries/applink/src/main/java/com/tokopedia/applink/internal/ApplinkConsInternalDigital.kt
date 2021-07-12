@@ -40,4 +40,6 @@ object ApplinkConsInternalDigital {
     const val PRODUCT_TEMPLATE_WITH_CATEGORY_ID = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?category_id={category_id}&menu_id={menu_id}&template={template}"
 
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
+    const val FAVORITE_NUMBER = "$INTERNAL_DIGITAL/favnum"
+    const val SEAMLESS_FAVORITE_NUMBER = "$INTERNAL_DIGITAL/seamlessfavnum"
 }

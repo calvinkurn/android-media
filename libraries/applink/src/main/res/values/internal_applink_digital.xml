@@ -27,6 +27,8 @@
     <string name="path_brizzi" translatable="false">/smartcard/brizzi</string>
     <string name="title_digital_emoney">Uang Elektronik</string>
     <string name="path_electronicmoney" translatable="false">/electronicmoney</string>
+    <string name="path_digital_favorite_number" translatable="false">/favnum</string>
+    <string name="path_digital_seamless_favorite_number" translatable="false">/seamlessfavnum</string>
 
     <string name="path_camera_ocr" translatable="false">/ocr</string>
 

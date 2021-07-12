@@ -65,7 +65,6 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_NUMBER = "EXTRA_NUMBER"
-        const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
 
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
         const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"

@@ -20,24 +20,19 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
-import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
-import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -239,12 +234,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getCatalogMenuDetail() {
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
-        // TODO: [Misael] toggle
-        if (isSeamlessFavoriteNumber) {
-            getSeamlessFavoriteNumbers(listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()))
-        } else {
-            getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_POSTPAID)
-        }
+        getFavoriteNumber(
+                categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
+                oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID
+        )
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
@@ -310,24 +303,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClientNumberHasFocus(clientNumber: String) {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
-                if (isSeamlessFavoriteNumber) {
-                    startActivityForResult(activity?.let {
-                        TopupBillsFavoriteNumberActivity.getCallingIntent(it,
-                            ClientNumberType.TYPE_INPUT_TEL,
-                            clientNumber,
-                            operatorData,
-                            topupAnalytics.getCategoryName(categoryId),
-                            arrayListOf(categoryId.toString())
-                        )
-                    },
-                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-                } else {
-                    startActivityForResult(activity?.let {
-                        DigitalSearchNumberActivity.newInstance(it,
-                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
-                    },
-                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-                }
+                navigateFavoriteNumberPage(clientNumber, favNumberList,
+                        arrayListOf(categoryId.toString()), topupAnalytics.getCategoryName(categoryId)
+                )
             }
         })
 
