@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.pms.bankaccount.viewmodel.ChangeBankAccountViewModel
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaViewModel
-import com.tokopedia.pms.howtopay_native.ui.viewmodel.HowToPayViewModel
+import com.tokopedia.pms.howtopay.ui.viewmodel.HowToPayViewModel
 import com.tokopedia.pms.paymentlist.viewmodel.PaymentListViewModel
 import dagger.Binds
 import dagger.Module
