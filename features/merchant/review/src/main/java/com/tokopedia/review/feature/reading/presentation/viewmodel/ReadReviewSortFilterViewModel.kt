@@ -39,7 +39,7 @@ class ReadReviewSortFilterViewModel @Inject constructor() : ViewModel() {
         return filterData
     }
 
-    fun getOriginalFilters(): Set<String>{
+    fun getOriginalFilters(): Set<String> {
         return originalFilter
     }
 
@@ -49,14 +49,14 @@ class ReadReviewSortFilterViewModel @Inject constructor() : ViewModel() {
 
     fun onFilterCheckChange(isChecked: Boolean, itemUnify: ListItemUnify) {
         selectedFilters.value = if (isChecked) {
-            selectedFilters.value?.plus(itemUnify.listTitleText)
+            selectedFilters.value!!.plus(itemUnify.listTitleText)
         } else {
-            selectedFilters.value?.minus(itemUnify.listTitleText)
+            selectedFilters.value!!.minus(itemUnify.listTitleText)
         }
     }
 
     fun updateSelectedFilter(listItemUnify: ListItemUnify) {
-        selectedFilters.value = selectedFilters.value?.plus(listItemUnify.listTitleText)
+        selectedFilters.value = selectedFilters.value!!.plus(listItemUnify.listTitleText)
     }
 
     fun onSortCheckChange(isChecked: Boolean, selectedSortOption: ListItemUnify) {
@@ -70,11 +70,11 @@ class ReadReviewSortFilterViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getSelectedSort(): ListItemUnify {
-        return selectedSort.value ?: ListItemUnify()
+        return selectedSort.value!!
     }
 
     fun getSelectedFilters(): Set<ListItemUnify> {
-        return selectedFilters.value?.map { ListItemUnify(it, "") }?.toSet() ?: setOf()
+        return selectedFilters.value!!.map { ListItemUnify(it, "") }.toSet()
     }
 
 }
