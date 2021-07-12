@@ -46,13 +46,17 @@ import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -119,6 +123,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private val buyerCancellationViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
+    }
+
+    private val buyerProductBundlingAdapterFactory by lazy {
+        BuyerProductBundlingAdapterFactory()
     }
 
     companion object {
@@ -199,7 +207,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         observingInstantCancel()
         observingRequestCancel()
         observeBuyerRequestCancelReasonValidationResult()
-        observeBuyerProductBundling()
 
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -237,7 +244,13 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         if (listBuyerBundlingProductUiModel == null) {
+            observeBuyerProductBundling()
             getProductBundling()
+        } else {
+            label_see_all_products?.run {
+                text = "${getString(R.string.see_all_placeholder)} (${listProduct.size + listBuyerBundlingProductUiModel?.getTotalItems().orZero()})"
+                setOnClickListener { showProductBundleBottomSheet() }
+            }
         }
 
     }
@@ -388,6 +401,29 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             rv_cancel?.apply {
                 layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
                 adapter = buyerListOfProductsBottomSheetAdapter
+            }
+        }
+
+        val bottomSheet = BottomSheetUnify().apply {
+            setChild(viewBottomSheet)
+            setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
+            showCloseIcon = true
+            setCloseClickListener { dismiss() }
+        }
+
+        fragmentManager?.let { bottomSheet.show(it, getString(R.string.show_bottomsheet)) }
+    }
+
+    private fun showProductBundleBottomSheet() {
+        val buyerProductBundlingAdapter = BuyerProductBundlingBottomSheetAdapter(
+                bundleProductItems = listBuyerBundlingProductUiModel.orEmpty(),
+                normalProductItems = listProduct.mapToNormalProductItems(),
+                adapterTypeFactory = buyerProductBundlingAdapterFactory
+        )
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null).apply {
+            rv_cancel?.apply {
+                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                adapter = buyerProductBundlingAdapter
             }
         }
 
@@ -630,10 +666,17 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         })
     }
 
+    @SuppressLint("SetTextI18n")
     @ExperimentalCoroutinesApi
     private fun observeBuyerProductBundling() {
-        buyerCancellationViewModel.buyerBundlingProductUiModelListLiveData.observe(viewLifecycleOwner) {
-            // TODO: Change onclick listener
+        buyerCancellationViewModel.buyerBundlingProductUiModelListLiveData.observe(viewLifecycleOwner) { bundleProductList ->
+            listBuyerBundlingProductUiModel = bundleProductList
+            bundleProductList?.let {
+                label_see_all_products?.run {
+                    text = "${getString(R.string.see_all_placeholder)} (${listProduct.size + it.getTotalItems()})"
+                    setOnClickListener { showProductBundleBottomSheet() }
+                }
+            }
         }
     }
 
@@ -784,5 +827,21 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun showKeyboard(context: Context) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    }
+
+    private fun List<Items>.mapToNormalProductItems(): List<BuyerNormalProductUiModel> {
+        return map {
+            BuyerNormalProductUiModel(
+                    productName = it.title,
+                    productPrice = it.price,
+                    productThumbnailUrl = it.imageUrl
+            )
+        }
+    }
+
+    private fun List<BuyerBundlingProductUiModel>.getTotalItems(): Int {
+        var totalItems = 0
+        forEach { totalItems += it.productList.size }
+        return totalItems
     }
 }
