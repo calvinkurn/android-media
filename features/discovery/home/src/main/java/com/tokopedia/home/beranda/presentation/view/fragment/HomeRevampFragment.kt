@@ -257,6 +257,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var tokopointsCoachmarkPosition: Int? = null
+    private var gopayCoachmarkPosition: Int? = null
+    private var gopayAccountCoachmarkPosition: Int? = null
+
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
@@ -711,6 +715,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getString(R.string.onboarding_coachmark_wallet_description)
                         )
                 )
+                tokopointsCoachmarkPosition = (this.size-1)
             }
         }
 
@@ -724,6 +729,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         getString(R.string.home_gopay_coachmark_description)
                     )
                 )
+                gopayCoachmarkPosition = (this.size-1)
             }
         }
 
@@ -737,6 +743,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         getString(R.string.home_gopay2_coachmark_description)
                     )
                 )
+                gopayAccountCoachmarkPosition = (this.size-1)
             }
         }
     }
@@ -750,8 +757,43 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachMarkItem.buildHomeCoachmark()
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        coachMarkItem.setCoachmarkShownPref()
+                    override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
+                        when (currentIndex) {
+                            tokopointsCoachmarkPosition -> {
+                                val item = coachMarkItem[currentIndex]
+                                coachmark?.isDismissed = true
+
+                                val tokopointsView = getTokopointsBalanceWidgetView()
+                                tokopointsView?.let {
+                                    item.anchorView = tokopointsView
+                                    coachmark?.isDismissed = false
+                                    coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
+                                }
+                            }
+                            gopayCoachmarkPosition -> {
+                                val item = coachMarkItem[currentIndex]
+                                coachmark?.isDismissed = true
+
+                                val gopayView = getGopayBalanceWidgetView()
+                                gopayView?.let {
+                                    item.anchorView = gopayView
+                                    coachmark?.isDismissed = false
+                                    coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
+                                }
+                            }
+                            gopayAccountCoachmarkPosition -> {
+                                val item = coachMarkItem[currentIndex]
+                                coachmark?.isDismissed = true
+
+                                val balanceWidgetView = getBalanceWidgetView()
+                                balanceWidgetView?.let {
+                                    item.anchorView = balanceWidgetView
+                                    coachmark?.isDismissed = false
+                                    coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
+                                }
+                            }
+                        }
+                        coachMark2Item.setCoachmarkShownPref()
                     }
                 })
                 //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature

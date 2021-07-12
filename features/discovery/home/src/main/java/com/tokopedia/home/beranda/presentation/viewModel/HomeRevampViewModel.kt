@@ -1372,6 +1372,9 @@ open class HomeRevampViewModel @Inject constructor(
 
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
         val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+        if (tokopointsDrawerListHome.tokopointsDrawerList.drawerList.isEmpty()) {
+            throw IllegalStateException("Tokopoints data is null")
+        }
         return tokopointsDrawerListHome
     }
 
