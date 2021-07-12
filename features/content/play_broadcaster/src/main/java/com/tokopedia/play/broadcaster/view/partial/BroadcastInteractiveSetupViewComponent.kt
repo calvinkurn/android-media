@@ -59,6 +59,10 @@ class BroadcastInteractiveSetupViewComponent(
     }
 
     private fun initView() {
+        rootView.setOnClickListener {
+            showKeyboard(false)
+            hide()
+        }
         findViewById<UnifyButton>(R.id.btn_cancel).setOnClickListener {
             showKeyboard(false)
             hide()
