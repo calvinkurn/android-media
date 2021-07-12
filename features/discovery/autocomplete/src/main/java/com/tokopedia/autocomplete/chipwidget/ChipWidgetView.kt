@@ -17,51 +17,28 @@ import kotlinx.android.synthetic.main.layout_autocomplete_chip_widget.view.*
 class ChipWidgetView: BaseCustomView {
 
     private var adapter: AutocompleteChipWidgetAdapter? = null
-    private var isUseDefaultItemDecorator = true
 
     constructor(context: Context): super(context) {
-        init(null)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
-        init(attrs)
+        init()
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(attrs)
+        init()
     }
 
-    private fun init(attrs: AttributeSet?) {
+    private fun init() {
         View.inflate(context, R.layout.autocomplete_chip_widget_view, this)
-
-        defineCustomAttributes(attrs)
-
         addDefaultItemDecorator()
     }
 
-    private fun defineCustomAttributes(attrs: AttributeSet?) {
-        if (attrs != null) {
-            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ChipWidgetView, 0, 0)
-
-            try {
-                tryDefineCustomAttributes(styledAttributes)
-            } finally {
-                styledAttributes.recycle()
-            }
-        }
-    }
-
-    private fun tryDefineCustomAttributes(styledAttributes: TypedArray) {
-        isUseDefaultItemDecorator = styledAttributes.getBoolean(R.styleable.ChipWidgetView_useDefaultItemDecorator, true)
-    }
-
     private fun addDefaultItemDecorator() {
-        if (isUseDefaultItemDecorator) {
-            if (autocompleteChipWidgetRecyclerView.itemDecorationCount > 0)
-                autocompleteChipWidgetRecyclerView.removeItemDecorationAt(0)
+        if (autocompleteChipWidgetRecyclerView.itemDecorationCount > 0) autocompleteChipWidgetRecyclerView.removeItemDecorationAt(0)
 
-            autocompleteChipWidgetRecyclerView.addItemDecoration(createItemDecoration())
-        }
+        autocompleteChipWidgetRecyclerView.addItemDecoration(createItemDecoration())
     }
 
     private fun createItemDecoration() = object: RecyclerView.ItemDecoration() {
