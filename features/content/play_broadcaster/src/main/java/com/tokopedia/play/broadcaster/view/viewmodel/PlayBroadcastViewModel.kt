@@ -24,7 +24,6 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveI
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayChannelLiveStateListener
@@ -184,7 +183,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val countDownTimerListener = object : PlayCountDownTimer.Listener {
         override fun onCountDownActive(millis: Long) {
-            _observableLiveDurationState.value = PlayTimerState.Active(millis.convertMillisToMinuteSecond())
+            _observableLiveDurationState.value = PlayTimerState.Active(millis.toString()) // TODO("time format %02d:%02d")
         }
 
         override fun onCountDownAlmostFinish(minutes: Long) {

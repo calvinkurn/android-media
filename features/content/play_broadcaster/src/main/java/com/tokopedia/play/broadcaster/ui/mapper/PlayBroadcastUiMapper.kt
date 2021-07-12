@@ -19,7 +19,6 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
-import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -157,7 +156,6 @@ class PlayBroadcastUiMapper(
                 channelId = channelStatus.first,
                 channelType =  channelStatus.second,
                 remainingTime = remainingTime,
-                timeElapsed = (maxDuration - remainingTime).convertMillisToMinuteSecond(),
                 durationConfig = DurationConfigUiModel(
                         duration = maxDuration,
                         maxDurationDesc = config.maxDurationDesc,

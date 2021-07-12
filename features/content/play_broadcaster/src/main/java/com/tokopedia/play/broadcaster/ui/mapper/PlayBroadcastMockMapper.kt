@@ -138,7 +138,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 channelType = ChannelType.Draft,
                 channelId = "10008", // 10008 prod, 10012 stag (status: draft)
                 remainingTime = (30 * 60 * 1000),
-                timeElapsed = "01:00",
                 durationConfig = DurationConfigUiModel(
                         duration = (30 * 60 * 1000),
                         maxDurationDesc = "Siaran 30 menit",

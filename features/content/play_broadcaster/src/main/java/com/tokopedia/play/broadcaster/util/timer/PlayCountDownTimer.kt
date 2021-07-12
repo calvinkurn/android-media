@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.util.timer
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.CountDownTimer
-import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -12,12 +11,6 @@ import kotlin.math.max
  * Created by mzennis on 25/05/20.
  */
 class PlayCountDownTimer @Inject constructor(private val context: Context) {
-
-    val maxDuration: Long
-        get() = mMaxDuration
-
-    val timeElapsed: String
-        get() = getTimeElapsedInMillis().convertMillisToMinuteSecond()
 
     private var mCountDownTimer: CountDownTimer? = null
     private var mMaxDuration: Long = 0L
