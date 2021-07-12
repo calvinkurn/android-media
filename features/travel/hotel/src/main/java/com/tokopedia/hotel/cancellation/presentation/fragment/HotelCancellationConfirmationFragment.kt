@@ -110,7 +110,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        cancellationViewModel.cancellationSubmitData.observe(this, Observer {
+        cancellationViewModel.cancellationSubmitData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     initView(it.data)

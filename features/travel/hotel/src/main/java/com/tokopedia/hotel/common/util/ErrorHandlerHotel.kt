@@ -71,10 +71,12 @@ class ErrorHandlerHotel {
         fun getErrorUnify(context: Context?, e: Throwable?, action: () -> Unit, view: GlobalError){
             when(e){
                 is UnknownHostException -> view.setType(GlobalError.NO_CONNECTION)
-                is MessageErrorException -> view.setType(GlobalError.SERVER_ERROR)
+                is MessageErrorException -> {
+                    view.setType(GlobalError.SERVER_ERROR)
+                    view.errorTitle.text = if(e.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, e) else e.message
+                }
                 else -> view.setType(GlobalError.SERVER_ERROR)
             }
-            view.errorTitle.text = if(e?.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, e) else e?.message
             view.setActionClickListener {
                 action()
             }
