@@ -190,76 +190,13 @@
 
             </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
                 android:id="@+id/reply_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_8"
-                android:paddingEnd="@dimen/unify_space_12">
-
-                <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/send_but"
-                    android:layout_width="@dimen/spacing_lvl7"
-                    android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
-                    android:background="@drawable/bg_topchat_send_btn_disabled"
-                    android:paddingStart="@dimen/dp_topchat_10"
-                    android:paddingTop="@dimen/dp_topchat_10"
-                    android:paddingEnd="@dimen/dp_topchat_9"
-                    android:paddingBottom="@dimen/dp_topchat_10"
-                    app:icon_color_light_enable="@color/Unify_Static_White"
-                    app:icon_color_night_enable="@color/Unify_Static_White"
-                    app:icon_name="SEND_TEXT"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <EditText
-                    android:id="@+id/new_comment"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_topchat_6"
-                    android:layout_marginBottom="@dimen/dp_topchat_14"
-                    android:hint="@string/chat_edit_text"
-                    android:inputType="textMultiLine"
-                    android:maxLines="5"
-                    android:minHeight="@dimen/dp_topchat_40"
-                    android:paddingStart="@dimen/spacing_lvl7"
-                    android:paddingTop="@dimen/dp_topchat_10"
-                    android:paddingEnd="@dimen/spacing_lvl8"
-                    android:paddingBottom="@dimen/dp_topchat_10"
-                    android:textColor="@color/Unify_N700_96"
-                    android:textColorHint="@color/Unify_N700_32"
-                    android:textSize="@dimen/fontSize_lvl4"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/send_but"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:text="@tools:sample/lorem/random" />
-
-                <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/iv_chat_sticker"
-                    android:layout_width="@dimen/spacing_lvl7"
-                    android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_marginBottom="@dimen/dp_topchat_1"
-                    android:padding="@dimen/spacing_lvl3"
-                    app:icon_color_light_enable="@color/topchat_dms_icon_compose"
-                    app:icon_name="STICKER"
-                    app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-                    app:layout_constraintStart_toStartOf="@+id/new_comment" />
-
-                <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/iv_chat_menu"
-                    android:layout_width="@dimen/spacing_lvl7"
-                    android:layout_height="@dimen/spacing_lvl7"
-                    android:layout_marginEnd="@dimen/spacing_lvl1"
-                    android:layout_marginBottom="@dimen/dp_topchat_1"
-                    android:padding="@dimen/spacing_lvl3"
-                    app:icon_color_light_enable="@color/topchat_dms_icon_compose"
-                    app:icon_name="ADD_CIRCLE"
-                    app:layout_constraintBottom_toBottomOf="@+id/new_comment"
-                    app:layout_constraintEnd_toEndOf="@+id/new_comment" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:paddingEnd="@dimen/unify_space_12" />
 
             <com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
                 android:id="@+id/fl_chat_menu"
