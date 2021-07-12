@@ -286,7 +286,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         connectionMonitor?.end()
     }
 
-    override fun interruptOnBackPressed(): Boolean {
+    override fun onFragmentBackPressed(): Boolean {
         return dismissBottomSheets()
     }
 

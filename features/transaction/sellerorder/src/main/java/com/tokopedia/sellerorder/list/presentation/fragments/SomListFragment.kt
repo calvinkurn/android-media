@@ -408,7 +408,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
     }
 
-    override fun interruptOnBackPressed(): Boolean {
+    override fun onFragmentBackPressed(): Boolean {
         return dismissBottomSheets()
     }
 

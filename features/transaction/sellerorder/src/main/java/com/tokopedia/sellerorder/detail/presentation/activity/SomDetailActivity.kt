@@ -57,7 +57,6 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
     }
 
     override fun onBackPressed() {
-        if (handleFragmentOnBackPressedInterrupt()) return
         val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, (fragment as? SomDetailFragment)?.isDetailChanged ?: false)
         setResult(Activity.RESULT_OK, result)
         finish()
@@ -67,13 +66,6 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
             DaggerSomDetailComponent.builder()
                     .somComponent(SomComponentInstance.getSomComponent(application))
                     .build()
-
-    private fun handleFragmentOnBackPressedInterrupt(): Boolean {
-        return fragment?.let {
-            if (it is TkpdBaseV4Fragment) it.interruptOnBackPressed()
-            else false
-        } ?: false
-    }
 
     private fun setWhiteStatusBarBackground() {
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
