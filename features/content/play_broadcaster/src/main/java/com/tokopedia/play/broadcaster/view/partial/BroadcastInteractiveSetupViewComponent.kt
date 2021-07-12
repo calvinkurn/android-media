@@ -37,6 +37,7 @@ class BroadcastInteractiveSetupViewComponent(
     private val activeTimerLbl = findViewById<Typography>(R.id.tv_timer)
     private val containerTimePicker = findViewById<ConstraintLayout>(R.id.cl_interactive_time_picker)
     private val timePicker = findViewById<PickerUnify>(R.id.pu_timer)
+    private val btnApply = findViewById<UnifyButton>(R.id.btn_apply)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(containerTimePicker)
 
@@ -91,7 +92,7 @@ class BroadcastInteractiveSetupViewComponent(
             }
         }
 
-        findViewById<UnifyButton>(R.id.btn_apply).setOnClickListener {
+        btnApply.setOnClickListener {
             val selectedDuration = mAvailableDuration[timePicker.activeIndex]
             listener.onApplyButtonClicked(this@BroadcastInteractiveSetupViewComponent, title, selectedDuration)
         }
@@ -101,6 +102,10 @@ class BroadcastInteractiveSetupViewComponent(
             val selectedDuration = mAvailableDuration[index]
             setLabelSelectedDuration(selectedDuration)
         }
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        btnApply.isLoading = isLoading
     }
 
     fun setConfig(config: InteractiveConfigUiModel) {

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.mapper
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -64,4 +65,6 @@ interface PlayBroadcastMapper {
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 
     fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+
+    fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean
 }

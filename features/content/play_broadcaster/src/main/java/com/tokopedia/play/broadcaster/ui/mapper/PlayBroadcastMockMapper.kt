@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -237,6 +238,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             durationInMs = 10000L,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
     )
+
+    override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
+        return true
+    }
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"

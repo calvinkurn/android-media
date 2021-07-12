@@ -44,6 +44,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -104,7 +105,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 title: String,
                 durationInMs: Long
             ) {
-                // TODO("Not yet implemented")
+                parentViewModel.createInteractiveSession(title, durationInMs)
             }
         })
     }
@@ -139,7 +140,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (arguments?.getBoolean(KEY_START_COUNTDOWN) == true) {
             startCountDown()
         }
-        parentViewModel.onOpenLiveStreamPage()
     }
 
     override fun onStart() {
@@ -192,6 +192,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeMetrics()
         observeEvent()
         observeInteractiveConfig()
+        observeCreateInteractiveSession()
     }
 
     private fun startCountDown() {
@@ -513,6 +514,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun observeCreateInteractiveSession() {
+        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner, Observer { state ->
+            when (state) {
+                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
+                is NetworkResult.Success -> {
+                    interactiveSetupView.setLoading(false)
+                    interactiveSetupView.hide()
+                }
+                is NetworkResult.Fail -> {
+                    interactiveSetupView.setLoading(false)
+                    showToaster(
+                        message = getString(R.string.play_interactive_broadcast_create_fail), // TODO("ask for proper message")
+                        type = Toaster.TYPE_ERROR,
+                        duration = Toaster.LENGTH_SHORT
+                    )
+                }
+            }
+        })
     }
     //endregion
 

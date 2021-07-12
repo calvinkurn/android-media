@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -44,14 +45,14 @@ class PostInteractiveCreateSessionUseCase @Inject constructor(
         shopId: String,
         channelId: String,
         title: String,
-        timer: Int
+        durationInMs: Long
     ): PostInteractiveCreateSessionResponse {
         setRequestParams(
             createParams(
                 shopId = shopId,
                 channelId = channelId,
                 title = title,
-                timer = (timer*60).toString() // convert minute to second
+                timer = TimeUnit.MILLISECONDS.toSeconds(durationInMs).toString()
             )
         )
         return executeOnBackground()

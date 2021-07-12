@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
@@ -68,6 +69,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
         private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
         private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
+        private val createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase,
         private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val playSocket: PlayBroadcastSocket,
@@ -127,6 +129,8 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableInteractiveState
     val observableLeaderboardInfo: LiveData<PlayLeaderboardInfoUiModel>
         get() = _observableLeaderboardInfo
+    val observableCreateInteractiveSession: LiveData<NetworkResult<Boolean>>
+        get() = _observableCreateInteractiveSession
 
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
@@ -150,13 +154,17 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo = MutableLiveData<PlayLeaderboardInfoUiModel>()
+    private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<Boolean>>()
 
     private val livePusher = livePusherBuilder.build()
 
     private val liveStateListener = object : PlayLiveStateListener {
         override fun onStateChanged(state: PlayLivePusherState) {
             when (state) {
-                is PlayLivePusherState.Start -> startWebSocket()
+                is PlayLivePusherState.Start -> {
+                    startWebSocket()
+                    getInteractiveConfig()
+                }
                 is PlayLivePusherState.Resume -> if (state.isResumed) resumeTimer()
                 is PlayLivePusherState.Pause -> countDownTimer.pause()
                 else -> {}
@@ -191,7 +199,7 @@ class PlayBroadcastViewModel @Inject constructor(
             }
         }
     }
-    
+
     private val liveStateProcessor = livePusherStateProcessorFactory.create(livePusher, dispatcher, viewModelScope)
     private var isLiveStarted: Boolean = false
 
@@ -431,12 +439,34 @@ class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launch { onInteractiveFinished() }
     }
 
-    fun onOpenLiveStreamPage() {
+    fun createInteractiveSession(title: String, durationInMs: Long) {
+        _observableCreateInteractiveSession.value = NetworkResult.Loading
+        viewModelScope.launchCatchError(block = {
+            val response = createInteractiveSessionUseCase.execute(
+                userSession.shopId,
+                channelId,
+                title,
+                durationInMs
+            )
+            val result = playBroadcastMapper.mapCreateInteractiveSession(response)
+            if (result) {
+                handleActiveInteractive()
+                _observableCreateInteractiveSession.value = NetworkResult.Success(result)
+            } else {
+                _observableCreateInteractiveSession.value = NetworkResult.Fail(Throwable("fail create interactive session"))
+            }
+        }) {
+            _observableCreateInteractiveSession.value = NetworkResult.Fail(it)
+        }
+    }
+
+    private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveResponse = getInteractiveConfigUseCase.apply {
                 setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
             }.executeOnBackground()
             val interactiveConfig = playBroadcastMapper.mapInteractiveConfig(interactiveResponse)
+            _observableInteractiveConfig.value = interactiveConfig
 
             if (interactiveConfig.isActive) {
                 handleActiveInteractive()

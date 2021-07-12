@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
@@ -275,4 +276,8 @@ class PlayBroadcastUiMapper(
                 TimeUnit.SECONDS.toMillis(it.toLong())
             },
     )
+
+    override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
+        return response.interactiveSellerCreateSession.header.status == 200
+    }
 }
