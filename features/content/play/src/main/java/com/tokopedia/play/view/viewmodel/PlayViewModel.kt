@@ -1279,23 +1279,25 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleInteractiveOngoingFinished() {
-        viewModelScope.launchCatchError(block = {
-            val channelId = mChannelData?.id ?: return@launchCatchError
-
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
-            interactiveRepo.setFinished(activeInteractiveId)
+        fun setInteractiveToFinished(interactiveId: String) {
+            interactiveRepo.setFinished(interactiveId)
 
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_initial_text,
             )
+        }
 
-            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
-
+        suspend fun fetchLeaderboard(channelId: String) = withContext(dispatchers.io) {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
 
-            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
+            val deferredInteractiveLeaderboard = async { interactiveRepo.getInteractiveLeaderboard(channelId) }
+
+            deferredDelay.await()
+            val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
+
             val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
             val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
 
@@ -1311,13 +1313,25 @@ class PlayViewModel @Inject constructor(
 
             _interactive.value = PlayInteractiveUiState.NoInteractive
             _leaderboardInfo.value = interactiveLeaderboard
+        }
 
+        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
             _uiEvent.emit(
                     ShowCoachMarkWinnerEvent(
-                            interactiveLeaderboard.config.loserMessage,
-                            interactiveLeaderboard.config.loserDetail
+                            leaderboard.config.loserMessage,
+                            leaderboard.config.loserDetail
                     )
             )
+        }
+
+        viewModelScope.launchCatchError(block = {
+            val channelId = mChannelData?.id ?: return@launchCatchError
+            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
+
+            setInteractiveToFinished(activeInteractiveId)
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+            fetchLeaderboard(channelId)
+            showCoachMark(_leaderboardInfo.value)
         }) {}
     }
 
@@ -1407,7 +1421,7 @@ class PlayViewModel @Inject constructor(
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val ONBOARDING_DELAY = 5000L
-        private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 1000L
+        private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
         /**
          * Request Code When need login
