@@ -171,11 +171,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     override fun onBackPressed() {
-        supportFragmentManager.fragments.forEach {
-            if (it is TkpdBaseV4Fragment) {
-                if (it.interruptOnBackPressed()) return
-            }
-        }
+        super.onBackPressed()
         doubleTapToExit()
     }
 
