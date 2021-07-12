@@ -96,7 +96,7 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                     _recommendationTicketModel.value = recommendationList
                 }
                 is Fail -> {
-                    mutableError.value = data.throwable
+                    mutableError.postValue(data.throwable)
                 }
             }
 
@@ -110,7 +110,7 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                 }
             }
         }){
-            mutableError.value = it
+            mutableError.postValue(it)
         }
     }
 
@@ -124,10 +124,10 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
             if (data.eventVerify.error.isNullOrEmpty()) {
                 mutableVerifyResponse.value = data
             } else {
-                mutableErrorVerify.value = MessageErrorException(data.eventVerify.errorDescription)
+                mutableErrorVerify.postValue(MessageErrorException(data.eventVerify.errorDescription))
             }
         }) {
-            mutableErrorVerify.value = it
+            mutableErrorVerify.postValue(it)
         }
     }
 

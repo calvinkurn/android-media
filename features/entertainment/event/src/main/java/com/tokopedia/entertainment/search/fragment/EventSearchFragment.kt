@@ -121,9 +121,10 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
 
         viewModel.errorReport.observe(viewLifecycleOwner,
-                Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity,
-                ErrorHandler.getErrorMessage(context, it)){ getData(CacheType.ALWAYS_CLOUD) }.
-        showRetrySnackbar()})
+                Observer {
+                    NetworkErrorHelper.createSnackbarRedWithAction(activity,
+                            ErrorHandler.getErrorMessage(context, it)) { getData(CacheType.ALWAYS_CLOUD) }.showRetrySnackbar()}
+        )
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
@@ -132,7 +133,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
                 || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
             viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())
         } else{
-            viewModel.getHistorySearch(cacheType, getEventHistory())
+            viewModel.getHistorySearch(cacheType, getEventHistory(), userSession.isLoggedIn)
         }
     }
 
@@ -150,7 +151,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
                 if(p0.toString().isEmpty()){
                     if(job.isActive) job.cancel()
                     viewModel.cancelRequest()
-                    viewModel.getHistorySearch(CacheType.CACHE_FIRST,getEventHistory())
+                    viewModel.getHistorySearch(CacheType.CACHE_FIRST,getEventHistory(), userSession.isLoggedIn)
                 }
                 else{
                     if(job.isActive) job.cancel()

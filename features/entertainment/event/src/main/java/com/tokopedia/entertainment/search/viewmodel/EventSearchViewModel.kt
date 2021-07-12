@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.search.viewmodel
 
 import android.content.res.Resources
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -44,11 +45,11 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
 
     val errorReport : MutableLiveData<Throwable> by lazy { MutableLiveData<Throwable>() }
 
-    fun getHistorySearch(cacheType: CacheType, query: String){
+    fun getHistorySearch(cacheType: CacheType, query: String, isUserLogin: Boolean){
         launchCatchError(
                 block = {
                     listViewHolder.clear()
-                    if(userSession.isLoggedIn){
+                    if(isUserLogin){
                         val data = getHistorySearchData(cacheType,query)
                         data.let {
                                 searchList.postValue(SearchMapper.mappingHistorytoSearchList(data))
@@ -61,7 +62,8 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                     }
                 },
                 onError = {
-                    errorReport.value = it
+                    Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY")
+                    errorReport.postValue(it)
                     isItRefreshing.postValue(false)
                 }
         )
@@ -77,7 +79,8 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                     }
                 },
                 onError = {
-                    errorReport.value = it
+                    Log.d("ERROR_SNACK", "SHOW ERROR SNACK Data")
+                    errorReport.postValue(it)
                     isItRefreshing.value = false
                 }
         )
