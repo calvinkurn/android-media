@@ -9,12 +9,12 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -33,8 +33,10 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -109,9 +111,9 @@ abstract class BaseSearchCategoryFragment:
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
     protected var stickyView: StickySingleHeaderView? = null
+    protected var swipeRefreshLayout: SwipeRefreshLayout? = null
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
-    protected var contentGroup: Group? = null
     protected var loaderUnify: LoaderUnify? = null
 
     private var movingPosition = 0
@@ -154,6 +156,7 @@ abstract class BaseSearchCategoryFragment:
 
         configureNavToolbar()
         configureStickyView()
+        configureSwipeRefreshLayout()
         configureStatusBar()
         configureRecyclerView()
         observeViewModel()
@@ -166,9 +169,9 @@ abstract class BaseSearchCategoryFragment:
         recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
         miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
         stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
+        swipeRefreshLayout = view.findViewById(R.id.tokonowSearchCategorySwipeRefreshLayout)
         statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
         headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
-        contentGroup = view.findViewById(R.id.tokonowSearchCategoryContentGroup)
         loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
         container = view.findViewById(R.id.tokonowSearchCategoryContainer)
     }
@@ -302,6 +305,12 @@ abstract class BaseSearchCategoryFragment:
         params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
 
         return params
+    }
+
+    private fun configureSwipeRefreshLayout() {
+        swipeRefreshLayout?.setOnRefreshListener {
+            getViewModel().onViewReloadPage()
+        }
     }
 
     private fun configureStatusBar() {
@@ -439,7 +448,13 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
+        if (visitableList.isNotEmpty()) showContent()
         searchCategoryAdapter?.submitList(visitableList)
+    }
+
+    private fun showContent() {
+        loaderUnify?.gone()
+        stickyView?.visible()
     }
 
     protected open fun updateEndlessScrollListener(hasNextPage: Boolean) {
@@ -660,8 +675,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
-        loaderUnify?.showWithCondition(isLoadingVisible)
-        recyclerView?.showWithCondition(!isLoadingVisible)
+        swipeRefreshLayout?.isRefreshing = isLoadingVisible
     }
 
     protected open fun updateRecyclerViewScrollable(isScrollable: Boolean) {

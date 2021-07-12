@@ -172,7 +172,6 @@ abstract class BaseSearchCategoryViewModel(
     val routeApplinkLiveData: LiveData<String> = routeApplinkMutableLiveData
 
     init {
-        showLoading()
         updateQueryParams()
 
         hasGlobalMenu = isABTestNavigationRevamp()
