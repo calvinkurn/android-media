@@ -99,7 +99,12 @@ class SellableStockProductViewHolder (itemView: View?,
         }
 
         setAddClickListener {
-            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = true, source)
+            ProductManageTracking.eventClickAllocationIncreaseStock(
+                isVariant = true,
+                source = source,
+                productId = element.productId,
+                shopId = shopId
+            )
         }
         setSubstractListener {
             ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true, source)

@@ -320,9 +320,7 @@ object ProductManageTracking {
             ProductManageDataLayer.EVENT_LABEL_ALLOCATION_OFF
         }
         if (source.isNotEmpty()) label = "$label - $source"
-        if (productId.isNotEmpty() && shopId.isNotEmpty()) {
-            label = label.plus(" - $productId - $shopId")
-        }
+        label = addProductIdAndShopId(label, productId, shopId)
         eventProductManage(
             ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_PRODUCT_STATUS withAllocationType isVariant,
             label
@@ -337,7 +335,14 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INPUT_STOCK withAllocationType isVariant, "")
     }
 
-    fun eventClickAllocationIncreaseStock(isVariant: Boolean, label: String = "") {
+    fun eventClickAllocationIncreaseStock(
+        isVariant: Boolean,
+        source: String = "",
+        productId: String = "",
+        shopId: String = ""
+    ) {
+        var label = source
+        label = addProductIdAndShopId(label, productId, shopId)
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_INCREASE_STOCK withAllocationType isVariant, label)
     }
 
@@ -383,5 +388,17 @@ object ProductManageTracking {
                     ProductManageDataLayer.SCREEN_NAME_STOCK_ALLOCATION_SINGLE
                 }
         sendScreen(screenName)
+    }
+
+    private fun addProductIdAndShopId(
+        label: String,
+        productId: String,
+        shopId: String
+    ): String {
+        var newLabel = label
+        if (productId.isNotEmpty() && shopId.isNotEmpty()) {
+            newLabel = label.plus(" - $productId - $shopId")
+        }
+        return newLabel
     }
 }
