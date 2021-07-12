@@ -27,7 +27,7 @@ object AtcVariantJsonHelper {
 
         return ProductVariantBottomSheetParams(
                 productId = productId,
-                pageSource = "pdp",
+                pageSource = "product detail page",
                 isTokoNow = isTokoNow,
                 variantAggregator = mockResponse.first,
                 miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems.associateBy({ it.productId }, { it })
