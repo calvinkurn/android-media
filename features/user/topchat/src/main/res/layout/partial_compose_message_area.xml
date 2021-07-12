@@ -4,7 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    tools:paddingEnd="@dimen/unify_space_12"
+    tools:paddingStart="@dimen/spacing_lvl4"
+    tools:paddingTop="@dimen/unify_space_8"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:background="@color/red_100"
+        android:paddingBottom="@dimen/dp_topchat_20"
+        app:layout_constraintBottom_toTopOf="@+id/view_border_radius"
+        app:layout_constraintEnd_toEndOf="@+id/view_border_radius"
+        app:layout_constraintStart_toStartOf="@+id/view_border_radius">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_border_radius"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/dp_topchat_20"
+        app:layout_constraintEnd_toEndOf="@+id/new_comment"
+        app:layout_constraintStart_toStartOf="@+id/new_comment"
+        app:layout_constraintTop_toTopOf="@+id/new_comment" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/send_but"
