@@ -1,6 +1,7 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
@@ -32,10 +33,12 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postInteractiveTap(channelId: String, interactiveId: String): Boolean = withContext(dispatchers.io) {
-        val response = postInteractiveTapUseCase.apply {
-            setRequestParams(PostInteractiveTapUseCase.createParams(channelId, interactiveId))
-        }.executeOnBackground()
-        return@withContext response.data.header.status == 200
+        return@withContext try {
+            postInteractiveTapUseCase.apply {
+                setRequestParams(PostInteractiveTapUseCase.createParams(channelId, interactiveId))
+            }.executeOnBackground()
+            true
+        } catch (e: MessageErrorException) { false }
     }
 
     override suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel = withContext(dispatchers.io) {

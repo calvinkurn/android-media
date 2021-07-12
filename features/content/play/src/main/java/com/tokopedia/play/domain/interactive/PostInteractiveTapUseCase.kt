@@ -1,10 +1,10 @@
 package com.tokopedia.play.domain.interactive
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.interactive.PostInteractiveTapResponse
+import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import javax.inject.Inject
 
 /**
@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 class PostInteractiveTapUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
-): GraphqlUseCase<PostInteractiveTapResponse>(gqlRepository) {
+): RetryableGraphqlUseCase<PostInteractiveTapResponse>(gqlRepository, 3) {
 
     private val query = """
         mutation PostInteractiveTap(${"$$PARAM_CHANNEL_ID"}: String!, ${"$$PARAM_INTERACTIVE_ID"}: String!){
@@ -33,6 +33,10 @@ class PostInteractiveTapUseCase @Inject constructor(
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(PostInteractiveTapResponse::class.java)
+    }
+
+    override fun isResponseSuccess(response: PostInteractiveTapResponse): Boolean {
+        return response.data.header.status == 200
     }
 
     companion object {
