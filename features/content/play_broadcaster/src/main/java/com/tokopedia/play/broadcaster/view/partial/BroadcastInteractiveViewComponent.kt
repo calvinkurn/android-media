@@ -33,7 +33,7 @@ class BroadcastInteractiveViewComponent(
 
     private val initView = object : InteractiveInitView.Listener {
         override fun onCreateNewGameClicked(view: InteractiveInitView) {
-            hideCoachMark()
+            cancelCoachMark()
             listener.onNewGameClicked(this@BroadcastInteractiveViewComponent)
         }
     }
@@ -114,6 +114,11 @@ class BroadcastInteractiveViewComponent(
         }
     }
 
+    private fun cancelCoachMark() {
+        job.cancelChildren()
+        hideCoachMark()
+    }
+
     private fun hideCoachMark() {
         coachMark.dismissCoachMark()
     }
@@ -155,7 +160,7 @@ class BroadcastInteractiveViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        job.cancelChildren()
+        cancelCoachMark()
     }
 
     interface Listener {

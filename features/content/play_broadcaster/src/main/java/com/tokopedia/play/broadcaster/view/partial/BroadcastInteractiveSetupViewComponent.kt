@@ -41,8 +41,9 @@ class BroadcastInteractiveSetupViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(containerTimePicker)
 
-    private var mAvailableDuration = listOf<Long>()
-    private var mConfig: InteractiveConfigUiModel? = null
+    private val defaultSelectedDuration = TimeUnit.MINUTES.toMillis(DEFAULT_DURATION_IN_MINUTE)
+
+    private lateinit var mConfig: InteractiveConfigUiModel
 
     private val title: String
         get() = editTextTitle.text.toString()
@@ -97,13 +98,13 @@ class BroadcastInteractiveSetupViewComponent(
         }
 
         btnApply.setOnClickListener {
-            val selectedDuration = mAvailableDuration[timePicker.activeIndex]
+            val selectedDuration = mConfig.availableStartTimeInMs[timePicker.activeIndex]
             listener.onApplyButtonClicked(this@BroadcastInteractiveSetupViewComponent, title, selectedDuration)
         }
 
         timePicker.infiniteMode = false
         timePicker.onValueChanged = { _, index ->
-            val selectedDuration = mAvailableDuration[index]
+            val selectedDuration = mConfig.availableStartTimeInMs[index]
             setLabelSelectedDuration(selectedDuration)
         }
     }
@@ -115,18 +116,15 @@ class BroadcastInteractiveSetupViewComponent(
     fun setConfig(config: InteractiveConfigUiModel) {
         mConfig = config
         setupLabelGuideline(false)
-        setAvailableStartTimes(config.availableStartTimeInMs)
-
-        /**
-         * Default value
-         */
-        setSelectedDuration(TimeUnit.MINUTES.toMillis(DEFAULT_DURATION_IN_MINUTE))
     }
 
     fun setAvailableStartTimes(durationInMs: List<Long>) {
-        mAvailableDuration = durationInMs
-        timePicker.stringData = mAvailableDuration.map { formatTime(it) }.toMutableList()
-        setSelectedDuration(durationInMs.first())
+        if (!durationInMs.isNullOrEmpty()) mConfig = mConfig.copy(availableStartTimeInMs = durationInMs)
+        timePicker.stringData = mConfig.availableStartTimeInMs.map { formatTime(it) }.toMutableList()
+
+        if (mConfig.availableStartTimeInMs.contains(defaultSelectedDuration)) {
+            setSelectedDuration(defaultSelectedDuration)
+        } else setSelectedDuration(mConfig.availableStartTimeInMs.first())
     }
 
     fun interceptBackPressed(): Boolean {
@@ -154,16 +152,16 @@ class BroadcastInteractiveSetupViewComponent(
 
     private fun setupLabelGuideline(showPickerSheet: Boolean) {
         if (showPickerSheet) {
-            titleLbl.text = mConfig?.timeGuidelineHeader
-            descLbl.text = mConfig?.timeGuidelineDetail
+            titleLbl.text = mConfig.timeGuidelineHeader
+            descLbl.text = mConfig.timeGuidelineDetail
         } else {
-            titleLbl.text = mConfig?.nameGuidelineHeader
-            descLbl.text = mConfig?.nameGuidelineDetail
+            titleLbl.text = mConfig.nameGuidelineHeader
+            descLbl.text = mConfig.nameGuidelineDetail
         }
     }
 
     private fun setSelectedDuration(durationInMs: Long) {
-        val activePosition = mAvailableDuration.indexOf(durationInMs)
+        val activePosition = mConfig.availableStartTimeInMs.indexOf(durationInMs)
         if (activePosition in 0 until timePicker.stringData.size) {
             timePicker.goToPosition(activePosition)
         } else {
@@ -234,7 +232,6 @@ class BroadcastInteractiveSetupViewComponent(
         private const val MIN_LENGTH_CHAR = 3
         private const val MAX_LENGTH_CHAR = 25
 
-        private const val FIRST_INDEX = 0
         private const val DEFAULT_DURATION_IN_MINUTE: Long = 3
     }
 }
