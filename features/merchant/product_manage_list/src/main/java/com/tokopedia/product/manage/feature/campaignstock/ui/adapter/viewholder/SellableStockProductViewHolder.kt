@@ -107,7 +107,12 @@ class SellableStockProductViewHolder (itemView: View?,
             )
         }
         setSubstractListener {
-            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = true, source)
+            ProductManageTracking.eventClickAllocationDecreaseStock(
+                isVariant = true,
+                source = source,
+                productId = element.productId,
+                shopId = shopId
+            )
         }
 
         setupStockEditor(element)

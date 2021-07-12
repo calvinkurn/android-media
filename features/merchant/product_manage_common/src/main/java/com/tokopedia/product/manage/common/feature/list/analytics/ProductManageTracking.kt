@@ -327,7 +327,14 @@ object ProductManageTracking {
         )
     }
 
-    fun eventClickAllocationDecreaseStock(isVariant: Boolean, label: String = "") {
+    fun eventClickAllocationDecreaseStock(
+        isVariant: Boolean,
+        source: String = "",
+        productId: String = "",
+        shopId: String = ""
+    ) {
+        var label = source
+        label = addProductIdAndShopId(label, productId, shopId)
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ALLOCATION_DECREASE_STOCK withAllocationType isVariant, label)
     }
 
