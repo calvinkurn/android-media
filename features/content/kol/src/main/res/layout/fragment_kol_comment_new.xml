@@ -15,12 +15,13 @@
         android:background="@color/Unify_N0"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/avatar_shop"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_16" />
+            android:layout_marginStart="@dimen/dp_16"
+            app:unify_image_type="circle" />
 
         <com.tokopedia.feedcomponent.view.custom.MentionEditText
             android:id="@+id/new_comment"
