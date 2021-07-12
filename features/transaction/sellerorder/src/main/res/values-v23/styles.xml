@@ -3,15 +3,8 @@
     <style name="SomListTheme" parent="@style/Theme.White">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
-
-    <style name="WaitingPaymentOrderTheme" parent="@style/Theme.White" />
-
-    <style name="SomFilterDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
-        <item name="android:windowAnimationStyle">@null</item>
     </style>
 </resources>

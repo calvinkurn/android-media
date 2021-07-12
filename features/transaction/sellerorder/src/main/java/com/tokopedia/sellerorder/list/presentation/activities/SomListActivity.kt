@@ -85,14 +85,6 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
     }
 
     private fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDarkMode()) {
-                requestStatusBarLight()
-            } else {
-                requestStatusBarDark()
-            }
-            statusBarBackground?.show()
-        }
         if (DeviceScreenInfo.isTablet(this)) {
             toolbarShadow?.show()
         } else {
