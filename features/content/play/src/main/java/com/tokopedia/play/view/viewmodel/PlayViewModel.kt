@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
+import com.google.android.gms.cast.framework.CastState
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -26,10 +27,7 @@ import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
-import com.tokopedia.play.view.uimodel.PlayCastUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
@@ -1141,8 +1139,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    fun setCastState(playCastUiModel: PlayCastUiModel) {
-        _observableCastState.value = playCastUiModel
+    fun setCastState(castState: PlayCastState) {
+        var model = _observableCastState.value
+        if(model == null) {
+            model = PlayCastUiModel(currentState = castState)
+        }
+        else {
+            model.previousState = model.currentState
+            model.currentState = castState
+        }
+        _observableCastState.value = model
     }
 
     companion object {

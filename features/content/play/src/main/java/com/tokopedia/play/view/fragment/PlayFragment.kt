@@ -55,6 +55,7 @@ import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.dismissToaster
@@ -124,19 +125,19 @@ class PlayFragment @Inject constructor(
         when(it) {
             CastState.CONNECTING -> {
                 Log.d("<CAST>", "Cast - Connecting")
-                playViewModel.setCastState(PlayCastUiModel.LOADING)
+                playViewModel.setCastState(PlayCastState.CONNECTING)
             }
             CastState.CONNECTED -> {
                 Log.d("<CAST>", "Cast - Connected")
-                playViewModel.setCastState(PlayCastUiModel.CONNECTED)
+                playViewModel.setCastState(PlayCastState.CONNECTED)
             }
             CastState.NOT_CONNECTED -> {
                 Log.d("<CAST>", "Cast - Not Connected")
-                playViewModel.setCastState(PlayCastUiModel.NOT_CONNECTED)
+                playViewModel.setCastState(PlayCastState.NOT_CONNECTED)
             }
             CastState.NO_DEVICES_AVAILABLE -> {
                 Log.d("<CAST>", "Cast - Not Device Available")
-                playViewModel.setCastState(PlayCastUiModel.NO_DEVICE_AVAILABLE)
+                playViewModel.setCastState(PlayCastState.NO_DEVICE_AVAILABLE)
             }
         }
     }

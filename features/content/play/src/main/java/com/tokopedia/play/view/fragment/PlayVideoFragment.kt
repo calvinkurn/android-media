@@ -50,12 +50,14 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -394,12 +396,18 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observeCastState() {
-        playViewModel.observableCastState.observe(viewLifecycleOwner, DistinctObserver {
-            when(it) {
-                PlayCastUiModel.LOADING -> videoLoadingView.showLoadingCasting()
-                PlayCastUiModel.CONNECTED -> videoLoadingView.showCasting()
-                PlayCastUiModel.NO_DEVICE_AVAILABLE,
-                PlayCastUiModel.NOT_CONNECTED-> videoLoadingView.hide()
+        playViewModel.observableCastState.observe(viewLifecycleOwner, {
+            when(it.currentState) {
+                PlayCastState.CONNECTING -> videoLoadingView.showLoadingCasting()
+                PlayCastState.CONNECTED -> videoLoadingView.showCasting()
+                PlayCastState.NO_DEVICE_AVAILABLE,
+                PlayCastState.NOT_CONNECTED-> {
+                    videoLoadingView.hide()
+                    it.previousState?.let { previousState ->
+                        if(previousState == PlayCastState.CONNECTING || previousState == PlayCastState.CONNECTED)
+                            Toaster.build(view = requireView(), text = "Disconnect from chromecast").show()
+                    }
+                }
                 else -> {}
             }
         })
