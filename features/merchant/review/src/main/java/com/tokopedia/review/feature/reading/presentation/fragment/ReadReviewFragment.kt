@@ -16,6 +16,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -101,6 +102,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var emptyFilteredStateImage: ImageUnify? = null
     private var emptyRatingOnly: ReadReviewRatingOnlyEmptyState? = null
     private var goToTopFab: FloatingButtonUnify? = null
+    private var errorType = GlobalError.NO_CONNECTION
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -294,6 +296,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun loadInitialData() {
         isLoadingInitialData = true
         adapter.clearAllElements()
+        hideError()
         showFullPageLoading()
         getProductIdFromArguments()
         loadData(defaultInitialPage)
@@ -389,12 +392,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             return
         }
         hideError()
+        hideFullPageLoading()
         if (ratingAndTopics.rating.totalRatingTextAndImage == 0 && ratingAndTopics.rating.totalRatingWithImage == 0) {
             emptyRatingOnly?.apply {
                 setRatingData(ratingAndTopics.rating)
                 show()
             }
-            hideFullPageLoading()
             hideListOnlyLoading()
             return
         }
@@ -426,7 +429,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun onFailGetProductReviews() {
-        if (currentPage == defaultInitialPage) {
+        if (currentPage == 0) {
             showError()
         } else {
             showToasterError(getString(R.string.review_reading_connection_error)) { loadData(currentPage) }
@@ -436,7 +439,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun showError() {
         globalError?.apply {
             setActionClickListener {
-                loadInitialData()
+                if (errorType == GlobalError.PAGE_NOT_FOUND) {
+                    goToHome()
+                } else {
+                    loadInitialData()
+                }
             }
             show()
         }
@@ -455,7 +462,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun hideError() {
-        if (globalError?.getErrorType() == GlobalError.NO_CONNECTION) {
+        if (errorType == GlobalError.NO_CONNECTION) {
             globalError?.hide()
         }
     }
@@ -491,6 +498,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun showPageNotFound() {
         hideFab()
         globalError?.apply {
+            errorType = GlobalError.PAGE_NOT_FOUND
             setType(GlobalError.PAGE_NOT_FOUND)
             show()
         }
@@ -526,6 +534,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toLongOrZero())
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
+    }
+
+    private fun goToHome() {
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 
     private fun logToCrashlytics(throwable: Throwable) {
