@@ -118,8 +118,8 @@ class TopupBillsFavoriteNumberFragment :
     @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
         arguments?.run {
-            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
-            number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
+            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
+            number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
@@ -151,6 +151,7 @@ class TopupBillsFavoriteNumberFragment :
 
     fun initView() {
         setClientNumberInputType()
+        binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.inputType = InputType.TYPE_CLASS_PHONE
         if (number.isNotEmpty()) {
             binding?.run {
                 commonTopupbillsSearchNumberInputView.searchBarTextField.setText(number)
@@ -352,7 +353,11 @@ class TopupBillsFavoriteNumberFragment :
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
         } else {
-            numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            if (clientNumbers.isNotEmpty()) {
+                numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            } else {
+                numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+            }
         }
     }
 
@@ -366,6 +371,7 @@ class TopupBillsFavoriteNumberFragment :
 
     fun onSearchReset() {
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.setText("")
+        numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -709,7 +715,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun getOperatorNameByPrefix(clientNumber: String): String {
-        return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.single {
+        return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.singleOrNull() {
             clientNumber.startsWith(it.value)
         }?.operator?.attributes?.name ?: ""
     }
@@ -717,8 +723,8 @@ class TopupBillsFavoriteNumberFragment :
     companion object {
         const val REQUEST_CODE_CONTACT_PICKER = 75
 
-        const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
-        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
@@ -734,8 +740,8 @@ class TopupBillsFavoriteNumberFragment :
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
-            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
-            bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(Locale.getDefault()))
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
