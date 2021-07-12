@@ -1141,6 +1141,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    fun setCastState(playCastUiModel: PlayCastUiModel) {
+        _observableCastState.value = playCastUiModel
+    }
+
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val ONBOARDING_DELAY = 5000L

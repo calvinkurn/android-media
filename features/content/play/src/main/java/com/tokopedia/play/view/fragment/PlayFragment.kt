@@ -55,6 +55,7 @@ import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -123,9 +124,11 @@ class PlayFragment @Inject constructor(
         when(it) {
             CastState.CONNECTING -> {
                 Log.d("<CAST>", "Cast - Connecting")
+                playViewModel.setCastState(PlayCastUiModel.LOADING)
             }
             CastState.CONNECTED -> {
                 Log.d("<CAST>", "Cast - Connected")
+                playViewModel.setCastState(PlayCastUiModel.CONNECTED)
             }
         }
     }

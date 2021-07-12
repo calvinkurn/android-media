@@ -50,6 +50,7 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
 import com.tokopedia.play_common.view.RoundedConstraintLayout
@@ -321,6 +322,7 @@ class PlayVideoFragment @Inject constructor(
         observeStatusInfo()
         observePiPEvent()
         observeOnboarding()
+        observeCastState()
     }
 
     private fun showVideoThumbnail() {
@@ -388,6 +390,17 @@ class PlayVideoFragment @Inject constructor(
     private fun observeOnboarding() {
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
             if (!orientation.isLandscape) onboardingView?.showAnimated()
+        })
+    }
+
+    private fun observeCastState() {
+        playViewModel.observableCastState.observe(viewLifecycleOwner, DistinctObserver {
+            if(it == PlayCastUiModel.LOADING) {
+                videoLoadingView.showLoadingCasting()
+            }
+            else if(it == PlayCastUiModel.CONNECTED) {
+                videoLoadingView.showCasting()
+            }
         })
     }
     //endregion
