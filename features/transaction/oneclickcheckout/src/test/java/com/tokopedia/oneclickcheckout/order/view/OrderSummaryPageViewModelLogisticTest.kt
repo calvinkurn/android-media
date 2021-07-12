@@ -9,12 +9,32 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.order.view.model.QuantityUiModel
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
-import io.mockk.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.just
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -147,6 +167,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Error`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingErrorMessage = "error"
         every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData().apply {
@@ -171,6 +192,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Without Preference Duration`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         shippingDurationViewModels.removeIf { it.serviceData.serviceId == helper.shipment.serviceId }
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
@@ -196,6 +218,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Without Any Duration`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         shippingDurationViewModels.clear()
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
@@ -220,6 +243,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Error Revamp With Recommendation`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
@@ -257,6 +281,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Revamp With Recommendation`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
@@ -294,6 +319,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Not Match Revamp With No Recommendation`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(shipment = OrderProfileShipment())
 
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
@@ -315,6 +341,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Revamp With Second Courier Recommended`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         shippingDurationViewModels[0].shippingCourierViewModelList[1].productData.isRecommend = true
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
@@ -352,6 +379,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Second Courier Recommended`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         shippingDurationViewModels[0].shippingCourierViewModelList[1].productData.isRecommend = true
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
@@ -389,6 +417,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Error Distance Exceed With Selected Order Shipment`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
@@ -421,6 +450,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Duration Error Weight Exceed With Selected Order Shipment`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].serviceData.error = ErrorServiceData().apply {
@@ -453,6 +483,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Distance Exceed With Selected Order Shipment`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
@@ -493,6 +524,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Weight Exceed With Selected Order Shipment`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
@@ -533,6 +565,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier Error Pinpoint With Selected Order Shipment`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
             this.errorId = ErrorProductData.ERROR_PINPOINT_NEEDED
@@ -572,6 +605,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier With Selected Order Shipment Second Courier`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -609,6 +643,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Courier With Selected Order Shipment No Courier`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val shippingCourierViewModels = shippingDurationViewModels[0].shippingCourierViewModelList.toMutableList()
         shippingCourierViewModels.removeAt(0)
@@ -971,6 +1006,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Without Corresponding Duration`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         val durations = shippingRecommendationData.shippingDurationViewModels.toMutableList()
@@ -995,6 +1031,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Without Corresponding Courier`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         val shippingRecommendationData = helper.shippingRecommendationData
         val durations = shippingRecommendationData.shippingDurationViewModels.toMutableList()
@@ -1019,6 +1056,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Red State`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
@@ -1039,6 +1077,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo No State`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
@@ -1057,6 +1096,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Server Error Status`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
@@ -1075,6 +1115,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Error`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
@@ -1094,6 +1135,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Choose Logistic Promo Error Akamai`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
