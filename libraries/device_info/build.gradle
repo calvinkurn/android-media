@@ -23,7 +23,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.playServicesDependencies.ads
     implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation project(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {

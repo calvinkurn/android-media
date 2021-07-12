@@ -6,7 +6,7 @@ import android.text.SpannableString
 import android.view.View
 import com.tokopedia.otp.R
 
-class WhatsappVerificationFragment : VerificationFragment() {
+open class WhatsappVerificationFragment : VerificationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

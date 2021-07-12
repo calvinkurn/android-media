@@ -3,6 +3,7 @@
     <string name="screen_recorder_notif_finish">Batal</string>
     <string name="screen_recorder_notif_stop">Berhenti</string>
     <string name="screen_record_notif_title_recording_screen">Merekam Layar…</string>
+    <string name="screen_record_notif_title_preparation">Persiapan 3 detik…</string>
     <string name="screen_record_notif_title_ready_to_record">Siap Merekam Layar (Maks. 1 menit)</string>
     <string name="screen_record_notif_text_ready_to_record">Gunakan notifikasi untuk mulai merekam layar</string>
     <string name="screen_record_notif_title_video_create_success">Video Berhasil Dibuat</string>
