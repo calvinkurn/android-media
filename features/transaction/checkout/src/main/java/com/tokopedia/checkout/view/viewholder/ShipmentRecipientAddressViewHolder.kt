@@ -67,7 +67,9 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         } else {
             renderNormalAddress(recipientAddress)
         }
-        rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+        }
         showOnboarding(isShowOnboarding)
     }
 
