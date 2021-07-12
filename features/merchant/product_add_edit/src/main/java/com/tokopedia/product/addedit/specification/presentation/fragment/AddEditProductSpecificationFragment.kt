@@ -97,16 +97,18 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         val htmlDescription = getString(R.string.label_info_specification)
         val newUserSpecificationBottomSheet = NewUserSpecificationBottomSheet()
         newUserSpecificationBottomSheet.setOnDismissListener {
-            SharedPreferencesUtil.setFirstTimeSpecification(requireActivity(), true)
+            activity?.let {
+                SharedPreferencesUtil.setFirstTimeSpecification(it, true)
+            }
         }
 
         tickerSpecification.setHtmlDescription(htmlDescription)
         tickerSpecification.setOnClickListener {
-            newUserSpecificationBottomSheet.show(requireFragmentManager())
+            newUserSpecificationBottomSheet.show(childFragmentManager)
         }
 
         if (!isInfoDisplayed) {
-            newUserSpecificationBottomSheet.show(requireFragmentManager())
+            newUserSpecificationBottomSheet.show(childFragmentManager)
         }
     }
 
