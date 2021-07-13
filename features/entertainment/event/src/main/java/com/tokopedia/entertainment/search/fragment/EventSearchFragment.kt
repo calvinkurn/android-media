@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.search.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -117,10 +118,15 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer { throwable ->
+                    Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT")
                     view?.let {
+                        Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT")
                         val snackbar = Snackbar.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_INDEFINITE)
                         snackbar.setAction("Coba Lagi") {
-                            getData(CacheType.ALWAYS_CLOUD)
+                            context?.let {
+                                Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT CONTEXT not null")
+                                getData(CacheType.ALWAYS_CLOUD)
+                            }
                         }
                         snackbar.show()
                     }
