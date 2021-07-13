@@ -181,6 +181,7 @@ class PlayFragment @Inject constructor(
                 playViewModel.latestCompleteChannelData
         )
         castContext.removeCastStateListener(castStateListener)
+        playViewModel.removeCastSessionListener()
         super.onPause()
     }
 

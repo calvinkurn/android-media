@@ -365,7 +365,7 @@ class PlayViewModel @Inject constructor(
         videoStateProcessor.removeStateListener(videoStateListener)
         videoStateProcessor.removeStateListener(videoPerformanceListener)
         channelStateProcessor.removeStateListener(channelStateListener)
-        castPlayerHelper.setSessionAvailabilityListener(null)
+        removeCastSessionListener()
     }
     //endregion
 
@@ -615,6 +615,10 @@ class PlayViewModel @Inject constructor(
             else playVideoPlayer.pause(preventLoadingBuffer = true)
         }
         playVideoPlayer.removeListener(videoManagerListener)
+    }
+
+    fun removeCastSessionListener() {
+        castPlayerHelper.setSessionAvailabilityListener(null)
     }
 
     private fun returnToNonCastPlayer() {
