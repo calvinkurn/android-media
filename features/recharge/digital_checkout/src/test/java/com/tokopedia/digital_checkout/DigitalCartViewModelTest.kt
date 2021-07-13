@@ -19,6 +19,7 @@ import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getAttributesCheckout
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponse
+import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseDisableVoucher
 import com.tokopedia.digital_checkout.dummy.DigitalCartDummyData.getDummyGetCartResponseWithDefaultCrossSellType
 import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewModel
 import com.tokopedia.digital_checkout.usecase.DigitalCancelVoucherUseCase
@@ -39,6 +40,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertNull
 import kotlinx.coroutines.Dispatchers
 import org.junit.Before
@@ -713,6 +715,37 @@ class DigitalCartViewModelTest {
             it.title == STRING_KODE_PROMO
         }
         assert(summary?.priceAmount == String.format("-%s", getStringIdrFormat(promoData.amount.toDouble())))
+    }
+
+    @Test
+    fun onApplyDiscountPromoCodeWhenDisabledVoucher_updateCheckoutSummary() {
+        //given
+        val dummyResponse = getDummyGetCartResponseDisableVoucher()
+        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
+        }
+        coEvery { userSession.isLoggedIn } returns true
+
+        //when
+        val categoryId = "1"
+        digitalCartViewModel.getCart(categoryId)
+
+        //then
+        assertNotNull(digitalCartViewModel.promoData.value)
+        val promoData = digitalCartViewModel.promoData.value ?: PromoData()
+        assert(!promoData.isActive())
+        assert(promoData.state == TickerCheckoutView.State.INACTIVE)
+        assert(promoData.description == "PROMOO")
+        assert(promoData.amount == 5000)
+
+        //when
+        digitalCartViewModel.applyPromoData(promoData)
+
+        //then
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull {
+            it.title == "PROMOO"
+        }
+        assert(summary?.priceAmount == String.format("-%s", getStringIdrFormat(5000.0)))
     }
 
     @Test
