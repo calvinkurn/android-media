@@ -207,6 +207,17 @@ class PlayBroadcastViewModel @Inject constructor(
         liveStateProcessor.addStateListener(liveStateListener)
         liveStateProcessor.addStateListener(channelLiveStateListener)
         countDownTimer.setListener(countDownTimerListener)
+
+        //TODO("Mock")
+//        _observableInteractiveConfig.value = InteractiveConfigUiModel(
+//                isActive = true,
+//                nameGuidelineHeader = "Mau kasih hadiah apa?",
+//                nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
+//                timeGuidelineHeader = "Kapan game-nya mulai?",
+//                timeGuidelineDetail = "Tentukan kapan game dimulai, dan game akan berlangsung selama 10 detik.",
+//                durationInMs = 10000L,
+//                availableStartTimeInMs = listOf(30 * 1000L, 60 * 1000L, 3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+//        )
     }
 
     override fun onCleared() {

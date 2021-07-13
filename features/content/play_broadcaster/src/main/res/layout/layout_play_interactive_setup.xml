@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_interactive_setup"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/play_dms_N700_80"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/play_dms_N700_80">
+        >
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_cancel"
@@ -74,6 +77,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/view_play_interactive_time_picker"/>
+    <include
+        layout="@layout/view_play_interactive_time_picker"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

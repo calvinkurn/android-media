@@ -8,6 +8,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
@@ -15,6 +18,9 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText
+import com.tokopedia.play_common.util.extension.marginLp
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.picker.PickerUnify
@@ -57,6 +63,16 @@ class BroadcastInteractiveSetupViewComponent(
          */
         setActiveTitle("${getString(R.string.play_interactive_title_default)} ")
         setFocusOnEditTextTitle()
+
+        rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
+        }
+
+        btnApply.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLp = v.marginLp
+            marginLp.bottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            v.layoutParams = marginLp
+        }
     }
 
     private fun initView() {
@@ -226,6 +242,12 @@ class BroadcastInteractiveSetupViewComponent(
 
     interface Listener {
         fun onApplyButtonClicked(view: BroadcastInteractiveSetupViewComponent, title: String, durationInMs: Long)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, null)
+        ViewCompat.setOnApplyWindowInsetsListener(btnApply, null)
     }
 
     companion object {

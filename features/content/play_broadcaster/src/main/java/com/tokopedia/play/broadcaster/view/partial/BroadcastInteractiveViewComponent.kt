@@ -161,6 +161,7 @@ class BroadcastInteractiveViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         cancelCoachMark()
+        scope.cancel()
     }
 
     interface Listener {

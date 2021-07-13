@@ -165,7 +165,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 //        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
 //            interactiveView.show()
 //
-//            interactiveView.setInit()
+//            interactiveView.setInit(true)
 //            delay(5000)
 //            interactiveView.setSchedule("Giveaway Tesla", 10000) {
 //                interactiveView.setLive(15000) {
