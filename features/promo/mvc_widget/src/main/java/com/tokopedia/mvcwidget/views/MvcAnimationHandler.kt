@@ -1,31 +1,31 @@
 package com.tokopedia.mvcwidget.views
 
-import android.animation.ValueAnimator
 import android.view.View
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.promoui.common.dpToPx
 
 class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContainer: MvcTextContainer) {
-    lateinit var  animatedInfoList: List<AnimatedInfos?>
-
-
+    lateinit var animatedInfoList: List<AnimatedInfos?>
     var currentPositionAnimationInfo = 0
 
     var visibleContainer = firstContainer
     var invisibleContainer = secondContainer
+    var isAnimationStarted = false
 
     fun animateView() {
-        if(!::animatedInfoList.isInitialized) return
+        isAnimationStarted = true
+        if (!::animatedInfoList.isInitialized) return
 
-        val visibleDataPos =  if (currentPositionAnimationInfo  == animatedInfoList.size) 0 else currentPositionAnimationInfo
-        val invisibleDataPos = if(currentPositionAnimationInfo + 1 >= animatedInfoList.size) 0 else currentPositionAnimationInfo + 1
+        val visibleDataPos = if (currentPositionAnimationInfo == animatedInfoList.size) 0 else currentPositionAnimationInfo
+        val invisibleDataPos = if (currentPositionAnimationInfo + 1 >= animatedInfoList.size) 0 else currentPositionAnimationInfo + 1
         currentPositionAnimationInfo = visibleDataPos
 
         visibleContainer.setData(animatedInfoList[visibleDataPos])
         invisibleContainer.setData(animatedInfoList[invisibleDataPos])
 
         slideUpFromMiddle(visibleContainer)
-        slideUpFromBottom(invisibleContainer,completion = {
+
+        slideUpFromBottom(invisibleContainer, completion = {
 
             //switch container reference
             val tempContainer = visibleContainer
@@ -36,22 +36,26 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
             currentPositionAnimationInfo += 1
 
             //reset position
-            if(currentPositionAnimationInfo == animatedInfoList.size)
+            if (currentPositionAnimationInfo == animatedInfoList.size)
                 currentPositionAnimationInfo = 0
-
 
             animateView()
         })
+
     }
 
-    fun slideUpFromMiddle(view: View, duration: Long = 2000, completion: (() -> Unit)? = null) {
-//        val anim = ValueAnimator.ofFloat(1f,0f)
-//        anim.addUpdateListener {
-//            val currentValue = it.animatedValue as Float
-//            view.alpha = currentValue
-//            view.translationY
-//        }
-        view.animate()
+    fun clearAnimation() {
+        firstContainer.clearAnimation()
+        secondContainer.clearAnimation()
+        firstContainer.alpha = 1f
+        firstContainer.translationY = 0f
+        secondContainer.alpha = 0f
+
+    }
+
+    fun slideUpFromMiddle(view: View, duration: Long = 600, completion: (() -> Unit)? = null) {
+        view.postDelayed({
+            view.animate()
                 .alpha(1f)
                 .setDuration(duration)
                 .translationY(-dpToPx(48))
@@ -59,17 +63,20 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
                     view.translationY = -view.translationY
                     completion?.invoke()
                 }
+        }, 3000L)
+
     }
 
-    fun slideUpFromBottom(view: View, duration: Long = 2000, completion: (() -> Unit)? = null) {
-        view.animate()
+    fun slideUpFromBottom(view: View, duration: Long = 600, completion: (() -> Unit)? = null) {
+        view.postDelayed({
+            view.animate()
                 .alpha(1f)
                 .setDuration(duration)
                 .translationY(0f)
                 .withEndAction {
-                    view.postDelayed({
-                        completion?.invoke()
-                    }, 300L)
+                    completion?.invoke()
                 }
+        }, 3000L)
+
     }
 }
