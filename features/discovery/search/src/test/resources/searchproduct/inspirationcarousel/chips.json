@@ -1116,7 +1116,7 @@
         "title": "Pilih sesuai warna-mu",
         "position": 8,
         "layout": "chips",
-        "type": "annotation_color_product_chips",
+        "type": "annotation_product_color_chips",
         "options": [
           {
             "title": "Hijau",
@@ -1254,7 +1254,7 @@
         "title": "Pilih sesuai ukuran-mu",
         "position": 10,
         "layout": "chips",
-        "type": "annotation_not_color_product_chips",
+        "type": "image_type",
         "options": [
           {
             "title": "Hijau",
