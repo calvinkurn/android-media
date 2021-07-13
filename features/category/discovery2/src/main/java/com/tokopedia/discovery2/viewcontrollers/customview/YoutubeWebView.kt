@@ -92,7 +92,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      var player;\n" +
                 "      function onYouTubeIframeAPIReady() {\n" +
                 "        player = new YT.Player('player', {\n" +
-                "          height: 200,\n" +
+                "          height: ${(width*9/16).toInt()},\n" +
                 "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          playerVars: {\n" +
