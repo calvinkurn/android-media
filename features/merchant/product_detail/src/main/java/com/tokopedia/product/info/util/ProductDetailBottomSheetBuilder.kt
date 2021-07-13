@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
+import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.view.util.toDateId
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
