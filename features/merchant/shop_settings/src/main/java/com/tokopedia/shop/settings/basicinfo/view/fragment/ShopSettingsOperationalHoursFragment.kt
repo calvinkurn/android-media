@@ -636,6 +636,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun setupEndDateTextFieldBottomSheet() {
         endDateTextField?.textFieldInput?.apply {
             inputType = InputType.TYPE_NULL
+            isEnabled = false
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     initCalendarView(
@@ -686,12 +687,18 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         }
                     }
                     else {
+                        selectedStartDate = if (isActionEdit) {
+                            existingStartDate
+                        } else {
+                            tomorrowDate
+                        }
                         startDateTextField?.textFieldInput?.apply {
                             isEnabled = true
                             text.clear()
                             requestFocus()
+                            setText(OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate))
                         }
-                        endDateTextField?.textFieldInput?.text?.clear()
+                        endDateTextField?.textFieldInput?.isEnabled = false
                     }
                 }
                 isChecked = isCloseNow
@@ -771,7 +778,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         }
         else {
             selectedStartDate = tomorrowDate
-            selectedEndDate = Date()
+            selectedEndDate = tomorrowDate
         }
     }
 

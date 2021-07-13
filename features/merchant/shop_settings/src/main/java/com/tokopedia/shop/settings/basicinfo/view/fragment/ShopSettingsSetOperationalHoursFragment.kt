@@ -19,7 +19,6 @@ import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.util.OperationalHoursUtil
@@ -60,14 +59,11 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         @IdRes
         val CHOOSE_TIME_OPTION_ID = R.id.option_choose
 
-        private const val DEFAULT_FIRST_DAY_INDEX = 0
+        private const val DEFAULT_FIRST_INDEX = 0
         private const val MIN_OPEN_HOUR = 0
         private const val MIN_OPEN_MINUTE = 0
         private const val MAX_CLOSE_HOUR = 23
         private const val MAX_CLOSE_MINUTE = 59
-        private const val ALL_DAY_OPTION = 1
-        private const val HOLIDAY_OPTION = 2
-        private const val CHOOSE_HOUR_OPTION = 3
 
         @JvmStatic
         fun createInstance(): ShopSettingsSetOperationalHoursFragment = ShopSettingsSetOperationalHoursFragment()
@@ -89,7 +85,6 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private var endTimePicker: DateTimePickerUnify? = null
     private var currentSetShopOperationalHourList: MutableList<ShopOperationalHour> = mutableListOf()
     private var currentExpandedAccordionPosition = 0
-    private var currentSelectedRadioOption = 0
     private var currentSelectedStartTime = "0"
     private var currentSelectedEndTime = "0"
 
@@ -173,6 +168,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 if (updateShopOperationalHoursListResult.success) {
                     activity?.setResult(Activity.RESULT_OK)
                     activity?.finish()
+                } else {
+                    hideLoader()
+                    showToaster(getString(R.string.shop_operational_hour_set_holiday_schedule_failed), Toaster.TYPE_ERROR)
+                    opsHourAccordion?.collapseAllGroup()
                 }
             }
         }
@@ -194,6 +193,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun setupAccordion(operationalHoursList: List<ShopOperationalHour>?) {
         operationalHoursList?.let { hourList ->
             if (hourList.isNotEmpty()) {
+                currentSetShopOperationalHourList.clear()
                 currentSetShopOperationalHourList.addAll(hourList)
                 opsHourAccordion?.type = AccordionUnify.TYPE_OR
                 hourList.forEachIndexed { index, opsHour ->
@@ -202,16 +202,22 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                                 title = OperationalHoursUtil.getDayName(opsHour.day),
                                 subtitle = OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime),
                                 expandableView = generateAccordionChildView(opsHour),
-                                isExpanded = index == DEFAULT_FIRST_DAY_INDEX
+                                isExpanded = index == DEFAULT_FIRST_INDEX
                         )
                         if (index == hourList.lastIndex) {
                             accordionOpsHourItem.setBorder(borderTop = false, borderBottom = false)
+                        }
+                        if (index == DEFAULT_FIRST_INDEX) {
+                            currentSelectedStartTime = opsHour.startTime
+                            currentSelectedEndTime = opsHour.endTime
                         }
                         opsHourAccordion?.addGroup(accordionOpsHourItem)
                     }
                 }
                 opsHourAccordion?.onItemClick = { position, isExpanded ->
                     if (isExpanded) {
+                        currentSelectedStartTime = currentSetShopOperationalHourList[position].startTime
+                        currentSelectedEndTime = currentSetShopOperationalHourList[position].endTime
                         currentExpandedAccordionPosition = position
                     }
                 }
@@ -229,52 +235,38 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             val startTimeTextField = findViewById<TextFieldUnify>(START_TIME_TEXTFIELD_ID)
             val endTimeTextField = findViewById<TextFieldUnify>(END_TIME_TEXTFIELD_ID)
             val connector = findViewById<Typography>(R.id.ops_hour_connector)
-            val icCopyToAllDay = findViewById<IconUnify>(R.id.ic_copy_hours)
-            val tvCopyToAllDay = findViewById<Typography>(R.id.tv_copy_to_all_day)
 
             setupTimeTextField(startTimeTextField, endTimeTextField, opsHour)
 
             when (OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime)) {
                 OperationalHoursUtil.ALL_DAY -> {
                     allDayRadioButton.isChecked = true
-                    currentSelectedRadioOption = ALL_DAY_OPTION
                     renderAccordionContent(
-                            isShowCopyOption = false, // hide copy option if 24 hours
                             isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                             isShowHolidayTicker = false,
                             startTimeTextField = startTimeTextField,
                             endTimeTextField = endTimeTextField,
-                            connector = connector,
-                            iconCopyToAll = icCopyToAllDay,
-                            textCopyToAll = tvCopyToAllDay
+                            connector = connector
                     )
                 }
                 OperationalHoursUtil.HOLIDAY -> {
                     holidayRadioButton.isChecked = true
-                    currentSelectedRadioOption = HOLIDAY_OPTION
                     renderAccordionContent(
-                            isShowCopyOption = false, // hide copy option if holiday option
                             isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                             isShowHolidayTicker = true,
                             startTimeTextField = startTimeTextField,
                             endTimeTextField = endTimeTextField,
-                            connector = connector,
-                            iconCopyToAll = icCopyToAllDay,
-                            textCopyToAll = tvCopyToAllDay
+                            connector = connector
                     )
                 }
                 else -> {
                     chooseRadioButton.isChecked = true
-                    currentSelectedRadioOption = CHOOSE_HOUR_OPTION
                     renderAccordionContent(
-                            isShowCopyOption = true, // show copy option if choose times
                             isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                             startTimeTextField = startTimeTextField,
                             isShowHolidayTicker = false,
                             endTimeTextField = endTimeTextField,
-                            connector = connector,
-                            iconCopyToAll = icCopyToAllDay,
-                            textCopyToAll = tvCopyToAllDay
+                            connector = connector
                     )
                 }
             }
@@ -285,16 +277,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     ALL_DAY_OPTION_ID -> {
                         // set time for selected day to 24 hours
                         renderAccordionContent(
-                                isShowCopyOption = false, // show copy option if choose times
                                 isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                                 isShowHolidayTicker = false,
                                 startTimeTextField = startTimeTextField,
                                 endTimeTextField = endTimeTextField,
-                                connector = connector,
-                                iconCopyToAll = icCopyToAllDay,
-                                textCopyToAll = tvCopyToAllDay
+                                connector = connector
                         )
-                        currentSelectedRadioOption = ALL_DAY_OPTION
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MAX_END_TIME
                     }
@@ -302,16 +290,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     HOLIDAY_OPTION_ID -> {
                         // set close time for selected day
                         renderAccordionContent(
-                                isShowCopyOption = false, // show copy option if choose times
                                 isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                                 isShowHolidayTicker = true,
                                 startTimeTextField = startTimeTextField,
                                 endTimeTextField = endTimeTextField,
-                                connector = connector,
-                                iconCopyToAll = icCopyToAllDay,
-                                textCopyToAll = tvCopyToAllDay
+                                connector = connector
                         )
-                        currentSelectedRadioOption = HOLIDAY_OPTION
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].startTime = OperationalHoursUtil.MIN_START_TIME
                         currentSetShopOperationalHourList[currentExpandedAccordionPosition].endTime = OperationalHoursUtil.MIN_START_TIME
                     }
@@ -319,16 +303,12 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     CHOOSE_TIME_OPTION_ID -> {
                         // show textField to choose open & close time
                         renderAccordionContent(
-                                isShowCopyOption = true, // show copy option if choose times
                                 isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
                                 isShowHolidayTicker = false,
                                 startTimeTextField = startTimeTextField,
                                 endTimeTextField = endTimeTextField,
-                                connector = connector,
-                                iconCopyToAll = icCopyToAllDay,
-                                textCopyToAll = tvCopyToAllDay
+                                connector = connector
                         )
-                        currentSelectedRadioOption = CHOOSE_HOUR_OPTION
                     }
                 }
             }
@@ -340,18 +320,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     private fun renderAccordionContent(
-            isShowCopyOption: Boolean,
             isChooseTimeRadioButtonChecked: Boolean,
             isShowHolidayTicker: Boolean,
             startTimeTextField: TextFieldUnify?,
             endTimeTextField: TextFieldUnify?,
-            connector: Typography?,
-            iconCopyToAll: IconUnify,
-            textCopyToAll: Typography
+            connector: Typography?
     ) {
         shouldShowTimeTextField(startTimeTextField, endTimeTextField, connector, isChooseTimeRadioButtonChecked)
         shouldShowHolidayTicker(isShowHolidayTicker)
-        shouldShowCopyToAllDayOptions(isShowCopyOption, iconCopyToAll, textCopyToAll)
     }
 
     private fun setupTimeTextField(startTimeTextField: TextFieldUnify?, endTimeTextField: TextFieldUnify?, opsHour: ShopOperationalHour) {
@@ -382,41 +358,6 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     private fun shouldShowHolidayTicker(isShow: Boolean) {
         holidayTicker?.showWithCondition(isShow)
-    }
-
-    private fun shouldShowCopyToAllDayOptions(
-            isShow: Boolean,
-            icon: IconUnify?,
-            text: Typography?
-    ) {
-        if (isShow) {
-            icon?.visible()
-            text?.visible()
-            icon?.setOnClickListener { applySelectedOpsHourToAllDay() }
-            text?.setOnClickListener { applySelectedOpsHourToAllDay() }
-        }
-        else {
-            icon?.invisible()
-            text?.invisible()
-        }
-    }
-
-    private fun applySelectedOpsHourToAllDay() {
-        if (currentSelectedRadioOption == ALL_DAY_OPTION) {
-            // apply 24 hour everyday
-            currentSetShopOperationalHourList.forEach { opsHour ->
-                opsHour.startTime = OperationalHoursUtil.MIN_START_TIME
-                opsHour.endTime = OperationalHoursUtil.MAX_END_TIME
-            }
-        }
-        else if (currentSelectedRadioOption == CHOOSE_HOUR_OPTION) {
-            // apply selected time to everyday
-            currentSetShopOperationalHourList.forEach { opsHour ->
-                opsHour.startTime = currentSelectedStartTime
-                opsHour.endTime = currentSelectedEndTime
-            }
-        }
-        showToaster(getString(R.string.shop_operational_hour_copy_to_all_day_text_desc), Toaster.TYPE_NORMAL)
     }
 
     private fun shouldShowTimeTextField(
@@ -610,8 +551,8 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         }
     }
 
-    private fun showToaster(message: String, type: Int) {
-        Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, type, "Oke").show()
+    private fun showToaster(message: String, type: Int, toasterLength: Int = Toaster.LENGTH_SHORT) {
+        Toaster.build(requireView(), message, toasterLength, type, "Oke").show()
     }
 
     private fun showLoader() {

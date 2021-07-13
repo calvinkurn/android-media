@@ -85,27 +85,4 @@
         app:layout_constraintLeft_toRightOf="@id/ops_hour_connector"
         />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_copy_hours"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_field_start_time_ops_hour"
-        app:icon_name="COPY"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_4"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_copy_to_all_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/ic_copy_hours"
-        app:layout_constraintTop_toTopOf="@id/ic_copy_hours"
-        app:typographyType="body_3"
-        android:text="@string/shop_operational_hour_copy_to_all_day_text"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_2"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

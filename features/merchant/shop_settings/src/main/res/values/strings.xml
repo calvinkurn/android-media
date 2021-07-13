@@ -46,7 +46,6 @@
     <string name="shop_operational_hour_desc_holiday">Pembeli tidak dapat membeli produkmu selama tokomu libur. Pastikan pesanan yang sudah masuk tetap diproses, ya. Waktu mulai libur mengikuti zona WIB.</string>
     <string name="shop_operational_hour_desc_set_hour">Pembeli akan diinformasikan kalau pesanan yang masuk saat toko tutup akan diproses keesokan hari dan tidak mengurangi skor tokomu.</string>
     <string name="shop_operational_hour_desc_ticker_holiday">Saat libur pembeli tidak dapat membeli produk di\ntokomu.</string>
-    <string name="shop_operational_hour_copy_to_all_day_text">Jadikan setiap hari</string>
     <string name="shop_operational_hour_copy_to_all_day_text_desc">Klik Simpan agar jam buka-tutup tokomu sama setiap hari, ya.</string>
     <string name="shop_operational_hour_24_hours">Buka 24 Jam</string>
     <string name="shop_operational_hour_holiday">Libur</string>
