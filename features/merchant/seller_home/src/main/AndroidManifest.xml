@@ -10,6 +10,7 @@
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SellerHomeTheme">

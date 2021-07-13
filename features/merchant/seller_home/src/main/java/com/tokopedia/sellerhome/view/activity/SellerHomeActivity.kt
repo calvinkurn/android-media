@@ -29,7 +29,11 @@ import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
@@ -118,6 +122,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         setupBackground()
         setupToolbar()
+        setupStatusBar()
         setupBottomNav()
         setupNavigator()
         setupShadow()
@@ -370,7 +375,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun onBottomNavSelected(page: PageFragment, trackingAction: String) {
         val pageType = page.type
 
-        setupStatusBar(pageType)
+        setupStatusBar()
         showToolbar(pageType)
         setCurrentFragmentType(pageType)
         resetPages(page)
@@ -487,19 +492,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
-    private fun setupStatusBar(@FragmentType pageType: Int) {
-        if (pageType == FragmentType.OTHER) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (isDarkMode()) {
-                    requestStatusBarLight()
-                } else {
-                    requestStatusBarDark()
-                }
-                statusBarBackground?.show()
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDarkMode()) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
             }
-        } else {
-            resetSellerHomeSystemUiVisibility()
-            statusBarBackground?.gone()
+            statusBarBackground?.show()
         }
     }
 
@@ -576,18 +576,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
         if (DeviceScreenInfo.isTablet(this)) {
             requestedOrientation = if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-    }
-
-    private fun resetSellerHomeSystemUiVisibility() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window?.run {
-                if (isDarkMode()) {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-                } else {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
         }
     }
 }
