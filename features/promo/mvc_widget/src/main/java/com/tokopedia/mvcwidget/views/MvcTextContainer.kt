@@ -2,6 +2,8 @@ package com.tokopedia.mvcwidget.views
 
 import android.app.Activity
 import android.content.Context
+import android.os.Build
+import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -9,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 class MvcTextContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -35,13 +38,12 @@ class MvcTextContainer @JvmOverloads constructor(
     }
 
     fun setData(title: String, subtitle: String, imageUrl: String) {
-        tvTitle.text = title
-        tvSubTitle.text = subtitle
-
-        if(!(title.startsWith("First") || title.startsWith("Second"))){
-            return
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            tvTitle.text = HtmlUtil.fromHtml(title).trim()
+        } else {
+            tvTitle.text = Html.fromHtml(title).trim()
         }
-
+        tvSubTitle.text = subtitle
         if (imageUrl.isEmpty()) return
 
         if (!(context as Activity).isFinishing) {

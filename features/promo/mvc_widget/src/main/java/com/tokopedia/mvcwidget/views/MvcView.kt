@@ -55,26 +55,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         this.source = source
         this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         this.shopId = shopId
-        val iconUrl = mvcData.animatedInfoList?.get(0)?.iconURL
-        val arrayList = arrayListOf<AnimatedInfos>()
-        val animatedInfos1 = AnimatedInfos("First title","First subtitle","$iconUrl")
-        val animatedInfos2 = AnimatedInfos("Second title","Second subtitle","$iconUrl")
-        val animatedInfos3 = AnimatedInfos("Third title","Third subtitle","$$iconUrl")
-        val animatedInfos4 = AnimatedInfos("Fourth title","Fourth subtitle","$$iconUrl")
-        val animatedInfos5 = AnimatedInfos("Fifth title","Fifth subtitle","$$iconUrl")
-        val animatedInfos6 = AnimatedInfos("Sixth title","Sixth subtitle","$$iconUrl")
-        arrayList.add(animatedInfos1)
-        arrayList.add(animatedInfos2)
-        arrayList.add(animatedInfos3)
-        arrayList.add(animatedInfos4)
-        arrayList.add(animatedInfos5)
-        arrayList.add(animatedInfos6)
-        setMVCData(arrayList)
+        setMVCData(mvcData.animatedInfoList)
     }
 
     private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {
 
-        //set initial data
         if (!animatedInfos.isNullOrEmpty()) {
             if(animatedInfos.size == 1){
                 val animatedInfo = animatedInfos.first()
@@ -87,20 +72,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
             }
 
         }
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            tvTitle.text = HtmlUtil.fromHtml(animatedInfos!![0]?.title!!).trim()
-//        } else {
-//            tvTitle.text = Html.fromHtml(animatedInfos!![0]?.title!!).trim()
-//        }
-//        tvSubTitle.text = animatedInfos[0]?.subTitle!!
-//
-//        if (!(context as Activity).isFinishing) {
-//            Glide.with(imageCoupon.context)
-//                .load(animatedInfos[0]?.iconURL!!)
-//                .dontAnimate()
-//                .into(imageCoupon)
-//        }
     }
 
 }
