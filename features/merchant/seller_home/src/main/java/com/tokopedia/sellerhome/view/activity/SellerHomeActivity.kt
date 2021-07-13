@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -169,7 +170,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        supportFragmentManager.fragments.forEach {
+            if (it is TkpdBaseV4Fragment) {
+                if (it.onFragmentBackPressed()) return
+            }
+        }
         doubleTapToExit()
     }
 
