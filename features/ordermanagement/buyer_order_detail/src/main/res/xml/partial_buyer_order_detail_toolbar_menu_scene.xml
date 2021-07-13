@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/initial" />
+
+    <ConstraintSet android:id="@+id/show_chat_icon">
+        <Constraint
+            android:id="@id/buyerOrderDetailChatMenu"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:scaleX="1"
+            android:scaleY="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </ConstraintSet>
+
+    <Transition
+        android:id="@+id/buyerOrderDetailInitialToShowChatIcon"
+        app:constraintSetEnd="@id/show_chat_icon"
+        app:constraintSetStart="@id/initial"
+        app:duration="@integer/buyer_order_detail_motion_layout_duration_short"
+        motion:motionInterpolator="cubic(0,0,0,1)" />
+    <Transition
+        android:id="@+id/buyerOrderDetailShowChatIconToInitial"
+        app:constraintSetEnd="@id/initial"
+        app:constraintSetStart="@id/show_chat_icon"
+        app:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+</MotionScene>

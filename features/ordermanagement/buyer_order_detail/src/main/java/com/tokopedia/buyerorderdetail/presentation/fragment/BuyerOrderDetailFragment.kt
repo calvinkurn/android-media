@@ -1,15 +1,11 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
-import android.animation.LayoutTransition
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
@@ -25,25 +21,27 @@ import com.tokopedia.buyerorderdetail.common.constants.*
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
-import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
-import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
-import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
+import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
+import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
+import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
+import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
+import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -69,18 +67,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
 
-        const val CHAT_ICON_TAG = "buyerOrderDetailToolbarChatIcon"
-
-        private const val CONTENT_CHANGING_ANIMATION_DURATION = 300L
-        private const val CONTENT_CHANGING_ANIMATION_DELAY = 45L
-
         private const val SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY = "buyerOrderDetailSavedInstanceState"
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var containerBuyerOrderDetail: ConstraintLayout? = null
+    private var containerBuyerOrderDetail: BuyerOrderDetailMotionLayout? = null
     private var swipeRefreshBuyerOrderDetail: SwipeRefreshLayout? = null
     private var rvBuyerOrderDetail: RecyclerView? = null
     private var actionButtonWrapper: ConstraintLayout? = null
@@ -93,7 +86,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
     }
     private val contentVisibilityAnimator by lazy {
-        BuyerOrderDetailContentAnimator(swipeRefreshBuyerOrderDetail, rvBuyerOrderDetail)
+        BuyerOrderDetailContentAnimator(containerBuyerOrderDetail)
+    }
+    private val toolbarMenuAnimator by lazy {
+        BuyerOrderDetailToolbarMenuAnimator(toolbarMenuIcons)
     }
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext(), true)
@@ -121,31 +117,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
-    private val chatIcon: IconUnify by lazy {
-        createChatIcon(requireContext())
+    private val toolbarMenuIcons: BuyerOrderDetailToolbarMenu by lazy {
+        createToolbarMenuIcons(requireContext())
     }
 
-    private fun createChatIcon(context: Context): IconUnify {
-        return IconUnify(requireContext(), IconUnify.CHAT).apply {
-            setOnClickListener {
-                viewModel.buyerOrderDetailResult.value?.let {
-                    if (it is Success) {
-                        navigator.goToAskSeller(it.data)
-                        BuyerOrderDetailTracker.eventClickChatIcon(
-                                it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId,
-                                it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
-                    }
-                }
-            }
-            layoutParams = LinearLayout.LayoutParams(
-                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt(),
-                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3).toInt()).apply {
-                setMargins(0, 0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toInt(), 0)
-            }
-            val outValue = TypedValue()
-            context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-            setBackgroundResource(outValue.resourceId)
-            tag = CHAT_ICON_TAG
+    private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu {
+        return (View.inflate(context, R.layout.partial_buyer_order_detail_toolbar_menu, null) as BuyerOrderDetailToolbarMenu).apply {
+            setViewModel(viewModel)
+            setNavigator(navigator)
         }
     }
 
@@ -173,11 +152,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         observeReceiveConfirmation()
         observeAddSingleToCart()
         observeAddMultipleToCart()
-        buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
-        if (savedInstanceState == null) {
-            loadInitialData()
-        } else {
-            restoreFragmentState(savedInstanceState)
+        contentVisibilityAnimator.initPage {
+            buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
+            if (savedInstanceState == null) {
+                loadInitialData()
+            } else {
+                restoreFragmentState(savedInstanceState)
+            }
         }
     }
 
@@ -227,19 +208,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun loadInitialData() {
-        showLoadIndicator()
         loadBuyerOrderDetail()
     }
 
     private fun setupViews() {
         bindViews()
-        containerBuyerOrderDetail?.layoutTransition?.apply {
-            setInterpolator(LayoutTransition.CHANGING, AccelerateInterpolator())
-            enableTransitionType(LayoutTransition.CHANGING)
-            setDuration(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DURATION)
-            setStartDelay(LayoutTransition.CHANGING, CONTENT_CHANGING_ANIMATION_DELAY)
-        }
-        actionButtonWrapper?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         setupToolbar()
         setupGlobalError()
         setupSwipeRefreshLayout()
@@ -258,6 +231,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupToolbar() {
+        setupToolbarMenuIcon()
         (activity as? AppCompatActivity)?.apply {
             supportActionBar?.hide()
             setSupportActionBar(toolbarBuyerOrderDetail)
@@ -266,19 +240,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupGlobalError() {
         globalErrorBuyerOrderDetail?.setActionClickListener {
-            globalErrorBuyerOrderDetail?.gone()
-            showLoadIndicator()
-            contentVisibilityAnimator.hideContent()
-            loadBuyerOrderDetail()
+            contentVisibilityAnimator.animateToLoadingState {
+                loadBuyerOrderDetail()
+            }
         }
         emptyStateBuyerOrderDetail?.apply {
             setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
             setPrimaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
             setPrimaryCTAClickListener {
-                emptyStateBuyerOrderDetail?.gone()
-                showLoadIndicator()
-                contentVisibilityAnimator.hideContent()
-                loadBuyerOrderDetail()
+                contentVisibilityAnimator.animateToLoadingState {
+                    loadBuyerOrderDetail()
+                }
             }
         }
     }
@@ -303,53 +275,63 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun observeBuyerOrderDetail() {
-        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner, { result ->
+        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner) { result ->
             buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
-            hideLoadIndicator()
             when (result) {
                 is Success -> onSuccessGetBuyerOrderDetail(result.data)
                 is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
             }
             swipeRefreshBuyerOrderDetail?.isRefreshing = false
             swipeRefreshBuyerOrderDetail?.isEnabled = true
-        })
+        }
     }
 
     private fun observeReceiveConfirmation() {
-        viewModel.finishOrderResult.observe(viewLifecycleOwner, { result ->
+        viewModel.finishOrderResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> onSuccessReceiveConfirmation(result.data)
                 is Fail -> onFailedReceiveConfirmation(result.throwable)
             }
-        })
+        }
     }
 
     private fun observeAddSingleToCart() {
-        viewModel.singleAtcResult.observe(viewLifecycleOwner, { result ->
+        viewModel.singleAtcResult.observe(viewLifecycleOwner) { result ->
             when (val requestResult = result.second) {
                 is Success -> onSuccessAddToCart(requestResult.data)
                 is Fail -> onFailedAddToCart(requestResult.throwable)
             }
             adapter.updateItem(result.first, result.first.copy(isProcessing = false))
-        })
+        }
     }
 
     private fun observeAddMultipleToCart() {
-        viewModel.multiAtcResult.observe(viewLifecycleOwner, { result ->
+        viewModel.multiAtcResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> onSuccessAddToCart(result.data)
                 is Fail -> onFailedAddToCart(result.throwable)
             }
             stickyActionButton.finishPrimaryActionButtonLoading()
-        })
+        }
     }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
+        val orderId = viewModel.getOrderId()
         stickyActionButton.setupActionButtons(data.actionButtonsUiModel)
-        setupToolbarChatIcon(containsAskSellerButton(data.actionButtonsUiModel))
+        setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
         adapter.updateItems(data)
-        contentVisibilityAnimator.showContent()
+        contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel))
         stopLoadTimeMonitoring()
+    }
+
+    private fun setupToolbarMenu(showChatIcon: Boolean) {
+        if (showChatIcon) {
+            toolbarMenuAnimator.transitionToShowChatIcon()
+        }
+    }
+
+    private fun containsActionButtons(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
+        return actionButtonsUiModel.primaryActionButton.key.isNotBlank() && actionButtonsUiModel.secondaryActionButtons.isNotEmpty()
     }
 
     private fun containsAskSellerButton(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
@@ -396,16 +378,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
 
         if (errorType == null) {
-            globalErrorBuyerOrderDetail?.gone()
             emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
         } else {
             globalErrorBuyerOrderDetail?.apply {
                 setType(errorType)
-                visible()
+                contentVisibilityAnimator.animateToErrorState()
             }
-            emptyStateBuyerOrderDetail?.gone()
         }
-        contentVisibilityAnimator.hideContent()
+        toolbarMenuAnimator.transitionToEmpty()
         stopLoadTimeMonitoring()
     }
 
@@ -414,29 +394,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             ErrorHandler.getErrorMessage(it, throwable)
         } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         setDescription(errorMessage)
-        visible()
+        contentVisibilityAnimator.animateToEmptyStateError()
     }
 
-    private fun setupToolbarChatIcon(containAskSellerButton: Boolean) {
-        val orderId = viewModel.getOrderId()
-        if (containAskSellerButton || orderId.isBlank() || orderId == "0") {
-            toolbarBuyerOrderDetail?.apply {
-                rightContentView.removeAllViews()
-                rightIcons?.clear()
-            }
-        } else {
-            toolbarBuyerOrderDetail?.apply {
-                addCustomRightContent(chatIcon)
-            }
+    private fun setupToolbarMenuIcon() {
+        toolbarBuyerOrderDetail?.apply {
+            addCustomRightContent(toolbarMenuIcons)
         }
-    }
-
-    private fun showLoadIndicator() {
-        loaderBuyerOrderDetail?.show()
-    }
-
-    private fun hideLoadIndicator() {
-        loaderBuyerOrderDetail?.gone()
     }
 
     private fun showCommonToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {

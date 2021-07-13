@@ -4,4 +4,6 @@
     <color name="buyer_order_detail_dms_thin_divider">@color/Unify_N50</color>
     <color name="buyer_order_detail_dms_window_color">@color/Unify_N0</color>
     <color name="buyer_order_detail_dms_secondary_action_button_color_filter">@color/Unify_N200</color>
+    <integer name="buyer_order_detail_motion_layout_duration_short">600</integer>
+    <integer name="buyer_order_detail_motion_layout_duration_long">1200</integer>
 </resources>

@@ -21,6 +21,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.buyerorderdetail.cassava.BuyerOrderDetailTrackerValidationConstant
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
+import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -143,8 +144,8 @@ class BuyerOrderDetailAction {
         waitUntilViewVisible(withId(R.id.btnBuyerOrderDetailSecondaryActions))
     }
 
-    private fun waitUntilToolbarChatIconVisible() {
-        waitUntilViewVisible(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+    private fun waitUntilToolbarChatIconVisible(context: Context) {
+        waitUntilViewVisible(firstView(withTagStringValue(context.getString(R.string.tag_buyer_order_detail_chat_icon_menu))))
     }
 
     private fun waitUntilSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity) {
@@ -191,8 +192,8 @@ class BuyerOrderDetailAction {
         }
     }
 
-    private fun clickToolbarChatIcon() {
-        clickView(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+    private fun clickToolbarChatIcon(context: Context) {
+        clickView(firstView(withTagStringValue(context.getString(R.string.tag_buyer_order_detail_chat_icon_menu))))
     }
 
     private fun clickSeeDetail() {
@@ -260,9 +261,9 @@ class BuyerOrderDetailAction {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    fun testClickToolbarChatIcon() {
-        waitUntilToolbarChatIconVisible()
-        clickToolbarChatIcon()
+    fun testClickToolbarChatIcon(context: Context) {
+        waitUntilToolbarChatIconVisible(context)
+        clickToolbarChatIcon(context)
     }
 
     fun testClickSeeDetail() {

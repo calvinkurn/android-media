@@ -1,76 +1,42 @@
 package com.tokopedia.buyerorderdetail.presentation.animator
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.view.View
-import android.view.animation.DecelerateInterpolator
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
+import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 
 class BuyerOrderDetailContentAnimator(
-        private val swipeRefreshLayout: SwipeRefreshLayout?,
-        private val recyclerView: RecyclerView?
+        private val buyerOrderDetailMotionLayout: BuyerOrderDetailMotionLayout?
 ) {
-
-    companion object {
-        private const val SHOW_HIDE_CONTENT_ANIMATION_DURATION = 300L
-        private const val FADE_ANIMATION_DELAY = 60L
-        private const val TRANSLATION_ANIMATION_DELAY = 45L
+    fun initPage(onTransitionEnd: () -> Unit) {
+        buyerOrderDetailMotionLayout?.run {
+            postDelayed({
+                animateToLoadingState(onTransitionEnd)
+            }, 400L)
+        }
     }
 
-    private var animatorShowContent: AnimatorSet? = null
-    private var animatorHideContent: AnimatorSet? = null
-
-    private fun createShowContentAnimatorSet(): AnimatorSet? {
-        return if (swipeRefreshLayout == null || recyclerView == null) {
-            null
-        } else {
-            val showContentAnimator = createTranslationYAnimator(swipeRefreshLayout, swipeRefreshLayout.translationY, 0f)
-            val fadeInAnimator = createFadeAnimator(recyclerView, recyclerView.alpha, 1f)
-            AnimatorSet().apply {
-                playTogether(showContentAnimator, fadeInAnimator)
+    fun animateToLoadingState(onTransitionEnd: () -> Unit) {
+        buyerOrderDetailMotionLayout?.run {
+            setOnTransitionCompleted {
+                setOnTransitionCompleted { }
+                onTransitionEnd()
             }
+            transitionToLoadingState()
         }
     }
 
-    private fun createHideContentAnimatorSet(): AnimatorSet? {
-        return if (swipeRefreshLayout == null || recyclerView == null) {
-            null
+    fun animateToShowContent(containsActionButtons: Boolean) {
+        if (containsActionButtons) {
+            buyerOrderDetailMotionLayout?.transitionToShowContentWithStickyButton()
         } else {
-            val hideContentAnimator = createTranslationYAnimator(swipeRefreshLayout, swipeRefreshLayout.translationY, swipeRefreshLayout.measuredHeight.toFloat())
-            val fadeOutAnimator = createFadeAnimator(recyclerView, recyclerView.alpha, 0f)
-            AnimatorSet().apply {
-                playTogether(hideContentAnimator, fadeOutAnimator)
-            }
+            buyerOrderDetailMotionLayout?.transitionToShowContentWithoutStickyButton()
         }
     }
 
-    private fun createFadeAnimator(target: View, from: Float, to: Float): Animator {
-        return ObjectAnimator.ofFloat(target, View.ALPHA, from, to).apply {
-            interpolator = DecelerateInterpolator(2f)
-            duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
-            startDelay = FADE_ANIMATION_DELAY
-        }
+    fun animateToErrorState() {
+        buyerOrderDetailMotionLayout?.transitionToErrorState()
     }
 
-    private fun createTranslationYAnimator(target: View, from: Float, to: Float): Animator {
-        return ObjectAnimator.ofFloat(target, View.TRANSLATION_Y, from, to).apply {
-            interpolator = DecelerateInterpolator()
-            duration = SHOW_HIDE_CONTENT_ANIMATION_DURATION
-            startDelay = TRANSLATION_ANIMATION_DELAY
-        }
-    }
-
-    fun showContent() {
-        animatorShowContent = createShowContentAnimatorSet()
-        animatorHideContent?.pause()
-        animatorShowContent?.start()
-    }
-
-    fun hideContent() {
-        animatorHideContent = createHideContentAnimatorSet()
-        animatorShowContent?.pause()
-        animatorHideContent?.start()
+    fun animateToEmptyStateError() {
+        buyerOrderDetailMotionLayout?.transitionToEmptyStateError()
     }
 }

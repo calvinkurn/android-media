@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.cassava
 
+import android.content.Context
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
@@ -18,7 +19,8 @@ abstract class BuyerOrderDetailTrackerValidationTestFixture {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before

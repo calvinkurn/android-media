@@ -12,7 +12,7 @@ class BuyerOrderDetailTrackerValidationTest601 : BuyerOrderDetailTrackerValidati
         } actionTest {
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
-            testClickToolbarChatIcon()
+            testClickToolbarChatIcon(context)
             testClickSeeDetail()
             testClickSeeInvoice(activityRule.activity)
             testClickCopyInvoice(activityRule.activity)

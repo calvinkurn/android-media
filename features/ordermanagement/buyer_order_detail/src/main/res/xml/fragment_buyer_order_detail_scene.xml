@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/initial" />
+
+    <ConstraintSet android:id="@+id/loading">
+        <Constraint
+            android:id="@+id/loaderBuyerOrderDetail"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:alpha="1"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/show_content_with_sticky_button">
+        <Constraint
+            android:id="@+id/containerActionButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            motion:layout_constraintBottom_toBottomOf="parent" />
+        <Constraint
+            android:id="@+id/swipeRefreshBuyerOrderDetail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:alpha="1"
+            motion:layout_constraintBottom_toTopOf="@id/containerActionButtons"
+            motion:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/show_content_without_sticky_button">
+        <Constraint
+            android:id="@+id/swipeRefreshBuyerOrderDetail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:alpha="1"
+            motion:layout_constraintBottom_toTopOf="@id/containerActionButtons"
+            motion:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/show_content_error_state_intermediary" />
+    <ConstraintSet android:id="@+id/error_state">
+        <Constraint
+            android:id="@+id/globalErrorBuyerOrderDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1"
+            android:scaleY="1"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+    </ConstraintSet>
+    <ConstraintSet android:id="@+id/show_content_empty_state_error_intermediary" />
+    <ConstraintSet android:id="@+id/empty_state_error">
+        <Constraint
+            android:id="@+id/emptyStateBuyerOrderDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1"
+            android:scaleY="1"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+    </ConstraintSet>
+
+    <Transition
+        android:id="@+id/buyerOrderDetailInitialToLoading"
+        motion:constraintSetEnd="@+id/loading"
+        motion:constraintSetStart="@+id/initial"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short"
+        motion:motionInterpolator="cubic(0,0,0,1)">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="1"
+                motion:framePosition="0"
+                motion:motionTarget="@+id/loaderBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailLoadingToShowContentWithStickyButton"
+        motion:constraintSetEnd="@+id/show_content_with_sticky_button"
+        motion:constraintSetStart="@+id/loading"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="60"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="80"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailLoadingToShowContentWithoutStickyButton"
+        motion:constraintSetEnd="@+id/show_content_without_sticky_button"
+        motion:constraintSetStart="@+id/loading"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="60"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="80"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailLoadingToErrorState"
+        motion:constraintSetEnd="@+id/error_state"
+        motion:constraintSetStart="@+id/loading"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailErrorStateToLoading"
+        motion:constraintSetEnd="@+id/loading"
+        motion:constraintSetStart="@+id/error_state"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short"
+        motion:motionInterpolator="cubic(0,0,0,1)">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="1"
+                motion:framePosition="0"
+                motion:motionTarget="@+id/loaderBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToErrorStateIntermediary"
+        motion:constraintSetEnd="@+id/show_content_error_state_intermediary"
+        motion:constraintSetStart="@+id/show_content_with_sticky_button"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="10"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="40"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailErrorStateIntermediaryToShowContentWithStickyButton"
+        motion:constraintSetEnd="@+id/show_content_with_sticky_button"
+        motion:constraintSetStart="@+id/show_content_error_state_intermediary"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="60"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="90"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToErrorStateIntermediary"
+        motion:constraintSetEnd="@+id/show_content_error_state_intermediary"
+        motion:constraintSetStart="@+id/show_content_without_sticky_button"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="10"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="40"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailErrorStateIntermediaryToShowContentWithoutStickyButton"
+        motion:constraintSetEnd="@+id/show_content_without_sticky_button"
+        motion:constraintSetStart="@+id/show_content_error_state_intermediary"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="60"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="90"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailErrorStateIntermediaryToErrorState"
+        motion:constraintSetEnd="@+id/error_state"
+        motion:constraintSetStart="@+id/show_content_error_state_intermediary"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailErrorStateToErrorStateIntermediary"
+        motion:constraintSetEnd="@+id/show_content_error_state_intermediary"
+        motion:constraintSetStart="@+id/error_state"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailLoadingToEmptyStateError"
+        motion:constraintSetEnd="@+id/empty_state_error"
+        motion:constraintSetStart="@+id/loading"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailEmptyStateErrorToLoading"
+        motion:constraintSetEnd="@+id/loading"
+        motion:constraintSetStart="@+id/empty_state_error"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short"
+        motion:motionInterpolator="cubic(0,0,0,1)">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="1"
+                motion:framePosition="0"
+                motion:motionTarget="@+id/loaderBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToEmptyStateErrorIntermediary"
+        motion:constraintSetEnd="@+id/show_content_empty_state_error_intermediary"
+        motion:constraintSetStart="@+id/show_content_with_sticky_button"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="10"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="40"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailEmptyStateErrorIntermediaryToShowContentWithStickyButton"
+        motion:constraintSetEnd="@+id/show_content_with_sticky_button"
+        motion:constraintSetStart="@+id/show_content_empty_state_error_intermediary"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="60"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="90"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToEmptyStateErrorIntermediary"
+        motion:constraintSetEnd="@+id/show_content_empty_state_error_intermediary"
+        motion:constraintSetStart="@+id/show_content_without_sticky_button"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="10"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="40"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailEmptyStateErrorIntermediaryToShowContentWithoutStickyButton"
+        motion:constraintSetEnd="@+id/show_content_without_sticky_button"
+        motion:constraintSetStart="@+id/show_content_empty_state_error_intermediary"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="60"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+            <KeyAttribute
+                android:alpha="0.9"
+                motion:framePosition="90"
+                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailEmptyStateErrorIntermediaryToEmptyStateError"
+        motion:constraintSetEnd="@+id/empty_state_error"
+        motion:constraintSetStart="@+id/show_content_empty_state_error_intermediary"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailEmptyStateErrorToEmptyStateErrorIntermediary"
+        motion:constraintSetEnd="@+id/show_content_empty_state_error_intermediary"
+        motion:constraintSetStart="@+id/empty_state_error"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailErrorStateToEmptyStateError"
+        motion:constraintSetEnd="@+id/empty_state_error"
+        motion:constraintSetStart="@+id/error_state"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_long">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:scaleX="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/globalErrorBuyerOrderDetail" />
+            <KeyAttribute
+                android:scaleY="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/globalErrorBuyerOrderDetail" />
+            <KeyAttribute
+                android:scaleX="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/emptyStateBuyerOrderDetail" />
+            <KeyAttribute
+                android:scaleY="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/emptyStateBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailEmptyStateErrorToErrorState"
+        motion:constraintSetEnd="@+id/error_state"
+        motion:constraintSetStart="@+id/empty_state_error"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_long">
+        <KeyFrameSet>
+            <KeyAttribute
+                android:scaleX="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/globalErrorBuyerOrderDetail" />
+            <KeyAttribute
+                android:scaleY="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/globalErrorBuyerOrderDetail" />
+            <KeyAttribute
+                android:scaleX="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/emptyStateBuyerOrderDetail" />
+            <KeyAttribute
+                android:scaleY="0"
+                motion:framePosition="50"
+                motion:motionTarget="@+id/emptyStateBuyerOrderDetail" />
+        </KeyFrameSet>
+    </Transition>
+    <Transition
+        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToShowContentWithoutStickyButton"
+        motion:constraintSetEnd="@id/show_content_without_sticky_button"
+        motion:constraintSetStart="@id/show_content_with_sticky_button"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+    <Transition
+        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToShowContentWithStickyButton"
+        motion:constraintSetEnd="@id/show_content_with_sticky_button"
+        motion:constraintSetStart="@id/show_content_without_sticky_button"
+        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
+</MotionScene>
