@@ -39,6 +39,8 @@ class ShopDataResponse(
         val officialStore: OfficialStore = OfficialStore(),
         @SerializedName("shop_type_info")
         val shopType: ShopTypeResponse = ShopTypeResponse(),
+        @SerializedName("shop_alert_message")
+        val shopAlertMessage: String = "",
         @SerializedName("shop_ticker")
         val shopTicker: String = "",
         @SerializedName("maximum_weight_wording")

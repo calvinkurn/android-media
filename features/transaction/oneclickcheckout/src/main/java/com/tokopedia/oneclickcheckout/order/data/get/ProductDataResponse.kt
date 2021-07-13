@@ -58,9 +58,6 @@ class ProductDataResponse(
         @SerializedName("product_price_original_fmt")
         @SuppressLint("Invalid Data Type")
         val productPriceOriginalFmt: String = "",
-        @SerializedName("is_slash_price")
-        @SuppressLint("Invalid Data Type")
-        val isSlashPrice: Boolean = false,
         @SerializedName("product_finsurance")
         val productFinsurance: Int = 0,
         @SerializedName("warehouse_id")
@@ -75,7 +72,17 @@ class ProductDataResponse(
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("purchase_protection_plan_data")
-        val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse()
+        val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse(),
+        @SerializedName("variant_description_detail")
+        val variantDescriptionDetail: ProductVariantDescriptionDetail = ProductVariantDescriptionDetail(),
+        @SerializedName("product_warning_message")
+        val productWarningMessage: String = "",
+        @SerializedName("product_alert_message")
+        val productAlertMessage: String = "",
+        @SerializedName("slash_price_label")
+        val slashPriceLabel: String = "",
+        @SerializedName("product_information")
+        val productInformation: List<String> = emptyList()
 )
 
 class ProductImage(
@@ -86,4 +93,11 @@ class ProductImage(
 class ProductPreorderResponse(
         @SerializedName("duration_day")
         val durationDay: String = ""
+)
+
+class ProductVariantDescriptionDetail(
+        @SerializedName("variant_name")
+        val variantName: List<String> = emptyList(),
+        @SerializedName("variant_description")
+        val variantDescription: String = ""
 )

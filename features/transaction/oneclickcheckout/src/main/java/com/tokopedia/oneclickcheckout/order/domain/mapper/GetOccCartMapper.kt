@@ -152,6 +152,8 @@ class GetOccCartMapper @Inject constructor() {
                 isFreeOngkir -> groupShop.shipmentInformation.freeShipping.badgeUrl
                 else -> ""
             }
+            preOrderLabel = if (groupShop.shipmentInformation.preorder.isPreorder) groupShop.shipmentInformation.preorder.duration else ""
+            shopAlertMessage = shop.shopAlertMessage
             shopTicker = shop.shopTicker
             maximumWeightWording = shop.maximumWeightWording
             maximumWeight = shop.maximumShippingWeight
@@ -206,6 +208,11 @@ class GetOccCartMapper @Inject constructor() {
             preOrderDuration = product.productPreorder.durationDay.toIntOrZero()
             quantity = mapQuantity(product)
             purchaseProtectionPlanData = mapPurchaseProtectionPlanData(product.purchaseProtectionPlanDataResponse)
+            variant = product.variantDescriptionDetail.variantName.joinToString(", ")
+            productWarningMessage = product.productWarningMessage
+            productAlertMessage = product.productAlertMessage
+            slashPriceLabel = product.slashPriceLabel
+            productInformation = product.productInformation.reversed()
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
         }

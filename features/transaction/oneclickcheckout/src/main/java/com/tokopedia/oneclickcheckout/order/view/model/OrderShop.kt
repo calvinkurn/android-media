@@ -25,6 +25,8 @@ data class OrderShop(
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
         var freeOngkirImg: String = "",
+        var preOrderLabel: String = "",
+        var shopAlertMessage: String = "",
         var unblockingErrorMessage: String = "",
         var firstProductErrorIndex: Int = -1,
         var shopTicker: String = "",

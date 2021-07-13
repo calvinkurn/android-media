@@ -35,6 +35,11 @@ data class OrderProduct(
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
+        var variant: String = "",
+        var productWarningMessage: String = "",
+        var productAlertMessage: String = "",
+        var slashPriceLabel: String = "",
+        var productInformation: List<String> = emptyList(),
         var errorMessage: String = "",
         var isError: Boolean = false
 ): OrderItem {

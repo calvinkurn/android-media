@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -12,12 +13,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -47,6 +50,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderProductTicker()
         renderProductNames()
         renderPrice()
+        renderProductInfo()
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
@@ -73,15 +77,17 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         binding.apply {
             ivProductImage.setImageUrl(product.productImageUrl)
             tvProductName.text = product.productName
-            if (product.tickerMessage.message.isNotEmpty()) {
-                var completeText = product.tickerMessage.message
-                for (replacement in product.tickerMessage.replacement) {
-                    completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
-                }
-                tvQtyLeft.text = MethodChecker.fromHtml(completeText)
+            if (product.productWarningMessage.isNotBlank()) {
+                tvQtyLeft.text = MethodChecker.fromHtml(product.productWarningMessage)
                 tvQtyLeft.visible()
             } else {
                 tvQtyLeft.gone()
+            }
+            if (product.variant.isNotBlank()) {
+                tvProductVariant.text = product.variant
+                tvProductVariant.visible()
+            } else {
+                tvProductVariant.gone()
             }
 
             val alpha = if (product.isError) 0.5f else 1.0f
@@ -103,14 +109,38 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 tvProductSlashPrice.gone()
             }
 
-            if (product.cashback.isNotEmpty()) {
-                labelProductSlashPricePercentage.setLabel(product.cashback)
+            if (product.slashPriceLabel.isNotBlank()) {
+                labelProductSlashPricePercentage.setLabel(product.slashPriceLabel)
                 labelProductSlashPricePercentage.visible()
             } else {
                 labelProductSlashPricePercentage.gone()
             }
 
             flexboxOrderProductPrices.alpha = if (product.isError) 0.5f else 1.0f
+        }
+    }
+
+    private fun renderProductInfo() {
+        binding.apply {
+            flexboxOrderProductInfo.removeAllViews()
+            if (!product.isError && product.getPrice() < product.productPrice) {
+                val textView = Typography(flexboxOrderProductInfo.context).apply {
+                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setType(Typography.BODY_3)
+                    text = root.context.getString(R.string.lbl_wholesale_product)
+                }
+                flexboxOrderProductInfo.addView(textView, 0)
+            }
+            if (!product.isError && product.productInformation.isNotEmpty()) {
+                for (information in product.productInformation) {
+                    val textView = Typography(flexboxOrderProductInfo.context).apply {
+                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setType(Typography.BODY_3)
+                        text = if (flexboxOrderProductInfo.childCount > 0) "$information, " else information
+                    }
+                    flexboxOrderProductInfo.addView(textView, 0)
+                }
+            }
         }
     }
 
@@ -217,6 +247,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     product.quantity.orderQuantity = newValue
                     listener.onProductChange(product, productIndex)
                     renderPrice()
+                    renderProductInfo()
                 }
             }
             qtyEditorProduct.setAddClickListener {
