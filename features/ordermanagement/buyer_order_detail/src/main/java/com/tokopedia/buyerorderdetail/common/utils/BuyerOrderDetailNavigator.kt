@@ -55,12 +55,14 @@ class BuyerOrderDetailNavigator(
         }
     }
 
-    private fun createProductBundleListPayload(productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>): String {
-        return GsonSingleton.instance.toJson(JsonArray(productBundlingList.size).apply {
-            productBundlingList.forEach {
-                add(createProductBundlePayload(it))
-            }
-        })
+    private fun createProductBundleListPayload(productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>?): String? {
+        return productBundlingList?.let { list ->
+            GsonSingleton.instance.toJson(JsonArray(list.size).apply {
+                list.forEach {
+                    add(createProductBundlePayload(it))
+                }
+            })
+        }
     }
 
     private fun createProductBundlePayload(model: ProductListUiModel.ProductBundlingUiModel): JsonObject {
@@ -149,7 +151,7 @@ class BuyerOrderDetailNavigator(
     ) {
         if (buyerOrderDetailData is Success) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
-            val payload: Map<String, Any> = mapOf(
+            val payload: Map<String, Any?> = mapOf(
                     BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
                     BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
                     BuyerRequestCancellationIntentParamKey.JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),

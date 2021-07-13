@@ -10,9 +10,8 @@
         android:id="@+id/view_buyer_order_bundling_header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/buyer_order_cancel_bundling_header_height_40dp"
-        android:background="@drawable/bg_rounded_grey_label_buyer"
+        android:background="@drawable/bg_rounded_grey_label_buyer_bundle"
         android:layout_marginHorizontal="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"/>
     
     <com.tokopedia.unifycomponents.ImageUnify

@@ -49,6 +49,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomShe
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductDivider
 import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
@@ -421,13 +422,17 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 adapterTypeFactory = buyerProductBundlingAdapterFactory
         )
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null).apply {
-            rv_cancel?.apply {
-                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                adapter = buyerProductBundlingAdapter
+            rv_cancel?.run {
+                context?.let {
+                    layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
+                    adapter = buyerProductBundlingAdapter
+                    addItemDecoration(BuyerBundlingProductDivider(it))
+                }
             }
         }
 
         val bottomSheet = BottomSheetUnify().apply {
+            clearContentPadding = true
             setChild(viewBottomSheet)
             setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
             showCloseIcon = true

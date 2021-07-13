@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ProductListUiModel(
         val productList: List<ProductUiModel>,
-        val productBundlingList: List<ProductBundlingUiModel>,
+        val productBundlingList: List<ProductBundlingUiModel>?,
         val productListHeaderUiModel: ProductListHeaderUiModel
 ) {
     data class ProductListHeaderUiModel(

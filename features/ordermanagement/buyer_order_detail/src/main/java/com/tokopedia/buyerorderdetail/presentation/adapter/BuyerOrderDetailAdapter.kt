@@ -97,8 +97,10 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         productList.filter { it.shouldShow() }.also { addAll(it) }
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>) {
-        addAll(productBundlingList)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>?) {
+        productBundlingList?.let {
+            addAll(it)
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierInfoSection(courierInfoUiModel: ShipmentInfoUiModel.CourierInfoUiModel) {

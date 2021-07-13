@@ -37,6 +37,36 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
                                         priceText = "Rp100.000"
                                 )
                         )
+                ),
+                BuyerBundlingProductUiModel(
+                        bundleName = "Tes Bundle",
+                        productList = listOf(
+                                ProductBundleItem(
+                                        productThumbnailUrl = "",
+                                        productName = "Product coba2",
+                                        priceText = "Rp100.000"
+                                ),
+                                ProductBundleItem(
+                                        productThumbnailUrl = "",
+                                        productName = "Product coba2",
+                                        priceText = "Rp100.000"
+                                )
+                        )
+                ),
+                BuyerBundlingProductUiModel(
+                        bundleName = "Tes Bundle",
+                        productList = listOf(
+                                ProductBundleItem(
+                                        productThumbnailUrl = "",
+                                        productName = "Product coba2",
+                                        priceText = "Rp100.000"
+                                ),
+                                ProductBundleItem(
+                                        productThumbnailUrl = "",
+                                        productName = "Product coba2",
+                                        priceText = "Rp100.000"
+                                )
+                        )
                 )
         )
     }
