@@ -458,11 +458,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun showError() {
         globalError?.apply {
             setActionClickListener {
-                if (errorType == GlobalError.PAGE_NOT_FOUND) {
-                    goToHome()
-                } else {
-                    loadInitialData()
-                }
+                loadInitialData()
             }
             show()
         }
@@ -519,6 +515,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         globalError?.apply {
             errorType = GlobalError.PAGE_NOT_FOUND
             setType(GlobalError.PAGE_NOT_FOUND)
+            setActionClickListener {
+                goToHome()
+            }
             show()
         }
     }

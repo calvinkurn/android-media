@@ -50,7 +50,13 @@ data class ProductRating(
         val totalRatingTextAndImage: Long = 0,
         @SerializedName("detail")
         @Expose
-        val detail: List<ProductReviewDetail> = listOf()
+        val detail: List<ProductReviewDetail> = listOf(),
+        @SerializedName("totalRatingFmt")
+        @Expose
+        val totalRatingFmt: String = "",
+        @SerializedName("totalRatingTextAndImageFmt")
+        @Expose
+        val totalRatingTextAndImageFmt: String = "",
 )
 
 data class ProductTopic(

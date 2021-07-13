@@ -143,7 +143,7 @@ class ReadReviewHeader : BaseCustomView {
     fun setRatingData(productRating: ProductRating) {
         rating?.setRating(productRating.ratingScore)
         this.satisfactionRate?.text = productRating.satisfactionRate
-        this.ratingAndReviewCount?.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRating, productRating.totalRatingTextAndImage)
+        this.ratingAndReviewCount?.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRatingFmt, productRating.totalRatingTextAndImageFmt)
     }
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
