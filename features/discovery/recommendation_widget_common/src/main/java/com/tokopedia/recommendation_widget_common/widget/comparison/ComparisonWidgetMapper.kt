@@ -1,6 +1,8 @@
 package com.tokopedia.recommendation_widget_common.widget.comparison
 
 import android.content.Context
+import android.util.TypedValue
+import android.widget.TextView
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
@@ -65,17 +67,20 @@ object ComparisonWidgetMapper {
         val maxSpecsSize = recommendationItem.maxBy { it.specs.size }?.specs?.size?:0
         for (i in 0 until maxSpecsSize) {
             val textSizeHeight = context.resources.getDimensionPixelSize(R.dimen.comparison_summary_text_height)
+            val textSpec = R.id.tv_spec_summary
             var comparisonWidth = context.resources.getDimensionPixelSize(R.dimen.comparison_widget_product_card_width_measure)
             //substract with margin start and end
             comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_start)
             comparisonWidth -= context.resources.getDimensionPixelSize(R.dimen.comparison_specs_margin_end)
+            val textSize = TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 12f, context.resources.displayMetrics )
 
             val measuredSummaryHeight =
                 SpecsMapper.findMaxSummaryText(
                     recommendationItem,
                     i,
-                    26.73f,
-                    comparisonWidth
+                    textSizeHeight.toFloat(),
+                    comparisonWidth.toFloat(),
+                    context
                 )
 
             //initial height for overall specs content, start from title height

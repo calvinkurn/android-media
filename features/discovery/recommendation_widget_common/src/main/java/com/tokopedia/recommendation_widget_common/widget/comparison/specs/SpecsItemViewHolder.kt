@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import kotlinx.android.synthetic.main.item_spec.view.*
 
 class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {

@@ -4,8 +4,10 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsMapper
 import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsModel
 import kotlinx.android.synthetic.main.item_spec2.view.*
 

@@ -5,6 +5,7 @@
     <dimen name="product_card_flashsale_width">136dp</dimen>
 
     <dimen name="comparison_summary_text_height">12dp</dimen>
+    <dimen name="comparison_summary_text_height_sp">12sp</dimen>
     <dimen name="comparison_title_text_height">20dp</dimen>
 
     <dimen name="comparison_specs_content_width">140dp</dimen>
@@ -13,6 +14,7 @@
     <dimen name="comparison_specs_margin_bottom">8dp</dimen>
     <dimen name="comparison_specs_margin_start">8dp</dimen>
     <dimen name="comparison_specs_margin_end">8dp</dimen>
+    <dimen name="comparison_specs_margin">4dp</dimen>
 
     <dimen name="comparison_widget_margin_start">14dp</dimen>
     <dimen name="comparison_widget_margin_end">14dp</dimen>
