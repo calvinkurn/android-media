@@ -108,6 +108,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
