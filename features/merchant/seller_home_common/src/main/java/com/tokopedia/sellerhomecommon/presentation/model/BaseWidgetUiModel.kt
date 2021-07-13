@@ -17,6 +17,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val appLink: String
     val dataKey: String
     val ctaText: String
+    val gridSize: Int
     val isShowEmpty: Boolean
     var data: T?
     var impressHolder: ImpressHolder
@@ -25,7 +26,9 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     var isFromCache: Boolean
     var isNeedToBeRemoved: Boolean
     var emptyState: WidgetEmptyStateUiModel
-    fun copy(): BaseWidgetUiModel<T>
+
+    fun copyWidget(): BaseWidgetUiModel<T>
+
     fun needToRefreshData(other: BaseWidgetUiModel<T>): Boolean
 
     fun shouldShowEmptyStateIfEmpty(): Boolean =

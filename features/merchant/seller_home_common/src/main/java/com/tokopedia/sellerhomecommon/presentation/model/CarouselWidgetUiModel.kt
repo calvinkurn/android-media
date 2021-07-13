@@ -7,7 +7,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class CarouselWidgetUiModel(
+data class CarouselWidgetUiModel(
         override val id: String,
         override val widgetType: String,
         override val title: String,
@@ -16,6 +16,7 @@ class CarouselWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val gridSize: Int,
         override val isShowEmpty: Boolean,
         override var data: CarouselDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -30,8 +31,8 @@ class CarouselWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<CarouselDataUiModel> {
-        return CarouselWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    override fun copyWidget(): BaseWidgetUiModel<CarouselDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<CarouselDataUiModel>): Boolean {

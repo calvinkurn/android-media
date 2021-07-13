@@ -18,6 +18,9 @@ data class WidgetModel(
         @SerializedName("ctaText")
         val ctaText: String?,
         @Expose
+        @SerializedName("gridSize")
+        val gridSize: Int?,
+        @Expose
         @SerializedName("dataKey")
         val dataKey: String?,
         @Expose

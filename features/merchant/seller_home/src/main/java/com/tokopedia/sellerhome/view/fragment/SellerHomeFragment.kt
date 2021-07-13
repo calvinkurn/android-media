@@ -704,7 +704,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 ?: WidgetFilterBottomSheet.newInstance()
         postFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_category, element.postFilter) {
             recyclerView?.post {
-                val copiedWidget = element.copy().apply { data = null }
+                val copiedWidget = element.copyWidget().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getPostData(listOf(element))
             }
@@ -718,7 +718,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 ?: WidgetFilterBottomSheet.newInstance()
         tableFilterBottomSheet.init(requireContext(), com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data, element.tableFilters) {
             recyclerView?.post {
-                val copiedWidget = element.copy().apply { data = null }
+                val copiedWidget = element.copyWidget().apply { data = null }
                 notifyWidgetChanged(copiedWidget)
                 getTableData(listOf(element))
             }
@@ -910,7 +910,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val newWidgetList = adapter.data.toMutableList()
                 forEach { section ->
                     newWidgetList.indexOf(section).takeIf { it > -1 }?.let { index ->
-                        newWidgetList[index] = section.copy().apply { isLoaded = true }
+                        newWidgetList[index] = section.copyWidget().apply { isLoaded = true }
                     }
                 }
                 updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
@@ -1119,7 +1119,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         newWidgetList.removeAt(index)
                         removeEmptySections(newWidgetList, index)
                     } else {
-                        val copiedWidget = widget.copy()
+                        val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
                         copiedWidget.isLoading = widget.data?.isFromCache ?: false
                         newWidgetList[index] = copiedWidget
@@ -1154,7 +1154,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val newWidgetList = adapter.data.map { widget ->
             val isSameWidgetType = widget.widgetType == widgetType
             if (widget is W && widget.data == null && widget.isLoaded && isSameWidgetType) {
-                widget.copy().apply {
+                widget.copyWidget().apply {
                     data = D::class.java.newInstance().apply {
                         error = message
                     }
@@ -1267,7 +1267,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 !is TickerWidgetUiModel,
                 !is WhiteSpaceUiModel -> {
                     if (isInvoked) {
-                        widget.copy().apply { impressHolder = ImpressHolder() }
+                        widget.copyWidget().apply { impressHolder = ImpressHolder() }
                     } else {
                         widget
                     }

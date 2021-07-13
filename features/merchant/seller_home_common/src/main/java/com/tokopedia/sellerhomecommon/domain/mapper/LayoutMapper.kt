@@ -1,7 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -11,7 +13,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 09/06/20
  */
 
-class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper): BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper) : BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
 
     override fun mapRemoteDataToUiData(response: GetLayoutResponse, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
         val widgets = response.layout?.widget.orEmpty()
@@ -51,6 +53,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_1),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -70,6 +73,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -89,6 +93,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -108,6 +113,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -127,6 +133,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 postFilter = widget.postFilter?.mapIndexed { i, filter ->
@@ -149,6 +156,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -168,6 +176,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -190,6 +199,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = WidgetGridSize.GRID_SIZE_4,
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -209,6 +219,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -228,6 +239,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -247,6 +259,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -267,6 +280,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
@@ -286,6 +300,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_2),
                 isShowEmpty = widget.isShowEmpty.orFalse(),
                 data = null,
                 isLoaded = false,
@@ -293,5 +308,13 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isFromCache = isFromCache,
                 emptyState = widget.emptyStateModel.mapToUiModel()
         )
+    }
+
+    private fun getGridSize(gridSize: Int, defaultGridSize: Int): Int {
+        return if (gridSize == WidgetGridSize.GRID_SIZE_0) {
+            defaultGridSize
+        } else {
+            gridSize
+        }
     }
 }

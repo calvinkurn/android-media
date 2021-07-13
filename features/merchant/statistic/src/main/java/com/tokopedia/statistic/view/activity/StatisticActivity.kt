@@ -73,7 +73,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         super.onCreate(savedInstanceState)
         initInjector()
 
-        checkWhiteListStatus()
+        if (savedInstanceState == null) {
+            checkWhiteListStatus()
+        }
+
         setContentView(R.layout.activity_stc_statistic)
 
         setupView()

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 /**
@@ -16,6 +17,7 @@ data class TickerWidgetUiModel(
         override val appLink: String = "",
         override val dataKey: String = "",
         override val ctaText: String = "",
+        override val gridSize: Int = WidgetGridSize.GRID_SIZE_4,
         override val isShowEmpty: Boolean = false,
         override var data: TickerDataUiModel? = null,
         override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -30,8 +32,8 @@ data class TickerWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<TickerDataUiModel> {
-        return TickerWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+    override fun copyWidget(): BaseWidgetUiModel<TickerDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<TickerDataUiModel>): Boolean {

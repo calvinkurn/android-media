@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.gms.common.util.DeviceProperties
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -21,6 +22,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
@@ -102,7 +104,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private val mViewModel: StatisticViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(StatisticViewModel::class.java)
     }
-    private val mLayoutManager by lazy { StatisticLayoutManager(context, spanCount = 2) }
+    private var mLayoutManager: StatisticLayoutManager? = null
     private val recyclerView by lazy { super.getRecyclerView(view) }
     private var dateFilterBottomSheet: DateFilterBottomSheet? = null
     private val defaultStartDate by lazy {
@@ -144,10 +146,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
-        loadInitialLayoutData {
+        loadInitialLayoutData(savedInstanceState) {
             statisticPage?.let { page ->
                 startLayoutNetworkPerformanceMonitoring()
                 mViewModel.getWidgetLayout(page.pageSource)
+                mViewModel.getUserRole()
+                mViewModel.getTickers(page.tickerPageName)
             }
         }
     }
@@ -330,8 +334,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendPieChartImpressionEvent(model, position)
     }
 
-    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
-        StatisticTracker.sendPieChartEmptyStateCtaClickEvent(model)
+    override fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {
+        StatisticTracker.sendPieChartEmptyStateCtaClickEvent(element)
     }
 
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
@@ -385,10 +389,12 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         this.selectedWidget = widget
     }
 
-    private fun loadInitialLayoutData(action: () -> Unit) {
+    private fun loadInitialLayoutData(savedInstanceState: Bundle?, action: () -> Unit) {
         val shouldLoadDataOnCreate = arguments?.getBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE).orFalse()
         if (shouldLoadDataOnCreate) {
-            action()
+            if (savedInstanceState == null) {
+                action()
+            }
         } else {
             lifecycleScope.launchWhenResumed {
                 if (isVisible && isFirstLoad) {
@@ -455,15 +461,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun setupRecyclerView() = view?.run {
-        with(mLayoutManager) {
+        val statisticSpanCount = getWidgetSpanCount()
+        val isTablet = (statisticSpanCount == WidgetGridSize.GRID_SIZE_4)
+        mLayoutManager = StatisticLayoutManager(context, statisticSpanCount)
+        mLayoutManager?.run {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return try {
-                        val isCardWidget = adapter.data[position].widgetType == WidgetType.CARD
-                        if (isCardWidget) 1 else spanCount
-                    } catch (e: IndexOutOfBoundsException) {
-                        spanCount
-                    }
+                    return getSpanSizeByDeviceType(position, isTablet, spanCount)
                 }
             }
 
@@ -475,6 +479,28 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         recyclerView?.run {
             layoutManager = mLayoutManager
             (itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        }
+    }
+
+    private fun getSpanSizeByDeviceType(position: Int, isTablet: Boolean, defaultSpanCount: Int): Int {
+        return try {
+            val widget = adapter.data[position]
+            return if (isTablet) {
+                widget.gridSize
+            } else {
+                val isCardWidget = widget.widgetType == WidgetType.CARD
+                if (isCardWidget) WidgetGridSize.GRID_SIZE_1 else defaultSpanCount
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            defaultSpanCount
+        }
+    }
+
+    private fun getWidgetSpanCount(): Int {
+        return if (DeviceProperties.isTablet(requireActivity().resources)) {
+            WidgetGridSize.GRID_SIZE_4
+        } else {
+            WidgetGridSize.GRID_SIZE_2
         }
     }
 
@@ -593,17 +619,19 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun requestVisibleWidgetsData() {
-        val firstVisible: Int = mLayoutManager.findFirstVisibleItemPosition()
-        val lastVisible: Int = mLayoutManager.findLastVisibleItemPosition()
-        lifecycleScope.launch(Dispatchers.Unconfined) {
-            val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-            adapter.data.forEachIndexed { index, widget ->
-                if (index in firstVisible..lastVisible && !widget.isLoaded) {
-                    visibleWidgets.add(widget)
+        mLayoutManager?.let {
+            val firstVisible: Int = it.findFirstVisibleItemPosition()
+            val lastVisible: Int = it.findLastVisibleItemPosition()
+            lifecycleScope.launch(Dispatchers.Unconfined) {
+                val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+                adapter.data.forEachIndexed { index, widget ->
+                    if (index in firstVisible..lastVisible && !widget.isLoaded) {
+                        visibleWidgets.add(widget)
+                    }
                 }
-            }
 
-            if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+                if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+            }
         }
     }
 
@@ -644,7 +672,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             if (index != invalidIndex) {
                 recyclerView?.post {
                     val offset = 0
-                    mLayoutManager.scrollToPositionWithOffset(index, offset)
+                    mLayoutManager?.scrollToPositionWithOffset(index, offset)
                 }
             }
         } catch (e: StringIndexOutOfBoundsException) {
@@ -743,9 +771,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private inline fun <reified D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> Throwable.setOnErrorWidgetState(widgetType: String) {
         val message = this.message.orEmpty()
-        adapter.data.filter { it.widgetType == widgetType }
-                .forEach { widget ->
-                    if (widget is W) {
+        adapter.data.forEach { widget ->
+                    if (widget is W && widget.widgetType == widgetType) {
                         val widgetData = D::class.java.newInstance().apply {
                             error = message
                         }
@@ -790,7 +817,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeWidgetLayoutLiveData() {
-        mViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
+        mViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
 
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
@@ -804,20 +831,16 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun observeUserRole() {
-        mViewModel.userRole.observe(viewLifecycleOwner, Observer {
+        mViewModel.userRole.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> checkUserRole(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_SELLER_ROLE)
             }
         })
-        mViewModel.getUserRole()
     }
 
     private fun observeTickers() {
-        statisticPage?.let {
-            mViewModel.getTickers(it.tickerPageName)
-        }
-        mViewModel.tickers.observe(viewLifecycleOwner, Observer {
+        mViewModel.tickers.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> showTickers(it.data)
                 is Fail -> StatisticLogger.logToCrashlytics(it.throwable, StatisticLogger.ERROR_TICKER)
@@ -826,7 +849,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
-        liveData.observe(viewLifecycleOwner, Observer { result ->
+        liveData.observe(viewLifecycleOwner, { result ->
             startLayoutRenderingPerformanceMonitoring()
 
             when (result) {

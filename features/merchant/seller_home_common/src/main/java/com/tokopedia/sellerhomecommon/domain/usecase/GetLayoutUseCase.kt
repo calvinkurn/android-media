@@ -77,6 +77,7 @@ class GetLayoutUseCase(
                   applink
                   dataKey
                   ctaText
+                  gridSize
                   emptyState {
                     imageUrl
                     title

@@ -19,7 +19,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPieChartLegend"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/charts_6dp"
         android:layout_marginLeft="@dimen/charts_6dp"

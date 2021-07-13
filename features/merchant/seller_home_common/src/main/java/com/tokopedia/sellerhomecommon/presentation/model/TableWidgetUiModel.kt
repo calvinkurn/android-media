@@ -16,6 +16,7 @@ data class TableWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val gridSize: Int,
         override val isShowEmpty: Boolean,
         override var data: TableDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -31,8 +32,8 @@ data class TableWidgetUiModel(
         return typeFactory.type(this)
     }
 
-    override fun copy(): BaseWidgetUiModel<TableDataUiModel> {
-        return TableWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState, tableFilters)
+    override fun copyWidget(): BaseWidgetUiModel<TableDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<TableDataUiModel>): Boolean {

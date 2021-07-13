@@ -3,12 +3,18 @@ package com.tokopedia.statistic.view.viewhelper
 import android.content.Context
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 
 /**
  * Created By @ilhamsuaib on 18/06/20
  */
 
-class StatisticLayoutManager(context: Context?, spanCount: Int) : GridLayoutManager(context, spanCount) {
+class StatisticLayoutManager(
+        context: Context?,
+        spanCount: Int
+) : GridLayoutManager(context, spanCount) {
 
     private var scrollVerticallyCallback: () -> Unit = {}
 
