@@ -46,7 +46,8 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
                                           private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
-                                          private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
+                                          private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
+                                          private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) {
     private var isShopFavorite = false
     private val chooseAddressWidget: ChooseAddressWidget?
@@ -90,7 +91,8 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                 shopActionButtonWidgetFollowButtonComponentListener,
                 shopActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
-                shopPlayWidgetListener
+                shopPlayWidgetListener,
+                shopPerformanceWidgetImageTextListener
         ))
         view.rv_shop_page_header_widget?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         view.rv_shop_page_header_widget?.itemAnimator = null
