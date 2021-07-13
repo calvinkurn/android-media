@@ -86,6 +86,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
@@ -403,27 +404,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun observeOrderPreference() {
         viewModel.orderPreference.observe(viewLifecycleOwner) {
             when (it) {
-                is OccState.FirstLoad -> {
-                    binding.loaderContent.animateGone()
-                    binding.globalError.animateGone()
-                    view?.also { _ ->
-                        adapter.onboarding = it.data.onboarding
-                        adapter.ticker = it.data.ticker
-                        if (binding.rvOrderSummaryPage.isComputingLayout) {
-                            binding.rvOrderSummaryPage.post {
-                                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
-                            }
-                        } else {
-                            adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
-                        }
-                        if (it.data.hasValidProfile) {
-                            binding.rvOrderSummaryPage.show()
-                            binding.layoutNoAddress.root.animateGone()
-                        } else {
-                            binding.rvOrderSummaryPage.gone()
-                        }
-                    }
-                }
                 is OccState.Loading -> {
                     binding.rvOrderSummaryPage.gone()
                     binding.globalError.animateGone()
@@ -436,6 +416,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         handleError(failure.throwable)
                     }
                 }
+                is OccState.FirstLoad -> showMainContent(it.data)
+                is OccState.Success -> showMainContent(it.data)
+            }
+        }
+    }
+
+    private fun showMainContent(data: OrderPreference) {
+        binding.loaderContent.animateGone()
+        binding.globalError.animateGone()
+        view?.also { _ ->
+            adapter.onboarding = data.onboarding
+            adapter.ticker = data.ticker
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+                }
+            } else {
+                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+            }
+            if (data.hasValidProfile) {
+                binding.rvOrderSummaryPage.show()
+                binding.layoutNoAddress.root.animateGone()
+            } else {
+                binding.rvOrderSummaryPage.gone()
             }
         }
     }
@@ -576,6 +580,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     if (activity != null) {
                         val messageData = it.message
                         val priceValidationDialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        priceValidationDialog.setOverlayClose(false)
+                        priceValidationDialog.setCancelable(false)
                         priceValidationDialog.setTitle(messageData.title)
                         priceValidationDialog.setDescription(messageData.desc)
                         priceValidationDialog.setPrimaryCTAText(messageData.action)

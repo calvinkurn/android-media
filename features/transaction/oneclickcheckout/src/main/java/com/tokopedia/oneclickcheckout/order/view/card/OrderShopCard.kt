@@ -6,7 +6,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.databinding.CardOrderShopBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop.Companion.MAXIMUM_WEIGHT_WORDING_REPLACE_KEY
 import com.tokopedia.unifycomponents.ticker.Ticker
+import java.text.NumberFormat
 import java.util.*
 
 class OrderShopCard(private val binding: CardOrderShopBinding,
@@ -74,7 +76,8 @@ class OrderShopCard(private val binding: CardOrderShopBinding,
                 occCustomTickerError.gone()
             } else if (shop.overweight > 0) {
                 tickerOrderShop.tickerType = Ticker.TYPE_WARNING
-                tickerOrderShop.setHtmlDescription(shop.maximumWeightWording)
+                val overweightString = NumberFormat.getNumberInstance(Locale("in", "id")).format(shop.overweight / 1000)
+                tickerOrderShop.setHtmlDescription(shop.maximumWeightWording.replace(MAXIMUM_WEIGHT_WORDING_REPLACE_KEY, overweightString))
                 tickerOrderShop.visible()
                 occCustomTickerError.gone()
             } else if (shop.firstProductErrorIndex > -1 && shop.unblockingErrorMessage.isNotBlank()) {

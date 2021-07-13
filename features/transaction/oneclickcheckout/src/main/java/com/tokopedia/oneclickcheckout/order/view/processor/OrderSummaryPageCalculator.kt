@@ -33,7 +33,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                                orderTotal: OrderTotal): Pair<OrderPayment, OrderTotal> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
-            val isValidState = shipping.isValid() && shipping.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.isError && orderCart.products.all { it.isError || it.quantity.orderQuantity > 0 } && orderProfile.isValidProfile
+            val isValidState = shipping.isValid() && shipping.serviceErrorMessage.isNullOrEmpty() && !orderCart.shop.isError && orderCart.shop.overweight == 0.0 && orderCart.products.all { it.isError || it.quantity.orderQuantity > 0 } && orderProfile.isValidProfile
             var payment = orderPayment
             if (!isValidState) {
                 return@withContext payment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)

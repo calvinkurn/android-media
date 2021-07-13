@@ -75,18 +75,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         return result
     }
 
-    /**
-     * Validate Order Error State
-     *
-     * @return true if order is OK, false if order is error
-     */
-    suspend fun isOrderNormal(orderCart: OrderCart): Boolean {
-        OccIdlingResource.increment()
-        val result = withContext(executorDispatchers.default) {
-            orderCart.shop.isError && orderCart.products.any { !it.isError }
-        }
-        OccIdlingResource.decrement()
-        return result
+    fun isOrderNormal(orderCart: OrderCart): Boolean {
+        return !orderCart.shop.isError && orderCart.products.any { !it.isError }
     }
 
     fun generateUpdateCartParam(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {

@@ -31,6 +31,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
@@ -895,5 +897,22 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(paymentProfile, orderSummaryPageViewModel.getPaymentProfile())
+    }
+
+    @Test
+    fun `Get Wallet Activation Data`() {
+        // Given
+        val activationData = OrderPaymentWalletActionData(isRequired = true)
+        val response = helper.orderData.copy(payment = OrderPayment(walletData = OrderPaymentWalletAdditionalData(
+                activation = activationData
+        )))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(activationData, orderSummaryPageViewModel.getActivationData())
     }
 }

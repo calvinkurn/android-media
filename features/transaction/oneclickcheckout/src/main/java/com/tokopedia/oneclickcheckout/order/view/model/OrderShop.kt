@@ -36,4 +36,8 @@ data class OrderShop(
 
     val isError: Boolean
         get() = errors.isNotEmpty()
+
+    companion object {
+        const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+    }
 }

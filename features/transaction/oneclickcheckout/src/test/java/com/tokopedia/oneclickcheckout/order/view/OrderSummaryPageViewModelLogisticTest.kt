@@ -147,6 +147,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Get Rates Failed`() {
         // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.error(Throwable())
 
@@ -679,6 +680,43 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 orderSummaryPageViewModel.orderShipment.value)
         verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
         verify(inverse = true) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.secondCourierFirstDuration.productData.shipperProductId.toString(), any()) }
+    }
+
+    @Test
+    fun `Get Rates On Error Order`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(shop = helper.orderData.cart.shop.copy(errors = listOf("error")))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(OrderShipment(
+                isDisabled = true,
+                isLoading = false,
+                serviceName = helper.shipment.serviceName,
+                serviceDuration = helper.shipment.serviceDuration,
+                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE
+        ), orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
+    fun `Get Rates Overweight`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(
+                shop = helper.orderData.cart.shop.copy(maximumWeight = 10),
+                products = arrayListOf(helper.product.copy(weight = 100)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(false, orderSummaryPageViewModel.orderProfile.value.enable)
+        assertEquals(90.0, orderSummaryPageViewModel.orderShop.value.overweight, 0.0)
+        assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
     }
 
     @Test

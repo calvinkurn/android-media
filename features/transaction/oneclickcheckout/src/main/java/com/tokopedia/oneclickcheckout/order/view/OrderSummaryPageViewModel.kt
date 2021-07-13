@@ -554,11 +554,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun clearAllPromoFromLastRequest() {
         validateUsePromoRevampUiModel = null
-        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
-        if (orders.isNotEmpty()) {
-            orders[0]?.codes?.clear()
-        }
-        lastValidateUsePromoRequest?.codes?.clear()
+        lastValidateUsePromoRequest = promoProcessor.clearAllPromoFromLastRequest(lastValidateUsePromoRequest)
         orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
