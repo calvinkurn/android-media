@@ -9,7 +9,7 @@
         <item name="android:text">@string/default_timer_value</item>
         <item name="android:maxLines">1</item>
         <item name="android:layout_marginStart">@dimen/dp_3</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
@@ -21,7 +21,7 @@
         <item name="android:layout_marginRight">@dimen/dp_3</item>
         <item name="android:layout_marginEnd">@dimen/dp_3</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_N0</item>
         <item name="android:textSize">@dimen/sp_14</item>
         <item name="android:text">@string/time_separator</item>
     </style>
