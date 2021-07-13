@@ -36,7 +36,7 @@ dependencies {
 project.ext {
     artifactId = 'live-broadcaster'
     groupId = 'com.tokopedia.broadcaster'
-    versionName = "0.0.3"
+    versionName = "0.0.1"
     artifactName = "live-broadcaster-release"
 }
 
