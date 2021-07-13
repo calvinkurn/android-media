@@ -81,7 +81,7 @@ class ProductHighlightComponentViewHolder(
             if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
                 itemView.deals_count_down?.run {
                     val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
-                    variant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
+                    timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
                         TimerUnifyHighlight.VARIANT_ALTERNATE
                     } else {
                         TimerUnifyHighlight.VARIANT_DARK_RED
