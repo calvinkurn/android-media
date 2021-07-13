@@ -17,7 +17,8 @@ data class ProductRecommendationDataModel(
         //UI Data
         var filterData: List<AnnotationChip>? = null,
         var cardModel: List<ProductCardModel>? = null,
-        var position: Int = -1
+        var position: Int = -1,
+        var updatedPosList: List<Int> = listOf()
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -62,7 +63,7 @@ data class ProductRecommendationDataModel(
             if (!areRecomQtyItemTheSame(newData.recomWidgetData)) {
                 val posList = getRecomPosListNeedToBeUpdated(newData.recomWidgetData)
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW)
-                bundle.putIntArray(ProductDetailConstant.DIFFUTIL_PAYLOAD_EXTRAS, posList.toIntArray())
+                newData.updatedPosList = posList
                 return bundle
             }
             null

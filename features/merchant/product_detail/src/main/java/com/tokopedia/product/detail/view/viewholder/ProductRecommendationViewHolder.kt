@@ -98,9 +98,8 @@ class ProductRecommendationViewHolder(
                 }
             }
             ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW -> {
-                element?.recomWidgetData?.let {
-                    //need to implement update per card : ask darian about update carousel
-                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                element?.updatedPosList?.let {
+                    view.rvProductRecom.notifyItemChanged(it)
                 }
             }
         }
