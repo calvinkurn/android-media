@@ -7,10 +7,8 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        jcenter()
         maven { url "https://maven.google.com" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'https://mymavenrepo.com/repo/e01iL1W9Gdxw73PGI9LA' }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
             credentials {
