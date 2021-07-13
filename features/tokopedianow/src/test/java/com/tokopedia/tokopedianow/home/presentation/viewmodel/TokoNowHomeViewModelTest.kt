@@ -5,10 +5,11 @@ import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
-import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper.mapTickerData
@@ -32,7 +33,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                         createHomeLayoutList(),
                         mapTickerData(createTicker().ticker.tickerList)
                 ),
-                state = HomeLayoutState.SHOW
+                state = TokoNowLayoutState.SHOW
         )
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
         verifyGetTickerUseCaseCalled()
@@ -140,37 +141,51 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting data for mini cart should run and give success result`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
     }
 
     @Test
     fun `when getting data for mini cart should throw mini cart exception`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(Exception())
 
-        viewModel.getMiniCart(shopId = listOf("123"), "233")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartFail()
     }
 
     @Test
     fun `when shopId is empty should get null for category livedata`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf(), "233")
+        viewModel.getMiniCart(shopId = listOf(), warehouseId = "233")
 
         verifyMiniCartNullResponse()
     }
 
     @Test
     fun `when warehouseId is zero should get null for category livedata`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModel.getMiniCart(shopId = listOf("123"), "0")
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "0")
 
+        verifyMiniCartNullResponse()
+    }
+
+    @Test
+    fun `given user is not logged in when getMiniCart should not call use case`() {
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = false)
+
+        viewModel.getMiniCart(listOf("123"), "1")
+
+        verifyGetMiniCartUseCaseNotCalled()
         verifyMiniCartNullResponse()
     }
 
@@ -190,27 +205,29 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
 
         //prepare model that need to be changed
-        val model = HomeCategoryGridUiModel(
+        val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = emptyList(),
-                state=HomeLayoutState.SHOW
+                state= TokoNowLayoutState.SHOW
         )
 
         viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
         val expectedResponse = HomeLayoutItemUiModel(
-            HomeCategoryGridUiModel(
+            TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
-                categoryList = listOf(HomeCategoryItemUiModel(
+                categoryList = listOf(
+                    TokoNowCategoryItemUiModel(
                     id="1",
                     title="Category 1",
                     imageUrl="tokopedia://",
                     appLink="tokoepdia://"
-                )),
-                state=HomeLayoutState.SHOW
+                )
+                ),
+                state= TokoNowLayoutState.SHOW
             ),
             HomeLayoutItemState.LOADED
         )
@@ -237,22 +254,22 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(Exception())
 
         //prepare model that need to be changed
-        val model = HomeCategoryGridUiModel(
+        val model = TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = emptyList(),
-                state=HomeLayoutState.SHOW
+                state= TokoNowLayoutState.SHOW
         )
 
         viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
         val expectedResponse = HomeLayoutItemUiModel(
-            HomeCategoryGridUiModel(
+            TokoNowCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = null,
-                state=HomeLayoutState.HIDE
+                state= TokoNowLayoutState.HIDE
             ),
             HomeLayoutItemState.LOADED
         )
@@ -277,16 +294,18 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //prepare model for expectedResult
         val expectedResponse = HomeLayoutItemUiModel(
-                HomeCategoryGridUiModel(
+                TokoNowCategoryGridUiModel(
                         id="11111",
                         title="Category Tokonow",
-                        categoryList = listOf(HomeCategoryItemUiModel(
+                        categoryList = listOf(
+                            TokoNowCategoryItemUiModel(
                                 id="3",
                                 title="Category 3",
                                 imageUrl="tokopedia://",
                                 appLink="tokoepdia://"
-                        )),
-                        state=HomeLayoutState.SHOW
+                        )
+                        ),
+                        state= TokoNowLayoutState.SHOW
                 ),
                 HomeLayoutItemState.LOADED
         )

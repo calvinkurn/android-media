@@ -37,7 +37,7 @@ internal class CarouselProductCardListenerInfo {
             }
         }
 
-    var onAddToCartNonVariantClickListener: CarouselProductCardListener.OnAddToCartNonVariantClickListener? = null
+    var onATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener? = null
         set(value) {
             if (value != null) {
                 field = value

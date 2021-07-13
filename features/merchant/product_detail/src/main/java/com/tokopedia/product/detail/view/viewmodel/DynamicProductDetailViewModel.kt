@@ -466,7 +466,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid : String = "") {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -1076,12 +1076,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             generatePdpSessionWithDeviceId(),
                             generateUserLocationRequest(userLocationCache),
                             getAffiliateUIID(affiliateUniqueString, uuid)),
-                            isTokoNow = isTokoNow,
-                            shopId = shopId,
-                            forceRefresh = forceRefresh,
-                            setErrorLogListener = {
-                                logP2Data(it, productId, pdpSession)
-                            })
+                    isTokoNow = isTokoNow,
+                    shopId = shopId,
+                    forceRefresh = forceRefresh,
+                    isLoggedIn = isUserSessionActive,
+                    setErrorLogListener = {
+                        logP2Data(it, productId, pdpSession)
+                    })
         }
     }
 

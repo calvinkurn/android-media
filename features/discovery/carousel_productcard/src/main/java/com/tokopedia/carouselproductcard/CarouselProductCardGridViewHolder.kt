@@ -32,8 +32,8 @@ internal class CarouselProductCardGridViewHolder(
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
         val onItemThreeDotsClickListener = carouselProductCardModel.getOnItemThreeDotsClickListener()
-        val onAddVariantClickListener = carouselProductCardModel.getOnAddVariantClickListener()
-        val onAddToCartNonVariantClickListener = carouselProductCardModel.getOnAddToCartNonVariantClickListener()
+        val onATCNonVariantClickListener = carouselProductCardModel.getOnATCNonVariantClickListener()
+        val onAddVariantClickListener = carouselProductCardModel.getAddVariantClickListener()
 
         itemView.carouselProductCardItem?.setOnClickListener {
             onItemClickListener?.onItemClick(productCardModel, adapterPosition)
@@ -55,9 +55,9 @@ internal class CarouselProductCardGridViewHolder(
             onItemThreeDotsClickListener?.onItemThreeDotsClick(productCardModel, adapterPosition)
         }
 
-        itemView.carouselProductCardItem?.setAddToCartNonVariantClickListener(object : ProductCardGridView.ATCNonVariantListener{
+        itemView.carouselProductCardItem?.setAddToCartNonVariantClickListener(object: ProductCardGridView.ATCNonVariantListener {
             override fun onQuantityChanged(quantity: Int) {
-                onAddToCartNonVariantClickListener?.onAddToCartNonVariantClick(productCardModel, adapterPosition, quantity)
+                onATCNonVariantClickListener?.onATCNonVariantClick(productCardModel, adapterPosition, quantity)
             }
         })
 

@@ -80,23 +80,23 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             finishCalculate: (() -> Unit)? = null,
-            carouselOnAddVariantClickListener: OnAddVariantClickListener? = null,
-            carouselOnAddToCartNonVariantClickListener: OnAddToCartNonVariantClickListener? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
         initBindCarousel(true)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
-                carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener,
-                carouselSeeMoreClickListener = carouselSeeMoreClickListener,
-                carouselOnAddToCartNonVariantClickListener = carouselOnAddToCartNonVariantClickListener,
-                carouselOnAddVariantClickListener = carouselOnAddVariantClickListener
+                carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener,
+                carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener,
+                carouselSeeMoreClickListener
         )
 
         launch {
@@ -121,9 +121,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
-            carouselOnAddToCartNonVariantClickListener: OnAddToCartNonVariantClickListener? = null,
-            carouselOnAddVariantClickListener: OnAddVariantClickListener? = null)
+    )
     : CarouselProductCardListenerInfo {
 
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
@@ -133,8 +134,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
         carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
         carouselProductCardListenerInfo.onSeeMoreClickListener = carouselSeeMoreClickListener
-        carouselProductCardListenerInfo.onAddToCartNonVariantClickListener = carouselOnAddToCartNonVariantClickListener
-        carouselProductCardListenerInfo.onAddVariantClickListener = carouselOnAddVariantClickListener
+        carouselProductCardListenerInfo.onATCNonVariantClickListener = carouselProductCardATCNonVariantClickListener
+        carouselProductCardListenerInfo.onAddVariantClickListener = carouselProductCardAddVariantClickListener
 
         return carouselProductCardListenerInfo
     }
@@ -253,11 +254,13 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         initBindCarousel(false)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
-                carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener,
-                carouselSeeMoreClickListener = carouselSeeMoreClickListener
+                carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener,
+                null,
+                null,
+                carouselSeeMoreClickListener,
         )
 
         launch {
@@ -297,5 +300,14 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             }
         }
         return 0
+    }
+
+    fun notifyItemChanged(positionList: List<Int>? = listOf()) {
+        val adapter = carouselProductCardAdapter?.asRecyclerViewAdapter() ?: return
+        positionList ?: return
+
+        positionList.forEach {
+            adapter.notifyItemChanged(it)
+        }
     }
 }

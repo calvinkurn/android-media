@@ -26,11 +26,15 @@ interface CarouselProductCardListener {
         fun onSeeMoreClick()
     }
 
-    interface OnAddToCartNonVariantClickListener{
-        fun onAddToCartNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int)
+    interface OnATCNonVariantClickListener {
+        fun onATCNonVariantClick(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int,
+                quantity: Int,
+        )
     }
 
-    interface OnAddVariantClickListener{
+    interface OnAddVariantClickListener {
         fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
 }

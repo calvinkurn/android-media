@@ -79,6 +79,7 @@ object AtcVariantHelper {
                         nearestWarehouse = warehouseResponse,
                         alternateCopy = alternateCopy ?: listOf()
                 ),
+                shopTypeString = productInfoP1.shopTypeString,
                 miniCartData = miniCart,
                 categoryName = categoryName,
                 categoryId = categoryId,

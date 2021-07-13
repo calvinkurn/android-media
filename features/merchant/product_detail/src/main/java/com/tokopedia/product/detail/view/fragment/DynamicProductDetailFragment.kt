@@ -88,7 +88,6 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
-import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -157,6 +156,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stickylogin.common.StickyLoginConstant
@@ -631,7 +631,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun reloadMiniCart() {
-        if (viewModel.getDynamicProductInfoP1 == null || context == null || viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == false || firstOpenPage == true) return
+        if (viewModel.getDynamicProductInfoP1 == null || context == null || viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == false || firstOpenPage == true || !viewModel.isUserSessionActive) return
         val data = viewModel.getDynamicProductInfoP1
         viewModel.getMiniCart(data?.basic?.shopID ?: "")
     }
@@ -782,23 +782,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 val categoryName = it.lastOrNull()?.name ?: ""
                 DynamicProductDetailTracking.Click.eventCategoryClicked(categoryId, categoryName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
-            RouteManager.route(context, url)
+            goToApplink(url)
         }
     }
 
     override fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel) {
-        val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
-        val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
-        val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+        viewModel.getDynamicProductInfoP1?.basic?.menu?.let {
+            val etalaseId = it.id
+            val etalaseName = it.name
+            DynamicProductDetailTracking.Click.eventEtalaseClicked(etalaseId, etalaseName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+        }
 
-        val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
-            UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
-        } else {
-            UriUtil.buildUri(ApplinkConst.SHOP, shopId)
-        })
-        DynamicProductDetailTracking.Click.eventEtalaseClicked(etalaseId, etalaseName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-
-        startActivity(intent)
+        goToApplink(url)
     }
 
     override fun goToApplink(url: String) {
@@ -1882,11 +1877,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             val shopStatus = viewModel.getShopInfo().statusInfo.shopStatus
-            val shouldShowSellerButtonByShopType = shopStatus != ProductShopStatusTypeDef.DELETED && shopStatus != ProductShopStatusTypeDef.MODERATED_PERMANENTLY
+            val shouldShowSellerButtonByShopType = shopStatus != ShopStatusDef.DELETED && shopStatus != ShopStatusDef.MODERATED_PERMANENTLY
             if (viewModel.isShopOwner()) {
                 actionButtonView.visibility = shouldShowSellerButtonByShopType
             } else {
-                actionButtonView.visibility = !isAffiliate && viewModel.getShopInfo().statusInfo.shopStatus == ProductShopStatusTypeDef.OPEN
+                actionButtonView.visibility = !isAffiliate && viewModel.getShopInfo().statusInfo.shopStatus == ShopStatusDef.OPEN
             }
             return
         }

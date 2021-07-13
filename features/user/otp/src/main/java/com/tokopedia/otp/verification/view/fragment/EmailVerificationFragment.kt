@@ -6,7 +6,7 @@ import android.text.SpannableString
 import android.view.View
 import com.tokopedia.otp.R
 
-class EmailVerificationFragment : VerificationFragment() {
+open class EmailVerificationFragment : VerificationFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
