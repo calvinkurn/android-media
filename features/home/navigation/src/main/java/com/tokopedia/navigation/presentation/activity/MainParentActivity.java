@@ -139,6 +139,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
+    public static final String FEED_PAGE = "FeedPlusContainerFragment";
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
@@ -645,8 +646,14 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             FragmentManager manager = getSupportFragmentManager();
             int position = HOME_MENU;
-            if (manager.getFragments().size() > 0 && currentFragment.getClass().getName().equalsIgnoreCase(manager.getFragments().get(2).getClass().getName())) {
-                position = 1;
+            if (currentFragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE)) {
+                for (int i = 0; i < manager.getFragments().size(); i++) {
+                    Fragment frag = manager.getFragments().get(i);
+                    if (frag.getClass().getName().equalsIgnoreCase(currentFragment.getClass().getName())) {
+                        position = i;
+                        break;
+                    }
+                }
             }
             reloadPage(position);
         }
