@@ -22,7 +22,13 @@ android {
     sourceSets {
         main {
             res.srcDirs = [
-                    pathSources
+                    pathSources,
+                    pathSources + 'buyerreview',
+                    pathSources + 'common',
+                    pathSources + 'container',
+                    pathSources + 'history',
+                    pathSources + 'incentives',
+                    pathSources + 'pending'
             ]
         }
     }
