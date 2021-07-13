@@ -123,6 +123,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
     }
 
+    override fun goToCatalog(url: String, catalogName: String) {
+        DynamicProductDetailTracking.ProductDetailSheet.onCatalogBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
+                ?: "", catalogName)
+        goToApplink(url)
+    }
+
     override fun goToCategory(url: String) {
         if (!GlobalConfig.isSellerApp()) {
             DynamicProductDetailTracking.ProductDetailSheet.onCategoryBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId

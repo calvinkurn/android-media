@@ -241,7 +241,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "0",
                 expectedQuantity = 2,
                 expectedMinOrder = 3,
-                isEmptyStock = true
+                isEmptyStock = false
         )
 
         assertButton(expectedIsBuyable = false,
@@ -392,7 +392,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.addWishlist(productId, "")
 
         val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertTrue(updateResultData == null)
+        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, false)
 
         assertButton(false,
                 "remind_me",
