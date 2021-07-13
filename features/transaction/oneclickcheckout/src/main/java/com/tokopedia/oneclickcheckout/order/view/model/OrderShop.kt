@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class OrderShop(
         var shopId: Long = 0,
@@ -33,7 +34,8 @@ data class OrderShop(
         var isTokoNow: Boolean = false,
         var maximumWeight: Int = 0,
         var maximumWeightWording: String = "",
-        var overweight: Double = 0.0
+        var overweight: Double = 0.0,
+        var boMetadata: BoMetadata = BoMetadata()
 ) : OrderItem {
 
     val isError: Boolean

@@ -409,9 +409,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             iconReloadShipping.gone()
             tickerShippingPromo.gone()
             loaderShipping.gone()
-            tvShippingCourier.text = "Atur pinpoint alamatmu dulu, ya."
-            val errorDescription = "Pengiriman & estimasi tiba akan tampil di sini."
-            val buttonText = "Atur"
+            tvShippingCourier.text = root.context.getString(R.string.occ_pinpoint_error_title)
+            val errorDescription = root.context.getString(R.string.occ_pinpoint_error_description)
+            val buttonText = root.context.getString(R.string.occ_pinpoint_error_action)
             val span = SpannableString("$errorDescription $buttonText")
             span.setSpan(StyleSpan(BOLD), errorDescription.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
             binding.root.context?.let {

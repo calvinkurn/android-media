@@ -423,11 +423,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun showMainContent(data: OrderPreference) {
-        binding.loaderContent.animateGone()
-        binding.globalError.animateGone()
         view?.also { _ ->
+            binding.loaderContent.animateGone()
+            binding.globalError.animateGone()
             adapter.onboarding = data.onboarding
             adapter.ticker = data.ticker
+            binding.rvOrderSummaryPage.scrollToPosition(0)
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
                     adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
@@ -524,16 +525,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.TriggerRefresh -> {
                     progressDialog?.dismiss()
                     view?.let { v ->
-                        var message = it.errorMessage
-                        if (message.isBlank() && it.throwable != null) {
-                            message = if (it.throwable is AkamaiErrorException) {
+                        var errorMessage = it.errorMessage
+                        if (errorMessage.isBlank() && it.throwable != null) {
+                            errorMessage = if (it.throwable is AkamaiErrorException) {
                                 it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
                             } else {
                                 ErrorHandler.getErrorMessage(context, it.throwable)
                             }
                         }
-                        if (message.isNotBlank()) {
-                            Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
+                        if (errorMessage.isNotBlank()) {
+                            Toaster.build(v, errorMessage, type = Toaster.TYPE_ERROR).show()
+                        } else if (it.successMessage.isNotBlank()) {
+                            Toaster.build(v, it.successMessage, actionText = getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)).show()
                         }
                         source = SOURCE_OTHERS
                         shouldShowToaster = false

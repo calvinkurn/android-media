@@ -77,17 +77,17 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         binding.apply {
             ivProductImage.setImageUrl(product.productImageUrl)
             tvProductName.text = product.productName
-            if (product.productWarningMessage.isNotBlank()) {
-                tvQtyLeft.text = MethodChecker.fromHtml(product.productWarningMessage)
-                tvQtyLeft.visible()
-            } else {
-                tvQtyLeft.gone()
-            }
             if (product.variant.isNotBlank()) {
                 tvProductVariant.text = product.variant
                 tvProductVariant.visible()
             } else {
                 tvProductVariant.gone()
+            }
+            if (!product.isError && product.productWarningMessage.isNotBlank()) {
+                tvQtyLeft.text = MethodChecker.fromHtml(product.productWarningMessage)
+                tvQtyLeft.visible()
+            } else {
+                tvQtyLeft.gone()
             }
 
             val alpha = if (product.isError) 0.5f else 1.0f
@@ -101,7 +101,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         binding.apply {
             tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
 
-            if (product.originalPrice.isNotBlank()) {
+            if (!product.isError && product.originalPrice.isNotBlank()) {
                 tvProductSlashPrice.text = product.originalPrice
                 tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 tvProductSlashPrice.visible()
@@ -109,7 +109,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 tvProductSlashPrice.gone()
             }
 
-            if (product.slashPriceLabel.isNotBlank()) {
+            if (!product.isError && product.slashPriceLabel.isNotBlank()) {
                 labelProductSlashPricePercentage.setLabel(product.slashPriceLabel)
                 labelProductSlashPricePercentage.visible()
             } else {

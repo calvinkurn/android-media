@@ -23,6 +23,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.SAVE_PINPOINT_SUCCESS_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
@@ -107,6 +108,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             orderValue = totalValue
             isFulfillment = orderShop.isFulfillment
             preOrderDuration = productPreOrderDuration
+            boMetadata = orderShop.boMetadata
         } to 0.0
     }
 
@@ -499,7 +501,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
 
                 if (statusSuccess) {
-                    return@withContext OccGlobalEvent.TriggerRefresh()
+                    return@withContext OccGlobalEvent.TriggerRefresh(successMessage = SAVE_PINPOINT_SUCCESS_MESSAGE)
                 }
 
                 if (messageError.isNullOrBlank()) {
@@ -634,19 +636,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
         }
         return Pair(null, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))
-    }
-
-    fun getRecommendedShipmentFromServiceId(orderShipment: OrderShipment, serviceId: Int): Pair<Int, Int>? {
-        val shippingRecommendationData = orderShipment.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            val newDuration = shippingRecommendationData.shippingDurationViewModels.firstOrNull { it.serviceData.serviceId == serviceId }
-            if (newDuration != null && newDuration.shippingCourierViewModelList.isNotEmpty()) {
-                val newCourier = newDuration.shippingCourierViewModelList.firstOrNull { it.isSelected || it.productData.isRecommend }
-                        ?: newDuration.shippingCourierViewModelList.first()
-                return newCourier.productData.shipperId to newCourier.productData.shipperProductId
-            }
-        }
-        return null
     }
 
     internal fun resetBbo(orderShipment: OrderShipment): OrderShipment {

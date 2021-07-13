@@ -69,4 +69,8 @@
     <string name="occ_lbl_desc_no_address">Cuma satu langkah lagi sebelum\nmelanjutkan proses Beli Langsung :)</string>
     
     <string name="occ_custom_ticker_action">Lihat</string>
+
+    <string name="occ_pinpoint_error_title">Atur pinpoint alamatmu dulu, ya.</string>
+    <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
+    <string name="occ_pinpoint_error_action">Atur</string>
 </resources>

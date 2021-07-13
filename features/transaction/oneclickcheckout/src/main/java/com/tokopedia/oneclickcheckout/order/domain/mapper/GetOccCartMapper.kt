@@ -158,6 +158,7 @@ class GetOccCartMapper @Inject constructor() {
             maximumWeightWording = shop.maximumWeightWording
             maximumWeight = shop.maximumShippingWeight
             unblockingErrorMessage = groupShop.unblockingErrors.firstOrNull() ?: ""
+            boMetadata = groupShop.boMetadata
         }
     }
 
