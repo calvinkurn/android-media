@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
 
@@ -40,5 +41,9 @@ data class ProductVariantAggregator(
 
         @SerializedName("bebasOngkir")
         @Expose
-        var bebasOngkir: BebasOngkir = BebasOngkir()
+        var bebasOngkir: BebasOngkir = BebasOngkir(),
+
+        @SerializedName("ratesEstimate")
+        @Expose
+        var ratesEstimate: List<P2RatesEstimate> = listOf()
 )

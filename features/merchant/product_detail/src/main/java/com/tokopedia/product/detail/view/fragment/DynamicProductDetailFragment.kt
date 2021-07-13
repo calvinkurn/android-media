@@ -106,6 +106,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.view.ProductDetailBottomSheetBuilderCommon
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
@@ -473,11 +474,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     firstOpenPage = true
                     onSwipeRefresh()
                 } else {
-                    if (requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
+                    if (this.requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
                         updateCartNotification()
+                    } else if (this.requestCode == ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS) {
+                        productId = selectedProductId
+                        onSuccessUpdateAddress()
+                        return@onActivityResultAtcVariant
                     }
+
                     val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(mapOfSelectedVariantOption?.values
-                            ?: mutableListOf()) ?: false // means selected variant in bottom sheet is the same in pdp
+                            ?: mutableListOf())
+                            ?: false // means selected variant in bottom sheet is the same in pdp
                     if (pdpUiUpdater?.productSingleVariant == null
                             || pdpUiUpdater?.productSingleVariant?.isVariantError == true
                             || mapOfSelectedVariantOption == null || isSelectedTheSame) return@onActivityResultAtcVariant
@@ -2061,7 +2068,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf(),
                         miniCart = viewModel.p2Data.value?.miniCart,
                         alternateCopy = viewModel.p2Data.value?.alternateCopy,
-                        boData = viewModel.p2Data.value?.bebasOngkir?.boProduct ?: listOf()
+                        boData = viewModel.p2Data.value?.bebasOngkir?.boProduct ?: listOf(),
+                        rates = viewModel.p2Data.value?.ratesEstimate ?: listOf()
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
@@ -2174,7 +2182,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (rates?.p2RatesError?.isEmpty() == true || rates?.p2RatesError?.firstOrNull()?.errorCode == 0 || bottomSheetData == null) return false
 
             DynamicProductDetailTracking.BottomSheetErrorShipment.impressShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title)
-            ProductDetailBottomSheetBuilder.getShippingErrorBottomSheet(
+            ProductDetailBottomSheetBuilderCommon.getShippingErrorBottomSheet(
                     it,
                     bottomSheetData,
                     rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0,
@@ -2191,7 +2199,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     /**
      * Go To Home Page and Clear Back Stack
      */
-    private fun goToHomePage(){
+    private fun goToHomePage() {
         val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
@@ -2210,7 +2218,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     onSuccessUpdateAddress()
                 }
 
-                override fun getLocalizingAddressHostSourceBottomSheet(): String = ProductDetailConstant.KEY_PRODUCT_DETAIL
+                override fun getLocalizingAddressHostSourceBottomSheet(): String = ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
 
                 override fun onLocalizingAddressLoginSuccessBottomSheet() {
                 }

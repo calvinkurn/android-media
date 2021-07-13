@@ -20,7 +20,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.KEY_PRODUCT_DETAIL
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -204,7 +204,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun getLocalizingAddressHostFragment(): Fragment = this
 
-    override fun getLocalizingAddressHostSourceData(): String = KEY_PRODUCT_DETAIL
+    override fun getLocalizingAddressHostSourceData(): String = ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
 
     override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 

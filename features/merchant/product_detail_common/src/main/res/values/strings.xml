@@ -30,4 +30,6 @@
     <string name="atc_variant_promo">PROMO</string>
     <string name="atc_variant_empty">Habis</string>
     <string name="atc_content_desc_txtChipVariant">text varian %1s</string>
+
+    <string name="pdp_shipping_error_to_home">Ke Home</string>
 </resources>

@@ -56,6 +56,7 @@ class AtcVariantViewModel @Inject constructor(
     //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
     private var minicartData: MutableMap<String, MiniCartItem>? = null
+    private var variantActivityResult: ProductVariantResult = ProductVariantResult()
     private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
 
     private val _initialData = MutableLiveData<Result<List<AtcVariantVisitable>>>()
@@ -65,10 +66,6 @@ class AtcVariantViewModel @Inject constructor(
     private val _buttonData = MutableLiveData<Result<PartialButtonDataModel>>()
     val buttonData: LiveData<Result<PartialButtonDataModel>>
         get() = _buttonData
-
-    private val _variantActivityResult = MutableLiveData<ProductVariantResult>()
-    val variantActivityResult: LiveData<ProductVariantResult>
-        get() = _variantActivityResult
 
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
@@ -88,8 +85,10 @@ class AtcVariantViewModel @Inject constructor(
 
     private var isShopOwner: Boolean = false
 
+    fun getActivityResultData() : ProductVariantResult = variantActivityResult
+
     //updated with the previous page data as well
-    fun getVariantAggregatorData() : ProductVariantAggregatorUiData? {
+    fun getVariantAggregatorData(): ProductVariantAggregatorUiData? {
         return aggregatorData
     }
 
@@ -166,17 +165,14 @@ class AtcVariantViewModel @Inject constructor(
                              atcSuccessMessage: String? = null,
                              shouldRefreshPreviousPage: Boolean? = null,
                              requestCode: Int? = null) {
-
-        _variantActivityResult.run {
-            postValue(AtcCommonMapper.updateActivityResultData(
-                    recentData = value,
-                    selectedProductId = selectedProductId,
-                    parentProductId = getVariantData()?.parentId,
-                    mapOfSelectedVariantOption = mapOfSelectedVariantOption,
-                    atcMessage = atcSuccessMessage,
-                    shouldRefreshPreviousPage = shouldRefreshPreviousPage,
-                    requestCode = requestCode))
-        }
+        variantActivityResult = AtcCommonMapper.updateActivityResultData(
+                recentData = variantActivityResult,
+                selectedProductId = selectedProductId,
+                parentProductId = getVariantData()?.parentId,
+                mapOfSelectedVariantOption = mapOfSelectedVariantOption,
+                atcMessage = atcSuccessMessage,
+                shouldRefreshPreviousPage = shouldRefreshPreviousPage,
+                requestCode = requestCode)
     }
 
     fun getSelectedQuantity(productId: String): Int {
@@ -402,7 +398,8 @@ class AtcVariantViewModel @Inject constructor(
                 updateMiniCartAndButtonData(productId = copyOfMiniCartItem.productId, isTokoNow = isTokoNow, quantity = copyOfMiniCartItem.quantity, notes = copyOfMiniCartItem.notes)
                 _updateCartLiveData.postValue(result.data.message.asSuccess())
             } else {
-                _updateCartLiveData.postValue(MessageErrorException(result.error.firstOrNull() ?: "").asFail())
+                _updateCartLiveData.postValue(MessageErrorException(result.error.firstOrNull()
+                        ?: "").asFail())
             }
         })
         {

@@ -84,6 +84,7 @@ object ProductDetailCommonConstant{
     const val ATC_UPDATE_BUTTON = 10
 
     const val REQUEST_CODE_CHECKOUT = 12382
+    const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198
 
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
@@ -95,4 +96,5 @@ object ProductDetailCommonConstant{
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
 
+    const val KEY_PRODUCT_DETAIL = "product detail"
 }

@@ -162,8 +162,6 @@ object ProductDetailConstant {
     const val PARAMS_PAGE = "page"
     const val PARAMS_PAGE_PDP = "pdp"
 
-    const val KEY_PRODUCT_DETAIL = "product detail"
-
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
 

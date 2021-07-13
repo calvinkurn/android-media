@@ -133,7 +133,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         }
 
-        Assert.assertEquals(viewModel.variantActivityResult.value?.shouldRefreshPreviousPage, true)
+        Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
     }
     //endregion
 
@@ -287,12 +287,11 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         assertButton(expectedIsBuyable = true,
                 expectedCartText = "+ Keranjang Hijau M")
 
-        val updateResultData = viewModel.variantActivityResult.value
+        val updateResultData = viewModel.getActivityResultData()
         val variantDataVisitable = visitablesData[1] as VariantComponentDataModel
-        Assert.assertTrue(updateResultData != null)
-        Assert.assertTrue(updateResultData?.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
+        Assert.assertTrue(updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
                 ?: false)
-        Assert.assertEquals(updateResultData?.selectedProductId, "2147818586")
+        Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
     }
 
     /**
@@ -347,9 +346,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.addWishlist(productId, "")
 
-        val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertTrue(updateResultData != null)
-        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, true)
+        val updateResultData = viewModel.getActivityResultData()
+        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
 
         assertButton(false,
                 "check_wishlist",
@@ -370,9 +368,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.addWishlist(productId, "")
 
-        val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertTrue(updateResultData != null)
-        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, true)
+        val updateResultData = viewModel.getActivityResultData()
+        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
 
         assertButton(false, null, null, null)
         Assert.assertTrue(viewModel.addWishlistResult.value is Success)
@@ -391,8 +388,8 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
 
         viewModel.addWishlist(productId, "")
 
-        val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, false)
+        val updateResultData = viewModel.getActivityResultData()
+        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, false)
 
         assertButton(false,
                 "remind_me",

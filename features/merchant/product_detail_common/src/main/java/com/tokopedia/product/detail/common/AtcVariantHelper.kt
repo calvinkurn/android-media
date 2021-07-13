@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirPro
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
@@ -55,6 +56,7 @@ object AtcVariantHelper {
                         miniCart: Map<String, MiniCartItem>?,
                         alternateCopy: List<AlternateCopy>?,
                         boData: List<BebasOngkirProduct>?,
+                        rates: List<P2RatesEstimate>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -71,6 +73,7 @@ object AtcVariantHelper {
                         cardRedirection = cartRedirection,
                         nearestWarehouse = warehouseResponse,
                         alternateCopy = alternateCopy ?: listOf(),
+                        rates = rates ?: listOf(),
                         simpleBasicInfo = SimpleBasicInfo(
                                 shopID = productInfoP1.basic.shopID,
                                 shopName = productInfoP1.basic.shopName,
