@@ -44,6 +44,7 @@ import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallba
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
@@ -429,6 +430,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
+        DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, null);
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);

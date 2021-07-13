@@ -1,24 +1,20 @@
 package com.tokopedia.device.info
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
-import android.telephony.TelephonyManager
-import androidx.core.content.ContextCompat
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.tokopedia.device.info.cache.DeviceInfoCache
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
 
 object DeviceInfo {
 
@@ -81,7 +77,18 @@ object DeviceInfo {
     }
 
     private fun checkRootMethod2(): Boolean {
-        val paths = arrayOf("/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su", "/data/local/su", "/su/bin/su")
+        val paths = arrayOf(
+            "/system/app/Superuser.apk",
+            "/sbin/su",
+            "/system/bin/su",
+            "/system/xbin/su",
+            "/data/local/xbin/su",
+            "/data/local/bin/su",
+            "/system/sd/xbin/su",
+            "/system/bin/failsafe/su",
+            "/data/local/su",
+            "/su/bin/su"
+        )
         for (path in paths) {
             if (File(path).exists()) return true
         }
@@ -124,37 +131,48 @@ object DeviceInfo {
     fun getAdsId(context: Context): String {
         val appContext = context.applicationContext
         val adsIdCache: String = getCacheAdsId(appContext)
-        if (adsIdCache.isNotBlank()) {
-            return adsIdCache
+        return if (adsIdCache.isNotBlank()) {
+            adsIdCache
         } else {
-            var adId = ""
-            runBlocking(Dispatchers.IO) {
-                try {
-                    withTimeout(2000) {
-                        adId = getlatestAdId(appContext)
+            runBlocking { getlatestAdId(context) }
+        }
+    }
+
+    suspend fun getlatestAdId(context: Context): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val appContext = context.applicationContext
+                val adId = withTimeout(2000) {
+                    val adInfo: AdvertisingIdClient.Info? =
+                        suspendCancellableCoroutine { continuation ->
+                            try {
+                                val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(appContext)
+                                continuation.resume(adInfo)
+                            } catch (e: Exception) {
+                                continuation.resume(null)
+                            }
+                        }
+                    val adIdTemp = if (adInfo == null) {
+                        ""
+                    } else {
+                        setCacheAdsId(appContext, adInfo.id)
+                        adInfo.id
                     }
-                } catch (ignored:Exception) { }
+                    adIdTemp
+                }
+                adId
+            } catch (e: Exception) {
+                ServerLogger.log(
+                    Priority.P2,
+                    "FINGERPRINT",
+                    mapOf("type" to "$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}")
+                )
+                ""
             }
-            return adId
         }
     }
 
-    fun getlatestAdId(context: Context): String {
-        return try {
-            val appContext = context.applicationContext
-            val adInfo = AdvertisingIdClient.getAdvertisingIdInfo(appContext)
-            if (adInfo != null) {
-                val adID = adInfo.id
-                setCacheAdsId(appContext, adID)
-            }
-            adInfo.id
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("type" to "$e | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"))
-            ""
-        }
-    }
-
+    // Initialize ads Id in background
     @JvmStatic
     fun getAdsIdSuspend(context: Context, onSuccessGetAdsId: ((adsId:String)->Unit)?) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -189,15 +207,11 @@ object DeviceInfo {
 
     @JvmStatic
     fun isx86() =
-            try {
-                if (Build.VERSION.SDK_INT < 21) {
-                    Build.CPU_ABI.contains(X_86) || Build.CPU_ABI2.contains(X_86)
-                } else {
-                    Build.SUPPORTED_ABIS.any { it.contains(X_86) }
-                }
-            } catch (e: Exception) {
-                false
-            }
+        try {
+            Build.SUPPORTED_ABIS.any { it.contains(X_86) }
+        } catch (e: Exception) {
+            false
+        }
 
     @JvmStatic
     fun getImei(context: Context): String? {
