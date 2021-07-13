@@ -12,8 +12,8 @@ import com.tokopedia.broadcaster.data.BroadcasterLogger
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
-import com.tokopedia.broadcaster.utils.BroadcasterConfig
-import com.tokopedia.broadcaster.utils.BroadcasterConnection
+import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.data.BroadcasterConnection
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.*
 import org.json.JSONObject

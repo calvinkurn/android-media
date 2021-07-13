@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.utils
+package com.tokopedia.broadcaster.data
 
 import com.wmspanel.libstream.Streamer
 
@@ -8,6 +8,5 @@ data class BroadcasterConfig(
     val fps: Float = 30.0f,
     val videoBitrate: Int = 2000 * 1000, // Kbps -> bps
 ) {
-
     fun getVideoSize() = Streamer.Size(videoHeight, videoWidth)
 }

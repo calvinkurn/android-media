@@ -4,6 +4,6 @@ import com.tokopedia.broadcaster.data.BroadcasterLogger
 import com.tokopedia.broadcaster.state.BroadcasterState
 
 interface BroadcasterListener {
-    fun onNewLivePusherState(pusherState: BroadcasterState)
-    fun onUpdateLivePusherStatistic(pusherStatistic: BroadcasterLogger)
+    fun onNewLivePusherState(state: BroadcasterState)
+    fun onUpdateLivePusherStatistic(log: BroadcasterLogger)
 }

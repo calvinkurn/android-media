@@ -4,8 +4,8 @@ import android.os.Handler
 import android.view.SurfaceView
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
-import com.tokopedia.broadcaster.utils.BroadcasterConfig
-import com.tokopedia.broadcaster.utils.BroadcasterConnection
+import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.data.BroadcasterConnection
 
 interface LiveBroadcaster {
     val state: BroadcasterState

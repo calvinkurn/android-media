@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.utils
+package com.tokopedia.broadcaster.data
 
 import com.wmspanel.libstream.ConnectionConfig
 

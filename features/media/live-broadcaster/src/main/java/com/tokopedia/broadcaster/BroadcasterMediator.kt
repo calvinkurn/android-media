@@ -20,14 +20,14 @@ class BroadcasterMediator(
     private val mListeners = mutableListOf<BroadcasterMediatorListener>()
 
     private val livePusherListener = object : BroadcasterListener {
-        override fun onNewLivePusherState(pusherState: BroadcasterState) {
-            broadcastStateChanged(pusherState)
+        override fun onNewLivePusherState(state: BroadcasterState) {
+            broadcastStateChanged(state)
 
-            if (pusherState.isStopped) removeLastPauseMillis()
+            if (state.isStopped) removeLastPauseMillis()
         }
 
-        override fun onUpdateLivePusherStatistic(pusherStatistic: BroadcasterLogger) {
-            broadcastStatsUpdated(pusherStatistic)
+        override fun onUpdateLivePusherStatistic(log: BroadcasterLogger) {
+            broadcastStatsUpdated(log)
         }
     }
 
@@ -101,7 +101,6 @@ class BroadcasterMediator(
     }
 
     companion object {
-
-        const val KEY_PAUSE_TIME = "play_broadcast_pause_time"
+        const val KEY_PAUSE_TIME = "broadcast_pause_time"
     }
 }
