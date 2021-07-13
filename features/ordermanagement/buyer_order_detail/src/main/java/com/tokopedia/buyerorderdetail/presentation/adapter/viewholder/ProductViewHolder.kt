@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -24,7 +25,7 @@ class ProductViewHolder(
         itemView: View?,
         private val listener: ProductViewListener,
         private val navigator: BuyerOrderDetailNavigator
-) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
+) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
@@ -99,8 +100,12 @@ class ProductViewHolder(
 
     private fun goToProductSnapshotPage() {
         element?.let {
-            navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
-            BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
+            if (it.orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID) {
+                navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
+                BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
+            } else {
+                showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+            }
         }
     }
 

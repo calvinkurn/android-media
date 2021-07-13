@@ -24,6 +24,10 @@ data class ProductDataResponse(
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight")
         val productWeight: Int = 0,
+        @SerializedName("product_weight_fmt")
+        val productWeightFmt: String = "",
+        @SerializedName("product_weight_actual")
+        val productWeightActual: Int = 0,
         @SerializedName("is_preorder")
         val isPreOrder: Int = 0,
         @SerializedName("product_cashback")

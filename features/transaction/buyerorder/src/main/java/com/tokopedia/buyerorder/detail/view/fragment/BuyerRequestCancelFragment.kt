@@ -186,6 +186,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         observingCancelReasons()
         observingInstantCancel()
         observingRequestCancel()
+        observeBuyerRequestCancelReasonValidationResult()
 
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -507,31 +508,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tf_choose_sub_reason_editable?.textFieldInput?.isSingleLine = false
             tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             tf_choose_sub_reason_editable?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                    //Before user enters the text
-                }
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    //On user changes the text
-                    btn_req_cancel?.isEnabled = s.toString().trim { it <= ' ' }.isNotEmpty()
-                }
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable) {
-                    //After user is done entering the text
-                    when {
-                        s.length < 15 -> {
-                            tf_choose_sub_reason_editable?.setError(true)
-                            tf_choose_sub_reason_editable?.setMessage(getString(R.string.min_char_reason_lainnya))
-                        }
-                        s.length > 160 -> {
-                            tf_choose_sub_reason_editable?.setError(true)
-                            tf_choose_sub_reason_editable?.setMessage(getString(R.string.max_char_reason_lainnya))
-                        }
-                        else -> {
-                            tf_choose_sub_reason_editable?.setError(false)
-                            tf_choose_sub_reason_editable?.setMessage("")
-                        }
-                    }
+                    buyerCancellationViewModel.validateBuyerRequestCancelReason(s.toString())
                 }
             })
         } else {
@@ -616,6 +598,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
+        })
+    }
+
+    private fun observeBuyerRequestCancelReasonValidationResult() {
+        buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.observe(viewLifecycleOwner, {
+            tf_choose_sub_reason_editable?.setMessage(it.inputFieldMessage)
+            tf_choose_sub_reason_editable?.setError(it.isError)
+            btn_req_cancel?.isEnabled = it.isButtonEnable
         })
     }
 
