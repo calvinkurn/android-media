@@ -57,7 +57,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                     val contentSha = content.sha256()
                     val objResult = appAuthUseCase.execute(contentSha)
                     if (objResult.mutationSignDvc.isSuccess) {
-                        setAlreadySuccessSend(appContext, 1)
+                        setAlreadySuccessSend(appContext)
                         Result.success()
                     } else {
                         sendLogMessage("gqlFailure", objResult.mutationSignDvc.errorMessage)
@@ -81,8 +81,11 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         val THRES_TS = TimeUnit.DAYS.toMillis(1)
 
         var hasSuccessSendInt = 0 // 1 assumed it already running, means this feature is disabled.
+        var lastSuccessToken = -1L
+        const val THRES_TOKEN_VALID = 2_592_000_000 // 1 month to submit new device data
         var PREF = "app_auth"
         var KEY_SUCCESS = "scs"
+        var KEY_SUCCESS_TS = "ts_scs"
         var KEY_TS = "ts"
         var KEY_TS_TRIES = "ts_tries"
 
@@ -107,10 +110,19 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
             return hasSuccessSendInt == 1
         }
 
-        private fun setAlreadySuccessSend(context: Context, successSend: Int) {
+        private fun isTokenAgeValid(context: Context): Boolean {
+            if (lastSuccessToken == -1L) {
+                val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+                lastSuccessToken = sp.getLong(KEY_SUCCESS_TS, 0)
+            }
+            return (System.currentTimeMillis() - lastSuccessToken) < THRES_TOKEN_VALID
+        }
+
+        private fun setAlreadySuccessSend(context: Context) {
             val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            sp.edit().putInt(KEY_SUCCESS, successSend).apply()
-            hasSuccessSendInt = successSend
+            sp.edit().putInt(KEY_SUCCESS, 1).apply()
+            sp.edit().putLong(KEY_SUCCESS_TS, System.currentTimeMillis()).apply()
+            hasSuccessSendInt = 1
         }
 
         private fun checkTimestamp(context: Context): Boolean {
@@ -157,6 +169,9 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                         return@launch
                     }
                     if (isRunning) {
+                        return@launch
+                    }
+                    if (isTokenAgeValid(context)) {
                         return@launch
                     }
                     val userSession = getUserSession(context)

@@ -26,7 +26,7 @@ ext {
             lint                    : "com.tokopedia.library:lint:0.0.13",
             dataVisor               : "com.tokopedia.sec:vangogh:0.0.1@aar",
             secUtil                 : "com.tokopedia.sec:java_util:0.0.1",
-            secUtilObs              : "com.tokopedia.sec:tkpd_util_obs:0.0.1",
+            secUtilObs              : "com.tokopedia.sec:tkpd_util_obs:0.0.2",
             brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
             alivcCorePusher         : "com.tokopedia.play_broadcaster:alivc-core-pusher:1.0.0",
             alivcReporter           : "com.tokopedia.play_broadcaster:AlivcReporter:1.2@aar",
