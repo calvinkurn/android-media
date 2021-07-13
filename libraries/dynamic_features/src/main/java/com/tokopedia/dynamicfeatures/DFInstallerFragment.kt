@@ -1,32 +1,51 @@
 package com.tokopedia.dynamicfeatures
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dynamicfeatures.constant.CommonConstant
+import com.tokopedia.dynamicfeatures.constant.ErrorConstant
+import com.tokopedia.dynamicfeatures.utils.ErrorUtils
+import com.tokopedia.dynamicfeatures.utils.PlayServiceUtils
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.android.synthetic.main.fragment_df_installer.*
+import kotlinx.android.synthetic.main.fragment_df_installer.button_download
 import kotlinx.android.synthetic.main.fragment_df_installer.image
+import kotlinx.android.synthetic.main.fragment_df_installer.subtitle_txt
 import kotlinx.android.synthetic.main.fragment_df_installer.title_txt
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstallerView {
 
+    companion object {
+        private const val EXTRA_NAME = "dfname"
+        private const val EXTRA_DEEPLINK = "dfapplink"
+        private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
+        private const val CONFIRMATION_REQUEST_CODE = 1
+        private const val SETTING_REQUEST_CODE = 2
+        const val DOWNLOAD_MODE_PAGE = "Page"
+        const val TIMEOUT_ERROR_MESSAGE = "timeout"
+    }
 
     private var job = Job()
     override val coroutineContext: CoroutineContext
@@ -48,6 +67,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     private var manager: SplitInstallManager? = null
     private var progressBar: ProgressBar? = null
     private var imageView: ImageView? = null
+    private var progressTextPercent: TextView? = null
     private var successInstall = false
     private var progressGroup: View? = null
     private var fragmentClassPathName = ""
@@ -56,6 +76,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     private var startDownloadPercentage = -1f
     private var moduleSize = 0L
     private var sessionId: Int? = null
+    private var errorList: MutableList<String> = mutableListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -101,13 +122,17 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         moduleId = arguments?.getString("MODULE_ID").orEmpty()
         fragmentClassPathName = arguments?.getString("CLASS_PATH_NAME").orEmpty()
         val isAutoDownload = true
-        if (DFInstaller.isInstalled(requireContext(), moduleId)) {
-            onSuccessfulLoad()
-        } else if (isAutoDownload) {
-            downloadFeature()
+        when {
+            DFInstaller.isInstalled(requireContext(), moduleId) -> {
+                onSuccessfulLoad()
+            }
+            isAutoDownload -> {
+                downloadFeature()
 //            logDownloadPage();
-        } else {
+            }
+            else -> {
 //            showOnBoardingView()
+            }
         }
     }
 
@@ -202,17 +227,17 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
                                       ctaText: String = "") {
         imageView?.setImageResource(imageRes)
         progressGroup?.visibility = View.INVISIBLE
-//        title_txt.text = title
-//        subtitle_txt.text = subTitle
-//        if (buttonText.isNotEmpty()) {
-//            button_download.text = buttonText
-//            button_download.setOnClickListener {
-//                onDownloadButtonClicked()
-//            }
-//            button_download.visibility = View.VISIBLE
-//        } else {
-//            button_download.visibility = View.INVISIBLE
-//        }
+        title_txt.text = title
+        subtitle_txt.text = subTitle
+        if (buttonText.isNotEmpty()) {
+            button_download.text = buttonText
+            button_download.setOnClickListener {
+                onDownloadButtonClicked()
+            }
+            button_download.visibility = View.VISIBLE
+        } else {
+            button_download.visibility = View.GONE
+        }
 //        if (fallbackUrl.isNotEmpty() && ctaText.isNotEmpty()) {
 //            button_cta.visibility = View.VISIBLE
 //            button_cta.text = ctaText
@@ -235,6 +260,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
     private fun initView() {
         imageView = view?.findViewById(R.id.image)
+        progressTextPercent = view?.findViewById(R.id.progress_text_percent)
         progressBar = view?.findViewById(R.id.progress_bar)
         progressGroup = view?.findViewById(R.id.progress_group)
         progressBar?.progressDrawable?.setColorFilter(
@@ -242,12 +268,77 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
                 android.graphics.PorterDuff.Mode.MULTIPLY)
     }
 
+    /** Display a loading state to the user. */
+    @SuppressLint("LogNotTimber")
+    private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
+        val totalBytesToDowload = state.totalBytesToDownload().toInt()
+        val bytesDownloaded = state.bytesDownloaded().toInt()
+        progressBar?.max = totalBytesToDowload
+        progressBar?.progress = bytesDownloaded
+        val progressText = String.format("%.2f KB / %.2f KB",
+                (bytesDownloaded.toFloat() / CommonConstant.ONE_KB), totalBytesToDowload.toFloat() / CommonConstant.ONE_KB)
+        Log.i(DFInstallerActivity.DOWNLOAD_MODE_PAGE, progressText)
+        val downloadProgress = bytesDownloaded.toFloat() * 100 / totalBytesToDowload
+        progressTextPercent?.text = String.format("%.0f%%", downloadProgress)
+        if (startDownloadPercentage < 0) {
+            startDownloadPercentage = downloadProgress
+        }
+        button_download.visibility = View.GONE
+    }
+
+    private fun showFailedMessage(errorCode: String = "") {
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(requireContext(), errorCode, freeInternalStorageBeforeDownload)
+        errorList.add(errorCodeTemp)
+        when (errorCodeTemp) {
+            SplitInstallErrorCode.PLAY_STORE_NOT_FOUND.toString() -> {
+                updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                        getString(R.string.download_error_play_store_title),
+                        getString(R.string.download_error_play_store_subtitle),
+                        getString(R.string.goto_playstore),
+                        { PlayServiceUtils.gotoPlayStore(requireActivity()) },
+                        getString(R.string.continue_without_install))
+            }
+            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    getString(R.string.download_error_os_and_play_store_title),
+                    getString(R.string.download_error_os_and_play_store_subtitle),
+                    getString(R.string.goto_seting),
+                    { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) },
+                    getString(R.string.continue_without_delete_storage))
+            SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() -> updateInformationView(R.drawable.ic_ill_insuficient_memory,
+                    getString(R.string.download_error_insuficient_storage_title),
+                    getString(R.string.download_error_insuficient_storage_subtitle),
+                    getString(R.string.goto_seting),
+                    { startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE) },
+                    getString(R.string.continue_without_install))
+            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
+                    getString(R.string.download_error_connection_title),
+                    getString(R.string.download_error_connection_subtitle),
+                    getString(R.string.df_installer_try_again),
+                    ::downloadFeature,
+                    getString(R.string.continue_without_install))
+            /* SplitInstallErrorCode.APP_NOT_OWNED */
+            "-15",
+            SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() -> updateInformationView(R.drawable.ic_ill_module_unavailable,
+                    getString(R.string.download_error_module_unavailable_title),
+                    getString(R.string.download_error_module_unavailable_subtitle),
+                    getString(R.string.goto_playstore),
+                    { PlayServiceUtils.gotoPlayStore(requireActivity()) },
+                    getString(R.string.continue_without_install))
+            else -> updateInformationView(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    getString(R.string.download_error_general_title),
+                    getString(R.string.download_error_general_subtitle),
+                    getString(R.string.df_installer_try_again),
+                    ::downloadFeature,
+                    getString(R.string.continue_without_install))
+        }
+    }
+
     override fun onDownload(state: SplitInstallSessionState) {
 //  In order to see this, the application has to be uploaded to the Play Store.
-//        displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
-//        if (moduleSize == 0L) {
-//            moduleSize = state.totalBytesToDownload()
-//        }
+        displayLoadingState(state, getString(R.string.downloading_x))
+        if (moduleSize == 0L) {
+            moduleSize = state.totalBytesToDownload()
+        }
 //        addTimeout()
     }
 
@@ -264,6 +355,9 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     }
 
     override fun onFailed(errorString: String) {
+//        timerJob.cancel()
+        endDownloadTimeStamp = System.currentTimeMillis()
+        showFailedMessage(errorString)
     }
 
     override fun getModuleNameView(): String {
