@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         edtRtmpUrl = findViewById(R.id.edt_rtmp_url)
         btnStream = findViewById(R.id.btn_stream)
 
+        edtRtmpUrl.setText("rtmp://live-ingest.tokopedia.net/stream/androidtesting")
+
         broadcaster = LiveBroadcasterManager().apply {
             init(Handler(mainLooper))
         }.also {
