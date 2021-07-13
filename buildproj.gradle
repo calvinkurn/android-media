@@ -1,6 +1,9 @@
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     repositories {
+        maven {
+            url = "$rootDir/localMavenRepository"
+        }
         google()
         mavenCentral()
         mavenLocal()
@@ -93,14 +96,9 @@ subprojects {
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
+                    substitute module(rootProject.ext.tkpdInternalLibDependencies.fakeresponse) with module(rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp)
                 }
             }
         }
     }
-}
-
-gradle.buildFinished {
-    "zip -d .okbuck/cache/org.hamcrest.hamcrest-core-1.3.jar LICENSE.txt".execute()
-    "zip -d .okbuck/cache/org.hamcrest.hamcrest-library-1.3.jar LICENSE.txt".execute()
-    "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }
