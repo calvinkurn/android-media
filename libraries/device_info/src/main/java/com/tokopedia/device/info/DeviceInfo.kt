@@ -142,7 +142,7 @@ object DeviceInfo {
         return withContext(Dispatchers.IO) {
             try {
                 val appContext = context.applicationContext
-                val adId = withTimeout(2000) {
+                val adId = withTimeout(1000) {
                     val adInfo: AdvertisingIdClient.Info? =
                         suspendCancellableCoroutine { continuation ->
                             try {

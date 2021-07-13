@@ -430,7 +430,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
-        DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, null);
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
