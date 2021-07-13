@@ -5,21 +5,37 @@ import com.tokopedia.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig() {
+internal open class HomeRecommendationFeedErrorResponseConfig : HomeMockResponseConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
         /**
-         * Error response for ATF content
+         * Error response for recommendation tab
          */
 
         addMockResponse(
+            KEY_CONTAINS_RECOMMENDATION_TAB,
+            getRawString(context, R.raw.response_error_mock_data_dynamic_home_recom_feed_tab),
+            FIND_BY_CONTAINS
+        )
+
+        /**
+         * End of error response for recommendation tab
+         */
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_HOME_CHANNEL,
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel),
+            FIND_BY_QUERY_NAME
+        )
+
+        addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_home_channel_atf_1),
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_1),
             FIND_BY_CONTAINS
         )
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_home_channel_atf_2),
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_2),
             FIND_BY_CONTAINS
         )
 
@@ -31,19 +47,15 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_POSITION_ICON,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_position_icon),
+            getRawString(context, R.raw.response_mock_data_dynamic_position_icon),
             FIND_BY_CONTAINS
         )
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_POSITION_TICKER,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_position_ticker),
+            getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
             FIND_BY_CONTAINS
         )
-
-        /**
-         * End of error response for ATF content
-         */
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
@@ -112,12 +124,6 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
         )
 
         addMockResponse(
-            KEY_CONTAINS_RECOMMENDATION_TAB,
-            getRawString(context, R.raw.response_mock_data_dynamic_home_recom_feed_tab),
-            FIND_BY_CONTAINS
-        )
-
-        addMockResponse(
             KEY_CONTAINS_UNIVERSE_PLACEHOLDER,
             getRawString(context, R.raw.response_mock_data_universe_placeholder),
             FIND_BY_CONTAINS
@@ -166,11 +172,16 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
         )
 
         addMockResponse(
+            KEY_CONTAINS_NOTIFICATION,
+            getRawString(context, R.raw.response_mock_data_navigation_notification),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
             KEY_CONTAINS_CHIPS,
             getRawString(context, R.raw.response_mock_data_best_seller_chips),
             FIND_BY_CONTAINS
         )
-
         return this
     }
 }

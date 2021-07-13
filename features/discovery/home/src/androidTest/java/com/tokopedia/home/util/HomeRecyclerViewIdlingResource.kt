@@ -3,6 +3,7 @@ package com.tokopedia.home.util
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 
@@ -27,7 +28,10 @@ internal class HomeRecyclerViewIdlingResource(
     }
 
     private fun HomeRecycleAdapter?.isNonCacheData(): Boolean {
-        return this != null && this.currentList.find { it is HomeRecommendationFeedDataModel } != null
+        return this != null && (
+                this.currentList.find { it is HomeRecommendationFeedDataModel } != null ||
+                        this.currentList.find { it is HomeRetryModel } != null
+                )
     }
 
     override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {

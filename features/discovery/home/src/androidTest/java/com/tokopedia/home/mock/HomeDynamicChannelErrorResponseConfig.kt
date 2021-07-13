@@ -5,23 +5,34 @@ import com.tokopedia.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig() {
+internal open class HomeDynamicChannelErrorResponseConfig : HomeMockResponseConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
-        /**
-         * Error response for ATF content
-         */
-
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_home_channel_atf_1),
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_1),
             FIND_BY_CONTAINS
         )
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_home_channel_atf_2),
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_atf_2),
             FIND_BY_CONTAINS
         )
+
+        /**
+         * Error response for dynamic channel
+         */
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
+            getRawString(context, R.raw.response_error_mock_data_dynamic_home_channel_screenshot),
+            FIND_BY_CONTAINS
+        )
+
+        /**
+         * End of error response for dynamic channel
+         */
+
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_POSITION,
@@ -31,23 +42,13 @@ internal open class HomeAtfContentErrorResponseConfig : HomeMockResponseConfig()
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_POSITION_ICON,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_position_icon),
+            getRawString(context, R.raw.response_mock_data_dynamic_position_icon),
             FIND_BY_CONTAINS
         )
 
         addMockResponse(
             KEY_QUERY_DYNAMIC_POSITION_TICKER,
-            getRawString(context, R.raw.response_error_mock_data_dynamic_position_ticker),
-            FIND_BY_CONTAINS
-        )
-
-        /**
-         * End of error response for ATF content
-         */
-
-        addMockResponse(
-            KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
-            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
+            getRawString(context, R.raw.response_mock_data_dynamic_position_ticker),
             FIND_BY_CONTAINS
         )
 
