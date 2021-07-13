@@ -153,6 +153,7 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.quantityEditorNonVariant] = isQuantityEditorDisplayedWithValue(nonVariant.quantity)
+        it[R.id.buttonDeleteCart] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

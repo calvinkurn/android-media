@@ -85,7 +85,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderButtonAddToCart(productCardModel)
 
-        renderQuantityEditorNonVariant(productCardModel)
+        renderCartEditorNonVariant(productCardModel)
 
         renderChooseVariant(productCardModel)
 
@@ -186,12 +186,21 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         quantityEditorDebounce?.onQuantityChanged(newValue)
     }
 
-    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
+    private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
+        val shouldShowCartEditorComponent = productCardModel.shouldCartEditorComponent()
 
+        configureButtonDeleteCart(shouldShowCartEditorComponent)
+        configureQuantityEditor(shouldShowCartEditorComponent, productCardModel)
+    }
+
+    private fun configureButtonDeleteCart(shouldShowCartEditorComponent: Boolean) {
+        buttonDeleteCart?.showWithCondition(shouldShowCartEditorComponent)
+    }
+
+    private fun configureQuantityEditor(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
         configureQuantityEditorDebounce()
 
-        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.showWithCondition(shouldShowCartEditorComponent)
         quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
     }
 
