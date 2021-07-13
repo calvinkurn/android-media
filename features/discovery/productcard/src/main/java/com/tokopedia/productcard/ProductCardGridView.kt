@@ -189,14 +189,23 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
         val shouldShowCartEditorComponent = productCardModel.shouldCartEditorComponent()
 
-        configureButtonDeleteCart(shouldShowCartEditorComponent)
+        configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
         configureQuantityEditor(shouldShowCartEditorComponent, productCardModel)
     }
 
-    private fun configureButtonDeleteCart(shouldShowCartEditorComponent: Boolean) {
+    private fun configureButtonDeleteCart(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
         buttonDeleteCart?.showWithCondition(shouldShowCartEditorComponent)
         buttonDeleteCart?.setOnClickListener {
             addToCartNonVariantClickListener?.onQuantityChanged(0)
+            showButtonAddToCartNonVariant(productCardModel)
+        }
+    }
+
+    private fun showButtonAddToCartNonVariant(productCardModel: ProductCardModel) {
+        buttonAddToCart?.show()
+        buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
+        buttonAddToCart?.setOnClickListener {
+            addToCartNonVariantClick(productCardModel)
         }
     }
 
