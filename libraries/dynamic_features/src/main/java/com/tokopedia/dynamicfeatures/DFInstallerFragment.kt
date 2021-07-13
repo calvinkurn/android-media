@@ -19,6 +19,8 @@ import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dynamicfeatures.config.DFConfig
+import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
@@ -33,6 +35,8 @@ import kotlinx.android.synthetic.main.fragment_df_installer.image
 import kotlinx.android.synthetic.main.fragment_df_installer.subtitle_txt
 import kotlinx.android.synthetic.main.fragment_df_installer.title_txt
 import kotlinx.coroutines.*
+import java.lang.Exception
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstallerView {
@@ -48,6 +52,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     }
 
     private var job = Job()
+    private var timerJob: Job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, _ -> }
 
@@ -77,6 +82,9 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     private var moduleSize = 0L
     private var sessionId: Int? = null
     private var errorList: MutableList<String> = mutableListOf()
+    private var dfConfig: DFConfig? = null
+    private var allowRunningServiceFromActivity: Boolean = false
+    private var cancelDownloadBeforeInstallInPage: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -117,10 +125,13 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
     override fun onResume() {
         super.onResume()
+        dfConfig = DFRemoteConfig.getConfig(requireContext())
         manager = DFInstaller.getManager(requireContext()) ?: return
         manager?.registerListener(listener)
         moduleId = arguments?.getString("MODULE_ID").orEmpty()
         fragmentClassPathName = arguments?.getString("CLASS_PATH_NAME").orEmpty()
+        allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId) ?: false
+        cancelDownloadBeforeInstallInPage = dfConfig?.cancelDownloadBeforeInstallInPage ?: false
         val isAutoDownload = true
         when {
             DFInstaller.isInstalled(requireContext(), moduleId) -> {
@@ -151,6 +162,40 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         fragTrans?.commit()
     }
 
+    /**
+     * mechanism if the download Dynamic Feature is Too long, it will pop up to launch without Install
+     */
+    private fun addTimeout() {
+        val timeout = dfConfig?.timeout ?: 0L
+        if (timeout <= 0) {
+            return
+        }
+        timerJob.cancel()
+        timerJob = launch(Dispatchers.IO) {
+            delay(TimeUnit.SECONDS.toMillis(timeout))
+            withContext(Dispatchers.Main) {
+                cancelPreviousDownload()
+                //show timeoutError
+                onFailed(DFInstallerActivity.TIMEOUT_ERROR_MESSAGE + "after" + timeout)
+            }
+        }
+    }
+
+    private fun cancelPreviousDownload() {
+        try {
+            if (allowRunningServiceFromActivity) {
+                DFInstaller.stopInstall(activity?.applicationContext!!)
+            } else {
+                sessionId?.let {
+                    manager?.cancelInstall(it)
+                }
+                sessionId = null
+            }
+        } catch (ignored: Exception) {
+
+        }
+    }
+
     private fun onSuccessfulLoad() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             SplitInstallHelper.updateAppInfo(requireContext())
@@ -163,9 +208,9 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     }
 
     private fun downloadFeature() {
-//        if (cancelDownloadBeforeInstallInPage) {
-//            cancelPreviousDownload()
-//        }
+        if (cancelDownloadBeforeInstallInPage) {
+            cancelPreviousDownload()
+        }
         updateInformationView(R.drawable.ic_ill_downloading, getString(R.string.dowload_on_process), getString(R.string.wording_download_waiting))
         progressGroup?.visibility = View.VISIBLE
         downloadTimes++
@@ -209,11 +254,11 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
                 }?.addOnFailureListener { exception ->
                     val errorCode = (exception as? SplitInstallException)?.errorCode
                     sessionId = null
-//                    onFailed(errorCode?.toString() ?: exception.toString())
+                    onFailed(errorCode?.toString() ?: exception.toString())
                 }
             }
         }
-//        addTimeout()
+        addTimeout()
     }
 
     private fun resetDFInfo() {
@@ -339,14 +384,14 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
         if (moduleSize == 0L) {
             moduleSize = state.totalBytesToDownload()
         }
-//        addTimeout()
+        addTimeout()
     }
 
     override fun onRequireUserConfirmation(state: SplitInstallSessionState) {
     }
 
     override fun onInstalled() {
-//        timerJob.cancel()
+        timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
         onSuccessfulLoad()
     }
@@ -355,7 +400,7 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     }
 
     override fun onFailed(errorString: String) {
-//        timerJob.cancel()
+        timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
         showFailedMessage(errorString)
     }
