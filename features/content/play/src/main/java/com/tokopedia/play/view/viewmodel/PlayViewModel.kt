@@ -167,7 +167,7 @@ class PlayViewModel @Inject constructor(
                     else -> ViewVisibility.Visible
                 },
                 leaderboards = leaderboardInfo.leaderboardWinners,
-                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty(),
+                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
                 status = status
         )
     }
@@ -658,6 +658,7 @@ class PlayViewModel @Inject constructor(
         startWebSocket(channelData.id)
         trackVisitChannel(channelData.id)
 
+        checkLeaderboard(channelData.id)
         //TODO("This is mock")
         checkInteractive(channelData.id)
     }
@@ -1058,6 +1059,14 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun checkLeaderboard(channelId: String) {
+        if (!channelType.isLive) return
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            _leaderboardInfo.value = interactiveLeaderboard
+        }) {}
+    }
+
     private fun checkInteractive(channelId: String) {
         if (!channelType.isLive) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
@@ -1296,6 +1305,9 @@ class PlayViewModel @Inject constructor(
             val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
             val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
 
+            _interactive.value = PlayInteractiveUiState.NoInteractive
+            _leaderboardInfo.value = interactiveLeaderboard
+
             if (userInLeaderboard != null && userInLeaderboard.id == userId) {
                 _uiEvent.emit(
                         ShowWinningDialogEvent(
@@ -1305,9 +1317,6 @@ class PlayViewModel @Inject constructor(
                         )
                 )
             }
-
-            _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboardInfo.value = interactiveLeaderboard
         }
 
         suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
