@@ -11,7 +11,7 @@ class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     fun bind(specsModel: SpecsModel, position: Int) {
         if(position == 0) view.view_divider.visibility = View.INVISIBLE
         view.tv_spec_title.text = specsModel.specsTitle
-        view.tv_spec_summary.text = specsModel.specsSummary
+        view.tv_spec_summary.text = MethodChecker.fromHtml(specsModel.specsSummary)
 
         val drawable = ContextCompat.getDrawable(view.context, specsModel.bgDrawableRef)
         drawable?.let {

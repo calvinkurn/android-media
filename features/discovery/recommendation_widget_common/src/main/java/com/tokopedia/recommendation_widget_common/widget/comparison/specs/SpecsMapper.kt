@@ -120,7 +120,7 @@ object SpecsMapper {
         val typography = Typography(context)
         typography.setType(BODY_3)
         typography.layoutParams = paramsTextView
-        typography.text = text
+        typography.text = MethodChecker.fromHtml(text.toString())
 //        typography.textSize = textSize
         typography.measure(0,0)
         myTextPaint.textSize = typography.textSize

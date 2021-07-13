@@ -19,7 +19,7 @@ class Specs2ItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         else if(currentRecommendationPosition == totalRecommendations-1)
             view.view_divider.setMargin(0,0,view.context.resources.getDimensionPixelSize(R.dimen.dimen_difference_card_use_compat_padding_view_divider),0)
         view.tv_spec_title.text = specsModel.specsTitle
-        view.tv_spec_summary.text = specsModel.specsSummary
+        view.tv_spec_summary.text = MethodChecker.fromHtml(specsModel.specsSummary)
 
         val drawable = ContextCompat.getDrawable(view.context, specsModel.bgDrawableRef)
         drawable?.let {
