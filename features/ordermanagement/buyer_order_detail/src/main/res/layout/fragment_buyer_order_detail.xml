@@ -12,9 +12,11 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:alpha="0"
-        app:layout_constraintBottom_toTopOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbarBuyerOrderDetail"
@@ -27,23 +29,19 @@
         android:id="@+id/globalErrorBuyerOrderDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleX="0"
-        android:scaleY="0"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:alpha="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyStateBuyerOrderDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleX="0"
-        android:scaleY="0"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:alpha="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshBuyerOrderDetail"
@@ -58,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
             android:paddingBottom="14dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -67,6 +66,7 @@
         android:id="@+id/containerActionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:alpha="0"
         app:cardBackgroundColor="@color/buyer_order_detail_dms_window_color"
         app:cardCornerRadius="@dimen/layout_lvl0"
         app:cardElevation="@dimen/spacing_lvl3"
@@ -79,7 +79,8 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl3">
+            android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:animateLayoutChanges="true">
 
             <com.tokopedia.unifycomponents.UnifyImageButton
                 android:id="@+id/btnBuyerOrderDetailSecondaryActions"

@@ -1,26 +1,26 @@
 package com.tokopedia.buyerorderdetail.presentation.animator
 
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
-import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 
 class BuyerOrderDetailContentAnimator(
         private val buyerOrderDetailMotionLayout: BuyerOrderDetailMotionLayout?
 ) {
+
+    companion object {
+        private const val DELAY_INITIAL_LOADING_STATE = 500L
+    }
+
     fun initPage(onTransitionEnd: () -> Unit) {
         buyerOrderDetailMotionLayout?.run {
             postDelayed({
                 animateToLoadingState(onTransitionEnd)
-            }, 400L)
+            }, DELAY_INITIAL_LOADING_STATE)
         }
     }
 
     fun animateToLoadingState(onTransitionEnd: () -> Unit) {
         buyerOrderDetailMotionLayout?.run {
-            setOnTransitionCompleted {
-                setOnTransitionCompleted { }
-                onTransitionEnd()
-            }
-            transitionToLoadingState()
+            transitionToLoadingState(onTransitionEnd)
         }
     }
 

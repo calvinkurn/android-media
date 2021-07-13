@@ -104,7 +104,7 @@ class BuyerOrderDetailStickyActionButton(
         }
     }
 
-    fun startPrimaryActionButtonLoading() {
+    private fun startPrimaryActionButtonLoading() {
         btnBuyerOrderDetailPrimaryActions?.isLoading = true
     }
 

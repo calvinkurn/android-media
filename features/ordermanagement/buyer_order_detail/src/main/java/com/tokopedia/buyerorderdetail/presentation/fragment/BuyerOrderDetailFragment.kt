@@ -260,7 +260,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
             loadBuyerOrderDetail()
         }
-        swipeRefreshBuyerOrderDetail?.translationY = getScreenHeight().toFloat()
     }
 
     private fun setupRecyclerView() {
@@ -331,7 +330,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun containsActionButtons(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
-        return actionButtonsUiModel.primaryActionButton.key.isNotBlank() && actionButtonsUiModel.secondaryActionButtons.isNotEmpty()
+        return actionButtonsUiModel.primaryActionButton.key.isNotBlank() || actionButtonsUiModel.secondaryActionButtons.isNotEmpty()
     }
 
     private fun containsAskSellerButton(actionButtonsUiModel: ActionButtonsUiModel): Boolean {

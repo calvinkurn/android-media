@@ -21,7 +21,6 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.buyerorderdetail.cassava.BuyerOrderDetailTrackerValidationConstant
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
-import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -144,8 +143,8 @@ class BuyerOrderDetailAction {
         waitUntilViewVisible(withId(R.id.btnBuyerOrderDetailSecondaryActions))
     }
 
-    private fun waitUntilToolbarChatIconVisible(context: Context) {
-        waitUntilViewVisible(firstView(withTagStringValue(context.getString(R.string.tag_buyer_order_detail_chat_icon_menu))))
+    private fun waitUntilToolbarChatIconVisible() {
+        waitUntilViewVisible(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun waitUntilSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity) {
@@ -192,8 +191,8 @@ class BuyerOrderDetailAction {
         }
     }
 
-    private fun clickToolbarChatIcon(context: Context) {
-        clickView(firstView(withTagStringValue(context.getString(R.string.tag_buyer_order_detail_chat_icon_menu))))
+    private fun clickToolbarChatIcon() {
+        clickView(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun clickSeeDetail() {
@@ -255,15 +254,16 @@ class BuyerOrderDetailAction {
                 BuyerOrderDetailTrackerValidationConstant.cartString,
                 BuyerOrderDetailTrackerValidationConstant.orderId,
                 BuyerOrderDetailTrackerValidationConstant.paymentId))
+        Thread.sleep(5000)
     }
 
     fun blockAllIntent() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    fun testClickToolbarChatIcon(context: Context) {
-        waitUntilToolbarChatIconVisible(context)
-        clickToolbarChatIcon(context)
+    fun testClickToolbarChatIcon() {
+        waitUntilToolbarChatIconVisible()
+        clickToolbarChatIcon()
     }
 
     fun testClickSeeDetail() {
