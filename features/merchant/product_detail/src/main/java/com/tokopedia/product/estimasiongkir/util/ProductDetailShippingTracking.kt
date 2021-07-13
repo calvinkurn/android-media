@@ -1,6 +1,6 @@
 package com.tokopedia.product.estimasiongkir.util
 
-import com.tokopedia.product.detail.data.util.ProductTrackingConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 

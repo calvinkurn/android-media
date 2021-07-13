@@ -35,7 +35,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     fun generateApplicationSettingMenu(
             accountPref: AccountPreference,
             permissionChecker: PermissionChecker,
-            showDarkModeToggle: Boolean
+            showDarkModeToggle: Boolean,
+            showScreenRecorder: Boolean
     ): SettingDataView {
         val listSetting = mutableListOf(
         CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
@@ -59,8 +60,15 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
 
         listSetting.addAll(mutableListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_QUALITY_SETTING, title = context?.getString(R.string.menu_account_title_quality_setting), body = context?.getString(R.string.menu_account_desc_quality_setting), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.IMAGE),
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE, title = context?.getString(R.string.menu_account_title_clear_cache), body = context?.getString(R.string.menu_account_desc_clear_cache), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BROOM)
+                CommonDataView(id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE, title = context?.getString(R.string.menu_account_title_clear_cache), body = context?.getString(R.string.menu_account_desc_clear_cache), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BROOM),
         ))
+        if (showScreenRecorder) {
+            listSetting.add(CommonDataView(id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_SCREEN_RECORD,
+                    title = context?.getString(R.string.menu_account_title_screen_recorder),
+                    body = context?.getString(R.string.menu_account_desc_screen_recorder),
+                    type = CommonViewHolder.TYPE_DEFAULT,
+                    icon = IconUnify.CAMERA))
+        }
         return SettingDataView(context?.getString(R.string.menu_account_section_title_app_setting), listSetting, showArrowDown = true)
     }
 
