@@ -26,7 +26,7 @@ public interface AttachProductContract {
         void setShopName(String shopName);
     }
     interface Presenter {
-        void loadProductData(String query, String shopId, int page);
+        void loadProductData(String query, String shopId, int page, String warehouseId);
         void updateCheckedList(List<AttachProductItemUiModel> products);
         void resetCheckedList();
         void completeSelection();

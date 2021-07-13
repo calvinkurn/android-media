@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
@@ -16,6 +17,7 @@ import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bs_item_product_detail_header.view.*
 import kotlinx.android.synthetic.main.item_info_product_detail.view.*
+import java.util.*
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -66,8 +68,22 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
             if (data.applink.isNotEmpty()) {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setWeight(Typography.BOLD)
+
                 setOnClickListener {
-                    listener.goToApplink(data.applink)
+                    when (data.title.toLowerCase(Locale.getDefault())) {
+                        ProductDetailCommonConstant.KEY_CATEGORY -> {
+                            listener.goToCategory(data.applink)
+                        }
+                        ProductDetailCommonConstant.KEY_ETALASE  -> {
+                            listener.goToEtalase(data.applink)
+                        }
+                        ProductDetailCommonConstant.KEY_CATALOG  -> {
+                            listener.goToCatalog(data.applink, data.subtitle)
+                        }
+                        else -> {
+                            listener.goToApplink(data.applink)
+                        }
+                    }
                 }
             } else {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))

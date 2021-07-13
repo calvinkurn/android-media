@@ -4,11 +4,16 @@ apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
 apply from: 'buildconfig/dependencies/dependency-features.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
+apply from: "buildconfig/aar/local-aar-config.gradle"
+apply from: "buildconfig/aar/local-aar.gradle"
 
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
 
     repositories {
+        maven {
+            url = "$rootDir/localMavenRepository"
+        }
         gradlePluginPortal()
         google()
         maven { url "https://maven.google.com" }
@@ -64,10 +69,21 @@ if (hasProperty('buildScan')) {
 
 apply from: 'buildproj.gradle'
 
+apply from: "$rootDir/tools/set_debug_tools.gradle"
+
+subprojects {
+    project.afterEvaluate {
+        def isLibrary = project.plugins.hasPlugin("com.android.library")
+        if (isLibrary) {
+            project.apply from: "$rootDir/buildconfig/aar/publish.gradle"
+        }
+    }
+}
+
 //Installing Git Hooks
 task installGitHooks {
     doLast {
-        ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+        ("cp " + rootProject.rootDir + "/git_hooks/pre-commit " + rootProject.rootDir + "/.git/hooks/pre-commit").execute()
         Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
     }
 }
