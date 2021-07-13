@@ -982,11 +982,16 @@
                 "price": 1200000,
                 "description": [],
                 "wishlist": false,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
                 "shop": {
-                  "name": "",
-                  "city": ""
+                  "city": "Jakarta Pusat"
                 },
-                "badges": [],
                 "label_groups": [
                   {
                     "position": "offers",
@@ -1010,11 +1015,16 @@
                 "price": 1200000,
                 "description": [],
                 "wishlist": false,
+                "badges": [
+                  {
+                    "title": "Power Badge",
+                    "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+                    "show": true
+                  }
+                ],
                 "shop": {
-                  "name": "",
-                  "city": ""
+                  "city": "Jakarta Pusat"
                 },
-                "badges": [],
                 "label_groups": [
                   {
                     "position": "offers",

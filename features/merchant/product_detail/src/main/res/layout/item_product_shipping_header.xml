@@ -10,6 +10,7 @@
         android:id="@+id/pdp_shipping_header_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:visibility="gone"
         android:background="@drawable/bg_border_pdp_small_radius"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,6 +116,20 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_weight"
         app:typographyType="body_3" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_bottom_shipping"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="txt_pdp_shipping_tokonow, img_pdp_shipping_bo"
+        app:barrierDirection="bottom"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_top_shipping"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="txt_pdp_shipping_tokonow, img_pdp_shipping_bo"
+        app:barrierDirection="top"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_estimation"
         android:layout_width="wrap_content"
@@ -122,7 +137,7 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_pdp_shipping_bo"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_bottom_shipping"
         app:typographyType="body_3"
         tools:text="Estimasi tiba 23-25 Nov" />
 
@@ -138,12 +153,23 @@
         tools:srcCompat="@drawable/ic_pdp_topchat" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_pdp_shipping_tokonow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@+id/label_pdp_shipping_weight"
+        app:layout_constraintStart_toEndOf="@+id/img_pdp_shipping_bo"
+        tools:text="NOW! 2 jam tiba"/>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/txt_pdp_shipping_bo_estimation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_pdp_shipping_bo"
+        app:layout_constraintTop_toTopOf="@+id/barrier_top_shipping"
         app:typographyType="body_3"
         tools:text="Rp0" />
 

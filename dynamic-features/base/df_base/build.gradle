@@ -51,113 +51,114 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
     //Base
-    implementation project(rootProject.ext.features.onboarding)
+    implementation projectOrAar(rootProject.ext.features.onboarding)
 
     //Category
-    implementation project(rootProject.ext.features.exploreCategory)
-    implementation project(rootProject.ext.features.catalog)
-    implementation project(rootProject.ext.features.kategori)
-    implementation project(rootProject.ext.features.categoryLevels)
-    implementation project(rootProject.ext.features.findNative)
-    //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
+    implementation projectOrAar(rootProject.ext.features.exploreCategory)
+    implementation projectOrAar(rootProject.ext.features.catalog)
+    implementation projectOrAar(rootProject.ext.features.kategori)
+    implementation projectOrAar(rootProject.ext.features.categoryLevels)
+    implementation projectOrAar(rootProject.ext.features.findNative)
+    //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
-    implementation project(rootProject.ext.features.play)
-    implementation project(rootProject.ext.features.kol)
-    implementation project(rootProject.ext.features.interestPick)
-    implementation project(rootProject.ext.features.feed)
+    implementation projectOrAar(rootProject.ext.features.play)
+    implementation projectOrAar(rootProject.ext.features.kol)
+    implementation projectOrAar(rootProject.ext.features.interestPick)
+    implementation projectOrAar(rootProject.ext.features.feed)
 
     //Digital
-    implementation project(rootProject.ext.features.digitalTopupBills)
-    implementation project(rootProject.ext.features.digitalHomepage)
-    implementation project(rootProject.ext.features.voucherGame)
-    implementation project(rootProject.ext.features.rechargeOcr)
-    implementation project(rootProject.ext.features.rechargeGeneral)
-    implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.rechargeCreditCard)
-    implementation project(rootProject.ext.features.digitalEmoney)
-    implementation project(rootProject.ext.features.digitalBrizzi)
-    implementation project(rootProject.ext.features.smartBills)
-    implementation project(rootProject.ext.features.recharge_slice)
-    implementation project(rootProject.ext.features.travel_slice)
-    implementation project(rootProject.ext.features.digitalCheckout)
-    implementation project(rootProject.ext.features.rechargePdpEmoney)
+    implementation projectOrAar(rootProject.ext.features.digitalTopupBills)
+    implementation projectOrAar(rootProject.ext.features.digitalHomepage)
+    implementation projectOrAar(rootProject.ext.features.voucherGame)
+    implementation projectOrAar(rootProject.ext.features.rechargeOcr)
+    implementation projectOrAar(rootProject.ext.features.rechargeGeneral)
+    implementation projectOrAar(rootProject.ext.features.digitalproduct)
+    implementation projectOrAar(rootProject.ext.features.rechargeCreditCard)
+    implementation projectOrAar(rootProject.ext.features.digitalEmoney)
+    implementation projectOrAar(rootProject.ext.features.digitalBrizzi)
+    implementation projectOrAar(rootProject.ext.features.smartBills)
+    implementation projectOrAar(rootProject.ext.features.recharge_slice)
+    implementation projectOrAar(rootProject.ext.features.travel_slice)
+    implementation projectOrAar(rootProject.ext.features.digitalCheckout)
+    implementation projectOrAar(rootProject.ext.features.rechargePdpEmoney)
 
     //Discovery
-    implementation project(rootProject.ext.features.similarSearch)
-    implementation project(rootProject.ext.features.search)
-    implementation project(rootProject.ext.features.autocomplete)
-    implementation project(rootProject.ext.features.homeRecom)
-    implementation project(rootProject.ext.features.homeWishlist)
-    implementation project(rootProject.ext.features.productCardOptions)
+    implementation projectOrAar(rootProject.ext.features.similarSearch)
+    implementation projectOrAar(rootProject.ext.features.search)
+    implementation projectOrAar(rootProject.ext.features.autocomplete)
+    implementation projectOrAar(rootProject.ext.features.homeRecom)
+    implementation projectOrAar(rootProject.ext.features.homeWishlist)
+    implementation projectOrAar(rootProject.ext.features.productCardOptions)
 
     //Fintech
-    implementation project(rootProject.ext.features.ovoPayWithQr)
-    implementation project(rootProject.ext.features.wallet)
-    implementation project(rootProject.ext.features.ovop2p)
-    implementation project(rootProject.ext.features.paylater)
+    implementation projectOrAar(rootProject.ext.features.ovoPayWithQr)
+    implementation projectOrAar(rootProject.ext.features.wallet)
+    implementation projectOrAar(rootProject.ext.features.ovop2p)
+    implementation projectOrAar(rootProject.ext.features.paylater)
 
     //IM
-    //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+    //implementation projectOrAar(rootProject.ext.features.referral) //Need to fix the structure
 
     //Logistic
-    implementation project(rootProject.ext.features.logisticorder)
-    implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.manageaddress)
+    implementation projectOrAar(rootProject.ext.features.logisticorder)
+    implementation projectOrAar(rootProject.ext.features.logisticaddaddress)
+    implementation projectOrAar(rootProject.ext.features.manageaddress)
 
     //Merchant
-    implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.shopShowcase)
-    implementation project(rootProject.ext.features.brandlist)
-    implementation project(rootProject.ext.features.productDetail)
-    implementation project(rootProject.ext.features.review)
-    implementation project(rootProject.ext.features.reviewProduct)
-    implementation project(rootProject.ext.features.shopPage)
+    implementation projectOrAar(rootProject.ext.features.shopOpen)
+    implementation projectOrAar(rootProject.ext.features.talk)
+    implementation projectOrAar(rootProject.ext.features.shopShowcase)
+    implementation projectOrAar(rootProject.ext.features.brandlist)
+    implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.atcVariant)
+    implementation projectOrAar(rootProject.ext.features.review)
+    implementation projectOrAar(rootProject.ext.features.reviewProduct)
+    implementation projectOrAar(rootProject.ext.features.shopPage)
     //Operational
 
     //Payment
-    implementation project(rootProject.ext.features.paymentSetting)
-    implementation project(rootProject.ext.features.instantDebitBca)
-    implementation project(rootProject.ext.features.pms)
-    implementation project(rootProject.ext.features.withdraw)
+    implementation projectOrAar(rootProject.ext.features.paymentSetting)
+    implementation projectOrAar(rootProject.ext.features.instantDebitBca)
+    implementation projectOrAar(rootProject.ext.features.pms)
+    implementation projectOrAar(rootProject.ext.features.withdraw)
 
     //Promo
-    implementation project(rootProject.ext.features.promoCheckout)
+    implementation projectOrAar(rootProject.ext.features.promoCheckout)
 
     //Salam
 
     //Travel
-    implementation project(rootProject.ext.features.travelHomepage)
+    implementation projectOrAar(rootProject.ext.features.travelHomepage)
 
     //User
-    implementation project(rootProject.ext.features.settingnotif)
-    implementation project(rootProject.ext.features.campaignShakeLanding)
-    implementation project(rootProject.ext.features.changePhoneNumber)
-    implementation project(rootProject.ext.features.kyccentralized)
-    implementation project(rootProject.ext.features.managename)
-    implementation project(rootProject.ext.features.managepassword)
-    implementation project(rootProject.ext.features.notifCenter)
-    implementation project(rootProject.ext.features.notifTroubleshooter)
-    implementation project(rootProject.ext.features.topchat)
-    implementation project(rootProject.ext.features.otp)
-    implementation project(rootProject.ext.features.loginphone)
-    implementation project(rootProject.ext.features.updateinactivephone)
-    implementation project(rootProject.ext.features.inbox)
-    implementation project(rootProject.ext.features.loginfingerprint)
+    implementation projectOrAar(rootProject.ext.features.settingnotif)
+    implementation projectOrAar(rootProject.ext.features.campaignShakeLanding)
+    implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
+    implementation projectOrAar(rootProject.ext.features.kyccentralized)
+    implementation projectOrAar(rootProject.ext.features.managename)
+    implementation projectOrAar(rootProject.ext.features.managepassword)
+    implementation projectOrAar(rootProject.ext.features.notifCenter)
+    implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
+    implementation projectOrAar(rootProject.ext.features.topchat)
+    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.updateinactivephone)
+    implementation projectOrAar(rootProject.ext.features.inbox)
+    implementation projectOrAar(rootProject.ext.features.loginfingerprint)
 
     //Transaction
-    implementation project(rootProject.ext.features.cart)
-    implementation project(rootProject.ext.features.checkout)
-    implementation project(rootProject.ext.features.oneclickcheckout)
-    implementation project(rootProject.ext.features.promoCheckoutMarketplace)
-    implementation project(rootProject.ext.features.buyerorder)
-    implementation project(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.cart)
+    implementation projectOrAar(rootProject.ext.features.checkout)
+    implementation projectOrAar(rootProject.ext.features.oneclickcheckout)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
+    implementation projectOrAar(rootProject.ext.features.buyerorder)
+    implementation projectOrAar(rootProject.ext.features.snapshot)
 
     //Order Management
-    implementation project(rootProject.ext.features.ordermanagementhistory)
-    implementation project(rootProject.ext.features.buyerorderdetail)
+    implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
+    implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
 
     //Library
-    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

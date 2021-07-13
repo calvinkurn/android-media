@@ -21,5 +21,6 @@ data class ShopGroupWithErrorData(
 
         var isWarning: Boolean = false,
         var warningTitle: String? = null,
-        var warningDescription: String? = null
+        var warningDescription: String? = null,
+        var isTokoNow: Boolean = false
 ) : Parcelable

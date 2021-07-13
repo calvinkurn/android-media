@@ -7,5 +7,7 @@ data class LocalCacheModel (
         val lat: String = "",
         val long: String = "",
         val postal_code: String = "",
-        val label: String = ""
+        val label: String = "",
+        val shop_id: String = "",
+        val warehouse_id: String = ""
 )

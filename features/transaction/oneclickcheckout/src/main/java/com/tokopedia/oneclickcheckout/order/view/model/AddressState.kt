@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.model
 
 data class AddressState(
         var errorCode: String = "",
-        var state: Int = 0,
+        var address: OrderProfileAddress = OrderProfileAddress(),
         var popupMessage: String = ""
 ) {
     companion object {
