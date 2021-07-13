@@ -151,7 +151,6 @@ class TopupBillsFavoriteNumberFragment :
 
     fun initView() {
         setClientNumberInputType()
-        binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.inputType = InputType.TYPE_CLASS_PHONE
         if (number.isNotEmpty()) {
             binding?.run {
                 commonTopupbillsSearchNumberInputView.searchBarTextField.setText(number)
