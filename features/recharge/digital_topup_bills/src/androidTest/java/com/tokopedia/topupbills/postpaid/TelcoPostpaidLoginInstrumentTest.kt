@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.util.Log
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -32,6 +33,7 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
+import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFragment
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
@@ -98,6 +100,15 @@ class TelcoPostpaidLoginInstrumentTest {
 
     @Test
     fun validate_postpaid_login() {
+//        val fragment = mActivityRule.activity.supportFragmentManager
+//                .findFragmentByTag(TelcoPostpaidActivity.TAG_FRAGMENT_TELCO_POSTPAID) as DigitalTelcoPostpaidFragment
+//        fragment.isSeamlessFavoriteNumber = false
+//
+//        Log.d("fragmentcheck", "=====> ${fragment.isSeamlessFavoriteNumber}")
+//        print("=====> ${fragment.isSeamlessFavoriteNumber}")
+
+        Thread.sleep(3000)
+
         stubSearchNumber()
 
         Thread.sleep(3000)
@@ -114,21 +125,21 @@ class TelcoPostpaidLoginInstrumentTest {
 
     fun click_on_fav_number_login() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(R.id.telco_field_input_number)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+        onView(withId(R.id.telco_field_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
 
         Thread.sleep(2000)
 
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(R.id.telco_field_input_number)).perform(click())
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+        onView(withId(R.id.telco_field_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
 
         Thread.sleep(2000)
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(R.id.telco_field_input_number)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
@@ -136,7 +147,7 @@ class TelcoPostpaidLoginInstrumentTest {
 
     fun click_on_tab_menu_login() {
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
+        onView(withId(R.id.telco_field_input_number)).check(matches(withText("")))
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(3000)
@@ -155,11 +166,11 @@ class TelcoPostpaidLoginInstrumentTest {
 
     fun enquiry_new_input_phone_number() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(R.id.telco_field_input_number)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER_2), ViewActions.pressImeActionButton())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER_2)))
+        onView(withId(R.id.telco_field_input_number)).check(matches(withText(VALID_PHONE_NUMBER_2)))
 
         Thread.sleep(2000)
         onView(withId(R.id.telco_buy_widget)).check(matches(IsNot.not(isDisplayed())))

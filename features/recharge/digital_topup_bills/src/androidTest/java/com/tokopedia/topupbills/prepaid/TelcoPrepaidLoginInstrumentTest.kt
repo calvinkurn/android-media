@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.util.Log
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -33,6 +34,8 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
+import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
+import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFragment
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
@@ -80,6 +83,10 @@ class TelcoPrepaidLoginInstrumentTest {
             putExtra(BaseTelcoActivity.PARAM_CLIENT_NUMBER, "")
         }
         mActivityRule.launchActivity(intent)
+
+//        val fragment = mActivityRule.activity.supportFragmentManager
+//                .findFragmentByTag(TelcoPrepaidActivity.TAG_FRAGMENT_TELCO_PREPAID) as DigitalTelcoPrepaidFragment
+//        fragment.isSeamlessFavoriteNumber = false
 
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
@@ -133,19 +140,20 @@ class TelcoPrepaidLoginInstrumentTest {
 
     fun click_on_fav_number_login() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+        Thread.sleep(1000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_PHONE_NUMBER)))
 
-        onView(withId(R.id.telco_ac_input_number)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_FAV_PHONE_NUMBER)))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_FAV_PHONE_NUMBER)))
 
         Thread.sleep(2000)
-        onView(withId(R.id.telco_input_number)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
@@ -153,7 +161,8 @@ class TelcoPrepaidLoginInstrumentTest {
 
     fun click_on_tab_menu_login() {
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
+        Thread.sleep(1000)
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(3000)
@@ -203,14 +212,14 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(R.id.searchbar_textfield)).check(matches(withText(VALID_PHONE_NUMBER)))
         val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_PHONE_NUMBER)))
     }
 
     fun click_item_recent_widget_login() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(R.id.telco_ac_input_number)).check(matches(withText("")))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
 
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
