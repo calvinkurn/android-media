@@ -15,7 +15,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.isNotStaticLayout
@@ -31,7 +31,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -72,7 +72,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList = addLoadingIntoList()
         val data = HomeLayoutListUiModel(
                 result = homeLayoutItemList,
-                state = HomeLayoutState.LOADING
+                state = TokoNowLayoutState.LOADING
         )
         _homeLayoutList.value = Success(data)
     }
@@ -81,7 +81,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList = addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
                 result = homeLayoutItemList,
-                state = HomeLayoutState.HIDE
+                state = TokoNowLayoutState.HIDE
         )
         _homeLayoutList.value = Success(data)
     }
@@ -96,7 +96,7 @@ class TokoNowHomeViewModel @Inject constructor(
             )
             val data = HomeLayoutListUiModel(
                 result = homeLayoutItemList,
-                state = HomeLayoutState.SHOW
+                state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }) {
@@ -117,7 +117,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     is HomeComponentVisitable -> {
                         homeLayoutItemList = getGlobalHomeComponent(layout)
                     }
-                    is HomeCategoryGridUiModel -> {
+                    is TokoNowCategoryGridUiModel -> {
                         homeLayoutItemList = getCategoryGridData(layout, warehouseId)
                     }
                 }
@@ -125,7 +125,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
             val data = HomeLayoutListUiModel(
                 result = homeLayoutItemList,
-                state = HomeLayoutState.SHOW,
+                state = TokoNowLayoutState.SHOW,
                 nextItemIndex = index + 1,
                 isInitialLoad = index == 0,
                 isInitialLoadFinished = isInitialLoadFinished
@@ -150,14 +150,14 @@ class TokoNowHomeViewModel @Inject constructor(
                         is HomeComponentVisitable -> {
                             homeLayoutItemList = getGlobalHomeComponent(layout)
                         }
-                        is HomeCategoryGridUiModel -> {
+                        is TokoNowCategoryGridUiModel -> {
                             homeLayoutItemList = getCategoryGridData(layout, warehouseId)
                         }
                     }
 
                     val data = HomeLayoutListUiModel(
                         result = homeLayoutItemList,
-                        state = HomeLayoutState.LOAD_MORE
+                        state = TokoNowLayoutState.LOAD_MORE
                     )
 
                     withContext(dispatchers.main) {
@@ -200,14 +200,14 @@ class TokoNowHomeViewModel @Inject constructor(
         }, source)
     }
 
-    fun getCategoryGrid(item: HomeCategoryGridUiModel, warehouseId: String) {
+    fun getCategoryGrid(item: TokoNowCategoryGridUiModel, warehouseId: String) {
         launchCatchError(block = {
             val response = getCategoryList(warehouseId)
             val homeLayoutItemList = homeLayoutItemList
                 .mapHomeCategoryGridData(item, response)
             val data = HomeLayoutListUiModel(
                     result = homeLayoutItemList,
-                    state = HomeLayoutState.SHOW
+                    state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }) {
@@ -215,7 +215,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 .mapHomeCategoryGridData(item, null)
             val data = HomeLayoutListUiModel(
                     result = homeLayoutItemList,
-                    state = HomeLayoutState.SHOW
+                    state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }
@@ -236,7 +236,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private suspend fun getCategoryGridData(
-        item: HomeCategoryGridUiModel,
+        item: TokoNowCategoryGridUiModel,
         warehouseId: String
     ): List<HomeLayoutItemUiModel> {
         val response = getCategoryList(warehouseId)
