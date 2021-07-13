@@ -19,4 +19,16 @@ object CommonAssertion {
             assertThat(adapter?.itemCount, `is`(expectedCount))
         }
     }
+
+    class RecyclerViewItemTypeAssertion(private val itemViewType: Int, private val position: Int) :
+        ViewAssertion {
+        override fun check(view: View, noViewFoundException: NoMatchingViewException?) {
+            if (noViewFoundException != null) {
+                throw noViewFoundException
+            }
+            val recyclerView: RecyclerView = view as RecyclerView
+            val adapter = recyclerView.adapter
+            assertThat(adapter?.getItemViewType(position), `is`(itemViewType))
+        }
+    }
 }

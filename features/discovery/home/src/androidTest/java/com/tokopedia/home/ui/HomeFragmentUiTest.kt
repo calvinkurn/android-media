@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -20,6 +21,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
+import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -36,6 +38,8 @@ import com.tokopedia.test.application.espresso_component.CommonAssertion
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -43,6 +47,7 @@ import org.junit.Test
  * Created by devarafikry on 02/07/21.
  */
 class HomeFragmentUiTest {
+    private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 
@@ -59,6 +64,18 @@ class HomeFragmentUiTest {
             setupAbTestRemoteConfig()
             super.beforeActivityLaunched()
         }
+    }
+
+    @Before
+    fun setupIdlingResource() {
+        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(recyclerView)
+        IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
+    }
+
+    @After
+    fun cleanup() {
+        IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
     @Test

@@ -295,12 +295,14 @@ class HomeVisitableFactoryImpl(
                                         }
                                     },
                                     onSuccess = {
-                                        addDynamicChannelData(
+                                        if (data.getAtfContent<DynamicHomeChannel>() != null) {
+                                            addDynamicChannelData(
                                                 false,
                                                 data.getAtfContent<DynamicHomeChannel>(),
                                                 false,
                                                 index
-                                        )
+                                            )
+                                        }
                                     }
                             )
                             channelPosition++
