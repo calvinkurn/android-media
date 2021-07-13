@@ -2,13 +2,13 @@ package com.tokopedia.tradein.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_tradein.model.DeviceDiagGQL
+import com.tokopedia.common_tradein.model.DeviceDiagParams
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.model.ValidateTradePDP
+import com.tokopedia.common_tradein.repository.CommonTradeInRepository
+import com.tokopedia.common_tradein.usecase.DiagnosticDataUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.tradein.model.DeviceDiagGQL
-import com.tokopedia.tradein.model.DeviceDiagParams
-import com.tokopedia.tradein.repository.TradeInRepository
 import io.mockk.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +27,7 @@ class DiagnosticDataUseCaseTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    private val tradeInRepository: TradeInRepository = mockk(relaxed = true)
+    private val tradeInRepository: CommonTradeInRepository = mockk(relaxed = true)
 
     var diagnosticDataUseCase = spyk(DiagnosticDataUseCase(tradeInRepository))
 

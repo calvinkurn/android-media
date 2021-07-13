@@ -213,7 +213,7 @@ class MoneyInHomeViewModelTest {
         assertEquals(tradeInHomeViewModel.homeResultData.value?.displayMessage, moneyInResponse?.response?.message)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
         assertEquals(tradeInHomeViewModel.homeResultData.value?.priceStatus, HomeResult.PriceState.MONEYIN_ERROR)
-        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
+        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
 
         /**Eligible case**/
         coEvery { moneyInResponse?.response?.isEligible } returns true
@@ -268,44 +268,12 @@ class MoneyInHomeViewModelTest {
     @Test
     fun onFinished() {
         val jsonObject = JSONObject("{\"min_price\":100000,\"max_price\":350000,\"model_id\":49,\"brand\":\"LG\",\"model\":\"Nexus 5\",\"model_display_name\":\"LG Nexus 5\"}")
-
-        /** Diagnosed invalid **/
-        tradeInHomeViewModel.tradeInParams.usedPrice = 10
-        tradeInHomeViewModel.tradeInParams.setPrice(0)
+        coEvery { tradeInHomeViewModel.checkMoneyIn(any(), any()) } just Runs
 
         tradeInHomeViewModel.onFinished(jsonObject)
 
-        verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
-        assertEquals(HomeResult.PriceState.DIAGNOSED_INVALID, tradeInHomeViewModel.homeResultData.value?.priceStatus)
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
+        verify(exactly = 1) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-
-
-        /** Not Diagnosed **/
-        tradeInHomeViewModel.tradeInParams.usedPrice = 0
-        tradeInHomeViewModel.tradeInParams.newPrice = 400000
-
-        tradeInHomeViewModel.onFinished(jsonObject)
-
-        verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
-        assertEquals(HomeResult.PriceState.NOT_DIAGNOSED, tradeInHomeViewModel.homeResultData.value?.priceStatus)
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
-        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-
-
-        /** Diagnosed valid **/
-        tradeInHomeViewModel.tradeInParams.usedPrice = 10
-        tradeInHomeViewModel.tradeInParams.setPrice(20)
-
-        tradeInHomeViewModel.onFinished(jsonObject)
-
-        verify(exactly = 0) { tradeInHomeViewModel.checkMoneyIn(any(), any()) }
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.isSuccess, true)
-        assertEquals(HomeResult.PriceState.DIAGNOSED_VALID, tradeInHomeViewModel.homeResultData.value?.priceStatus)
-        assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, false)
-        assertEquals(tradeInHomeViewModel.homeResultData.value?.deviceDisplayName, "LG Nexus 5")
 
     }
 

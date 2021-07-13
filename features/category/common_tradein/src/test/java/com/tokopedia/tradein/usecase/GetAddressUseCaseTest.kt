@@ -5,13 +5,14 @@ import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_tradein.model.AddressResult
+import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse
+import com.tokopedia.common_tradein.repository.CommonTradeInRepository
+import com.tokopedia.common_tradein.usecase.GetAddressUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.tradein.model.AddressResult
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData
-import com.tokopedia.tradein.repository.TradeInRepository
 import io.mockk.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,7 @@ class GetAddressUseCaseTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    val tradeInRepository: TradeInRepository = mockk(relaxed = true)
+    val tradeInRepository: CommonTradeInRepository = mockk(relaxed = true)
     val resources: Resources = mockk()
 
     var getAddressUseCase = spyk(GetAddressUseCase(tradeInRepository))
@@ -69,11 +70,11 @@ class GetAddressUseCaseTest {
 
     @Test
     fun getAddress() {
-        val address: ResponseData = createMockGraphqlSuccessResponse()
+        val address: MoneyInKeroGetAddressResponse.ResponseData = createMockGraphqlSuccessResponse()
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any()) } returns address
+            coEvery { tradeInRepository.getGQLData(any(), MoneyInKeroGetAddressResponse.ResponseData::class.java, any()) } returns address
 
             val addressResult = getAddressUseCase.getAddress()
 
@@ -91,7 +92,7 @@ class GetAddressUseCaseTest {
     /**************************** getAddress() *******************************************/
 
 
-    private fun createMockGraphqlSuccessResponse(): ResponseData {
+    private fun createMockGraphqlSuccessResponse(): MoneyInKeroGetAddressResponse.ResponseData {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
@@ -99,10 +100,10 @@ class GetAddressUseCaseTest {
                 JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = ResponseData::class.java
+        val objectType = MoneyInKeroGetAddressResponse.ResponseData::class.java
         val obj: Any = CommonUtils.fromJson(data, objectType)
         result[objectType] = obj
-        return GraphqlResponse(result, errors, false).getData(ResponseData::class.java)
+        return GraphqlResponse(result, errors, false).getData(MoneyInKeroGetAddressResponse.ResponseData::class.java)
     }
 
     private fun getJsonFromFile(path: String): String {

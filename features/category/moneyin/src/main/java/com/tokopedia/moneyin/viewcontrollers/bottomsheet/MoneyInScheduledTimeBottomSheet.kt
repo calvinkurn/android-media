@@ -49,7 +49,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheetUnify() {
         contentView = View.inflate(context,
                 R.layout.money_in_bottom_sheet_scheduled_time, null)
         if (arguments != null && arguments?.getParcelableArrayList<ScheduleDate>(KEY_SCHEDULE_DATA) != null) {
-            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)!!
+            scheduleDate = arguments?.getParcelableArrayList(KEY_SCHEDULE_DATA) ?: arrayListOf()
         }
         dateAdapter.date.clear()
         for (date in scheduleDate) {

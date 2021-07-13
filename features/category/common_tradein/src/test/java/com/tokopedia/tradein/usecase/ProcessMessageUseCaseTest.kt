@@ -1,14 +1,14 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.Context
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_tradein.model.DeviceDiagInput
+import com.tokopedia.common_tradein.model.DeviceDiagInputResponse
+import com.tokopedia.common_tradein.model.DeviceDiagnostics
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.tradein.model.DeviceDiagInput
-import com.tokopedia.tradein.model.DeviceDiagInputResponse
-import com.tokopedia.tradein.model.DeviceDiagnostics
-import com.tokopedia.tradein.repository.TradeInRepository
+import com.tokopedia.common_tradein.repository.CommonTradeInRepository
+import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
@@ -23,14 +23,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.ClassCastException
 
 @ExperimentalCoroutinesApi
 class ProcessMessageUseCaseTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
-    val tradeInRepository: TradeInRepository = mockk(relaxed = true)
+    val tradeInRepository: CommonTradeInRepository = mockk(relaxed = true)
     val resources: Resources = mockk()
 
     var processMessageUseCase = spyk(ProcessMessageUseCase(tradeInRepository))
