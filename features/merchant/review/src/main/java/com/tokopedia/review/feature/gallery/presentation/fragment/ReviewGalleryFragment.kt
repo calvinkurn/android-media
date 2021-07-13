@@ -132,6 +132,14 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
+    override fun disableScroll() {
+        imagesRecyclerView?.isNestedScrollingEnabled = false
+    }
+
+    override fun enableScroll() {
+        imagesRecyclerView?.isNestedScrollingEnabled = true
+    }
+
     override fun onBackPressed() {
         finishActivity()
     }

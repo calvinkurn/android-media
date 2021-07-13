@@ -35,6 +35,20 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
                     setScaleFactor(UNZOOM_SCALE_FACTOR)
                 }
             }
+            imagePreviewUnifyListener = object: ImagePreview.ImagePreviewUnifyListener {
+                override fun onZoomStart(scaleFactor: Float) {
+                }
+                override fun onZoom(scaleFactor: Float) {
+
+                }
+                override fun onZoomEnd(scaleFactor: Float) {
+                    if(scaleFactor >= UNZOOM_SCALE_FACTOR) {
+                        imageListener.disableScroll()
+                    } else {
+                        imageListener.enableScroll()
+                    }
+                }
+            }
         }
     }
 }
