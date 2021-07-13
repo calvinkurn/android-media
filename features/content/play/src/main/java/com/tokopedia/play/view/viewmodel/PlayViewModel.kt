@@ -365,6 +365,7 @@ class PlayViewModel @Inject constructor(
         videoStateProcessor.removeStateListener(videoStateListener)
         videoStateProcessor.removeStateListener(videoPerformanceListener)
         channelStateProcessor.removeStateListener(channelStateListener)
+        castPlayerHelper.setSessionAvailabilityListener(null)
     }
     //endregion
 
