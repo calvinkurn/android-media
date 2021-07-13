@@ -289,27 +289,6 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_block_canary_delay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:textSize="@dimen/fontSize_lvl4"
-            android:lines="1"
-            android:gravity="center_vertical"
-            android:inputType="text"
-            android:hint="Minimum Block Delay to Captured in ms (default = 500)"
-            app:backgroundTint="@color/Green_G500" />
-
-        <CheckBox
-            android:id="@+id/toggle_ui_block_debugger"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:padding="@dimen/margin_small"
-            android:text="Enable ANR Debugger" />
-
         <CheckBox
             android:id="@+id/toggle_leak_canary"
             android:layout_width="match_parent"
