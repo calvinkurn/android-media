@@ -261,6 +261,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
         private const val PARAM_POST_POSITION = "position"
+        private const val PARAM_CALL_SOURCE = "call_source"
+        private const val PARAM_FEED = "feed"
+
         private const val PARAM_VIDEO_INDEX = "video_index"
 
 
@@ -1051,8 +1054,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onGoToKolComment(
         rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-        activityType: String,
-        authorType: String
+        activityType: String
+    ) {
+        //not used
+    }
+
+    fun gotToKolComment(
+        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        activityType: String, authorType: String
     ) {
         val intent = RouteManager.getIntent(
             requireContext(),
@@ -1510,7 +1519,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String
     ) {
         feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, authorType)
-        onGoToKolComment(positionInFeed, id, false, "", authorType)
+        gotToKolComment(positionInFeed, id, false, "", authorType)
     }
 
     override fun onShareClick(
@@ -1946,6 +1955,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null) {
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
+            videoDetailIntent.putExtra(PARAM_CALL_SOURCE, PARAM_FEED)
             videoDetailIntent.putExtra(PARAM_POST_POSITION, positionInFeed)
             videoDetailIntent.putExtra(PARAM_VIDEO_INDEX, contentPosition)
             startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL)

@@ -51,7 +51,7 @@
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18"
         android:text="@string/feed_delete_comment"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Red_R600"
         android:visibility="gone"
         app:typographyType="body_2"
         app:typographyWeight="bold"

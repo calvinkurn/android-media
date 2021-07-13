@@ -462,18 +462,19 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     private fun setAvatar() {
-        ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
-    }
-
-    private fun prepareView() {
-        userSession?.isLoggedIn?.let { feedAnalytics.openCommentDetailPage(it) }
-        adapter = KolCommentAdapter(typeFactory)
         val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
         if (authorId?.isNotEmpty() == true) {
             if (authorId == userSession?.shopId) {
                 ImageHandler.loadImageCircle2(context, avatarShop, userSession?.shopAvatar)
             }
+        } else {
+            ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
         }
+    }
+
+    private fun prepareView() {
+        userSession?.isLoggedIn?.let { feedAnalytics.openCommentDetailPage(it) }
+        adapter = KolCommentAdapter(typeFactory)
         listComment?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listComment?.adapter = adapter

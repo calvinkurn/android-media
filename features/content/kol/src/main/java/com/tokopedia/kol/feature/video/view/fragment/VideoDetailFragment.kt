@@ -31,6 +31,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
@@ -49,6 +50,8 @@ import javax.inject.Inject
 
 const val POST_POSITION = "position"
 const val PARAM_VIDEO_INDEX = "video_index"
+const val PARAM_CALL_SOURCE = "call_source"
+const val PARAM_FEED = "feed"
 
 class VideoDetailFragment :
     BaseDaggerFragment(),
@@ -309,15 +312,23 @@ class VideoDetailFragment :
     }
 
     private fun onCommentSectionClicked(): View.OnClickListener {
+        val callSource = arguments?.getString(PARAM_CALL_SOURCE)
+
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
-                startActivityForResult(
-                    KolCommentActivity.getCallingIntent(
-                        requireActivity(),
-                        id.toInt(),
-                        0
-                    ), INTENT_COMMENT
-                )
+                if (callSource == PARAM_FEED) {
+                    val intent = getCallingIntent(requireContext(), id.toInt(), 0)
+                    startActivityForResult(intent, INTENT_COMMENT)
+
+                } else {
+                    startActivityForResult(
+                        KolCommentActivity.getCallingIntent(
+                            requireActivity(),
+                            id.toInt(),
+                            0
+                        ), INTENT_COMMENT
+                    )
+                }
             } else {
                 goToLogin()
             }
@@ -401,9 +412,8 @@ class VideoDetailFragment :
                 shareIcon.setOnClickListener {
                     doShare(
                         String.format(
-                            "%s %s",
-                            dynamicPostViewModel.footer.share.description,
-                            dynamicPostViewModel.footer.share.url
+                            "%s",
+                            dynamicPostViewModel.footer.share.description
                         ), dynamicPostViewModel.footer.share.title
                     )
                 }

@@ -678,7 +678,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onGoToKolComment(
         rowNumber: Int, id: Int, hasMultipleContent: Boolean,
         activityType: String,
-        authorType: String
     ) {
         RouteManager.getIntent(
             requireContext(),
@@ -895,7 +894,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         shopId: String
     ) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
-        onGoToKolComment(positionInFeed, id, false, "", authorType)
+        onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(

@@ -512,7 +512,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         id: Int,
         hasMultipleContent: Boolean,
         activityType: String,
-        authorType: String
     ) {
         RouteManager.getIntent(
             requireContext(),
@@ -624,7 +623,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean,
         shopId: String
     ) {
-        onGoToKolComment(positionInFeed, id, false, "", authorType)
+        onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(
