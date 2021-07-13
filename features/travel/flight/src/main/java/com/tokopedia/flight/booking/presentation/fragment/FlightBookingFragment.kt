@@ -277,7 +277,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
-            if(it == 0){
+            if(it == EMPTY_VOUCHER_STATE){
                 bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
             }else{
                 renderErrorToast(it)
@@ -850,14 +850,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     @SuppressLint("DialogUnifyUsage")
-    private fun showErrorDialog(e: FlightError, action: () -> Unit) {
+    private fun showErrorDialog(flightError: FlightError, action: () -> Unit) {
         if (activity != null) {
-            if (e.id != "" && e.id != null) {
-                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
+            if (flightError.id != "" && flightError.id != null) {
+                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
                 if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
                     renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-                    showErrorFullPage(e)
+                    showErrorFullPage(flightError)
                 } else {
                     lateinit var dialog: DialogUnify
                     when (errorCode) {
@@ -945,8 +945,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                     dialog.setCancelable(false)
                     dialog.setOverlayClose(false)
-                    if (e.head.isNotEmpty()) dialog.setTitle(e.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
-                    if (e.message.isNotEmpty()) dialog.setDescription(e.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
+                    if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
+                    if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
                     dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                     dialog.show()
                 }
@@ -1157,6 +1157,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
         const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
         const val REQUEST_CODE_OTP = 5
+        const val EMPTY_VOUCHER_STATE = 0
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()
