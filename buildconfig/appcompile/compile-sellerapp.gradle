@@ -62,6 +62,7 @@ includeIfEnabled("features:logistic:localizationchooseaddress")
 includeIfEnabled("features:media:mediauploader")
 includeIfEnabled("features:media:media-common")
 includeIfEnabled("features:media:medialoader")
+includeIfEnabled("features:media:live-broadcaster")
 
 includeIfEnabled("features:merchant:gold_merchant_common")
 includeIfEnabled("features:merchant:power_merchant_subscribe")
