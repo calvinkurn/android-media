@@ -6,14 +6,17 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.provider.Settings
+import android.util.StateSet
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.topchat.R
 
 
 object ViewUtil {
@@ -121,9 +124,11 @@ object ViewUtil {
             val strokeMargin = strokeWidthValue.toInt() / 2
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
+        val stateDrawable = StateListDrawable()
+        stateDrawable.addState(intArrayOf(android.R.attr.state_pressed), ContextCompat.getDrawable(view.context, R.drawable.bg_red_dot_unread))
+        stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
-        return drawable
-
+        return stateDrawable
     }
 
     fun areSystemAnimationsEnabled(context: Context?): Boolean {

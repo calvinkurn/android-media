@@ -14,25 +14,25 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.common.util.ViewUtil
 
 class LeftChatMessageViewHolder(
-        itemView: View?,
-        listener: ChatLinkHandlerListener,
-        private val commonListener: CommonViewHolderListener,
-        private val adapterListener: AdapterListener
+    itemView: View?,
+    listener: ChatLinkHandlerListener,
+    private val commonListener: CommonViewHolderListener,
+    private val adapterListener: AdapterListener
 ) : ChatMessageViewHolder(itemView, listener, adapterListener) {
 
     private val headerInfo: LinearLayout? = itemView?.findViewById(R.id.ll_header_info)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            fxChat,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER
+        fxChat,
+        com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        R.dimen.dp_topchat_0,
+        R.dimen.dp_topchat_20,
+        R.dimen.dp_topchat_20,
+        R.dimen.dp_topchat_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_topchat_2,
+        R.dimen.dp_topchat_1,
+        Gravity.CENTER
     )
 
     override fun bind(message: MessageViewModel) {
@@ -44,9 +44,9 @@ class LeftChatMessageViewHolder(
 
     private fun bindHeaderInfo(message: MessageViewModel) {
         if (
-                message.source == BaseChatViewModel.SOURCE_REPLIED_BLAST &&
-                !message.isSender &&
-                commonListener.isSeller()
+            message.source == BaseChatViewModel.SOURCE_REPLIED_BLAST &&
+            !message.isSender &&
+            commonListener.isSeller()
         ) {
             headerInfo?.show()
         } else {
@@ -60,7 +60,7 @@ class LeftChatMessageViewHolder(
 
     private fun bindMessageInfo(message: MessageViewModel) {
         if (
-                message.hasLabel() && !message.isSender
+            message.hasLabel() && !message.isSender
         ) {
             fxChat?.showInfo(message.label)
         } else {

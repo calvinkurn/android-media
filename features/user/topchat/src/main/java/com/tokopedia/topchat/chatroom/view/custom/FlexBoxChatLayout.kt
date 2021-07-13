@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -10,18 +11,18 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 
 
 class FlexBoxChatLayout : FrameLayout {
 
     var checkMark: ImageView? = null
         private set
-    private var message: TextView? = null
+    var message: TextView? = null
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
@@ -39,19 +40,19 @@ class FlexBoxChatLayout : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-            context,
-            attrs,
-            defStyleAttr
+        context,
+        attrs,
+        defStyleAttr
     ) {
         initConfig(context, attrs)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(
-            context: Context,
-            attrs: AttributeSet?,
-            defStyleAttr: Int,
-            defStyleRes: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         initConfig(context, attrs)
     }
@@ -72,10 +73,10 @@ class FlexBoxChatLayout : FrameLayout {
 
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
         context?.theme?.obtainStyledAttributes(
-                attrs,
-                R.styleable.FlexBoxChatLayout,
-                0,
-                0
+            attrs,
+            R.styleable.FlexBoxChatLayout,
+            0,
+            0
         )?.apply {
             try {
                 showCheckMark = getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
@@ -212,8 +213,9 @@ class FlexBoxChatLayout : FrameLayout {
         checkMark?.setImageDrawable(readStatus)
     }
 
-    fun setMovementMethod(movementMethod: ChatLinkHandlerMovementMethod) {
-        message?.movementMethod = movementMethod
+    @SuppressLint("ClickableViewAccessibility")
+    fun setMessageOnTouchListener(onTouchListener: MessageOnTouchListener) {
+        message?.setOnTouchListener(onTouchListener)
     }
 
     fun hideInfo() {
