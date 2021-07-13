@@ -29,6 +29,7 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(tvTotalPayment, model.totalPrice, itemView.context.getString(R.string.content_desc_tv_total_payment))
 
+        btnSelectPaymentMethod.isEnabled = model.totalPrice != "-"
         btnSelectPaymentMethod.let {
             compositeSubscription.add(
                     rxViewClickDebounce(it).subscribe(object : Subscriber<Boolean>() {
