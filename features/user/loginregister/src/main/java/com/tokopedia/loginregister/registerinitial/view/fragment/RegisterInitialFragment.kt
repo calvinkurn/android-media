@@ -49,7 +49,6 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
@@ -71,7 +70,7 @@ import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialRouter
@@ -127,7 +126,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private lateinit var bottomSheet: SocmedBottomSheet
     private var socmedButtonsContainer: LinearLayout? = null
     private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var registerInitialRouter: RegisterInitialRouterHelper
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -170,6 +168,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         viewModelProvider.get(RegisterInitialViewModel::class.java)
     }
 
+    @Inject
+    lateinit var registerInitialRouter: RegisterInitialRouterHelper
+
     lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
@@ -184,11 +185,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     }
 
     override fun initInjector() {
-        val daggerLoginComponent = DaggerRegisterInitialComponent
-                .builder().loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
-                .build() as DaggerRegisterInitialComponent
-
-        daggerLoginComponent.inject(this)
+        getComponent(RegisterInitialComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String {
@@ -203,7 +200,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         callbackManager = CallbackManager.Factory.create()
 
         activity?.let {
-            registerInitialRouter = RegisterInitialRouterHelper()
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getGoogleClientId(it))
                     .requestEmail()
@@ -299,7 +295,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun fetchRemoteConfig() {
+    open fun fetchRemoteConfig() {
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -1100,14 +1096,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 isSmartRegister = true
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
-                intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                val bundleResult = Bundle()
-                bundleResult.putBoolean(PARAM_IS_SMART_REGISTER, isSmartRegister)
-                activity.setResult(Activity.RESULT_OK, Intent().putExtras(bundleResult))
-                startActivity(intent)
-                activity.finish()
+                gotoLoginEmailPage(email)
             }
         }
         dialog?.setSecondaryCTAClickListener {
@@ -1115,6 +1104,17 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             dialog.dismiss()
         }
         dialog?.show()
+    }
+
+    override fun gotoLoginEmailPage(email: String) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LOGIN_EMAIL, Uri.encode(email), source)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        val bundleResult = Bundle()
+        bundleResult.putBoolean(PARAM_IS_SMART_REGISTER, isSmartRegister)
+        activity?.setResult(Activity.RESULT_OK, Intent().putExtras(bundleResult))
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun showRegisteredPhoneDialog(phone: String) {

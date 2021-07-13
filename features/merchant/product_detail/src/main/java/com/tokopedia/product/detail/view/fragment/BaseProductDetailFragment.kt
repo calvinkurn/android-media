@@ -97,6 +97,13 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
+    fun getViewHolderByPosition(position: Int): RecyclerView.ViewHolder? {
+        if (position == -1) {
+            return null
+        }
+        return rvPdp?.findViewHolderForAdapterPosition(position)
+    }
+
     fun <T : DynamicPdpDataModel> getComponentPosition(data: T?): Int {
         return if (data != null) {
             productAdapter?.currentList?.indexOf(data) ?: RecyclerView.NO_POSITION

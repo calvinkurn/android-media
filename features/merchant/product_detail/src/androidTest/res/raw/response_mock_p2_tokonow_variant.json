@@ -1,0 +1,626 @@
+[
+  {
+    "data": {
+      "pdpGetData": {
+        "bebasOngkir": {
+          "images": [
+            {
+              "boType": 3,
+              "imageURL": "",
+              "tokoCabangImageURL": ""
+            }
+          ],
+          "products": [
+            {
+              "boType": 3,
+              "productID": "1920781727"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781732"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781728"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781730"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781726"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781731"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781723"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781721"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781729"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781724"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781722"
+            },
+            {
+              "boType": 3,
+              "productID": "1920781725"
+            }
+          ]
+        },
+        "cartRedirection": {
+          "alternate_copy": [
+            {
+              "cart_type": "remind_me",
+              "color": "secondary_gray",
+              "text": "Cek wishlist kamu"
+            },
+            {
+              "cart_type": "update_cart",
+              "color": "primary_green",
+              "text": "Simpan Perubahan"
+            }
+          ],
+          "data": [
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920777196",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781721",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781722",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781723",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781724",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781725",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781726",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781727",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781728",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781729",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781730",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781731",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1920781732",
+              "unavailable_buttons": []
+            }
+          ],
+          "error_message": [],
+          "status": "OK"
+        },
+        "error": {
+          "Code": 0,
+          "DevMessage": "",
+          "Message": ""
+        },
+        "installmentCalculation": {
+          "data": {
+            "credit_card": [],
+            "non_credit_card": [],
+            "tnc": []
+          },
+          "message": ""
+        },
+        "installmentRecommendation": {
+          "data": {
+            "monthly_price": 0,
+            "os_monthly_price": 0,
+            "partner_code": "",
+            "subtitle": ""
+          }
+        },
+        "merchantVoucher": {
+          "error_message": "",
+          "error_message_title": "",
+          "vouchers": []
+        },
+        "merchantVoucherSummary": {
+          "imageURL": "",
+          "isShown": false,
+          "subtitle": "",
+          "title": []
+        },
+        "mostHelpFulReviewData": {
+          "list": []
+        },
+        "nearestWarehouse": [
+          {
+            "product_id": "1920781721",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781722",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781723",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781724",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781725",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781726",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781727",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781728",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781729",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781730",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781731",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          },
+          {
+            "product_id": "1920781732",
+            "warehouse_info": {
+              "district_id": "2257",
+              "geolocation": "-6.173592999999997,106.73443299999997",
+              "is_fulfillment": false,
+              "postal_code": "11610",
+              "warehouse_id": "11528221"
+            }
+          }
+        ],
+        "ppGetItemDetailPage": {
+          "program": {
+            "iconURL": "",
+            "isAppLink": true,
+            "linkURL": "",
+            "partnerLogo": "",
+            "partnerText": "",
+            "protectionAvailable": false,
+            "subTitle": "",
+            "subTitlePDP": "",
+            "title": "",
+            "titlePDP": ""
+          }
+        },
+        "productView": "118",
+        "ratesEstimate": [
+          {
+            "bottomsheet": {
+              "buttonCopy": "Ganti Alamat, yuk",
+              "iconURL": "https://ecs7.tokopedia.net/img/pdp/info/icon/pdp_illustration_truck_1@3x.png",
+              "subtitle": "Tidak ada kurir yang mendukung pengiriman barang ini ke alamat kamu.",
+              "title": "Pengiriman tidak tersedia"
+            },
+            "data": {
+              "cheapestShippingPrice": 0,
+              "courierLabel": "",
+              "destination": "",
+              "eTAText": "",
+              "errors": [
+                {
+                  "Code": 50504,
+                  "DevMessage": "pdp: Out of coverage",
+                  "Message": "pdp: Out of coverage"
+                }
+              ],
+              "icon": "",
+              "subtitle": "Tidak ada kurir yang mendukung pengiriman barang ini ke alamatmu. Cari barang lain atau <a href=\"\">Ganti Alamat.</a>",
+              "title": "Yaah, pengiriman tidak tersedia",
+              "totalService": 0
+            },
+            "products": [
+              "1920777196",
+              "1920781721",
+              "1920781722",
+              "1920781723",
+              "1920781724",
+              "1920781725",
+              "1920781726",
+              "1920781727",
+              "1920781728",
+              "1920781729",
+              "1920781730",
+              "1920781731",
+              "1920781732"
+            ],
+            "warehouseID": "0"
+          }
+        ],
+        "reputationShop": {
+          "badge": "https://ecs7.tokopedia.net/img/repsys/badges-off.jpg",
+          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg",
+          "score": "0",
+          "scoreMap": "0"
+        },
+        "restrictionInfo": {
+          "message": "",
+          "restrictionData": []
+        },
+        "reviewImage": {
+          "detail": {
+            "imageCount": "",
+            "imageCountFmt": "",
+            "images": [],
+            "reviews": []
+          },
+          "hasNext": false,
+          "hasPrev": false,
+          "list": []
+        },
+        "shopCommitment": {
+          "error": {
+            "message": ""
+          },
+          "result": {
+            "isNowActive": false,
+            "staticMessages": {
+              "pdpMessage": ""
+            }
+          }
+        },
+        "shopFeature": {
+          "IsGoApotik": false
+        },
+        "shopInfo": {
+          "activeProduct": "763",
+          "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+          "closedInfo": {
+            "closedNote": "",
+            "detail": {
+              "openDateUTC": "0"
+            },
+            "reason": "",
+            "until": ""
+          },
+          "createInfo": {
+            "epochShopCreated": "1621610404",
+            "epochShopCreatedUTC": "1621585204",
+            "openSince": "May 2021",
+            "shopCreated": "2021-05-21"
+          },
+          "isAllowManage": 0,
+          "isFreeReturns": 0,
+          "location": "Jakarta Selatan",
+          "shipmentInfo": [
+            {
+              "awbStatus": 0,
+              "code": "gojek",
+              "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "GoSend",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Instant Courier",
+                  "shipProdID": "28",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "10"
+            }
+          ],
+          "shippingLoc": {
+            "addressStreet": "",
+            "cityID": "0",
+            "cityName": "",
+            "countryName": "",
+            "districtID": "0",
+            "districtName": "",
+            "latitude": "",
+            "longitude": "",
+            "postalCode": "",
+            "provinceID": "0",
+            "provinceName": ""
+          },
+          "shopAssets": {
+            "avatar": "https://images.tokopedia.net/img/seller_no_logo_0.png",
+            "cover": "https://images.tokopedia.net/img/cache/1334/BpoSLE/seller_no_cover_0.png"
+          },
+          "shopCore": {
+            "description": "",
+            "domain": "11515028tknw",
+            "name": "11515028tknw",
+            "shopID": "11515028",
+            "tagLine": "",
+            "url": "https://www.tokopedia.com/11515028tknw"
+          },
+          "shopLastActive": "1625019864",
+          "shopStats": {
+            "productSold": "496",
+            "totalShowcase": "7",
+            "totalTx": "203"
+          },
+          "shopTerms": "0",
+          "shopTier": 2,
+          "shopType": 0,
+          "statusInfo": {
+            "isIdle": false,
+            "shopStatus": 1,
+            "statusMessage": "",
+            "statusTitle": ""
+          }
+        },
+        "shopPackSpeed": {
+          "hour": 1,
+          "speedFmt": "1 Jam"
+        },
+        "shopRatingsQuery": {
+          "ratingScore": 5
+        },
+        "shopTopChatSpeed": {
+          "messageResponseTime": "> 1 jam"
+        },
+        "uniqueSellingPoint": {
+          "bebasOngkirExtra": {
+            "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
+          }
+        },
+        "upcomingCampaigns": [],
+        "validateTradeIn": {
+          "isDiagnosed": false,
+          "isEligible": false,
+          "message": "",
+          "remainingPrice": "0",
+          "useKyc": false,
+          "usedPrice": "0",
+          "widgetString": ""
+        },
+        "wishlistCount": "0"
+      }
+    }
+  }
+]
