@@ -43,12 +43,13 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
-        val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
-        //temporary there is no remote config checker for environment test
-        //I think remote config will be checked before check threshold calculation or process screenshot taken
-        lastTimeCall = System.currentTimeMillis()
-        if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
-            processScreenshotTaken(uri)
+        val enableSellerFeedbackScreenshot =
+            getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
+        if (enableSellerFeedbackScreenshot) {
+            lastTimeCall = System.currentTimeMillis()
+            if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
+                processScreenshotTaken(uri)
+            }
         }
     }
 
@@ -82,8 +83,8 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
                 remoteConfig = FirebaseRemoteConfigImpl(activity)
             }
             remoteConfig?.getBoolean(
-                    REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK,
-                    REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
+                REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK,
+                REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
             ) ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
         } ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
     }
@@ -97,7 +98,8 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     private fun isDifferentDays(dateString: String): Boolean {
         return try {
-            val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_PREFS, DateFormatUtils.DEFAULT_LOCALE)
+            val simpleDateFormat =
+                SimpleDateFormat(PATTERN_DATE_PREFS, DateFormatUtils.DEFAULT_LOCALE)
             val targetDate = simpleDateFormat.parse(dateString)
             val diffInMs: Long = abs(System.currentTimeMillis() - targetDate?.time.orZero())
             val days = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
@@ -121,16 +123,17 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private fun showToasterSellerFeedback(uri: Uri?, currentActivity: Activity?) {
         val view = currentActivity?.window?.decorView?.rootView
         view?.run {
-            Toaster.build(this, text = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_text),
-                    actionText = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_cta_text),
-                    type = Toaster.TYPE_NORMAL,
-                    duration = Toaster.LENGTH_SHORT,
-                    clickListener = {
-                        uri?.let { uri ->
-                            SellerFeedbackTracking.Click.eventClickFeedbackButton()
-                            openFeedbackForm(uri)
-                        }
+            Toaster.build(this,
+                text = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_text),
+                actionText = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_cta_text),
+                type = Toaster.TYPE_NORMAL,
+                duration = Toaster.LENGTH_SHORT,
+                clickListener = {
+                    uri?.let { uri ->
+                        SellerFeedbackTracking.Click.eventClickFeedbackButton()
+                        openFeedbackForm(uri)
                     }
+                }
             ).show()
         }
     }
