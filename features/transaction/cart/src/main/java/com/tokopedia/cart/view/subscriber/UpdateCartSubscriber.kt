@@ -8,7 +8,6 @@ import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import rx.Subscriber
 
 /**
