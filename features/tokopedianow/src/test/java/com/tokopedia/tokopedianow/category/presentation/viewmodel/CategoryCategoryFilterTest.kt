@@ -74,7 +74,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 requestParams,
                 selectedCategoryFilter
         )
-        `Then verify request params does not contain filters`(requestParams, filterParam)
+        `Then verify request params reset filter and sort`(requestParams, filterParam)
     }
 
     private fun createMockFilterParam() = mapOf(
@@ -107,7 +107,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         assertThat(reason, actualParamsValue, shouldBe(selectedCategoryFilter.option.value))
     }
 
-    private fun `Then verify request params does not contain filters`(
+    private fun `Then verify request params reset filter and sort`(
             requestParams: RequestParams,
             filterParam: Map<String, String>,
     ) {
@@ -120,6 +120,8 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                     nullValue(),
             )
         }
+
+        assertThat(tokonowQueryParam[SearchApiConst.OB].toString(), shouldBe(23.toString()))
     }
 
     @Test
@@ -148,7 +150,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 requestParams,
                 selectedQuickFilter
         )
-        `Then verify request params does not contain filters`(requestParams, filterParam)
+        `Then verify request params reset filter and sort`(requestParams, filterParam)
     }
 
     private fun `Then verify request params does not contain unapplied filter`(

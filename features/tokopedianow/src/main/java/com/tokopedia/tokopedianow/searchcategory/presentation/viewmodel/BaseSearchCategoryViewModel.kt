@@ -659,17 +659,18 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
-        resetAllFilterIfExclude(option)
+        resetSortFilterIfExclude(option)
         filter(option, isSelected)
     }
 
-    private fun resetAllFilterIfExclude(option: Option) {
+    private fun resetSortFilterIfExclude(option: Option) {
         val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
 
         if (!isOptionKeyHasExclude) return
 
         queryParamMutable.remove(option.key)
         queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
+        queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
         filterController.refreshMapParameter(queryParam)
     }
 
@@ -953,7 +954,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onViewRemoveFilter(option: Option) {
-        resetAllFilterIfExclude(option)
+        resetSortFilterIfExclude(option)
         filter(option, false)
     }
 
