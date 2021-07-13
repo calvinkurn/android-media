@@ -20,6 +20,7 @@ import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -75,7 +76,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
@@ -90,6 +90,7 @@ class PlayViewModel @Inject constructor(
         private val playChannelWebSocket: PlayChannelWebSocket,
         private val interactiveRepo: PlayViewerInteractiveRepository,
         private val partnerRepo: PlayViewerPartnerRepository,
+        private val likeRepo: PlayViewerLikeRepository,
         private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
@@ -916,7 +917,9 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
-                val deferredIsLiked = async { getIsLiked(likeParamInfo) }
+                val deferredIsLiked = async {
+                    likeRepo.getIsLiked(contentId = likeParamInfo.contentId.toLong(), contentType = likeParamInfo.contentType)
+                }
 
                 val (totalView, totalLike, totalLikeFormatted) = try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
@@ -999,14 +1002,6 @@ class PlayViewModel @Inject constructor(
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
         getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
         getReportSummariesUseCase.executeOnBackground()
-    }
-
-    private suspend fun getIsLiked(likeParamInfo: PlayLikeParamInfoUiModel) = withContext(dispatchers.io) {
-        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(
-                contentId = likeParamInfo.contentId.toIntOrZero(),
-                contentType = likeParamInfo.contentType
-        )
-        getIsLikeUseCase.executeOnBackground()
     }
 
     private suspend fun getCartCount(): Int = withContext(dispatchers.io) {
@@ -1287,7 +1282,7 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-        suspend fun fetchLeaderboard(channelId: String) = withContext(dispatchers.io) {
+        suspend fun fetchLeaderboard(channelId: String) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
@@ -1330,8 +1325,13 @@ class PlayViewModel @Inject constructor(
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
-            fetchLeaderboard(channelId)
-            showCoachMark(_leaderboardInfo.value)
+
+            try {
+                fetchLeaderboard(channelId)
+                showCoachMark(_leaderboardInfo.value)
+            } catch (e: Throwable) {
+                _interactive.value = PlayInteractiveUiState.NoInteractive
+            }
         }) {}
     }
 

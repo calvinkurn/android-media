@@ -5,8 +5,10 @@ import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalyticImpl
 import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
+import com.tokopedia.play.data.repository.PlayViewerLikeRepositoryImpl
 import com.tokopedia.play.data.repository.PlayViewerPartnerRepositoryImpl
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
@@ -30,6 +32,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindPartnerRepository(repo: PlayViewerPartnerRepositoryImpl): PlayViewerPartnerRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindLikeRepository(repo: PlayViewerLikeRepositoryImpl): PlayViewerLikeRepository
 
     /**
      * Analytic
