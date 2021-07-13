@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -116,6 +119,8 @@ class DiscoveryFragment :
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
     private var shouldShowChooseAddressWidget:Boolean = true
+    private lateinit var coordinatorLayout:CoordinatorLayout
+    private lateinit var parentLayout: FrameLayout
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -221,6 +226,8 @@ class DiscoveryFragment :
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
         mProgressBar = view.findViewById(R.id.progressBar)
         ivToTop = view.findViewById(R.id.toTopImg)
+        coordinatorLayout = view.findViewById(R.id.parent_coordinator)
+        parentLayout = view.findViewById(R.id.parent_frame)
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
@@ -910,5 +917,27 @@ class DiscoveryFragment :
 
     private fun updateChooseAddressWidget() {
         chooseAddressWidget?.updateWidget()
+    }
+
+    fun showCustomContent(view: View){
+        coordinatorLayout.hide()
+        view.rotation = -90f
+        val offset = Resources.getSystem().displayMetrics.widthPixels-
+        Resources.getSystem().displayMetrics.heightPixels
+        view.translationX = offset.toFloat()/2
+        view.translationY = -offset.toFloat()/2
+
+        val layoutParams = FrameLayout.LayoutParams(Resources.getSystem().displayMetrics.heightPixels,
+                Resources.getSystem().displayMetrics.widthPixels)
+        view.layoutParams = layoutParams
+        parentLayout.addView(view)
+    }
+
+    fun hideCustomContent(){
+        coordinatorLayout.show()
+        if(parentLayout.childCount>1){
+            parentLayout.removeViewAt(1)
+        }
+
     }
 }

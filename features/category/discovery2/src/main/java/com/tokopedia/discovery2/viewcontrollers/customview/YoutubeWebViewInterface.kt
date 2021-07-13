@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
+import android.util.Log
 import android.webkit.JavascriptInterface
 
 private const val VIDEO_ENDED = 0
@@ -12,7 +13,8 @@ class YoutubeWebViewInterface(private val youtubeEventVideoEnded: YoutubeWebView
                               private val youtubeEventVideoPlaying: YoutubeWebViewEventListener.EventVideoPlaying?,
                               private val youtubeEventVideoPaused: YoutubeWebViewEventListener.EventVideoPaused?,
                               private val youtubeEventVideoBuffering: YoutubeWebViewEventListener.EventVideoBuffering?,
-                              private val youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued?) {
+                              private val youtubeEventVideoCued: YoutubeWebViewEventListener.EventVideoCued?,
+                              private val playerReady: YoutubeWebViewEventListener.EventPlayerReady?) {
 
     @JavascriptInterface
     fun onStateChanged(event: Int, time: Int) {
@@ -33,6 +35,11 @@ class YoutubeWebViewInterface(private val youtubeEventVideoEnded: YoutubeWebView
                 youtubeEventVideoCued?.onVideoCued()
             }
         }
+    }
+
+    @JavascriptInterface
+    fun onReady(){
+        playerReady?.onPlayerReady()
     }
 
 }

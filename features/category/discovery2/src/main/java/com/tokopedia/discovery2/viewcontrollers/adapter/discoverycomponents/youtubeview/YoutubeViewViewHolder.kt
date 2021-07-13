@@ -14,7 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.ImageUnify
 
-class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), YoutubeWebViewEventListener.EventVideoPaused, YoutubeWebViewEventListener.EventVideoPlaying {
+class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), YoutubeWebViewEventListener.EventVideoPaused, YoutubeWebViewEventListener.EventVideoPlaying,YoutubeCustomViewListener, YoutubeWebViewEventListener.EventPlayerReady {
 
     private var youtubeWebView: YoutubeWebView = itemView.findViewById(R.id.youtube_webview)
     private val shimmerView: ImageUnify = itemView.findViewById(R.id.shimmer_view)
@@ -22,6 +22,10 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private var videoId: String = ""
     private var videoName: String = ""
     private val widthOfPlayer:Int = ((Resources.getSystem().displayMetrics.widthPixels- (2*itemView.context.resources.getDimensionPixelSize(R.dimen.disco_youtube_view_padding)))/ Resources.getSystem().displayMetrics.density).toInt()
+
+    init {
+        youtubeWebView.customViewInterface = this
+    }
 
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -44,7 +48,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun showVideoInWebView() {
-        youtubeWebView.setUpEventListeners(youtubeEventVideoPlaying = this, youtubeEventVideoPaused = this)
+        youtubeWebView.setUpEventListeners(youtubeEventVideoPlaying =this, youtubeEventVideoPaused = this,playerReady = this)
         youtubeWebView.loadVideo(videoId,widthOfPlayer)
         shimmerView.hide()
     }
@@ -55,6 +59,18 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     override fun onVideoPlaying(time: Int) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickVideo(videoId, videoName, time.toString())
+    }
+
+    override fun onShowCustomView(view: View) {
+        (fragment as? DiscoveryFragment)?.showCustomContent(view)
+    }
+
+    override fun onHideCustomView() {
+        (fragment as? DiscoveryFragment)?.hideCustomContent()
+    }
+
+    override fun onPlayerReady() {
+        youtubeWebView.isPlayerReady = true
     }
 
 }
