@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.comparison2
+package com.tokopedia.recommendation_widget_common.widget.comparison.compareditem
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetItemViewHolder
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,8 +18,8 @@ class ComparedItemAdapter(
     val recommendationTrackingModel: RecommendationTrackingModel,
     val userSessionInterface: UserSessionInterface,
     private val isComparedItem: Boolean = false
-): RecyclerView.Adapter<ComparisonWidget2ItemViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidget2ItemViewHolder {
+): RecyclerView.Adapter<ComparisonWidgetComparedItemViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetComparedItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_widget2, parent, false)
         val productCardView = view.productCardView
         val layoutParams = productCardView.layoutParams
@@ -29,7 +28,7 @@ class ComparedItemAdapter(
 
         view.productCardView.applyCarousel()
 
-        return ComparisonWidget2ItemViewHolder(view)
+        return ComparisonWidgetComparedItemViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -41,7 +40,7 @@ class ComparedItemAdapter(
         return position
     }
 
-    override fun onBindViewHolder(holder: ComparisonWidget2ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ComparisonWidgetComparedItemViewHolder, position: Int) {
         if (position < comparisonListModel.comparisonData.size) {
             holder.bind(
                 comparisonListModel.comparisonData[position],

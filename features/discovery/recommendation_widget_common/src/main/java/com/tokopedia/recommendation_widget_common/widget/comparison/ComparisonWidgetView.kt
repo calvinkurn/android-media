@@ -3,7 +3,6 @@ package com.tokopedia.recommendation_widget_common.widget.comparison
 import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -11,17 +10,12 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleInterface
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModel
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModelList
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
-import com.tokopedia.recommendation_widget_common.widget.comparison2.ComparedItemAdapter
+import com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.ComparedItemAdapter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.view_comparison_widget.view.*

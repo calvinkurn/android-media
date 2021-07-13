@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_2"
         >
-
         <com.tokopedia.productcard.ProductCardGridView
             android:id="@+id/productCardView"
             android:layout_gravity="center_horizontal"
@@ -17,10 +16,8 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/dp_8"
             />
-
     </LinearLayout>
-
-    <com.tokopedia.recommendation_widget_common.widget.comparison2.specs.Specs2View
+    <com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.specs.SpecsComparedView
         android:id="@+id/specsView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

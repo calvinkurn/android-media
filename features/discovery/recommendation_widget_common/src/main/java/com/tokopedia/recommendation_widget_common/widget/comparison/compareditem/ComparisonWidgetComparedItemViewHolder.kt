@@ -1,4 +1,4 @@
-package com.tokopedia.recommendation_widget_common.widget.comparison2
+package com.tokopedia.recommendation_widget_common.widget.comparison.compareditem
 
 import android.content.Context
 import android.view.View
@@ -15,9 +15,9 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_comparison_widget2.view.*
 
-class ComparisonWidget2ItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     companion object {
-        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison2.ComparisonWidget2ItemViewHolder.kt"
+        private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.caompareditem.ComparisonWidgetComparedItemViewHolder.kt"
     }
     val context: Context = view.context
 
