@@ -60,6 +60,7 @@ object ApplinkConstInternalOrder {
     // snapshot
     const val PARAM_ORDER_DETAIL_ID = "order_detail_id"
     const val IS_SNAPSHOT_FROM_SOM = "is_snapshot_from_som"
+    const val PRODUCT_BUNDLE_NAME = "product_bundle_name"
 
     const val HOST_SELLER = "seller"
 

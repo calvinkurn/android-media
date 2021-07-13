@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.ordermanagement.snapshot.R
@@ -58,6 +59,8 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     val minOrderValue = itemView.findViewById<Typography>(R.id.snapshot_min_order_value)
     val dividerMinOrder = itemView.findViewById<View>(R.id.divider_min_order)
     val desc = itemView.findViewById<Typography>(R.id.snapshot_desc)
+    val productBundlingInfoLayout = itemView.findViewById<ConstraintLayout>(R.id.snapshot_bundling_info)
+    val productBundlingNameText = itemView.findViewById<Typography>(R.id.snapshot_bundling_name)
 
     @SuppressLint("SetTextI18n")
     override fun bind(item: SnapshotTypeData, position: Int) {
@@ -124,6 +127,11 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
         SnapshotUtils.parseDate(dataObject.orderDetail.createTime)?.let {
             itemView.context.getString(R.string.snapshot_ticker_info).replace(CREATED_TIME, it) }?.let {
             tickerInfo.setHtmlDescription(it) }
+
+        dataObject.productBundleName.let { bundleName ->
+            productBundlingInfoLayout?.showWithCondition(bundleName != null)
+            productBundlingNameText?.text = bundleName.orEmpty()
+        }
 
         productPrice.text = dataObject.productAdditionalData.productPrice
 

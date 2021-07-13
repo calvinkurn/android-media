@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_DETAIL_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PRODUCT_BUNDLE_NAME
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.ordermanagement.snapshot.view.fragment.SnapshotFragment
 
@@ -25,7 +26,9 @@ class SnapshotActivity : BaseSimpleActivity() {
             val orderId = it.getQueryParameter(PARAM_ORDER_ID).toEmptyStringIfNull()
             val orderDetailId = it.getQueryParameter(PARAM_ORDER_DETAIL_ID).toEmptyStringIfNull()
             val isSnapShotFromSOM = intent.getBooleanExtra(IS_SNAPSHOT_FROM_SOM, false)
+            val productBundleName = intent.getStringExtra(PRODUCT_BUNDLE_NAME)
             intent.putExtra(IS_SNAPSHOT_FROM_SOM, isSnapShotFromSOM)
+            intent.putExtra(PRODUCT_BUNDLE_NAME, productBundleName)
             intent.putExtra(PARAM_ORDER_ID, orderId)
             intent.putExtra(PARAM_ORDER_DETAIL_ID, orderDetailId)
         }
