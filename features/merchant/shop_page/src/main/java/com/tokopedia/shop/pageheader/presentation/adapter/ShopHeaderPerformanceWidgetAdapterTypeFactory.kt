@@ -7,21 +7,25 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderBadgeTextValueComponentTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderImageOnlyComponentTypeFactory
+import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.component.ShopHeaderImageTextComponentTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 class ShopHeaderPerformanceWidgetAdapterTypeFactory(
         private val shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
         private val shopPerformanceWidgetBadgeTextValueListener: ShopPerformanceWidgetBadgeTextValueComponentViewHolder.Listener,
-        private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener
-
-) :
+        private val shopPerformanceWidgetImageOnlyListener: ShopPerformanceWidgetImageOnlyComponentViewHolder.Listener,
+        private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
+        ) :
         BaseAdapterTypeFactory(),
         ShopHeaderImageOnlyComponentTypeFactory,
-        ShopHeaderBadgeTextValueComponentTypeFactory {
+        ShopHeaderBadgeTextValueComponentTypeFactory,
+        ShopHeaderImageTextComponentTypeFactory{
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -35,6 +39,11 @@ class ShopHeaderPerformanceWidgetAdapterTypeFactory(
                     shopHeaderWidgetUiModel,
                     shopPerformanceWidgetImageOnlyListener
             )
+            ShopPerformanceWidgetImageTextComponentViewHolder.LAYOUT -> ShopPerformanceWidgetImageTextComponentViewHolder(
+                    parent,
+                    shopHeaderWidgetUiModel,
+                    shopPerformanceWidgetImageTextListener
+            )
             -1 -> HideViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -46,5 +55,9 @@ class ShopHeaderPerformanceWidgetAdapterTypeFactory(
 
     override fun type(model: ShopHeaderImageOnlyComponentUiModel): Int {
         return ShopPerformanceWidgetImageOnlyComponentViewHolder.LAYOUT
+    }
+
+    override fun type(model: ShopHeaderImageTextComponentUiModel): Int {
+        return ShopPerformanceWidgetImageTextComponentViewHolder.LAYOUT
     }
 }

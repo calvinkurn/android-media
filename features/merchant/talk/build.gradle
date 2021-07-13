@@ -25,20 +25,20 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.attachcommon)
-    implementation project(rootProject.ext.features.inboxCommon)
-    implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.features.inboxCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -76,7 +76,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     // UI Test
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
@@ -85,9 +85,9 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {

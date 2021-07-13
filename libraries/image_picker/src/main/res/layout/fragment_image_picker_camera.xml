@@ -28,8 +28,7 @@
             app:cameraFlash="off"
             app:cameraPlaySounds="true"
             app:cameraAudio="off"
-            app:cameraMode="picture"
-            app:cameraFacing="back" />
+            app:cameraMode="picture" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/image_button_flash"

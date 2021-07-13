@@ -33,7 +33,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
