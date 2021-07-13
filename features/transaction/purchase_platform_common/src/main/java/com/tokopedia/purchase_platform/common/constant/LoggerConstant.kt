@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.constant
 object LoggerConstant {
 
     object Tag {
-        const val P2_BUYER_FLOW_CART = "P2#BUYER_FLOW_CART"
+        const val P2_BUYER_FLOW_CART = "BUYER_FLOW_CART"
     }
 
     object Key {
