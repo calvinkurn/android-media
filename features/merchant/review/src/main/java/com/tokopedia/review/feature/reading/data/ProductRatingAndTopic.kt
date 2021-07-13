@@ -41,16 +41,22 @@ data class ProductRating(
         val ratingScore: String = "",
         @SerializedName("totalRating")
         @Expose
-        val totalRating: Int = 0,
+        val totalRating: Long = 0,
         @SerializedName("totalRatingWithImage")
         @Expose
-        val totalRatingWithImage: Int = 0,
+        val totalRatingWithImage: Long = 0,
         @SerializedName("totalRatingTextAndImage")
         @Expose
-        val totalRatingTextAndImage: Int = 0,
+        val totalRatingTextAndImage: Long = 0,
         @SerializedName("detail")
         @Expose
-        val detail: List<ProductReviewDetail> = listOf()
+        val detail: List<ProductReviewDetail> = listOf(),
+        @SerializedName("totalRatingFmt")
+        @Expose
+        val totalRatingFmt: String = "",
+        @SerializedName("totalRatingTextAndImageFmt")
+        @Expose
+        val totalRatingTextAndImageFmt: String = "",
 )
 
 data class ProductTopic(

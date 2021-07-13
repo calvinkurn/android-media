@@ -4,17 +4,16 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.R
-import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.cart.view.viewholder.*
+import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
-import java.lang.Exception
+import javax.inject.Inject
 
 /**
  * @author anggaprasetiyo on 06/02/18.
  */
 
-class CartItemDecoration : RecyclerView.ItemDecoration() {
+class CartItemDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
     private var verticalSpaceHeight: Int = 0
     private var context: Context? = null

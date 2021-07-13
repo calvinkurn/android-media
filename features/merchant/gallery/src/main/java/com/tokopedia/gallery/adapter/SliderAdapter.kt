@@ -11,6 +11,10 @@ import java.util.*
 
 class SliderAdapter(private val shouldShowSeeAllButton: Boolean, private val callback: BottomSheetImageReviewSliderCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        const val SEE_ALL_BUTTON_INDEX = 4
+    }
+
     private val imageReviewItemList = ArrayList<ImageReviewItem>()
     var isLoadingItemEnabled = true
         private set
@@ -20,7 +24,7 @@ class SliderAdapter(private val shouldShowSeeAllButton: Boolean, private val cal
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ImageSliderViewHolder) {
-            holder.bind(imageReviewItemList[position], position == imageReviewItemList.lastIndex && shouldShowSeeAllButton, callback)
+            holder.bind(imageReviewItemList[position], position == SEE_ALL_BUTTON_INDEX && shouldShowSeeAllButton, callback)
         }
     }
 

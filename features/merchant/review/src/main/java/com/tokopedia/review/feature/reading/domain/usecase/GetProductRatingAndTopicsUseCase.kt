@@ -22,6 +22,8 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
                   totalRating
                   totalRatingWithImage
                   totalRatingTextAndImage
+                  totalRatingFmt
+                  totalRatingTextAndImageFmt
                   detail {
                     rate
                     totalReviews

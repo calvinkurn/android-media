@@ -72,7 +72,7 @@
         android:id="@+id/read_review_loading"
         layout="@layout/partial_read_review_full_page_loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone" />
 
     <com.tokopedia.globalerror.GlobalError
@@ -82,7 +82,7 @@
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:visibility="gone"
-        app:globalerrors_type="PAGE_NOT_FOUND" />
+        app:globalerrors_type="NO_CONNECTION" />
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
         android:id="@+id/read_review_rating_only"

@@ -90,7 +90,7 @@ object ReviewConstants {
 
     const val PARAM_IS_EDIT_MODE = "isEditMode"
     const val PARAM_FEEDBACK_ID = "feedbackId"
-    const val PARAM_UTM_SOURCE = "utm_source"
+    const val PARAM_SOURCE = "source"
     const val EDIT_MODE = true
 
     const val REPUTATION_SCORE_BAD = -1

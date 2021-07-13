@@ -90,7 +90,7 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
+            <com.tokopedia.hotel.search_map.presentation.widget.HotelFilterPriceRangeSlider
                 android:id="@+id/price_range_input_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

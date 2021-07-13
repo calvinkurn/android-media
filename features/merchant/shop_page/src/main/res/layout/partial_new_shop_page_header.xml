@@ -276,8 +276,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_lvl3"
-            android:background="@color/Unify_N0">
+            android:padding="@dimen/spacing_lvl3">
 
             <com.tokopedia.topads.sdk.view.FlowLayout
                 android:id="@+id/play_sgc_container_desc"

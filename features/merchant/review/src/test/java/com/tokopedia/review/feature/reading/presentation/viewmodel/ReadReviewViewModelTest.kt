@@ -36,14 +36,12 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val expectedResponse = ProductRatingAndTopic(ProductrevGetProductRatingAndTopic(
                 ProductRating(satisfactionRate = "90% pembeli merasa puas",
                         detail = listOf(
-                                ProductReviewDetail(5, 70, 70F),
-                                ProductReviewDetail(4, 10, 10F),
-                                ProductReviewDetail(3, 10, 10F),
-                                ProductReviewDetail(2, 10, 10F),
-                                ProductReviewDetail(1, 0, 0F),
+                                ProductReviewDetail(5, "70", 70F),
+                                ProductReviewDetail(4, "10", 10F),
+                                ProductReviewDetail(3, "10", 10F),
+                                ProductReviewDetail(2, "10", 10F),
+                                ProductReviewDetail(1, "0", 0F),
                         ))))
-        val expectedSatisfactionRate = expectedResponse.productrevGetProductRatingAndTopics.rating.satisfactionRate
-        val expectedStatistics = expectedResponse.productrevGetProductRatingAndTopics.rating.detail
 
         onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse)
 
@@ -59,8 +57,6 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when setProductId should call getRatingAndTopics and return expected error`() {
         val productId = anyString()
         val expectedResponse = Throwable()
-        val expectedSatisfactionRate = ""
-        val expectedStatistics = listOf<String>()
 
         onGetProductRatingAndTopicsFail_thenReturn(expectedResponse)
 

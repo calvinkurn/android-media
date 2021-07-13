@@ -137,6 +137,11 @@ class MixLeftComponentViewHolder (itemView: View,
             //becomes stretched.
             //https://github.com/bumptech/glide/issues/1591
             image.layout(0,0,0,0)
+
+            //reset image state
+            image.translationX = 0f
+            image.alpha = 1f
+
             image.addOnImpressionListener(channel){
                 if (!isCacheData)
                     mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)

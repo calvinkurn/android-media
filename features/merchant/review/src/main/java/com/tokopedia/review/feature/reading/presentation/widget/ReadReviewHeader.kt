@@ -66,13 +66,13 @@ class ReadReviewHeader : BaseCustomView {
         if (availableFilters.rating) {
             val ratingFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_ratings))
             setListenerAndChevronListener(ratingFilter) {
-                listener.onFilterWithRatingClicked(getIndexOfSortFilter(ratingFilter))
+                listener.onFilterWithRatingClicked(getIndexOfSortFilter(ratingFilter), isChipsActive(ratingFilter.type))
             }
             filter.add(ratingFilter)
         }
         if (availableFilters.topics) {
             val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
-            setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter)) }
+            setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
         }
         val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_default))
@@ -102,6 +102,10 @@ class ReadReviewHeader : BaseCustomView {
 
     private fun getIndexOfSortFilter(sortFilterItem: SortFilterItem): Int {
         return sortFilter?.chipItems?.indexOf(sortFilterItem) ?: 0
+    }
+
+    private fun isChipsActive(chipType: String): Boolean {
+        return chipType == ChipsUnify.TYPE_SELECTED
     }
 
     private fun getTopicFilterTitleBasedOnCount(selectedFilter: Set<ListItemUnify>): String {
@@ -139,12 +143,12 @@ class ReadReviewHeader : BaseCustomView {
     fun setRatingData(productRating: ProductRating) {
         rating?.setRating(productRating.ratingScore)
         this.satisfactionRate?.text = productRating.satisfactionRate
-        this.ratingAndReviewCount?.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRating, productRating.totalRatingTextAndImage)
+        this.ratingAndReviewCount?.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRatingFmt, productRating.totalRatingTextAndImageFmt)
     }
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
-        chevron?.setOnClickListener {
-            readReviewHeaderListener.onChevronClicked()
+        setOnClickListener {
+            readReviewHeaderListener.onHeaderClicked()
         }
     }
 
