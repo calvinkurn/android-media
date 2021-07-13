@@ -205,7 +205,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -237,7 +237,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -269,7 +269,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -303,7 +303,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -346,7 +346,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -388,7 +388,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -429,7 +429,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -471,7 +471,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
