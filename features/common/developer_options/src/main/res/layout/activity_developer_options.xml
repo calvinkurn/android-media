@@ -348,38 +348,6 @@
             android:text="Try RouteManager.route"
             android:textColor="@color/Neutral_N0" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/ip_groupchat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:hint="IP Groupchat" />
-
-        <TableLayout
-            android:stretchColumns="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TableRow>
-
-                <ToggleButton
-                    android:id="@+id/groupchat_log"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/ip_groupchat_save"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="Save IP"/>
-
-            </TableRow>
-        </TableLayout>
-
         <TableLayout
             android:stretchColumns="1"
             android:layout_marginTop="10dp"
