@@ -160,8 +160,8 @@ class ProductRecommendationViewHolder(
                         listener.onThreeDotsClick(productRecommendation, adapterPosition, carouselProductCardPosition)
                     }
                 },
-                carouselOnAddToCartNonVariantClickListener = object : CarouselProductCardListener.OnAddToCartNonVariantClickListener {
-                    override fun onAddToCartNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
+                carouselProductCardOnItemATCNonVariantClickListener = object : CarouselProductCardListener.OnATCNonVariantClickListener {
+                    override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         listener.onAddToCartNonVariantQuantityChangedClick(
                                 recomItem = productRecommendation,
@@ -170,7 +170,7 @@ class ProductRecommendationViewHolder(
                                 itemPosition = carouselProductCardPosition)
                     }
                 },
-                carouselOnAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
+                carouselProductCardOnItemAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
                     override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         listener.onAddVariantClick(
