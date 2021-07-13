@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateSellerFragment
 
 /**
@@ -26,7 +27,7 @@ class NotificationSellerActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return NotificationUpdateSellerFragment()
+        return NotificationFragment()
     }
 
     private fun setThemeWhiteIfSellerApp() {
