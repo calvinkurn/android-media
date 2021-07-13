@@ -57,6 +57,11 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
     }
 
     override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is TkpdBaseV4Fragment) {
+                if (it.onFragmentBackPressed()) return
+            }
+        }
         val result = Intent().putExtra(SomConsts.RESULT_REFRESH_ORDER, (fragment as? SomDetailFragment)?.isDetailChanged ?: false)
         setResult(Activity.RESULT_OK, result)
         finish()
