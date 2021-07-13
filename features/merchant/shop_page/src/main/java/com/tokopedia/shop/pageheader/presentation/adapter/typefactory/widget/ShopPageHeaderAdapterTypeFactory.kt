@@ -26,7 +26,8 @@ class ShopPageHeaderAdapterTypeFactory(
         private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
         private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
         private val sgcPlayWidget: ShopPageTrackingSGCPlayWidget?,
-        private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener
+        private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
+        private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) : BaseAdapterTypeFactory() {
 
     private var adapterShopHeader: ShopPageHeaderAdapter? = null
@@ -52,7 +53,8 @@ class ShopPageHeaderAdapterTypeFactory(
             ShopHeaderPerformanceWidgetViewHolder.LAYOUT -> ShopHeaderPerformanceWidgetViewHolder(
                     parent,
                     shopPerformanceWidgetBadgeTextValueListener,
-                    shopPerformanceWidgetImageOnlyListener
+                    shopPerformanceWidgetImageOnlyListener,
+                    shopPerformanceWidgetImageTextListener
             )
             ShopHeaderActionButtonWidgetViewHolder.LAYOUT -> ShopHeaderActionButtonWidgetViewHolder(
                     parent,

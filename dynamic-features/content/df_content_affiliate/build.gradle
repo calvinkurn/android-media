@@ -50,6 +50,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.affiliate)
-    implementation project(rootProject.ext.features.createpost)
+    implementation projectOrAar(rootProject.ext.features.affiliate)
+    implementation projectOrAar(rootProject.ext.features.createpost)
 }
