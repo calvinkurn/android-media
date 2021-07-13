@@ -489,7 +489,7 @@
                             android:paddingTop="@dimen/layout_lvl1">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/hotel_facility_title"
@@ -533,7 +533,7 @@
                             android:paddingTop="@dimen/layout_lvl1">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/hotel_policy_title"
