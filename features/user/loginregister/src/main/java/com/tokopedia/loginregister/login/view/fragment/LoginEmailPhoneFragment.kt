@@ -81,6 +81,7 @@ import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -236,8 +237,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)),
                         0, devOpsText.length, 0)
             }
-            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, devOpsText)
-            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+            menu.add(Menu.NONE, LoginConstants.MenuItemId.ID_ACTION_DEVOPS, 1, devOpsText)
+            menu.findItem(LoginConstants.MenuItemId.ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -258,13 +259,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == ID_ACTION_DEVOPS) {
+        if (id == LoginConstants.MenuItemId.ID_ACTION_DEVOPS) {
             if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
                 return true
             }
         }
-        if (id == ID_ACTION_REGISTER) {
+        if (id == LoginConstants.MenuItemId.ID_ACTION_REGISTER) {
             registerAnalytics.trackClickTopSignUpButton()
             goToRegisterInitial(source)
             return true
@@ -289,7 +290,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
-        isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
         refreshRolloutVariant()
     }
 
@@ -346,7 +347,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun prepareArgData() {
         arguments?.let {
-            val isAutoFill = it.getBoolean(IS_AUTO_FILL, false)
+            val isAutoFill = it.getBoolean(LoginConstants.AutoLogin.IS_AUTO_FILL, false)
             val phone = it.getString(PARAM_PHONE, "")
             val email = it.getString(PARAM_EMAIL, "")
             val method = it.getString(PARAM_LOGIN_METHOD, "")
@@ -361,7 +362,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
             when {
                 isAutoFill -> {
-                    emailPhoneEditText?.setText(arguments?.getString(AUTO_FILL_EMAIL, ""))
+                    emailPhoneEditText?.setText(arguments?.getString(LoginConstants.AutoLogin.AUTO_FILL_EMAIL, ""))
                 }
                 isAutoLogin -> {
                     when(method) {
@@ -533,7 +534,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun gotoVerifyFingerprint() {
         val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.VERIFY_BIOMETRIC)
-        startActivityForResult(intent, REQUEST_VERIFY_BIOMETRIC)
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_VERIFY_BIOMETRIC)
     }
 
     private fun onSuccessVerifyFingerprint(validateToken: String) {
@@ -546,17 +547,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 ApplinkConstInternalGlobal.CHOOSE_ACCOUNT_FINGERPRINT).apply {
                     putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
                 }
-            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT)
         }
     }
 
     private fun fetchRemoteConfig() {
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
-            isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
-            isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER, false)
-            isEnableFingerprint = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_LOGIN_FP, true)
-            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF, false)
+            isShowTicker = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_TICKER_FROM_ATC, false)
+            isShowBanner = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_BANNER, false)
+            isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
+            isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
             isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
         }
     }
@@ -566,8 +567,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onLoginEmailClick() {
-        val email = arguments?.getString(AUTO_LOGIN_EMAIL, "") ?: ""
-        val pw = arguments?.getString(AUTO_LOGIN_PASS, "") ?: ""
+        val email = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_EMAIL, "") ?: ""
+        val pw = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_PASS, "") ?: ""
         partialRegisterInputView?.showLoginEmailView(email)
         emailPhoneEditText?.setText(email)
         wrapper_password?.textFieldInput?.setText(pw)
@@ -809,8 +810,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     var name = userSession.name
                     if (name.split("\\s".toRegex()).size > 1)
                         name = name.substring(0, name.indexOf(" "))
-                    if ((it.id.equals(FACEBOOK, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
-                        (it.id.equals(GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                    if ((it.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                        (it.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
                         tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
                     }
                 }
@@ -835,9 +836,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun setDiscoverListener(discoverItemDataModel: DiscoverItemDataModel, tv: LoginTextView) {
-        if (discoverItemDataModel.id.equals(FACEBOOK, ignoreCase = true)) {
+        if (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true)) {
             tv.setOnClickListener { onLoginFacebookClick() }
-        } else if (discoverItemDataModel.id.equals(GPLUS, ignoreCase = true)) {
+        } else if (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
         }
     }
@@ -853,7 +854,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun openGoogleLoginIntent(){
         val intent = mGoogleSignInClient.signInIntent
-        startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_LOGIN_GOOGLE)
     }
 
     private fun onLoginFacebookClick() {
@@ -1190,7 +1191,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
         analytics.trackLoginPhoneNumber()
-        routeToVerifyPage(phoneNumber, REQUEST_LOGIN_PHONE, OTP_LOGIN_PHONE_NUMBER)
+        routeToVerifyPage(phoneNumber, LoginConstants.Request.REQUEST_LOGIN_PHONE, LoginConstants.OtpType.OTP_LOGIN_PHONE_NUMBER)
     }
 
     override fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int){
@@ -1202,8 +1203,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
         activity?.let {
-            val intent = goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_REGISTER_PHONE)
+            val intent = goToVerification(phone = phoneNumber, otpType = LoginConstants.OtpType.OTP_REGISTER_PHONE_NUMBER)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_REGISTER_PHONE)
         }
     }
 
@@ -1368,8 +1369,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onGoToActivationPage(email: String) {
         if(email.isNotEmpty()) {
-            val intent = goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
-            startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
+            val intent = goToVerification(email = email, otpType = LoginConstants.OtpType.OTP_TYPE_ACTIVATE)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_PENDING_OTP_VALIDATE)
         }
     }
 
@@ -1377,8 +1378,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return {
             userSession.setTempLoginEmail(email)
 
-            val intent =  goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
-            startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+            val intent =  goToVerification(email = email, otpType = LoginConstants.OtpType.OTP_SECURITY_QUESTION)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_SECURITY_QUESTION)
         }
     }
 
@@ -1485,7 +1486,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
-            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)
         }
     }
 
@@ -1493,9 +1494,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, LoginConstants.LoginType.FACEBOOK_LOGIN_TYPE)
 
-            startActivityForResult(intent, REQUEST_CHOOSE_ACCOUNT)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)
         }
     }
 
@@ -1513,39 +1514,39 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data)
-            if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
+            if (requestCode == LoginConstants.Request.REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let {
                     isLoginAfterSq = true
                     tempValidateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 logoutGoogleAccountIfExist()
                 dismissLoadingLogin()
                 activity?.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 val uuid = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
                 val msisdn = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
                 validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                 goToAddNameFromRegisterPhone(uuid, msisdn)
-            } else if (requestCode == REQUEST_ADD_NAME) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_ADD_NAME) {
                 onSuccessLogin()
-            } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 isAutoLogin = true
                 isFromRegister = true
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == REQUEST_LOGIN_PHONE) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE) {
                 data?.extras?.run {
                     val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                     goToChooseAccountPage(accessToken, phoneNumber)
                 }
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 activityShouldEnd = false
                 isFromChooseAccount = true
 
@@ -1560,18 +1561,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 } else {
                     viewModel.getUserInfo()
                 }
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
                 data?.extras?.let {
                     val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
                     val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
                     onSuccessChooseAccountFingerprint(email, token)
                 }
-            } else if (requestCode == REQUEST_LOGIN_PHONE || requestCode == REQUEST_CHOOSE_ACCOUNT) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_LOGIN_PHONE || requestCode == LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
-            } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_ADD_PIN_AFTER_REGISTER_PHONE) {
                 viewModel.getUserInfo()
-            } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == LoginConstants.Request.REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK) {
                 data?.extras?.let { bundle ->
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
@@ -1581,7 +1582,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         viewModel.activateUser(email, token)
                     }
                 }
-            } else if(requestCode == REQUEST_VERIFY_BIOMETRIC){
+            } else if(requestCode == LoginConstants.Request.REQUEST_VERIFY_BIOMETRIC){
                 if(resultCode == Activity.RESULT_OK && data?.hasExtra(ApplinkConstInternalGlobal.PARAM_TOKEN) == true) {
                     val validateToken = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
                     if(validateToken.isNotEmpty()) {
@@ -1626,19 +1627,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
             putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
         })
-        startActivityForResult(intent, REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_PIN_AFTER_REGISTER_PHONE)
     }
 
-    private fun isFromAccountPage(): Boolean = source == SOURCE_ACCOUNT
+    private fun isFromAccountPage(): Boolean = source == LoginConstants.SourcePage.SOURCE_ACCOUNT
 
-    private fun isFromAtcPage(): Boolean = source == SOURCE_ATC
+    private fun isFromAtcPage(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
         val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
-        startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
+        startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE)
     }
 
     /**
@@ -1670,7 +1671,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
-            startActivityForResult(intent, REQUEST_ADD_NAME)
+            startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_NAME)
         }
     }
 
@@ -1770,7 +1771,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return {
             trackSuccessValidate()
 
-            if (TextUtils.equals(it.registerType, PHONE_TYPE)) {
+            if (TextUtils.equals(it.registerType, LoginConstants.LoginType.PHONE_TYPE)) {
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
                 userSession.tempPhoneNumber = partialRegisterInputView?.textValue
                 if (it.isExist) {
@@ -1781,7 +1782,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
             }
 
-            if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
+            if (TextUtils.equals(it.registerType, LoginConstants.LoginType.EMAIL_TYPE)) {
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
                 if (it.isExist) {
                     if (!it.isPending) {
@@ -1802,16 +1803,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun saveFirstInstallTime() {
         context?.let {
             sharedPrefs = it.getSharedPreferences(
-                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                    LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
             sharedPrefs?.edit()?.putLong(
-                    KEY_FIRST_INSTALL_TIME_SEARCH, 0)?.apply()
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0)?.apply()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-        outState.putBoolean(IS_AUTO_LOGIN, isAutoLogin)
+        outState.putBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, isAutoLogin)
     }
 
     private fun logoutGoogleAccountIfExist() {
@@ -1942,57 +1943,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
-        const val IS_AUTO_LOGIN = "auto_login"
-
-        const val AUTO_LOGIN_EMAIL = "email"
-        const val AUTO_LOGIN_PASS = "pw"
-
-        const val IS_AUTO_FILL = "auto_fill"
-        const val AUTO_FILL_EMAIL = "email"
-
-        const val FACEBOOK = "facebook"
-        const val GPLUS = "gplus"
-
-        const val ID_ACTION_REGISTER = 111
-        const val ID_ACTION_DEVOPS = 112
-
-        const val REQUEST_SECURITY_QUESTION = 104
-        const val REQUEST_ADD_NAME = 109
-        const val REQUEST_CHOOSE_ACCOUNT = 110
-        const val REQUEST_LOGIN_PHONE = 112
-        const val REQUEST_REGISTER_PHONE = 113
-        const val REQUEST_ADD_NAME_REGISTER_PHONE = 114
-        const val REQUEST_LOGIN_GOOGLE = 116
-        private val REQUEST_PENDING_OTP_VALIDATE = 121
-        const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
-        const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
-        const val REQUEST_VERIFY_BIOMETRIC = 124
-
-        private const val PHONE_TYPE = "phone"
-        private const val EMAIL_TYPE = "email"
-
-        private const val OTP_SECURITY_QUESTION = 134
-        private const val OTP_LOGIN_PHONE_NUMBER = 112
-        private const val OTP_REGISTER_PHONE_NUMBER = 116
-        private const val OTP_TYPE_ACTIVATE = 143
-
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
 
-        private const val SOURCE_ACCOUNT = "account"
-        private const val SOURCE_ATC = "atc"
-
-        private const val FACEBOOK_LOGIN_TYPE = "fb"
-
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
-
-        private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
-        private const val REMOTE_CONFIG_KEY_BANNER = "android_user_banner_login"
-        private const val REMOTE_CONFIG_KEY_LOGIN_FP = "android_user_fingerprint_login_new"
-        private const val REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page"
-
-        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
-        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val TOKOPEDIA_CARE_PATH = "help"
 

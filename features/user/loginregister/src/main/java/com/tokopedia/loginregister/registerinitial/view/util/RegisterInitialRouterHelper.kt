@@ -9,8 +9,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 
 /**
  * Created by Yoris Prayogo on 16/12/20.
@@ -43,7 +44,7 @@ open class RegisterInitialRouterHelper {
 
     open fun goToRegisterEmail(fragment: Fragment){
         val intent = RegisterEmailActivity.getCallingIntent(fragment.context)
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_REGISTER_EMAIL)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
     open fun goToRegisterEmailPageWithParams(fragment: Fragment, email: String, token: String, source: String){
@@ -51,7 +52,7 @@ open class RegisterInitialRouterHelper {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, token)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_REGISTER_EMAIL)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_REGISTER_EMAIL)
     }
 
     open fun goToChooseAccountPage(fragment: Fragment, accessToken: String, phoneNumber: String){
@@ -61,21 +62,21 @@ open class RegisterInitialRouterHelper {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, true)
 
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_CHOOSE_ACCOUNT)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
     open fun goToChooseAccountPageFacebook(fragment: Fragment, accessToken: String){
         val intent = RouteManager.getIntent(fragment.context,
                 ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, RegisterInitialFragment.FACEBOOK_LOGIN_TYPE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, LoginConstants.LoginType.FACEBOOK_LOGIN_TYPE)
 
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_CHOOSE_ACCOUNT)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
     open fun goToChangeName(fragment: Fragment) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_CHANGE_NAME)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)
     }
 
     open fun goToAddPin2FA(fragment: Fragment, enableSkip2FA: Boolean, validateToken: String = ""){
@@ -85,7 +86,7 @@ open class RegisterInitialRouterHelper {
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
             putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
         })
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_ADD_PIN)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_PIN)
     }
 
     open fun goToAddName(fragment: Fragment, uuid: String, phoneNumber: String){
@@ -93,6 +94,6 @@ open class RegisterInitialRouterHelper {
         val intent = RouteManager.getIntent(fragment.context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
-        fragment.startActivityForResult(intent, RegisterInitialFragment.REQUEST_ADD_NAME_REGISTER_PHONE)
+        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_ADD_NAME_REGISTER_PHONE)
     }
 }

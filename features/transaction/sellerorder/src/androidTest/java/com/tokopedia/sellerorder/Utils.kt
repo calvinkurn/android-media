@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +10,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.user.session.UserSession
 import org.hamcrest.Matchers
 
@@ -27,8 +26,8 @@ object Utils {
         if (!userSession.isLoggedIn) {
             val activityRuleLogin = ActivityTestRule(LoginActivity::class.java, false, false)
             val bundle = Bundle()
-            bundle.putBoolean(LoginEmailPhoneFragment.IS_AUTO_FILL, true)
-            bundle.putString(LoginEmailPhoneFragment.AUTO_FILL_EMAIL, EMAIL_LOGIN)
+            bundle.putBoolean(LoginConstants.AutoLogin.IS_AUTO_FILL, true)
+            bundle.putString(LoginConstants.AutoLogin.AUTO_FILL_EMAIL, EMAIL_LOGIN)
             val intent = Intent(context, LoginActivity::class.java)
             intent.putExtras(bundle)
             activityRuleLogin.launchActivity(intent)
