@@ -2,18 +2,14 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import android.app.Activity
 import android.app.Instrumentation.ActivityResult
-import android.content.Intent
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
+import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_SINGLE_PRODUCT_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
@@ -22,7 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class OrderSummaryPageActivityRemoveProfileTest {
+class OrderSummaryPageActivityMultiProductTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
@@ -50,42 +46,48 @@ class OrderSummaryPageActivityRemoveProfileTest {
     }
 
     @Test
-    fun typePost_NoAddress() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH
+    fun happyFlow_AllInfo_DirectCheckout() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_SINGLE_PRODUCT_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            assertNoAddressLayoutVisible()
-
-            clickAddNewAddress()
-
-            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH
-            intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, Intent().putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, SaveAddressDataModel())))
-
-            clickAddNewAddress()
-
             assertShopCard(
                     shopName = "tokocgk",
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
                     isFreeShipping = true,
-                    preOrderText = "",
-                    alertMessage = ""
+                    preOrderText = "Pre Order 3 hari",
+                    alertMessage = "Alert"
             )
+            Thread.sleep(5000)
             assertProductCard(
+                    index = 0,
                     productName = "Product1",
                     productPrice = "Rp100.000",
-                    productSlashPrice = null,
-                    productSlashPriceLabel = null,
-                    productVariant = null,
-                    productWarningMessage = null,
-                    productAlertMessage = null,
-                    productInfo = null,
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
                     productQty = 1,
-                    productNotes = null
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
+            )
+            assertProductCard(
+                    index = 1,
+                    productName = "Product2",
+                    productPrice = "Rp100.000",
+                    productSlashPrice = "Rp100.000",
+                    productSlashPriceLabel = "5%",
+                    productVariant = "hitam, putih",
+                    productWarningMessage = "sisa < 1",
+                    productAlertMessage = "alert",
+                    productInfo = listOf("cashback 10%, ", "harga berubah"),
+                    productQty = 1,
+                    productNotes = "notes apa aja yang isinya panjang banget sekali jauh disana"
             )
 
             assertAddressRevamp(
@@ -103,7 +105,23 @@ class OrderSummaryPageActivityRemoveProfileTest {
 
             assertPaymentRevamp(paymentName = "Payment 1", paymentDetail = null)
 
-            assertPayment("Rp116.000", "Bayar")
+            assertPayment("Rp216.000", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp200.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.000",
+                        totalPrice = "Rp216.000"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
         }
     }
 }

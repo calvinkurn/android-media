@@ -59,6 +59,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
+                t.printStackTrace()
                 return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),

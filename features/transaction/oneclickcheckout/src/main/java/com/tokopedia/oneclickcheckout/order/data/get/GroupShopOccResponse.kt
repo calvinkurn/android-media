@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoC
 class GroupShopOccResponse(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SerializedName("ShipmentInformationResponse")
+        @SerializedName("shipment_information")
         val shipmentInformation: ShipmentInformationResponse = ShipmentInformationResponse(),
         @SerializedName("errors_unblocking")
         val unblockingErrors: List<String> = emptyList(),

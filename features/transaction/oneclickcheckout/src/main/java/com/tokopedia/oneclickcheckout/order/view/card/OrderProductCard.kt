@@ -51,6 +51,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderProductNames()
         renderPrice()
         renderProductInfo()
+        renderProductAlert()
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
@@ -110,10 +111,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             }
 
             if (!product.isError && product.slashPriceLabel.isNotBlank()) {
-                labelProductSlashPricePercentage.setLabel(product.slashPriceLabel)
-                labelProductSlashPricePercentage.visible()
+                lblProductSlashPricePercentage.setLabel(product.slashPriceLabel)
+                lblProductSlashPricePercentage.visible()
             } else {
-                labelProductSlashPricePercentage.gone()
+                lblProductSlashPricePercentage.gone()
             }
 
             flexboxOrderProductPrices.alpha = if (product.isError) 0.5f else 1.0f
@@ -140,6 +141,17 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     }
                     flexboxOrderProductInfo.addView(textView, 0)
                 }
+            }
+        }
+    }
+
+    private fun renderProductAlert() {
+        binding.apply {
+            if (!product.isError && product.productAlertMessage.isNotBlank()) {
+                tvProductAlertMessage.text = product.productAlertMessage
+                tvProductAlertMessage.visible()
+            } else {
+                tvProductAlertMessage.gone()
             }
         }
     }

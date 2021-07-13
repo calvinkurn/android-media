@@ -26,7 +26,7 @@ class GetOccCartData(
         val keroDiscomToken: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SerializedName("group_shop")
+        @SerializedName("group_shop_occ")
         val groupShop: List<GroupShopOccResponse> = emptyList(),
         @SerializedName("profile")
         val profileResponse: ProfileResponse = ProfileResponse(),
