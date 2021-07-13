@@ -483,7 +483,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkRequestPickupUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is SuccessRequestPickup)
+        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
     }
 
     @Test
@@ -521,7 +521,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is SuccessRequestPickup)
+        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
     }
 
     @Test

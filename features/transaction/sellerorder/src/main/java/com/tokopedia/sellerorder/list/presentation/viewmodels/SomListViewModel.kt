@@ -100,8 +100,8 @@ class SomListViewModel @Inject constructor(
         get() = _bulkAcceptOrderResult
 
     private val _bulkRequestPickupResult =
-        MutableLiveData<BulkRequestPickupState<SomListBulkRequestPickupUiModel>>()
-    val bulkRequestPickupResult: LiveData<BulkRequestPickupState<SomListBulkRequestPickupUiModel>>
+        MutableLiveData<Result<SomListBulkRequestPickupUiModel>>()
+    val bulkRequestPickupResult: LiveData<Result<SomListBulkRequestPickupUiModel>>
         get() = _bulkRequestPickupResult
 
     private val _isLoadingOrder = MutableLiveData<Boolean>()
@@ -154,7 +154,7 @@ class SomListViewModel @Inject constructor(
         MediatorLiveData<Result<MultiShippingStatusUiModel>>().apply {
             addSource(_bulkRequestPickupResult) {
                 when (it) {
-                    is SuccessRequestPickup -> {
+                    is Success -> {
                         getMultiShippingStatus(it.data.data.jobId, 0L)
                     }
                 }
@@ -209,7 +209,7 @@ class SomListViewModel @Inject constructor(
             when (it) {
                 is Success -> {
                     val requestPickupUiModel =
-                        (_bulkRequestPickupResult.value as? SuccessRequestPickup)?.data
+                        (_bulkRequestPickupResult.value as? Success)?.data
                     val orderIdListFail =
                         it.data.listError.map { listError -> listError.orderId.toString() }
                     val totalNotEligible = requestPickupUiModel?.errors?.size?.toLong().orZero()
@@ -276,7 +276,7 @@ class SomListViewModel @Inject constructor(
                 }
                 is Fail -> {
                     val requestPickupUiModel =
-                        (_bulkRequestPickupResult.value as? SuccessRequestPickup)?.data
+                        (_bulkRequestPickupResult.value as? Success)?.data
                     if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
                         retryRequestPickup++
                         getMultiShippingStatus(
@@ -383,15 +383,12 @@ class SomListViewModel @Inject constructor(
 
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
-            withContext(dispatcher.main) {
-                _bulkRequestPickupResult.value = ShowLoading(orderIds.size.toLong())
-            }
             retryRequestPickup = 0
             bulkRequestPickupUseCase.setParams(orderIds)
-            _bulkRequestPickupResult.postValue(SuccessRequestPickup(bulkRequestPickupUseCase.executeOnBackground()))
+            _bulkRequestPickupResult.postValue(Success(bulkRequestPickupUseCase.executeOnBackground()))
         }, onError = {
             //Case 1 will happen when there's an early error/down from BE
-            _bulkRequestPickupResult.postValue(FailRequestPickup(it))
+            _bulkRequestPickupResult.postValue(Fail(it))
         })
     }
 

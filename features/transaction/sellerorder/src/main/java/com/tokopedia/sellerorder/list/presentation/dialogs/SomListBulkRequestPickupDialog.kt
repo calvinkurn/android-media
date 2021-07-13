@@ -11,7 +11,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class SomListBulkRequestPickupDialog(private val context: Context) {
+class SomListBulkRequestPickupDialog(context: Context) {
 
     private var onDismissAction: (() -> Unit)? = null
     private var dialogUnify: DialogUnify? = null
@@ -23,7 +23,7 @@ class SomListBulkRequestPickupDialog(private val context: Context) {
     private var loaderBulkAccept: LoaderUnify? = null
     private var ivBulkAcceptDialog: ImageUnify? = null
 
-    fun init() {
+    init {
         childViews = View.inflate(
             context,
             com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog,
