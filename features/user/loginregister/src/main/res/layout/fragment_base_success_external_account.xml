@@ -51,7 +51,7 @@
             android:text="@string/ovo_external_register_description_success"
             android:textAlignment="center"
             android:textSize="@dimen/fontSize_lvl3"
-            android:textColor="@color/Neutral_N500"
+            android:textColor="@color/Unify_N500"
             app:typographyType="body_2"
             app:layout_constraintEnd_toEndOf="@+id/fragment_base_success_title"
             app:layout_constraintStart_toStartOf="@+id/fragment_base_success_title"

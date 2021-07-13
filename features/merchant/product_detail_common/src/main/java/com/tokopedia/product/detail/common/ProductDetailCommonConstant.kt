@@ -70,6 +70,7 @@ object ProductDetailCommonConstant{
 
     const val KEY_ETALASE = "etalase"
     const val KEY_CATEGORY = "kategori"
+    const val KEY_CATALOG = "katalog"
 
     //Button Action
     const val BUY_BUTTON = 1

@@ -176,6 +176,7 @@ object ProductTrackingConstant {
         const val CLICK_SHOP_NOTES_BOTTOM_SHEET = "click - lihat informasi penting catatan toko on product detail bottomsheet"
         const val CLICK_SPECIFICATION_BOTTOM_SHEET = "click - selengkapnya on product detail bottomsheet"
         const val CLICK_CATEGORY_BOTTOM_SHEET = "click - kategori on product detail bottomsheet"
+        const val CLICK_CATALOG_BOTTOM_SHEET = "click - catalog on detail produk bottomsheet"
         const val CLICK_ETALASE_BOTTOM_SHEET = "click - etalase on product detail bottomsheet"
         const val CLICK_WRITE_DISCUSSION_BOTTOM_SHEET = "click - tanya di diskusi on product detail bottomsheet"
         const val CLICK_CHECK_DISCUSSION_BOTTOM_SHEET = "click - cek di diskusi on product detail bottomsheet"

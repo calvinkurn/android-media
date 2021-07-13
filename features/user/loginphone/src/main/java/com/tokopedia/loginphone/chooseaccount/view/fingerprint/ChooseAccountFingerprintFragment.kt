@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountComponent
 import com.tokopedia.loginphone.chooseaccount.view.base.BaseChooseAccountFragment
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
@@ -46,7 +46,7 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
 
     override fun getScreenName(): String = TAG
 
-    override fun onSelectedAccount(account: UserDetail, phone: String) {
+    override fun onSelectedAccount(account: UserDetailDataModel, phone: String) {
         selectAccount(account)
     }
 
@@ -62,7 +62,7 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
     }
 
     override fun initObserver() {
-        viewModel.getAccountListResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.getAccountListDataModelResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetFingerprintAccounts(it.data)
                 is Fail -> onErrorGetFingerprintAccounts(it.throwable)
@@ -77,14 +77,6 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
             }
         })
 
-        viewModel.getUserInfoResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> onSuccessGetUserInfo(it.data)
-                is Fail -> onErrorGetUserInfo(it.throwable)
-            }
-            dismissLoadingProgress()
-        })
-
         viewModel.activationPage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if(it is Success){
                 onGoToActivationPage(it.data)
@@ -94,13 +86,6 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
         viewModel.securityQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if(it is Success) {
                 onGoToSecurityQuestion()
-            }
-        })
-
-        viewModel.showAdminLocationPopUp.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it) {
-                is Success -> showLocationAdminPopUp(userSessionInterface)
-                is Fail -> showLocationAdminError(it.throwable)
             }
         })
     }
@@ -116,13 +101,13 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
     }
 
 
-    private fun onSuccessGetFingerprintAccounts(accountList: AccountList) {
-        if (accountList.userDetails.size == 1) {
-            adapter.setList(accountList.userDetails, accountList.msisdn)
-            val userDetail = accountList.userDetails[0]
+    private fun onSuccessGetFingerprintAccounts(accountListDataModel: AccountListDataModel) {
+        if (accountListDataModel.userDetailDataModels.size == 1) {
+            adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
+            val userDetail = accountListDataModel.userDetailDataModels[0]
             selectAccount(userDetail)
         } else {
-            adapter.setList(accountList.userDetails, accountList.msisdn)
+            adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
         }
         dismissLoadingProgress()
     }
@@ -136,15 +121,9 @@ class ChooseAccountFingerprintFragment: BaseChooseAccountFragment() {
         }
     }
 
-    override fun onSuccessLogin(userId: String) {
-        setFCM(userSessionInterface.deviceId)
-        activity?.setResult(Activity.RESULT_OK)
-        activity?.finish()
-    }
-
-    fun selectAccount(userDetail: UserDetail) {
+    fun selectAccount(userDetailDataModel: UserDetailDataModel) {
         val intent = Intent().apply {
-            putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userDetail.email)
+            putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userDetailDataModel.email)
             putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
         }
         activity?.setResult(Activity.RESULT_OK, intent)
