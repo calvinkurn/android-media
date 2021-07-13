@@ -77,6 +77,9 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
                         ProductDetailCommonConstant.KEY_ETALASE  -> {
                             listener.goToEtalase(data.applink)
                         }
+                        ProductDetailCommonConstant.KEY_CATALOG  -> {
+                            listener.goToCatalog(data.applink, data.subtitle)
+                        }
                         else -> {
                             listener.goToApplink(data.applink)
                         }

@@ -19,11 +19,13 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperMerchant {
 
+    const val PARAM_CREATE_SHOWCASE = "is_create_showcase"
     private const val PARAM_RATING = "rating"
     private const val PARAM_SOURCE = "source"
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
+    private const val CREATE_SHOWCASE_SEGMENT = "showcase-create"
     private const val FOLLOWER_LIST_SEGMENT = "follower"
     private const val SHOP_PAGE_SETTING_SEGMENT = "settings"
     private const val SHOP_PAGE_SEGMENT_SIZE = 1
@@ -342,6 +344,21 @@ object DeeplinkMapperMerchant {
     fun isShopPageSettingSellerApp(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
+    }
+
+    fun isCreateShowcaseApplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT)
+    }
+
+    fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT) {
+            return Uri.parse(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT).buildUpon().apply {
+                appendQueryParameter(PARAM_CREATE_SHOWCASE, "true")
+            }.build().toString()
+        }
+        return deeplink
     }
 
     fun goToInboxUnified(): Boolean {
