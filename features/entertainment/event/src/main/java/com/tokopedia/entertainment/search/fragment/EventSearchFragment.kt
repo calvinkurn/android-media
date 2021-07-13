@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
@@ -121,21 +122,15 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
 
         viewModel.errorReport.observe(viewLifecycleOwner,
-                Observer { throwable ->
-                    Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT")
-                    view?.let {
+                Observer {
+                    launch {
+                        delay(100)
                         Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT")
-                        val snackbar = Snackbar.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_INDEFINITE)
-                        snackbar.setAction("Coba Lagi") {
-                            context?.let {
-                                Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT CONTEXT not null")
-                                getData(CacheType.ALWAYS_CLOUD)
-                            }
-                        }
-                        snackbar.show()
+                        NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+                            Log.d("ERROR_SNACK", "SHOW ERROR SNACK GET DATA")
+                            getData(CacheType.ALWAYS_CLOUD)
+                        }.showRetrySnackbar()
                     }
-//                    NetworkErrorHelper.createSnackbarRedWithAction(activity,
-//                            ErrorHandler.getErrorMessage(context, it)) { getData(CacheType.ALWAYS_CLOUD) }.showRetrySnackbar()
                 }
         )
     }
