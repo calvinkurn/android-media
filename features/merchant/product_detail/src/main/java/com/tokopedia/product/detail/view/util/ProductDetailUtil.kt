@@ -9,10 +9,8 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import androidx.annotation.DimenRes
-import androidx.core.content.ContextCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,10 +21,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
@@ -37,7 +33,6 @@ import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
-    private const val MAX_CHAR_OLD = 150
     private const val MAX_CHAR = 140
     private const val ALLOW_CLICK = true
 
