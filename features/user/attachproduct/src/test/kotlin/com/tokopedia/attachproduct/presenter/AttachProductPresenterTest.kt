@@ -31,6 +31,7 @@ class AttachProductPresenterTest {
     private val queryTest = "Test Query"
     private val shopIdTest = "0"
     private val pageTest = 0
+    private val warehouseId = "0"
 
     @Before
     fun before() {
@@ -53,7 +54,7 @@ class AttachProductPresenterTest {
             testSubscriber.onNext(expectedReturn)
         }
 
-        presenter.loadProductData(queryTest, shopIdTest, pageTest)
+        presenter.loadProductData(queryTest, shopIdTest, pageTest, warehouseId)
 
         verify {
             useCase.execute(any(), any())
@@ -77,7 +78,7 @@ class AttachProductPresenterTest {
             testSubscriber.onError(expectedReturn)
         }
 
-        presenter.loadProductData(queryTest, shopIdTest, pageTest)
+        presenter.loadProductData(queryTest, shopIdTest, pageTest, warehouseId)
 
         verify {
             useCase.execute(any(), any())

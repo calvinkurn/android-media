@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -49,6 +50,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.contactUs)
-    implementation project(rootProject.ext.features.chatbot)
+    implementation projectOrAar(rootProject.ext.features.contactUs)
+    implementation projectOrAar(rootProject.ext.features.chatbot)
 }

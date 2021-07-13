@@ -4,8 +4,8 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.model.PropertyPrice
+import com.tokopedia.hotel.search_map.data.model.Property
+import com.tokopedia.hotel.search_map.data.model.PropertyPrice
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_property_search_result_horizontal.view.*
 

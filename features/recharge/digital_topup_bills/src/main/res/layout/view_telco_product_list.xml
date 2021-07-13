@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/layout_lvl8"
+    android:paddingTop="@dimen/unify_space_12"
     android:clipToPadding="false"
     android:scrollbarStyle="outsideOverlay"
     android:descendantFocusability="blocksDescendants" />

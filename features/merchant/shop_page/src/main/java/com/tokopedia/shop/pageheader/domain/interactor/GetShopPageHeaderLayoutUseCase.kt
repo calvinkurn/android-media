@@ -70,6 +70,25 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
                         isBottomSheet
                         label
                       }
+                      ... on ImageText {
+                        images {
+                          style
+                          data {
+                            image
+                            imageLink
+                            isBottomSheet
+                          }
+                        }
+                        textComponent {
+                          style
+                          data {
+                            icon
+                            textLink
+                            textHtml
+                            isBottomSheet
+                          }
+                        }
+                      }
                     }
                   }
                 }
