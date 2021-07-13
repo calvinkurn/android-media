@@ -81,7 +81,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         val THRES_TS = TimeUnit.DAYS.toMillis(1)
 
         var hasSuccessSendInt = 0 // 1 assumed it already running, means this feature is disabled.
-        var lastSuccessToken = -1L
+        var lastSuccessTimestamp = -1L
         const val THRES_TOKEN_VALID = 2_592_000_000 // 1 month to submit new device data
         var PREF = "app_auth"
         var KEY_SUCCESS = "scs"
@@ -111,27 +111,29 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         }
 
         private fun isTokenAgeValid(context: Context): Boolean {
-            if (lastSuccessToken == -1L) {
+            if (lastSuccessTimestamp == -1L) {
                 val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-                lastSuccessToken = sp.getLong(KEY_SUCCESS_TS, 0)
+                lastSuccessTimestamp = sp.getLong(KEY_SUCCESS_TS, 0)
             }
-            return (System.currentTimeMillis() - lastSuccessToken) < THRES_TOKEN_VALID
+            return (System.currentTimeMillis() - lastSuccessTimestamp) < THRES_TOKEN_VALID
         }
 
         private fun setAlreadySuccessSend(context: Context) {
+            val now = System.currentTimeMillis()
             val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
             sp.edit().putInt(KEY_SUCCESS, 1).apply()
-            sp.edit().putLong(KEY_SUCCESS_TS, System.currentTimeMillis()).apply()
+            sp.edit().putLong(KEY_SUCCESS_TS, now).apply()
             hasSuccessSendInt = 1
+            lastSuccessTimestamp = now
         }
 
         private fun checkTimestamp(context: Context): Boolean {
             val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            val lastTs = sp.getLong(KEY_TS, 0)
+            val lastRunTs = sp.getLong(KEY_TS, 0)
             val now = System.currentTimeMillis()
             // we check the timestamp the worker last run.
             // If the worker last run is more than 1 day, run the worker again
-            if (now - lastTs > THRES_TS) {
+            if (now - lastRunTs > THRES_TS) {
                 sp.edit().putLong(KEY_TS, now).putInt(KEY_TS_TRIES, 0).apply()
                 return true
             } else {
