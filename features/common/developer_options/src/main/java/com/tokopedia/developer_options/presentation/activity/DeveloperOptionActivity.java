@@ -75,12 +75,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DeveloperOptionActivity extends BaseActivity {
-
-    public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
-    private static final String IP_GROUPCHAT = "ip_groupchat";
-    private static final String LOG_GROUPCHAT = "log_groupchat";
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
@@ -151,12 +147,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleSellerAppReview;
     private CheckBox toggleLeakCanary;
 
-    private AppCompatEditText ipGroupChat;
-    private View saveIpGroupChat;
-    private ToggleButton groupChatLogToggle;
-
     private UserSessionInterface userSession;
-    private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
     private TextView accessTokenView;
@@ -298,10 +289,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         changeVersionButton = findViewById(R.id.btn_change_version);
         editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
         editTextChangeVersionCode.setText(String.valueOf(GlobalConfig.VERSION_CODE));
-
-        ipGroupChat = findViewById(R.id.ip_groupchat);
-        saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
-        groupChatLogToggle = findViewById(R.id.groupchat_log);
 
         accessTokenView = findViewById(R.id.access_token);
         appAuthSecretView = findViewById(R.id.app_auth_secret);
@@ -681,13 +668,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
-        saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
-        groupChatLogToggle.setOnCheckedChangeListener((buttonView, isChecked) -> actionLogGroupChat(isChecked));
-
-        groupChatSf = getSharedPreferences(GROUPCHAT_PREF);
-
-        ipGroupChat.setText(groupChatSf.getString(IP_GROUPCHAT, ""));
-        groupChatLogToggle.setChecked(groupChatSf.getBoolean(LOG_GROUPCHAT, false));
 
         Env currentEnv = TokopediaUrl.Companion.getInstance().getTYPE();
         for (int i = 0; i < Env.values().length; i++) {
@@ -813,24 +793,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         intent.putExtra(REMOTE_CONFIG_PREFIX, prefix.trim());
 
         startActivity(intent);
-    }
-
-    private void actionSaveIpGroupChat() {
-        String ip = ipGroupChat.getText().toString();
-        SharedPreferences.Editor editor = groupChatSf.edit();
-        if (TextUtils.isEmpty(ip)) {
-            editor.putString(IP_GROUPCHAT, null);
-        } else {
-            editor.putString(IP_GROUPCHAT, ip);
-        }
-        editor.apply();
-        Toast.makeText(this, ip + " saved", Toast.LENGTH_SHORT).show();
-    }
-
-    private void actionLogGroupChat(boolean check) {
-        SharedPreferences.Editor editor = groupChatSf.edit();
-        editor.putBoolean(LOG_GROUPCHAT, check);
-        editor.apply();
     }
 
     private SharedPreferences getSharedPreferences(String name) {
