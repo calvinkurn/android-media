@@ -483,7 +483,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkRequestPickupUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
+        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is SuccessRequestPickup)
     }
 
     @Test
@@ -512,7 +512,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns MultiShippingStatusUiModel()
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -521,7 +521,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
+        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is SuccessRequestPickup)
     }
 
     @Test
@@ -537,7 +537,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -563,7 +563,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns MultiShippingStatusUiModel(total_order = 3, success = 3)
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -592,7 +592,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -625,7 +625,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -658,7 +658,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -691,7 +691,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -720,7 +720,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
@@ -749,7 +749,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             multiShippingStatusUseCase.executeOnBackground()
         } returns multiShippingStatusUiModel
 
-        viewModel.bulkRequestPickupStatusResult.observe( {lifecycle}) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 

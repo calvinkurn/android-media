@@ -32,27 +32,29 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class SomListViewModel @Inject constructor(
-        somAcceptOrderUseCase: SomAcceptOrderUseCase,
-        somRejectOrderUseCase: SomRejectOrderUseCase,
-        somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
-        somEditRefNumUseCase: SomEditRefNumUseCase,
-        somValidateOrderUseCase: SomValidateOrderUseCase,
-        userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatchers,
-        private val somListGetTickerUseCase: SomListGetTickerUseCase,
-        private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
-        private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
-        private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
-        private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
-        private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
-        private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
-        private val bulkRequestPickupUseCase: SomListBulkRequestPickupUseCase,
-        private val bulkShippingStatusUseCase: SomListGetMultiShippingStatusUseCase,
-        authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
-        authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
-) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
-        somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
-        authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase) {
+    somAcceptOrderUseCase: SomAcceptOrderUseCase,
+    somRejectOrderUseCase: SomRejectOrderUseCase,
+    somRejectCancelOrderRequest: SomRejectCancelOrderUseCase,
+    somEditRefNumUseCase: SomEditRefNumUseCase,
+    somValidateOrderUseCase: SomValidateOrderUseCase,
+    userSession: UserSessionInterface,
+    private val dispatcher: CoroutineDispatchers,
+    private val somListGetTickerUseCase: SomListGetTickerUseCase,
+    private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
+    private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
+    private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
+    private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
+    private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
+    private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
+    private val bulkRequestPickupUseCase: SomListBulkRequestPickupUseCase,
+    private val bulkShippingStatusUseCase: SomListGetMultiShippingStatusUseCase,
+    authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
+    authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
+) : SomOrderBaseViewModel(
+    dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
+    somEditRefNumUseCase, somRejectCancelOrderRequest, somValidateOrderUseCase,
+    authorizeSomListAccessUseCase, authorizeMultiAcceptAccessUseCase
+) {
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
@@ -97,8 +99,9 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
 
-    private val _bulkRequestPickupResult = MutableLiveData<Result<SomListBulkRequestPickupUiModel>>()
-    val bulkRequestPickupResult: LiveData<Result<SomListBulkRequestPickupUiModel>>
+    private val _bulkRequestPickupResult =
+        MutableLiveData<BulkRequestPickupState<SomListBulkRequestPickupUiModel>>()
+    val bulkRequestPickupResult: LiveData<BulkRequestPickupState<SomListBulkRequestPickupUiModel>>
         get() = _bulkRequestPickupResult
 
     private val _isLoadingOrder = MutableLiveData<Boolean>()
@@ -129,28 +132,34 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
-    val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
+    private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? =
+        null
+    val bulkAcceptOrderStatusResult =
+        MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
-    private val _bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>().apply {
-        addSource(_bulkAcceptOrderResult) {
-            when (it) {
-                is Success -> getBulkAcceptOrderStatus(it.data.data.batchId, 0L)
-            }
-        }
-    }
-
-    val bulkRequestPickupFinalResult = MediatorLiveData<BulkRequestPickupState>()
-
-    val bulkRequestPickupStatusResult = MediatorLiveData<Result<MultiShippingStatusUiModel>>().apply {
-        addSource(_bulkRequestPickupResult) {
-            when (it) {
-                is Success -> {
-                    getMultiShippingStatus(it.data.data.jobId, 0L)
+    private val _bulkAcceptOrderStatusResult =
+        MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>().apply {
+            addSource(_bulkAcceptOrderResult) {
+                when (it) {
+                    is Success -> getBulkAcceptOrderStatus(it.data.data.batchId, 0L)
                 }
             }
         }
-    }
+
+    val bulkRequestPickupFinalResultMediator = MediatorLiveData<BulkRequestPickupResultState>()
+    val bulkRequestPickupFinalResult: LiveData<BulkRequestPickupResultState>
+        get() = bulkRequestPickupFinalResultMediator
+
+    val bulkRequestPickupStatusResult =
+        MediatorLiveData<Result<MultiShippingStatusUiModel>>().apply {
+            addSource(_bulkRequestPickupResult) {
+                when (it) {
+                    is SuccessRequestPickup -> {
+                        getMultiShippingStatus(it.data.data.jobId, 0L)
+                    }
+                }
+            }
+        }
 
     init {
         bulkAcceptOrderStatusResult.apply {
@@ -161,12 +170,19 @@ class SomListViewModel @Inject constructor(
                             data.data.shouldRecheck = false
                         }
                         if (it.data.data.success + it.data.data.fail == it.data.data.totalOrder) {
-                            bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                            bulkAcceptOrderStatusResult.postValue(
+                                lastBulkAcceptOrderStatusSuccessResult
+                            )
                         } else if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
                             retryCount++
-                            getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY_GET_ACCEPT_ORDER_STATUS)
+                            getBulkAcceptOrderStatus(
+                                (_bulkAcceptOrderResult.value as Success).data.data.batchId,
+                                DELAY_GET_ACCEPT_ORDER_STATUS
+                            )
                         } else {
-                            bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                            bulkAcceptOrderStatusResult.postValue(
+                                lastBulkAcceptOrderStatusSuccessResult
+                            )
                         }
                     }
                     is Fail -> {
@@ -175,64 +191,101 @@ class SomListViewModel @Inject constructor(
                         }
                         if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
                             retryCount++
-                            getBulkAcceptOrderStatus((_bulkAcceptOrderResult.value as Success).data.data.batchId, DELAY_GET_ACCEPT_ORDER_STATUS)
+                            getBulkAcceptOrderStatus(
+                                (_bulkAcceptOrderResult.value as Success).data.data.batchId,
+                                DELAY_GET_ACCEPT_ORDER_STATUS
+                            )
                         } else {
-                            bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                            bulkAcceptOrderStatusResult.postValue(
+                                lastBulkAcceptOrderStatusSuccessResult
+                            )
                         }
                     }
                 }
             }
         }
 
-        bulkRequestPickupFinalResult.addSource(bulkRequestPickupStatusResult) {
+        bulkRequestPickupFinalResultMediator.addSource(bulkRequestPickupStatusResult) {
             when (it) {
                 is Success -> {
-                    val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
-                    val orderIdListFail = it.data.listError.map { listError -> listError.orderId.toString() }
+                    val requestPickupUiModel =
+                        (_bulkRequestPickupResult.value as? SuccessRequestPickup)?.data
+                    val orderIdListFail =
+                        it.data.listError.map { listError -> listError.orderId.toString() }
                     val totalNotEligible = requestPickupUiModel?.errors?.size?.toLong().orZero()
-                    val totalOrderIds = requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
+                    val totalOrderIds =
+                        requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
 
                     if (it.data.success == it.data.total_order && totalOrderIds == it.data.total_order && it.data.success > 0) {
                         // case 2 When All Orders Success
-                        bulkRequestPickupFinalResult.postValue(AllSuccess(it.data.success))
+                        bulkRequestPickupFinalResultMediator.postValue(AllSuccess(it.data.success))
                     } else if (it.data.total_order != it.data.processed && retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
                         retryRequestPickup++
-                        getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
+                        getMultiShippingStatus(
+                            requestPickupUiModel?.data?.jobId.orEmpty(),
+                            DELAY_GET_MULTI_SHIPPING_STATUS
+                        )
                     } else {
                         // case 3 when partial success but there's not eligible and failed
                         if (it.data.success > 0 && it.data.fail > 0 && totalNotEligible > 0) {
-                            bulkRequestPickupFinalResult.postValue(PartialSuccessNotEligibleFail(it.data.success, totalNotEligible, orderIdListFail))
+                            bulkRequestPickupFinalResultMediator.postValue(
+                                PartialSuccessNotEligibleFail(
+                                    it.data.success,
+                                    totalNotEligible,
+                                    orderIdListFail
+                                )
+                            )
                         }
                         // case 4 when All Fail but there's not eligible
                         else if (it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0 && totalNotEligible > 0) {
-                            bulkRequestPickupFinalResult.postValue(NotEligibleAndFail(totalNotEligible, orderIdListFail))
+                            bulkRequestPickupFinalResultMediator.postValue(
+                                NotEligibleAndFail(
+                                    totalNotEligible,
+                                    orderIdListFail
+                                )
+                            )
                         }
                         // case 5 When partial success but there's failed
                         else if (it.data.success > 0 && it.data.fail > 0 && totalNotEligible == 0L) {
-                            bulkRequestPickupFinalResult.postValue(PartialSuccess(it.data.success, orderIdListFail))
+                            bulkRequestPickupFinalResultMediator.postValue(
+                                PartialSuccess(
+                                    it.data.success,
+                                    orderIdListFail
+                                )
+                            )
                         }
                         // case 6 When Partial success but there's not eligible
-                        else if(it.data.success > 0 && it.data.fail == 0L && totalNotEligible > 0) {
-                            bulkRequestPickupFinalResult.postValue(PartialSuccessNotEligible(it.data.success, totalNotEligible))
+                        else if (it.data.success > 0 && it.data.fail == 0L && totalNotEligible > 0) {
+                            bulkRequestPickupFinalResultMediator.postValue(
+                                PartialSuccessNotEligible(
+                                    it.data.success,
+                                    totalNotEligible
+                                )
+                            )
                         }
                         //case 7 will happen fail bulk process due to all validation failed
                         else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_ALL_VALIDATION
-                                        || requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_NOT_FOUND)) {
-                            bulkRequestPickupFinalResult.postValue(AllValidationFail)
+                                    || requestPickupUiModel?.status == BulkRequestPickupStatus.FAIL_NOT_FOUND)
+                        ) {
+                            bulkRequestPickupFinalResultMediator.postValue(AllValidationFail)
                         } else {
                             //Case 8 will happen when after 10x retry is still fail
-                            bulkRequestPickupFinalResult.postValue(FailRetry)
+                            bulkRequestPickupFinalResultMediator.postValue(FailRetry)
                         }
                     }
                 }
                 is Fail -> {
-                    val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
+                    val requestPickupUiModel =
+                        (_bulkRequestPickupResult.value as? SuccessRequestPickup)?.data
                     if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
                         retryRequestPickup++
-                        getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
+                        getMultiShippingStatus(
+                            requestPickupUiModel?.data?.jobId.orEmpty(),
+                            DELAY_GET_MULTI_SHIPPING_STATUS
+                        )
                     } else {
                         //Case 9 will happen when there's a server error/down from BE
-                        bulkRequestPickupFinalResult.postValue(ServerFail(it.throwable))
+                        bulkRequestPickupFinalResultMediator.postValue(ServerFail(it.throwable))
                     }
                 }
             }
@@ -252,7 +305,10 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    override suspend fun doRejectOrder(rejectOrderRequestParam: SomRejectRequestParam, invoice: String) {
+    override suspend fun doRejectOrder(
+        rejectOrderRequestParam: SomRejectRequestParam,
+        invoice: String
+    ) {
         super.doRejectOrder(rejectOrderRequestParam, invoice)
         getFilters(false)
         withContext(dispatcher.main) {
@@ -279,10 +335,12 @@ class SomListViewModel @Inject constructor(
     private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
         launchCatchError(block = {
             delay(wait)
-            bulkAcceptOrderStatusUseCase.setParams(SomListBulkGetBulkAcceptOrderStatusParam(
+            bulkAcceptOrderStatusUseCase.setParams(
+                SomListBulkGetBulkAcceptOrderStatusParam(
                     batchId = batchId,
                     shopId = userSession.shopId
-            ))
+                )
+            )
             _bulkAcceptOrderStatusResult.postValue(Success(bulkAcceptOrderStatusUseCase.executeOnBackground()))
         }, onError = {
             _bulkAcceptOrderStatusResult.postValue(Fail(it))
@@ -325,13 +383,15 @@ class SomListViewModel @Inject constructor(
 
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
-            bulkRequestPickupFinalResult.postValue(ShowLoading(orderIds.size.toLong()))
+            withContext(dispatcher.main) {
+                _bulkRequestPickupResult.value = ShowLoading(orderIds.size.toLong())
+            }
             retryRequestPickup = 0
             bulkRequestPickupUseCase.setParams(orderIds)
-            _bulkRequestPickupResult.postValue(Success(bulkRequestPickupUseCase.executeOnBackground()))
+            _bulkRequestPickupResult.postValue(SuccessRequestPickup(bulkRequestPickupUseCase.executeOnBackground()))
         }, onError = {
             //Case 1 will happen when there's an early error/down from BE
-            _bulkRequestPickupResult.postValue(Fail(it))
+            _bulkRequestPickupResult.postValue(FailRequestPickup(it))
         })
     }
 
@@ -373,13 +433,17 @@ class SomListViewModel @Inject constructor(
             somListGetFilterListUseCase.isFirstLoad = false
             launchCatchError(context = dispatcher.main, block = {
                 if (_canShowOrderData.value == true) {
-                    _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(true).apply { refreshOrder = refreshOrders })
+                    _filterResult.value = Success(
+                        somListGetFilterListUseCase.executeOnBackground(true)
+                            .apply { refreshOrder = refreshOrders })
                 }
             }, onError = {})
         }
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
-                _filterResult.value = Success(somListGetFilterListUseCase.executeOnBackground(false).apply { refreshOrder = refreshOrders })
+                _filterResult.value = Success(
+                    somListGetFilterListUseCase.executeOnBackground(false)
+                        .apply { refreshOrder = refreshOrders })
             }
         }, onError = {
             _filterResult.value = Fail(it)
@@ -419,15 +483,16 @@ class SomListViewModel @Inject constructor(
             var refreshOrder: RefreshOrder? = null
             val job = launchCatchError(block = {
                 val getOrderListParams = getOrderListParams.copy(
-                        search = invoice,
-                        nextOrderId = 0L
+                    search = invoice,
+                    nextOrderId = 0L
                 )
                 val params = somListGetOrderListUseCase.composeParams(getOrderListParams)
                 val result = somListGetOrderListUseCase.executeOnBackground(params)
                 getFiltersJob?.join()
                 withContext(dispatcher.main) {
                     refreshOrderJobs.remove(refreshOrder)
-                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                    _refreshOrderResult.value =
+                        Success(OptionalOrderData(orderId, result.second.firstOrNull()))
                 }
             }, onError = {
                 withContext(dispatcher.main) {
@@ -509,12 +574,17 @@ class SomListViewModel @Inject constructor(
 
     fun getAdminPermission() {
         launchCatchError(
-                block = {
-                    _isOrderManageEligible.postValue(getAdminAccessEligibilityPair(AccessId.SOM_LIST, AccessId.SOM_MULTI_ACCEPT))
-                },
-                onError = {
-                    _isOrderManageEligible.postValue(Fail(it))
-                }
+            block = {
+                _isOrderManageEligible.postValue(
+                    getAdminAccessEligibilityPair(
+                        AccessId.SOM_LIST,
+                        AccessId.SOM_MULTI_ACCEPT
+                    )
+                )
+            },
+            onError = {
+                _isOrderManageEligible.postValue(Fail(it))
+            }
         )
     }
 }

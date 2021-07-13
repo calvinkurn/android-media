@@ -24,26 +24,34 @@ class SomListBulkRequestPickupDialog(private val context: Context) {
     private var ivBulkAcceptDialog: ImageUnify? = null
 
     fun init() {
-        childViews = View.inflate(context, com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog, null)
-        dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
-            if (DeviceScreenInfo.isTablet(context)) {
-                dialogMaxWidth = getScreenWidth() / 2
+        childViews = View.inflate(
+            context,
+            com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog,
+            null
+        )
+        dialogUnify =
+            DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+                if (DeviceScreenInfo.isTablet(context)) {
+                    dialogMaxWidth = getScreenWidth() / 2
+                }
+                dialogPrimaryCTA.gone()
+                dialogSecondaryCTA.gone()
+                setOverlayClose(false)
+                setCancelable(false)
+                dialogImageContainer.removeAllViews()
+                setChild(childViews)
             }
-            dialogPrimaryCTA.gone()
-            dialogSecondaryCTA.gone()
-            setOverlayClose(false)
-            setCancelable(false)
-            dialogImageContainer.removeAllViews()
-            setChild(childViews)
-        }
         initChildView()
     }
 
     private fun initChildView() = childViews?.run {
         titleDialog = findViewById(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogTitle)
-        descDialog = findViewById(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogDescription)
-        btnPrimaryDialog = findViewById(com.tokopedia.sellerorder.R.id.btnSomListBulkActionDialogPrimaryButton)
-        btnSecondaryDialog = findViewById(com.tokopedia.sellerorder.R.id.btnSomListBulkActionDialogSecondaryButton)
+        descDialog =
+            findViewById(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogDescription)
+        btnPrimaryDialog =
+            findViewById(com.tokopedia.sellerorder.R.id.btnSomListBulkActionDialogPrimaryButton)
+        btnSecondaryDialog =
+            findViewById(com.tokopedia.sellerorder.R.id.btnSomListBulkActionDialogSecondaryButton)
         loaderBulkAccept = findViewById(com.tokopedia.sellerorder.R.id.loaderBulkAccept)
         ivBulkAcceptDialog = findViewById(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)
     }

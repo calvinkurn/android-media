@@ -1087,14 +1087,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     bulkRequestPickupDialog?.dismiss()
                     showGlobalError(it.throwable)
                 }
-                is ShowLoading -> {
-                    showProgressBulkRequestPickupDialog(it.totalOrder)
-                }
                 is PartialSuccessNotEligible -> {
                     showPartialSuccessNotEligibleRequestPickup(it.totalSuccess, it.totalNotEligible)
-                }
-                null -> {
-                    showErrorBulkRequestPickupStatus()
                 }
             }
         }
@@ -1103,12 +1097,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun observeBulkRequestPickup() {
         observe(viewModel.bulkRequestPickupResult) {
             when (it) {
-                is Success -> {
+                is ShowLoading -> {
+                    showProgressBulkRequestPickupDialog(it.totalOrder)
+                }
+                is SuccessRequestPickup -> {
                     if (somListBulkProcessOrderBottomSheet?.isShowing() == true) {
                         somListBulkProcessOrderBottomSheet?.dismiss()
                     }
                 }
-                is Fail -> {
+                is FailRequestPickup -> {
                     showErrorBulkRequestPickup()
                 }
             }
@@ -1126,7 +1123,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 dismissAndRunAction()
             }
             showSuccess()
-            show()
         }
     }
 
@@ -1139,7 +1135,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             hideSecondaryButton()
             showSuccess()
-            show()
         }
     }
 
@@ -1154,7 +1149,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 dismissAndRunAction()
             }
             showSuccess()
-            show()
         }
     }
 
@@ -1169,7 +1163,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 dismissAndRunAction()
             }
             showFailed()
-            show()
         }
     }
 
@@ -1184,7 +1177,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 dismiss()
             }
             showFailed()
-            show()
         }
     }
 
@@ -1197,7 +1189,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
             hideSecondaryButton()
             showFailed()
-            show()
         }
     }
 
@@ -1220,7 +1211,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             hideSecondaryButton()
             setTitle(getString(R.string.som_list_bulk_request_pickup_title_success, orderCount.toString()))
             showSuccess()
-            show()
         }
     }
 
