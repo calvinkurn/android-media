@@ -15,9 +15,6 @@ class SomOrderEditAwbBottomSheet(
 ) : SomBottomSheet(LAYOUT, true, true, false, SomConsts.TITLE_UBAH_RESI, context, true) {
 
     companion object {
-        private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.25f
-        private const val KEYBOARD_HEIGHT_PERCENTAGE_LANDSCAPE = 0.5f
-
         private val LAYOUT = R.layout.bottomsheet_cancel_order
     }
 
@@ -28,24 +25,6 @@ class SomOrderEditAwbBottomSheet(
             tf_cancel_notes?.clearFocus()
             tf_cancel_notes?.setLabelStatic(true)
             tf_cancel_notes?.setMessage(context.getString(R.string.change_no_resi_notes))
-            if (DeviceScreenInfo.isTablet(context)) {
-                tf_cancel_notes?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        btnContainer?.let {
-                            val layoutParams = it.layoutParams
-                            layoutParams.height = layoutParams.height + getKeyboardHeightEstimation()
-                            it.layoutParams = layoutParams
-                        }
-                    } else {
-                        btnContainer?.let {
-                            val layoutParams = it.layoutParams
-                            layoutParams.height = layoutParams.height - getKeyboardHeightEstimation()
-                            it.layoutParams = layoutParams
-                        }
-                        hideKeyboard(context, tf_cancel_notes?.rootView)
-                    }
-                }
-            }
             tf_cancel_notes?.textFieldInput?.hint = context.getString(R.string.change_no_resi_hint)
             btn_cancel_order_canceled?.setOnClickListener {
                 hideKeyboard(context, tf_cancel_notes?.rootView)
@@ -59,19 +38,6 @@ class SomOrderEditAwbBottomSheet(
             }
             handleHideKeyboardWhenClickOnBottomSheet()
         }
-    }
-
-    private fun getKeyboardHeightEstimation(): Int {
-        val heightPercentage = getKeyboardHeightPercentage()
-        return (getScreenHeight() * heightPercentage).toInt()
-    }
-
-    private fun getKeyboardHeightPercentage(): Float {
-        return if (isPortrait()) KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT else KEYBOARD_HEIGHT_PERCENTAGE_LANDSCAPE
-    }
-
-    private fun isPortrait(): Boolean {
-        return context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     }
 
     private fun handleHideKeyboardWhenClickOnBottomSheet() {
