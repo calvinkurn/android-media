@@ -193,7 +193,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         return try {
             application.resources.getString(colorID)
         } catch (exception: Resources.NotFoundException) {
-            application.resources.getString(R.color.discovery2_dms_clr_1e31353b)
+            application.resources.getString(R.string.discovery_product_stock_color)
         }
     }
 
