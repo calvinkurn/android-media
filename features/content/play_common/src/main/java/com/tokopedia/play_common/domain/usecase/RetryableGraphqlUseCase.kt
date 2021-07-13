@@ -14,6 +14,7 @@ abstract class RetryableGraphqlUseCase<T: Any>(
 
     override suspend fun executeOnBackground(): T {
         var count = 0
+        var latestError: Throwable? = null
 
         while(count <= retryCount) {
             try {
@@ -22,18 +23,19 @@ abstract class RetryableGraphqlUseCase<T: Any>(
                 if (isSuccess) return response
                 else error("Response is not success")
             } catch (e: Throwable) {
+                latestError = e
                 count += 1
             }
         }
 
-        throw MessageErrorException(getErrorMessage())
+        throw MessageErrorException(getErrorMessage(latestError))
     }
 
     open fun isResponseSuccess(response: T): Boolean {
         return true
     }
 
-    open fun getErrorMessage(): String {
+    open fun getErrorMessage(err: Throwable?): String {
         return DEFAULT_ERROR_MESSAGE
     }
 
