@@ -1306,6 +1306,8 @@ class ProductListPresenter @Inject constructor(
                                 priceString = product.priceStr,
                                 ratingAverage = product.ratingAverage,
                                 labelGroupDataList = product.labelGroupDataList,
+                                badgeItemDataViewList = product.badgeItemDataViewList,
+                                shopLocation = product.shopLocation,
                                 position = index + 1,
                                 alternativeKeyword = option.title,
                                 carouselProductType = determineInspirationCarouselProductType(type, option),

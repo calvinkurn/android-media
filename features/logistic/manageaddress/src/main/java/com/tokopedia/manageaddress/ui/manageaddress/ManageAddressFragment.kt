@@ -291,7 +291,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                             _selectedAddressItem = newRecipientAddressModel
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
@@ -318,7 +319,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     context?.let {
                         context ->
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
@@ -635,7 +637,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         context?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
                     addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}", addressDataModel.postalCode)
+                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString())
         }
 
         if (isLocalization == true) {

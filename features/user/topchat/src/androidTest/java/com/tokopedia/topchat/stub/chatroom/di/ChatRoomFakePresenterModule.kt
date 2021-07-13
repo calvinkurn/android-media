@@ -11,7 +11,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -62,6 +61,7 @@ class ChatRoomFakePresenterModule {
             chatToggleBlockChat: ChatToggleBlockChatUseCase,
             chatBackgroundUseCase: ChatBackgroundUseCase,
             chatSrwUseCase: SmartReplyQuestionUseCase,
+            tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
             sharedPref: SharedPreferences,
             dispatchers: CoroutineDispatchers,
             remoteConfig: RemoteConfig
@@ -92,6 +92,7 @@ class ChatRoomFakePresenterModule {
                 chatToggleBlockChat,
                 chatBackgroundUseCase,
                 chatSrwUseCase,
+                tokoNowWHUsecase,
                 sharedPref,
                 dispatchers,
                 remoteConfig
