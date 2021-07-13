@@ -53,7 +53,6 @@ import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
-import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
@@ -84,6 +83,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
+    public static final String URI_HOME_MACROBENCHMARK = "home-macrobenchmark";
     public static final String URI_COACHMARK = "coachmark";
     public static final String URI_COACHMARK_ENABLE = "enable";
     public static final String URI_COACHMARK_DISABLE = "disable";
@@ -103,6 +103,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
+    String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+    String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
@@ -113,7 +116,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
     private TextView vForceCrash;
-    private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private AppCompatTextView abTestRollenceEditorStartButton;
@@ -182,6 +184,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             Uri uri = null;
             boolean isChangeUrlApplink = false;
             boolean isCoachmarkApplink = false;
+            boolean isHomeMacrobenchmarkApplink = false;
             if (intent != null) {
                 uri = intent.getData();
                 if (uri != null) {
@@ -189,11 +192,15 @@ public class DeveloperOptionActivity extends BaseActivity {
                             uri.getPathSegments().get(1).equals(CHANGEURL);
                     isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(URI_COACHMARK);
+                    isHomeMacrobenchmarkApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
                 }
             }
             if (isChangeUrlApplink) {
                 handleUri(uri);
-            }else if (isCoachmarkApplink) {
+            } else if (isHomeMacrobenchmarkApplink) {
+                handleHomeMacrobenchmarkUri(userSession);
+            } else if (isCoachmarkApplink) {
                 handleCoachmarkUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -230,6 +237,21 @@ public class DeveloperOptionActivity extends BaseActivity {
                     .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
         }
         finish();
+    }
+
+    private void handleHomeMacrobenchmarkUri(UserSessionInterface userSession) {
+        CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
+        SharedPreferences sharedPrefs = getSharedPreferences(
+                KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+                .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
+
+        userSession.setFirstTimeUserOnboarding(false);
+
+        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**
@@ -278,8 +300,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
         abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
-
-        reviewNotifBtn = findViewById(R.id.review_notification);
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
@@ -622,12 +642,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void oneOnClick(View view) {
                 startActivity(Chucker.getLaunchIntent(getApplicationContext(), Chucker.SCREEN_HTTP));
             }
-        });
-
-        reviewNotifBtn.setOnClickListener(v -> {
-            Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777, notifReview);
         });
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);

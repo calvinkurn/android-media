@@ -12,8 +12,6 @@ import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponRepository
-import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsGQLRepository
-import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
@@ -34,6 +32,7 @@ import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRestRepository
+import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -63,11 +62,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun providePushStatusGQLRepository(@ApplicationContext context: Context): PushStatusRepository {
         return PushStatusGQLRepository(provideGetStringMethod(context))
-    }
-
-    @Provides
-    fun provideCpmTopAdsGQLRepository(): CpmTopAdsRepository {
-        return CpmTopAdsGQLRepository()
     }
 
     @Provides
@@ -109,6 +103,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideProductCardsRestRepository(): ProductCardsRepository {
         return repoProvider.provideProductCardsRepository()
+    }
+
+    @Provides
+    fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
+        return repoProvider.provideTopAdsHeadlineRepository()
     }
 
     @Provides

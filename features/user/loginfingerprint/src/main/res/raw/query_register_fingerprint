@@ -1,7 +1,0 @@
-query register_fingerprint ($publicKey: String!, $signature: String!, $datetime: String!){
-    RegisterFingerprint(publicKey: $publicKey, signature: $signature, datetime: $datetime) {
-        success
-        message
-        errorMessage
-    }
-}

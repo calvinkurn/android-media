@@ -4,6 +4,7 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
+        val bestSellerContent: Map<String, BestSellerInfoContent>? = mapOf(),
         val layoutName: String = "",
         val pdpSession: String = ""
 ) {
@@ -14,9 +15,6 @@ data class DynamicProductInfoP1(
 
     val isUsingOvo: Boolean
         get() = data.campaign.isUsingOvo
-
-    val isLeasing: Boolean
-        get() = basic.isLeasing
 
     val shopTypeString: String
         get() {
@@ -65,10 +63,6 @@ data class DynamicProductInfoP1(
                 ""
             }
         }
-
-    fun checkImei(imeiRemoteConfig: Boolean): Boolean {
-        return imeiRemoteConfig && data.campaign.isCheckImei
-    }
 
     fun getFinalStock(): String {
         return if (data.campaign.isActive) {

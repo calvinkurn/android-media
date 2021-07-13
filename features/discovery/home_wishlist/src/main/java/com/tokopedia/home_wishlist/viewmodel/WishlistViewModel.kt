@@ -774,7 +774,7 @@ open class WishlistViewModel @Inject constructor(
                                         RemoveWishlistActionData(
                                                 message = errorMessage ?: "",
                                                 isSuccess = false,
-                                                productId = productId?.toInt() ?: 0
+                                                productId = productId ?: ""
                                         )
                                 )
                             }
@@ -786,7 +786,7 @@ open class WishlistViewModel @Inject constructor(
                                         RemoveWishlistActionData(
                                                 message = "",
                                                 isSuccess = true,
-                                                productId = productId?.toInt() ?: 0
+                                                productId = productId ?: ""
                                         )
                                 )
                                 if (updatedList.isEmpty()) updatedList.add(EmptyWishlistDataModel())

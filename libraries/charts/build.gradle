@@ -10,7 +10,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.libraries.mpAndroidChart
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 }
 
 project.ext {
