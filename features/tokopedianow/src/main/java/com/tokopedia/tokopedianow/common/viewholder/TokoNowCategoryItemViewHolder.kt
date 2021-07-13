@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.viewholder
+package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -7,20 +7,20 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
 import kotlinx.android.synthetic.main.item_tokopedianow_home_category.view.*
 
-class HomeCategoryItemViewHolder(
-        itemView: View,
-        private val listener: HomeCategoryItemListener? = null,
-): AbstractViewHolder<HomeCategoryItemUiModel>(itemView) {
+class TokoNowCategoryItemViewHolder(
+    itemView: View,
+    private val listener: TokoNowCategoryItemListener? = null,
+): AbstractViewHolder<TokoNowCategoryItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_category
     }
 
-    override fun bind(data: HomeCategoryItemUiModel) {
+    override fun bind(data: TokoNowCategoryItemUiModel) {
         itemView.apply {
             textCategory.text = data.title
             imageCategory.loadImage(data.imageUrl) {
@@ -33,7 +33,7 @@ class HomeCategoryItemViewHolder(
         }
     }
 
-    interface HomeCategoryItemListener {
+    interface TokoNowCategoryItemListener {
         fun onCategoryClicked(position: Int, categoryId: String)
     }
 }

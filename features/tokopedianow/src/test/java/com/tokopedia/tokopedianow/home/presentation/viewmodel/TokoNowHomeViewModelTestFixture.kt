@@ -17,7 +17,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.util.getOrAwaitValue
@@ -111,7 +111,7 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
-        val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is HomeCategoryGridUiModel }
+        val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is TokoNowCategoryGridUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
