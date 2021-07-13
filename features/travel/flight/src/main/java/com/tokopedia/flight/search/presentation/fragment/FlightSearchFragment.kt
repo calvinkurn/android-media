@@ -125,6 +125,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     renderSearchList(it.data)
                 }
                 is Fail -> {
+                    hidePromoChips()
                     if (it.throwable is FlightSearchThrowable) {
                         val errors = (it.throwable as FlightSearchThrowable).errorList
                         for (error in errors) {
@@ -168,6 +169,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     }
                 }
                 is Fail -> {
+                    hidePromoChips()
                     hideTickerView()
                 }
             }
