@@ -1,2 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tokopedia.broadcaster"/>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.broadcaster">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+        <activity
+            android:name="com.tokopedia.broadcaster.MainActivity"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
