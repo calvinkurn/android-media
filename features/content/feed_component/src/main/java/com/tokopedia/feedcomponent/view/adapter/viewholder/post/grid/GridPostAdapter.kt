@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -37,7 +38,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_grid, parent, false)
-        return GridItemViewHolder(view, gridPostViewModel.positionInFeed, contentPosition, listener)
+        return GridItemViewHolder(view, gridPostViewModel.positionInFeed, contentPosition, listener, gridPostViewModel)
     }
 
     override fun getItemCount(): Int {
@@ -96,7 +97,7 @@ class GridPostAdapter(private val contentPosition: Int,
     class GridItemViewHolder(val v: View,
                              private val positionInFeed: Int,
                              private val contentPosition: Int,
-                             private val listener: GridItemListener) : RecyclerView.ViewHolder(v) {
+                             private val listener: GridItemListener, private val gridPostViewModel: GridPostViewModel) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String, listSize: Int) {
             itemView.productImage.loadImageRounded(image, RAD_10f)
             setImageMargins(listSize)
@@ -132,7 +133,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     item.redirectLink,
                     type,
                     isFollowed,
-                    shopId)
+                    shopId,
+                    gridPostViewModel.itemListFeedXProduct)
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -187,7 +189,8 @@ class GridPostAdapter(private val contentPosition: Int,
                     else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
                     type,
                     isFollowed,
-                    shopId
+                    shopId,
+                    gridPostViewModel.itemListFeedXProduct
                 )
             }
         }
@@ -209,7 +212,8 @@ class GridPostAdapter(private val contentPosition: Int,
         fun onGridItemClick(
             positionInFeed: Int, activityId: Int, productId: Int,
             redirectLink: String, type: String, isFollowed: Boolean,
-            shopId: String
+            shopId: String,
+            feedXProduct: List<FeedXProduct>
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)

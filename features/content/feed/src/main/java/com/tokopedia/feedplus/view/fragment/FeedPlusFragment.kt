@@ -1509,7 +1509,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         shopId: String
     ) {
-        feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, shopId)
+        feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, authorType)
         onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
@@ -1919,7 +1919,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        products: List<FeedXProduct>
     ) {
         onGoToLink(redirectLink)
 
@@ -1931,7 +1932,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 productId.toString(),
                 type,
                 isFollowed,
-                shopId)
+                shopId,
+                products)
         }
     }
 

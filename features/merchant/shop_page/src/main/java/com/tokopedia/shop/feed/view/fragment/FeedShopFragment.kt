@@ -823,7 +823,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        feedXProduct: List<FeedXProduct>
     ) {
         onGoToLink(redirectLink)
     }

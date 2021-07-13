@@ -1143,7 +1143,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        feedXProduct: List<FeedXProduct>
     ) {
         onGoToLink(redirectLink)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {

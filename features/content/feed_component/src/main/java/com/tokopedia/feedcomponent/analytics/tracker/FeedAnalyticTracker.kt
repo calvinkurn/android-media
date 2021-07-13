@@ -474,28 +474,33 @@ class FeedAnalyticTracker
         activityId: String, productId: String, type: String,
         isFollowed: Boolean,
         shopId: String,
+        products: List<FeedXProduct>
     ) {
-        val map = mapOf(
-            KEY_EVENT to PRODUCT_CLICK,
-            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
-            KEY_EVENT_ACTION to String.format(
-                FORMAT_THREE_PARAM,
-                CLICK,
-                "product",
-                getPostType(type,isFollowed)
-            ),
-            KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_THREE_PARAM,
-                activityId,
-                shopId,
-                productId
-            ),
-            KEY_BUSINESS_UNIT_EVENT to CONTENT,
-            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
-            KEY_EVENT_USER_ID to userSessionInterface.userId
-        )
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    trackEnhancedEcommerceEventNew(
+        PRODUCT_CLICK,
+        CATEGORY_FEED_TIMELINE,
+        String.format(
+            FORMAT_THREE_PARAM,
+            CLICK,
+            "product",
+            getPostType(type, isFollowed)
+        ),
+        String.format(
+            FORMAT_THREE_PARAM,
+            activityId,
+            shopId,
+            productId
+        ),
+        DataLayer.mapOf(CLICK , mapOf(
+                    "actionField" to mapOf(
+                        "list" to "feed - sgc image"
+                    ),
+                    "products" to getProductItemASGC(products)
+                )
+            )
+    )
+
     }
     fun eventGridMoreProductCLicked(
         activityId: String, type: String,
@@ -579,7 +584,7 @@ class FeedAnalyticTracker
             Promotion.CREATIVE , imageUrl,
             Promotion.ID ,activityId,
             Promotion.NAME , "/feed - asgc - post",
-            Promotion.POSITION , "{product horizontal position from $position}",
+            Promotion.POSITION , "$position",
         )
 
 
@@ -876,7 +881,8 @@ fun eventImpressionProductASGC(
             Product.ID, feedXProduct.id,
             Product.NAME, feedXProduct.name,
             Product.VARIANT, "",
-            Product.PRICE, feedXProduct.priceFmt,
+            Product.PRICE,
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscountFmt else feedXProduct.priceFmt,
             "dimension39", "/feed - asgc detail"
         )
 
@@ -978,7 +984,7 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 activityId,
                 userSessionInterface.shopId,
-                "#$hashTag"
+                "$hashTag"
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -2168,7 +2174,7 @@ fun eventImpressionProductASGC(
         EVENT_CATEGORY, eventCategory,
         EVENT_ACTION, eventAction,
         EVENT_LABEL, eventLabel,
-        USER_ID, userSessionInterface.userId,
+        KEY_EVENT_USER_ID, userSessionInterface.userId,
         KEY_BUSINESS_UNIT_EVENT , CONTENT,
         KEY_CURRENT_SITE_EVENT , MARKETPLACE
     )
