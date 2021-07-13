@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -73,7 +74,7 @@ abstract class SomBottomSheet(
 
     private fun setupOverlayBackgroundColor(fragmentView: ViewGroup, overlayView: View) {
         if (!hasVisibleTransparentOverlay(fragmentView)) {
-            overlayView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            overlayView.setBackgroundColor(ContextCompat.getColor(context, R.color._dms_bottomsheet_overlay_color))
         } else {
             overlayView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         }
