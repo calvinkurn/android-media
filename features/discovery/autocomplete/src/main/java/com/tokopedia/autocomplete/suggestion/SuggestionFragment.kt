@@ -21,7 +21,11 @@ import com.tokopedia.autocomplete.suggestion.di.SuggestionContextModule
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
 
@@ -66,8 +70,10 @@ class SuggestionFragment :
             (activity?.application as BaseMainApplication).baseAppComponent
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_suggestion, container, false)
     }
 
@@ -156,7 +162,7 @@ class SuggestionFragment :
         suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
-    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
         presenter.setSearchParameter(searchParameter)
     }
 
@@ -211,5 +217,22 @@ class SuggestionFragment :
     override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
         val productDataLayer = item.getProductLineAsObjectDataLayer()
         AutocompleteTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
+    }
+
+    override val chooseAddressData: LocalCacheModel
+        get() = context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
+
+    override fun trackTokoNowEventClickCurated(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowCurated(eventLabel)
+    }
+
+    override fun trackTokoNowEventClickKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowKeyword(eventLabel)
     }
 }

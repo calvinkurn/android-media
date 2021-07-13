@@ -145,16 +145,18 @@ data class Watermark (
 
         bitmap.adjustRotation(config.position.rotation).also {
             watermarkBitmap = it
-        }.also {
-            val watermarkWithAlphaBitmap = createBitmap(it.width, it.height, it.config)
-            val canvas = Canvas(watermarkWithAlphaBitmap)
-            canvas.drawBitmap(it, 0f, 0f, paint)
+
+            Canvas(
+                createBitmap(it.width, it.height, it.config)
+            ).apply {
+                drawBitmap(it, 0f, 0f, paint)
+            }
         }
 
-        val resultBitmap = scaledWatermarkBitmap(textLength)
-
-        canvasBitmap = resultBitmap
-        outputImage = resultBitmap
+        scaledWatermarkBitmap(textLength).apply {
+            canvasBitmap = this
+            outputImage = this
+        }
     }
 
     private fun createWatermark(

@@ -11,4 +11,5 @@ interface RegisterInitialRouter {
     fun goToOTPActivateEmail(email: String)
     fun onSuccessRegister()
     fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String)
+    fun gotoLoginEmailPage(email: String)
 }
