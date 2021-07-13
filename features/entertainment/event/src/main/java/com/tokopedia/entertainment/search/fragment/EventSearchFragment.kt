@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,9 +44,13 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 {
 
     lateinit var searchadapter:SearchEventAdapter
+
     @Inject
-    lateinit var factory : EventSearchViewModelFactory
-    lateinit var viewModel : EventSearchViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(EventSearchViewModel::class.java) }
+
     lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
@@ -73,7 +78,6 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         super.onCreate(savedInstanceState)
         initializePerformance()
         activity?.run {
-            viewModel = ViewModelProviders.of(this, factory).get(EventSearchViewModel::class.java)
             viewModel.resources = resources
         }
     }

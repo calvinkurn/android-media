@@ -59,13 +59,4 @@ class EventSearchModule {
     fun provideErrorInterceptors(): CommonErrorResponseInterceptor {
         return CommonErrorResponseInterceptor()
     }
-
-    @EventSearchScope
-    @Provides
-    fun provideViewModelFactory(dispatcher: CoroutineDispatcher,
-                                gqlRepository: GraphqlRepository,
-                                userSession: UserSessionInterface):
-            EventSearchViewModelFactory = EventSearchViewModelFactory(dispatcher,
-            gqlRepository, userSession)
-
 }

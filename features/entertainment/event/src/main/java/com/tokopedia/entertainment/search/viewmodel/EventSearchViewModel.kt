@@ -21,16 +21,17 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 04,March,2020
  */
 
-class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
-                           private val gqlRepository: GraphqlRepository,
-                           private val userSession: UserSessionInterface) : BaseViewModel(dispatcher){
+class EventSearchViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
+                           private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.main){
     companion object{
         private val TAG = EventSearchViewModel::class.java.simpleName
         private val SEARCHQUERY = "search_query"
@@ -91,7 +92,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     suspend fun getLocationSuggestionData(text: String, cacheType: CacheType, query: String) : EventSearchLocationResponse.Data{
-        return withContext(dispatcher){
+        return withContext(dispatcher.io){
             val req = GraphqlRequest(
                     query,
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
@@ -102,7 +103,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     suspend fun getHistorySearchData(cacheType: CacheType, query:String): EventSearchHistoryResponse.Data{
-        return withContext(dispatcher){
+        return withContext(dispatcher.io){
             val req = GraphqlRequest(
                     query,
                     EventSearchHistoryResponse.Data::class.java)
