@@ -110,7 +110,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             }
 
             ComponentNames.QuickFilter.componentName -> {
-                listComponents.add(component.copy())
+                listComponents.add(component)
+                component.properties?.targetId?.let {
+                    getComponent(it,component.pageEndPoint).apply {
+                        this?.parentFilterComponentId = component.id
+                    }
+                }
             }
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->

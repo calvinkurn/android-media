@@ -6,6 +6,7 @@ import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.CartLogger
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import rx.Subscriber
@@ -16,7 +17,6 @@ import rx.Subscriber
 
 class UpdateCartSubscriber(private val view: ICartListView?,
                            private val presenter: ICartListPresenter?,
-                           private val fireAndForget: Boolean,
                            private val cartItemDataList: List<CartItemData>) : Subscriber<UpdateCartData>() {
 
     override fun onCompleted() {
@@ -24,36 +24,31 @@ class UpdateCartSubscriber(private val view: ICartListView?,
     }
 
     override fun onError(e: Throwable) {
-        if (!fireAndForget) {
-            view?.let {
-                e.printStackTrace()
-                it.hideProgressLoading()
-                it.renderErrorToShipmentForm(e)
-                CartLogger.logOnErrorUpdateCartForCheckout(e, cartItemDataList)
-            }
+        view?.let {
+            it.hideProgressLoading()
+            it.renderErrorToShipmentForm(e)
+            CartLogger.logOnErrorUpdateCartForCheckout(e, cartItemDataList)
         }
     }
 
     override fun onNext(data: UpdateCartData) {
-        if (!fireAndForget) {
-            view?.let {
-                it.hideProgressLoading()
-                if (!data.isSuccess) {
-                    if (data.outOfServiceData.id != 0) {
-                        it.renderErrorToShipmentForm(data.outOfServiceData)
-                    } else {
-                        it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
-                    }
-                    CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(data.message), cartItemDataList)
+        view?.let {
+            it.hideProgressLoading()
+            if (!data.isSuccess) {
+                if (data.outOfServiceData.id != 0) {
+                    it.renderErrorToShipmentForm(data.outOfServiceData)
                 } else {
-                    val checklistCondition = getChecklistCondition()
-                    val cartItemDataList = it.getAllSelectedCartDataList()
-                    cartItemDataList?.let { data ->
-                        it.renderToShipmentFormSuccess(
-                                presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1)
-                                        ?: hashMapOf(),
-                                data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
-                    }
+                    it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
+                }
+                CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(data.message), cartItemDataList)
+            } else {
+                val checklistCondition = getChecklistCondition()
+                val cartItemDataList = it.getAllSelectedCartDataList()
+                cartItemDataList?.let { data ->
+                    it.renderToShipmentFormSuccess(
+                            presenter?.generateCheckoutDataAnalytics(data, EnhancedECommerceActionField.STEP_1)
+                                    ?: hashMapOf(),
+                            data, isCheckoutProductEligibleForCashOnDelivery(data), checklistCondition)
                 }
             }
         }

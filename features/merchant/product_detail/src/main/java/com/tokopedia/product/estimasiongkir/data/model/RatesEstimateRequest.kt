@@ -1,7 +1,7 @@
 package com.tokopedia.product.estimasiongkir.data.model
 
 import com.tokopedia.product.detail.data.util.KG
-import com.tokopedia.product.detail.data.util.numberFormatted
+import com.tokopedia.product.detail.common.numberFormatted
 
 /**
  * Created by Yehezkiel on 25/01/21
@@ -21,7 +21,8 @@ data class RatesEstimateRequest(
         val uspImageUrl: String = "",
         val userId: String = "",
         val forceRefresh: Boolean = false,
-        val shopTier: Int = 0
+        val shopTier: Int = 0,
+        val isTokoNow: Boolean = false
 ) {
     companion object {
         const val KG_TEXT = "kilo"

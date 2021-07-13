@@ -63,6 +63,7 @@ object AccountConstants {
         const val DEVELOPER_OPTIONS = "developer options"
         const val LOGOUT = "logout"
         const val CLEAR_CACHE = "clear cache"
+        const val SCREEN_RECORDER = "perekam layar"
         const val USER_DATA = "user_data"
         const val ADVANCED_SETTING = "pengaturan tambahan"
         const val PERSONAL_DATA = "personal data"

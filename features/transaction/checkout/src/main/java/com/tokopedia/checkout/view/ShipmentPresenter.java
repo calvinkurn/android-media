@@ -22,7 +22,6 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
@@ -48,6 +47,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -153,7 +153,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ExecutorSchedulers executorSchedulers;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
-    private TickerAnnouncementHolderData tickerAnnouncementHolderData;
+    private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
+    private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
     private RecipientAddressModel recipientAddressModel;
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
@@ -275,6 +276,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shipmentCostModel = new ShipmentCostModel();
         }
         return shipmentCostModel;
+    }
+
+    @Override
+    public ShipmentTickerErrorModel getShipmentTickerErrorModel() {
+        return shipmentTickerErrorModel;
     }
 
     @Override
@@ -549,6 +555,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setLatValidateUseRequest(null);
         setValidateUsePromoRevampUiModel(null);
 
+        shipmentTickerErrorModel = new ShipmentTickerErrorModel(cartShipmentAddressFormData.getErrorTicker());
+
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
                     new TickerAnnouncementHolderData(cartShipmentAddressFormData.getTickerData().getId(),
@@ -556,7 +564,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             );
             analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
         } else {
-            setTickerAnnouncementHolderData(null);
+            setTickerAnnouncementHolderData(new TickerAnnouncementHolderData());
         }
 
         RecipientAddressModel newAddress = shipmentDataConverter
@@ -564,7 +572,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setRecipientAddressModel(newAddress);
 
         if (cartShipmentAddressFormData.getDonation() != null) {
-            setShipmentDonationModel(shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData));
+            ShipmentDonationModel shipmentDonationModel = shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData);
+            shipmentDonationModel.setEnabled(!shipmentTickerErrorModel.isError());
+            setShipmentDonationModel(shipmentDonationModel);
         } else {
             setShipmentDonationModel(null);
         }
@@ -584,7 +594,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             mTrackerPurchaseProtection.eventImpressionOfProduct();
         }
 
-        setEgoldAttributeModel(cartShipmentAddressFormData.getEgoldAttributes());
+        EgoldAttributeModel egoldAttributes = cartShipmentAddressFormData.getEgoldAttributes();
+        if (egoldAttributes != null) {
+            egoldAttributes.setEnabled(!shipmentTickerErrorModel.isError());
+        }
+        setEgoldAttributeModel(egoldAttributes);
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
@@ -1040,10 +1054,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest) {
+    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
+        getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
@@ -1057,6 +1072,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onError(Throwable e) {
+                                getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
                                 Timber.d(e);
                                 if (getView() != null) {
                                     mTrackerShipment.eventClickLanjutkanTerapkanPromoError(e.getMessage());
@@ -1075,6 +1091,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                getView().setStateLoadingCourierStateAtIndex(cartPosition, false);
                                 ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 if (getView() != null) {
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
@@ -1406,10 +1423,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                           List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
         if (shipmentCartItemModel == null) return;
         CourierItemData courierData = null;
-        if (getView().isTradeInByDropOff()) {
-            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
-        } else {
-            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+            if (getView().isTradeInByDropOff()) {
+                courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
+            } else {
+                courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+            }
         }
 
         if (courierData != null) {
@@ -1839,6 +1858,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setOriginLatitude(shipmentDetailData.getShipmentCartData().getOriginLatitude());
         shippingParam.setOriginLongitude(shipmentDetailData.getShipmentCartData().getOriginLongitude());
         shippingParam.setWeightInKilograms(shipmentDetailData.getShipmentCartData().getWeight() / 1000);
+        shippingParam.setWeightActualInKilograms(shipmentDetailData.getShipmentCartData().getWeightActual() / 1000);
         shippingParam.setShopId(shipmentDetailData.getShopId());
         shippingParam.setShopTier(shipmentDetailData.getShipmentCartData().getShopTier());
         shippingParam.setToken(shipmentDetailData.getShipmentCartData().getToken());
@@ -1856,6 +1876,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setTradeInDropOff(isTradeInDropOff);
         shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
         shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
+        shippingParam.setBoMetadata(shipmentDetailData.getShipmentCartData().getBoMetadata());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(recipientAddressModel.getLocationDataModel().getDistrict());
@@ -1872,9 +1893,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition) {
+    public List<ShippingCourierUiModel> getShippingCourierViewModelsState(int orderNumber) {
         if (shippingCourierViewModelsState != null) {
-            return shippingCourierViewModelsState.get(itemPosition);
+            return shippingCourierViewModelsState.get(orderNumber);
         }
         return null;
     }
@@ -1882,11 +1903,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShippingCourierViewModelsState
             (List<ShippingCourierUiModel> shippingCourierUiModelsState,
-             int itemPosition) {
+             int orderNumber) {
         if (this.shippingCourierViewModelsState == null) {
             this.shippingCourierViewModelsState = new HashMap<>();
         }
-        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierUiModelsState);
+        this.shippingCourierViewModelsState.put(orderNumber, shippingCourierUiModelsState);
     }
 
     @Override

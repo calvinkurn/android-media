@@ -36,8 +36,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.pms_hwp_info.*
-import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 

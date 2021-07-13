@@ -42,7 +42,13 @@ data class Payment(
         @SerializedName("is_ovo_only_campaign")
         val isOvoOnlyCampaign: Boolean = false,
         @SerializedName("ovo_additional_data")
-        val ovoAdditionalData: OvoAdditionalData= OvoAdditionalData()
+        val ovoAdditionalData: OvoAdditionalData= OvoAdditionalData(),
+        @SerializedName("bid")
+        val bid: String = "",
+        @SerializedName("specific_gateway_campaign_only_type")
+        val specificGatewayCampaignOnlyType: Int = 0,
+        @SerializedName("wallet_additional_data")
+        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData()
 )
 
 data class PaymentErrorMessage(
@@ -119,6 +125,19 @@ data class OvoAdditionalData(
         val phoneNumberRegistered: OvoActionData = OvoActionData()
 )
 
+data class WalletAdditionalData(
+        @SerializedName("wallet_type")
+        val walletType: Int = 0, // 1 for ovo, 2 for gopay, 3 for gopaylater
+        @SerializedName("enable_wallet_amount_validation")
+        val enableWalletAmountValidation: Boolean = false,
+        @SerializedName("activation")
+        val activation: WalletData = WalletData(),
+        @SerializedName("top_up")
+        val topUp: WalletData = WalletData(),
+        @SerializedName("phone_number_registered")
+        val phoneNumberRegistered: WalletData = WalletData()
+)
+
 data class OvoActionData(
         @SerializedName("is_required")
         val isRequired: Boolean = false,
@@ -130,4 +149,23 @@ data class OvoActionData(
         val errorTicker: String = "",
         @SerializedName("is_hide_digital")
         val isHideDigital: Int = 0
+)
+
+data class WalletData(
+        @SerializedName("is_required")
+        val isRequired: Boolean = false, // flag to client to show activation button title or activation?
+        @SerializedName("button_title")
+        val buttonTitle: String = "",
+        @SerializedName("success_toaster")
+        val successToaster: String = "",
+        @SerializedName("error_toaster")
+        val errorToaster: String = "",
+        @SerializedName("error_message")
+        val errorMessage: String = "",
+        @SerializedName("is_hide_digital")
+        val isHideDigital: Boolean = false,
+        @SerializedName("header_title")
+        val headerTitle: String = "",
+        @SerializedName("url_link")
+        val urlLink: String = ""
 )

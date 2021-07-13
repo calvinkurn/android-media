@@ -97,7 +97,7 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         return try {
             // Example: <font color = "red">Example Text</font>
             val colorFromFontTagRegex = "<(.*)font(.+)color*=*(.+)".toRegex()
-            // Example: <span style=color:#d6001c;><b>Habis</b></span>
+            // Example: <span style=color:#the_hex_color;><b>Habis</b></span>
             val colorFromStyleTagRegex = "(<+)(.+)style*=*(\"*)(.+)color*:*(.+)".toRegex()
 
             val colorString =

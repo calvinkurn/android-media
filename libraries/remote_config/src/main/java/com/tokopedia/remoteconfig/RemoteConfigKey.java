@@ -43,7 +43,6 @@ public class RemoteConfigKey {
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
     public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
-    public static final String CUSTOMER_HOTEL_SEARCH_WITH_MAP = "android_customer_hotel_search_with_map";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST = "app_flag_flight_rapid_test";
     public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING = "app_flag_flight_seat_distancing";
     public static final String ANDROID_CUSTOMER_FLIGHT_CANCELLATION_NAVIGATION = "android_customer_flight_cancellation_navigation";
@@ -207,7 +206,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
 
-    public static final String CHAT_EVER_SEEN_PRODUCT = "android_event_seen_product";
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled_v2";
@@ -248,5 +246,8 @@ public class RemoteConfigKey {
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
+    public static final String SETTING_SHOW_SCREEN_RECORDER = "android_show_screen_recorder";
+
+    public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
 }

@@ -13,6 +13,7 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
@@ -154,6 +155,8 @@ public interface ShipmentContract {
 
         void resetAllCourier();
 
+        void setStateLoadingCourierStateAtIndex(int index, boolean isLoading);
+
         void logOnErrorLoadCheckoutPage(Throwable throwable);
 
         void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
@@ -233,7 +236,7 @@ public interface ShipmentContract {
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
-        void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
+        void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -263,6 +266,8 @@ public interface ShipmentContract {
         ShipmentCostModel getShipmentCostModel();
 
         EgoldAttributeModel getEgoldAttributeModel();
+
+        ShipmentTickerErrorModel getShipmentTickerErrorModel();
 
         TickerAnnouncementHolderData getTickerAnnouncementHolderData();
 
@@ -296,9 +301,9 @@ public interface ShipmentContract {
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
 
         void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
-                                               int itemPosition);
+                                               int orderNumber);
 
-        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition);
+        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int orderNumber);
 
         void setCouponStateChanged(boolean appliedCoupon);
 
