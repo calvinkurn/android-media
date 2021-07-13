@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -28,6 +31,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
+                                            private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
                                             private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
@@ -362,6 +366,62 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                     throwable = throwable
             )
         }
+    }
+
+    fun addToCartOcc(observer: Int) {
+        if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+            val miniCartItems = mutableListOf<AddToCartOccMultiCartParam>()
+            getMiniCartItems().forEach { miniCartItem ->
+                if (!miniCartItem.isError) {
+                    miniCartItems.add(
+                            AddToCartOccMultiCartParam(
+                                    cartId = miniCartItem.cartId,
+                                    productId = miniCartItem.productId,
+                                    shopId = miniCartItem.shopId,
+                                    quantity = miniCartItem.quantity.toString(),
+                                    notes = miniCartItem.notes,
+                                    warehouseId = miniCartItem.warehouseId,
+                                    attribution = miniCartItem.attribution
+                            )
+                    )
+                }
+            }
+            val params = AddToCartOccMultiRequestParams(
+                    carts = miniCartItems,
+                    source = AddToCartOccMultiRequestParams.SOURCE_MINICART
+            )
+            addToCartOccMultiUseCase.setParams(params)
+        } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+            val miniCartItems = mutableListOf<AddToCartOccMultiCartParam>()
+            val visitables = getVisitables()
+            visitables.forEach { visitable ->
+                if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                    miniCartItems.add(AddToCartOccMultiCartParam(
+                            cartId = visitable.cartId,
+                            productId = visitable.productId,
+                            shopId = visitable.shopId,
+                            quantity = visitable.productQty.toString(),
+                            notes = visitable.productNotes,
+                            warehouseId = visitable.warehouseId,
+                            attribution = visitable.attribution
+                    ))
+                }
+            }
+            val params = AddToCartOccMultiRequestParams(
+                    carts = miniCartItems,
+                    source = AddToCartOccMultiRequestParams.SOURCE_MINICART
+            )
+            addToCartOccMultiUseCase.setParams(params)
+        }
+
+        addToCartOccMultiUseCase.execute(
+                onSuccess = {
+
+                },
+                onError = {
+
+                }
+        )
     }
 
     // User Interaction

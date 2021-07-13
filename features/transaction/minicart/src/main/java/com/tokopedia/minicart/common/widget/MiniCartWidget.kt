@@ -316,7 +316,8 @@ class MiniCartWidget @JvmOverloads constructor(
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
-                viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                viewModel?.addToCartOcc(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+//                viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
         imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
