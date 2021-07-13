@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.mvcwidget.AnimatedInfos
 
 data class MerchantVoucherSummary(
-        @SerializedName("title")
+        @SerializedName("animatedInfo")
         @Expose
         val animatedInfos: List<AnimatedInfos> = listOf(),
         @SerializedName("isShown")
