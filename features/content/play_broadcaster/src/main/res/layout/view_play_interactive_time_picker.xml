@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_time_picker_sheet"
+        android:id="@+id/cl_interactive_time_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_play_bottom_sheet"
@@ -20,7 +20,7 @@
             layout="@layout/bottom_sheet_header" />
 
         <com.tokopedia.unifycomponents.picker.PickerUnify
-            android:id="@+id/picker_time"
+            android:id="@+id/pu_timer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl9"
             android:layout_marginStart="@dimen/spacing_lvl4"
@@ -37,9 +37,9 @@
             android:layout_height="@dimen/play_button_medium_height"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/play_interactive_time_picker_apply"
-            app:layout_constraintStart_toStartOf="@id/picker_time"
-            app:layout_constraintEnd_toEndOf="@id/picker_time"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/pu_timer"
+            app:layout_constraintStart_toStartOf="@id/pu_timer"
             app:unifyButtonSize="medium" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

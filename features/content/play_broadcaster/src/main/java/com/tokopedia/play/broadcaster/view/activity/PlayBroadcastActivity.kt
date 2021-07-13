@@ -168,11 +168,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         val destFragment = getFragmentByClassName(fragmentClass)
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_setup)
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fl_container)
         if (currentFragment == null || currentFragment::class.java != fragmentClass) {
             destFragment.arguments = extras
             fragmentTransaction
-                    .replace(R.id.fl_setup, destFragment, fragmentClass.name)
+                    .replace(R.id.fl_container, destFragment, fragmentClass.name)
                     .commit()
         }
     }
@@ -207,7 +207,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun initView() {
-        containerSetup = findViewById(R.id.fl_setup)
+        containerSetup = findViewById(R.id.fl_container)
         globalErrorView = findViewById(R.id.global_error)
         surfaceView = findViewById(R.id.surface_view)
     }
@@ -251,7 +251,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         return fragmentFactory.instantiate(classLoader, fragmentClass.name)
     }
 
-    private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.fl_setup)
+    private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.fl_container)
 
     private fun shouldClosePage(): Boolean {
         val currentVisibleFragment = getCurrentFragment()

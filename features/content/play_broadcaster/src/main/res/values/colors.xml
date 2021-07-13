@@ -19,7 +19,6 @@
     <color name="play_dms_gradient_start">#7F31353B</color>
     <color name="play_dms_gradient_end">#0031353B</color>
 
-    <color name="play_dms_summary_background">#7031353B</color>
 
     <!--Schedule-->
     <color name="play_dms_broadcast_schedule_info">#FFFFFF</color>
@@ -28,6 +27,7 @@
     <!--Engagement Tools-->
     <color name="play_dms_broadcast_interactive_live_title">#40454C</color>
 
+    <color name="play_dms_N700_40">#6631353B</color>
     <color name="play_dms_N700_68">#AD31353B</color>
     <color name="play_dms_N700_96">#F531353B</color>
     <color name="play_dms_N150">#B5BBC5</color>

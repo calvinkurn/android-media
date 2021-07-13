@@ -9,7 +9,6 @@
     >
 
     <include
-        android:id="@+id/action_bar"
         layout="@layout/layout_play_action_bar"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"

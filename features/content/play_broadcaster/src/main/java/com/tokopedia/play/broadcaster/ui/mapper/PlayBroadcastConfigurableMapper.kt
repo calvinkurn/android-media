@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.mapper
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -122,5 +123,10 @@ class PlayBroadcastConfigurableMapper(
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
         return if (!isMock) uiMapper.mapInteractiveConfig(response)
         else mockMapper.mapInteractiveConfig(response)
+    }
+
+    override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
+        return if (!isMock) uiMapper.mapCreateInteractiveSession(response)
+        else mockMapper.mapCreateInteractiveSession(response)
     }
 }

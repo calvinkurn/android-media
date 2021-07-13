@@ -2,16 +2,10 @@ package com.tokopedia.play_common.view
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Outline
-import android.graphics.Path
-import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play_common.R
 
 /**

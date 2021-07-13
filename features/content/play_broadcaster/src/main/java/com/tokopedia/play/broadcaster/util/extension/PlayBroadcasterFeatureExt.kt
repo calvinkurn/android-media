@@ -66,15 +66,10 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .into(this)
 }
 
-internal fun Long.convertMillisToMinuteSecond(): String = String.format("%02d:%02d",
-        this.convertMillisToMinute(),
-        this.convertMillisToSecond()
-)
+internal fun Long.millisToMinutes() = TimeUnit.MILLISECONDS.toMinutes(this)
 
-internal fun Long.convertMillisToMinute() = TimeUnit.MILLISECONDS.toMinutes(this)
-
-internal fun Long.convertMillisToSecond() = TimeUnit.MILLISECONDS.toSeconds(this) -
-        TimeUnit.MINUTES.toSeconds(this.convertMillisToMinute())
+internal fun Long.millisToRemainingSeconds() =
+    TimeUnit.MILLISECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)
 
 internal fun Date.dayLater(amount: Int): Date {
     val calendar = Calendar.getInstance()

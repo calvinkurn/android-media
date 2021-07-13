@@ -22,7 +22,7 @@
 
     <string name="play_action_bar_prepare_title">Buat Live Streaming</string>
     <string name="play_action_bar_prepare_final_title">Ayo cek lagi info di bawah\n ini sebelum mulai!</string>
-    <string name="play_action_bar_end">End</string>
+    <string name="play_action_bar_end">Akhiri</string>
 
     <string name="play_permit_title">Aktifkan kamera &amp; mikrofon</string>
     <string name="play_permit_description">Untuk memulai live streaming, berikan akses kamera &amp; mikrofon di HP kamu.</string>
@@ -95,6 +95,7 @@
     <string name="play_live_broadcast_stat_info_default">0</string>
     <string name="play_live_broadcast_time_default">00:00</string>
     <string name="play_live_broadcast_time_left">Sisa %d menit</string>
+    <string name="play_live_broadcast_remaining_duration_format">%1$02d:%2$02d</string>
     <string name="play_live_broadcast_dialog_end_title">Eh, kamu mau ke mana?</string>
     <string name="play_live_broadcast_dialog_end_desc">Banyak penonton kamu yg akan sedih kalau kamu keluar dari live streaming sekarang.</string>
     <string name="play_live_broadcast_dialog_end_primary">Lanjut Siaran</string>
@@ -179,13 +180,18 @@
     <string name="album">Album</string>
 
     <string name="play_interactive_create_game">Buat Game Hadiah</string>
+    <string name="play_interactive_title_default">Giveaway </string>
     <string name="play_interactive_time_picker_title">Atur waktu mulai</string>
     <string name="play_interactive_time_picker_apply"><![CDATA[Terapkan & Mulai]]></string>
-    <string name="play_interactive_time_picker_value">%d Menit</string>
     <string name="play_interactive_setup_start_in">Dimulai dalam:</string>
     <string name="play_interactive_live_end_in">Berakhir dalam:</string>
     <string name="play_interactive_live">Game sedang dimulai</string>
+    <string name="play_interactive_selected_duration_format">%1$02d menit %2$02d detik</string>
+    <string name="play_interactive_minute">%d Menit </string>
+    <string name="play_interactive_second">%d Detik</string>
 
     <string name="play_interactive_broadcast_onboarding_title">Baru! Main game di live streaming</string>
     <string name="play_interactive_broadcast_onboarding_subtitle">Bikin penontonmu betah nonton lama dengan buat Game Hadiah.</string>
+
+    <string name="play_interactive_broadcast_create_fail">Oops, gagal membuat game. Silahkan coba lagi</string>
 </resources>

@@ -32,6 +32,9 @@ class PlayInteractiveLeaderboardViewComponent(
         }
     })
 
+    /**
+     * TODO: please delete
+     */
     private val mockLeaderboardItems = List(5) {
         PlayLeaderboardUiModel(
             title = listOf("Giveaway Kotak Pensil", "Giveaway LCD tv", "Giveaway CD Blackpink").random(),
@@ -87,6 +90,11 @@ class PlayInteractiveLeaderboardViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
-        fun onChatWinnerButtonClicked(view: PlayInteractiveLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int)
+        fun onChatWinnerButtonClicked(
+            view: PlayInteractiveLeaderboardViewComponent,
+            winner: PlayWinnerUiModel,
+            position: Int
+        ) {
+        }
     }
 }

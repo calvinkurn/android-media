@@ -28,6 +28,9 @@ class InteractiveFinishView : RoundedConstraintLayout {
         binding.viewPlayInteractiveInit.root.setOnClickListener {
             mListener?.onCreateNewGameClicked(this)
         }
+        binding.flInteractiveWinner.setOnClickListener {
+            mListener?.onSeeWinnerClicked(this)
+        }
     }
 
     fun getBadgeView(): View = binding.flInteractiveWinner
@@ -39,5 +42,6 @@ class InteractiveFinishView : RoundedConstraintLayout {
     interface Listener {
 
         fun onCreateNewGameClicked(view: InteractiveFinishView)
+        fun onSeeWinnerClicked(view: InteractiveFinishView)
     }
 }

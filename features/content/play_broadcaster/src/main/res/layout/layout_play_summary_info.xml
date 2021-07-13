@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:background="@drawable/bg_play_dark_gray_rounded_corner"
+            android:background="@drawable/bg_play_stats_info_view_badge"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:paddingStart="@dimen/play_dp_6"
             android:paddingTop="@dimen/spacing_lvl1"
