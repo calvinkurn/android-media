@@ -479,6 +479,15 @@ public interface ApplinkConst {
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
     }
 
+    interface TokopediaNow {
+        String HOME = "tokopedia://now";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 = "11515028";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
+        String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
+        String SEARCH = "tokopedia://now/search";
+        String CATEGORY = "tokopedia://now/category";
+    }
+
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";
@@ -559,6 +568,7 @@ public interface ApplinkConst {
         String TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY = "TKPD_ATTACH_PRODUCT_SOURCE";
         String TOKOPEDIA_ATTACH_PRODUCT_HIDDEN = "TKPD_ATTACH_PRODUCT_HIDDEN";
         String TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY = "TKPD_ATTACH_PRODUCT_RESULTS";
+        String TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID = "TKPD_ATTACH_PRODUCT_WAREHOUSE_ID";
     }
 
     interface Notification {

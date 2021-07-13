@@ -160,7 +160,8 @@ class NewShopPageFragment :
         ShopActionButtonWidgetChatButtonComponentViewHolder.Listener,
         ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
         ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
-        ShopHeaderPlayWidgetViewHolder.Listener
+        ShopHeaderPlayWidgetViewHolder.Listener,
+        ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 {
 
     companion object {
@@ -363,6 +364,7 @@ class NewShopPageFragment :
                 shopPageTracking,
                 shopPageTrackingSGCPlay,
                 view.context,
+                this,
                 this,
                 this,
                 this,
@@ -2174,6 +2176,15 @@ class NewShopPageFragment :
             componentModel: ShopHeaderImageOnlyComponentUiModel,
             shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
     ) {
+        sendImpressionShopHeaderComponentTracking(
+                shopHeaderWidgetUiModel,
+                componentModel,
+                ""
+        )
+    }
+
+
+    override fun onImpressionShopPerformanceWidgetImageTextItem(componentModel: ShopHeaderImageTextComponentUiModel, shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
         sendImpressionShopHeaderComponentTracking(
                 shopHeaderWidgetUiModel,
                 componentModel,
