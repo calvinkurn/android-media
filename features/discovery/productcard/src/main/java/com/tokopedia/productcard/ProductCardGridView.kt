@@ -195,6 +195,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private fun configureButtonDeleteCart(shouldShowCartEditorComponent: Boolean) {
         buttonDeleteCart?.showWithCondition(shouldShowCartEditorComponent)
+        buttonDeleteCart?.setOnClickListener {
+            addToCartNonVariantClickListener?.onQuantityChanged(0)
+        }
     }
 
     private fun configureQuantityEditor(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
