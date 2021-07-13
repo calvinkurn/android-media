@@ -359,19 +359,12 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private fun showErrorState(throwable: Throwable, isVerify: Boolean){
         swipe_refresh_layout.isRefreshing = false
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-//        NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
-//            showViewBottom(false)
-//            loadData()
-//        }.showRetrySnackbar()
-
-        view?.let {
-            val snackbar = Snackbar.make(it, errorMessage, Snackbar.LENGTH_INDEFINITE)
-            snackbar.setAction("Coba Lagi") {
-                showViewBottom(false)
-                loadData()
-            }
-            snackbar.show()
-        }
+        Handler().postDelayed({
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
+            showViewBottom(false)
+            loadData()
+        }.showRetrySnackbar()
+        },200)
         if(!isVerify) {
             renderList(listOf())
             activity?.txtUbah?.visibility = View.GONE

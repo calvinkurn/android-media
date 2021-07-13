@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -123,14 +124,13 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
-                    launch {
-                        delay(100)
+                    Handler().postDelayed({
                         Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT")
                         NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                             Log.d("ERROR_SNACK", "SHOW ERROR SNACK GET DATA")
                             getData(CacheType.ALWAYS_CLOUD)
                         }.showRetrySnackbar()
-                    }
+                    }, 200)
                 }
         )
     }

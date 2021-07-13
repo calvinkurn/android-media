@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +37,8 @@ import kotlinx.android.synthetic.main.ent_search_detail_activity.*
 import kotlinx.android.synthetic.main.ent_search_detail_shimmer.*
 import kotlinx.android.synthetic.main.ent_search_fragment.recycler_viewParent
 import kotlinx.android.synthetic.main.ent_search_fragment.swipe_refresh_layout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -161,24 +164,14 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     }
 
     private fun observeErrorReport(){
-        viewModel.errorReport.observe(viewLifecycleOwner, Observer { throwable ->
-//            NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
-//                recycler_viewParent.addOnScrollListener(endlessScroll)
-//                viewModel.page = "1"
-//                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
-//            }.showRetrySnackbar()
-
-            view?.let {
-                val snackbar = Snackbar.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_INDEFINITE)
-                snackbar.setAction("Coba Lagi") {
-                    recycler_viewParent.addOnScrollListener(endlessScroll)
-                    viewModel.page = "1"
-                    viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
-                }
-                snackbar.show()
-            }
-//                    NetworkErrorHelper.createSnackbarRedWithAction(activity,
-//                            ErrorHandler.getErrorMessage(context, it)) { getData(CacheType.ALWAYS_CLOUD) }.showRetrySnackbar()
+        viewModel.errorReport.observe(viewLifecycleOwner, Observer {
+            Handler().postDelayed({
+                NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+                recycler_viewParent.addOnScrollListener(endlessScroll)
+                viewModel.page = "1"
+                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
+            }.showRetrySnackbar()
+            },200)
         })
     }
 
