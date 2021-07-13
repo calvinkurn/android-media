@@ -61,7 +61,7 @@ internal fun Map<String, Any>.haveSameEventAndLabel(obj: Map<String, Any>): Bool
                 this[ValidatorEngine.EVENT_LABEL_KEY]!!.eq(obj[ValidatorEngine.EVENT_LABEL_KEY]!!).first)
 
 private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): Pair<Boolean, String> {
-    if (this.size > 1) throw Exception("Tracker Query array should only contains one element")
+    if (this.size > 1) throw ArrayStoreException("Tracker Query array should only contains one element")
     for (map in arr) {
         val result = this[0].canValidateWithErrorMessage(map)
         if (!result.first) return result
