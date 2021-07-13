@@ -181,6 +181,8 @@ dependencies {
 
     implementation platform(rootProject.ext.firebase.bom)
 
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
+
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
