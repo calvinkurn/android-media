@@ -301,4 +301,13 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
         return 0
     }
+
+    fun notifyItemChanged(positionList: List<Int>? = listOf()) {
+        val adapter = carouselProductCardAdapter?.asRecyclerViewAdapter() ?: return
+        positionList ?: return
+
+        positionList.forEach {
+            adapter.notifyItemChanged(it)
+        }
+    }
 }
