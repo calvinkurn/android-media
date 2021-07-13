@@ -42,6 +42,7 @@
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:textColor="@color/Unify_N700_44"
+            android:textIsSelectable="false"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
@@ -53,7 +54,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginTop="@dimen/dp_topchat_6"
         android:textColor="@color/Unify_N700_44"
-        android:textIsSelectable="true"
+        android:textIsSelectable="false"
         android:visibility="gone"
         app:typographyType="body_3"
         tools:text="Pesan ini dibalas oleh sistem"
