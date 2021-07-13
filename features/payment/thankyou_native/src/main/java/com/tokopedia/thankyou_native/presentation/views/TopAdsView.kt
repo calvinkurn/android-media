@@ -17,8 +17,8 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestPar
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 class TopAdsView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val layout = R.layout.thanks_topads_view
     private lateinit var recyclerView: RecyclerView
@@ -39,8 +39,16 @@ class TopAdsView @JvmOverloads constructor(
         this.thanksPageData = thanksPageData
         if (!topAdsParams.topAdsImageViewModel.isNullOrEmpty()) {
             visible()
-            findViewById<TextView>(R.id.tvFeatureTitle).text = topAdsParams.title
-            findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.description
+            if (topAdsParams.title.isNotBlank())
+                findViewById<TextView>(R.id.tvFeatureTitle).text = topAdsParams.title
+            else
+                findViewById<TextView>(R.id.tvFeatureTitle).gone()
+
+            if (topAdsParams.description.isNotBlank())
+                findViewById<TextView>(R.id.tvFeatureDescription).text = topAdsParams.description
+            else
+                findViewById<TextView>(R.id.tvFeatureDescription).gone()
+
             addTORecyclerView(topAdsParams.topAdsImageViewModel)
         } else {
             gone()
@@ -50,7 +58,8 @@ class TopAdsView @JvmOverloads constructor(
     private fun addTORecyclerView(topAdsImageViewModelList: ArrayList<TopAdsImageViewModel>?) {
         topAdsImageViewModelList?.let {
             recyclerView = findViewById(R.id.recyclerView)
-            recyclerView.layoutManager = LinearLayoutManager(context,  LinearLayoutManager.HORIZONTAL, false)
+            recyclerView.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             recyclerView.adapter = adapter
             recyclerView.post {
                 adapter.addItems(topAdsImageViewModelList)
@@ -59,7 +68,7 @@ class TopAdsView @JvmOverloads constructor(
         }
     }
 
-    private fun onClick(topAdsImageViewModel: TopAdsImageViewModel){
+    private fun onClick(topAdsImageViewModel: TopAdsImageViewModel) {
         context?.let {
             RouteManager.route(context, topAdsImageViewModel.applink)
         }

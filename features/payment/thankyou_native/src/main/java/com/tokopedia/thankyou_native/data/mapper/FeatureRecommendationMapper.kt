@@ -7,7 +7,6 @@ import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import org.json.JSONObject
 
 object FeatureRecommendationMapper {
@@ -21,10 +20,12 @@ object FeatureRecommendationMapper {
                     val jsonObject = JSONObject(featureEngineItem.detail)
                     if (jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_PRODUCT, true)
                         || jsonObject[KEY_TYPE].toString().equals(TYPE_TDN_USER, true)) {
-                        return gson.fromJson(
+                        val requestParam = gson.fromJson(
                             featureEngineItem.detail,
                             TopAdsRequestParams::class.java
                         )
+                        requestParam.title = engineData.title
+                        requestParam.description = engineData.description
                     }
                 } catch (e: Exception) { }
             }
