@@ -140,8 +140,10 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         swipe_refresh_layout.isRefreshing = true
         if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                 || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
+            Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT CONTEXT not null search data")
             viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())
         } else{
+            Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT CONTEXT not null history data")
             viewModel.getHistorySearch(cacheType, getEventHistory(), userSession.isLoggedIn)
         }
     }
