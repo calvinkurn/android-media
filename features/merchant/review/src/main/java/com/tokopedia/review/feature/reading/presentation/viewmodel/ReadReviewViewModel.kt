@@ -79,7 +79,7 @@ class ReadReviewViewModel @Inject constructor(
 
     fun mapProductReviewToReadReviewUiModel(productReviews: List<ProductReview>, shopId: String, shopName: String): List<ReadReviewUiModel> {
         return productReviews.map {
-            ReadReviewUiModel(it, false, shopId, shopName)
+            ReadReviewUiModel(it, false, shopId, shopName, productId.value ?: "")
         }
     }
 

@@ -11,7 +11,7 @@ object ReviewGalleryTracking {
     fun trackOnLikeReviewClicked(feedbackId: String, isLiked: Boolean, productId: String) {
         tracker.sendGeneralEvent(getTrackEventMap(
                 ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_LIKE_REVIEW,
-                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_LIKE, feedbackId, isLiked.toString()),
+                String.format(ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_LIKE, feedbackId, (!isLiked).toString()),
                 productId
         ))
     }
