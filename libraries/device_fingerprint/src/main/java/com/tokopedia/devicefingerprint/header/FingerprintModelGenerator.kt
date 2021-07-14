@@ -94,6 +94,10 @@ object FingerprintModelGenerator {
         return now - fingerprintLastTs > FINGERPRINT_EXPIRED_TIME
     }
 
+    fun expireFingerprint() {
+        fingerprintLastTs = 0
+    }
+
     private fun generateFingerprintData(context: Context): String {
         val deviceName = getModelName()
         val deviceFabrik = getManufacturerName()
