@@ -79,14 +79,20 @@ internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChang
 
         fun bind(productCardModel: ProductCardModel) {
             productCardView?.setProductModel(productCardModel)
-            productCardView?.setOnClickListener {
-                Toast.makeText(itemView.context, adapterPosition.toString(), Toast.LENGTH_SHORT).show()
-            }
+            productCardView?.setOnClickListener { toast("Click") }
+            productCardView?.setThreeDotsOnClickListener { toast("Three dots") }
+            productCardView?.setAddToCartOnClickListener { toast("Add to cart") }
             productCardView?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
                     onQuantityChanged.onQuantityChanged(quantity, adapterPosition)
                 }
             })
+            productCardView?.setAddVariantClickListener { toast("Add Variant") }
+        }
+
+        private fun toast(message: String) {
+            val toastMessage = "Position $adapterPosition, $message"
+            Toast.makeText(itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
         }
 
         fun recycle() {
@@ -95,7 +101,7 @@ internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChang
     }
 
     override fun onQuantityChanged(quantity: Int, index: Int) {
-        val message = "Quantity changed to $quantity"
+        val message = "Position: $index, Quantity changed to $quantity"
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
