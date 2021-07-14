@@ -13,6 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/desc_notifcenter_empty_state_illustration"
         android:scaleType="fitCenter" />
 
     <com.tokopedia.unifyprinciples.Typography
