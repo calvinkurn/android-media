@@ -921,14 +921,15 @@ class DiscoveryFragment :
 
     fun showCustomContent(view: View){
         coordinatorLayout.hide()
-        view.rotation = -90f
-        val offset = Resources.getSystem().displayMetrics.widthPixels-
-        Resources.getSystem().displayMetrics.heightPixels
-        view.translationX = offset.toFloat()/2
-        view.translationY = -offset.toFloat()/2
+        view.rotation = 90f
+        val offset = parentLayout.width - parentLayout.height
+        view.translationX = offset.toFloat() / 2
+        view.translationY = -offset.toFloat() / 2
 
-        val layoutParams = FrameLayout.LayoutParams(Resources.getSystem().displayMetrics.heightPixels,
-                Resources.getSystem().displayMetrics.widthPixels)
+        val layoutParams = FrameLayout.LayoutParams(
+            parentLayout.height,
+            parentLayout.width
+        )
         view.layoutParams = layoutParams
         parentLayout.addView(view)
     }

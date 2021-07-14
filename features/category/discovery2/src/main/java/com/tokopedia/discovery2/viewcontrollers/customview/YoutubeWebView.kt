@@ -120,7 +120,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          playerVars: {\n" +
-                "            'rel': 0\n" +
+                "            'rel': 0,\n" +
+                "            'modestbranding': 1\n" +
                 "          }," +
                 "          events: {\n" +
                 "            'onReady': onPlayerReady,\n"+
@@ -138,9 +139,6 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      function cueVideo(videoId, startSeconds) {\n" +
                 "          player.cueVideoById(videoId, startSeconds);\n" +
                 "      }\n" +
-                "window.onload = function () {\n" +
-                "            document.getElementsByTagName('body')[0].style.zoom=0.999;\n" +
-                "        }\n"+
                 "    </script>\n" +
                 "  </body>\n" +
                 "</html>"
