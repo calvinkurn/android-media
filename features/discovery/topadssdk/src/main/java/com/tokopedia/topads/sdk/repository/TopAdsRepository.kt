@@ -60,7 +60,7 @@ open class TopAdsRepository {
                 imageWidth = image.second
                 imageHeight = image.third
                 nextPageToken = response.header?.pagination?.nextPageToken
-                shopId = data?.banner?.shop?.id.toString()
+                shopId = data?.banner?.shop?.id?.toString()?:""
             }
             list.add(model)
         }

@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductInfoContent
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
@@ -44,3 +44,8 @@ data class ProductInfoDataModel(
         return null
     }
 }
+
+data class ProductInfoContent(
+        val row: String = "",
+        val listOfContent: List<Content> = listOf()
+)

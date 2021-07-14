@@ -9,10 +9,10 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
 import com.tokopedia.wallet.R
 import com.tokopedia.wallet.di.WalletComponentInstance
@@ -23,9 +23,9 @@ import javax.inject.Inject
  */
 class ActivationOvoFragment : BaseDaggerFragment() {
 
-    private lateinit var activationNewAccountBtn: Button
-    private lateinit var changeNumberBtn: Button
-    private lateinit var activationDesc: TextView
+    private lateinit var activationNewAccountBtn: UnifyButton
+    private lateinit var changeNumberBtn: UnifyButton
+    private lateinit var activationDesc: Typography
     private lateinit var registeredApplink: String
     private var phoneNumber: String = ""
     private var changeMsisdnApplink: String = ""

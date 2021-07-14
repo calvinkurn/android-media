@@ -335,11 +335,13 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     private fun sendMessage() {
         (mPresenter as InboxDetailContract.Presenter).sendMessage()
         edMessage.setHint(R.string.contact_us_type_here)
-        ContactUsTracking.sendGTMInboxTicket(this, "",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickSubmitReply,
-                "")
+        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventClickReplyTicket,
+                getTicketId())
     }
+
+    private fun getTicketId(): String = commentsItems.getOrNull(0)?.ticketId ?: ""
 
     private fun onClickListener(v: View) {
         val id = v.id
@@ -572,9 +574,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             viewReplyButton.hide()
             (mPresenter as InboxDetailContract.Presenter).onClick(true, commentPosition, item?.id ?: "")
             helpFullBottomSheet?.dismiss()
+
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelYa,
+                    InboxTicketTracking.Action.EventRatingCsatOnSlider)
+
             if (iscloseAllow) {
-                sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
-                        InboxTicketTracking.Action.EventRatingCsatOnSlider)
                 closeComplainBottomSheet = CloseComplainBottomSheet(this@InboxDetailActivity, this)
                 closeComplainBottomSheet?.show(supportFragmentManager, "closeComplainBottomSheet")
 
@@ -582,7 +586,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                 textToolbar.show()
             }
         } else {
-            sendGTmEvent(InboxTicketTracking.Label.EventNotHelpful,
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelTidak,
                     InboxTicketTracking.Action.EventRatingCsatOnSlider)
             (mPresenter as InboxDetailContract.Presenter).onClick(false, commentPosition, item?.id ?: "")
             textToolbar.show()
@@ -600,11 +604,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun onClickComplain(agreed: Boolean) {
         closeComplainBottomSheet?.dismiss()
         if (agreed) {
-            sendGTmEvent(InboxTicketTracking.Label.EventYes,
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelYaTutup,
                     InboxTicketTracking.Action.EventClickCloseTicket)
             (mPresenter as InboxDetailContract.Presenter).closeTicket()
         } else {
-            sendGTmEvent(InboxTicketTracking.Label.EventNo,
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelBatal,
                     InboxTicketTracking.Action.EventClickCloseTicket)
             viewReplyButton.hide()
             viewHelpRate.hide()
@@ -644,10 +648,11 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun sendGTmEvent(eventLabel: String, action: String) {
-        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.EventName,
-                InboxTicketTracking.Category.EventHelpMessageInbox,
+        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
                 action,
-                eventLabel)
+                "${getTicketId()} - $eventLabel")
+
     }
 
     override fun onPriorityLabelClick() {
