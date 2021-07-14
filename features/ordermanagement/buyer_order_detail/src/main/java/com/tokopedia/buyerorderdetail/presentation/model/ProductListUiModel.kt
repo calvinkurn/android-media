@@ -55,10 +55,12 @@ data class ProductListUiModel(
     }
 
     data class ProductBundlingUiModel(
+            val button: ActionButtonsUiModel.ActionButton,
             val bundleName: String,
             val totalPrice: String,
             val totalPriceText: String,
             val bundleItemList: List<ProductBundlingItemUiModel>,
+            val isProcessing: Boolean = false
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
             return typeFactory.type(this)
@@ -68,6 +70,7 @@ data class ProductListUiModel(
     data class ProductBundlingItemUiModel(
             val orderId: String,
             val orderDetailId: String,
+            val orderStatusId: String,
             val productId: String,
             val productName: String,
             val productNote: String,

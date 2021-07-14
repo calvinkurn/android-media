@@ -31,6 +31,7 @@ import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailSticky
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
@@ -56,7 +57,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, TickerViewHolder.TickerViewHolderListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener,
+        ProductBundlingViewHolder.Listener, TickerViewHolder.TickerViewHolderListener {
 
     companion object {
         @JvmStatic
@@ -99,7 +101,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, navigator, this)
+        BuyerOrderDetailTypeFactory(this, this, navigator, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -205,6 +207,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
         trackBuyAgainProduct(listOf(product))
+    }
+
+    override fun onPurchaseAgainButtonClicked(productBundlingUiModel: ProductListUiModel.ProductBundlingUiModel) {
+//        TODO("Check for action from PM")
     }
 
     override fun onClickShipmentInfoTnC() {

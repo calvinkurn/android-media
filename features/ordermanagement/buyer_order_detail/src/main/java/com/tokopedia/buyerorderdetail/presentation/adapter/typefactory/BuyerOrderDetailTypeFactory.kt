@@ -10,6 +10,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.*
 
 class BuyerOrderDetailTypeFactory(
         private val productViewListener: ProductViewHolder.ProductViewListener,
+        private val productBundlingViewListener: ProductBundlingViewHolder.Listener,
         private val navigator: BuyerOrderDetailNavigator,
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener
 ) : BaseAdapterTypeFactory() {
@@ -91,7 +92,7 @@ class BuyerOrderDetailTypeFactory(
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
             ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
-            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, navigator)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, productBundlingViewListener, navigator)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)

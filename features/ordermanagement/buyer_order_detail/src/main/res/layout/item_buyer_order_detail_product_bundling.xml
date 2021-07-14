@@ -80,7 +80,7 @@
             tools:text="Rp150.000"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_bom_detail_bundling_purchase_again"
+            android:id="@+id/btn_bom_detail_bundling_action"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"

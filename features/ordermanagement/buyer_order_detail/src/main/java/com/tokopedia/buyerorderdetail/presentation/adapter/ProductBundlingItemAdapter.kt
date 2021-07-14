@@ -42,7 +42,7 @@ class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
                 setBundleItemProductName(it.productName)
                 setBundleItemProductPriceQuantity(it.quantity, it.priceText)
                 setupBundleItemProductNote(it.productNote)
-                setItemOnClickListener(it.orderId, it.orderDetailId)
+                setItemOnClickListener(it.orderId, it.orderDetailId, it.orderStatusId)
             }
         }
 
@@ -65,14 +65,14 @@ class ProductBundlingItemAdapter(private val listener: ViewHolder.Listener,
             }
         }
 
-        private fun setItemOnClickListener(orderId: String, orderDetailId: String) {
+        private fun setItemOnClickListener(orderId: String, orderDetailId: String, orderStatusId: String) {
             itemView.setOnClickListener {
-                listener.onBundleItemClicked(orderId, orderDetailId)
+                listener.onBundleItemClicked(orderId, orderDetailId, orderStatusId)
             }
         }
 
         interface Listener {
-            fun onBundleItemClicked(orderId: String, orderDetailId: String)
+            fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String)
         }
     }
 }
