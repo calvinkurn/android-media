@@ -3,9 +3,9 @@ package com.tokopedia.entertainment.search.viewmodel
 import org.junit.Assert.*
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
 import com.tokopedia.entertainment.search.adapter.viewmodel.FirstTimeModel
 import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryModel
@@ -47,19 +47,12 @@ class EventSearchViewModelTest {
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
-    @MockK
-    lateinit var userSessionInterface: UserSessionInterface
-
-    @MockK
-    lateinit var resources: Resources
-
     val context = mockk<Context>(relaxed = true)
-
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        eventSearchViewModel = EventSearchViewModel(Dispatchers.Unconfined, graphqlRepository, userSessionInterface)
+        eventSearchViewModel = EventSearchViewModel(Dispatchers.Unconfined, graphqlRepository)
         eventSearchViewModel.resources = context.resources
     }
 
@@ -73,11 +66,9 @@ class EventSearchViewModelTest {
         ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         assertNotNull(dataMock)
 
-        every { userSessionInterface.isLoggedIn } returns true
-
         val dataMockMapper = SearchMapper.mappingHistorytoSearchList(dataMock.data)
 
-        eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"")
+        eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"", true)
 
         assertNotNull(eventSearchViewModel.searchList)
         assertEquals((eventSearchViewModel.searchList.value?.get(0) as HistoryModel).list, (dataMockMapper.get(0) as HistoryModel).list)
@@ -91,9 +82,7 @@ class EventSearchViewModelTest {
         val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
         listViewHolder.add(FirstTimeModel())
 
-        every { userSessionInterface.isLoggedIn } returns false
-
-        eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"")
+        eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"", false)
 
         assertNotNull(eventSearchViewModel.searchList)
         assertEquals((eventSearchViewModel.searchList.value?.get(0) as FirstTimeModel).isFirstTime , (listViewHolder.get(0) as FirstTimeModel).isFirstTime)
@@ -110,15 +99,13 @@ class EventSearchViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[ EventSearchHistoryResponse.Data::class.java] = listOf(errorGql)
 
-        every { userSessionInterface.isLoggedIn } returns true
-
         coEvery {
             graphqlRepository.getReseponse(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
 
-        eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"")
+        eventSearchViewModel.getHistorySearch(CacheType.CACHE_FIRST,"", true)
 
         assertNotNull(eventSearchViewModel.errorReport.value)
         assertEquals((eventSearchViewModel.errorReport.value as Throwable).message, errorGql.message)

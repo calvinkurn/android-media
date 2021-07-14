@@ -29,7 +29,6 @@ public class SnackbarRetry {
     }
 
     public void showRetrySnackbar() {
-        Log.d("ERROR_SNACK", "SHOW ERROR SNACK GET SHOW");
         isRetryClicked = false;
         snackBar.show();
     }

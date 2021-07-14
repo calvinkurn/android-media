@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -29,7 +27,6 @@ import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListV
 import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
-import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
@@ -125,9 +122,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
                     Handler().postDelayed({
-                        Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT")
                         NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
-                            Log.d("ERROR_SNACK", "SHOW ERROR SNACK GET DATA")
                             getData(CacheType.ALWAYS_CLOUD)
                         }.showRetrySnackbar()
                     }, 200)
@@ -139,10 +134,8 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         swipe_refresh_layout.isRefreshing = true
         if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                 || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
-            Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT CONTEXT not null search data")
             viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType, getEventSearchLocation())
         } else{
-            Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY FRAGMENT CONTEXT not null history data")
             viewModel.getHistorySearch(cacheType, getEventHistory(), userSession.isLoggedIn)
         }
     }

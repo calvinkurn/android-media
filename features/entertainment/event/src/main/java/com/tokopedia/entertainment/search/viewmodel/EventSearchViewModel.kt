@@ -1,15 +1,9 @@
 package com.tokopedia.entertainment.search.viewmodel
 
 import android.content.res.Resources
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
-import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
 import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
 import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
@@ -20,18 +14,15 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Author errysuprayogi on 04,March,2020
  */
 
-class EventSearchViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
-                           private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.main){
+class EventSearchViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
+                           private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher){
     companion object{
         private val TAG = EventSearchViewModel::class.java.simpleName
         private val SEARCHQUERY = "search_query"
@@ -63,7 +54,6 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                    Log.d("ERROR_SNACK", "SHOW ERROR SNACK HISTORY")
                     errorReport.postValue(it)
                     isItRefreshing.postValue(false)
                 }
@@ -80,7 +70,6 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                    Log.d("ERROR_SNACK", "SHOW ERROR SNACK Data")
                     errorReport.postValue(it)
                     isItRefreshing.value = false
                 }
@@ -92,7 +81,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
     }
 
     suspend fun getLocationSuggestionData(text: String, cacheType: CacheType, query: String) : EventSearchLocationResponse.Data{
-        return withContext(dispatcher.io){
+        return withContext(dispatcher){
             val req = GraphqlRequest(
                     query,
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
@@ -103,7 +92,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
     }
 
     suspend fun getHistorySearchData(cacheType: CacheType, query:String): EventSearchHistoryResponse.Data{
-        return withContext(dispatcher.io){
+        return withContext(dispatcher){
             val req = GraphqlRequest(
                     query,
                     EventSearchHistoryResponse.Data::class.java)
