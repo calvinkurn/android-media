@@ -39,8 +39,6 @@ if [ ! -f "$AAB_FILE_PATH" ]; then
 fi
 
 INPUT=$AAB_FILE_PATH
-OUTPUT_APK="${INPUT::${#INPUT}-4}.apk"
-source ./tools/aab/convert.sh "$INPUT"
 
 # Check 2nd param
 INSTALL_MODE=$2
