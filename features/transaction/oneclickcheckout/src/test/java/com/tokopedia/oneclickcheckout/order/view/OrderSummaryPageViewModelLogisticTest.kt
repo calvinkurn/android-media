@@ -7,6 +7,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Insur
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
@@ -720,6 +721,29 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Get Rates With No Pinpoint And Disable Change Courier`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
+                address = helper.address.copy(latitude = "", longitude = ""),
+                shipment = helper.shipment.copy(isDisableChangeCourier = true)
+        )
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(true, orderSummaryPageViewModel.orderProfile.value.enable)
+        assertEquals(OrderShipment(
+                serviceName = helper.shipment.serviceName,
+                serviceDuration = helper.shipment.serviceDuration,
+                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                needPinpoint = true
+        ), orderSummaryPageViewModel.orderShipment.value)
+        assertEquals(OrderTotal(), orderSummaryPageViewModel.orderTotal.value)
+    }
+
+    @Test
     fun `Choose Courier`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -1098,8 +1122,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         orderSummaryPageViewModel.getRates()
+        val promoErrorMessage = "error promo"
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
-                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red"))
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "red", text = promoErrorMessage))
         )), status = "OK"))
 
         // When
@@ -1109,7 +1134,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         val shipping = orderSummaryPageViewModel.orderShipment.value
         assertEquals(false, shipping.isApplyLogisticPromo)
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
-        assertEquals(OccGlobalEvent.Error(null, OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(OccGlobalEvent.Error(null, promoErrorMessage), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
@@ -1413,6 +1438,34 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Auto Apply Logistic Promo Error On Disable Change Courier`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(shipment = helper.shipment.copy(isDisableChangeCourier = true))
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
+                PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
+        )), status = "OK"))
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        orderSummaryPageViewModel.getRates()
+        val throwable = Throwable()
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
+
+        // When
+        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10)), 0)
+        testDispatchers.main.advanceUntilIdle()
+
+        // Then
+        val shipping = orderSummaryPageViewModel.orderShipment.value
+        assertEquals(false, shipping.isApplyLogisticPromo)
+        assertEquals(false, shipping.isDisabled)
+        assertEquals(OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE, shipping.serviceErrorMessage)
+        assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
+        assertEquals(OccGlobalEvent.Error(throwable), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Auto Apply Logistic Promo Error Akamai`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -1424,6 +1477,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK"))
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+        assertEquals(true, orderSummaryPageViewModel.orderShipment.value.isApplyLogisticPromo)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val throwable = AkamaiErrorException("")
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.error(throwable)
@@ -1528,19 +1582,20 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
-        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(OccGlobalEvent.TriggerRefresh(successMessage = OrderSummaryPageViewModel.SAVE_PINPOINT_SUCCESS_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Save Pinpoint On Invalid Preference State`() {
         // Given
-        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
 
         // When
         orderSummaryPageViewModel.savePinpoint("", "")
 
         // Then
         verify(inverse = true) { editAddressUseCase.get().createObservable(any()) }
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

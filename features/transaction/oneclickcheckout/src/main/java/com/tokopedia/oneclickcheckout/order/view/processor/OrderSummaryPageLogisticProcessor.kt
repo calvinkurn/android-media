@@ -466,6 +466,20 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         )
     }
 
+    fun generateNeedPinpointResultRates(orderProfile: OrderProfile): ResultRates {
+        return ResultRates(
+                orderShipment = OrderShipment(
+                        isLoading = false,
+                        isDisabled = false,
+                        serviceName = orderProfile.shipment.serviceName,
+                        serviceDuration = orderProfile.shipment.serviceDuration,
+                        serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                        needPinpoint = true,
+                        shippingRecommendationData = null
+                )
+        )
+    }
+
     suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String, userId: String, deviceId: String): OccGlobalEvent {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {

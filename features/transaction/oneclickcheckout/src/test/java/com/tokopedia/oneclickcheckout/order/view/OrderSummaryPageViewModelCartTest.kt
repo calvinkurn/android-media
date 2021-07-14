@@ -13,6 +13,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -398,7 +399,14 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        coVerify { updateCartOccUseCase.executeSuspend(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1", gatewayCode = "payment")), it) }) }
+        coVerify {
+            updateCartOccUseCase.executeSuspend(withArg {
+                assertEquals(UpdateCartOccRequest(arrayListOf(
+                        UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString(), spId = 1, shippingId = 1)),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1", gatewayCode = "payment")),
+                        it)
+            })
+        }
     }
 
     @Test
@@ -441,8 +449,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         coVerify {
             updateCartOccUseCase.executeSuspend(withArg {
-                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = "1", spId = 0, shippingId = 0)),
-                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1", gatewayCode = "payment"), skipShippingValidation = true), it)
+                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString(), spId = 0, shippingId = 0)),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1", gatewayCode = "payment"), skipShippingValidation = true),
+                        it)
             })
         }
     }
@@ -552,6 +561,27 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             {
                 "express_checkout_param" : {}
             }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = preference
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Installment Using Invalid Metadata Json`() {
+        // Given
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {}
         """.trimIndent()))
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = preference
@@ -718,6 +748,30 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address LCA Error`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        val addressModel = RecipientAddressModel().apply {
+            id = "address1"
+            destinationDistrictId = "districtId1"
+            postalCode = "postalcode1"
+            latitude = "lat1"
+            longitude = "lon1"
+        }
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val response = Exception()
+        coEvery { chooseAddressRepository.get().setStateChosenAddressFromAddress(any()) } throws response
+        coEvery { chooseAddressMapper.get().mapSetStateChosenAddress(any()) } returns ChosenAddressModel()
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressModel.id }) } throws response
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressModel)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

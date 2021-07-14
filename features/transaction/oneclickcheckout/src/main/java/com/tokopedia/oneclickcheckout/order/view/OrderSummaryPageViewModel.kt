@@ -120,13 +120,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = it
             }
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
-                if (result.orderProfile.isDisableChangeCourierAndNeedPinpoint()) {
-                    orderShipment.value = orderShipment.value.copy(isLoading = false, serviceName = "", needPinpoint = true)
-                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                } else {
-                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-                    getRatesSuspend()
-                }
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+                getRatesSuspend()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
@@ -148,10 +143,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             delay(DEBOUNCE_TIME)
             if (isActive) {
                 updateCart()
-                if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
-                    orderShipment.value = orderShipment.value.copy(isLoading = false, serviceName = "", needPinpoint = true)
-                    orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
-                } else if (orderProfile.value.isValidProfile) {
+                if (orderProfile.value.isValidProfile) {
                     getRates()
                 }
             }
@@ -176,10 +168,12 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private suspend fun getRatesSuspend() {
-        val result = if (cartProcessor.isOrderNormal(orderCart)) {
-            logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderShop.value.shopShipment)
-        } else {
+        val result = if (!cartProcessor.isOrderNormal(orderCart)) {
             logisticProcessor.generateOrderErrorResultRates(orderProfile.value)
+        } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
+            logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
+        } else {
+            logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderShop.value.shopShipment)
         }
         if (result.clearOldPromoCode.isNotEmpty()) {
             clearOldLogisticPromo(result.clearOldPromoCode)

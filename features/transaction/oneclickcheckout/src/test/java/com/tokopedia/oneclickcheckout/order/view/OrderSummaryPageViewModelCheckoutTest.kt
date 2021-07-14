@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -41,6 +42,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
+import java.io.IOException
 
 @ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest() {
@@ -432,6 +434,44 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assertEquals(OccGlobalEvent.CheckoutError(CheckoutOccErrorData(ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY)), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Error Update Cart`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val exception = IOException()
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws exception
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(throwable = exception), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Failed Update Cart`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val errorMessage = "cart error"
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws MessageErrorException(errorMessage)
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

@@ -205,12 +205,12 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
 }
 
 class ResultGetOccCart(
-        var orderCart: OrderCart,
-        var orderPreference: OrderPreference,
-        var orderProfile: OrderProfile,
-        var orderPayment: OrderPayment,
-        var orderPromo: OrderPromo,
-        var globalEvent: OccGlobalEvent?,
-        var throwable: Throwable?,
-        var addressState: AddressState
+        val orderCart: OrderCart,
+        val orderPreference: OrderPreference,
+        val orderProfile: OrderProfile,
+        val orderPayment: OrderPayment,
+        val orderPromo: OrderPromo,
+        val globalEvent: OccGlobalEvent?,
+        val throwable: Throwable?,
+        val addressState: AddressState
 )
