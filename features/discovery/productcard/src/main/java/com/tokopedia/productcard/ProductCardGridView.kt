@@ -85,7 +85,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderButtonAddToCart(productCardModel)
 
-        renderQuantityEditorNonVariant(productCardModel)
+        renderCartEditorNonVariant(productCardModel)
 
         renderChooseVariant(productCardModel)
 
@@ -181,17 +181,43 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
+        buttonDeleteCart?.show()
         buttonAddToCart?.gone()
 
         quantityEditorDebounce?.onQuantityChanged(newValue)
     }
 
-    private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
+    private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
+        val shouldShowCartEditorComponent = productCardModel.shouldCartEditorComponent()
 
+        configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
+        configureQuantityEditor(shouldShowCartEditorComponent, productCardModel)
+    }
+
+    private fun configureButtonDeleteCart(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
+        buttonDeleteCart?.showWithCondition(shouldShowCartEditorComponent)
+        buttonDeleteCart?.setOnClickListener {
+            deleteCartClick(productCardModel)
+        }
+    }
+
+    private fun deleteCartClick(productCardModel: ProductCardModel) {
+        buttonAddToCart?.let {
+            setOnClickListener {
+                addToCartNonVariantClick(productCardModel)
+            }
+            it.buttonType = UnifyButton.Type.MAIN
+            it.show()
+        }
+        buttonDeleteCart?.gone()
+        quantityEditorNonVariant?.gone()
+        addToCartNonVariantClickListener?.onQuantityChanged(0)
+    }
+
+    private fun configureQuantityEditor(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
         configureQuantityEditorDebounce()
 
-        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.showWithCondition(shouldShowCartEditorComponent)
         quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
     }
 
