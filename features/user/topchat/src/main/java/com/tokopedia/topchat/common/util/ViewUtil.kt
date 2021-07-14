@@ -33,7 +33,7 @@ object ViewUtil {
         shadowGravity: Int,
         @ColorRes strokeColor: Int? = null,
         @DimenRes strokeWidth: Int? = null,
-        useViewPadding: Boolean = false
+        useViewPadding: Boolean = false,
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -48,6 +48,11 @@ object ViewUtil {
             strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
         val strokeWidthValue: Float? =
             strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
+
+        val stateDrawable = StateListDrawable()
+        val shadowDrawable = ShapeDrawable()
+        val strokeDrawable = ShapeDrawable()
+        val drawableLayer = arrayListOf<Drawable>()
 
         val outerRadius = floatArrayOf(
             topLeftRadiusValue,
@@ -64,59 +69,60 @@ object ViewUtil {
         backgroundPaint.style = Paint.Style.FILL
         backgroundPaint.setShadowLayer(shadowRadiusValue, 0f, 0f, 0)
 
-        val shapeDrawablePadding = Rect()
-        shapeDrawablePadding.left = elevationValue
-        shapeDrawablePadding.right = elevationValue
+        val shadowDrawableRect = Rect()
+        shadowDrawableRect.left = elevationValue
+        shadowDrawableRect.right = elevationValue
 
         val DY: Float
         when (shadowGravity) {
             Gravity.CENTER -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue
                 DY = 0.5f.toPx()
             }
             Gravity.TOP -> {
-                shapeDrawablePadding.top = elevationValue * 2
-                shapeDrawablePadding.bottom = elevationValue
+                shadowDrawableRect.top = elevationValue * 2
+                shadowDrawableRect.bottom = elevationValue
                 DY = -1 * elevationValue / 3f
             }
             Gravity.BOTTOM -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue * 2
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / 3f
             }
             else -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue * 2
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / 3f
             }
         }
 
         if (useViewPadding) {
-            if (view.paddingTop > shapeDrawablePadding.top) {
-                shapeDrawablePadding.top += view.paddingTop
+            if (view.paddingTop > shadowDrawableRect.top) {
+                shadowDrawableRect.top += view.paddingTop
             }
-            if (view.paddingBottom > shapeDrawablePadding.bottom) {
-                shapeDrawablePadding.bottom += view.paddingBottom
+            if (view.paddingBottom > shadowDrawableRect.bottom) {
+                shadowDrawableRect.bottom += view.paddingBottom
             }
-            if (view.paddingStart > shapeDrawablePadding.left) {
-                shapeDrawablePadding.left += view.paddingStart
+            if (view.paddingStart > shadowDrawableRect.left) {
+                shadowDrawableRect.left += view.paddingStart
             }
-            if (view.paddingEnd > shapeDrawablePadding.right) {
-                shapeDrawablePadding.right += view.paddingEnd
+            if (view.paddingEnd > shadowDrawableRect.right) {
+                shadowDrawableRect.right += view.paddingEnd
             }
         }
 
-        val shapeDrawable = ShapeDrawable().apply {
-            setPadding(shapeDrawablePadding)
+        shadowDrawable.apply {
+            setPadding(shadowDrawableRect)
             paint.color = backgroundColorValue
             paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
             shape = RoundRectShape(outerRadius, null, null)
         }
-        val drawableLayer = arrayListOf<Drawable>(shapeDrawable)
+        drawableLayer.add(shadowDrawable)
+
         if (strokeColorValue != null && strokeWidthValue != null) {
-            val strokeDrawable = ShapeDrawable().apply {
-                setPadding(shapeDrawablePadding)
+            strokeDrawable.apply {
+                setPadding(shadowDrawableRect)
                 paint.style = Paint.Style.STROKE
                 paint.color = strokeColorValue
                 paint.strokeWidth = strokeWidthValue
@@ -132,7 +138,7 @@ object ViewUtil {
             val strokeMargin = strokeWidthValue.toInt() / 2
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
-        val stateDrawable = StateListDrawable()
+
         stateDrawable.addState(
             intArrayOf(android.R.attr.state_pressed),
             ContextCompat.getDrawable(view.context, R.drawable.bg_red_dot_unread)
