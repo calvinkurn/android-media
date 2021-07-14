@@ -89,7 +89,13 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
+        dfConfig = DFRemoteConfig.getConfig(requireContext())
+        manager = DFInstaller.getManager(requireContext()) ?: return
+        manager?.registerListener(listener)
+        moduleId = arguments?.getString("MODULE_ID").orEmpty()
+        fragmentClassPathName = arguments?.getString("CLASS_PATH_NAME").orEmpty()
+        allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId) ?: false
+        cancelDownloadBeforeInstallInPage = dfConfig?.cancelDownloadBeforeInstallInPage ?: false
     }
 
     /** Listener used to handle changes in state for install requests. */
@@ -125,24 +131,20 @@ class DFInstallerFragment : Fragment() , CoroutineScope, DFInstaller.DFInstaller
 
     override fun onResume() {
         super.onResume()
-        dfConfig = DFRemoteConfig.getConfig(requireContext())
-        manager = DFInstaller.getManager(requireContext()) ?: return
-        manager?.registerListener(listener)
-        moduleId = arguments?.getString("MODULE_ID").orEmpty()
-        fragmentClassPathName = arguments?.getString("CLASS_PATH_NAME").orEmpty()
-        allowRunningServiceFromActivity = dfConfig?.allowRunningServiceFromActivity(moduleId) ?: false
-        cancelDownloadBeforeInstallInPage = dfConfig?.cancelDownloadBeforeInstallInPage ?: false
         val isAutoDownload = true
-        when {
-            DFInstaller.isInstalled(requireContext(), moduleId) -> {
-                onSuccessfulLoad()
-            }
-            isAutoDownload -> {
-                downloadFeature()
+        val currentFragment = activity?.supportFragmentManager?.findFragmentByTag(tag)
+        if (currentFragment == null) {
+            when {
+                DFInstaller.isInstalled(requireContext(), moduleId) -> {
+                    onSuccessfulLoad()
+                }
+                isAutoDownload -> {
+                    downloadFeature()
 //            logDownloadPage();
-            }
-            else -> {
+                }
+                else -> {
 //            showOnBoardingView()
+                }
             }
         }
     }
