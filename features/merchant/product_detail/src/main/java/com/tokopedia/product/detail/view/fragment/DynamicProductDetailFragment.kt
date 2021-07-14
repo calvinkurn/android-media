@@ -1671,7 +1671,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         updateUi()
                     }
                 } else {
-                    pdpUiUpdater?.removeComponent(it.data.pageName)
+                    //recomUiPageName used because there is possibilites gql recom return empty pagename
+                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
                     updateUi()
                 }
             }, {

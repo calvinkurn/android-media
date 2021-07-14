@@ -759,7 +759,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
                         recomWidget
                     }
-
+                    //since there is posibility gql return empty page name and recom list
+                    //we append UI Page Name to be validated
+                    recomData.recomUiPageName = pageName
                     _loadTopAdsProduct.value = recomData.asSuccess()
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = Throwable(pageName).asFail()
