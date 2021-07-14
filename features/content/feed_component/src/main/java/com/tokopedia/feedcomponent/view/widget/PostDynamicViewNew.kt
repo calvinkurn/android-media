@@ -10,7 +10,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -336,7 +335,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun bindLike(like: FeedXLike, id: Int, type: String, isFollowed: Boolean, shopId: String) {
+    private fun bindLike(
+        like: FeedXLike,
+        id: Int,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String
+    ) {
         if (like.isLiked) {
             val colorGreen =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
@@ -382,12 +387,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-            listener?.onLikeClick(positionInFeed,
+            listener?.onLikeClick(
+                positionInFeed,
                 id,
                 like.isLiked,
                 type,
                 isFollowed,
-                shopId = shopId)
+                shopId = shopId
+            )
         }
     }
 
@@ -597,11 +604,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (media.size > 1) {
                     pageControl.show()
                     pageControl.setIndicator(media.size)
-                    pageControl.indicatorCurrentPosition = 0
+                    pageControl.indicatorCurrentPosition = activeIndex
                 } else {
                     pageControl.hide()
                 }
-                media.forEach { feedMedia ->
+                media.forEachIndexed { index, feedMedia ->
                     imagePostListener.userCarouselImpression(
                         positionInFeed,
                         media,
@@ -751,8 +758,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedXCard.author.id,
                                 feedXCard.typename,
                                 feedXCard.followers.isFollowed,
-                                feedXCard.author.id,
-                                isVideoVisible
+                                isVideoVisible,
+                                index
                             )
                         )
                     }
@@ -763,18 +770,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
                         else {
-                            if (videoPlayer != null) {
-                                videoPlayer?.resume()
-                            } else {
-                                val videoItem =
-                                    View.inflate(context, R.layout.item_post_video_new, null)
-                                val param = LinearLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.MATCH_PARENT
-                                )
-                                videoItem?.layoutParams = param
-                                setVideoControl(videoItem, media[current], postId.toString())
-                            }
+                            videoPlayer?.start(media[current].mediaUrl, isMute)
                         }
                     }
                 }
@@ -792,8 +788,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         id: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String,
-        isVideoVisible: Boolean
+        isVideoVisible: Boolean,
+        index: Int
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
@@ -801,11 +797,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         videoItem?.layoutParams = param
-        videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-
-        if (isVideoVisible) {
-            setVideoControl(videoItem, feedMedia, postId)
-        }
+        setVideoControl(isVideoVisible, videoItem, feedMedia, postId, index)
         videoItem?.run {
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
@@ -829,8 +821,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         return (videoItem)
     }
 
-    private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia, postId: String) {
-
+    private fun setVideoControl(
+        isVideoVisible: Boolean,
+        videoItem: View?,
+        feedMedia: FeedXMedia,
+        postId: String,
+        index: Int
+    ) {
         videoItem?.run {
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             var time = feedMedia.videoTime
@@ -845,7 +842,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             video_tag_text.postDelayed({
                 video_tag_text.visible()
-                video_tag_text.animate().alpha(1F).setDuration(300L).start()
+                video_tag_text.animate().alpha(1F).start()
             }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
@@ -856,21 +853,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     if (feedMedia.mediaUrl.isNotEmpty()) {
                         videoListener?.onVideoPlayerClicked(
                             positionInFeed,
-                            0,
+                            index,
                             postId,
                             feedMedia.appLink
                         )
                     }
                 }
-                videoPlayer?.start(feedMedia.mediaUrl, isMute)
+                if (isVideoVisible) {
+                    videoPlayer?.start(feedMedia.mediaUrl, isMute)
+                }
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
-                        showVideoLoading(videoItem)
+                        showVideoLoading()
                     }
 
                     override fun onVideoReadyToPlay() {
-                        hideVideoLoading(videoItem)
+                        hideVideoLoading()
                         time = feedMedia.videoTime
                         object : CountDownTimer(TIMER_TO_BE_SHOWN, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
@@ -893,21 +892,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun hideVideoLoading(videoItem: View) {
-        videoItem.run {
-            loader?.gone()
-            ic_play?.gone()
-            timer_view?.visible()
-            videoPreviewImage?.gone()
-        }
+    private fun hideVideoLoading() {
+        loader?.gone()
+        ic_play?.gone()
+        timer_view?.visible()
+        videoPreviewImage?.gone()
     }
 
-    private fun showVideoLoading(videoItem: View) {
-        videoItem.run {
-            loader?.animate()
-            loader?.visible()
-            ic_play?.visible()
-        }
+    private fun showVideoLoading() {
+        loader?.animate()
+        loader?.visible()
+        ic_play?.visible()
     }
 
     private fun getVideoDuration(feedMedia: FeedXMedia): Long {
@@ -965,12 +960,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (totalProducts > MAX_FEED_SIZE) {
             totalProductsImpressed = LAST_FEED_POSITION
 
-        } else if (totalProducts < MAX_FEED_SIZE && totalProducts > MAX_FEED_SIZE_SMALL) {
+        } else if (totalProducts in (MAX_FEED_SIZE_SMALL + 1) until MAX_FEED_SIZE) {
             totalProductsImpressed = LAST_FEED_POSITION_SMALL
         }
-        Log.e("TAG", "size" + totalProducts + " " + totalProductsImpressed)
-        var listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
-
+        val listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
         imagePostListener.userProductImpression(
             positionInFeed,
             feedXCard.id,
@@ -1066,7 +1059,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStop(){
+    internal fun onStop() {
         videoPlayer?.pause()
     }
 

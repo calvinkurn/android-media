@@ -463,12 +463,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     private fun setAvatar() {
         val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
-        if (authorId?.isNotEmpty() == true) {
-            if (authorId == userSession?.shopId) {
-                ImageHandler.loadImageCircle2(context, avatarShop, userSession?.shopAvatar)
-            }
-        } else {
-            ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
+        ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
+        if (authorId?.isNotEmpty() == true && authorId == userSession?.shopId) {
+            ImageHandler.loadImageCircle2(context, avatarShop, userSession?.shopAvatar)
         }
     }
 
