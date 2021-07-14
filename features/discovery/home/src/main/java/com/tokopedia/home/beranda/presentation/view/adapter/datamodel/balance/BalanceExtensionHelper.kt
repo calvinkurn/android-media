@@ -150,9 +150,10 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 }
 
 fun WalletAppData.mapToHomeBalanceItemModel(state: Int): List<BalanceDrawerItemModel> {
+    val selectedWallet = "PEMUDA"
     val balanceTitleTextAttribute = BalanceTextAttribute(text = walletappGetBalance.walletName)
-    if (walletappGetBalance.balance.isNotEmpty()) {
-        return walletappGetBalance.balance.map {
+    if (walletappGetBalance.isLinked && walletappGetBalance.balance.isNotEmpty()) {
+        return walletappGetBalance.balance.filter { it.walletCode == selectedWallet }.map {
             val balanceSubTitleTextAttribute =
                 buildSubtitleBasedOnLinkedCondition(it)
             buildWalletAppBalanceDrawerModel(
