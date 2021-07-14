@@ -8,8 +8,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
-import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateSellerFragment
 
@@ -17,7 +18,7 @@ import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateSellerF
  * Created by faisalramd on 05/02/20.
  */
 
-class NotificationSellerActivity : BaseSimpleActivity() {
+class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setThemeWhiteIfSellerApp()
@@ -46,5 +47,36 @@ class NotificationSellerActivity : BaseSimpleActivity() {
         fun createIntent(context: Context): Intent {
             return Intent(context, NotificationSellerActivity::class.java)
         }
+    }
+
+    override val role: Int
+        get() = RoleType.SELLER
+
+    override fun clearNotificationCounter() {
+    }
+
+    override fun decreaseChatUnreadCounter() {
+    }
+
+    override fun increaseChatUnreadCounter() {
+    }
+
+    override fun refreshNotificationCounter() {
+    }
+
+    override fun decreaseDiscussionUnreadCounter() {
+    }
+
+    override fun decreaseReviewUnreviewedCounter() {
+    }
+
+    override fun hideReviewCounter() {
+    }
+
+    override fun showReviewCounter() {
+    }
+
+    override fun getPageSource(): String {
+        return "notification"
     }
 }
