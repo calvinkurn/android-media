@@ -667,6 +667,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchLabelAddress(type: String) {
         if (isPositiveFlow) {
             binding.formAddress.etLabel.textFieldInput.apply {
