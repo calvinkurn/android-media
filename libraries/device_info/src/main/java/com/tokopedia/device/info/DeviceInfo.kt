@@ -142,7 +142,7 @@ object DeviceInfo {
         return withContext(Dispatchers.IO) {
             try {
                 val appContext = context.applicationContext
-                val adId = withTimeout(1000) {
+                val adId = withTimeout(2000) {
                     val adInfo: AdvertisingIdClient.Info? =
                         suspendCancellableCoroutine { continuation ->
                             try {
@@ -155,8 +155,9 @@ object DeviceInfo {
                     val adIdTemp = if (adInfo == null) {
                         ""
                     } else {
-                        setCacheAdsId(appContext, adInfo.id)
-                        adInfo.id
+                        val trimAdId = trimGoogleAdId(adInfo.id)
+                        setCacheAdsId(appContext, trimAdId)
+                        trimAdId
                     }
                     adIdTemp
                 }
@@ -170,6 +171,18 @@ object DeviceInfo {
                 ""
             }
         }
+    }
+
+    private fun trimGoogleAdId(googleAdsId: String): String {
+        val sb =
+            StringBuilder(googleAdsId.length) //we know this is the capacity so we initialise with it:
+        for (element in googleAdsId) {
+            when (element) {
+                '\u2013', '\u2014', '\u2015' -> sb.append('-')
+                else -> sb.append(element)
+            }
+        }
+        return sb.toString()
     }
 
     // Initialize ads Id in background

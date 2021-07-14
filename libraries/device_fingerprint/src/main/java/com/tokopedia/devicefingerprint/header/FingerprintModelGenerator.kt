@@ -50,28 +50,16 @@ object FingerprintModelGenerator {
     fun generateFingerprintModel(context: Context): FingerprintModel {
         val fingerprintModel = FingerprintModel()
         val fingerprintString = getFingerPrintJson(context).toBase64()
-        fingerprintModel.adsId = trimGoogleAdId(DeviceInfo.getAdsId(context))
+        fingerprintModel.adsId = DeviceInfo.getAdsId(context)
         fingerprintModel.fingerprintHash = fingerprintString
         fingerprintModel.registrarionId = getFCMId(context)
         return fingerprintModel
     }
 
-    fun trimGoogleAdId(googleAdsId: String): String? {
-        val sb =
-            StringBuilder(googleAdsId.length) //we know this is the capacity so we initialise with it:
-        for (element in googleAdsId) {
-            when (element) {
-                '\u2013', '\u2014', '\u2015' -> sb.append('-')
-                else -> sb.append(element)
-            }
-        }
-        return sb.toString()
-    }
-
     fun getFCMId(context: Context): String {
         val userSession = UserSession(context)
         val deviceId = userSession.deviceId
-        if (TextUtils.isEmpty(deviceId)) {
+        if (deviceId.isNullOrEmpty()) {
             val uuid = getUUID(context)
             userSession.deviceId = uuid
             return uuid
