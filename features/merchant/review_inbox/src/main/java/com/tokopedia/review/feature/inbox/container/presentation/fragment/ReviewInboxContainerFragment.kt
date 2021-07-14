@@ -16,15 +16,17 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.ReviewInboxInstance
+import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
+import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
-import com.tokopedia.review.common.ReviewInboxConstants
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.review.feature.inbox.container.di.DaggerReviewInboxContainerComponent
@@ -33,6 +35,7 @@ import com.tokopedia.review.feature.inbox.container.presentation.adapter.ReviewI
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.container.presentation.viewmodel.ReviewInboxContainerViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.unifycomponents.setCounter
 import kotlinx.android.synthetic.main.fragment_review_inbox_container.*
 import javax.inject.Inject
 
