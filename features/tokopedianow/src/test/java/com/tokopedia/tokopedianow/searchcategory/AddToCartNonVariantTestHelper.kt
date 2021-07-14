@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -406,8 +407,8 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `test delete cart success`() {
-        val updateCartSuccessMessage = "Success nih"
-        `Given view setup to update quantity`(updateCartSuccessMessage)
+        val updateCartSuccessMessage = "1 barang telah dihapus."
+        `Given view setup to delete`(updateCartSuccessMessage)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
@@ -421,19 +422,47 @@ class AddToCartNonVariantTestHelper(
         `Then assert delete cart`(
                 productUpdatedQuantity,
                 productInMiniCart,
-                productInVisitable
+                productInVisitable,
         )
         `Then assert route to login page event is null`()
     }
 
+
+
+    private fun `Given view setup to delete`(deleteCartMessage: String) {
+        val deleteCartResponse = RemoveFromCartData(
+            status = "OK",
+            errorMessage = listOf(deleteCartMessage),
+            data = com.tokopedia.minicart.common.data.response.deletecart.Data(success = 1, message = listOf(deleteCartMessage))
+        )
+
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given delete cart use case will be successful`(deleteCartResponse)
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+    }
+
+    private fun `Given delete cart use case will be successful`(
+        successUpdateCartResponse: RemoveFromCartData
+    ) {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(successUpdateCartResponse)
+        }
+    }
+
     private fun `Then assert delete cart`(
-            productUpdatedQuantity: Int,
-            productInMiniCart: MiniCartItem,
+        productUpdatedQuantity: Int,
+        productInMiniCart: MiniCartItem,
+        productInVisitable: ProductItemDataView,
     ) {
         `Then assert delete cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
         `Then assert add to cart use case is not called`()
         `Then assert update cart use case is not called`()
-        `Then verify mini cart is refreshed`()
+        `Then verify mini cart is refreshed`(2)
     }
 
     private fun `Then assert delete cart params`(
