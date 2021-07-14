@@ -381,4 +381,7 @@
 
     <!--Dynamic feature TokopediaNOW! -->
     <string name="title_tokopedia_now">Tokopedia NOW</string>
+
+    <!-- Review   -->
+    <string name="title_review">Ulasan</string>
 </resources>

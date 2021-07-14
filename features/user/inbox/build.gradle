@@ -63,7 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.notifCenter)
     implementation projectOrAar(rootProject.ext.features.talk)
-    implementation projectOrAar(rootProject.ext.features.review)
+    implementation projectOrAar(rootProject.ext.features.reviewInbox)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
