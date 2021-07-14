@@ -19,11 +19,11 @@
     <dimen name="comparison_widget_margin_start">14dp</dimen>
     <dimen name="comparison_widget_margin_end">14dp</dimen>
     <dimen name="comparison_wdiget_collapsed_height">360dp</dimen>
-    <dimen name="comparison_widget_product_card_width">132dp</dimen>
-    <dimen name="comparison_widget_product_card_width_measure">126dp</dimen>
+    <dimen name="comparison_widget_product_card_width">140dp</dimen>
+    <dimen name="comparison_widget_product_card_width_measure">134dp</dimen>
     <dimen name="comparison_specs_calculation_width">136dp</dimen>
     <dimen name="dimen_difference_card_use_compat_padding">3.2dp</dimen>
-    <dimen name="dimen_difference_card_use_compat_padding_view_divider">5dp</dimen>
+    <dimen name="dimen_difference_card_use_compat_padding_view_divider">4dp</dimen>
 
     <dimen name="comparison_widget_collapsed_height">463dp</dimen>
 
