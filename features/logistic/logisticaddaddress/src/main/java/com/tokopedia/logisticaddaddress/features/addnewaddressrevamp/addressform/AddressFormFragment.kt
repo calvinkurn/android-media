@@ -382,13 +382,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etLabel.textFieldInput.text.toString().length < 3) {
+                if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_label_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
-                if (formAddress.etAlamatNew.textFieldInput.text.toString().length < 3) {
+                if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
@@ -406,14 +406,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < 3) {
+                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_label_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
 
-                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < 3) {
+                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
@@ -812,6 +812,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
+
+        const val MINIMUM_CHAR = 3
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
