@@ -847,8 +847,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
        districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
     }
 
-    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
-        val kotaKecamatanText = "${districtAddress.districtName}, ${districtAddress.cityName} $zipCode"
+    override fun onChooseZipcode(districtAddress: Address, postalCode: String, isPinpoint: Boolean) {
+        val kotaKecamatanText = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
         formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
         currentDistrictName = districtAddress.districtName.toString()
         binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
@@ -862,8 +862,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.provinceId = districtAddress.provinceId
         saveDataModel?.districtId = districtAddress.districtId
         saveDataModel?.zipCodes = districtAddress.zipCodes
-        saveDataModel?.postalCode = zipCode
-        currentKodepos = zipCode
+        saveDataModel?.postalCode = postalCode
+        currentKodepos = postalCode
 
         if (isPinpoint) goToPinpointPage()
     }
