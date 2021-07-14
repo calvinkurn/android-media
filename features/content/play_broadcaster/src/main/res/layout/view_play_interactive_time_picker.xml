@@ -14,7 +14,8 @@
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
         app:layout_behavior="com.tokopedia.play_common.util.behavior.LockableBottomSheetBehavior"
-        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
+        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
+        >
 
         <include
             layout="@layout/bottom_sheet_header" />
@@ -40,7 +41,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/pu_timer"
             app:layout_constraintStart_toStartOf="@id/pu_timer"
-            app:unifyButtonSize="medium" />
+            app:unifyButtonSize="medium"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
