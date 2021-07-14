@@ -37,19 +37,8 @@
     {
       "eventCategory": "cart change address negative",
       "event": "clickAddress",
-      "eventAction": "click field nama penerima",
-      "eventLabel": "logistic"
-    },
-    {
-      "eventCategory": "cart change address negative",
-      "event": "clickAddress",
       "eventAction": "click field no ponsel",
       "eventLabel": "logistic"
-    },
-    {
-      "eventCategory": "cart change address",
-      "eventAction": "click button simpan",
-      "eventLabel": "negative success - logistic"
     }
   ],
   "readme": "Logistic Add Address cart funnel, also verifies CVR. STR: Create New Address from Cart Address Choice"

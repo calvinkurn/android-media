@@ -33,11 +33,6 @@
       "eventCategory": "add new address positive",
       "eventAction": "click field nomor hp",
       "eventLabel" : ".*"
-    },
-    {
-      "eventCategory": "add new address positive",
-      "eventAction": "click simpan",
-      "eventLabel" : ".*"
     }
   ],
   "readme": "Logistic Add New Address Revamp user funnel Tracking & verifies CVR"
