@@ -58,7 +58,7 @@ class TokoPointsHomeViewModelTest {
         Dispatchers.resetMain()
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun `getTokoPointDetail for success data`() {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
@@ -91,7 +91,7 @@ class TokoPointsHomeViewModelTest {
         assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun `getTokoPointDetail for userSavingVisible`() {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
