@@ -233,23 +233,6 @@
                         android:layout_marginRight="@dimen/layout_lvl2"
                         android:layout_marginBottom="@dimen/hotel_12dp"
                         android:orientation="horizontal">
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/hotel_property_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_lvl2"
-                            android:layout_marginRight="@dimen/spacing_lvl2"
-                            android:background="@drawable/bg_search_destination_tag"
-                            android:paddingLeft="@dimen/hotel_6dp"
-                            android:paddingTop="@dimen/spacing_lvl1"
-                            android:paddingRight="@dimen/hotel_6dp"
-                            android:paddingBottom="@dimen/spacing_lvl1"
-                            android:textColor="@color/Unify_N200"
-                            app:typographyType="body_3"
-                            app:typographyWeight="bold"
-                            tools:text="Hotel" />
-
                     </LinearLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout

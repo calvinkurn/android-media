@@ -48,14 +48,12 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
@@ -357,7 +355,21 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         setupMainImage(data.property.images)
 
         tv_hotel_name.text = data.property.name
-        hotel_property_type.text = data.property.typeName
+        hotel_rating_container?.let{
+            it.removeAllViews()
+        }
+        context?.run {
+            val textView = Typography(requireContext())
+            textView.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.bg_search_destination_tag)
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                text = data.property.typeName
+                setType(Typography.BODY_3)
+                setWeight(Typography.BOLD)
+                setPadding(getDimens(R.dimen.dp_6), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.dp_6), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+            }
+            hotel_rating_container.addView(textView)
+        }
         for (i in 1..data.property.star) {
             context?.run { hotel_rating_container.addView(RatingStarView(this)) }
         }

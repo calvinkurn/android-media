@@ -75,7 +75,10 @@ class ErrorHandlerHotel {
                     view.setType(GlobalError.SERVER_ERROR)
                     view.errorTitle.text = if(e.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, e) else e.message
                 }
-                else -> view.setType(GlobalError.SERVER_ERROR)
+                else -> {
+                    view.setType(GlobalError.SERVER_ERROR)
+                    view.errorTitle.text = ErrorHandler.getErrorMessage(context, e)
+                }
             }
             view.setActionClickListener {
                 action()
