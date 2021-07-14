@@ -27,7 +27,6 @@ import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomShee
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
@@ -120,17 +119,17 @@ class MiniCartWidget @JvmOverloads constructor(
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
                     onFailedToLoadMiniCartBottomSheet(it, fragment)
                 }
-                GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
+                GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
                         context?.let { context ->
                             hideProgressLoading()
-                            onSuccessUpdateCartForCheckout(context)
+                            onSuccessAddToCartForCheckout(context)
                         }
                     }
                 }
-                GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
+                GlobalEvent.STATE_FAILED_ADD_TO_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        onFailedUpdateCartForCheckout(it, fragment)
+                        onFailedAddToCartForCheckout(it, fragment)
                     }
                 }
             }
@@ -160,27 +159,28 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
+    private fun onFailedAddToCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
         hideProgressLoading()
         setTotalAmountLoading(true)
         fragment.context?.let { context ->
-            handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
+            handleFailedAddToCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
         }
     }
 
-    private fun handleFailedUpdateCartForCheckout(view: View?, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+    private fun handleFailedAddToCartForCheckout(view: View?, context: Context, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
         val data = globalEvent.data
         if (data != null) {
-            // Goes here if failed but get response from BE
-            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context, globalEvent)
+            // Goes here if failed and get response from BE
+            handleFailedAddToCartWithOutOfService(view, data, fragmentManager, context, globalEvent)
         } else {
             // Goes here if failed and get no response from BE
-            handleFailedUpdateCartWithThrowable(view, globalEvent, fragmentManager, context)
+            handleFailedAddToCartWithThrowable(view, globalEvent, fragmentManager, context)
         }
     }
 
-    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
-        if (data is Data) {
+    private fun handleFailedAddToCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
+        // Todo : adjust AddToCartOccMultiDataModel model, add out of service & toaster action
+/*        if (data is AddToCartOccMultiDataModel) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
                 globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
@@ -190,7 +190,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
                     override fun onRefreshErrorPage() {
                         showProgressLoading()
-                        viewModel?.updateCart(true, globalEvent.observer)
+                        viewModel?.addToCartOcc(globalEvent.observer)
                     }
                 })
                 analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
@@ -216,10 +216,10 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 analytics.eventClickBuyThenGetToasterError(data.error)
             }
-        }
+        }*/
     }
 
-    private fun handleFailedUpdateCartWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {
+    private fun handleFailedAddToCartWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {
         val throwable = globalEvent.throwable
         if (throwable != null) {
             when (throwable) {
@@ -231,7 +231,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
                         override fun onRefreshErrorPage() {
                             showProgressLoading()
-                            viewModel?.updateCart(true, globalEvent.observer)
+                            viewModel?.addToCartOcc(globalEvent.observer)
                         }
                     })
                     analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
@@ -256,8 +256,8 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun onSuccessUpdateCartForCheckout(context: Context) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+    private fun onSuccessAddToCartForCheckout(context: Context) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         context.startActivity(intent)
     }
 
@@ -317,7 +317,6 @@ class MiniCartWidget @JvmOverloads constructor(
                 sendEventClickBuy()
                 showProgressLoading()
                 viewModel?.addToCartOcc(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
-//                viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
         imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
@@ -512,15 +511,15 @@ class MiniCartWidget @JvmOverloads constructor(
         viewModel?.resetTemporaryHiddenUnavailableItems()
     }
 
-    override fun onBottomSheetSuccessUpdateCartForCheckout() {
+    override fun onBottomSheetSuccessAddToCartForCheckout() {
         context?.let {
-            onSuccessUpdateCartForCheckout(it)
+            onSuccessAddToCartForCheckout(it)
         }
     }
 
-    override fun onBottomSheetFailedUpdateCartForCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
+    override fun onBottomSheetFailedAddToCartForCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent) {
         context?.let {
-            handleFailedUpdateCartForCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
+            handleFailedAddToCartForCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
         }
     }
 

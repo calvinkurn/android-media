@@ -79,7 +79,7 @@ class UpdateCartTest {
         viewModel.updateCart(isForCheckout, observer)
 
         //then
-        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT)
+        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT)
     }
 
     @Test
@@ -101,7 +101,7 @@ class UpdateCartTest {
         viewModel.updateCart(isForCheckout, observer)
 
         //then
-        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT)
+        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_SUCCESS_ADD_TO_CART_FOR_CHECKOUT)
     }
 
     @Test
@@ -124,7 +124,7 @@ class UpdateCartTest {
         viewModel.updateCart(isForCheckout, observer)
 
         //then
-        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT)
+        assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_ADD_TO_CART_FOR_CHECKOUT)
     }
 
     @Test
