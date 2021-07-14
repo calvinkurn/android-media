@@ -55,6 +55,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -260,7 +261,7 @@ class TokoNowHomeFragment: Fragment(),
                     viewModelTokoNow.getChooseAddress(SOURCE)
                 }
                 warehouseId == 0L -> {
-                    showEmptyState(EMPTY_STATE_NO_ADDRESS)
+                    showEmptyStateNoAddress()
                 }
                 else -> {
                     showLayout()
@@ -277,6 +278,14 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showFailedToFetchData() {
         showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    }
+
+    private fun showEmptyStateNoAddress() {
+        if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
+            showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
+        } else {
+            showEmptyState(EMPTY_STATE_NO_ADDRESS)
+        }
     }
 
     private fun showLayout() {
@@ -474,7 +483,7 @@ class TokoNowHomeFragment: Fragment(),
                         warehouseId = it.data.tokonow.warehouseId
                 )
             } else {
-                showEmptyState(EMPTY_STATE_NO_ADDRESS)
+                showEmptyStateNoAddress()
             }
         }
     }
