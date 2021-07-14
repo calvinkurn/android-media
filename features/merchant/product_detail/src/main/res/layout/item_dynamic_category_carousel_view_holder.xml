@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_category_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Kategori lain di Tokopedia NOW!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_category_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/product_category_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/product_category_title"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Lihat Semua" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/product_category_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        tools:listitem="@layout/item_category_image_view_holder"
+        app:layout_constraintTop_toBottomOf="@+id/product_category_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

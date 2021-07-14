@@ -202,6 +202,9 @@ object ProductTrackingConstant {
         const val CLICK_VARIANT_ATC_BUTTON = "click - tambah ke keranjang on pdp - to global variant bottomsheet"
 
         const val CLICK_VARIANT_QUANTITY_EDITOR = "click - quantity editor"
+
+        const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
+        const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
     }
 
 

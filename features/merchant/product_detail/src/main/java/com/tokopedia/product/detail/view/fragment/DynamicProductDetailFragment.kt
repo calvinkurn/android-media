@@ -777,9 +777,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    /**
-     * ProductInfoViewHolder
-     */
+    override fun onCategoryCarouselImageClicked(url: String, categoryTitle:String, componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.onImageCategoryCarouselClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel, categoryTitle)
+        goToApplink(url)
+    }
+
+    override fun onCategoryCarouselSeeAllClicked(url: String, componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.onSeeAllCategoryCarouselClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+        goToApplink(url)
+    }
+
     override fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel) {
         if (!GlobalConfig.isSellerApp()) {
 

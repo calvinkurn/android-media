@@ -171,4 +171,10 @@ interface DynamicProductDetailListener {
     fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
     fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun showCoachmark(view: Typography?, isBoeType: Boolean)
+
+    /**
+     * ProductCategoryCarouselViewHolder
+     */
+    fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
 }

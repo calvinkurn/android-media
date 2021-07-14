@@ -60,6 +60,28 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun onImageCategoryCarouselClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?, categoryName:String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE,
+                    "category_name:$categoryName")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_CATEGORY_IMAGE)
+        }
+
+        fun onSeeAllCategoryCarouselClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_SEE_ALL_CATEGORY_CAROUSEL,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_CATEGORY_CAROUSEL)
+        }
+
         fun onQuantityEditorClicked(productId: String, oldQuantity: Int, newQuantity: Int) {
             val label = "quantity button:${if (newQuantity > oldQuantity) "plus" else "minus"}"
             val mapEvent = TrackAppUtils.gtmData(

@@ -74,7 +74,7 @@ data class ComponentData(
         @SerializedName("variants")
         val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        val children : List<VariantChild> = listOf(),
+        val children: List<VariantChild> = listOf(),
         //endregioncopy
 
         //region best seller data
@@ -87,10 +87,17 @@ data class ComponentData(
         @SerializedName("color")
         val color: String = "",
         @SerializedName("isVisible")
-        val isVisible: Boolean = true
+        val isVisible: Boolean = true,
         //endregioncopy
-)  {
-    companion object{
+
+        //region category carousel
+        @SerializedName("titleCarousel")
+        val titleCarousel: String = "",
+        @SerializedName("list")
+        val categoryCarouselList: List<CategoryCarousel> = listOf()
+        //endregion
+) {
+    companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"
     }
 
@@ -144,3 +151,14 @@ data class ComponentData(
         })
     }
 }
+
+data class CategoryCarousel(
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("isApplink")
+        var isApplink: Boolean = false,
+        @SerializedName("applink")
+        val applink: String = ""
+)
