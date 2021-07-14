@@ -20,6 +20,7 @@ import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -44,12 +45,14 @@ class TokoPointsHomeViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
         viewModel = TokoPointsHomeViewModel(repository,recomUsecase)
     }
 
+    @ExperimentalCoroutinesApi
     @After
     fun tearDown() {
         Dispatchers.resetMain()
@@ -76,7 +79,9 @@ class TokoPointsHomeViewModelTest {
                 }
             }
         }
-        commonRecomDatacall()
+        coEvery {  recomUsecase.getRequestParams(1, "", "") } returns requestParams
+        every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
+        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
 
@@ -120,7 +125,9 @@ class TokoPointsHomeViewModelTest {
             }
         }
 
-        commonRecomDatacall()
+        coEvery {  recomUsecase.getRequestParams(1, "", "") } returns requestParams
+        every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
+        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
 
@@ -192,10 +199,4 @@ class TokoPointsHomeViewModelTest {
         verify(exactly = 1) { tokopointIntroObserver.onChanged(any()) }
     }
 
-    fun `commonRecomDatacall`(){
-        coEvery {  recomUsecase.getRequestParams(1, "", "") } returns requestParams
-        every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
-        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
-
-    }
 }
