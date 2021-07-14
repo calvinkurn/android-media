@@ -16,7 +16,7 @@ class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCa
         if (view != null) {
             view.hideProgressLoading()
             view.showToastMessageRed(e)
-            view.refreshCart()
+            view.refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -26,7 +26,7 @@ class AddToCartExternalSubscriber(val view: ICartListView?) : Subscriber<AddToCa
             if (model.message.isNotEmpty()) {
                 view.showToastMessageGreen(model.message[0])
             }
-            view.refreshCart()
+            view.refreshCartWithSwipeToRefresh()
         }
     }
 

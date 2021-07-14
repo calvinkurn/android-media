@@ -274,8 +274,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             val cartItemData = mapCartItemData(it, shopGroup, shopGroupData, cartDataListResponse, isDisabledAllProduct, selectedUnavailableActionId)
             val cartItemHolderData = CartItemHolderData(
                     cartItemData = cartItemData,
-                    errorFormItemValidationType = 0,
-                    errorFormItemValidationMessage = "",
                     isEditableRemark = false,
                     isStateHasNotes = false,
                     isSelected = cartItemData.originData.isCheckboxState,

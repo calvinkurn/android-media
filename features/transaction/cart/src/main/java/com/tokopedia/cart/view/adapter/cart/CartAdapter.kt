@@ -707,43 +707,26 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun checkForShipmentForm() {
-        var canProcess = true
-        var checkedCount = 0
-        for (any in cartDataList) {
+        var hasCheckedAvailableItem = false
+        loop@ for (any in cartDataList) {
+            if (hasCheckedAvailableItem) break@loop
             if (any is CartShopHolderData) {
                 if (any.isAllSelected) {
-                    checkedCount += any.shopGroupAvailableData?.cartItemDataList?.size ?: 0
+                    hasCheckedAvailableItem = true
                 } else if (any.isPartialSelected) {
                     any.shopGroupAvailableData?.cartItemDataList?.let {
-                        for (cartItemHolderData in it) {
+                        innerLoop@ for (cartItemHolderData in it) {
                             if (cartItemHolderData.isSelected) {
-                                checkedCount++
-                                if (cartItemHolderData.getErrorFormItemValidationTypeValue() != CartItemHolderData.ERROR_EMPTY || cartItemHolderData.cartItemData.isError) {
-                                    canProcess = false
-                                    break
-                                }
+                                hasCheckedAvailableItem = true
+                                break@innerLoop
                             }
                         }
                     }
-                    if (!canProcess) {
-                        break
-                    }
                 }
             }
         }
 
-        for (any in cartDataList) {
-            if (any is CartShopHolderData && (any.isAllSelected || any.isPartialSelected)) {
-                any.shopGroupAvailableData?.cartItemDataList?.forEach {
-                    if (it.errorFormItemValidationMessage.isNotBlank()) {
-                        canProcess = false
-                        return@forEach
-                    }
-                }
-            }
-        }
-
-        if (canProcess && checkedCount > 0) {
+        if (hasCheckedAvailableItem) {
             actionListener.onCartDataEnableToCheckout()
         } else {
             actionListener.onCartDataDisableToCheckout()

@@ -312,7 +312,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (isAtcExternalFlow()) {
                 if (productId == INVALID_PRODUCT_ID) {
                     showToastMessageRed(MessageErrorException(AtcConstant.ATC_ERROR_GLOBAL))
-                    refreshCart()
+                    refreshCartWithSwipeToRefresh()
                 } else {
                     addToCartExternal(productId)
                 }
@@ -398,8 +398,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_SHIPMENT -> onResultFromShipmentPage(resultCode, data)
             NAVIGATION_PDP -> onResultFromPdp()
             NAVIGATION_PROMO -> onResultFromPromoPage(resultCode, data)
-            NAVIGATION_SHOP_PAGE -> refreshCart()
-            NAVIGATION_WISHLIST -> refreshCart()
+            NAVIGATION_SHOP_PAGE -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -420,7 +420,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onResultFromPdp() {
         if (!isTestingFlow()) {
-            refreshCart()
+            refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -1059,7 +1059,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun loadCartData(savedInstanceState: Bundle?): Unit? {
         return if (savedInstanceState == null) {
-            refreshCart()
+            refreshCartWithSwipeToRefresh()
         } else {
             if (cartListData != null) {
                 dPresenter.setCartListData(cartListData!!)
@@ -1067,13 +1067,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 renderInitialGetCartListDataSuccess(cartListData)
                 stopCartPerformanceTrace()
             } else {
-                refreshCart()
+                refreshCartWithSwipeToRefresh()
             }
         }
     }
 
-    override fun refreshCart() {
-        refreshCartWithSwipeToRefresh()
+    override fun refreshCartWithSwipeToRefresh() {
+        refreshHandler?.isRefreshing = true
+        resetRecentViewList()
+        if (dPresenter.dataHasChanged()) {
+            showMainContainer()
+            dPresenter.processToUpdateAndReloadCartData(getCartId())
+        } else {
+            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+        }
     }
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData?) {
@@ -2633,16 +2640,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun showMainContainerLoadingInitData() {
-        binding?.apply {
-            layoutGlobalError.gone()
-            rlContent.show()
-            bottomLayout.gone()
-            bottomLayoutShadow.gone()
-            llPromoCheckout.gone()
-        }
-    }
-
     private fun showMainContainer() {
         binding?.apply {
             layoutGlobalError.gone()
@@ -2717,7 +2714,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
         )
 
-        refreshCart()
+        refreshCartWithSwipeToRefresh()
     }
 
     private fun renderGlobalErrorBottomsheet(message: String) {
@@ -2897,7 +2894,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun renderLoadGetCartData() {
-        showMainContainerLoadingInitData()
+        binding?.apply {
+            layoutGlobalError.gone()
+            rlContent.show()
+            bottomLayout.gone()
+            bottomLayoutShadow.gone()
+            llPromoCheckout.gone()
+        }
     }
 
     override fun renderLoadGetCartDataFinish() {
@@ -2933,7 +2936,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setTopLayoutVisibility()
 
         if (removeAllItems) {
-            refreshCart()
+            refreshCartWithSwipeToRefresh()
         } else {
             setLastItemAlwaysSelected()
         }
@@ -3001,7 +3004,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         setTopLayoutVisibility()
 
         if (isLastItem) {
-            refreshCart()
+            refreshCartWithSwipeToRefresh()
         } else {
             setLastItemAlwaysSelected()
         }
@@ -3146,17 +3149,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onRefresh(view: View?) {
         refreshCartWithSwipeToRefresh()
-    }
-
-    private fun refreshCartWithSwipeToRefresh() {
-        refreshHandler?.isRefreshing = true
-        resetRecentViewList()
-        if (dPresenter.dataHasChanged()) {
-            showMainContainer()
-            dPresenter.processToUpdateAndReloadCartData(getCartId())
-        } else {
-            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
-        }
     }
 
     private fun refreshCartWithProgressDialog(getCartState: Int) {
