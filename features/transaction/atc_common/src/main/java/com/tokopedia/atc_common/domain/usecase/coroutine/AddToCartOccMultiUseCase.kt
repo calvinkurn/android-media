@@ -8,7 +8,7 @@ import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
-import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART_OCC
+import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART_OCC_MULTI
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -39,7 +39,7 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
     override suspend fun executeOnBackground(): AddToCartOccMultiDataModel {
         val sentParams = requestParams?.copy() ?: throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
 
-        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC, AddToCartOccMultiGqlResponse::class.java, getParams(sentParams))
+        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC_MULTI, AddToCartOccMultiGqlResponse::class.java, getParams(sentParams))
         val addToCartOccGqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiGqlResponse>()
 
         val result = addToCartDataMapper.mapAddToCartOccMultiResponse(addToCartOccGqlResponse)

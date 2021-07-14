@@ -10,6 +10,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
+import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_QTY_NOTES
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -81,17 +82,23 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
     }
 
     fun generateUpdateCartParam(orderCart: OrderCart, orderProfile: OrderProfile, orderShipment: OrderShipment, orderPayment: OrderPayment): UpdateCartOccRequest? {
-        val orderProduct = orderCart.products.firstOrNull()
-        if (orderProfile.isValidProfile && orderProduct != null) {
-            val cart = UpdateCartOccCartRequest(
-                    orderProduct.cartId,
-                    orderProduct.quantity.orderQuantity,
-                    orderProduct.notes,
-                    orderProduct.productId.toString(),
-                    orderShipment.getRealShipperId(),
-                    orderShipment.getRealShipperProductId(),
-                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
-            )
+        if (orderProfile.isValidProfile && orderCart.products.isNotEmpty()) {
+            val cart = ArrayList<UpdateCartOccCartRequest>()
+            orderCart.products.forEach {
+                if (!it.isError) {
+                    cart.add(
+                            UpdateCartOccCartRequest(
+                                    it.cartId,
+                                    it.quantity.orderQuantity,
+                                    it.notes,
+                                    it.productId.toString()
+                            )
+                    )
+                }
+            }
+            if (cart.isEmpty()) {
+                return null
+            }
             var metadata = orderProfile.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm
             if (selectedTerm != null) {
@@ -112,10 +119,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                     orderProfile.profileId.toString(),
                     orderProfile.payment.gatewayCode,
                     metadata,
+                    orderProfile.address.addressId.toString(),
                     if (realServiceId == 0) orderProfile.shipment.serviceId else realServiceId,
-                    orderProfile.address.addressId.toString()
+                    orderShipment.getRealShipperId(),
+                    orderShipment.getRealShipperProductId(),
+                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
             )
-            return UpdateCartOccRequest(arrayListOf(cart), profile)
+            return UpdateCartOccRequest(cart, profile)
         }
         return null
     }
@@ -128,7 +138,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         withContext(executorDispatchers.io) {
             try {
                 val param = generateUpdateCartParam(orderCart, orderProfile, orderShipment, orderPayment)?.copy(
-                        skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment)
+                        skipShippingValidation = shouldSkipShippingValidationWhenUpdateCart(orderShipment),
+                        source = SOURCE_UPDATE_QTY_NOTES
                 )
                 if (param != null) {
                     // ignore result

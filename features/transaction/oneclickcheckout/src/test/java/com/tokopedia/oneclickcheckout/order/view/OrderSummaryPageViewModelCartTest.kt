@@ -402,8 +402,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coVerify {
             updateCartOccUseCase.executeSuspend(withArg {
                 assertEquals(UpdateCartOccRequest(arrayListOf(
-                        UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString(), spId = 1, shippingId = 1)),
-                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1", gatewayCode = "payment")),
+                        UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString())),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1", gatewayCode = "payment", spId = 1, shippingId = 1), source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES),
                         it)
             })
         }
@@ -449,8 +449,8 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         coVerify {
             updateCartOccUseCase.executeSuspend(withArg {
-                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString(), spId = 0, shippingId = 0)),
-                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1", gatewayCode = "payment"), skipShippingValidation = true),
+                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString())),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1", gatewayCode = "payment", spId = 0, shippingId = 0), skipShippingValidation = true, source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES),
                         it)
             })
         }
