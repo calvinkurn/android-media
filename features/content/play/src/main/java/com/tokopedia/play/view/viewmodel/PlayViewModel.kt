@@ -572,14 +572,17 @@ class PlayViewModel @Inject constructor(
             playVideoPlayer.removeListener(videoManagerListener)
 
             val videoStream = channelData.videoMetaInfo.videoStream
-            castPlayerHelper.castPlay(
+            if(mChannelData?.id.toString() != castPlayerHelper.getCurrentMediaChannelId()) {
+                castPlayerHelper.castPlay(
                     channelId = channelData.id,
                     title = videoStream.title,
                     partnerName = channelData.partnerInfo.basicInfo.name,
                     coverUrl = channelData.channelInfo.coverUrl,
                     videoUrl = channelData.videoMetaInfo.videoPlayer.params.videoUrl,
                     currentPosition = playVideoPlayer.getCurrentPosition()
-            )
+                )
+            }
+
             _observableVideoMeta.value = channelData.videoMetaInfo.copy(
                     videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelInfo.coverUrl)
             )
