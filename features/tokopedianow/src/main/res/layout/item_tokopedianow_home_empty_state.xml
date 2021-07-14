@@ -18,4 +18,17 @@
         app:globalerrors_type="SERVER_ERROR"
         android:visibility="gone"/>
 
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/empty_state_no_address_and_local_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:unifyEmptyStateImageDrawable="@drawable/tokopedianow_ic_empty_state_no_address_no_local_cache"
+        app:unifyEmptyStateTitle="@string/tokopedianow_empty_state_no_address_and_local_cache_title"
+        app:unifyEmptyStateDescription = "@string/tokopedianow_empty_state_no_address_and_local_cache_description"
+        app:unifyEmptyStateType="page"
+        app:unifyEmptyStatePrimaryCTAText="@string/tokopedianow_empty_state_no_address_and_local_cache_primary_cta"
+        app:unifyEmptyStateSecondaryCTAText="@string/tokopedianow_empty_state_no_address_and_local_cache_secondary_cta"
+        android:visibility="gone"/>
+
 </RelativeLayout>

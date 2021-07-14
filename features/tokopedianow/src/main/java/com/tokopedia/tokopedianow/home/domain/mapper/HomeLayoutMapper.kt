@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.LEGO_6_
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
@@ -36,6 +37,7 @@ object HomeLayoutMapper {
             CHOOSE_ADDRESS_WIDGET_ID,
             TICKER_WIDGET_ID,
             EMPTY_STATE_NO_ADDRESS,
+            EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE,
             EMPTY_STATE_FAILED_TO_FETCH_DATA
     )
 

@@ -19,7 +19,8 @@ annotation class HomeStaticLayoutId {
         const val CHOOSE_ADDRESS_WIDGET_ID = "0"
         const val TICKER_WIDGET_ID = "1"
         const val EMPTY_STATE_NO_ADDRESS = "2"
-        const val EMPTY_STATE_FAILED_TO_FETCH_DATA = "3"
-        const val LOADING_STATE = "4"
+        const val EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE = "3"
+        const val EMPTY_STATE_FAILED_TO_FETCH_DATA = "4"
+        const val LOADING_STATE = "5"
     }
 }
