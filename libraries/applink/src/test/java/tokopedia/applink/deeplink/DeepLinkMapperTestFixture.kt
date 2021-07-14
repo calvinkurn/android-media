@@ -47,13 +47,6 @@ open class DeepLinkMapperTestFixture {
     protected fun assertEqualsDeepLinkMapper(deepLink: String, expectedDeepLink: String) {
         val actualResult = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
         assertEquals(expectedDeepLink, actualResult)
-        every {
-            DeeplinkMapper.getTokopediaSchemeList()
-        } answers {
-            DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
-        }
-        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
-        assertEquals(expectedDeepLink, actualResultReverse)
     }
 
     protected fun assertEqualsDeepLinkMapperApp(appType: AppType, deepLink: String, expectedDeepLink: String) {

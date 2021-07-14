@@ -8,6 +8,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
@@ -18,19 +19,19 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation project(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation rootProject.ext.miscDependencies.flexBoxLayout
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.purchase_platform_common)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -49,10 +50,10 @@ dependencies {
         transitive = true
     }
 
-    implementation project(rootProject.ext.features.minicart)
-    implementation project(rootProject.ext.features.localizationchooseaddress_common)
-    implementation project(rootProject.ext.features.productDetailCommon)
-    implementation project(rootProject.ext.libraries.imagePreview)
+    implementation projectOrAar(rootProject.ext.features.minicart)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.libraries.imagePreview)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.dagger
@@ -64,7 +65,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
