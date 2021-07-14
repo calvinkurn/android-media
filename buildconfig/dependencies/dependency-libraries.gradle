@@ -76,6 +76,7 @@ ext {
             keys                    : ":libraries:keys",
             kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
+            universal_sharing       : ":libraries:universal_sharing",
             liveness_lib            : ":libraries:liveness_lib",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
