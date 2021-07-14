@@ -2,40 +2,60 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/play_interactive_winner_badge_height"
-    android:background="@drawable/bg_play_interactive_winner_badge"
-    android:gravity="center_vertical"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     >
 
-    <FrameLayout
-        android:id="@+id/fl_winner_badge"
+    <View
+        android:id="@+id/v_anchor_top"
+        android:layout_width="@dimen/play_interactive_coachmark_anchor_size"
+        android:layout_height="@dimen/play_interactive_coachmark_anchor_size"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_play_interactive_circle"
+        android:layout_height="@dimen/play_interactive_winner_badge_height"
+        android:background="@drawable/bg_play_interactive_winner_badge"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            app:srcCompat="@drawable/ic_play_interactive_crown"
+        <FrameLayout
+            android:id="@+id/fl_winner_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:background="@drawable/bg_play_interactive_circle"
+            >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/ic_play_interactive_crown"
+                />
+
+        </FrameLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:text="@string/play_interactive_winner_badge_text"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3"
             />
 
-    </FrameLayout>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:text="@string/play_interactive_winner_badge_text"
-        android:textColor="@color/Unify_Static_White"
-        app:typographyType="body_3"
-        />
+    </LinearLayout>
 
 </LinearLayout>

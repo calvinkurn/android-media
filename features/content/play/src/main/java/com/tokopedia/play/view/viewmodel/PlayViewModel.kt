@@ -20,6 +20,7 @@ import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -75,7 +76,6 @@ class PlayViewModel @Inject constructor(
         private val getChannelStatusUseCase: GetChannelStatusUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
@@ -90,6 +90,7 @@ class PlayViewModel @Inject constructor(
         private val playChannelWebSocket: PlayChannelWebSocket,
         private val interactiveRepo: PlayViewerInteractiveRepository,
         private val partnerRepo: PlayViewerPartnerRepository,
+        private val likeRepo: PlayViewerLikeRepository,
         private val playAnalytic: PlayNewAnalytic,
 ) : ViewModel() {
 
@@ -166,7 +167,7 @@ class PlayViewModel @Inject constructor(
                     else -> ViewVisibility.Visible
                 },
                 leaderboards = leaderboardInfo.leaderboardWinners,
-                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty(),
+                showWinnerBadge = !bottomInsets.isAnyShown && status.isActive && leaderboardInfo.leaderboardWinners.isNotEmpty() && channelType.isLive,
                 status = status
         )
     }
@@ -657,6 +658,7 @@ class PlayViewModel @Inject constructor(
         startWebSocket(channelData.id)
         trackVisitChannel(channelData.id)
 
+        checkLeaderboard(channelData.id)
         //TODO("This is mock")
         checkInteractive(channelData.id)
     }
@@ -916,7 +918,9 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
-                val deferredIsLiked = async { getIsLiked(likeParamInfo) }
+                val deferredIsLiked = async {
+                    likeRepo.getIsLiked(contentId = likeParamInfo.contentId.toLong(), contentType = likeParamInfo.contentType)
+                }
 
                 val (totalView, totalLike, totalLikeFormatted) = try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
@@ -1001,14 +1005,6 @@ class PlayViewModel @Inject constructor(
         getReportSummariesUseCase.executeOnBackground()
     }
 
-    private suspend fun getIsLiked(likeParamInfo: PlayLikeParamInfoUiModel) = withContext(dispatchers.io) {
-        getIsLikeUseCase.params = GetIsLikeUseCase.createParam(
-                contentId = likeParamInfo.contentId.toIntOrZero(),
-                contentType = likeParamInfo.contentType
-        )
-        getIsLikeUseCase.executeOnBackground()
-    }
-
     private suspend fun getCartCount(): Int = withContext(dispatchers.io) {
         try {
             getCartCountUseCase.executeOnBackground()
@@ -1061,6 +1057,14 @@ class PlayViewModel @Inject constructor(
             trackVisitChannelBroadcasterUseCase.executeOnBackground()
         }) {
         }
+    }
+
+    private fun checkLeaderboard(channelId: String) {
+        if (!channelType.isLive) return
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            _leaderboardInfo.value = interactiveLeaderboard
+        }) {}
     }
 
     private fun checkInteractive(channelId: String) {
@@ -1279,25 +1283,30 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleInteractiveOngoingFinished() {
-        viewModelScope.launchCatchError(block = {
-            val channelId = mChannelData?.id ?: return@launchCatchError
-
-            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
-            interactiveRepo.setFinished(activeInteractiveId)
+        fun setInteractiveToFinished(interactiveId: String) {
+            interactiveRepo.setFinished(interactiveId)
 
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_initial_text,
             )
+        }
 
-            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
-
+        suspend fun fetchLeaderboard(channelId: String) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
             )
 
-            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
+            val deferredInteractiveLeaderboard = async { interactiveRepo.getInteractiveLeaderboard(channelId) }
+
+            deferredDelay.await()
+            val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
+
             val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
             val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
+
+            _interactive.value = PlayInteractiveUiState.NoInteractive
+            _leaderboardInfo.value = interactiveLeaderboard
 
             if (userInLeaderboard != null && userInLeaderboard.id == userId) {
                 _uiEvent.emit(
@@ -1308,16 +1317,30 @@ class PlayViewModel @Inject constructor(
                         )
                 )
             }
+        }
 
-            _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboardInfo.value = interactiveLeaderboard
-
+        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
             _uiEvent.emit(
                     ShowCoachMarkWinnerEvent(
-                            interactiveLeaderboard.config.loserMessage,
-                            interactiveLeaderboard.config.loserDetail
+                            leaderboard.config.loserMessage,
+                            leaderboard.config.loserDetail
                     )
             )
+        }
+
+        viewModelScope.launchCatchError(block = {
+            val channelId = mChannelData?.id ?: return@launchCatchError
+            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launchCatchError
+
+            setInteractiveToFinished(activeInteractiveId)
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+
+            try {
+                fetchLeaderboard(channelId)
+                showCoachMark(_leaderboardInfo.value)
+            } catch (e: Throwable) {
+                _interactive.value = PlayInteractiveUiState.NoInteractive
+            }
         }) {}
     }
 
@@ -1407,7 +1430,7 @@ class PlayViewModel @Inject constructor(
     companion object {
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val ONBOARDING_DELAY = 5000L
-        private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 1000L
+        private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
         /**
          * Request Code When need login

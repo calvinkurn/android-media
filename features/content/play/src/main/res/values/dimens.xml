@@ -90,6 +90,8 @@
     <dimen name="play_interactive_winner_badge_width">100dp</dimen>
     <dimen name="play_interactive_winner_badge_height">32dp</dimen>
     <dimen name="play_interactive_winner_badge_radius">22dp</dimen>
+    
+    <dimen name="play_interactive_coachmark_anchor_size">0.1dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>

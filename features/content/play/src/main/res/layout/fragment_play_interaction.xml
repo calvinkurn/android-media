@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play.view.custom.PlayInteractionConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_play_interaction"
@@ -143,7 +144,7 @@
         android:id="@+id/view_interactive_winner_badge"
         layout="@layout/view_interactive_winner_badge"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/play_interactive_winner_badge_height"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class GetInteractiveLeaderboardUseCase @Inject constructor(
         gqlRepository: GraphqlRepository,
         private val dispatchers: CoroutineDispatchers,
-) : GraphqlUseCase<GetInteractiveLeaderboardResponse>(gqlRepository) {
+) : RetryableGraphqlUseCase<GetInteractiveLeaderboardResponse>(gqlRepository) {
 
     private val query = """
         query GetSummaryLeaderboard(${"$$PARAM_CHANNEL_ID"}: String!) {
