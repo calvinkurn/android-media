@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_200"
+    android:layout_height="wrap_content"
     android:layout_marginVertical="@dimen/disco_youtube_view_padding"
     android:layout_marginHorizontal="@dimen/disco_youtube_horizontal_padding"
     app:contentPadding="@dimen/dp_0"
@@ -14,14 +14,16 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/black"
     tools:context=".viewcontrollers.activity.DiscoveryActivity">
 
     <com.tokopedia.discovery2.viewcontrollers.customview.YoutubeWebView
         android:id="@+id/youtube_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -30,7 +32,9 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shimmer_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
