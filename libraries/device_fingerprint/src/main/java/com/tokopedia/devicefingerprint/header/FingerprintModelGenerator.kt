@@ -49,9 +49,9 @@ object FingerprintModelGenerator {
     @JvmStatic
     fun generateFingerprintModel(context: Context): FingerprintModel {
         val fingerprintModel = FingerprintModel()
-        val fingerprintString = getFingerPrintJson(context).toBase64()
+        // adsid need to be gotten first, because there is possibility it make fingerprintJson expire.
         fingerprintModel.adsId = DeviceInfo.getAdsId(context)
-        fingerprintModel.fingerprintHash = fingerprintString
+        fingerprintModel.fingerprintHash = getFingerPrintJson(context).toBase64()
         fingerprintModel.registrarionId = getFCMId(context)
         return fingerprintModel
     }
