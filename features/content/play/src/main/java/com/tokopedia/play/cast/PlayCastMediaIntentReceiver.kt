@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.MediaIntentReceiver
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.view.activity.PlayActivity
@@ -28,7 +29,7 @@ class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
                     ?.getString("channel_id").orEmpty()
 
                 try {
-                    val intent = RouteManager.getIntent(it, ApplinkConstInternalContent.PLAY_DETAIL.replace("{channel_id}", channelId))
+                    val intent = RouteManager.getIntent(it, ApplinkConst.PLAY_DETAIL.replace("{channel_id}", channelId))
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     it.startActivity(intent)
                 }

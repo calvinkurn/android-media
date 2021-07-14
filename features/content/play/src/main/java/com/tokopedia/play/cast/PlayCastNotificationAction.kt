@@ -1,6 +1,7 @@
 package com.tokopedia.play.cast
 
 import android.content.Context
+import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.MediaIntentReceiver
 import com.google.android.gms.cast.framework.media.NotificationAction
 import com.google.android.gms.cast.framework.media.NotificationActionsProvider
@@ -19,21 +20,30 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
                 .setAction(MediaIntentReceiver.ACTION_STOP_CASTING)
                 .build()
         )
-        actions.add(
-            NotificationAction.Builder()
-                .setAction(ACTION_OPEN_PLAY)
-                .setIconResId(R.drawable.ic_play_arrow_up)
-                .setContentDescription(ACTION_OPEN_PLAY)
-                .build()
-        )
+        if(isShow) {
+            actions.add(
+                NotificationAction.Builder()
+                    .setAction(ACTION_OPEN_PLAY)
+                    .setIconResId(R.drawable.ic_play_arrow_up)
+                    .setContentDescription(ACTION_OPEN_PLAY)
+                    .build()
+            )
+        }
         return actions
     }
 
     override fun getCompactViewActionIndices(): IntArray {
-        return intArrayOf(0,1,2)
+        if(isShow) return intArrayOf(0,1,2)
+        return intArrayOf(0,1)
     }
 
     companion object {
         val ACTION_OPEN_PLAY = "ACTION_OPEN_PLAY"
+        private var isShow = false
+
+        fun showRedirectButton(context: Context, isShow: Boolean) {
+            this.isShow = isShow
+            CastContext.getSharedInstance(context.applicationContext).mediaNotificationManager.updateNotification()
+        }
     }
 }

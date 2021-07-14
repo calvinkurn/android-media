@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
@@ -135,6 +136,7 @@ class PlayActivity : BaseActivity(),
         orientationManager.enable()
         volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        PlayCastNotificationAction.showRedirectButton(applicationContext, false)
     }
 
     override fun onPause() {
@@ -266,6 +268,7 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
+                    PlayCastNotificationAction.showRedirectButton(applicationContext, true)
                     if (isTaskRoot) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
