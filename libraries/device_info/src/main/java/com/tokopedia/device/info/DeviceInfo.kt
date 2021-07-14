@@ -134,15 +134,15 @@ object DeviceInfo {
         return if (adsIdCache.isNotBlank()) {
             adsIdCache
         } else {
-            runBlocking { getlatestAdId(context) }
+            runBlocking { getlatestAdId(context, 1000L) }
         }
     }
 
-    suspend fun getlatestAdId(context: Context): String {
+    suspend fun getlatestAdId(context: Context, timeOutInMillis: Long = 3000L): String {
         return withContext(Dispatchers.IO) {
             try {
                 val appContext = context.applicationContext
-                val adId = withTimeout(2000) {
+                val adId = withTimeout(timeOutInMillis) {
                     val adInfo: AdvertisingIdClient.Info? =
                         suspendCancellableCoroutine { continuation ->
                             try {
@@ -188,7 +188,11 @@ object DeviceInfo {
     // Initialize ads Id in background
     @JvmOverloads
     @JvmStatic
-    fun getAdsIdSuspend(context: Context, onSuccessGetAdsId: ((adsId:String)->Unit)? = null) {
+    fun getAdsIdSuspend(
+        context: Context,
+        onSuccessGetAdsId: ((adsId: String) -> Unit)? = null,
+        timeOutInMillis: Long = 3000L
+    ) {
         GlobalScope.launch(Dispatchers.IO) {
             val adsIdCache: String = getCacheAdsId(context)
             if (adsIdCache.isNotBlank()) {
@@ -196,7 +200,7 @@ object DeviceInfo {
                     onSuccessGetAdsId?.invoke(adsIdCache)
                 }
             } else {
-                val adId = getlatestAdId(context)
+                val adId = getlatestAdId(context, timeOutInMillis)
                 withContext(Dispatchers.Main) {
                     onSuccessGetAdsId?.invoke(adId)
                 }
