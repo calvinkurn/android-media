@@ -1011,8 +1011,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun userCarouselImpression(
+        activityId: String,
+        media: FeedXMedia,
         positionInFeed: Int,
-        media: List<FeedXMedia>,
         postType: String,
         isFollowed: Boolean,
         shopId: String
@@ -1143,7 +1144,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        feedXProduct: List<FeedXProduct>
+        feedXProduct: FeedXProduct
     ) {
         onGoToLink(redirectLink)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
@@ -1222,7 +1223,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         listener: DynamicPostViewHolder.DynamicPostListener,
         id: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        positionInFeed: Int
     ) {
     }
 

@@ -49,8 +49,9 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
         fun userImagePostImpression(positionInFeed: Int, contentPosition: Int)
 
         fun userCarouselImpression(
+            activityId: String,
+            media: FeedXMedia,
             positionInFeed: Int,
-            media: List<FeedXMedia>,
             postType: String,
             isFollowed: Boolean,
             shopId: String

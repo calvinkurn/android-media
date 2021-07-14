@@ -1591,7 +1591,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
-            feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.products,
+            feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.tags,
                 itemPosition, item.feedXCard.typename, item.feedXCard.followers.isFollowed, item.feedXCard.author.id)
 
         }
@@ -1614,13 +1614,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userCarouselImpression(
+        activityId: String,
+        media: FeedXMedia,
         positionInFeed: Int,
-        media: List<FeedXMedia>,
         type: String,
         isFollowed: Boolean,
         shopId: String
     ) {
-        feedAnalytics.eventImpression(positionInFeed.toString(), media, type, isFollowed, shopId)
+        feedAnalytics.eventImpression(activityId, media, positionInFeed, type, isFollowed, shopId)
     }
 
     override fun userGridPostImpression(
@@ -1835,10 +1836,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         listener: DynamicPostViewHolder.DynamicPostListener,
         id: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        positionInFeed: Int
     ) {
         feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id)
-        productTagBS.show(childFragmentManager, products, listener, postId, id, type, isFollowed)
+        productTagBS.show(childFragmentManager, products, listener, postId, id, type, isFollowed, positionInFeed)
         productTagBS.closeClicked = {
             feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed, id)
         }
@@ -1929,7 +1931,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        products: List<FeedXProduct>
+        product: FeedXProduct
     ) {
         onGoToLink(redirectLink)
 
@@ -1937,12 +1939,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedAnalytics.eventGridMoreProductCLicked(
                 activityId.toString(), type, isFollowed, shopId)
         } else {
-            feedAnalytics.eventGridProductItemClicked(activityId.toString(),
-                productId.toString(),
-                type,
-                isFollowed,
-                shopId,
-                products)
+            if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+                val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
+                feedAnalytics.eventGridProductItemClicked(activityId.toString(),
+                    productId.toString(),
+                    type,
+                    isFollowed,
+                    shopId,
+                    product,
+                    item.feedXCard.products.indexOf(product)
+                )
+            }
+
+
         }
     }
 

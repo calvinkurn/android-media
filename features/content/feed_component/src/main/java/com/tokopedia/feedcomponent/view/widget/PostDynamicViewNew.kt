@@ -603,8 +603,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 media.forEach { feedMedia ->
                     imagePostListener.userCarouselImpression(
-                        positionInFeed,
-                        media,
+                        feedXCard.id,
+                        feedMedia,
+                        media.indexOf(feedMedia)+1,
                         feedXCard.typename,
                         feedXCard.followers.isFollowed,
                         feedXCard.author.id
@@ -683,7 +684,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 like_anim.visibility = VISIBLE
                                                 listener?.onLikeClick(
                                                     positionInFeed, postId,
-                                                    isLiked = false,
+                                                    !feedXCard.like.isLiked,
                                                     feedXCard.typename,
                                                     feedXCard.followers.isFollowed,
                                                     type = true,
@@ -719,7 +720,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         listener,
                                         feedXCard.author.id,
                                         feedXCard.typename,
-                                        feedXCard.followers.isFollowed
+                                        feedXCard.followers.isFollowed,
+                                        positionInFeed
                                     )
                                 }
                             }
@@ -731,7 +733,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         listener,
                                         feedXCard.author.id,
                                         feedXCard.typename,
-                                        feedXCard.followers.isFollowed
+                                        feedXCard.followers.isFollowed,
+                                        positionInFeed
                                     )
                                 }
                             }
@@ -815,7 +818,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         listener,
                         id,
                         type,
-                        isFollowed
+                        isFollowed,
+                        positionInFeed
                     )
                 }
             }
@@ -968,7 +972,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         } else if (totalProducts < MAX_FEED_SIZE && totalProducts > MAX_FEED_SIZE_SMALL) {
             totalProductsImpressed = LAST_FEED_POSITION_SMALL
         }
-        Log.e("TAG", "size" + totalProducts + " " + totalProductsImpressed)
         var listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
 
         imagePostListener.userProductImpression(
@@ -1026,7 +1029,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     it.appLink,
                     it.coverURL,
                     mutableListOf(),
-                    mutableListOf()
+                    mutableListOf(),
+                    index = products.indexOf(it)
                 )
             )
         }

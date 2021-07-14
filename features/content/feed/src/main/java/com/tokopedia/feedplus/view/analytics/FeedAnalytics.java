@@ -59,6 +59,7 @@ public class FeedAnalytics {
     private static final String CONTENT_FEED = "content feed";
     private static final String CONTENT_FEED_TIMELINE = "content feed timeline";
     private static final String CONTENT_FEED_TIMELINE_DETAIL = "content feed timeline - product detail";
+    private static final String CONTENT_FEED_TIMELINE_BOTTOM_SHEET = "content feed timeline - bottom sheet";
     //endregion
 
     private UserSessionInterface userSession;
@@ -561,11 +562,11 @@ public class FeedAnalytics {
     }
 
     public void eventDetailProductClick(ProductEcommerce product, int userId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+        trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
-                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE_DETAIL,
-                        EVENT_ACTION, "click product",
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
+                        EVENT_ACTION, "click - product - asgc",
                         EVENT_LABEL, product.getProductId(),
                         KEY_USER_ID, userId,
                         KEY_USER_ID_MOD, userId % 50,

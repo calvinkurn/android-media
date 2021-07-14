@@ -275,7 +275,10 @@ class FeedAnalyticTracker
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
-            KEY_EVENT_ACTION to String.format(FORMAT_THREE_PARAM, CLICK, "shop", getPostType(type, isFollowed)),
+            KEY_EVENT_ACTION to String.format(FORMAT_THREE_PARAM,
+                CLICK,
+                "shop",
+                getPostType(type, isFollowed)),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
                 activityId,
@@ -312,7 +315,12 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickBottomSheetMenu(activityId: String,type: String,isFollowed: Boolean, shopId: String) {
+    fun eventClickBottomSheetMenu(
+        activityId: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
@@ -474,7 +482,8 @@ class FeedAnalyticTracker
         activityId: String, productId: String, type: String,
         isFollowed: Boolean,
         shopId: String,
-        products: List<FeedXProduct>
+        products: FeedXProduct,
+        index: Int
     ) {
 
     trackEnhancedEcommerceEventNew(
@@ -494,9 +503,9 @@ class FeedAnalyticTracker
         ),
         DataLayer.mapOf(CLICK , mapOf(
                     "actionField" to mapOf(
-                        "list" to "feed - sgc image"
+                        "list" to "/feed - asgc"
                     ),
-                    "products" to getProductItemASGC(products)
+                    "products" to getSingleProductListASGC(products, index+1, ASGC)
                 )
             )
     )
@@ -580,12 +589,28 @@ class FeedAnalyticTracker
         return list
     }
 
-    private fun getImpressionPostASGC(imageUrl: String, activityId: String, position: Int): Map<String, Any>  = DataLayer.mapOf(
-            Promotion.CREATIVE , imageUrl,
-            Promotion.ID ,activityId,
-            Promotion.NAME , "/feed - asgc - post",
-            Promotion.POSITION , "$position",
-        )
+    private fun getImpressionPostASGC(
+        imageUrl: String,
+        activityId: String,
+        position: Int
+    ): Map<String, Any> = DataLayer.mapOf(
+        Promotion.CREATIVE, imageUrl,
+        Promotion.ID, activityId,
+        Promotion.NAME, "/feed - asgc - post",
+        Promotion.POSITION, position + 1,
+    )
+
+
+    private fun getImpressionPostSGC(
+        imageUrl: String,
+        activityId: String,
+        position: Int
+    ): Map<String, Any> = DataLayer.mapOf(
+        Promotion.CREATIVE, imageUrl,
+        Promotion.ID, activityId,
+        Promotion.NAME, "/feed - sgc - image",
+        Promotion.POSITION, position + 1,
+    )
 
 
 fun eventImpressionProductASGC(
@@ -648,31 +673,34 @@ fun eventImpressionProductASGC(
 
     fun eventImpression(
         activityId: String,
-        list: List<FeedXMedia>,
+        media: FeedXMedia,
+        position: Int,
         type: String,
         isFollowed: Boolean,
         shopId: String
     ) {
-        var map = getCommonMap(PROMO_VIEW)
-        map = map.plus(
-            mutableMapOf(
-                KEY_EVENT_ACTION to String.format(
-                    FORMAT_THREE_PARAM,
-                    "impression",
-                    "image",
-                    getPostType(type,isFollowed)
-                ),
-                KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
-                    activityId,
-                    shopId
-                ),
-                ECOMMERCE to mapOf(
-                    PROMO_VIEW to getImpressionList(list)
-                ),
+        trackEnhancedEcommerceEventNew(
+            PROMO_VIEW,
+            CONTENT_FEED_TIMELINE,
+            String.format(
+                FORMAT_THREE_PARAM,
+                "impression",
+                "image",
+                getPostType(type, isFollowed)
+            ),
+            String.format(
+                FORMAT_TWO_PARAM,
+                activityId,
+                shopId
+            ),
+            getPromoViewData(
+                getPromotionsData(
+                    listOf(
+                        getImpressionPostSGC(media.mediaUrl, activityId, position)
+                    )
+                )
             )
-        ) as MutableMap<String, String>
-        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+        )
     }
 
     fun eventClickOpenComment(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
@@ -736,7 +764,7 @@ fun eventImpressionProductASGC(
     }
 
     fun eventClickCloseProductInfoSheet(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
-        var map = getCommonMap()
+        var map = getCommonMapBottomSheet()
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -764,35 +792,31 @@ fun eventImpressionProductASGC(
         shopId: String
     ) {
 
-        val map = mapOf(
-            KEY_EVENT to PRODUCT_CLICK,
-            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE + "- bottom sheet",
-            KEY_EVENT_ACTION to String.format(
+        trackEnhancedEcommerceEventNew(
+            PRODUCT_CLICK,
+            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "product",
                 getPostType(type, isFollowed)
             ),
-            KEY_EVENT_LABEL to String.format(
+            String.format(
                 FORMAT_THREE_PARAM,
                 activityId,
                 shopId,
-                products[position].id
+                products[position - 1].id
             ),
-            ECOMMERCE to mapOf(
-                CLICK to mapOf(
-                    "actionField" to mapOf(
-                        "list" to "feed - sgc image"
-                    ),
-                    "products" to getProductItem(products)
-                )
-            ),
-            KEY_BUSINESS_UNIT_EVENT to CONTENT,
-            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
-            KEY_EVENT_USER_ID to userSessionInterface.userId
+            DataLayer.mapOf(CLICK, mapOf(
+                "actionField" to mapOf(
+                    "list" to "feed - sgc image"
+                ),
+                "products" to getSingleProductListASGC(products[position - 1], position, "SGC")
+            )
+            )
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+
     }
 
     fun eventClickFollowitem(
@@ -867,13 +891,20 @@ fun eventImpressionProductASGC(
     private fun getProductItemASGC(feedXProduct: List<FeedXProduct>): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         for (i in feedXProduct) {
-            val map = createItemMap(i, feedXProduct.indexOf(i).toString())
+            val map = createItemMapASGC(i, feedXProduct.indexOf(i).toString())
             list.add(map)
         }
         return list
     }
+    private fun getSingleProductListASGC(feedXProduct: FeedXProduct, index : Int, type: String): List<Map<String, Any>> {
+        val list: MutableList<Map<String, Any>> = mutableListOf()
+        val map = if (type == ASGC) createItemMapASGC(feedXProduct,
+            index.toString()) else createItemMapSGC(feedXProduct, index.toString())
+            list.add(map)
+        return list
+    }
 
-    private fun createItemMap(feedXProduct: FeedXProduct, index: String): Map<String, Any> =
+    private fun createItemMapASGC(feedXProduct: FeedXProduct, index: String): Map<String, Any> =
         DataLayer.mapOf(
             Product.INDEX, index,
             Product.BRAND, "",
@@ -882,8 +913,20 @@ fun eventImpressionProductASGC(
             Product.NAME, feedXProduct.name,
             Product.VARIANT, "",
             Product.PRICE,
-            if (feedXProduct.isDiscount) feedXProduct.priceDiscountFmt else feedXProduct.priceFmt,
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
             "dimension39", "/feed - asgc detail"
+        )
+    private fun createItemMapSGC(feedXProduct: FeedXProduct, index: String): Map<String, Any> =
+        DataLayer.mapOf(
+            Product.INDEX, index,
+            Product.BRAND, "",
+            Product.CATEGORY, "",
+            Product.ID, feedXProduct.id,
+            Product.NAME, feedXProduct.name,
+            Product.VARIANT, "",
+            Product.PRICE,
+            if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
+            "dimension39", "/feed - sgc "
         )
 
 
@@ -1162,6 +1205,16 @@ fun eventImpressionProductASGC(
 
 
     private fun getCommonMap(category: String = CATEGORY_FEED_TIMELINE): Map<String, String> {
+        return mapOf(
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to category,
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+    }
+    private fun getCommonMapBottomSheet(category: String = CATEGORY_FEED_TIMELINE_BOTTOMSHEET): Map<String, String> {
         return mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to category,

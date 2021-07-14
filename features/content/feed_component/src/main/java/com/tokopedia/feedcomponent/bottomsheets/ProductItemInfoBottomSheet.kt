@@ -25,6 +25,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private lateinit var listProducts: List<FeedXProduct>
     private lateinit var listener: DynamicPostViewHolder.DynamicPostListener
     private var postId: Int = 0
+    private var positionInFeed: Int = 0
     private var shopId: String = "0"
     private var postType: String = ""
     private var isFollowed: Boolean = false
@@ -98,7 +99,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             )
             item.feedType = "product"
             item.postId = postId
-            item.positionInFeed = 0
+            item.positionInFeed = positionInFeed
             item.postType = postType
             item.isFollowed = isFollowed
             itemList.add(item)
@@ -114,6 +115,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         shopId: String,
         type: String,
         isFollowed: Boolean,
+        positionInFeed: Int
     ) {
         this.listProducts = products
         this.listener = dynamicPostListener
@@ -121,6 +123,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.shopId = shopId
         this.postType = type
         this.isFollowed = isFollowed
+        this.positionInFeed = positionInFeed
         show(fragmentManager, "")
     }
 }

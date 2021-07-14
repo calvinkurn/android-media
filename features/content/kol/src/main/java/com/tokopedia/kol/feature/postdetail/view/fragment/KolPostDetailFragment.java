@@ -862,7 +862,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int activityId, int productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull List<FeedXProduct> products) {
+    public void onGridItemClick(int positionInFeed, int activityId, int productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull FeedXProduct products) {
 
         onGoToLink(redirectLink);
     }
@@ -1012,7 +1012,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed) {
+    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, int positionInFeed) {
 
     }
 
@@ -1022,7 +1022,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void userCarouselImpression(int positionInFeed, @NotNull List<FeedXMedia> media, String type, boolean isFollowed, @NotNull String shopId) {
+    public void userCarouselImpression(@NotNull String activityId, @NotNull FeedXMedia media, int positionInFeed, String type, boolean isFollowed, @NotNull String shopId) {
 
     }
 

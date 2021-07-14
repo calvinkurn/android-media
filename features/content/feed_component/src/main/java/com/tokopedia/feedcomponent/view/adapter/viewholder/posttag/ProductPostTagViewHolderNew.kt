@@ -106,7 +106,7 @@ class ProductPostTagViewHolderNew(
         item: FeedXProduct, itemPosition: Int
     ): View.OnClickListener {
         return View.OnClickListener {
-            listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition)
+            listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition+1)
         }
     }
 

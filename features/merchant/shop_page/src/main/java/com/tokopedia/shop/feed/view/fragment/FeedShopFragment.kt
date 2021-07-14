@@ -716,8 +716,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun userCarouselImpression(
+        activityId: String,
+        media: FeedXMedia,
         positionInFeed: Int,
-        media: List<FeedXMedia>,
         postType: String,
         isFollowed: Boolean,
         shopId: String
@@ -823,7 +824,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        feedXProduct: List<FeedXProduct>
+        feedXProduct: FeedXProduct
     ) {
         onGoToLink(redirectLink)
     }
@@ -882,7 +883,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         listener: DynamicPostViewHolder.DynamicPostListener,
         id: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        positionInFeed: Int
     ) {
     }
 

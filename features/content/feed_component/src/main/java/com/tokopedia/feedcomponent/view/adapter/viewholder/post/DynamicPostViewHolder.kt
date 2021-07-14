@@ -673,7 +673,8 @@ open class DynamicPostViewHolder(v: View,
             listener: DynamicPostListener,
             id: String,
             type: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            positionInFeed: Int
         )
 
         fun onReadMoreClicked(postId: String, shopId: String = "")
