@@ -41,8 +41,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -432,8 +430,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean, isPositiveFlow: Boolean) {
         val bundle = Bundle()
         bundle.putString(EXTRA_PLACE_ID, placeId)
-        latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
-        longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
+        latitude?.let { bundle.putDouble(EXTRA_LAT, it) }
+        longitude?.let { bundle.putDouble(EXTRA_LONG, it) }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
