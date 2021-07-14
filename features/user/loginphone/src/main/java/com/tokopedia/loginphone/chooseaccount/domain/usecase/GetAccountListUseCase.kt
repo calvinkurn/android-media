@@ -3,7 +3,7 @@ package com.tokopedia.loginphone.chooseaccount.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant.PARAM_LOGIN_TYPE
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant.PARAM_PHONE
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant.PARAM_VALIDATE_TOKEN
@@ -12,16 +12,18 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class GetAccountListUseCase(val graphqlUseCase: GraphqlUseCase<AccountListPojo>,
-                            var dispatchers: CoroutineDispatchers): CoroutineScope {
+class GetAccountListUseCase(
+        val graphqlUseCase: GraphqlUseCase<AccountsDataModel>,
+        var dispatchers: CoroutineDispatchers
+): CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
-    fun getAccounts(validateToken: String, loginType: String, onSuccess: (AccountListPojo) -> Unit, onError: (Throwable) -> Unit) {
+    fun getAccounts(validateToken: String, loginType: String, onSuccess: (AccountsDataModel) -> Unit, onError: (Throwable) -> Unit) {
         launchCatchError(dispatchers.io, {
             val data =
                 graphqlUseCase.apply {
-                    setTypeClass(AccountListPojo::class.java)
+                    setTypeClass(AccountsDataModel::class.java)
                     setGraphqlQuery(query)
                     setRequestParams(createRequestParams(validateToken, loginType))
                 }.executeOnBackground()

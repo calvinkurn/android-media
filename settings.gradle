@@ -1,3 +1,49 @@
+plugins {
+    id "com.gradle.enterprise" version "3.6.3"
+}
+
+gradleEnterprise {
+    server = "http://172.21.57.32"
+    buildScan {
+        publishAlways()
+        tag (System.getenv('CI') ? 'CI' : 'LOCAL')
+        if (System.getenv('CI')) {
+            if (System.getenv('BUILD_URL')) {
+                link 'Jenkins build', System.getenv('BUILD_URL')
+            }
+            if (System.getenv('BUILD_NUMBER')) {
+                value 'CI build number', System.getenv('BUILD_NUMBER')
+            }
+            if (System.getenv('NODE_NAME')) {
+                def nodeName = System.getenv('NODE_NAME')
+                def agentName = nodeName
+                if (nodeName.startsWith("kube")) {
+                    agentName = "kube-"+nodeName.split('-')[1]
+                } else if (nodeName == 'master') {
+                    agentName = "master-node"
+                }
+                tag agentName
+                value 'CI node name', agentName
+            }
+            if (System.getenv('JOB_NAME')) {
+                def jobNameLabel = 'CI job'
+                def jobName = System.getenv('JOB_NAME')
+                tag jobName
+                value jobNameLabel, jobName
+            }
+        }
+        background {
+            def gitCommitId = "git rev-parse --verify HEAD".execute().text.trim()
+            def gitBranchName = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+            def gitStatus = "git status --porcelain".execute().text.trim()
+            value "Git Commit ID", gitCommitId
+            value 'Git branch', gitBranchName
+            value 'Git status', gitStatus
+        }
+    }
+}
+
+
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -15,6 +61,7 @@ buildCache {
     }
 }
 
+apply from: 'buildconfig/aar/settings-helper.gradle'
 apply from: 'tools/dynamic_feature_inclusion.gradle'
 apply from: "buildconfig/appcompile/compile-libraries.gradle"
 //apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
@@ -24,4 +71,6 @@ apply from: "buildconfig/appcompile/compile-customerapp_pro.gradle"
 apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
 //apply from: "buildconfig/appcompile/compile-testapp.gradle"
+//apply from: "buildconfig/gradle-enterprise.gradle"
+
 apply from: "tools/composite_build_settings.gradle"

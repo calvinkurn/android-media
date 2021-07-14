@@ -14,3 +14,13 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf() {
         throw AssertionError("$actualClassName should be instance of $expectedClassName")
     }
 }
+
+internal infix fun Map<String, Any?>?.shouldNotContain(expectedKey: String) {
+    if (this == null) {
+        throw AssertionError("Map is null")
+    }
+
+    if (this.containsKey(expectedKey)) {
+        throw AssertionError("Map still contain key \"$expectedKey\"")
+    }
+}
