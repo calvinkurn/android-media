@@ -166,7 +166,8 @@ object AtcCommonMapper {
 
         return listOf(cartTypeData?.availableButtons?.firstOrNull()?.copy(
                 cartType = ProductDetailCommonConstant.KEY_CHECK_WISHLIST,
-                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY,
+                color = remindMeAlternateCopy?.color
+                        ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY,
                 text = remindMeAlternateCopy?.text ?: ProductDetailCommonConstant.TEXT_REMIND_ME
         ) ?: return null)
     }
@@ -177,7 +178,8 @@ object AtcCommonMapper {
                        processedVariant: List<VariantCategory>?,
                        selectedProductFulfillment: Boolean,
                        totalStock: Int,
-                       selectedQuantity: Int): List<AtcVariantVisitable>? {
+                       selectedQuantity: Int,
+                       shouldShowDeleteButton: Boolean): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
@@ -211,12 +213,23 @@ object AtcCommonMapper {
                         quantity = selectedQuantity,
                         minOrder = selectedChild?.getFinalMinOrder() ?: 0,
                         maxOrder = selectedChild?.getFinalMaxOrder() ?: DEFAULT_ATC_MAX_ORDER,
+                        shouldShowDeleteButton = shouldShowDeleteButton,
                         shouldShowView = isTokoNow && selectedChild?.isBuyable == true)
         ).also {
             idCounter += 1
         }
 
         return result
+    }
+
+    fun updateDeleteButtonQtyEditor(oldList: List<AtcVariantVisitable>): List<AtcVariantVisitable> {
+        return oldList.map {
+            if (it is VariantQuantityDataModel) {
+                it.copy(shouldShowDeleteButton = true)
+            } else {
+                it
+            }
+        }
     }
 
     fun updateVisitable(oldList: List<AtcVariantVisitable>,
@@ -227,7 +240,8 @@ object AtcCommonMapper {
                         variantImage: String,
                         selectedProductFulfillment: Boolean,
                         isTokoNow: Boolean,
-                        selectedQuantity: Int): List<AtcVariantVisitable> {
+                        selectedQuantity: Int,
+                        shouldShowDeleteButton: Boolean): List<AtcVariantVisitable> {
 
         return oldList.map {
             when (it) {
@@ -242,7 +256,9 @@ object AtcCommonMapper {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
                             quantity = selectedQuantity,
                             minOrder = selectedVariantChild?.getFinalMinOrder() ?: 0,
-                            maxOrder = selectedVariantChild?.getFinalMaxOrder() ?: DEFAULT_ATC_MAX_ORDER,
+                            maxOrder = selectedVariantChild?.getFinalMaxOrder()
+                                    ?: DEFAULT_ATC_MAX_ORDER,
+                            shouldShowDeleteButton = shouldShowDeleteButton,
                             shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true)
                 }
                 is VariantHeaderDataModel -> {

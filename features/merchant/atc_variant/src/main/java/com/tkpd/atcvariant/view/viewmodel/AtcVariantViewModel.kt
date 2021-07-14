@@ -110,6 +110,7 @@ class AtcVariantViewModel @Inject constructor(
             val selectedVariantChild = getVariantData()?.getChildByOptionId(selectedVariantIds?.values?.toList()
                     ?: listOf())
             val selectedMiniCart = minicartData?.get(selectedVariantChild?.productId ?: "")
+            val shouldShowDeleteButton = selectedMiniCart != null
             val cartData = AtcCommonMapper.mapToCartRedirectionData(selectedVariantChild, aggregatorData?.cardRedirection, isShopOwner, selectedMiniCart != null, aggregatorData?.alternateCopy)
 
             val isPartiallySelected = AtcVariantMapper.isPartiallySelectedOptionId(selectedVariantIds)
@@ -126,7 +127,8 @@ class AtcVariantViewModel @Inject constructor(
                     variantImage = variantImage,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     isTokoNow = isTokoNow,
-                    selectedQuantity = selectedQuantity)
+                    selectedQuantity = selectedQuantity,
+                    shouldShowDeleteButton = shouldShowDeleteButton)
 
             _initialData.postValue(list.asSuccess())
             _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedVariantChild))
@@ -207,6 +209,7 @@ class AtcVariantViewModel @Inject constructor(
 
             assignLocalQuantityWithMiniCartQuantity(minicartData?.values?.toList())
             val selectedQuantity = getSelectedQuantity(selectedChild?.productId ?: "")
+            val shouldShowDeleteButton = minicartData?.get(selectedChild?.productId ?: "") != null
 
             //Generate visitables
             val visitables = AtcCommonMapper.mapToVisitable(
@@ -216,7 +219,8 @@ class AtcVariantViewModel @Inject constructor(
                     processedVariant = processedVariant,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     totalStock = aggregatorData?.variantData?.totalStockChilds ?: 0,
-                    selectedQuantity = selectedQuantity)
+                    selectedQuantity = selectedQuantity,
+                    shouldShowDeleteButton = shouldShowDeleteButton)
 
             if (visitables != null) {
                 _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild))
@@ -407,6 +411,13 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
+    private fun updateQuantityEditorDeleteButtonAfterAtc(isTokoNow: Boolean) {
+        if (isTokoNow) {
+            val updatedList = AtcCommonMapper.updateDeleteButtonQtyEditor((_initialData.value as Success).data)
+            _initialData.postValue(updatedList.asSuccess())
+        }
+    }
+
     private suspend fun getAddToCartUseCase(requestParams: RequestParams, isTokoNow: Boolean) {
         val result = withContext(dispatcher.io) {
             addToCartUseCase.createObservable(requestParams).toBlocking().single()
@@ -415,6 +426,7 @@ class AtcVariantViewModel @Inject constructor(
             val errorMessage = result.errorMessage.firstOrNull() ?: ""
             _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
         } else {
+            updateQuantityEditorDeleteButtonAfterAtc(isTokoNow)
             updateMiniCartAndButtonData(result.data.productId.toString(), result.data.quantity, isTokoNow, result.data.cartId, result.data.notes)
             _addToCartLiveData.postValue(result.asSuccess())
         }

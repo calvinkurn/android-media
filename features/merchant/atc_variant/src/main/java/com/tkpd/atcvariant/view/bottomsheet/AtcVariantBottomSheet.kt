@@ -428,6 +428,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 .build()
     }
 
+    override fun onDeleteQuantityClicked(productId: String) {
+        super.onDeleteQuantityClicked(productId)
+    }
+
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
