@@ -404,8 +404,10 @@ class PlayVideoFragment @Inject constructor(
                 PlayCastState.NOT_CONNECTED-> {
                     videoLoadingView.hide()
                     it.previousState?.let { previousState ->
-                        if(previousState == PlayCastState.CONNECTING || previousState == PlayCastState.CONNECTED)
+                        if(previousState == PlayCastState.CONNECTING || previousState == PlayCastState.CONNECTED) {
+                            Toaster.toasterCustomBottomHeight = 100
                             Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
+                        }
                     }
                 }
                 else -> {}
