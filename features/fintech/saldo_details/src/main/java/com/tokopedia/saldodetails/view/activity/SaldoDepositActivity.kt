@@ -50,6 +50,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
                 window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
             }
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
