@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/play_interactive_error_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_interactive"
+    app:cornerRadius="@dimen/play_interactive_common_radius"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg_play_interactive_decor"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lvl3"
+        android:gravity="center_horizontal"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/play_interactive_error_text"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_interactive_retry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:text="@string/play_interactive_error_action"
+            app:unifyButtonInvers="true"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            />
+
+    </LinearLayout>
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

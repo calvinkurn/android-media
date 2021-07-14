@@ -3,9 +3,7 @@ package com.tokopedia.play.view.viewcomponent.interactive
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.R
-import com.tokopedia.play.view.custom.interactive.InteractiveFinishedView
-import com.tokopedia.play.view.custom.interactive.InteractivePreStartView
-import com.tokopedia.play.view.custom.interactive.InteractiveTapView
+import com.tokopedia.play.view.custom.interactive.*
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -17,6 +15,12 @@ class InteractiveViewComponent(
 ) : ViewComponent(container, R.id.view_interactive) {
 
     private val parent = rootView as ViewGroup
+
+    private val errorListener = object : InteractiveErrorView.Listener {
+        override fun onRetryButtonClicked(view: InteractiveErrorView) {
+            listener.onRetryButtonClicked(this@InteractiveViewComponent)
+        }
+    }
 
     private val preStartListener = object : InteractivePreStartView.Listener {
         override fun onFollowButtonClicked(view: InteractivePreStartView) {
@@ -37,6 +41,12 @@ class InteractiveViewComponent(
     override fun hide() {
         super.hide()
         cancelTimer()
+    }
+
+    fun setLoading() = setChildView { InteractiveLoadingView(parent.context) }
+
+    fun setError() = setChildView { InteractiveErrorView(parent.context) }.apply {
+        setListener(errorListener)
     }
 
     fun setPreStart(
@@ -89,6 +99,7 @@ class InteractiveViewComponent(
         val firstChild = parent.getChildAt(0) ?: return
         when (firstChild) {
             is InteractivePreStartView -> firstChild.setListener(null)
+            is InteractiveErrorView -> firstChild.setListener(null)
             is InteractiveTapView -> firstChild.setListener(null)
         }
     }
@@ -105,5 +116,6 @@ class InteractiveViewComponent(
 
         fun onFollowButtonClicked(view: InteractiveViewComponent)
         fun onTapTapClicked(view: InteractiveViewComponent)
+        fun onRetryButtonClicked(view: InteractiveViewComponent)
     }
 }

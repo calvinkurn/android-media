@@ -28,6 +28,10 @@ sealed class PlayInteractiveUiState {
 
     object NoInteractive : PlayInteractiveUiState()
 
+    object Loading : PlayInteractiveUiState()
+
+    object Error : PlayInteractiveUiState()
+
     data class PreStart(
             val timeToStartInMs: Long,
             val title: String,

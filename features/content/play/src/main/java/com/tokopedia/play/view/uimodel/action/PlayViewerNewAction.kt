@@ -18,5 +18,6 @@ object ClickFollowAction : PlayViewerNewAction()
 object ClickPartnerNameAction : PlayViewerNewAction()
 
 object ClickFollowInteractiveAction : PlayViewerNewAction()
+object ClickRetryInteractiveAction : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
