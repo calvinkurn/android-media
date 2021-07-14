@@ -714,7 +714,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
-        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, status = BulkRequestPickupStatus.FAIL_ALL_VALIDATION)
+        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, status = BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED)
 
         coEvery {
             multiShippingStatusUseCase.executeOnBackground()
@@ -731,6 +731,35 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         }
 
         assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllValidationFail)
+    }
+
+    @Test
+    fun bulkRequestPickup_shouldAllFailEligible() = runBlocking {
+        val orderIds = listOf("0", "1", "2", "5", "6", "7")
+        val batchId = "1234566"
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId, totalOnProcess = 5)
+        val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 5)
+        retryRequestPickup.set(viewModel, 11)
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel)
+
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } returns multiShippingStatusUiModel
+
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+
+        viewModel.bulkRequestPickup(orderIds)
+
+        coVerify {
+            bulkRequestPickupUseCase.setParams(orderIds)
+            bulkRequestPickupUseCase.executeOnBackground()
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllFailEligible)
     }
 
     @Test

@@ -60,6 +60,10 @@ class SomListBulkRequestPickupDialog(context: Context) {
         this.onDismissAction = action
     }
 
+    fun refreshData() {
+        onDismissAction?.invoke()
+    }
+
     fun dismissAndRunAction() {
         dialogUnify?.dismiss()
         onDismissAction?.invoke()
