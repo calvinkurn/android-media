@@ -1539,7 +1539,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == REQUEST_LOGIN_PHONE && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == REQUEST_LOGIN_PHONE &&
+                    resultCode == Activity.RESULT_OK &&
+                    data != null &&
+                    data.extras != null) {
                 data?.extras?.run {
                     val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
