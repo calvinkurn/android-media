@@ -36,7 +36,7 @@ class SettingFingerprintViewModelTest {
     private var registerFingerprintObserver = mockk<Observer<Result<RegisterFingerprintResult>>>(relaxed = true)
     private var removeFingerprintObserver = mockk<Observer<Result<RemoveFingerprintData>>>(relaxed = true)
 
-    private val throwable = Throwable("Error")
+    private val throwable = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setUp() {
