@@ -180,7 +180,14 @@ open class SomListOrderViewHolder(
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
             }
-            val displayedProduct = getProductToDisplay(element.orderProduct)
+            val haveBundle = element.haveBundleProduct && !element.bundleDetail?.bundle.isNullOrEmpty()
+            val displayedProduct = if (haveBundle) {
+                val firstBundleProduct = element.bundleDetail?.bundle?.firstOrNull()?.orderDetail?.firstOrNull()
+                        ?: element.orderProduct.firstOrNull()
+                firstBundleProduct
+            } else {
+                element.orderProduct.firstOrNull()
+            }
             displayedProduct?.let { product ->
                 val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
@@ -211,12 +218,6 @@ open class SomListOrderViewHolder(
                 }
             }
         }
-    }
-
-    //return first bundled product if any
-    private fun getProductToDisplay(products: List<SomListOrderUiModel.OrderProduct>): SomListOrderUiModel.OrderProduct? {
-        return products.firstOrNull { it.bundleId != 0L }
-                ?: products.firstOrNull()
     }
 
     private fun setupTicker(element: SomListOrderUiModel) {

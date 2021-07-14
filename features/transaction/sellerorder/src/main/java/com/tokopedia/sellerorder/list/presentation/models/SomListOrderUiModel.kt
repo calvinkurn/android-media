@@ -16,6 +16,8 @@ data class SomListOrderUiModel(
         val deadlineText: String = "",
         val orderId: String = "",
         val orderProduct: List<OrderProduct> = listOf(),
+        val haveBundleProduct: Boolean = false,
+        val bundleDetail: BundleDetailUiModel? = null,
         val orderResi: String = "",
         val orderStatusId: Int = 0,
         val status: String = "",
@@ -42,8 +44,7 @@ data class SomListOrderUiModel(
     data class OrderProduct(
             val productId: String = "",
             val productName: String = "",
-            val picture: String = "",
-            val bundleId: Long = 0L
+            val picture: String = ""
     )
 
     data class Button(

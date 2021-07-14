@@ -3,6 +3,8 @@ package com.tokopedia.sellerorder.list.domain.mapper
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
+import com.tokopedia.sellerorder.list.presentation.models.BundleDetailUiModel
+import com.tokopedia.sellerorder.list.presentation.models.BundleProductUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import javax.inject.Inject
 
@@ -31,9 +33,28 @@ class OrderListMapper @Inject constructor() {
                     buyerName = it.buyerName.capitalize(),
                     tickerInfo = it.tickerInfo,
                     buttons = mapButtons(it.buttons),
-                    searchParam = keyword
+                    searchParam = keyword,
+                    haveBundleProduct = it.haveProductBundle,
+                    bundleDetail = getBundleDetail(it.bundleDetail)
             )
         }
+    }
+
+    private fun getBundleDetail(bundleDetail: SomListOrderListResponse.Data.OrderList.Order.BundleDetail?): BundleDetailUiModel? {
+        bundleDetail?.let {
+            return BundleDetailUiModel(
+                    productCount = it.totalProduct,
+                    bundle = it.bundle.map { bundle ->
+                        BundleProductUiModel(
+                                bundleId = bundle.bundleId,
+                                bundleName = bundle.bundleName,
+                                bundlePrice = bundle.bundlePrice,
+                                orderDetail = mapProductList(bundle.orderDetail)
+                        )
+                    }
+            )
+        }
+        return null
     }
 
     private fun mapProductList(orderProduct: List<SomListOrderListResponse.Data.OrderList.Order.OrderProduct>): List<SomListOrderUiModel.OrderProduct> {
@@ -41,8 +62,7 @@ class OrderListMapper @Inject constructor() {
             SomListOrderUiModel.OrderProduct(
                     productId = it.productId,
                     productName = it.productName.asCamelCase(),
-                    picture = it.picture,
-                    bundleId = it.bundleId
+                    picture = it.picture
             )
         }
     }

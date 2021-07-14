@@ -87,8 +87,39 @@ data class SomListOrderListResponse(
                     val tickerInfo: TickerInfo = TickerInfo(),
                     @SerializedName("button")
                     @Expose
-                    val buttons: List<Button> = emptyList()
+                    val buttons: List<Button> = emptyList(),
+                    @Expose
+                    @SerializedName("have_product_bundle")
+                    val haveProductBundle: Boolean = false,
+                    @Expose
+                    @SerializedName("bundle_detail")
+                    val bundleDetail: BundleDetail? = BundleDetail()
             ) {
+
+                data class BundleDetail(
+                        @Expose
+                        @SerializedName("total_product")
+                        val totalProduct: Int = 0,
+                        @Expose
+                        @SerializedName("bundle")
+                        val bundle: List<BundleProduct> = emptyList()
+                ) {
+                    data class BundleProduct(
+                            @Expose
+                            @SerializedName("bundle_id")
+                            val bundleId: String = "",
+                            @Expose
+                            @SerializedName("bundle_name")
+                            val bundleName: String = "",
+                            @Expose
+                            @SerializedName("bundle_price")
+                            val bundlePrice: String = "",
+                            @Expose
+                            @SerializedName("order_detail")
+                            val orderDetail: List<OrderProduct> = emptyList()
+                    )
+                }
+
                 data class OrderProduct(
                         @SerializedName("product_id")
                         @Expose
@@ -98,10 +129,7 @@ data class SomListOrderListResponse(
                         val productName: String = "",
                         @SerializedName("picture")
                         @Expose
-                        val picture: String = "",
-                        @SerializedName("bundle_id")
-                        @Expose
-                        val bundleId: Long = 0L,
+                        val picture: String = ""
                 )
 
                 data class Button(
