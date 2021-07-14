@@ -144,7 +144,8 @@ object FingerprintModelGenerator {
                 deviceDpi = deviceDpi,
                 pid = imei,
                 uuid = uuid,
-                inval = VisorFingerprintInstance.getDVToken(context))
+                inval = VisorFingerprintInstance.getDVToken(context),
+                installer = context.packageManager.getInstallerPackageName(context.packageName)?: "")
         return Gson().toJson(fp)
     }
 
