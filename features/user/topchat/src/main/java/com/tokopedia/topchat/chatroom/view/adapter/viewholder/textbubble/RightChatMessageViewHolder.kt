@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
+import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -25,18 +26,35 @@ open class RightChatMessageViewHolder constructor(
     var header: LinearLayout? = itemView?.findViewById(R.id.llRoleUser)
     var headerRole: Typography? = itemView?.findViewById(R.id.tvRole)
     var smartReplyBlueDot: ImageView? = itemView?.findViewById(R.id.img_sr_blue_dot)
-    protected open val bg = ViewUtil.generateBackgroundWithShadow(
-            fxChat,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER
-    )
+    protected open val bg = generateBackground()
+
+    private fun generateBackground(): Drawable? {
+        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
+            view = fxChat,
+            backgroundColor = R.color.topchat_dms_right_button_pressed,
+            topLeftRadius = R.dimen.dp_topchat_20,
+            topRightRadius = R.dimen.dp_topchat_0,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER
+        )
+        return ViewUtil.generateBackgroundWithShadow(
+            view = fxChat,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            topLeftRadius = R.dimen.dp_topchat_20,
+            topRightRadius = R.dimen.dp_topchat_0,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER,
+            pressedDrawable = pressedBackground
+        )
+    }
 
     override fun bind(message: MessageViewModel) {
         super.bind(message)

@@ -42,4 +42,5 @@
 
     <!-- TODO: add support for dark mode color -->
     <color name="topchat_dms_left_button_pressed">#D5D5D5</color>
+    <color name="topchat_dms_right_button_pressed">#B8D3C5</color>
 </resources>
