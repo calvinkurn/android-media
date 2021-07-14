@@ -107,6 +107,7 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShopReviewPage
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -1504,16 +1505,18 @@ class NewShopPageFragment :
                     feedFragment
             ))
         }
-        val shopReviewFragment = ReviewShopFragment.createInstance(
-                shopId,
-                shopDomain
-        )
-        listShopPageTabModel.add(ShopPageTabModel(
-                getString(R.string.shop_info_title_tab_review),
-                iconTabReviewInactive,
-                iconTabReviewActive,
-                shopReviewFragment
-        ))
+        if(!isUsingNewShopReviewPage()) {
+            val shopReviewFragment = ReviewShopFragment.createInstance(
+                    shopId,
+                    shopDomain
+            )
+            listShopPageTabModel.add(ShopPageTabModel(
+                    getString(R.string.shop_info_title_tab_review),
+                    iconTabReviewInactive,
+                    iconTabReviewActive,
+                    shopReviewFragment
+            ))
+        }
         return listShopPageTabModel
     }
 
@@ -1996,7 +1999,7 @@ class NewShopPageFragment :
             shopOperationalHoursListBottomSheet?.show(fragmentManager)
         }
 
-        if (isShopReviewAppLink(appLink)) {
+        if (isShopReviewAppLink(appLink) && !isUsingNewShopReviewPage()) {
             val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
             viewPager.setCurrentItem(reviewTabPosition, false)
             tabLayout?.getTabAt(reviewTabPosition)?.select()

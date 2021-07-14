@@ -95,4 +95,13 @@ object ShopUtil {
             shop.isGoldMerchant || shop.isOfficial
         } ?: false
     }
+
+    fun isUsingNewShopReviewPage(): Boolean {
+//        val shopEtalaseRevampKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+//                AB_TEST_ROLLOUT_NEW_SHOP_ETALASE,
+//                ""
+//        )
+//        return shopEtalaseRevampKey.equals(AB_TEST_ROLLOUT_NEW_SHOP_ETALASE, true)
+        return false
+    }
 }
