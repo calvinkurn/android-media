@@ -38,6 +38,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Comp
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -138,6 +139,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        voucherGameViewModel.voucherGameOperatorDetails.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                voucherGameOperatorData = it.data.attributes
+                setupOperatorDetail()
+            }
+        })
+
         voucherGameViewModel.voucherGameProducts.observe(viewLifecycleOwner, Observer {
             it.run {
                 input_field_container_shimmering.visibility = View.GONE
@@ -174,6 +182,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
+        if (voucherGameOperatorData.name.isEmpty()) {
+            voucherGameViewModel.getVoucherGameOperators(VoucherGameGqlQuery.voucherGameProductList,
+                    voucherGameViewModel.createMenuDetailParams(voucherGameExtraParam.menuId.toIntOrZero()), false, voucherGameExtraParam.operatorId)
+        }
 
         adapter.showLoading()
         loadData()

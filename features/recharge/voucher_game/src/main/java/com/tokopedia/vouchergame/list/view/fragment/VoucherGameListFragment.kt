@@ -89,7 +89,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                     ?: VoucherGameExtraParam()
             rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA,"")
         }
-    }
+     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -140,6 +140,12 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (voucherGameExtraParam.operatorId.isNotEmpty()) {
+            navigateToProductList(CatalogOperatorAttributes())
+            activity?.finish()
+            return
+        }
 
         if(rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
