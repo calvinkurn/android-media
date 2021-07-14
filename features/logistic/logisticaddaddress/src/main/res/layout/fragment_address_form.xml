@@ -106,7 +106,7 @@
 
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_save_address"
+            android:id="@+id/btn_save_address_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
