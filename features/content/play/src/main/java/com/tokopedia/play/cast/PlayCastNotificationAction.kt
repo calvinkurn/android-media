@@ -21,9 +21,9 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
         )
         actions.add(
             NotificationAction.Builder()
-                .setAction("ACTION_OPEN_PLAY")
+                .setAction(ACTION_OPEN_PLAY)
                 .setIconResId(R.drawable.ic_play_arrow_up)
-                .setContentDescription("ACTION_OPEN_PLAY")
+                .setContentDescription(ACTION_OPEN_PLAY)
                 .build()
         )
         return actions
@@ -31,5 +31,9 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
 
     override fun getCompactViewActionIndices(): IntArray {
         return intArrayOf(0,1,2)
+    }
+
+    companion object {
+        val ACTION_OPEN_PLAY = "ACTION_OPEN_PLAY"
     }
 }

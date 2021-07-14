@@ -9,9 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.view.activity.PlayActivity
 import java.lang.Exception
 
-class PlayCastMediaIntentReceiver(
-
-): MediaIntentReceiver() {
+class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
     override fun onReceive(p0: Context?, p1: Intent?) {
         super.onReceive(p0, p1)
     }
@@ -19,24 +17,25 @@ class PlayCastMediaIntentReceiver(
     override fun onReceiveOtherAction(p0: Context?, p1: String?, p2: Intent?) {
         super.onReceiveOtherAction(p0, p1, p2)
         p0?.let {
-            Log.d("<CAST>", "onReceiveOtherAction -> p1 : $p1")
-            val castContext = CastContext.getSharedInstance(it)
-            val channelId = castContext.sessionManager
-                .currentCastSession
-                .remoteMediaClient
-                ?.mediaInfo
-                ?.metadata
-                ?.getString("channel_id").orEmpty()
-            Log.d("<CAST>", "onReceiveOtherAction : channelId : $channelId")
+            if(p1 == PlayCastNotificationAction.ACTION_OPEN_PLAY) {
+                Log.d("<CAST>", "onReceiveOtherAction -> p1 : $p1")
+                val castContext = CastContext.getSharedInstance(it)
+                val channelId = castContext.sessionManager
+                    .currentCastSession
+                    .remoteMediaClient
+                    ?.mediaInfo
+                    ?.metadata
+                    ?.getString("channel_id").orEmpty()
+                Log.d("<CAST>", "onReceiveOtherAction : channelId : $channelId")
 
-            try {
-                RouteManager.route(p0, "tokopedia://play/${channelId}")
-                it.startActivity(Intent(it, PlayActivity::class.java))
+                try {
+                    RouteManager.route(p0, "tokopedia://play/${channelId}")
+//                it.startActivity(Intent(it, PlayActivity::class.java))
+                }
+                catch (e: Exception) {
+                    Log.d("<CAST>", "Error : ${e.message}")
+                }
             }
-            catch (e: Exception) {
-                Log.d("<CAST>", "Error : ${e.message}")
-            }
-
         }
     }
 }
