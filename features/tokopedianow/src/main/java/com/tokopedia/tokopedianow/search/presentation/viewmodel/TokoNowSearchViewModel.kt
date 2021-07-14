@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -16,14 +15,14 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
-import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
