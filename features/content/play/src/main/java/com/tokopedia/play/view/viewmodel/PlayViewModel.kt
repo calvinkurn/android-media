@@ -660,7 +660,7 @@ class PlayViewModel @Inject constructor(
 
         checkLeaderboard(channelData.id)
         //TODO("This is mock")
-        checkInteractive(channelData.id)
+//        checkInteractive(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
