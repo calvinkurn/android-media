@@ -116,7 +116,9 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.7'
-    unifyAccordionVersion = '1.1.2'
+    unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
+    unifyTotalAmountVersion = '1.0.3'
+    unifyExplorePromoVersion = '1.0.2'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -266,6 +268,7 @@ ext {
             liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
+            traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.1.13",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
@@ -359,6 +362,8 @@ ext {
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
             accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
+            total_amount    : "com.tokopedia.unify.compositions:total_amount:${unifyTotalAmountVersion}@aar",
+            explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }

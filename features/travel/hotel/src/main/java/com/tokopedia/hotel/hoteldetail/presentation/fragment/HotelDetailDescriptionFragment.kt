@@ -1,10 +1,10 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.tokopedia.hotel.R
 import kotlinx.android.synthetic.main.simple_text_view_compat_item.*
 

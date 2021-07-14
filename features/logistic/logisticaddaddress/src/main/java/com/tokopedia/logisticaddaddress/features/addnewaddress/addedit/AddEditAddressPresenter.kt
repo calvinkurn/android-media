@@ -48,6 +48,8 @@ class AddEditAddressPresenter
                         response.keroAddAddress.data.run {
                             if (isSuccess == 1) {
                                 model.id = this.addrId
+                                model.warehouseId = this.tokonow.warehouseId
+                                model.shopId = this.tokonow.shopId
                                 view?.onSuccessAddAddress(model)
                             } else {
                                 view?.showError(null)
