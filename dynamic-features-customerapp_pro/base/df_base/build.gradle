@@ -108,6 +108,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
+    implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.review)
     implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
