@@ -516,6 +516,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     override fun onShowUnavailableItemsCLicked() {
+        scrollToUnavailableSection()
+    }
+
+    fun scrollToUnavailableSection() {
         val data = adapter?.data ?: emptyList()
         loop@ for ((index, visitable) in data.withIndex()) {
             if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {

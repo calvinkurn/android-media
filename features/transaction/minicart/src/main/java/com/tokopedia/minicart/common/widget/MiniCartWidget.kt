@@ -209,7 +209,10 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 if (data.toasterAction.showCta) {
                     showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText) {
-                        analytics.eventClickUpdateCartToasterErrorCta(data.error, ctaText)
+                        if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                            miniCartListBottomSheet.scrollToUnavailableSection()
+                        }
+                        analytics.eventClickAtcToasterErrorCta(data.error, ctaText)
                     }
                 } else {
                     showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
@@ -240,7 +243,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
                     val ctaText = context.getString(R.string.mini_cart_cta_ok)
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
-                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                        analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
                     analytics.eventClickBuyThenGetToasterError(message)
                 }
@@ -248,7 +251,7 @@ class MiniCartWidget @JvmOverloads constructor(
                     val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
                     val ctaText = context.getString(R.string.mini_cart_cta_ok)
                     showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
-                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                        analytics.eventClickAtcToasterErrorCta(message, ctaText)
                     }
                     analytics.eventClickBuyThenGetToasterError(message)
                 }

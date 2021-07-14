@@ -1556,6 +1556,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onSeeErrorProductsClicked() {
+        scrollToUnavailableSection()
+    }
+
+    private fun scrollToUnavailableSection() {
         binding?.rvCart?.layoutManager?.let {
             val linearSmoothScroller = object : LinearSmoothScroller(binding?.rvCart?.context) {
                 override fun getVerticalSnapPreference(): Int {
@@ -2709,7 +2713,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         showToastMessageRed(message = message,
                 actionText = ctaText,
                 ctaClickListener = View.OnClickListener {
-
+                    scrollToUnavailableSection()
                 }
         )
 

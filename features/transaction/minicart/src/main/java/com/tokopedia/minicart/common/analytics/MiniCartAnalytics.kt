@@ -422,7 +422,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 19 - DONE
-    fun eventClickUpdateCartToasterErrorCta(errorMessage: String, ctaWording: String) {
+    fun eventClickAtcToasterErrorCta(errorMessage: String, ctaWording: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
                 eventAction = EVENT_CLICK_BUTTON_ON_ERROR_TOASTER,
