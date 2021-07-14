@@ -176,8 +176,6 @@ class TopupBillsFavoriteNumberActivityTest {
         modifyBottomSheet_typeNewClientName(VALID_CLIENT_NAME)
         onView(withId(R.id.common_topupbills_favorite_number_modify_button)).perform(click())
         Thread.sleep(1000)
-
-        // API Result is won't affect anything, dummy action
     }
 
     fun validate_delete_favorite_number() {
@@ -195,8 +193,6 @@ class TopupBillsFavoriteNumberActivityTest {
 
         onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
         onView(withId(R.id.dialog_btn_primary)).perform(click())
-
-        // API Result is won't affect anything, dummy action
     }
 
     fun validate_undo_delete_favorite_number() {

@@ -1,6 +1,6 @@
 {
   "readme": "Tracker Seamless Favorite Number Page",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "businessUnit": "recharge",
