@@ -488,6 +488,39 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
+    fun `delete cart failed`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given delete cart use case will fail`()
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+
+        val productUpdatedQuantity = 0
+        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+
+        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+
+        `Then assert delete cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert product item quantity`(productInVisitable, productInMiniCart.quantity)
+        `Then assert add to cart use case is not called`()
+        `Then assert update cart use case is not called`()
+        `Then verify mini cart is refreshed`(1)
+        `Then assert route to login page event is null`()
+    }
+
+    private fun `Given delete cart use case will fail`() {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(responseErrorException)
+        }
+    }
+
     companion object {
         private const val PRODUCT_ID_NON_VARIANT_ATC = "574261655"
     }
