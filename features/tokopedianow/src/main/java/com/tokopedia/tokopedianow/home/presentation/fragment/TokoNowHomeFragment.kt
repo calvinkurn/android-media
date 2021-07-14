@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -64,11 +65,17 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
@@ -237,6 +244,28 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun getCarouselRecycledViewPool(): RecyclerView.RecycledViewPool = RecyclerView.RecycledViewPool()
+
+    override fun onProductRecomNonVariantClick(productCard: HomeProductCardUiModel, quantity: Int) {
+        if (userSession.isLoggedIn)
+            handleAddToCartEventLogin(productCard, quantity)
+        else
+            handleAddToCartEventNonLogin(productCard)
+    }
+
+    private fun handleAddToCartEventLogin(productCard: HomeProductCardUiModel, quantity: Int) {
+        val nonVariantATC = productCard.productCardModel.nonVariant
+        if (nonVariantATC?.quantity == quantity) return
+
+        if (nonVariantATC?.quantity == 0)
+            viewModelTokoNow.addToCart(productCard, quantity, localCacheModel?.shop_id.orEmpty())
+        else
+            viewModelTokoNow.updateCart(productCard, quantity)
+    }
+
+    fun handleAddToCartEventNonLogin(productCard: HomeProductCardUiModel) {
+        RouteManager.route(context, ApplinkConst.LOGIN)
+//        updatedVisitableIndicesMutableLiveData.value = listOf(visitableList.indexOf(productItem))
+    }
 
     override fun isMainViewVisible(): Boolean = true
 
@@ -491,6 +520,49 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.miniCartWidgetDataUpdated) {
             miniCartWidget?.updateData(it)
+        }
+
+        observe(viewModelTokoNow.miniCartAdd) {
+            when(it) {
+                is Success -> {
+                    showToaster(
+                        message = it.data.errorMessage.joinToString(separator = ", "),
+                        type = TYPE_NORMAL
+                    )
+                    getMiniCart()
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = TYPE_ERROR
+                    )
+                }
+            }
+        }
+
+        observe(viewModelTokoNow.miniCartUpdate) {
+            when(it) {
+                is Success -> {
+                    getMiniCart()
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
+    private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = message,
+                duration = duration,
+                type = type
+            ).show()
         }
     }
 

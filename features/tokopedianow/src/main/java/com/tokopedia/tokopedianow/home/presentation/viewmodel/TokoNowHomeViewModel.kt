@@ -5,15 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
@@ -41,7 +45,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -53,6 +56,8 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
     private val getTickerUseCase: GetTickerUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
@@ -67,15 +72,18 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _chooseAddress
     val miniCartWidgetDataUpdated: LiveData<MiniCartSimplifiedData>
         get() = _miniCartWidgetDataUpdated
-    val updatedVisitableIndicesLiveData: LiveData<List<Int>>
-        get() = updatedVisitableIndicesMutableLiveData
+    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
+        get() = _miniCartAdd
+    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
+        get() = _miniCartUpdate
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _miniCartWidgetDataUpdated = MutableLiveData<MiniCartSimplifiedData>()
-    private val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
+    private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
+    private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
 
     private var homeLayoutItemList = listOf<HomeLayoutItemUiModel>()
     private var cartItemsNonVariant: List<MiniCartItem>? = null
@@ -240,6 +248,60 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun addToCart(productItem: HomeProductCardUiModel, quantity: Int, shopId: String) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productItem.id,
+            shopId = shopId,
+            quantity = quantity,
+        )
+
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            _miniCartAdd.value = Success(it)
+            onAddToCartSuccess(productItem, it.data.quantity)
+            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+        }, {
+            _miniCartAdd.value = Fail(it)
+        })
+    }
+
+    fun updateCart(productItem: HomeProductCardUiModel, quantity: Int) {
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id } ?: return
+        miniCartItem.quantity = quantity
+        updateCartUseCase.setParams(
+            miniCartItemList = listOf(miniCartItem),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
+        updateCartUseCase.execute({
+            onAddToCartSuccess(productItem, quantity)
+        }, {
+            onAddToCartFailed(it)
+        })
+    }
+
+    private fun onAddToCartSuccess(productItem: HomeProductCardUiModel, quantity: Int) {
+        refreshMiniCart()
+    }
+
+    fun refreshMiniCart() {
+//        val shopId = shopIdLiveData.value ?: ""
+//        if (!shopId.isValidId()) return
+        getMiniCartUseCase.cancelJobs()
+//        getMiniCartUseCase.setParams(listOf(shopId))
+//        getMiniCartUseCase.execute(
+//            ::onViewUpdateCartItems,
+//            ::onGetMiniCartDataFailed,
+//        )
+    }
+
+    private fun updateCartMessageSuccess(successMessage: String) {
+//        successATCMessageMutableLiveData.value = successMessage
+    }
+
+    private fun onAddToCartFailed(throwable: Throwable) {
+//        errorATCMessageMutableLiveData.value = throwable.message ?: ""
+    }
+
     fun updateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData, item: HomeProductRecomUiModel) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
 
@@ -263,9 +325,9 @@ class TokoNowHomeViewModel @Inject constructor(
             item.productCards.forEachIndexed { position, product ->
                 updateProductItemQuantity(position, product, updatedProductIndices)
             }
-            withContext(dispatchers.main) {
-                updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
-            }
+//            withContext(dispatchers.main) {
+//                updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
+//            }
         }
     }
 
