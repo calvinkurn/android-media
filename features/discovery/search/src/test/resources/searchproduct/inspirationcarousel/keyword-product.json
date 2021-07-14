@@ -960,7 +960,7 @@
   "searchInspirationCarouselV2": {
     "data": [
       {
-        "title": "",
+        "title": "Pencarian lebih spesifik",
         "position": 4,
         "layout": "product_list",
         "type": "keyword",
