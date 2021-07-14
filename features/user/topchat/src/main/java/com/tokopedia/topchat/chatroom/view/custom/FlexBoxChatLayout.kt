@@ -98,6 +98,11 @@ class FlexBoxChatLayout : FrameLayout {
         initCheckMarkVisibility()
     }
 
+    fun setShowCheckMark(showCheckMark: Boolean) {
+        this.showCheckMark = showCheckMark
+        initCheckMarkVisibility()
+    }
+
     private fun initCheckMarkVisibility() {
         if (!showCheckMark) {
             hideReadStatus()
@@ -228,7 +233,7 @@ class FlexBoxChatLayout : FrameLayout {
     }
 
     companion object {
-        private const val DEFAULT_USE_MAX_WIDTH = false
-        private const val DEFAULT_SHOW_CHECK_MARK = true
+        const val DEFAULT_USE_MAX_WIDTH = false
+        const val DEFAULT_SHOW_CHECK_MARK = true
     }
 }

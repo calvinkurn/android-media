@@ -49,7 +49,8 @@
         <com.tokopedia.topchat.chatroom.view.custom.MessageBubbleConstraintLayout
             android:id="@+id/mb_bubble_msg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:showCheckMark="false" />
 
     </LinearLayout>
 

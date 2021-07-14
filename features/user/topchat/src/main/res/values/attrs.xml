@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="showCheckMark" format="boolean" />
     <declare-styleable name="SingleProductAttachmentContainer">
         <attr name="widthMultiplier" format="float" />
     </declare-styleable>
+    <declare-styleable name="MessageBubbleConstraintLayout">
+        <attr name="showCheckMark"/>
+    </declare-styleable>
     <declare-styleable name="FlexBoxChatLayout">
-        <attr name="showCheckMark" format="boolean" />
+        <attr name="showCheckMark"/>
         <attr name="useMaxWidth" format="boolean" />
     </declare-styleable>
     <declare-styleable name="TopchatMerchantVoucherView">
