@@ -160,10 +160,10 @@
 
     </LinearLayout>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/pg_event_redeem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/spacing_lvl4"
         android:layout_gravity="center" />
 
     <LinearLayout
