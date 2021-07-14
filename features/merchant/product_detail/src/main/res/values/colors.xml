@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="product_detail_dms_shadow_color_1">#00CCCCCC</color>
-    <color name="product_detail_dms_shadow_color_2">#10CCCCCC</color>
-    <color name="product_detail_dms_shadow_color_3">#15CCCCCC</color>
-    <color name="product_detail_dms_shadow_color_4">#20CCCCCC</color>
-    <color name="product_detail_dms_shadow_color_5">#25CCCCCC</color>
     <color name="product_detail_dms_page_control">@color/Unify_N700</color>
     <color name="product_detail_dms_cashback_green">#D6FFDE</color>
     <color name="product_detail_dms_discount_red_background">#FFEAEF</color>

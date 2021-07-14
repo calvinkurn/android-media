@@ -88,7 +88,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
-    private val toppers: String = "Toppers"
+    private val toppers: String = "Toppers-"
 
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private lateinit var localCacheHandler: LocalCacheHandler

@@ -40,16 +40,17 @@
             android:padding="@dimen/dp_16"
             android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
-            app:typographyWeight="reguler"
+            app:typographyWeight="bold"
             tools:text="+3 Produk Lainnya" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_expand_other_product"
-            android:layout_width="@dimen/layout_lvl2"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_5"
             android:layout_toEndOf="@id/tv_expand_other_product"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:icon_color_night_enable="@color/Unify_G500"
             app:icon_name="CHEVRON_DOWN" />
 
     </RelativeLayout>

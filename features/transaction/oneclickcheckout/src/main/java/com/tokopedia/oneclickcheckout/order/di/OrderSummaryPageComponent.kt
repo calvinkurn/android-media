@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import dagger.Component
 
@@ -9,4 +10,5 @@ import dagger.Component
 interface OrderSummaryPageComponent {
 
     fun inject(fragment: OrderSummaryPageFragment)
+    fun inject(activity: OrderSummaryPageActivity)
 }
