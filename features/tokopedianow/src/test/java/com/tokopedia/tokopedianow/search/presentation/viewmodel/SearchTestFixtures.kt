@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
+import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
@@ -38,6 +39,7 @@ open class SearchTestFixtures {
     protected val getMiniCartListSimplifiedUseCase = mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     protected val updateCartUseCase = mockk<UpdateCartUseCase>(relaxed = true)
+    protected val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
@@ -71,6 +73,7 @@ open class SearchTestFixtures {
                 getMiniCartListSimplifiedUseCase,
                 addToCartUseCase,
                 updateCartUseCase,
+                deleteCartUseCase,
                 getWarehouseUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,

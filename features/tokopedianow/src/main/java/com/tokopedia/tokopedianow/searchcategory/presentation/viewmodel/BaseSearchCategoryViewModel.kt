@@ -36,6 +36,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
@@ -79,6 +80,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         protected val addToCartUseCase: AddToCartUseCase,
         protected val updateCartUseCase: UpdateCartUseCase,
+        protected val deleteCartUseCase: DeleteCartUseCase,
         protected val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
@@ -923,6 +925,21 @@ abstract class BaseSearchCategoryViewModel(
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
                 ?: return
         miniCartItem.quantity = quantity
+
+        if (quantity == 0) deleteCart(miniCartItem, productItem, quantity)
+        else updateCart(miniCartItem, productItem, quantity)
+    }
+
+    private fun deleteCart(miniCartItem: MiniCartItem, productItem: ProductItemDataView, quantity: Int) {
+        deleteCartUseCase.setParams(listOf(miniCartItem))
+        deleteCartUseCase.execute({
+            onAddToCartSuccess(productItem, quantity)
+        }, {
+            onAddToCartFailed(it)
+        })
+    }
+
+    private fun updateCart(miniCartItem: MiniCartItem, productItem: ProductItemDataView, quantity: Int) {
         updateCartUseCase.setParams(
                 miniCartItemList = listOf(miniCartItem),
                 source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
