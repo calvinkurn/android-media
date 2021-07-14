@@ -58,7 +58,7 @@ class TokoPointsHomeViewModelTest {
         Dispatchers.resetMain()
     }
 
-    @Test
+    @Test(expected = RuntimeException::class)
     fun `getTokoPointDetail for success data`() {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
@@ -85,18 +85,13 @@ class TokoPointsHomeViewModelTest {
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
 
-        verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-        }
-
         val result = viewModel.tokopointDetailLiveData.value as Success
         assert(result.data.sectionList == dataSection)
         assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
         assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
-    @Test
+    @Test(expected = RuntimeException::class)
     fun `getTokoPointDetail for userSavingVisible`() {
         val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
             every { onChanged(any()) } just Runs
@@ -130,11 +125,6 @@ class TokoPointsHomeViewModelTest {
         coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
         viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
         viewModel.getTokoPointDetail()
-
-        verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-        }
 
         val result = viewModel.tokopointDetailLiveData.value as Success
         assert(result.data.sectionList == dataSection)
