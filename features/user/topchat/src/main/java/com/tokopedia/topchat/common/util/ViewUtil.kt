@@ -16,7 +16,6 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.topchat.R
 
 
 object ViewUtil {
@@ -34,6 +33,7 @@ object ViewUtil {
         @ColorRes strokeColor: Int? = null,
         @DimenRes strokeWidth: Int? = null,
         useViewPadding: Boolean = false,
+        pressedDrawable: Drawable? = null
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -139,10 +139,11 @@ object ViewUtil {
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
 
-        stateDrawable.addState(
-            intArrayOf(android.R.attr.state_pressed),
-            ContextCompat.getDrawable(view.context, R.drawable.bg_red_dot_unread)
-        )
+        if (pressedDrawable != null) {
+            stateDrawable.addState(
+                intArrayOf(android.R.attr.state_pressed), pressedDrawable
+            )
+        }
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
         return stateDrawable

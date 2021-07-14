@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
+import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -22,18 +23,35 @@ class LeftChatMessageViewHolder(
 
     private val headerInfo: LinearLayout? = itemView?.findViewById(R.id.ll_header_info)
 
-    private val bg = ViewUtil.generateBackgroundWithShadow(
-        fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        R.dimen.dp_topchat_0,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_topchat_2,
-        R.dimen.dp_topchat_1,
-        Gravity.CENTER
-    )
+    private val bg = generateBackground()
+
+    private fun generateBackground(): Drawable? {
+        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
+            fxChat,
+            R.color.topchat_dms_left_button_pressed,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER
+        )
+        return ViewUtil.generateBackgroundWithShadow(
+            fxChat,
+            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            R.dimen.dp_topchat_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            pressedDrawable = pressedBackground
+        )
+    }
 
     override fun bind(message: MessageViewModel) {
         super.bind(message)
