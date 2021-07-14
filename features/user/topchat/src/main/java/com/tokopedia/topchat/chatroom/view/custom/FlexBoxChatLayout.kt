@@ -22,7 +22,7 @@ class FlexBoxChatLayout : FrameLayout {
 
     var checkMark: ImageView? = null
         private set
-    var message: TextView? = null
+    private var message: TextView? = null
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
