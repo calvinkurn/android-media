@@ -125,7 +125,7 @@ data class ProductCardModel (
         return nonVariant?.quantity == 0
     }
 
-    fun shouldShowQuantityEditor(): Boolean {
+    fun shouldCartEditorComponent(): Boolean {
         return nonVariant?.quantity ?: 0 > 0
     }
 
