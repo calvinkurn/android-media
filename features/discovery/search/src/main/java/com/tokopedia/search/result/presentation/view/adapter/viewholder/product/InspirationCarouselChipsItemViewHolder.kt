@@ -39,7 +39,7 @@ class InspirationCarouselChipsItemViewHolder(
         chipsUnify?.chipType = getChipType(inspirationCarouselOption)
         chipsUnify?.chipSize = ChipsUnify.SIZE_SMALL
         chipsUnify?.chipText = inspirationCarouselOption.title
-        chipsUnify?.showColor(inspirationCarouselOption)
+        chipsUnify?.showIcon(inspirationCarouselOption)
         chipsUnify?.setOnClickListener {
             onChipsClicked(
                     inspirationCarouselAdapterPosition,
@@ -53,16 +53,16 @@ class InspirationCarouselChipsItemViewHolder(
             if (inspirationCarouselOption.isChipsActive) ChipsUnify.TYPE_SELECTED
             else ChipsUnify.TYPE_NORMAL
 
-    private fun ChipsUnify.showColor(option: Option) {
+    private fun ChipsUnify.showIcon(option: Option) {
         chip_image_icon.shouldShowWithAction(option.isShowChipsIcon()) {
             when {
-                option.hexColor.isNotEmpty() -> showColor(option.hexColor)
+                option.hexColor.isNotEmpty() -> showIcon(option.hexColor)
                 option.chipImageUrl.isNotEmpty() -> showImageUrl(option.chipImageUrl)
             }
         }
     }
 
-    private fun ChipsUnify.showColor(hexColor: String) {
+    private fun ChipsUnify.showIcon(hexColor: String) {
         val colorSampleDrawable = createColorSampleDrawable(itemView.context, hexColor)
         chip_image_icon.setImageDrawable(colorSampleDrawable)
     }
