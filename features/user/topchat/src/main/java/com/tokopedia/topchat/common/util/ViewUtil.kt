@@ -21,19 +21,19 @@ import com.tokopedia.topchat.R
 
 object ViewUtil {
     fun generateBackgroundWithShadow(
-            view: View?,
-            @ColorRes backgroundColor: Int,
-            @DimenRes topLeftRadius: Int,
-            @DimenRes topRightRadius: Int,
-            @DimenRes bottomLeftRadius: Int,
-            @DimenRes bottomRightRadius: Int,
-            @ColorRes shadowColor: Int,
-            @DimenRes elevation: Int,
-            @DimenRes shadowRadius: Int,
-            shadowGravity: Int,
-            @ColorRes strokeColor: Int? = null,
-            @DimenRes strokeWidth: Int? = null,
-            useViewPadding: Boolean = false
+        view: View?,
+        @ColorRes backgroundColor: Int,
+        @DimenRes topLeftRadius: Int,
+        @DimenRes topRightRadius: Int,
+        @DimenRes bottomLeftRadius: Int,
+        @DimenRes bottomRightRadius: Int,
+        @ColorRes shadowColor: Int,
+        @DimenRes elevation: Int,
+        @DimenRes shadowRadius: Int,
+        shadowGravity: Int,
+        @ColorRes strokeColor: Int? = null,
+        @DimenRes strokeWidth: Int? = null,
+        useViewPadding: Boolean = false
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -44,12 +44,20 @@ object ViewUtil {
         val shadowRadiusValue = view.context.resources.getDimension(shadowRadius)
         val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
         val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)
-        val strokeColorValue: Int? = strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
-        val strokeWidthValue: Float? = strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
+        val strokeColorValue: Int? =
+            strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
+        val strokeWidthValue: Float? =
+            strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
 
         val outerRadius = floatArrayOf(
-                topLeftRadiusValue, topLeftRadiusValue, topRightRadiusValue, topRightRadiusValue,
-                bottomLeftRadiusValue, bottomLeftRadiusValue, bottomRightRadiusValue, bottomRightRadiusValue
+            topLeftRadiusValue,
+            topLeftRadiusValue,
+            topRightRadiusValue,
+            topRightRadiusValue,
+            bottomLeftRadiusValue,
+            bottomLeftRadiusValue,
+            bottomRightRadiusValue,
+            bottomRightRadiusValue
         )
 
         val backgroundPaint = Paint()
@@ -125,7 +133,10 @@ object ViewUtil {
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
         val stateDrawable = StateListDrawable()
-        stateDrawable.addState(intArrayOf(android.R.attr.state_pressed), ContextCompat.getDrawable(view.context, R.drawable.bg_red_dot_unread))
+        stateDrawable.addState(
+            intArrayOf(android.R.attr.state_pressed),
+            ContextCompat.getDrawable(view.context, R.drawable.bg_red_dot_unread)
+        )
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
         return stateDrawable
@@ -134,11 +145,13 @@ object ViewUtil {
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
         if (context == null) return false
         val duration: Float = Settings.Global.getFloat(
-                context.contentResolver,
-                Settings.Global.ANIMATOR_DURATION_SCALE, 0f)
+            context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE, 0f
+        )
         val transition: Float = Settings.Global.getFloat(
-                context.contentResolver,
-                Settings.Global.TRANSITION_ANIMATION_SCALE, 0f)
+            context.contentResolver,
+            Settings.Global.TRANSITION_ANIMATION_SCALE, 0f
+        )
         return duration != 0f && transition != 0f
     }
 }
