@@ -392,11 +392,13 @@ abstract class BaseSearchCategoryViewModel(
             categoryFilterDataValue: DataValue,
     ) {
         val categoryFilter = categoryFilterDataValue.filter.getOrNull(0)
+        categoryFilter ?: return
 
-        if (categoryFilter != null) {
+        if (isShowCategoryFilter(categoryFilter))
             headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
-        }
     }
+
+    protected open fun isShowCategoryFilter(categoryFilter: Filter) = true
 
     protected fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
         val channel = headerDataView.bannerChannel

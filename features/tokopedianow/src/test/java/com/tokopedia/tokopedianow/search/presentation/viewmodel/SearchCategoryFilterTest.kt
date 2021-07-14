@@ -173,4 +173,22 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
 
         assertThat(actualParamsValue, nullValue())
     }
+
+    @Test
+    fun `hide L2 category filter if only 1 filter option`() {
+        val searchModel = "search/categoryfilter/only-one-category-filter.json".jsonToObject<SearchModel>()
+
+        `Given get search first page use case will be successful`(searchModel)
+
+        `When view created`()
+
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
+        val hasCategoryFilter = visitableList.find { it is CategoryFilterDataView } != null
+
+        assertThat(
+                "Should not show category filter if only 1 filter option",
+                hasCategoryFilter,
+                shouldBe(false)
+        )
+    }
 }

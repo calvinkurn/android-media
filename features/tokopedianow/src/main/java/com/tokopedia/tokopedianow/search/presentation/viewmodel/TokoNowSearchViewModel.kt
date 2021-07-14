@@ -5,7 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
@@ -140,6 +142,8 @@ class TokoNowSearchViewModel @Inject constructor (
 
         return quickFilterIndex + 1
     }
+
+    override fun isShowCategoryFilter(categoryFilter: Filter) = categoryFilter.options.size > 1
 
     private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
         val eventLabel = query +
