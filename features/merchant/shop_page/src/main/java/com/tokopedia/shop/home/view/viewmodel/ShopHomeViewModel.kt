@@ -5,11 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -68,7 +69,7 @@ class ShopHomeViewModel @Inject constructor(
     private val getShopProductUseCase: GqlGetShopProductUseCase,
     private val dispatcherProvider: CoroutineDispatchers,
     private val addToCartUseCase: AddToCartUseCase,
-    private val addToCartOccUseCase: AddToCartOccUseCase,
+    private val addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
     private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
     private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
@@ -396,14 +397,18 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private suspend fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
-        return addToCartOccUseCase.setParams(AddToCartOccRequestParams(
-                productId = product.id ?: "",
-                shopId = shopId,
-                quantity = product.minimumOrder.toString(),
-                productName = product.name ?: "",
-                price = product.displayedPrice ?: "",
+        return addToCartOccUseCase.setParams(AddToCartOccMultiRequestParams(
+                carts = listOf(
+                        AddToCartOccMultiCartParam(
+                                productId = product.id ?: "",
+                                shopId = shopId,
+                                quantity = product.minimumOrder.toString(),
+                                productName = product.name ?: "",
+                                price = product.displayedPrice ?: ""
+                        )
+                ),
                 userId = userId
-        )).executeOnBackground()
+        )).executeOnBackground().mapToAddToCartDataModel()
     }
 
     private suspend fun checkListProductWishlist(

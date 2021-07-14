@@ -3,7 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
@@ -45,7 +45,7 @@ fun createHomeViewModel(
         getHomeUseCase: HomeRevampUseCase = mockk(relaxed = true),
         userSessionInterface: UserSessionInterface = mockk(relaxed = true),
         dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true),
-        getAtcUseCase: AddToCartOccUseCase = mockk(relaxed = true),
+        getAtcUseCase: AddToCartOccMultiUseCase = mockk(relaxed = true),
         getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase = mockk(relaxed = true),
         getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
         getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),

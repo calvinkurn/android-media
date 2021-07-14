@@ -1,6 +1,7 @@
 package com.tokopedia.product.viewmodel
 
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -606,17 +607,17 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on success occ atc`() = runBlockingTest {
-        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(carts = listOf(AddToCartOccMultiCartParam("123", "123", "1")))
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.setParams(any()).executeOnBackground()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.setParams(any()).executeOnBackground()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         }
 
         coVerify(inverse = true) {
@@ -632,11 +633,11 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `on error occ atc`() = runBlockingTest {
-        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(carts = listOf(AddToCartOccMultiCartParam("123", "123", "1")))
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
         coEvery {
-            addToCartOccUseCase.setParams(any()).executeOnBackground()
+            addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOccRequestParams)

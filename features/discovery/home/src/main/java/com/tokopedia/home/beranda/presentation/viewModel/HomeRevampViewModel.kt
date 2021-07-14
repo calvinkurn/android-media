@@ -7,9 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.config.GlobalConfig
@@ -90,7 +90,7 @@ open class HomeRevampViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
         private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
         private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
-        private val getAtcUseCase: Lazy<AddToCartOccUseCase>,
+        private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
         private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
         private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
         private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
@@ -827,16 +827,20 @@ open class HomeRevampViewModel @Inject constructor(
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
         launchCatchError(coroutineContext, block = {
             val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-            val addToCartResult = getAtcUseCase.get().setParams(AddToCartOccRequestParams(
-                    productId = grid.id,
-                    quantity = quantity,
-                    shopId = grid.shopId,
-                    warehouseId = grid.warehouseId,
-                    productName = grid.name,
-                    price = grid.price,
+            val addToCartResult = getAtcUseCase.get().setParams(AddToCartOccMultiRequestParams(
+                    carts = listOf(
+                            AddToCartOccMultiCartParam(
+                                    productId = grid.id,
+                                    quantity = quantity,
+                                    shopId = grid.shopId,
+                                    warehouseId = grid.warehouseId,
+                                    productName = grid.name,
+                                    price = grid.price
+                            )
+                    ),
                     userId = getUserId()
             )).executeOnBackground()
-            if(addToCartResult.status == STATUS_OK) {
+            if(!addToCartResult.isStatusError()) {
                 _oneClickCheckoutHomeComponent.postValue(Event(
                         mapOf(
                                 ATC to addToCartResult,

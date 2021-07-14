@@ -14,13 +14,13 @@ import com.tkpd.atcvariant.util.AtcCommonMapper.asSuccess
 import com.tkpd.atcvariant.util.AtcCommonMapper.generateAvailableButtonIngatkanSaya
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
@@ -48,7 +48,7 @@ class AtcVariantViewModel @Inject constructor(
         private val aggregatorMiniCartUseCase: GetAggregatorAndMiniCartUseCase,
         private val addToCartUseCase: AddToCartUseCase,
         private val addToCartOcsUseCase: AddToCartOcsUseCase,
-        private val addToCartOccUseCase: AddToCartOccUseCase,
+        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val updateCartUseCase: UpdateCartUseCase
 ) : ViewModel() {
@@ -373,7 +373,7 @@ class AtcVariantViewModel @Inject constructor(
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
-                is AddToCartOccRequestParams -> {
+                is AddToCartOccMultiRequestParams -> {
                     getAddToCartOccUseCase(atcParams)
                 }
             }
@@ -432,9 +432,9 @@ class AtcVariantViewModel @Inject constructor(
     }
 
 
-    private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccRequestParams) {
+    private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
         val result = withContext(dispatcher.io) {
-            addToCartOccUseCase.setParams(atcParams).executeOnBackground()
+            addToCartOccUseCase.setParams(atcParams).executeOnBackground().mapToAddToCartDataModel()
         }
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""

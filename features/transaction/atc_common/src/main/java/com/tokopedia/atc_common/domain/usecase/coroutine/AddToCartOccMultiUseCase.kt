@@ -50,7 +50,7 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
                 AddToCartBaseAnalytics.sendBranchIoTracking(it.productId, it.productName, it.price,
                         it.quantity, it.category, it.categoryLevel1Id,
                         it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
-                        it.categoryLevel3Id, it.categoryLevel3Name, it.userId)
+                        it.categoryLevel3Id, it.categoryLevel3Name, sentParams.userId)
             }
         }
         return result

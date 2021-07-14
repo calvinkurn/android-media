@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -80,7 +80,7 @@ class ShopHomeViewModelTest {
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
     @RelaxedMockK
-    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
     @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
     @RelaxedMockK
@@ -380,7 +380,7 @@ class ShopHomeViewModelTest {
         val mockProductName = "product mock"
         val mockDisplayedPrice = "Rp. 1000"
         val onSuccessAddToCart: (DataModel) -> Unit = mockk(relaxed = true)
-        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns AddToCartDataModel(
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns AddToCartDataModel(
                 status = AddToCartDataModel.STATUS_OK,
                 data = DataModel(success = 1)
         )

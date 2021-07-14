@@ -72,13 +72,6 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named(AtcConstant.MUTATION_ATC_OCC)
-    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
-    }
-
-    @ProductDetailScope
-    @Provides
     @IntoMap
     @StringKey(RawQueryKeyConstant.MUTATION_NOTIFY_ME)
     fun provideNotifyMeStatus(@ApplicationContext context: Context): String =

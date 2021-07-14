@@ -36,6 +36,7 @@ data class AddToCartOccMultiDataModel(
 
     companion object {
         const val STATUS_OK = "OK"
+        const val STATUS_ERROR = "ERROR"
     }
 }
 
