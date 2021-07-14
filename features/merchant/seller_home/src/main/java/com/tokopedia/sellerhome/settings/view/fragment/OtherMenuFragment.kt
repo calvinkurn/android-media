@@ -271,6 +271,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun setCurrentFragmentType(fragmentType: Int) {
         currentFragmentType = fragmentType
+        if (fragmentType != FragmentType.OTHER) {
+            multipleErrorSnackbar?.dismiss()
+        }
     }
 
     override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
