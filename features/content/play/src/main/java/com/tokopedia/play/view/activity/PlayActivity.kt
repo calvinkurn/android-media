@@ -145,6 +145,11 @@ class PlayActivity : BaseActivity(),
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    override fun onStop() {
+        super.onStop()
+        PlayCastNotificationAction.showRedirectButton(applicationContext, true)
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val newBundle = intent.extras
@@ -268,7 +273,6 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    PlayCastNotificationAction.showRedirectButton(applicationContext, true)
                     if (isTaskRoot) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
