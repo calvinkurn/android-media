@@ -23,11 +23,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReadReviewViewModel @Inject constructor(
-        private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
-        private val getProductReviewListUseCase: GetProductReviewListUseCase,
-        private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        dispatchers: CoroutineDispatchers
+    private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
+    private val getProductReviewListUseCase: GetProductReviewListUseCase,
+    private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -77,18 +77,38 @@ class ReadReviewViewModel @Inject constructor(
         currentPage.value = page
     }
 
-    fun mapProductReviewToReadReviewUiModel(productReviews: List<ProductReview>, shopId: String, shopName: String): List<ReadReviewUiModel> {
+    fun mapProductReviewToReadReviewUiModel(
+        productReviews: List<ProductReview>,
+        shopId: String,
+        shopName: String
+    ): List<ReadReviewUiModel> {
         return productReviews.map {
-            ReadReviewUiModel(it, false, shopId, shopName, productId.value ?: "")
+            ReadReviewUiModel(
+                reviewData = it,
+                isShopViewHolder = false,
+                shopId = shopId,
+                shopName = shopName,
+                productId = productId.value ?: ""
+            )
         }
     }
 
     fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
         launchCatchError(block = {
-            toggleLikeReviewUseCase.setParams(reviewId, shopId, productId.value
-                    ?: "", ReadReviewUtils.invertLikeStatus(likeStatus))
+            toggleLikeReviewUseCase.setParams(
+                reviewId, shopId, productId.value
+                    ?: "", ReadReviewUtils.invertLikeStatus(likeStatus)
+            )
             val data = toggleLikeReviewUseCase.executeOnBackground()
-            _toggleLikeReview.postValue(Success(ToggleLikeUiModel(data.toggleProductReviewLike.likeStatus, data.toggleProductReviewLike.totalLike, index)))
+            _toggleLikeReview.postValue(
+                Success(
+                    ToggleLikeUiModel(
+                        data.toggleProductReviewLike.likeStatus,
+                        data.toggleProductReviewLike.totalLike,
+                        index
+                    )
+                )
+            )
         }) {
             _toggleLikeReview.postValue(Fail(it))
         }
@@ -159,8 +179,12 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun getProductReviews(page: Int) {
         launchCatchError(block = {
-            getProductReviewListUseCase.setParams(productId.value
-                    ?: "", page, sort, filter.mapFilterToRequestParams())
+            getProductReviewListUseCase.setParams(
+                productId.value ?: "",
+                page,
+                sort,
+                filter.mapFilterToRequestParams()
+            )
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))
         }) {
