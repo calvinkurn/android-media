@@ -760,11 +760,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         recomWidget
                     }
 
-                    if (recomData.recommendationItemList.isNotEmpty()) {
-                        _loadTopAdsProduct.value = recomData.asSuccess()
-                    } else {
-                        _loadTopAdsProduct.value = Throwable(pageName).asFail()
-                    }
+                    _loadTopAdsProduct.value = recomData.asSuccess()
                 } catch (e: Throwable) {
                     _loadTopAdsProduct.value = Throwable(pageName).asFail()
                 }
