@@ -23,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:unifyEmptyStateImageDrawable="@drawable/tokopedianow_ic_empty_state_no_address_no_local_cache"
         app:unifyEmptyStateTitle="@string/tokopedianow_empty_state_no_address_and_local_cache_title"
         app:unifyEmptyStateDescription = "@string/tokopedianow_empty_state_no_address_and_local_cache_description"
         app:unifyEmptyStateType="page"
