@@ -181,6 +181,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
+        buttonDeleteCart?.show()
         buttonAddToCart?.gone()
 
         quantityEditorDebounce?.onQuantityChanged(newValue)
@@ -196,17 +197,21 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun configureButtonDeleteCart(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
         buttonDeleteCart?.showWithCondition(shouldShowCartEditorComponent)
         buttonDeleteCart?.setOnClickListener {
-            addToCartNonVariantClickListener?.onQuantityChanged(0)
-            showButtonAddToCartNonVariant(productCardModel)
+            deleteCartClick(productCardModel)
         }
     }
 
-    private fun showButtonAddToCartNonVariant(productCardModel: ProductCardModel) {
-        buttonAddToCart?.show()
-        buttonAddToCart?.buttonType = UnifyButton.Type.MAIN
-        buttonAddToCart?.setOnClickListener {
-            addToCartNonVariantClick(productCardModel)
+    private fun deleteCartClick(productCardModel: ProductCardModel) {
+        buttonAddToCart?.let {
+            setOnClickListener {
+                addToCartNonVariantClick(productCardModel)
+            }
+            it.buttonType = UnifyButton.Type.MAIN
+            it.show()
         }
+        buttonDeleteCart?.gone()
+        quantityEditorNonVariant?.gone()
+        addToCartNonVariantClickListener?.onQuantityChanged(0)
     }
 
     private fun configureQuantityEditor(shouldShowCartEditorComponent: Boolean, productCardModel: ProductCardModel) {
