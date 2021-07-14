@@ -210,19 +210,21 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun submitList(productCardModelList: List<ProductCardModel>,
-                           showSeeMoreCard: Boolean = false,
-                           carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
-        val carouselList: MutableList<BaseCarouselCardModel> = productCardModelList.map {
+    private fun submitList(
+            productCardModelList: List<ProductCardModel>,
+            showSeeMoreCard: Boolean = false,
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
+    ) {
+        val carouselList = productCardModelList.map {
             CarouselProductCardModel(
                     productCardModel = it,
-                    carouselProductCardListenerInfo = carouselProductCardListenerInfo
+                    carouselProductCardListenerInfo = carouselProductCardListenerInfo,
             )
-        }.toMutableList()
-        if(showSeeMoreCard){
-            carouselList.add(CarouselSeeMoreCardModel(carouselProductCardListenerInfo
-            ))
-        }
+        }.toMutableList<BaseCarouselCardModel>()
+
+        if (showSeeMoreCard)
+            carouselList.add(CarouselSeeMoreCardModel(carouselProductCardListenerInfo))
+
         carouselProductCardAdapter?.submitCarouselProductCardModelList(carouselList)
     }
 
@@ -300,14 +302,5 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             }
         }
         return 0
-    }
-
-    fun notifyItemChanged(positionList: List<Int>? = listOf()) {
-        val adapter = carouselProductCardAdapter?.asRecyclerViewAdapter() ?: return
-        positionList ?: return
-
-        positionList.forEach {
-            adapter.notifyItemChanged(it)
-        }
     }
 }
