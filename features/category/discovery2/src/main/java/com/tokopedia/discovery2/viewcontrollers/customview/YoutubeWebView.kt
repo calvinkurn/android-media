@@ -77,6 +77,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
+        val ratio = 0.5625 //9:16
+        val height = (ratio*width).toInt()
         return "<html>\n" +
                 "  <body>\n" +
                 "    <div id=\"player\"" +
@@ -92,7 +94,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      var player;\n" +
                 "      function onYouTubeIframeAPIReady() {\n" +
                 "        player = new YT.Player('player', {\n" +
-                "          height: ${(width*9/16).toInt()},\n" +
+                "          height: ${height},\n" +
                 "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          playerVars: {\n" +
