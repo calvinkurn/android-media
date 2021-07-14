@@ -32,9 +32,9 @@ class AddressRevampRobot {
     }
 
     fun clickAddressStreetItem() {
-        val i = Intent().apply { putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true) }
         onView(withId(R.id.rv_address_list))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+        waitForData()
     }
 
     fun onClickChooseLocation() {
@@ -55,6 +55,50 @@ class AddressRevampRobot {
     fun fillPhoneNumber(phone: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
                 .perform(click(), typeText(phone), closeSoftKeyboard())
+    }
+
+    fun clickManualForm() {
+        onView(withId(R.id.tv_message_search)).perform(click())
+    }
+
+    fun clickKotaKecamatan() {
+        onView(withId(R.id.et_kota_kecamatan)).perform(click())
+        waitForData()
+    }
+
+    fun searchKotaKecamatan(keyword: String) {
+        onView(withId(R.id.et_search_district_recommendation))
+                .perform(click(), typeText(keyword), closeSoftKeyboard())
+        waitForData()
+    }
+
+    fun clickKotaKecamatanItem() {
+        onView(withId(R.id.rv_list_district))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+    }
+
+    fun clickPostalCode() {
+        onView(withId(R.id.et_kodepos))
+                .perform(click())
+    }
+
+    fun clickPostalCodeItem() {
+        onView(withId(R.id.rv_kodepos_chips))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()), closeSoftKeyboard())
+    }
+
+    fun clickChoosePostalCode() {
+        onView(withId(R.id.btn_choose_zipcode))
+                .perform(click())
+    }
+
+    fun fillAddressNegative(address: String) {
+        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat))))
+                .perform(click(), typeText(address), closeSoftKeyboard())
+    }
+
+    private fun waitForData() {
+        Thread.sleep(1000L)
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {

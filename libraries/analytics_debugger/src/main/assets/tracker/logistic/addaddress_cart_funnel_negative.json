@@ -38,7 +38,6 @@
       "eventCategory": "cart change address negative",
       "event": "clickAddress",
       "eventAction": "click field nama penerima",
-      "sessionIris": ".*",
       "eventLabel": "logistic"
     },
     {
