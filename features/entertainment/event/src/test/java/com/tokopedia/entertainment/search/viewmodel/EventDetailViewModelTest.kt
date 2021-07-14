@@ -250,4 +250,50 @@ class EventDetailViewModelTest {
         //then
         assertEquals(eventDetailViewModel.category, "12,13")
     }
+
+    @Test
+    fun checkCategoryIsDifferentOrEmpty_CategoryDataSize_ReturnTrue(){
+        //given
+        eventDetailViewModel.hashSet.add("12")
+        eventDetailViewModel.categoryData = mutableListOf(CategoryTextBubbleAdapter.CategoryTextBubble("12", "Event"))
+
+        val listCategory = EventDetailResponse.Data.EventChildCategory(
+                listOf(EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://"),
+                        EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://")
+                ))
+        //when
+        val actual = eventDetailViewModel.categoryIsDifferentOrEmpty(listCategory)
+
+        //then
+        assertEquals(actual, true)
+    }
+
+    @Test
+    fun checkCategoryIsDifferentOrEmpty_HashEmpty_ReturnTrue(){
+        //given
+        eventDetailViewModel.categoryData = mutableListOf(CategoryTextBubbleAdapter.CategoryTextBubble("12", "Event"))
+
+        val listCategory = EventDetailResponse.Data.EventChildCategory(
+                listOf(EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://")))
+        //when
+        val actual = eventDetailViewModel.categoryIsDifferentOrEmpty(listCategory)
+
+        //then
+        assertEquals(actual, true)
+    }
+
+    @Test
+    fun checkCategoryIsDifferentOrEmpty_CategoryListSize_ReturnTrue(){
+        //given
+        eventDetailViewModel.hashSet.add("12")
+        eventDetailViewModel.categoryData = mutableListOf(CategoryTextBubbleAdapter.CategoryTextBubble("12", "Event"))
+
+        val listCategory = EventDetailResponse.Data.EventChildCategory(
+                listOf(EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://")))
+        //when
+        val actual = eventDetailViewModel.categoryIsDifferentOrEmpty(listCategory)
+
+        //then
+        assertEquals(actual, true)
+    }
 }

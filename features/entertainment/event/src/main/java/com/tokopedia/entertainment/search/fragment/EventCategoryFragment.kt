@@ -67,6 +67,8 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         fun newInstance() = EventCategoryFragment()
         val TAG = EventCategoryFragment::class.java.simpleName
         const val ENT_CATEGORY_PERFORMANCE = "et_event_category"
+
+        private const val DELAY_TIME = 200L
     }
 
 
@@ -171,7 +173,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
                 viewModel.page = "1"
                 viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
             }.showRetrySnackbar()
-            },200)
+            },DELAY_TIME)
         })
     }
 

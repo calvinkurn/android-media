@@ -125,7 +125,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
                         NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                             getData(CacheType.ALWAYS_CLOUD)
                         }.showRetrySnackbar()
-                    }, 200)
+                    }, DELAY_TIME)
                 }
         )
     }
@@ -158,7 +158,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
                 } else {
                     if (job.isActive) job.cancel()
                     job = launch {
-                        delay(200)
+                        delay(DELAY_TIME)
                         EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(p0.toString())
                         viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST, getEventSearchLocation())
                     }
@@ -192,6 +192,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         val TAG = EventSearchFragment::class.java.simpleName
 
         const val ENT_SEARCH_PERFORMANCE = "et_event_search"
+        private const val DELAY_TIME = 200L
     }
 
 }

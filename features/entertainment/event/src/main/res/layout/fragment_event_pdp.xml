@@ -86,10 +86,10 @@
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/event_pdp_pb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/spacing_lvl4"
+                android:layout_height="@dimen/spacing_lvl4"
                 android:layout_gravity="center"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

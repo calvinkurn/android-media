@@ -42,7 +42,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
            withContext(dispatcher){
                 val data = usecase.executeOnBackground()
                 val value = data[EventRedeem::class.java]
-                if (value?.code == 200 && !value.isError) {
+                if (value?.code == SUCCESS_CODE && !value.isError) {
                     val result = convertToRedeemResponse(data)
                     eventRedeemMutable.value = result
                 } else {
@@ -61,7 +61,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
             withContext(dispatcher){
                 val data = useCaseRedeem.executeOnBackground()
                 val value = data[EventRedeemedData::class.java]
-                if (value?.code == 200 && !value.isError) {
+                if (value?.code == SUCCESS_CODE && !value.isError) {
                     val result = convertToRedeemedResponse(data)
                     eventRedeemedMutable.value = result
                 } else {
@@ -75,6 +75,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
     }
 
     companion object{
+        private const val SUCCESS_CODE = 200
         private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {
             return typeRestResponseMap[EventRedeem::class.java]?.getData() as EventRedeem
         }

@@ -104,7 +104,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    private fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
+    fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
         //Case 1 Still empty or Data Category size and API Category Size is different
         if(categoryData.size == 0 || hashSet.isEmpty() || categoryData.size != list.categories.size-1) return true
 
