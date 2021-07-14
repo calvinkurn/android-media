@@ -26,7 +26,9 @@ object FeatureRecommendationMapper {
                         )
                         requestParam.title = engineData.title
                         requestParam.description = engineData.description
+                        return requestParam
                     }
+
                 } catch (e: Exception) { }
             }
         }
