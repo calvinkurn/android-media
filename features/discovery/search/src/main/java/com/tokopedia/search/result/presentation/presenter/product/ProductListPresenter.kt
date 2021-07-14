@@ -22,6 +22,7 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
@@ -201,8 +202,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            (view.abTestRemoteConfig?.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                    == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+            (view.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                    == RollenceKey.NAVIGATION_VARIANT_REVAMP)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -221,8 +222,8 @@ class ProductListPresenter @Inject constructor(
 
     private fun shouldShowPMProPopUp(): Boolean {
         return try {
-            (view.abTestRemoteConfig?.getString(AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
-                    == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+            (view.abTestRemoteConfig?.getString(RollenceKey.POWER_MERCHANT_PRO_POP_UP)
+                    == RollenceKey.POWER_MERCHANT_PRO_POP_UP)
         } catch (e: Exception) {
             e.printStackTrace()
             false
