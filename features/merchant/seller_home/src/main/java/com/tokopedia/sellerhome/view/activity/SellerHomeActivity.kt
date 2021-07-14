@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -58,6 +59,7 @@ import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
 
@@ -524,6 +526,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
+        createSahBottomNavVisibilityHandler()
     }
 
     private fun initSellerHomePlt() {
@@ -585,6 +588,35 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                     decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
                 } else {
                     decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
+        }
+    }
+
+    private fun createSahBottomNavVisibilityHandler() {
+        sahRootLayout?.viewTreeObserver?.addOnPreDrawListener {
+            val heightDiffThreshold = 100
+            val screenHeight = getScreenHeight()
+            val sahRootLayoutHeight = sahRootLayout.measuredHeight
+            val showNavBar = abs(screenHeight - sahRootLayoutHeight) <= heightDiffThreshold
+            if (showNavBar) {
+                // Postpone the show logic so that the bottom nav will show after root layout become
+                // full screen to prevent glitch then continue the drawing process
+                sahRootLayout?.post {
+                    navBarShadow?.show()
+                    sahBottomNav?.show()
+                }
+                true
+            } else {
+                if (navBarShadow?.isVisible != true && sahBottomNav?.isVisible != true) {
+                    // Continue the drawing process because bottom nav is already hidden
+                    true
+                } else {
+                    // To prevent glitch showing keyboard, cancel current drawing process and hide
+                    // the bottom nav first
+                    navBarShadow?.gone()
+                    sahBottomNav?.gone()
+                    false
                 }
             }
         }
