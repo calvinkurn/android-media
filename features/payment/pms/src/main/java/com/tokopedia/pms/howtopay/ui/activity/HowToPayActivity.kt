@@ -18,8 +18,4 @@ class HowToPayActivity : BaseSimpleActivity(), HasComponent<PmsComponent> {
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
             .build()
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 }
