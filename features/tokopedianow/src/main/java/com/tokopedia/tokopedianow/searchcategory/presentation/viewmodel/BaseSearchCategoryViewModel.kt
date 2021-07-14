@@ -25,6 +25,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.isNotFilterAndSortKey
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -658,13 +659,18 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
-        removeFilterWithExclude(option)
+        resetSortFilterIfExclude(option)
         filter(option, isSelected)
     }
 
-    private fun removeFilterWithExclude(option: Option) {
-        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
+    private fun resetSortFilterIfExclude(option: Option) {
+        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
+
+        if (!isOptionKeyHasExclude) return
+
         queryParamMutable.remove(option.key)
+        queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
+        queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
         filterController.refreshMapParameter(queryParam)
     }
 
@@ -706,9 +712,22 @@ abstract class BaseSearchCategoryViewModel(
         onGetProductCountSuccess("0")
     }
 
+    open fun onViewGetProductCount(option: Option) {
+        val mapParameter = queryParam + mapOf(option.key to option.value)
+        onViewGetProductCount(mapParameter)
+    }
+
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
         onViewDismissL3FilterPage()
-        onViewClickCategoryFilterChip(chosenCategoryFilter, true)
+        removeAllCategoryFilter(chosenCategoryFilter)
+        filter(chosenCategoryFilter, true)
+    }
+
+    private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
+        queryParamMutable.remove(chosenCategoryFilter.key)
+        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(chosenCategoryFilter))
+
+        filterController.refreshMapParameter(queryParam)
     }
 
     open fun onViewDismissL3FilterPage() {
@@ -935,10 +954,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onViewRemoveFilter(option: Option) {
-        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
-        if (isOptionKeyHasExclude)
-            removeFilterWithExclude(option)
-
+        resetSortFilterIfExclude(option)
         filter(option, false)
     }
 
