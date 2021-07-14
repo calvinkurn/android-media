@@ -45,7 +45,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-<<<<<<< HEAD
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
@@ -63,7 +62,6 @@ import com.tokopedia.hotel.search_map.presentation.widget.HotelFilterBottomSheet
 import com.tokopedia.hotel.search_map.presentation.widget.SubmitFilterListener
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify

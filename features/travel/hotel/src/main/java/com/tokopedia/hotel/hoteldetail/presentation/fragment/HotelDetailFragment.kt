@@ -318,7 +318,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showErrorView(e: Throwable) {
-        if (!isHotelDetailSuccess || !isHotelReviewSuccess) {
+        if (!isHotelDetailSuccess || !isHotelReviewSuccess || !isRoomListSuccess) {
             stopTrace()
 
             container_content.visibility = View.GONE
