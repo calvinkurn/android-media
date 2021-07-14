@@ -98,8 +98,8 @@ class ProductRecommendationViewHolder(
                 }
             }
             ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW -> {
-                element?.updatedPosList?.let {
-                    view.rvProductRecom.notifyItemChanged(it)
+                element?.recomWidgetData?.let {
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
                 }
             }
         }
