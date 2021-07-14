@@ -90,6 +90,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val contentHeight = productCardModel.getContentHeightList(context)
             val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+            val buttonQuantityEditorSectionHeight = productCardModel.getQuantityEditorSectionHeight(context)
+            val buttonVariantSectionHeight = productCardModel.getVariantSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
 
             val totalHeight = cardPaddingTop +
@@ -100,6 +102,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
                     max(imageSize, contentHeight) +
                     buttonDeleteProductSectionHeight +
                     buttonAddToCartSectionHeight +
+                    buttonQuantityEditorSectionHeight +
+                    buttonVariantSectionHeight +
                     buttonNotifyMeSectionHeight
 
             productCardHeightList.add(totalHeight)

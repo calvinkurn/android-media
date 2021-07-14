@@ -100,12 +100,12 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
     }
 
-    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
-        buttonNotify?.setOnClickListener(notifyMeClickListener)
-    }
-
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
         buttonAddVariant?.setOnClickListener(addVariantClickListener)
+    }
+
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -143,9 +143,5 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     override fun getShopBadgeView(): View? = imageShopBadge
-
-    interface ATCNonVariantListener {
-        fun onQuantityChanged(quantity: Int)
-    }
 
 }

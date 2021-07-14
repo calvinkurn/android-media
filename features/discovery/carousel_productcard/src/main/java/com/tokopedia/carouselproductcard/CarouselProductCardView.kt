@@ -246,6 +246,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             showSeeMoreCard: Boolean = false,
@@ -260,8 +262,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
                 carouselProductCardOnItemThreeDotsClickListener,
-                null,
-                null,
+                carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener,
                 carouselSeeMoreClickListener,
         )
 

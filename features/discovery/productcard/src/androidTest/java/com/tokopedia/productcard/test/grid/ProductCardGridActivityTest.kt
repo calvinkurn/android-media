@@ -8,29 +8,20 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.ProductCardGridView.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.utils.ProductCardItemDecoration
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
 
-internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChanged, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Main.immediate
-
-    private val recyclerViewAdapter = Adapter(this)
+internal class ProductCardGridActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.product_card_grid_activity_test_layout)
 
         val recyclerView = findViewById<RecyclerView>(R.id.productCardGridTestRecyclerView)
-        recyclerView.adapter = recyclerViewAdapter
+        recyclerView.adapter = Adapter()
         recyclerView.layoutManager = createLayoutManager()
         recyclerView.addItemDecoration(createItemDecoration())
     }
@@ -46,12 +37,12 @@ internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChang
         return ProductCardItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16))
     }
 
-    class Adapter(private val onQuantityChanged: OnQuantityChanged): RecyclerView.Adapter<ViewHolder>() {
+    class Adapter: RecyclerView.Adapter<ViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.product_card_grid_item_test_layout, null)
 
-            return ViewHolder(view, onQuantityChanged)
+            return ViewHolder(view)
         }
 
         override fun getItemCount(): Int {
@@ -68,13 +59,10 @@ internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChang
         }
     }
 
-    class ViewHolder(
-            itemView: View,
-            private val onQuantityChanged: OnQuantityChanged,
-    ): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         private val productCardView: ProductCardGridView? by lazy {
-            itemView.findViewById<ProductCardGridView>(R.id.productCardGrid)
+            itemView.findViewById(R.id.productCardGrid)
         }
 
         fun bind(productCardModel: ProductCardModel) {
@@ -84,7 +72,7 @@ internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChang
             productCardView?.setAddToCartOnClickListener { toast("Add to cart") }
             productCardView?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
-                    onQuantityChanged.onQuantityChanged(quantity, adapterPosition)
+                    toast("Quantity changed to $quantity")
                 }
             })
             productCardView?.setAddVariantClickListener { toast("Add Variant") }
@@ -100,12 +88,4 @@ internal class ProductCardGridActivityTest: AppCompatActivity(), OnQuantityChang
         }
     }
 
-    override fun onQuantityChanged(quantity: Int, index: Int) {
-        val message = "Position: $index, Quantity changed to $quantity"
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-    }
-}
-
-internal interface OnQuantityChanged {
-    fun onQuantityChanged(quantity: Int, index: Int)
 }

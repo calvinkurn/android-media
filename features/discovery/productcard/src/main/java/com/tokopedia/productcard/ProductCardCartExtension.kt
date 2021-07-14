@@ -11,7 +11,6 @@ import com.tokopedia.productcard.utils.QUANTITY_EDITOR_DEBOUNCE_IN_MS
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -20,7 +19,7 @@ import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 
-class ProductCardCartExtension(private val productCardView: View) {
+internal class ProductCardCartExtension(private val productCardView: View) {
 
     private fun <T: View?> findView(@IdRes id: Int): T {
         return productCardView.findViewById(id)
@@ -35,7 +34,7 @@ class ProductCardCartExtension(private val productCardView: View) {
     val textVariantQuantity by lazy { findView<Typography?>(R.id.textVariantQuantity) }
 
     var addToCartClickListener: ((View) -> Unit)? = null
-    var addToCartNonVariantClickListener: ProductCardGridView.ATCNonVariantListener? = null
+    var addToCartNonVariantClickListener: ATCNonVariantListener? = null
 
     private val context = productCardView.context
     private var quantityEditorDebounce: QuantityEditorDebounce? = null
@@ -52,7 +51,7 @@ class ProductCardCartExtension(private val productCardView: View) {
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
             productCardModel.hasAddToCartButton ->
-                buttonAddToCart?.configureButtonAddToCart(productCardModel)
+                buttonAddToCart?.configureButtonAddToCart()
 
             else ->
                 buttonAddToCart?.gone()
@@ -63,8 +62,6 @@ class ProductCardCartExtension(private val productCardView: View) {
         setOnClickListener {
             addToCartNonVariantClick(productCardModel)
         }
-
-        buttonType = UnifyButton.Type.MAIN
 
         show()
     }
@@ -81,12 +78,10 @@ class ProductCardCartExtension(private val productCardView: View) {
         quantityEditorDebounce?.onQuantityChanged(newValue)
     }
 
-    private fun UnifyButton.configureButtonAddToCart(productCardModel: ProductCardModel) {
+    private fun UnifyButton.configureButtonAddToCart() {
         setOnClickListener {
             addToCartClickListener?.invoke(it)
         }
-
-        buttonType = productCardModel.addToCartButtonType
 
         show()
     }
