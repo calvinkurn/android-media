@@ -490,12 +490,12 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .build())
     }
 
-    fun onClickSimpanErrorPositive(userId: String) {
+    fun onClickSimpanErrorPositive(userId: String, errorField: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_POSITIVE)
                 .appendEventAction(CLICK_SIMPAN_ERROR)
-                .appendEventLabel("")
+                .appendEventLabel(errorField)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
@@ -635,12 +635,12 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .build())
     }
 
-    fun onClickSimpanErrorNegative(userId: String) {
+    fun onClickSimpanErrorNegative(userId: String, errorField: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(ANA_NEGATIVE)
                 .appendEventAction(CLICK_SIMPAN_ERROR)
-                .appendEventLabel("")
+                .appendEventLabel(errorField)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)

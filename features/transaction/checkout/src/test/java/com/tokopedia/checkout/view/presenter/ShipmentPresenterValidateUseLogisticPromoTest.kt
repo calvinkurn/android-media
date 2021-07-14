@@ -127,10 +127,13 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         )
 
         // When
-        presenter.doValidateuseLogisticPromo(0, "", ValidateUsePromoRequest())
+        val cartPosition = 0
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
-        verify {
+        verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.updateButtonPromoCheckout(promoUiModel, true)
         }
     }
@@ -159,10 +162,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
             view.updateButtonPromoCheckout(promoUiModel, true)
@@ -177,10 +182,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
@@ -195,10 +202,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // When
         val cartPosition = 0
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
             view.showToastError(errorMessage)
             view.resetAllCourier()
@@ -223,10 +232,12 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         every { PromoRevampAnalytics.eventCheckoutViewPromoMessage(any()) } just Runs
 
         // When
-        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
         verifySequence {
+            view.setStateLoadingCourierStateAtIndex(cartPosition, true)
+            view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(errorMessage)
             view.resetCourier(cartPosition)
         }

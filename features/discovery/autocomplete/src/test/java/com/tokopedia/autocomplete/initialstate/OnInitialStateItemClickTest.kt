@@ -3,12 +3,14 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
@@ -23,6 +25,13 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private val applinkShop = "tokopedia://shop/$shopId?source=universe&st=product"
     private val slotRecentSearchDataView = slot<RecentSearchDataView>()
 
+    private val searchProductPageTitle = "Toko Now"
+    private val searchParameter = mapOf(
+            SearchApiConst.NAVSOURCE to "tokonow",
+            SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
+            SearchApiConst.SRP_PAGE_ID to "1234"
+    )
+
     @Test
     fun `test click recent search item`() {
         `Given view already get initial state`(initialStateCommonResponse)
@@ -32,13 +41,6 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         `when recent search item clicked` (item)
         `then verify view interaction is correct`(item)
-    }
-
-    private fun `given initial state use case capture request params`(list: List<InitialStateData>) {
-        every { getInitialStateUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<List<InitialStateData>>>().onStart()
-            secondArg<Subscriber<List<InitialStateData>>>().onNext(list)
-        }
     }
 
     private fun `when recent search item clicked`(item: BaseItemInitialStateSearch) {
@@ -244,6 +246,62 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
             trackEventClickProductLine(item, userId, expectedLabel)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
+        }
+    }
+
+    @Test
+    fun `Test click refresh popular search`() {
+        `Given view already get initial state`(initialStateWithSeeMoreRecentSearch)
+
+        val item = findDataView<PopularSearchDataView>()
+
+        `When refresh popular search`(item)
+        `Then verify view interaction is correct for refresh popular search`()
+    }
+
+    private fun `When refresh popular search`(item: PopularSearchDataView) {
+        initialStatePresenter.refreshPopularSearch(item.featureId)
+    }
+
+    private fun `Then verify view interaction is correct for refresh popular search`() {
+        verifyOrder {
+            initialStateView.onRefreshPopularSearch()
+        }
+    }
+
+    @Test
+    fun `Test click refresh TokoNow popular search`() {
+        `Given presenter will return searchParameter`(searchParameter)
+        `Given view already get initial state`(initialStateWithSeeMoreRecentSearch)
+
+        val item = findDataView<PopularSearchDataView>()
+
+        `When refresh popular search`(item)
+        `Then verify view interaction is correct for refresh tokonow popular search`(item)
+    }
+
+    private fun `Then verify view interaction is correct for refresh tokonow popular search`(item: PopularSearchDataView) {
+        verifyOrder {
+            initialStateView.onRefreshTokoNowPopularSearch()
+        }
+    }
+
+    @Test
+    fun `Test click TokoNow Dynamic Section Search`() {
+        `Given presenter will return searchParameter`(searchParameter)
+        `Given view already get initial state`(initialStateCommonResponse)
+
+        val data = findDataView<DynamicInitialStateSearchDataView>()
+        val item = data.list.findByType()
+
+        `When recent dynamic section item is clicked`(item)
+        `Then verify view interaction is correct for tokonow dynamic section`(item)
+    }
+
+    private fun `Then verify view interaction is correct for tokonow dynamic section`(item: BaseItemInitialStateSearch) {
+        val expectedLabel = "value: ${item.title} - po: ${item.position} - page: ${item.applink}"
+        verify {
+            initialStateView.trackEventClickTokoNowDynamicSectionItem(expectedLabel)
         }
     }
 }

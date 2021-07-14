@@ -12,6 +12,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
@@ -87,7 +88,7 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
 
     fun showTextAnimation(data: DataItem) {
         setTextBackgroundIfAny(data.boxColor ?: "")
-        setTextColorIfAny(data.fontColor ?: "")
+        setTextColorIfAny(data.fontColor)
         setTextIfAny(data.name ?: "")
         handleAnimations()
     }
@@ -104,11 +105,15 @@ class CustomTopChatView @JvmOverloads constructor(context: Context, attrs: Attri
         topChatTextView.text = name
     }
 
-    private fun setTextColorIfAny(fontColor: String) {
-        fontColor.let {
-            if (it.length > 1) {
-                topChatTextView.setTextColor((Color.parseColor(it)))
+    private fun setTextColorIfAny(fontColor: String?) {
+        try {
+            if (fontColor.isNullOrEmpty()) {
+                topChatTextView.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+            } else {
+                topChatTextView.setTextColor((Color.parseColor(fontColor)))
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

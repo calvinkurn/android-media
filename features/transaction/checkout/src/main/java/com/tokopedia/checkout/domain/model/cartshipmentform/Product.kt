@@ -20,6 +20,7 @@ data class Product(
         var productWholesalePriceFmt: String = "",
         var productWeightFmt: String = "",
         var productWeight: Int = 0,
+        var productWeightActual: Int = 0,
         var productCondition: Int = 0,
         var productUrl: String = "",
         var isProductReturnable: Boolean = false,

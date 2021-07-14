@@ -78,31 +78,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventAddPreferensiFromOSP() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ADD_PREFERENSI_FROM_OSP
-        )
-    }
-
-    fun eventChangesProfile() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.USER_CHANGES_PROFILE
-        )
-    }
-
-    fun eventUserSetsFirstPreference(userId: String) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.USER_SETS_FIRST_PREFERENCE,
-                userId
-        )
-    }
-
     fun eventChooseBboAsDuration() {
         sendEventCategoryAction(
                 EventName.CLICK_CHECKOUT_EXPRESS,
@@ -126,22 +101,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_RINGKASAN_BELANJA_OSP,
                 "$productId - $totalPrice"
-        )
-    }
-
-    fun eventClickGearLogoInPreferenceFromGantiPilihanOSP() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP
-        )
-    }
-
-    fun eventClickGunakanPilihanIniFromGantiPilihanOSP() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP
         )
     }
 
@@ -178,15 +137,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 ExtraKey.PAYMENT_TYPE, paymentType
         )
         sendEnhancedEcommerce(dataLayer)
-    }
-
-    fun eventClickInfoOnOSPNewOcc() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_BUTTON_INFO_ON_OSP,
-                EventLabel.NEW_OCC
-        )
     }
 
     fun eventClickInfoOnOSPNewBuyer() {
@@ -272,22 +222,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventClickYukCobaLagiInOnboardingTicker() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_YUK_COBA_LAGI_IN_ONBOARDING_TICKER
-        )
-    }
-
-    fun eventViewOnboardingTicker() {
-        sendEventCategoryAction(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_ONBOARDING_TICKER
-        )
-    }
-
     fun eventViewPreselectedCourierOption(spId: String, userId: String) {
         val gtmData = getGtmData(
                 EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
@@ -307,58 +241,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 ""
         )
         gtmData[ExtraKey.USER_ID] = userId
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickSelectedDurationOption(serviceId: String, userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_SELECTED_DURATION_OPTION,
-                serviceId
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        sendGeneralEvent(gtmData)
-    }
-
-    // =============== Revamp ===============
-
-    fun eventClickTambahTemplate(userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_TAMBAH_TEMPLATE,
-                ""
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickPilihTemplateLain(userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_PILIH_TEMPLATE_LAIN,
-                ""
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventViewProfileList(userId: String) {
-        val gtmData = getGtmData(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_PROFILE_LIST,
-                ""
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         sendGeneralEvent(gtmData)
     }
 
@@ -433,58 +315,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_SELECTED_PAYMENT_OPTION,
                 newGateway
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickProfileOptionOnProfileList(newProfileId: String, userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_PROFILE_OPTION_ON_PROFILE_LIST,
-                newProfileId
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickTambahTemplateBeliLangsungOnOrderSummary(userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY,
-                ""
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickTambahTemplateBeliLangsungOnProfileList(userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST,
-                ""
-        )
-        gtmData[ExtraKey.USER_ID] = userId
-        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
-        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        sendGeneralEvent(gtmData)
-    }
-
-    fun eventClickEditProfileOnProfileList(profileId: String, userId: String) {
-        val gtmData = getGtmData(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_EDIT_PROFILE_ON_PROFILE_LIST,
-                profileId
         )
         gtmData[ExtraKey.USER_ID] = userId
         gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -706,7 +536,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
 
         const val ERROR_ID_STOCK = "1"
         const val ERROR_ID_SHOP_CLOSED = "2"
-        const val ERROR_ID_MAX_QTY = "5"
         const val ERROR_ID_PRICE_CHANGE = "8"
         const val ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE = "9"
         const val ERROR_ID_LOGISTIC_DISTANCE_EXCEED = "10"
