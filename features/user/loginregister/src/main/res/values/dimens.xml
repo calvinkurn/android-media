@@ -21,6 +21,8 @@
 
     <dimen name="email_extension_6">6dp</dimen>
 
+    <dimen name="login_text_view_18">18dp</dimen>
+
     <dimen name="partial_input_3">3dp</dimen>
     <dimen name="partial_input_minus_5">-5dp</dimen>
     <dimen name="partial_input_minus_10">-10dp</dimen>
