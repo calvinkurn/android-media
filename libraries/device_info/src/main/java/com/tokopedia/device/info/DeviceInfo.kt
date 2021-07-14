@@ -186,8 +186,9 @@ object DeviceInfo {
     }
 
     // Initialize ads Id in background
+    @JvmOverloads
     @JvmStatic
-    fun getAdsIdSuspend(context: Context, onSuccessGetAdsId: ((adsId:String)->Unit)?) {
+    fun getAdsIdSuspend(context: Context, onSuccessGetAdsId: ((adsId:String)->Unit)? = null) {
         GlobalScope.launch(Dispatchers.IO) {
             val adsIdCache: String = getCacheAdsId(context)
             if (adsIdCache.isNotBlank()) {
