@@ -18,7 +18,6 @@ class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
         super.onReceiveOtherAction(p0, p1, p2)
         p0?.let {
             if(p1 == PlayCastNotificationAction.ACTION_OPEN_PLAY) {
-                Log.d("<CAST>", "onReceiveOtherAction -> p1 : $p1")
                 val castContext = CastContext.getSharedInstance(it)
                 val channelId = castContext.sessionManager
                     .currentCastSession
@@ -26,14 +25,14 @@ class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
                     ?.mediaInfo
                     ?.metadata
                     ?.getString("channel_id").orEmpty()
-                Log.d("<CAST>", "onReceiveOtherAction : channelId : $channelId")
 
                 try {
-                    RouteManager.route(p0, "tokopedia://play/${channelId}")
-//                it.startActivity(Intent(it, PlayActivity::class.java))
+                    val intent = RouteManager.getIntent(it, "tokopedia://play/$channelId")
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    it.startActivity(intent)
                 }
                 catch (e: Exception) {
-                    Log.d("<CAST>", "Error : ${e.message}")
+
                 }
             }
         }
