@@ -1,0 +1,18 @@
+[
+  {
+    "data": {
+      "updateFavoriteDetail": {
+        "clientNumber": "0811111111111",
+        "operatorID": 12,
+        "productID": 70,
+        "categoryID": 1,
+        "label": "GoTo",
+        "lastUpdated": "20210630123307",
+        "lastOrderDate": "20210630123307",
+        "totalTransaction": 999,
+        "subscribed": true,
+        "wishlist": false
+      }
+    }
+  }
+]

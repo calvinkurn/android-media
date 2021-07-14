@@ -20,20 +20,15 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
-import com.tokopedia.test.application.espresso_component.CommonMatcher
-import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.TelcoContactHelper
@@ -44,8 +39,6 @@ import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
 import com.tokopedia.topupbills.utils.ResourceUtils
-import io.mockk.every
-import io.mockk.mockkObject
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
 import org.hamcrest.core.IsNot
@@ -96,11 +89,6 @@ class TelcoPrepaidInstrumentTest {
         }
 
         mActivityRule.launchActivity(intent)
-
-        mockkObject(CommonTopupBillsUtil)
-        every { CommonTopupBillsUtil.isSeamlessFavoriteNumber(any()) } returns false
-        every { CommonTopupBillsUtil.getApplinkFavoriteNumber(any()) } returns ApplinkConsInternalDigital.FAVORITE_NUMBER
-
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 

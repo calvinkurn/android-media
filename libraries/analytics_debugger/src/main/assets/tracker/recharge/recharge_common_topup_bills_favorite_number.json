@@ -1,6 +1,6 @@
 {
   "readme": "Tracker Seamless Favorite Number Page",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "businessUnit": "recharge",
@@ -36,7 +36,7 @@
       "businessUnit": "recharge",
       "eventCategory": "digital - pdp favorite number",
       "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
+      "event": "digitalGeneralEvent",
       "userId": ".+",
       "eventAction": "click kebab menu",
       "sessionIris": ".+",
