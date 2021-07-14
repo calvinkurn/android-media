@@ -28,7 +28,7 @@ class AddressRevampRobot {
     fun searchAddressStreet(keyword: String) {
         onView(withId(R.id.search_page_input)).perform(click())
         onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), pressImeActionButton())
-        Thread.sleep(1000L)
+        waitForData()
     }
 
     fun clickAddressStreetItem() {
@@ -39,7 +39,7 @@ class AddressRevampRobot {
 
     fun onClickChooseLocation() {
         onView(withId(R.id.btn_primary)).perform(click())
-        Thread.sleep(1000L)
+        waitForData()
     }
 
     fun fillAddress(address: String) {
