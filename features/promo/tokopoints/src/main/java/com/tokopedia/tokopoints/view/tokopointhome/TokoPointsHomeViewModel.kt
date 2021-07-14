@@ -46,10 +46,13 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
                 deferredSavingData = async(Dispatchers.IO) { getUserSavingData() }
             }
             recomData = async(Dispatchers.IO) {  getRecommendationData()}
-            val recomReponseData = recomData?.await()
+            val recomReponseData = try { recomData?.await() } catch (e:Exception){}
+            val userSavingData = try { deferredSavingData?.await()?.tokopointsUserSaving } catch (e:Exception){}
             if (data != null && dataSection != null && dataSection.sectionContent != null && data.tokopediaRewardTopSection != null) {
                 tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection,
-                        deferredSavingData?.await()?.tokopointsUserSaving), dataSection.sectionContent.sectionContent, recomReponseData))
+                    userSavingData as TokopointsUserSaving?), dataSection.sectionContent.sectionContent,
+                    recomReponseData as RewardsRecommendation?
+                ))
             } else {
                 throw NullPointerException("error in data")
             }
