@@ -8,6 +8,7 @@
 
     <!--Product Bundling-->
     <dimen name="buyer_order_detail_divider_height">1dp</dimen>
-    <dimen name="buyer_order_detail_bundling_name_margin_start">10dp</dimen>
+    <dimen name="buyer_order_detail_bundling_info_margin">10dp</dimen>
     <dimen name="buyer_order_detail_bundling_card_padding_bottom">14dp</dimen>
+    <dimen name="buyer_order_detail_bundling_icon_size">20dp</dimen>
 </resources>

@@ -15,5 +15,6 @@
     <dimen name="buyer_order_cancel_bundling_card_title_margin_start_46dp">46dp</dimen>
     <dimen name="buyer_order_cancel_bundling_header_height_40dp">40dp</dimen>
     <dimen name="buyer_order_cancel_bundling_header_image_margin_start_14dp">14dp</dimen>
+    <dimen name="buyer_order_cancel_bundling_header_image_size">20dp</dimen>
 
 </resources>

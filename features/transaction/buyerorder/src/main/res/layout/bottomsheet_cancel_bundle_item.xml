@@ -16,11 +16,10 @@
     
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_buyer_order_bundling_header"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/buyer_order_cancel_bundling_header_image_size"
         android:layout_height="0dp"
         android:layout_marginVertical="@dimen/margin_small"
         android:layout_marginStart="@dimen/buyer_order_cancel_bundling_header_image_margin_start_14dp"
-        app:srcCompat="@drawable/ic_product_bundling"
         app:layout_constraintStart_toStartOf="@id/view_buyer_order_bundling_header"
         app:layout_constraintTop_toTopOf="@id/view_buyer_order_bundling_header"
         app:layout_constraintBottom_toBottomOf="@id/view_buyer_order_bundling_header"/>

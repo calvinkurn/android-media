@@ -17,12 +17,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.ordermanagement.snapshot.R
 import com.tokopedia.ordermanagement.snapshot.data.model.GetOrderSnapshot
 import com.tokopedia.ordermanagement.snapshot.data.model.SnapshotTypeData
+import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.CREATED_TIME
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BARU
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotConsts.KONDISI_BEKAS
 import com.tokopedia.ordermanagement.snapshot.util.SnapshotUtils
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotAdapter
 import com.tokopedia.ordermanagement.snapshot.view.adapter.SnapshotImageViewPagerAdapter
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -61,6 +63,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
     val desc = itemView.findViewById<Typography>(R.id.snapshot_desc)
     val productBundlingInfoLayout = itemView.findViewById<ConstraintLayout>(R.id.snapshot_bundling_info)
     val productBundlingNameText = itemView.findViewById<Typography>(R.id.snapshot_bundling_name)
+    val productBundlingIconImage = itemView.findViewById<ImageUnify>(R.id.snapshot_bundling_icon)
 
     @SuppressLint("SetTextI18n")
     override fun bind(item: SnapshotTypeData, position: Int) {
@@ -130,6 +133,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
 
         dataObject.productBundleName.let { bundleName ->
             productBundlingInfoLayout?.showWithCondition(bundleName != null)
+            productBundlingIconImage?.setImageUrl(SnapshotConsts.BUNDLING_ICON_URL)
             productBundlingNameText?.text = bundleName.orEmpty()
         }
 

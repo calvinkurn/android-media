@@ -14,10 +14,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_bom_detail_bundling_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/buyer_order_detail_bundling_icon_size"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            app:srcCompat="@drawable/ic_buyer_order_product_bundling"
+            android:layout_marginVertical="@dimen/buyer_order_detail_bundling_info_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/divider_bom_detail_bundling_top"/>
@@ -26,7 +26,7 @@
             android:id="@+id/tv_bom_detail_bundling_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/buyer_order_detail_bundling_name_margin_start"
+            android:layout_marginStart="@dimen/buyer_order_detail_bundling_info_margin"
             app:layout_constraintStart_toEndOf="@id/iv_bom_detail_bundling_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/divider_bom_detail_bundling_top"
