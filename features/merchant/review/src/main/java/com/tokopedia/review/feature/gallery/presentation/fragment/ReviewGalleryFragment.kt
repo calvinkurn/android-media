@@ -133,11 +133,15 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun disableScroll() {
-        imagesRecyclerView?.isNestedScrollingEnabled = false
+        imagesRecyclerView?.layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
+            override fun canScrollHorizontally(): Boolean = false
+        }
     }
 
     override fun enableScroll() {
-        imagesRecyclerView?.isNestedScrollingEnabled = true
+        imagesRecyclerView?.layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
+            override fun canScrollHorizontally(): Boolean = true
+        }
     }
 
     override fun onBackPressed() {
@@ -187,9 +191,6 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         imagesRecyclerView?.apply {
             adapter = this@ReviewGalleryFragment.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            setOnClickListener {
-                onImageClicked()
-            }
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })

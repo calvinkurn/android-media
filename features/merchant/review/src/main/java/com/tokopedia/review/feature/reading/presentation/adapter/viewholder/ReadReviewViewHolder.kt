@@ -21,6 +21,7 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItem
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -127,7 +128,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
                 setOnClickListener {
                     ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
                     maxLines = Integer.MAX_VALUE
-                    text = message
+                    text = HtmlLinkHelper(context, message).spannedString ?: ""
                 }
             }
             show()

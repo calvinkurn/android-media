@@ -30,6 +30,7 @@ abstract class ReadReviewSortFilterViewModelTestFixture {
 
         viewModel = ReadReviewSortFilterViewModel()
         viewModel.buttonState.observeForever { }
+        viewModel.resetButtonState.observeForever {  }
     }
 
     @After

@@ -25,6 +25,9 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
         image?.apply {
             mLoaderView.hide()
             mImageView.loadImage(imageUrl)
+            onImageClickListener = {
+                imageListener.onImageClicked()
+            }
             onImageDoubleClickListener = {
                 if (mScaleFactor == UNZOOM_SCALE_FACTOR) {
                     setScaleFactor(ZOOM_SCALE_FACTOR)
@@ -39,7 +42,7 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
 
                 }
                 override fun onZoomEnd(scaleFactor: Float) {
-                    if(scaleFactor >= UNZOOM_SCALE_FACTOR) {
+                    if(scaleFactor > UNZOOM_SCALE_FACTOR) {
                         imageListener.disableScroll()
                     } else {
                         imageListener.enableScroll()

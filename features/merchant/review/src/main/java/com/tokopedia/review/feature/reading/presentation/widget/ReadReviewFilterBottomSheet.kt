@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
@@ -94,7 +94,6 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
                 configSortData()
             }
         } else {
-            setResetButton()
             observeSubmitButtonState()
             observeResetButtonState()
             setFilterItemListener()
@@ -118,7 +117,12 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
 
     private fun observeResetButtonState() {
         sortFilterViewModel.resetButtonState.observe(viewLifecycleOwner, {
-            bottomSheetAction.showWithCondition(it)
+            if(it) {
+                setResetButton()
+                bottomSheetAction.show()
+            } else {
+                bottomSheetAction.hide()
+            }
         })
     }
 
@@ -161,8 +165,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
             val originalFilters = sortFilterViewModel.getOriginalFilters()
             if (originalFilters.contains(listItemUnify.listTitleText) && originalFilters.isNotEmpty()) {
                 sortFilterViewModel.updateSelectedFilter(listItemUnify)
-                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked =
-                    true
+                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = true
             }
         }
     }
