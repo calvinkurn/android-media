@@ -121,11 +121,13 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
-                    //Handler().postDelayed({
-                        NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
-                            getData(CacheType.ALWAYS_CLOUD)
-                        }.showRetrySnackbar()
-                   // }, DELAY_TIME)
+                    launch {
+                        withContext(Dispatchers.Main) {
+                            NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+                                getData(CacheType.ALWAYS_CLOUD)
+                            }.showRetrySnackbar()
+                        }
+                    }
                 }
         )
     }
