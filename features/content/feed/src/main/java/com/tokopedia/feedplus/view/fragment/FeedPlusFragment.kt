@@ -1715,7 +1715,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
             productTagBS.dismiss()
-            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed)
+            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId.toString())
         } else {
             onGoToLogin()
         }
@@ -2265,7 +2265,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventClickFollowitem(item.feedXCard.id,
                     adapterPosition,
                     item.feedXCard.typename,
-                    item.feedXCard.followers.isFollowed,
+                    !item.feedXCard.followers.isFollowed,
                     item.feedXCard.author.id)
 
                 if (item.feedXCard.followers.isFollowed)

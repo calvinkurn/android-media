@@ -608,15 +608,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 } else {
                     pageControl.hide()
                 }
+                imagePostListener.userCarouselImpression(
+                    feedXCard.id,
+                    media[0],
+                    1,
+                    feedXCard.typename,
+                    feedXCard.followers.isFollowed,
+                    feedXCard.author.id
+                )
                 media.forEachIndexed { index, feedMedia ->
-                    imagePostListener.userCarouselImpression(
-                        feedXCard.id,
-                        feedMedia,
-                        media.indexOf(feedMedia)+1,
-                        feedXCard.typename,
-                        feedXCard.followers.isFollowed,
-                        feedXCard.author.id
-                    )
 
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
@@ -769,6 +769,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        imagePostListener.userCarouselImpression(
+                            feedXCard.id,
+                            media[current],
+                            current+1,
+                            feedXCard.typename,
+                            feedXCard.followers.isFollowed,
+                            feedXCard.author.id
+                        )
                         pageControl.setCurrentIndicator(current)
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()

@@ -313,10 +313,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean) {
+    fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean, activityId: String) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                atc(postTagItem, shopId, type, isFollowed)
+                atc(postTagItem, shopId, type, isFollowed, activityId)
             }
             atcResp.value = Success(results)
         }) {
@@ -626,12 +626,13 @@ class FeedViewModel @Inject constructor(
         postTagItem: FeedXProduct,
         shopId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        activityId: String
     ): AtcViewModel {
         try {
             val data = AtcViewModel()
             data.applink = postTagItem.appLink
-            data.activityId = postTagItem.id
+            data.activityId = activityId
             data.postType = type
             data.isFollowed = isFollowed
             data.shopId = shopId

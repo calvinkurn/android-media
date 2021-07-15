@@ -61,6 +61,7 @@ class FeedAnalyticTracker
         private const val KEY_EVENT_USER_ID = "userId"
         private const val KEY_SESSION_IRIS = "sessionIris"
         private const val SGC_IMAGE = "sgc image"
+        private const val SGC_IMAGE_RECOM = "sgc image recom"
         private const val ASGC = "asgc"
         private const val ASGC_RECOM= "asgc recom"
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT= "FeedXCardProductsHighlight"
@@ -223,6 +224,8 @@ class FeedAnalyticTracker
             ASGC_RECOM
         else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
             ASGC
+        else if(type!= TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
+            SGC_IMAGE_RECOM
         else
             SGC_IMAGE
     }
@@ -436,7 +439,7 @@ class FeedAnalyticTracker
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     CLICK,
-                    "lihat-wishlist",
+                    "lihat wishlist",
                     getPostType(type,isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
@@ -608,7 +611,7 @@ class FeedAnalyticTracker
     ): Map<String, Any> = DataLayer.mapOf(
         Promotion.CREATIVE, imageUrl,
         Promotion.ID, activityId,
-        Promotion.NAME, "/feed - sgc - image",
+        Promotion.NAME, "/feed - sgc image - image",
         Promotion.POSITION, position + 1,
     )
 
@@ -750,7 +753,7 @@ fun eventImpressionProductASGC(
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     CLICK,
-                    " lihat selengkapnya",
+                    "lihat selengkapnya",
                     SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
@@ -770,7 +773,7 @@ fun eventImpressionProductASGC(
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     CLICK,
-                    " x ",
+                    "x",
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
@@ -891,7 +894,7 @@ fun eventImpressionProductASGC(
     private fun getProductItemASGC(feedXProduct: List<FeedXProduct>): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         for (i in feedXProduct) {
-            val map = createItemMapASGC(i, feedXProduct.indexOf(i).toString())
+            val map = createItemMapASGC(i, (feedXProduct.indexOf(i)+1).toString())
             list.add(map)
         }
         return list
@@ -906,7 +909,7 @@ fun eventImpressionProductASGC(
 
     private fun createItemMapASGC(feedXProduct: FeedXProduct, index: String): Map<String, Any> =
         DataLayer.mapOf(
-            Product.INDEX, index,
+            Product.INDEX, index ,
             Product.BRAND, "",
             Product.CATEGORY, "",
             Product.ID, feedXProduct.id,
