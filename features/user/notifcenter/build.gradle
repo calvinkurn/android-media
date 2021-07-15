@@ -9,6 +9,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
@@ -20,21 +21,21 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.libraries.analyticAnnotationCentral)
-    implementation project(rootProject.ext.features.discoveryCommon)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.features.inboxCommon)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    implementation projectOrAar(rootProject.ext.features.inboxCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -44,10 +45,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
@@ -55,7 +56,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
@@ -74,16 +75,17 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

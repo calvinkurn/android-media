@@ -1,12 +1,12 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailPagerAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel

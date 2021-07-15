@@ -54,7 +54,7 @@ object TrackingPageQuery {
 
     val retryBooking = """
         mutation RetryBooking(${'$'}id: String!){
-          retryBooking(orderID: {'$'}id){
+          retryBooking(orderID: ${'$'}id){
             order_id
             order_tx_id
             awbnum

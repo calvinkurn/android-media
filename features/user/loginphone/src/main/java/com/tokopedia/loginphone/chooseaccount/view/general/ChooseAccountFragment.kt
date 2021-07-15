@@ -3,51 +3,39 @@ package com.tokopedia.loginphone.chooseaccount.view.general
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.model.UserData
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.UserDetail
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
 import com.tokopedia.loginphone.chooseaccount.view.base.BaseChooseAccountFragment
-import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountContract
+import com.tokopedia.loginphone.chooseaccount.view.listener.ChooseAccountListener
 import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 12/4/17.
  */
 
-open class ChooseAccountFragment : BaseChooseAccountFragment(),
-        ChooseAccountContract.ViewAdapter {
+open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountListener {
 
     private var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel = com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel()
-    private var selectedAccount: UserDetail? = null
+    private var selectedAccount: UserDetailDataModel? = null
     private var selectedPhoneNo: String? = null
 
     @Inject
@@ -60,12 +48,11 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    private val REQUEST_SECURITY_QUESTION = 101
-
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
-    protected val chooseAccountViewModel by lazy {
+
+    private val chooseAccountViewModel by lazy {
         viewModelProvider.get(ChooseAccountViewModel::class.java)
     }
 
@@ -75,14 +62,15 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
 
     override fun initInjector() {
         if (activity != null) {
-            val appComponent = (activity?.application as BaseMainApplication)
-                .baseAppComponent
+            val appComponent = (activity?.application as BaseMainApplication).baseAppComponent
             val loginRegisterPhoneComponent = DaggerLoginRegisterPhoneComponent.builder()
-                .baseAppComponent(appComponent).build()
-            val daggerChooseAccountComponent = DaggerChooseAccountComponent.builder()
-                .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
-                .build() as DaggerChooseAccountComponent
-            daggerChooseAccountComponent.inject(this)
+                    .baseAppComponent(appComponent)
+                    .build()
+
+            DaggerChooseAccountComponent.builder()
+                    .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+                    .build()
+                    .inject(this)
         }
     }
 
@@ -119,60 +107,50 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
     }
 
     override fun initObserver() {
-        chooseAccountViewModel.getAccountListFBResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        chooseAccountViewModel.getAccountListDataModelFBResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
                 is Fail -> onErrorGetAccountList(it.throwable)
             }
         })
-        chooseAccountViewModel.getAccountListPhoneResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        chooseAccountViewModel.getAccountListDataModelPhoneResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessGetAccountList(it.data)
                 is Fail -> onErrorGetAccountList(it.throwable)
             }
         })
+
         chooseAccountViewModel.loginPhoneNumberResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                is Success -> onSuccessLoginToken(it.data)
+                is Success -> onSuccessLoginToken()
                 is Fail -> {
                     dismissLoadingProgress()
                     onErrorLoginToken(it.throwable)
                 }
             }
         })
-        chooseAccountViewModel.getUserInfoResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> onSuccessGetUserInfo(it.data)
-                is Fail -> {
-                    dismissLoadingProgress()
-                    onErrorGetUserInfo(it.throwable)
-                }
-            }
-        })
+
         chooseAccountViewModel.popupError.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it is Success) {
                 showPopupError(it.data.header, it.data.body, it.data.action)
             }
         })
+
         chooseAccountViewModel.activationPage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if(it is Success){
                 onGoToActivationPage(it.data)
             }
         })
+
         chooseAccountViewModel.securityQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if(it is Success){
                 onGoToSecurityQuestion()
             }
         })
-        chooseAccountViewModel.showAdminLocationPopUp.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it) {
-                is Success -> showLocationAdminPopUp(userSessionInterface)
-                is Fail -> showLocationAdminError(it.throwable)
-            }
-        })
     }
 
-    private fun open2FA(account: UserDetail, phone: String) {
+    private fun open2FA(account: UserDetailDataModel, phone: String) {
         selectedAccount = account
         selectedPhoneNo = phone
         showLoadingProgress()
@@ -207,12 +185,12 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
         }
     }
 
-    private fun loginToken(account: UserDetail?, phone: String) {
+    private fun loginToken(account: UserDetailDataModel?, phone: String) {
         account?.let {
             when (viewModel.loginType) {
                 FACEBOOK_LOGIN_TYPE -> {
                     if (phone.isNotEmpty()) {
-                        viewModel.accountList?.key?.let { key ->
+                        viewModel.accountListDataModel?.key?.let { key ->
                             chooseAccountViewModel.loginTokenFacebook(
                                     key,
                                     it.email,
@@ -222,8 +200,8 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
                     }
                 }
                 else -> {
-                    LetUtil.ifLet(viewModel.accountList, viewModel.phoneNumber) { (accountList, phoneNumber) ->
-                        if (accountList is AccountList && phoneNumber is String) {
+                    LetUtil.ifLet(viewModel.accountListDataModel, viewModel.phoneNumber) { (accountList, phoneNumber) ->
+                        if (accountList is AccountListDataModel && phoneNumber is String) {
                             chooseAccountViewModel.loginTokenPhone(
                                     accountList.key,
                                     it.email,
@@ -236,67 +214,11 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
         }
     }
 
-    override fun onSuccessLogin(userId: String) {
-        activity?.let {
-            dismissLoadingProgress()
-            if(!viewModel.isFromRegister) {
-                analytics.eventSuccessLoginPhoneNumber()
-            } else {
-                if (viewModel.isFacebook) {
-                    analytics.eventSuccessFbPhoneNumber()
-                } else {
-                    analytics.eventSuccessLoginPhoneNumberSmartRegister()
-                }
-            }
-            setTrackingUserId(userId)
-            setFCM(userSessionInterface.deviceId)
-            it.setResult(Activity.RESULT_OK)
-            it.finish()
+    private fun onSuccessLoginToken() {
+        activity?.apply {
+            setResult(Activity.RESULT_OK)
+            finish()
         }
-    }
-
-    private fun setTrackingUserId(userId: String) {
-        try {
-            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
-            TrackApp.getInstance().gtm
-                    .pushUserId(userId)
-            if (!GlobalConfig.DEBUG && crashlytics != null)
-                crashlytics.setUserId(userId)
-
-            if (userSessionInterface.isLoggedIn) {
-                val userData = UserData()
-                userData.userId = userSessionInterface.userId
-                userData.email = userSessionInterface.email
-                userData.phoneNumber = userSessionInterface.phoneNumber
-                userData.medium = userSessionInterface.loginMethod
-
-                //Identity Event
-                LinkerManager.getInstance().sendEvent(
-                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
-
-                //Login Event
-                LinkerManager.getInstance().sendEvent(
-                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-                loginEventAppsFlyer(userSessionInterface.userId, "")
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun loginEventAppsFlyer(userId: String, userEmail: String) {
-        var dataMap = HashMap<String, Any>()
-        dataMap["user_id"] = userId
-        dataMap["user_email"] = userEmail
-        val date = Date()
-        val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
-        dataMap["timestamp"] = stringDate
-        TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
-    }
-
-    private fun onSuccessLoginToken(loginToken: LoginToken) {
-        chooseAccountViewModel.getUserInfo()
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
@@ -304,20 +226,20 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
         logUnknownError(Throwable("Login Phone Number Login Token is not success"))
     }
 
-    private fun onSuccessGetAccountList(accountList: AccountList) {
-        this.viewModel.accountList = accountList
+    private fun onSuccessGetAccountList(accountListDataModel: AccountListDataModel) {
+        this.viewModel.accountListDataModel = accountListDataModel
 
-        if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
-            adapter.setList(accountList.userDetails, accountList.msisdn)
-            val userDetail = accountList.userDetails[0]
+        if (accountListDataModel.userDetailDataModels.size == 1 && accountListDataModel.msisdn.isNotEmpty()) {
+            adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
+            val userDetail = accountListDataModel.userDetailDataModels[0]
             if (userDetail.challenge2Fa) {
-                open2FA(userDetail, accountList.msisdn)
+                open2FA(userDetail, accountListDataModel.msisdn)
             } else {
-                loginToken(userDetail, accountList.msisdn)
+                loginToken(userDetail, accountListDataModel.msisdn)
             }
         } else {
             dismissLoadingProgress()
-            adapter.setList(accountList.userDetails, accountList.msisdn)
+            adapter?.setList(accountListDataModel.userDetailDataModels, accountListDataModel.msisdn)
         }
     }
 
@@ -331,9 +253,7 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-            onSuccessLogin(userSessionInterface.temporaryUserId)
-        } else if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
+        if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
                     loginToken(selectedAccount, selectedPhoneNo ?: "")
@@ -352,16 +272,15 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        chooseAccountViewModel.getAccountListFBResponse.removeObservers(this)
-        chooseAccountViewModel.getAccountListPhoneResponse.removeObservers(this)
+        chooseAccountViewModel.getAccountListDataModelFBResponse.removeObservers(this)
+        chooseAccountViewModel.getAccountListDataModelPhoneResponse.removeObservers(this)
         chooseAccountViewModel.loginPhoneNumberResponse.removeObservers(this)
-        chooseAccountViewModel.getUserInfoResponse.removeObservers(this)
         chooseAccountViewModel.activationPage.removeObservers(this)
         chooseAccountViewModel.securityQuestion.removeObservers(this)
         chooseAccountViewModel.flush()
     }
 
-    override fun onSelectedAccount(account: UserDetail, phone: String) {
+    override fun onSelectedAccount(account: UserDetailDataModel, phone: String) {
         showLoadingProgress()
         if (account.challenge2Fa) {
             open2FA(account, phone)

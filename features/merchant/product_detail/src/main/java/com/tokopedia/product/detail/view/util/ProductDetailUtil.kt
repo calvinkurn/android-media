@@ -9,10 +9,8 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import androidx.annotation.DimenRes
-import androidx.core.content.ContextCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,11 +21,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
@@ -38,18 +33,8 @@ import java.util.concurrent.TimeUnit
 
 object ProductDetailUtil {
 
-    private const val MAX_CHAR_OLD = 150
     private const val MAX_CHAR = 140
     private const val ALLOW_CLICK = true
-
-    fun reviewDescFormatterOld(context: Context, review: String): Pair<CharSequence?, Boolean> {
-        return if (MethodChecker.fromHtml(review).length > MAX_CHAR_OLD) {
-            val subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR_OLD)
-            Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
-        } else {
-            Pair(MethodChecker.fromHtml(review), !ALLOW_CLICK)
-        }
-    }
 
     fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
@@ -60,18 +45,6 @@ object ProductDetailUtil {
             Pair(formattedText, !ALLOW_CLICK)
         }
     }
-
-    fun generateDescriptionData(productInfo: DynamicProductInfoP1, textDescription: String) = DescriptionData(
-            basicId = productInfo.basic.productID,
-            basicName = productInfo.getProductName,
-            basicPrice = productInfo.data.price.value.toFloat(),
-            shopName = productInfo.basic.shopName,
-            thumbnailPicture = productInfo.data.getFirstProductImage() ?: "",
-            basicDescription = textDescription,
-            videoUrlList = productInfo.data.youtubeVideos.map { it.url },
-            isOfficial = productInfo.data.isOS,
-            isGoldMerchant = productInfo.data.isPowerMerchant)
-
 }
 
 fun String.boldOrLinkText(isLink: Boolean, context: Context,
@@ -167,22 +140,6 @@ internal fun Long.getRelativeDateByHours(context: Context): String {
         context.getString(R.string.shop_chat_speed_in_days_with_icon, hourInput / dayInHours)
     } else {
         context.getString(R.string.shop_chat_speed_in_hours_with_icon, hourInput)
-    }
-}
-
-internal fun String.isGivenDateIsBelowThan24H(): Boolean {
-    return try {
-        val endDate = Date(this.toLongOrZero() * 1000)
-        val now = System.currentTimeMillis()
-        val diff = (endDate.time - now).toFloat()
-        if (diff < 0) {
-            //End date is out dated
-            false
-        } else {
-            TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1
-        }
-    } catch (e: Throwable) {
-        false
     }
 }
 
@@ -295,62 +252,6 @@ fun String.goToWebView(context: Context) {
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
-
-fun View?.showToasterSuccess(message: String,
-                             @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-    }
-}
-
-fun View?.showToasterSuccess(message: String,
-                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
-                           ctaMaxWidth: Int? = null,
-                           ctaText: String = "",
-                           ctaListener: (() -> Unit?)? = null) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        ctaMaxWidth?.let {
-            Toaster.toasterCustomCtaWidth = ctaMaxWidth
-        }
-
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        if (ctaText.isNotEmpty()) {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        } else {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        }
-    }
-}
-fun View?.showToasterError(message: String,
-                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
-                           ctaMaxWidth: Int? = null,
-                           ctaText: String = "",
-                           ctaListener: (() -> Unit?)? = null) {
-    this?.let {
-        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
-        ctaMaxWidth?.let {
-            Toaster.toasterCustomCtaWidth = ctaMaxWidth
-        }
-
-        Toaster.toasterCustomBottomHeight = toasterOffset
-        if (ctaText.isNotEmpty()) {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        } else {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-                ctaListener?.invoke()
-            }).show()
-        }
-    }
-}
 
 internal fun View?.animateExpand() = this?.run {
     val matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)

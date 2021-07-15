@@ -23,6 +23,9 @@ import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTr
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.iris.Iris
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
@@ -185,11 +188,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     private fun refreshPopularSearch(featureId: String) {
-        AutocompleteTracking.eventClickRefreshPopularSearch()
         presenter.refreshPopularSearch(featureId)
     }
 
-    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
         presenter.setSearchParameter(searchParameter)
     }
 
@@ -274,6 +276,27 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String) {
         val productDataLayer = item.getProductLineAsObjectDataLayer()
         AutocompleteTracking.eventClickInitialStateProductLine(productDataLayer, userId, label, item.dimension90)
+    }
+
+    override val chooseAddressData: LocalCacheModel
+        get() = context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
+
+    override fun onRefreshPopularSearch() {
+        AutocompleteTracking.eventClickRefreshPopularSearch()
+    }
+
+    override fun onRefreshTokoNowPopularSearch() {
+        AutocompleteTracking.eventClickRefreshTokoNowPopularSearch()
+    }
+
+    override fun trackEventClickTokoNowDynamicSectionItem(label: String) {
+        AutocompleteTracking.eventClickTokoNowPopularSearch(label)
     }
 
     override fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String) {

@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -14,7 +15,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.playServicesDependencies.core
-    implementation project(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {

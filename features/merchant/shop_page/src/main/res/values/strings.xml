@@ -36,8 +36,8 @@
     <string name="shop_page_header_request_unmoderate_option_2_text">Saya sudah melakukan perbaikan toko.</string>
     <string name="shop_page_header_request_unmoderate_option_2_value">Have Fixed</string>
     <string name="shop_page_header_request_unmoderate_btn_send_text">Kirim</string>
-    <string name="shop_page_header_request_unmoderate_appended_text">&lt;br /&gt;&lt;br /&gt;Permohonan buka toko dapat dilakukan dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
-    <string name="shop_page_header_request_unmoderate_appended_text_dummy_url">https://tokopedia.com/#req-shop-moderate-bottomsheet</string>
+    <string name="shop_page_header_request_unmoderate_appended_text" formatted="true">&lt;br /&gt;&lt;br /&gt;Permohonan buka toko dapat dilakukan dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="shop_page_header_request_unmoderate_appended_text_dummy_url" formatted="true">https://tokopedia.com/#req-shop-moderate-bottomsheet</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
@@ -216,7 +216,7 @@
     <string name="new_shop_page_header_shop_close_description_seller">Toko akan dibuka otomatis pada %1$s. <![CDATA[<a href="">%2$s</a>]]></string>
     <string name="new_shop_page_header_shop_close_title_seller">Toko Anda Sedang Tutup</string>
     <string name="new_shop_page_header_shop_close_description_buyer_clickable_text">Help Center</string>
-    <string name="new_shop_page_header_shop_close_description_seller_clickable_text">Buka Toko</string>
+    <string name="new_shop_page_header_shop_close_description_seller_clickable_text" formatted="true">Buka Toko</string>
     <string name="shop_page_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="shop_page_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
 
