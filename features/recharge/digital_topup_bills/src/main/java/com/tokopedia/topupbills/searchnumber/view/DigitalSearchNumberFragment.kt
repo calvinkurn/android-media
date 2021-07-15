@@ -124,8 +124,8 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
                         numberList: List<TopupBillsFavNumberItem>): Fragment {
             val fragment = DigitalSearchNumberFragment()
             val bundle = Bundle()
-            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
-            bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             if (numberList.isNotEmpty()) {
                 bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             }

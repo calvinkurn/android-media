@@ -16,7 +16,7 @@ class CommonTopupBillsUtil {
 
         fun getApplinkFavoriteNumber(context: Context): String {
             return if (isSeamlessFavoriteNumber(context))
-                ApplinkConsInternalDigital.SEAMLESS_FAVORITE_NUMBER else ApplinkConsInternalDigital.FAVORITE_NUMBER
+                ApplinkConsInternalDigital.FAVORITE_NUMBER else ApplinkConsInternalDigital.SEARCH_NUMBER
         }
     }
 }

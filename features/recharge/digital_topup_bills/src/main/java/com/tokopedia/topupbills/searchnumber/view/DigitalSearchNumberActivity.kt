@@ -45,8 +45,8 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasCompone
         fun newInstance(activity: Activity, clientNumberType: String,
                         number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
             val intent = Intent(activity, DigitalSearchNumberActivity::class.java)
-            intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
-            intent.putExtra(EXTRA_NUMBER, number)
+            intent.putExtra(EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            intent.putExtra(EXTRA_CLIENT_NUMBER, number)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             return intent
         }
