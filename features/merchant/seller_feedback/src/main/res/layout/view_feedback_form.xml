@@ -91,6 +91,18 @@
             android:id="@+id/layout_questions"
             app:layout_constraintTop_toBottomOf="@id/background_header">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_seller_feedback"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                app:tickerShapeType="loose"
+                app:tickerType="information"
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                app:layout_constraintEnd_toStartOf="@id/guideline_right"
+                app:layout_constraintStart_toEndOf="@id/guideline_left"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_form_first"
                 android:layout_width="0dp"
@@ -100,7 +112,7 @@
                 android:textColor="@color/Unify_N700"
                 app:layout_constraintEnd_toStartOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ticker_seller_feedback"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold" />
 

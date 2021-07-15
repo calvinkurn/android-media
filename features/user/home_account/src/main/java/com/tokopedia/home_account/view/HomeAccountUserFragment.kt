@@ -142,6 +142,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private var widgetTitle: String = ""
     private var isShowHomeAccountTokopoints = false
     private var isShowDarkModeToggle = false
+    private var isShowScreenRecorder = false
 
     var adapter: HomeAccountUserAdapter? = null
     var financialAdapter: HomeAccountFinancialAdapter? = null
@@ -190,6 +191,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowHomeAccountTokopoints = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
             isShowDarkModeToggle = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+            isShowScreenRecorder = firebaseRemoteConfig.getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -604,7 +606,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun setupSettingList() {
         addItem(menuGenerator.generateUserSettingMenu(), addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
-                accountPref, permissionChecker, isShowDarkModeToggle),
+                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
                 addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -862,6 +864,12 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
                 showDialogClearCache()
+            }
+            AccountConstants.SettingCode.SETTING_APP_ADVANCED_SCREEN_RECORD -> {
+                context?.let {
+                    homeAccountAnalytic.eventClickAppSettingScreenRecord()
+                    RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER)
+                }
             }
             AccountConstants.SettingCode.SETTING_SECURITY -> {
                 homeAccountAnalytic.eventClickAccountSettingAccountSecurity()

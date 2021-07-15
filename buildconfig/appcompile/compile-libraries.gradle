@@ -1,77 +1,75 @@
 // Sort alphabetically by name
-include "libraries:adapter_delegate"
-include "libraries:akamai_bot_lib"
-include "libraries:analytics"
-include "libraries:analytics_debugger"
-include "libraries:analytics_debugger_noop"
-include "libraries:applink"
-include "libraries:banner_dynamic"
-include "libraries:base_adapter"
-include "libraries:base_list"
-include "libraries:base_list_seller"
-include "libraries:blockcanary"
-include "libraries:bottom_sheet_builder"
-include "libraries:cassavatest"
-include "libraries:charts"
-include "libraries:circular_view_pager"
-include "libraries:cm_push_notifications"
-include "libraries:collapsing_tab_layout"
-include "libraries:common_network"
-include "libraries:core_legacy"
-include "libraries:core_network"
-include 'libraries:date_picker_range'
-include 'libraries:device_fingerprint'
-include 'libraries:device_info'
-include 'libraries:dev_monitoring_tools'
-include 'libraries:dynamic_features'
-include 'libraries:encryption'
-include "libraries:fingerprint"
-include "libraries:floating_window"
-include "libraries:image_picker"
-include "libraries:image_picker_common"
-include "libraries:image_preview"
-include 'libraries:imageuploader'
+includeIfEnabled("libraries:adapter_delegate")
+includeIfEnabled("libraries:akamai_bot_lib")
+includeIfEnabled("libraries:analytics")
+includeIfEnabled("libraries:analytics_debugger")
+includeIfEnabled("libraries:analytics_debugger_noop")
+includeIfEnabled("libraries:applink")
+includeIfEnabled("libraries:banner_dynamic")
+includeIfEnabled("libraries:base_adapter")
+includeIfEnabled("libraries:base_list")
+includeIfEnabled("libraries:base_list_seller")
+includeIfEnabled("libraries:bottom_sheet_builder")
+includeIfEnabled("libraries:cassavatest")
+includeIfEnabled("libraries:charts")
+includeIfEnabled("libraries:circular_view_pager")
+includeIfEnabled("libraries:cm_push_notifications")
+includeIfEnabled("libraries:collapsing_tab_layout")
+includeIfEnabled("libraries:common_network")
+includeIfEnabled("libraries:core_legacy")
+includeIfEnabled("libraries:core_network")
+includeIfEnabled("libraries:date_picker_range")
+includeIfEnabled("libraries:device_fingerprint")
+includeIfEnabled("libraries:device_info")
+includeIfEnabled("libraries:dev_monitoring_tools")
+includeIfEnabled("libraries:dynamic_features")
+includeIfEnabled("libraries:encryption")
+includeIfEnabled("libraries:fingerprint")
+includeIfEnabled("libraries:floating_window")
+includeIfEnabled("libraries:image_picker")
+includeIfEnabled("libraries:image_picker_common")
+includeIfEnabled("libraries:image_preview")
+includeIfEnabled("libraries:imageuploader")
 
-include "libraries:inappupdate"
-include "libraries:smart_recycler_diffutil_helper"
-include "libraries:keys"
-include "libraries:kotlin_extensions"
-include "libraries:liveness_lib"
-include 'libraries:locationmanager'
-include "libraries:logger"
-include "libraries:instrumentation_test"
-include 'libraries:iris'
-include 'libraries:iris_session'
-include "libraries:oms"
-include "libraries:poc_new_relic"
-include "libraries:push_notification"
-include "libraries:product_photo_adapter"
-include "libraries:remote_config"
-include "libraries:remoteresourcerequest"
-include "libraries:shake_detect"
-include "libraries:traceroute"
-include "libraries:translator"
-include "libraries:travel_calendar"
-include "libraries:tracking_optimizer"
-include "libraries:twitter_share"
-include "libraries:videoplayer"
-include "libraries:videouploader"
-include "libraries:websocket"
-include "libraries:youtubeutil"
-include "libraries:track"
-include "libraries:graphql"
-include "libraries:linker"
-include "libraries:webview"
-include "libraries:imagepreviewslider"
-include "libraries:weaver"
-include "libraries:utils"
-include "libraries:page_info_pusher"
-include "libraries:pre_release_inspector"
-include "libraries:pre_release_inspector_no_op"
-include "libraries:mapviewer"
-include "libraries:tokopatch"
-include ':libraries:annotation_proc_central'
-include "libraries:screen_recorder"
-include "libraries:screenshot_observer"
-include "libraries:unit_test"
-include 'libraries:macrobenchmark'
+includeIfEnabled("libraries:inappupdate")
+includeIfEnabled("libraries:smart_recycler_diffutil_helper")
+includeIfEnabled("libraries:keys")
+includeIfEnabled("libraries:kotlin_extensions")
+include("libraries:liveness_lib")
+includeIfEnabled("libraries:locationmanager")
+includeIfEnabled("libraries:logger")
+includeIfEnabled("libraries:instrumentation_test")
+includeIfEnabled("libraries:iris")
+includeIfEnabled("libraries:iris_session")
+includeIfEnabled("libraries:oms")
+includeIfEnabled("libraries:poc_new_relic")
+includeIfEnabled("libraries:push_notification")
+includeIfEnabled("libraries:product_photo_adapter")
+includeIfEnabled("libraries:remote_config")
+includeIfEnabled("libraries:remoteresourcerequest")
+includeIfEnabled("libraries:shake_detect")
+includeIfEnabled("libraries:translator")
+includeIfEnabled("libraries:travel_calendar")
+includeIfEnabled("libraries:tracking_optimizer")
+includeIfEnabled("libraries:twitter_share")
+includeIfEnabled("libraries:videoplayer")
+includeIfEnabled("libraries:videouploader")
+includeIfEnabled("libraries:websocket")
+includeIfEnabled("libraries:youtubeutil")
+includeIfEnabled("libraries:track")
+includeIfEnabled("libraries:graphql")
+includeIfEnabled("libraries:linker")
+includeIfEnabled("libraries:webview")
+includeIfEnabled("libraries:imagepreviewslider")
+includeIfEnabled("libraries:weaver")
+includeIfEnabled("libraries:utils")
+includeIfEnabled("libraries:page_info_pusher")
+includeIfEnabled("libraries:pre_release_inspector")
+includeIfEnabled("libraries:pre_release_inspector_no_op")
+includeIfEnabled("libraries:mapviewer")
+includeIfEnabled("libraries:tokopatch")
+includeIfEnabled("libraries:annotation_proc_central")
+includeIfEnabled("libraries:screen_recorder")
+includeIfEnabled("libraries:screenshot_observer")
+includeIfEnabled("libraries:unit_test")
+includeIfEnabled("libraries:macrobenchmark")

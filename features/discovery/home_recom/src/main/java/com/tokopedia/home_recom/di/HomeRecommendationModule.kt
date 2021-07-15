@@ -19,7 +19,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 /**
  * A class module for dagger recommendation page
@@ -66,12 +65,5 @@ class HomeRecommendationModule {
         useCase.setGraphqlQuery(query)
         return GetPrimaryProductUseCase(useCase)
     }
-
-    @Provides
-    @HomeRecommendationScope
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
 }
