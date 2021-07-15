@@ -278,7 +278,7 @@
     <string name="desc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
     <string name="item_detail_performance_value">%1s %2s</string>
     <string name="item_detail_performance_target">Target %s</string>
-    <string name="desc_potential_eligible_power_merchant">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
+    <string name="desc_potential_eligible_power_merchant">Batas skor PM adalah 60. Daftar Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
 
     <string name="shop_performance_level_header">Level %s</string>
     
@@ -303,4 +303,11 @@
     <string name="desc_potential_rm_section_new_seller"><![CDATA[Tingkatkan penjualan & kepercayaan pembeli dengan berbagai fitur untuk memaksimalkan bisnis.]]></string>
     <string name="text_see_all_benefit_pm_pro">Lihat Semua Keuntungannya</string>
 
+    <!-- RM not eligible for PM/PM PRO -->
+    <string name="title_rm_not_eligible_all">Gabung Power Merchant untuk dapatkan berbagai keuntungan menarik!</string>
+    <string name="desc_rm_not_eligible_all">Batas skor untuk bergabung Power Merchant adalah 60 dan Power Merchant PRO 70, ya.</string>
+    <string name="title_item_rm_section_not_eligible_all">Toko dengan Power Merchant punya keuntungan:</string>
+    <string name="title_item_rm_section_pm_benefit_1">Badge toko eksklusif Power Merchant atau Power Merchant PRO</string>
+    <string name="title_item_rm_section_pm_benefit_2">Bebas Ongkir dengan biaya layanan lebih ringan</string>
+    <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
 </resources>

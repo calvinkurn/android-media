@@ -13,7 +13,7 @@ class ItemPotentialPMProViewHolder(view: View, private val itemStatusPMProListen
         AbstractViewHolder<SectionPotentialPMProUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_potential_pm_pro
+        val LAYOUT = R.layout.item_potential_rm_to_pm_pro
     }
 
     private var itemPMProBenefitAdapter: ItemPMProBenefitAdapter? = null

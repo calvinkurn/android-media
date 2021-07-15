@@ -21,10 +21,7 @@ class CardPotentialPMBenefitViewHolder(view: View, private val itemRegularMercha
     override fun bind(element: SectionPotentialPMBenefitUiModel?) {
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter(itemRegularMerchantListener)
         with(itemView) {
-            tvDescNonEligiblePowerMerchant.text = getString(R.string.desc_non_eligible_power_merchant,
-                    element?.transitionEndDate)
             setPotentialPMBenefitAdapter(element)
-
             setOnClickListener {
                 itemRegularMerchantListener.onRMSectionToPMPage()
             }

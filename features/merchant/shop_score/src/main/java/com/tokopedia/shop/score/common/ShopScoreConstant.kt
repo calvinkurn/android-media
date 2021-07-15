@@ -42,7 +42,10 @@ object ShopScoreConstant {
     const val IC_ORDER_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_order_pm@3x.png"
     const val IC_INCOME_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_income_pm@3x.png"
 
-    const val IC_SELLER_ANNOUNCE = "https://images.tokopedia.net/img/android/shop_score/ic_seller_announce@3x.png"
+    const val IC_FREE_SHIPPING_BENEFIT_URL = "https://images.tokopedia.net/img/android/shop_score/ic_free_shipping_benefit.png"
+    const val IC_PROMOTION_BENEFIT_URL = "https://images.tokopedia.net/img/android/shop_score/ic_promotion_benefit.png"
+    const val IC_PM_PRO_BADGE_BENEFIT_URL = "https://images.tokopedia.net/img/android/shop_score/ic_pm_pro_badge_benefit.png"
+
     const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
     const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 

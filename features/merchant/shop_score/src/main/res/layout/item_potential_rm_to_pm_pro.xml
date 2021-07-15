@@ -54,7 +54,6 @@
             app:layout_constraintTop_toBottomOf="@id/tvDescPMPro"
             app:typographyType="heading_5" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_shop_pm_pro_potential_benefit"
             android:layout_width="@dimen/layout_lvl0"
