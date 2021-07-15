@@ -12,12 +12,12 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="@dimen/unify_space_2"
-        android:background="@drawable/bg_chat_reply_preview_left_bubble"
         android:paddingBottom="@dimen/dp_topchat_20"
         app:layout_constraintBottom_toTopOf="@+id/view_border_radius"
         app:layout_constraintEnd_toEndOf="@+id/view_border_radius"
         app:layout_constraintStart_toStartOf="@+id/view_border_radius"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@drawable/bg_chat_reply_preview_left_bubble">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

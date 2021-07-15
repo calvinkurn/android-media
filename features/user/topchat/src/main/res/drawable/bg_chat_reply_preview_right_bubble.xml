@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:topLeftRadius="@dimen/dp_topchat_20" />
+    <solid android:color="@color/Unify_G100" />
+    <stroke
+        android:width="@dimen/unify_space_2"
+        android:color="@color/topchat_dms_reply_bubble_border" />
+</shape>

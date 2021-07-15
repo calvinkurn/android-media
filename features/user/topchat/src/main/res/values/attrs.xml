@@ -6,6 +6,10 @@
     </declare-styleable>
     <declare-styleable name="MessageBubbleConstraintLayout">
         <attr name="showCheckMark"/>
+        <attr name="messageOrientation" format="enum">
+            <enum name="LEFT" value="0"/>
+            <enum name="RIGHT" value="1" />
+        </attr>
     </declare-styleable>
     <declare-styleable name="FlexBoxChatLayout">
         <attr name="showCheckMark"/>

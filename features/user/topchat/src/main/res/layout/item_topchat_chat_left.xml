@@ -50,6 +50,7 @@
             android:id="@+id/mb_bubble_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:messageOrientation="LEFT"
             app:showCheckMark="false" />
 
     </LinearLayout>
