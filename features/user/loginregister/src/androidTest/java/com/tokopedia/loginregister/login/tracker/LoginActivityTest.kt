@@ -36,7 +36,6 @@ import com.tokopedia.loginregister.login.helper.waitForData
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
-import com.tokopedia.managepassword.forgotpassword.view.activity.ForgotPasswordActivity
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import io.mockk.coEvery
 import io.mockk.mockk
