@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
+import com.tokopedia.hotel.databinding.ItemHotelRoomListShimmeringBinding
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListShimmeringViewHolder
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
@@ -19,8 +20,14 @@ class RoomListTypeFactory(val callback: BaseEmptyViewHolder.Callback, val listen
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            RoomListViewHolder.LAYOUT -> return RoomListViewHolder(parent, listener)
-            RoomListShimmeringViewHolder.LAYOUT -> return RoomListShimmeringViewHolder(parent)
+            RoomListViewHolder.LAYOUT -> {
+                val binding = ItemHotelRoomListShimmeringBinding.bind(parent)
+                return RoomListViewHolder(parent, listener)
+            }
+            RoomListShimmeringViewHolder.LAYOUT -> {
+                val binding = ItemHotelRoomListShimmeringBinding.bind(parent)
+                return RoomListShimmeringViewHolder(binding)
+            }
             EmptyViewHolder.LAYOUT -> return EmptyViewHolder(parent, callback)
             else -> return super.createViewHolder(parent, type)
         }
