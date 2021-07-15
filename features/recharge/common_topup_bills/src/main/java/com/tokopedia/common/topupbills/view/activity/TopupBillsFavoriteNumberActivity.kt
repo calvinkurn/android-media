@@ -48,8 +48,8 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     override fun onCreate(savedInstanceState: Bundle?) {
         val extras = intent.extras
         extras?.let {
-            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER, "")
-            this.number = extras.getString(EXTRA_NUMBER, "")
+            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER_TYPE, "")
+            this.number = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.currentCategoryName = extras.getString(EXTRA_DG_CATEGORY_NAME, "")
             this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
             this.operatorData = extras.getParcelable(EXTRA_CATALOG_PREFIX_SELECT)
@@ -70,27 +70,11 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     }
 
     companion object {
-
+        const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
-        const val EXTRA_NUMBER = "EXTRA_NUMBER"
         const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
         const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
         const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
-
-        fun getCallingIntent(context: Context, clientNumberType: String,
-                             number: String, catalogPrefixSelect: TelcoCatalogPrefixSelect,
-                             currentCategoryName: String, digitalCategoryIds: ArrayList<String>
-        ): Intent {
-            val intent = Intent(context, TopupBillsFavoriteNumberActivity::class.java)
-            val extras = Bundle()
-            extras.putString(EXTRA_CLIENT_NUMBER, clientNumberType)
-            extras.putString(EXTRA_NUMBER, number)
-            extras.putStringArrayList(EXTRA_DG_CATEGORY_IDS, digitalCategoryIds)
-            extras.putString(EXTRA_DG_CATEGORY_NAME, currentCategoryName)
-            extras.putParcelable(EXTRA_CATALOG_PREFIX_SELECT, catalogPrefixSelect)
-            intent.putExtras(extras)
-            return intent
-        }
     }
 
 }

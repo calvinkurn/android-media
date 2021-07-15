@@ -24,8 +24,14 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil.Companion.isSeamlessFavoriteNumber
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CATALOG_PREFIX_SELECT
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_CLIENT_NUMBER_TYPE
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_IDS
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity.Companion.EXTRA_DG_CATEGORY_NAME
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -499,12 +505,5 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val REQUEST_CODE_CONTACT_PICKER = 78
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
-
-        const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
-        const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
-        const val EXTRA_DG_CATEGORY_NAME = "EXTRA_DG_CATEGORY_NAME"
-        const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
-        const val EXTRA_CATALOG_PREFIX_SELECT = "EXTRA_CATALOG_PREFIX_SELECT"
-        const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
     }
 }
