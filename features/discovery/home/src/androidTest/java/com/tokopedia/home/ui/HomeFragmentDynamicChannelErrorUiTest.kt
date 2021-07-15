@@ -17,6 +17,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_ERROR_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
+import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
@@ -60,22 +61,23 @@ class HomeFragmentDynamicChannelErrorUiTest {
         }
     }
 
-    @Test
-    fun testDynamicChannelError() {
-        assertDynamicChannelError()
-    }
-
     @Before
-    fun setupIdlingResource() {
+    fun setupEnvironment() {
         val recyclerView: RecyclerView =
             activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(recyclerView)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
+        activityRule.deleteHomeDatabase()
     }
 
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
+    }
+
+    @Test
+    fun testDynamicChannelError() {
+        assertDynamicChannelError()
     }
 
     /**

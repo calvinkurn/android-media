@@ -45,5 +45,6 @@ class HomeCachedDataSource(
 
     fun deleteHomeData() {
         homeDao.deleteHomeData()
+        homeDao.deleteAtfTable()
     }
 }

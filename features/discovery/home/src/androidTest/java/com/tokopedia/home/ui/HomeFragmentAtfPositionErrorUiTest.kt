@@ -3,18 +3,17 @@ package com.tokopedia.home.ui
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.HomeAtfErrorViewHolder
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.mock.HomeRecommendationFeedErrorResponseConfig
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_COUNT
+import com.tokopedia.home.mock.HomeAtfPositionErrorResponseConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_ERROR_POSITION_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
@@ -31,7 +30,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.VARIANT_NEW_INBOX
 import com.tokopedia.test.application.espresso_component.CommonAssertion
-import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -42,7 +40,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 02/07/21.
  */
-class HomeFragmentRecommendationFeedErrorUiTest {
+class HomeFragmentAtfPositionErrorUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -55,7 +53,7 @@ class HomeFragmentRecommendationFeedErrorUiTest {
             InstrumentationAuthHelper.clearUserSession()
             gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
-            setupGraphqlMockResponse(HomeRecommendationFeedErrorResponseConfig())
+            setupGraphqlMockResponse(HomeAtfPositionErrorResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
             super.beforeActivityLaunched()
@@ -77,20 +75,20 @@ class HomeFragmentRecommendationFeedErrorUiTest {
     }
 
     @Test
-    fun testRecommendationFeedError() {
-        assertRecommendationFeedError()
+    fun testAtfContentError() {
+        assertAtfContentError()
     }
 
     /**
      * We want to make sure that the home recyclerview:
      * - Showing data equally with given mock response and the static data (header + recom)
      */
-    private fun assertRecommendationFeedError() {
+    private fun assertAtfContentError() {
         /**
-         * Assert home content to match given mock value with dynamic channel content error
+         * Assert home content to match given mock value with atf position error
          */
         val totalData =
-            MOCK_HEADER_COUNT + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
+            MOCK_HEADER_COUNT + MOCK_ATF_ERROR_POSITION_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
         onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))
         onView(withId(R.id.home_fragment_recycler_view)).check(
             CommonAssertion.RecyclerViewItemCountAssertion(
@@ -98,26 +96,12 @@ class HomeFragmentRecommendationFeedErrorUiTest {
             )
         )
 
-        val homeRecyclerView =
-            activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         onView(withId(R.id.home_fragment_recycler_view)).check(
             CommonAssertion.RecyclerViewItemTypeAssertion(
-                itemViewType = RetryViewHolder.LAYOUT,
-                position = (homeRecyclerView.adapter?.itemCount ?: 0) - 1
+                itemViewType = HomeAtfErrorViewHolder.LAYOUT,
+                position = 1
             )
         )
-
-        while (homeRecyclerView?.canScrollVertically(1) == true) {
-            onView(withId(R.id.home_fragment_recycler_view)).perform(ViewActions.swipeUp())
-        }
-
-        onView(CommonMatcher.firstView(withText(R.string.home_feed_retry))).check(
-            matches(
-                isDisplayed()
-            )
-        )
-        onView(CommonMatcher.firstView(withId(R.id.retry))).check(matches(isDisplayed()))
-        onView(CommonMatcher.firstView(withId(R.id.retry))).check(matches(isClickable()))
     }
 
     private fun setupAbTestRemoteConfig() {
