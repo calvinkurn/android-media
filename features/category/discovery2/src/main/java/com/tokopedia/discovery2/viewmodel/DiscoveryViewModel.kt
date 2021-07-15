@@ -270,4 +270,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 }
         )
     }
+
+    fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
+        return 100 * (offset + extent) / range
+    }
 }

@@ -267,36 +267,43 @@ class DiscoveryFragment :
     }
 
     private fun calculateScrollDepth(recyclerView: RecyclerView) {
-        val offset = recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
-        val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
-        val range = recyclerView.computeVerticalScrollRange() // max scroll height
-        val currentScrollDepth: Int
+        if(::discoveryViewModel.isInitialized){
+            val offset =
+                recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
+            val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+            val range = recyclerView.computeVerticalScrollRange() // max scroll height
 
-        currentScrollDepth = 100 * (offset + extent) / range
-        if (screenScrollPercentage == 0 || currentScrollDepth > screenScrollPercentage) {
-            screenScrollPercentage = currentScrollDepth
+            val currentScrollDepth = discoveryViewModel.getScrollDepth(offset, extent, range)
+            if (screenScrollPercentage == 0 || currentScrollDepth > screenScrollPercentage) {
+                screenScrollPercentage = currentScrollDepth
+            }
+            updateLastVisibleComponent()
         }
-        if (screenScrollPercentage > 0) {
+    }
+
+    private fun updateLastVisibleComponent() {
+        if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
+                    ComponentsList.ProductCardSprintSale.componentName)
+        ) {
+            return
+        }
+        val positionArray = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
+        if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
+            if (discoveryAdapter.currentList.size <= positionArray.first()) return
+            lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
+
             if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
-                            ComponentsList.ProductCardRevamp.componentName || lastVisibleComponent?.name ==
-                            ComponentsList.ProductCardSprintSale.componentName)) {
-                return
+                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                        ComponentsList.ProductCardSprintSaleItem.componentName ||
+                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName)
+            ) {
+                lastVisibleComponent = com.tokopedia.discovery2.datamapper
+                    .getComponent(
+                        lastVisibleComponent!!.parentComponentId,
+                        lastVisibleComponent!!.pageEndPoint
+                    )
             }
-            val positionArray = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
-            if (positionArray.isNotEmpty()) {
-                discoveryAdapter.currentList[positionArray.first()]
-                if (discoveryAdapter.currentList.size <= positionArray.first()) return
-                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
-
-                if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
-                                ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                                ComponentsList.ProductCardSprintSaleItem.componentName)) {
-                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
-                            .getComponent(lastVisibleComponent!!.parentComponentId,
-                                    lastVisibleComponent!!.pageEndPoint)
-                }
-            }
-
         }
     }
 
@@ -316,6 +323,7 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
+            staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             setLayoutManager(staggeredGridLayoutManager)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
@@ -848,6 +856,9 @@ class DiscoveryFragment :
 
     override fun onStop() {
         super.onStop()
+        if(lastVisibleComponent == null){
+            updateLastVisibleComponent()
+        }
         getDiscoveryAnalytics().trackScrollDepth(screenScrollPercentage, lastVisibleComponent)
         openScreenStatus = false
     }
