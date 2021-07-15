@@ -43,6 +43,8 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity.
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -57,6 +59,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -436,6 +439,21 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, throwable,
+                { onRetryClicked() }, global_error)
+        }
+    }
+
+    override fun onRetryClicked() {
+        view?.let {
+            container_error.hide()
+        }
+        super.onRetryClicked()
     }
 
     private fun navigateToAddPhonePage() {

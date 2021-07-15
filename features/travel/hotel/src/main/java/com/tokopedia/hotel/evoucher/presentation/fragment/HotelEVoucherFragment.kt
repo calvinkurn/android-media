@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
@@ -31,6 +32,7 @@ import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -39,6 +41,7 @@ import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.io.File
 import java.io.File.separator
 import java.io.FileOutputStream
@@ -87,6 +90,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                     renderData(it.data)
                 }
                 is Fail -> {
+                    showErrorView(it.throwable)
                 }
             }
         })
@@ -134,6 +138,12 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         }
     }
 
+    fun showErrorView(e: Throwable){
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, e, { onErrorRetryClicked() },  global_error)
+        }
+    }
 
     private fun getScreenBitmap(): Bitmap? {
         val v = container_root
@@ -346,6 +356,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     }
 
     override fun onErrorRetryClicked() {
+        view?.let {
+            container_error.hide()
+        }
         eVoucherViewModel.getOrderDetail(HotelGqlQuery.ORDER_DETAILS, orderId)
     }
 

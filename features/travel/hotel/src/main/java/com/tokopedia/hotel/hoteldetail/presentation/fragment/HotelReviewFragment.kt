@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
@@ -19,9 +20,15 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFac
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_review.*
+import kotlinx.android.synthetic.main.fragment_hotel_review.app_bar_layout
+import kotlinx.android.synthetic.main.fragment_hotel_review.container_error
+import kotlinx.android.synthetic.main.fragment_hotel_review.filter_recycler_view
+import kotlinx.android.synthetic.main.item_network_error_view.*
 import javax.inject.Inject
 
 /**
@@ -110,7 +117,18 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     private fun onErrorGetResult(throwable: Throwable) {
-        super.showGetListError(throwable)
+        container_error.visible()
+        context?.run {
+            ErrorHandlerHotel.getErrorUnify(this, throwable,
+                { onRetryClicked() }, global_error)
+        }
+    }
+
+    override fun onRetryClicked() {
+        view?.let {
+            container_error.hide()
+        }
+        super.onRetryClicked()
     }
 
     override fun getAdapterTypeFactory(): ReviewAdapterTypeFactory = ReviewAdapterTypeFactory()
