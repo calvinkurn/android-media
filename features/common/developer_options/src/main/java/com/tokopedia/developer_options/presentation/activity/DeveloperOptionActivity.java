@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -489,6 +490,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void initListener() {
         remoteConfigStartButton.setOnClickListener(v -> {
             Editable prefix = remoteConfigPrefix.getTextFieldInput().getEditableText();
