@@ -474,7 +474,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 1 -> {
-                    binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivFirstPhotoPreview)
@@ -482,7 +482,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 2 -> {
-                    binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivSecondPhotoPreview)
@@ -490,7 +490,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 3 -> {
-                    binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivThirdPhotoPreview)
@@ -499,7 +499,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
-                binding?.ivMainPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                binding?.ivMainPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                 binding?.ivMainPhotoPreview?.setOnClickListener {
                     onPhotoClicked()
                     openImagePreview(imageList, imageIndex, binding?.ivMainPhotoPreview)
