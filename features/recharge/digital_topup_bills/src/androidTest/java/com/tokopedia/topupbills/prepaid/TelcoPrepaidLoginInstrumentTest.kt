@@ -133,6 +133,9 @@ class TelcoPrepaidLoginInstrumentTest {
 
     fun click_on_fav_number_login() {
         Thread.sleep(2000)
+        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
+
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
@@ -140,8 +143,6 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_PHONE_NUMBER)))
 
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
-        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_FAV_PHONE_NUMBER)))
 
         Thread.sleep(2000)

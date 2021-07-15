@@ -40,8 +40,8 @@ class DigitalSearchNumberActivityTest {
                     val favNumbers = ArrayList<TopupBillsFavNumberItem>()
                     val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
                     return Intent(targetContext, DigitalSearchNumberActivity::class.java).apply {
-                        putExtra(TopupBillsSearchNumberFragment.ARG_PARAM_EXTRA_CLIENT_NUMBER, ClientNumberType.TYPE_INPUT_TEL)
-                        putExtra(TopupBillsSearchNumberFragment.ARG_PARAM_EXTRA_NUMBER, "")
+                        putExtra(TopupBillsSearchNumberFragment.ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, ClientNumberType.TYPE_INPUT_TEL)
+                        putExtra(TopupBillsSearchNumberFragment.ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
                         putParcelableArrayListExtra(TopupBillsSearchNumberFragment.ARG_PARAM_EXTRA_NUMBER_LIST, favNumbers)
                     }
                 }
