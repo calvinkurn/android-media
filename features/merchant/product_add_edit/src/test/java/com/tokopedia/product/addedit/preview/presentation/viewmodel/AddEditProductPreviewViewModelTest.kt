@@ -368,11 +368,11 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         val errorPictureList: List<PictureInputModel> = listOf()
 
         viewModel.updateProductPhotos(successImageUrlOrPathList, successPictureList1)
-        assert(!viewModel.imageUrlOrPathList.getOrAwaitValue().isNullOrEmpty())
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
         viewModel.updateProductPhotos(successImageUrlOrPathList, successPictureList2)
-        assert(!viewModel.imageUrlOrPathList.getOrAwaitValue().isNullOrEmpty())
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isEmpty())
         viewModel.updateProductPhotos(errorImageUrlOrPathList, errorPictureList)
-        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNullOrEmpty())
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isEmpty())
     }
 
     @Test
