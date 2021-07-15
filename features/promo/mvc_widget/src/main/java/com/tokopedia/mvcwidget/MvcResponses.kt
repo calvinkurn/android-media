@@ -6,6 +6,7 @@ import com.tokopedia.mvcwidget.FollowWidgetType.Companion.DEFAULT
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_CLOSE
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
+import java.util.*
 
 data class TokopointsCatalogMVCListResponse(
         @SerializedName("tokopointsCatalogMVCList") val data: TokopointsCatalogMVCList? = null
