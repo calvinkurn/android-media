@@ -516,9 +516,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             }
         }
 
-        val EMPTY_VALUE = "-"
-        val EMPTY_QTY = 0
-        val REQUEST_CODE_LOGIN = 100
+        const val EMPTY_QTY = 0
+        const val REQUEST_CODE_LOGIN = 100
         const val DATE_MULTIPLICATION = 1000
         const val DELAY_TIME = 200L
         const val IS_HIBURAN = 8192

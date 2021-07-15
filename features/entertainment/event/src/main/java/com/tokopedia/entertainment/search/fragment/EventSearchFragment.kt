@@ -121,11 +121,11 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
-                    Handler().postDelayed({
+                    //Handler().postDelayed({
                         NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                             getData(CacheType.ALWAYS_CLOUD)
                         }.showRetrySnackbar()
-                    }, DELAY_TIME)
+                   // }, DELAY_TIME)
                 }
         )
     }
@@ -150,8 +150,8 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (p0.toString().isEmpty()) {
+            override fun onTextChanged(keyword: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (keyword.toString().isEmpty()) {
                     if (job.isActive) job.cancel()
                     viewModel.cancelRequest()
                     viewModel.getHistorySearch(CacheType.CACHE_FIRST, getEventHistory(), userSession.isLoggedIn)
@@ -159,8 +159,8 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
                     if (job.isActive) job.cancel()
                     job = launch {
                         delay(DELAY_TIME)
-                        EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(p0.toString())
-                        viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST, getEventSearchLocation())
+                        EventSearchPageTracking.getInstance().clickSearchBarOnKeyWordSearchActivity(keyword.toString())
+                        viewModel.getSearchData(keyword.toString(), CacheType.CACHE_FIRST, getEventSearchLocation())
                     }
                 }
             }

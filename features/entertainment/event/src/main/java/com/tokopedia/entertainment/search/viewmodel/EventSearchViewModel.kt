@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.search.viewmodel
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.entertainment.search.adapter.SearchEventItem
 import com.tokopedia.entertainment.search.adapter.viewmodel.*
 import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
@@ -21,8 +22,8 @@ import javax.inject.Inject
  * Author errysuprayogi on 04,March,2020
  */
 
-class EventSearchViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
-                           private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher){
+class EventSearchViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
+                           private val gqlRepository: GraphqlRepository) : BaseViewModel(dispatcher.main){
     companion object{
         private val TAG = EventSearchViewModel::class.java.simpleName
         private val SEARCHQUERY = "search_query"
@@ -44,18 +45,20 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     if(isUserLogin){
                         val data = getHistorySearchData(cacheType,query)
                         data.let {
-                                searchList.postValue(SearchMapper.mappingHistorytoSearchList(data))
-                                isItRefreshing.postValue(false)
+                                searchList.value = SearchMapper.mappingHistorytoSearchList(data)
+                                isItRefreshing.value = false
                         }
                     }else{
                         listViewHolder.add(FirstTimeModel())
-                        searchList.postValue(listViewHolder)
-                        isItRefreshing.postValue(false)
+                        searchList.value = listViewHolder
+                        isItRefreshing.value = false
                     }
                 },
                 onError = {
-                    errorReport.postValue(it)
-                    isItRefreshing.postValue(false)
+                    withContext(dispatcher.io) {
+                        errorReport.postValue(it)
+                        isItRefreshing.postValue(false)
+                    }
                 }
         )
     }
@@ -65,13 +68,15 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                 block = {
                     val dataLocation = getLocationSuggestionData(text, cacheType,query)
                     dataLocation.let {
-                        searchList.postValue(SearchMapper.mappingLocationandKegiatantoSearchList(it,text,resources))
+                        searchList.value = SearchMapper.mappingLocationandKegiatantoSearchList(it,text,resources)
                         isItRefreshing.value = false
                     }
                 },
                 onError = {
-                    errorReport.postValue(it)
-                    isItRefreshing.value = false
+                    withContext(dispatcher.io) {
+                        errorReport.postValue(it)
+                        isItRefreshing.postValue(false)
+                    }
                 }
         )
     }
@@ -81,7 +86,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
     }
 
     suspend fun getLocationSuggestionData(text: String, cacheType: CacheType, query: String) : EventSearchLocationResponse.Data{
-        return withContext(dispatcher){
+        return withContext(dispatcher.io){
             val req = GraphqlRequest(
                     query,
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
@@ -92,7 +97,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
     }
 
     suspend fun getHistorySearchData(cacheType: CacheType, query:String): EventSearchHistoryResponse.Data{
-        return withContext(dispatcher){
+        return withContext(dispatcher.io){
             val req = GraphqlRequest(
                     query,
                     EventSearchHistoryResponse.Data::class.java)
