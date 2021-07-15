@@ -2,7 +2,6 @@ package com.tokopedia.abstraction.common.utils.snackbar;
 
 import androidx.annotation.ColorInt;
 import com.google.android.material.snackbar.Snackbar;
-
 import android.view.View;
 
 import com.tokopedia.abstraction.R;
