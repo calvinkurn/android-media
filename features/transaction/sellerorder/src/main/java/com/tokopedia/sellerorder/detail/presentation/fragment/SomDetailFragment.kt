@@ -851,8 +851,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onBottomSheetItemClick(key: String) {
-        secondaryBottomSheet?.setOnDismiss {
-            secondaryBottomSheet?.setOnDismiss {  }
+        secondaryBottomSheet?.setOneTimeOnDismiss {
             detailResponse?.button?.forEach {
                 if (key.equals(it.key, true)) {
                     eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse?.statusCode.toString(), detailResponse?.statusText.orEmpty())
@@ -998,14 +997,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRejectReasonItemClick(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        somRejectReasonBottomSheet?.setOnDismiss {
-            somRejectReasonBottomSheet?.setOnDismiss {  }
+        somRejectReasonBottomSheet?.setOneTimeOnDismiss {
             when (rejectReason.reasonCode) {
-                1 -> setProductEmpty(rejectReason)
-                4 -> setShopClosed(rejectReason)
-                7 -> setCourierProblems(rejectReason)
-                15 -> setBuyerNoResponse(rejectReason)
-                14 -> setOtherReason(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_PRODUCT_EMPTY -> setProductEmpty(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_SHOP_CLOSED -> setShopClosed(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_COURIER_PROBLEMS -> setCourierProblems(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_BUYER_NO_RESPONSE -> setBuyerNoResponse(rejectReason)
+                SomBottomSheetRejectReasonsAdapter.REJECT_REASON_OTHER_REASON -> setOtherReason(rejectReason)
             }
         }
         somRejectReasonBottomSheet?.dismiss()

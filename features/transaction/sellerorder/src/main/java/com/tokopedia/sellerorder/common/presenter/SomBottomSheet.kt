@@ -37,6 +37,7 @@ abstract class SomBottomSheet(
     private var bottomSheetBehavior: BottomSheetBehavior<out View>? = null
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
     private var onDismissed: () -> Unit = {}
+    private var oneTimeOnDismissed: (() -> Unit)? = {}
 
     protected var bottomSheetLayout: View? = null
     protected var childViews: View? = null
@@ -127,6 +128,8 @@ abstract class SomBottomSheet(
                     override fun onAnimationEnd(animation: Animator?) {
                         this@run?.gone()
                         onDismissed()
+                        oneTimeOnDismissed?.invoke()
+                        oneTimeOnDismissed = null
                     }
 
                     override fun onAnimationCancel(animation: Animator?) {
@@ -240,5 +243,9 @@ abstract class SomBottomSheet(
 
     fun setOnDismiss(onDismissed: () -> Unit) {
         this.onDismissed = onDismissed
+    }
+
+    fun setOneTimeOnDismiss(onDismissed: () -> Unit) {
+        this.oneTimeOnDismissed = onDismissed
     }
 }
