@@ -109,10 +109,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.platformEngine
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation project(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
