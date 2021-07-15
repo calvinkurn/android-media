@@ -102,7 +102,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation project(rootProject.ext.features.managepassword)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
