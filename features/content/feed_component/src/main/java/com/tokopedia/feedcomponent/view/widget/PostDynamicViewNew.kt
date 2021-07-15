@@ -201,7 +201,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.reportable,
             feedXCard.deletable,
             feedXCard.followers,
-            feedXCard.typename
+            feedXCard.typename,
+            feedXCard.media.firstOrNull()?.type ?: ""
         )
     }
 
@@ -211,10 +212,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         reportable: Boolean,
         deletable: Boolean,
         followers: FeedXFollowers,
-        type: String
+        type: String,
+        mediaType: String
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
+        val isVideo = mediaType != TYPE_IMAGE
+
         if (count >= 100) {
             followCount.text =
                 String.format(
@@ -331,7 +335,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isFollowed,
                 author.id,
                 authorType,
-                type
+                type,
+                isVideo
             )
         }
     }
@@ -473,7 +478,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                 spannableString = SpannableString(MethodChecker.fromHtml(captionTxt))
                 captionText.setOnClickListener {
-                    listener?.onReadMoreClicked(caption.id, caption.author.id)
+                    listener?.onReadMoreClicked(caption.id, caption.author.id, caption.typename, caption.followers.isFollowed)
                     val txt: String = buildString {
                         append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
                     }
@@ -627,7 +632,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 imagePostListener.userCarouselImpression(
                     feedXCard.id,
                     media[0],
-                    1,
+                    0,
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
                     feedXCard.author.id
@@ -788,7 +793,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         imagePostListener.userCarouselImpression(
                             feedXCard.id,
                             media[current],
-                            current+1,
+                            current,
                             feedXCard.typename,
                             feedXCard.followers.isFollowed,
                             feedXCard.author.id

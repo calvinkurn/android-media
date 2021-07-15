@@ -569,10 +569,11 @@ public class FeedAnalytics {
                         EVENT_ACTION, "click - product - asgc",
                         EVENT_LABEL, product.getProductId(),
                         KEY_USER_ID, userId,
-                        KEY_USER_ID_MOD, userId % 50,
+                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
                         EVENT_ECOMMERCE, getProductEcommerceClick(
                                 product,
-                                "/feed detail - product list"
+                                "/feed - asgc detail"
                         )
                 )
         );
@@ -618,7 +619,7 @@ public class FeedAnalytics {
         productItem.put("id", product.getProductId());
         productItem.put("price", formatStringToInt(product.getProductPrice()));
         productItem.put("list", list);
-        productItem.put("position", product.getPosition());
+        productItem.put("position", product.getPosition() + 1);
 
         ArrayList<Object> products = new ArrayList<>();
         products.add(productItem);

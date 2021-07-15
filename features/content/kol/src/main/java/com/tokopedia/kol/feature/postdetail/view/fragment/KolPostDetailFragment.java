@@ -629,7 +629,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NotNull String authorId, @NotNull String authorType, @NotNull String postType) {
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NotNull String authorId, @NotNull String authorType, @NotNull String postType, boolean isVideo) {
         if (getContext() != null) {
             Menus menus = createBottomMenu(getContext(), deletable,
                     reportable, false, new PostMenuListener() {
@@ -1012,7 +1012,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId) {
+    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId, @NotNull String postType, boolean isFollowed) {
 
     }
 
@@ -1044,6 +1044,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, boolean isVideo, int positionInFeed) {
+
+    }
+
+    @Override
+    public void onPostTagItemBSImpression(@NotNull String activityId, @NotNull List<FeedXProduct> postTagItemList, @NotNull String type, @NotNull String shopId, boolean isFollowed) {
 
     }
 }

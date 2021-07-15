@@ -1136,7 +1136,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int) {
+    private fun createDeleteDialog(rowNumber: Int, id: Int, shopId: String, type: String, isFollowed: Boolean, isVideo: Boolean) {
         val dialog =
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.feed_delete_post))
@@ -1147,6 +1147,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
             dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
+            feedAnalytics.clickDeleteConfirmThreeDotsPage(id.toString(),
+                shopId,
+                type,
+                isFollowed,
+                isVideo)
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
         }
@@ -1419,7 +1424,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         authorId: String,
         authorType: String,
-        postType: String
+        postType: String,
+        isVideo: Boolean
     ) {
         if (context != null) {
             feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed, authorId)
@@ -1470,10 +1476,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     ) else onGoToLogin()
             }
             sheet.onDelete = {
-                createDeleteDialog(positionInFeed, postId)
-                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "Hapus",
+                createDeleteDialog(positionInFeed, postId, authorId, postType, isFollowed, isVideo)
+                feedAnalytics.clickDeleteThreeDotsPage(postId.toString(),authorId,
                     postType,
-                    isFollowed, authorId)
+                    isFollowed, isVideo)
 
             }
             sheet.onDismiss = {
@@ -1599,6 +1605,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
         onGoToLink(redirectUrl)
+    }
+
+    override fun onPostTagItemBSImpression(
+        activityId: String,
+        products: List<FeedXProduct>,
+        type: String,
+        shopId: String,
+        isFollowed: Boolean
+    ) {
+        feedAnalytics.eventImpressionProductBottomSheet(activityId,
+            products,
+            shopId,
+            type,
+            isFollowed)
     }
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
@@ -1787,8 +1807,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onReadMoreClicked(postId: String, shopId: String) {
-        feedAnalytics.eventClickReadMoreNew(postId, shopId)
+    override fun onReadMoreClicked(
+        postId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
+        feedAnalytics.eventClickReadMoreNew(postId, shopId, type, isFollowed)
     }
 
     override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
@@ -1821,6 +1846,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         productTagBS.dismiss()
         feedViewModel.addWishlist(
+            postId.toString(),
             productId,
             shopId,
             0,

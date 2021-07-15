@@ -379,6 +379,7 @@ class FeedViewModel @Inject constructor(
     }
 
     fun addWishlist(
+        activityId: String,
         productId: String,
         shopId: String,
         position: Int,
@@ -396,7 +397,7 @@ class FeedViewModel @Inject constructor(
 
                 override fun onSuccessAddWishlist(productId: String?) {
                     if (productId != null) {
-                        onSuccess.invoke(productId, shopId, type, isFollowed)
+                        onSuccess.invoke(activityId, shopId, type, isFollowed)
                     }
                 }
 

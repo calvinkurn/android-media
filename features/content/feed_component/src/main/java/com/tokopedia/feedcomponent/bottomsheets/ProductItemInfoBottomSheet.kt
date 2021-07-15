@@ -58,6 +58,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             mapPostTag(listProducts),
             PostTagTypeFactoryImpl(listener, DeviceScreenInfo.getScreenWidth(requireContext()))
         )
+        listener.onPostTagItemBSImpression(
+            postId.toString(),
+            listProducts,
+            postType,
+            shopId,
+            isFollowed)
         (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
         setCloseClickListener {
             dismissedByClosing = true

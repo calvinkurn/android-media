@@ -207,7 +207,9 @@ open class DynamicPostViewHolder(v: View,
                             header.editable,
                             true,
                             "",
-                            ""
+                            "",
+                            "",
+                            false
                         )
                     }
                 } else{
@@ -604,7 +606,8 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean,
             authorId: String,
             authorType: String ,
-            postType: String = ""
+            postType: String = "",
+            isVideo: Boolean
         )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
@@ -655,6 +658,13 @@ open class DynamicPostViewHolder(v: View,
             postTagItem: FeedXProduct,
             itemPosition: Int
         )
+        fun onPostTagItemBSImpression(
+            activityId: String,
+            postTagItemList: List<FeedXProduct>,
+            type: String,
+            shopId: String,
+            isFollowed: Boolean
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
@@ -682,7 +692,7 @@ open class DynamicPostViewHolder(v: View,
 
         )
 
-        fun onReadMoreClicked(postId: String, shopId: String = "")
+        fun onReadMoreClicked(postId: String, shopId: String = "", type: String, isFollowed: Boolean)
         fun onBottomSheetMenuClicked(
             item: ProductPostTagViewModelNew,
             context: Context,

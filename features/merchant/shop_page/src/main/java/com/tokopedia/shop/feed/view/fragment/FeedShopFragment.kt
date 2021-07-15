@@ -570,7 +570,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean,
         id: String,
         authorType: String,
-        postType: String
+        postType: String,
+        isVideo: Boolean
     ) {
         context?.let {
             val menus =
@@ -665,6 +666,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
+    }
+
+    override fun onPostTagItemBSImpression(
+        activityId: String,
+        postTagItemList: List<FeedXProduct>,
+        type: String,
+        shopId: String,
+        isFollowed: Boolean,
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
@@ -879,7 +890,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         )
     }
 
-    override fun onReadMoreClicked(postId: String, shopId: String) {
+    override fun onReadMoreClicked(
+        postId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
     }
 
     override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
