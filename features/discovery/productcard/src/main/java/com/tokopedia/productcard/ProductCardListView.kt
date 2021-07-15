@@ -161,12 +161,12 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     fun wishlistPage_enableButtonAddToCart(){
         buttonAddToCart?.isEnabled = true
         buttonAddToCart?.buttonVariant = UnifyButton.Variant.GHOST
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_disableButtonAddToCart(){
         buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_setOutOfStock(){
