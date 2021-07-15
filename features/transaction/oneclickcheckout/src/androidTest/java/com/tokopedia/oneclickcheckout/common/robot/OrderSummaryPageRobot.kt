@@ -21,18 +21,8 @@ fun orderSummaryPage(func: OrderSummaryPageRobot.() -> Unit) = OrderSummaryPageR
 
 class OrderSummaryPageRobot {
 
-    @Deprecated("will be removed in next iteration")
-    fun clickOnboardingInfo() {
-        onView(withId(R.id.tv_header_3)).perform(scrollTo()).perform(click())
-    }
-
     fun closeBottomSheet() {
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
-    }
-
-    @Deprecated("will be removed in next iteration")
-    fun clickAddPreferenceForNewBuyer() {
-        onView(withId(R.id.button_atur_pilihan)).perform(scrollTo()).perform(click())
     }
 
     fun clickAddProductQuantity(times: Int = 1) {
@@ -51,14 +41,6 @@ class OrderSummaryPageRobot {
         onView(withId(R.id.ticker_preference_info)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
             view.findViewById<View>(com.tokopedia.unifycomponents.R.id.ticker_close_icon).performClick()
-        }
-    }
-
-    fun clickAddOrChangePreferenceRevamp(func: (PreferenceListBottomSheetRobot.() -> Unit)?) {
-        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).perform(click())
-        func?.let {
-            onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
-            PreferenceListBottomSheetRobot().apply(it)
         }
     }
 
@@ -127,6 +109,8 @@ class OrderSummaryPageRobot {
     }
 
     fun clickButtonContinueWithRedPromo() {
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_continue)).perform(click())
     }
 
@@ -192,24 +176,20 @@ class OrderSummaryPageRobot {
         onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).check(matches(withText(productQty.toString())))
     }
 
-    fun assertProductQuantity(qty: Int) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
-    }
-
-    fun assertProfileRevampWording(wording: String) {
-        onView(withId(R.id.tv_new_card_header)).perform(scrollTo()).check(matches(withText(wording)))
-    }
-
-    @Deprecated("will be remove in next iteration")
-    fun assertProfileRevampUtama(isDefaultProfile: Boolean) {
-        onView(withId(R.id.lbl_new_default_preference)).check { view, noViewFoundException ->
+    fun assertShopBadge(hasShopBadge: Boolean = true, shopTypeName: String) {
+        onView(withId(R.id.iv_shop)).check { view, noViewFoundException ->
             noViewFoundException?.printStackTrace()
-            assertEquals(if (isDefaultProfile) View.VISIBLE else View.GONE, view.visibility)
+            if (hasShopBadge) {
+                assertEquals(View.VISIBLE, view.visibility)
+                assertEquals("image shop badge $shopTypeName", view.contentDescription)
+            } else {
+                assertEquals(View.GONE, view.visibility)
+            }
         }
     }
 
-    fun assertProfileRevampActionWording(actionWording: String) {
-        onView(withId(R.id.tv_new_choose_preference)).perform(scrollTo()).check(matches(withText(actionWording)))
+    fun assertProductQuantity(qty: Int) {
+        onView(withId(com.tokopedia.unifycomponents.R.id.quantity_editor_qty)).perform(scrollTo()).check(matches(withText(qty.toString())))
     }
 
     fun assertProfileRevampNewHeader() {

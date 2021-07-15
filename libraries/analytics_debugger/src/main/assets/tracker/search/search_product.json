@@ -14,7 +14,8 @@
       "categoryIdMapping": ".+",
       "categoryNameMapping": ".+",
       "relatedKeyword": ".+ - .+",
-      "sessionIris": ".+"
+      "sessionIris": ".+",
+      "pageSource": ".*"
     },
     {
       "event": "view_item_list",
@@ -23,6 +24,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist",
       "sessionIris": ".+",
+      "businessUnit": "Ads Solution",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -33,7 +37,8 @@
           "index": "\\d*.\\d*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": "/searchproduct - topads productlist",
-          "dimension83": "bebas ongkir extra|bebas ongkir|none / other"
+          "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
+          "dimension90": ".*"
         }
       ]
     },
@@ -44,6 +49,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - organic|/searchproduct - organic ads",
       "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -51,12 +59,12 @@
           "item_brand": ".+",
           "item_category": ".+",
           "item_variant": ".+",
-          "userId": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "shopId": ".+",
           "index": "\\d*.\\d*",
           "dimension40": "/searchproduct - organic|/searchproduct - organic ads",
           "dimension61": ".+",
+          "dimension79": ".+",
+          "dimension81": ".+",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
           "dimension87": "search result",
           "dimension88": "search - product",
@@ -73,6 +81,9 @@
       "eventLabel": ".+",
       "item_list": "/searchproduct - topads productlist",
       "sessionIris": ".+",
+      "businessUnit": "Ads Solution",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -83,7 +94,8 @@
           "index": "\\d*.\\d*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": ".*",
-          "dimension83": "bebas ongkir extra|bebas ongkir|none / other"
+          "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
+          "dimension90": ".*"
         }
       ]
     },
@@ -95,6 +107,9 @@
       "searchFilter": ".+",
       "item_list": "/searchproduct - organic|/searchproduct - organic ads",
       "sessionIris": ".+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
       "items": [
         {
           "item_id": ".+",
@@ -102,12 +117,12 @@
           "item_brand": ".+",
           "item_category": ".+",
           "item_variant": ".+",
-          "userId": ".+",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "shopId": ".+",
           "index": "\\d*.\\d*",
           "dimension40": "/searchproduct - organic|/searchproduct - organic ads",
           "dimension61": ".+",
+          "dimension79": ".+",
+          "dimension81": ".+",
           "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
           "dimension87": "search result",
           "dimension88": "search - product",

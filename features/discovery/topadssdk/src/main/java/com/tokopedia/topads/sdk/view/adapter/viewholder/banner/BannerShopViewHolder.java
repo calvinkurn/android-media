@@ -56,7 +56,12 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
             descriptionTxt.setText(TopAdsBannerView.Companion.escapeHTML(cpm.getCpmShop().getSlogan()));
-            ctaTxt.setText(cpm.getCta());
+            if (element.isShowCta()) {
+                ctaTxt.setText(cpm.getCta());
+                ctaTxt.setVisibility(View.VISIBLE);
+            } else {
+                ctaTxt.setVisibility(View.GONE);
+            }
             cardView.setOnClickListener(v -> {
                 if(topAdsBannerClickListener!=null) {
                     topAdsBannerClickListener.onBannerAdsClicked(getAdapterPosition(), element.getAppLink(), element.getCpmData());
@@ -64,13 +69,14 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
             });
             if(bg!=null) {
-                if (cpm.getCpmShop().isPowerMerchant()) {
+                if (cpm.getCpmShop().isOfficial()) {
+                    bg.setImageResource(R.drawable.bg_os_ads);
+                } else if(cpm.getCpmShop().isPMPro()) {
+                    bg.setImageResource(R.drawable.bg_pm_pro_ads);
+                } else if (cpm.getCpmShop().isPowerMerchant()) {
                     bg.setImageResource(R.drawable.bg_pm_ads);
                 } else {
                     bg.setImageResource(R.drawable.bg_rm_ads);
-                }
-                if (cpm.getCpmShop().isOfficial()) {
-                    bg.setImageResource(R.drawable.bg_os_ads);
                 }
             }
             if(shopImage!=null){

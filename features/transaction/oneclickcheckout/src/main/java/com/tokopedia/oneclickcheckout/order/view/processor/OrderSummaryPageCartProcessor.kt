@@ -33,7 +33,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_PRODUCT_ID, productId)
                             putString(AddToCartOccExternalUseCase.REQUEST_PARAM_KEY_USER_ID, userId)
                         }).toBlocking().single()
-                if (response.isDataError()) {
+                if (response.isStatusError()) {
                     return@withContext OccGlobalEvent.AtcError(errorMessage = response.getAtcErrorMessage()
                             ?: "")
                 }
@@ -61,7 +61,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
                         throwable = null,
                         revampData = orderData.revampData,
-                        addressState = AddressState(orderData.errorCode, orderData.preference.address.state, orderData.popUpMessage)
+                        addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage)
                 )
             } catch (t: Throwable) {
                 Timber.d(t)

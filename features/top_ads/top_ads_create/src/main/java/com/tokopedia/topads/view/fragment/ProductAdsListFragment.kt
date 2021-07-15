@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.UrlConstant
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
@@ -43,6 +44,7 @@ import javax.inject.Inject
 
 private const val CLICK_TIPS_PRODUCT_IKLAN = "click-tips memilih produk"
 private const val CLICK_PRODUCT_IKLAN = "click-pilih produk"
+private const val PRODUCT_PAGE_NAME = "android.topads_create"
 
 class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
@@ -93,7 +95,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             stepperListener?.goToNextPage(stepperModel)
         else {
             stepperModel?.redirectionToSummary = false
-            stepperListener?.getToFragment(3, stepperModel)
+            stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_4, stepperModel)
         }
     }
 
@@ -159,7 +161,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 getSelectedSortId(),
                 getPromoted(),
                 ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+                START,
+                PRODUCT_PAGE_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -186,6 +189,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         tip_btn.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
+                add(TipsUiRowModel(R.string.pilih_produk_yang_berada_dalam, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.pilih_produk_terpopuler, R.drawable.topads_create_ic_checklist))
             }

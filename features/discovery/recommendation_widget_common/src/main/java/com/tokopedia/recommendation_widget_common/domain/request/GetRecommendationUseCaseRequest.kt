@@ -21,6 +21,15 @@ internal class GetRecommendationUseCaseRequest {
                         prevPage
                         hasNext
                       }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                      }
                       recommendation {
                         id
                         name
@@ -102,6 +111,15 @@ internal class GetRecommendationUseCaseRequest {
                        pagination{
                             hasNext
                        }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                       }
                        recommendation {
                            id
                            name
@@ -116,6 +134,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name

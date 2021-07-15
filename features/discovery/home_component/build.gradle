@@ -10,6 +10,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -38,9 +39,9 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
     // Unify
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
@@ -48,20 +49,21 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation project(rootProject.ext.libraries.traceroute)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.miscDependencies.traceroute
+
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.productCard)
 
-    androidTestImplementation (project(rootProject.ext.libraries.core_legacy))
+    androidTestImplementation (projectOrAar(rootProject.ext.libraries.core_legacy))
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -70,7 +72,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
@@ -79,5 +81,6 @@ dependencies {
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.firebase.core
 
-    implementation project(rootProject.ext.libraries.circularViewPager)
+    implementation projectOrAar(rootProject.ext.libraries.circularViewPager)
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 }

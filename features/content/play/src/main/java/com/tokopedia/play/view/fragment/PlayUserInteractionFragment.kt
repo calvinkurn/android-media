@@ -33,6 +33,8 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -44,6 +46,7 @@ import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
+import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.PlayChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideoBoundsProvider
@@ -64,9 +67,7 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
-import com.tokopedia.play_common.util.extension.awaitMeasured
-import com.tokopedia.play_common.util.extension.changeConstraint
-import com.tokopedia.play_common.util.extension.recreateView
+import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -121,6 +122,9 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+
+    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -164,7 +168,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private var dynamicLayoutManager: DynamicLayoutManager? = null
     private var chatListHeightManager: ChatListHeightManager? = null
 
-    private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
+    private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, ChatHeightMapValue>()
 
     private var mMaxTopChatMode: Int? = null
     private var toasterBottomMargin = 0
@@ -412,9 +416,27 @@ class PlayUserInteractionFragment @Inject constructor(
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
         mMaxTopChatMode = maxTopPosition
+        if (!playViewModel.bottomInsets.isKeyboardShown) return
         scope.launch(dispatchers.immediate) {
-            invalidateChatListBounds(maxTopPosition = maxTopPosition)
+             invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }
+    }
+
+    fun onStartAnimateInsets(isHidingInsets: Boolean) {
+        view?.hide()
+    }
+
+    //TODO("Find better logic to improve this code")
+    fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        /**
+         * The first one is to handle fast changes when insets transition from show to hide
+         */
+        if (isHidingInsets) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        view?.show()
+        /**
+         * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
+         */
+        if (isHidingInsets) scope.launch { invalidateChatListBounds() }
     }
 
     private fun initAnalytic() {
@@ -519,7 +541,8 @@ class PlayUserInteractionFragment @Inject constructor(
         observeTotalViews()
         observeNewChat()
         observeChatList()
-        observePinned()
+        observePinnedMessage()
+        observePinnedProduct()
         observeCartInfo()
         observeBottomInsetsState()
         observeStatusInfo()
@@ -541,10 +564,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun handleVideoHorizontalTopBounds() {
         scope.launch {
             val toolbarMeasure = asyncCatchError(block = {
-                toolbarView.rootView.awaitMeasured()
+                measureWithTimeout { toolbarView.rootView.awaitMeasured() }
              }, onError = {})
             val statsInfoMeasure = asyncCatchError(block = {
-                statsInfoView.rootView.awaitMeasured()
+                measureWithTimeout { statsInfoView.rootView.awaitMeasured() }
             }, onError = {})
 
             awaitAll(toolbarMeasure, statsInfoMeasure)
@@ -569,6 +592,9 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             gradientBackgroundViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
+
+            pinnedViewOnStateChanged()
+            quickReplyViewOnStateChanged()
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
@@ -595,6 +621,9 @@ class PlayUserInteractionFragment @Inject constructor(
             videoControlViewOnStateChanged(channelType = it.channelType)
             sendChatViewOnStateChanged(channelType = it.channelType)
             chatListViewOnStateChanged(channelType = it.channelType)
+            quickReplyViewOnStateChanged(channelType = it.channelType)
+
+            pinnedViewOnStateChanged()
         })
     }
 
@@ -646,12 +675,20 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
-            pinnedViewOnStateChanged(pinnedModel = it)
-            productFeaturedViewOnStateChanged(pinnedModel = it)
-            quickReplyViewOnStateChanged(pinnedModel = it)
+    private fun observePinnedMessage() {
+        playViewModel.observablePinnedMessage.observe(viewLifecycleOwner, DistinctObserver {
+            pinnedViewOnStateChanged(pinnedModel = it, shouldTriggerChatHeightCalculation = true)
 
+            /**
+             * To trigger bottom bounds for product featured
+             */
+            quickReplyViewOnStateChanged()
+        })
+    }
+
+    private fun observePinnedProduct() {
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner, DistinctObserver {
+            productFeaturedViewOnStateChanged(pinnedModel = it, shouldTriggerChatHeightCalculation = true)
         })
     }
 
@@ -661,27 +698,18 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
-            if (!playViewModel.isFreezeOrBanned) view?.hide()
-
             if (playViewModel.videoOrientation.isVertical) triggerImmersive(false)
-
-            scope.launch(dispatchers.immediate) {
-                if (playViewModel.channelType.isLive && !map.isKeyboardShown) invalidateChatListBounds(bottomInsets = map)
-            }
 
             val keyboardState = map[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
                     when (keyboardState) {
-                        is BottomInsetsState.Hidden -> if (!map.isAnyShown) playFragment.onBottomInsetsViewHidden()
                         is BottomInsetsState.Shown -> {
                             pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                         }
                     }
                 }
 
-            view?.postDelayed({
-                view?.show()
-            }, PlayVideoScalingManager.ANIMATION_DURATION)
+            if (map.isKeyboardShown) dismissToaster()
 
             gradientBackgroundViewOnStateChanged(bottomInsets = map)
             toolbarViewOnStateChanged(bottomInsets = map)
@@ -1013,12 +1041,18 @@ class PlayUserInteractionFragment @Inject constructor(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-            maxTopPosition: Int = mMaxTopChatMode ?: 0
+            maxTopPosition: Int = mMaxTopChatMode ?: 0,
+            shouldForceInvalidate: Boolean = false,
     ) {
+        if (!playViewModel.channelType.isLive) return
+
         val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
 
+        val hasProductFeatured = productFeaturedView?.isShown() == true
+        val hasPinnedVoucher = pinnedVoucherView?.isShown() == true
+
         if (bottomInsets.isKeyboardShown) getChatListHeightManager().invalidateHeightChatMode(videoOrientation, videoPlayer, maxTopPosition, hasQuickReply)
-        else getChatListHeightManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer)
+        else getChatListHeightManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer, shouldForceInvalidate, hasProductFeatured, hasPinnedVoucher)
     }
 
     private fun changeLayoutBasedOnVideoOrientation(videoOrientation: VideoOrientation) {
@@ -1128,7 +1162,7 @@ class PlayUserInteractionFragment @Inject constructor(
             videoOrientation: VideoOrientation = playViewModel.videoOrientation,
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (isFreezeOrBanned) videoSettingsView.hide()
         else if (videoOrientation.isHorizontal && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoSettingsView.show()
@@ -1136,35 +1170,34 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pinnedViewOnStateChanged(
-            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
+            pinnedModel: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            shouldTriggerChatHeightCalculation: Boolean = false,
     ) {
         if (isFreezeOrBanned) {
             pinnedView?.hide()
             return
         }
 
-        when (pinnedModel) {
-            is PlayPinnedUiModel.PinnedMessage -> {
-                pinnedView?.setPinnedMessage(pinnedModel)
+        if (pinnedModel != null) {
+            pinnedView?.setPinnedMessage(pinnedModel)
+            if (pinnedModel.shouldShow && !bottomInsets.isAnyShown) pinnedView?.show()
+            else pinnedView?.hide()
+        } else pinnedView?.hide()
 
-                if (!bottomInsets.isAnyShown) pinnedView?.show()
-                else pinnedView?.hide()
-            }
-            is PlayPinnedUiModel.PinnedProduct -> {
-                pinnedView?.hide()
-            }
-            PlayPinnedUiModel.NoPinned -> {
-                pinnedView?.hide()
-            }
-        }
+        changePinnedMessageConstraint()
+
+        if (shouldTriggerChatHeightCalculation) scope.launch(dispatchers.immediate) { invalidateChatListBounds(shouldForceInvalidate = true) }
+
+        changeQuickReplyConstraint()
     }
 
     private fun productFeaturedViewOnStateChanged(
-            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
+            pinnedModel: PinnedProductUiModel? = playViewModel.observablePinnedProduct.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            shouldTriggerChatHeightCalculation: Boolean = false,
     ) {
         if (isFreezeOrBanned) {
             pinnedVoucherView?.hide()
@@ -1172,25 +1205,22 @@ class PlayUserInteractionFragment @Inject constructor(
             return
         }
 
-        when (pinnedModel) {
-            is PlayPinnedUiModel.PinnedProduct -> {
-                if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
-                    pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
-                    productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
-                }
-
-                if (!bottomInsets.isAnyShown) {
-                    pinnedVoucherView?.showIfNotEmpty()
-                    productFeaturedView?.showIfNotEmpty()
-                } else {
-                    pinnedVoucherView?.hide()
-                    productFeaturedView?.hide()
-                }
-            } else -> {
-                pinnedVoucherView?.hide()
-                productFeaturedView?.hide()
-            }
+        if (pinnedModel != null && pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
+            pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
+            productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
         }
+
+        if (!bottomInsets.isAnyShown && pinnedModel?.shouldShow == true) {
+            pinnedVoucherView?.showIfNotEmpty()
+            productFeaturedView?.showIfNotEmpty()
+        } else {
+            pinnedVoucherView?.hide()
+            productFeaturedView?.hide()
+        }
+
+        changePinnedMessageConstraint()
+
+        if (shouldTriggerChatHeightCalculation) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
     }
 
     private fun gradientBackgroundViewOnStateChanged(
@@ -1246,7 +1276,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun quickReplyViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
@@ -1255,26 +1284,7 @@ class PlayUserInteractionFragment @Inject constructor(
             quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
 
-        val quickReplyViewId = quickReplyView?.id ?: return
-        when (pinnedModel) {
-            is PlayPinnedUiModel.PinnedProduct -> {
-                val pinnedVoucherViewId = pinnedVoucherView?.id
-                if (pinnedVoucherViewId != null) {
-                    view?.changeConstraint {
-                        connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
-                    }
-                }
-            }
-            is PlayPinnedUiModel.PinnedMessage -> {
-                val sendChatViewId = sendChatView?.id
-                if (sendChatViewId != null) {
-                    view?.changeConstraint {
-                        connect(quickReplyViewId, ConstraintSet.BOTTOM, sendChatViewId, ConstraintSet.TOP)
-                    }
-                }
-            }
-            else -> {}
-        }
+        changeQuickReplyConstraint()
     }
 
     private fun immersiveBoxViewOnStateChanged(
@@ -1306,6 +1316,70 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
     }
     //endregion
+
+    /**
+     * Change constraint
+     */
+    private fun changePinnedMessageConstraint(
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            channelType: PlayChannelType = playViewModel.channelType
+    ) {
+        val pinnedMessageId = pinnedView?.id ?: return
+        if (videoPlayer.isYouTube && channelType.isVod) {
+            view?.changeConstraint {
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.BOTTOM, 0)
+            }
+        } else if (channelType.isLive || pinnedVoucherView?.isShown() == true || productFeaturedView?.isShown() == true) {
+            val pinnedVoucherId = pinnedVoucherView?.id ?: return
+            view?.changeConstraint {
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, pinnedVoucherId, ConstraintSet.TOP, offset8)
+            }
+        } else {
+            view?.changeConstraint {
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, videoControlView.id, ConstraintSet.TOP, offset8)
+            }
+        }
+    }
+
+    private fun changeQuickReplyConstraint(
+            pinnedMessage: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            channelType: PlayChannelType = playViewModel.channelType
+    ) {
+        /**
+         * This can be solved by a simple barrier, but the barrier only work on testapp, not customerapp
+         * and I don't know why arghhh
+         */
+        val quickReplyViewId = quickReplyView?.id ?: return
+        val topmostLikeView = this.topmostLikeView ?: return
+        if (videoPlayer.isYouTube && channelType.isVod) {
+            scope.launch {
+                val pinnedView = this@PlayUserInteractionFragment.pinnedView
+                val anchorId = if (pinnedView == null) topmostLikeView.id
+                else {
+                    val measurePinnedView = asyncCatchError(block = { measureWithTimeout { pinnedView.rootView.awaitLayout() } }) {}
+                    val measureTopmostLikeView = asyncCatchError(block = { measureWithTimeout { topmostLikeView.rootView.awaitLayout() } }) {}
+                    awaitAll(measurePinnedView, measureTopmostLikeView)
+
+                    if (pinnedMessage?.shouldShow == true && pinnedView.rootView.y < topmostLikeView.rootView.y) pinnedView.id
+                    else topmostLikeView.id
+                }
+
+                view?.changeConstraint {
+                    connect(
+                            quickReplyViewId,
+                            ConstraintSet.BOTTOM,
+                            anchorId,
+                            ConstraintSet.TOP
+                    )
+                }
+            }
+        } else {
+            view?.changeConstraint {
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+            }
+        }
+    }
 
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25

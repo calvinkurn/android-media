@@ -18,12 +18,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -71,6 +72,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var shopId: String = "0"     // 67726 for testing
 
     private var progressDialog: ProgressDialog? = null
+    private var shopBadge: String = ""
 
     override fun getScreenName(): String? {
         return null
@@ -192,10 +194,24 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
         onFragmentResult()
 
+        observeShopBadgeData()
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
         observeUpdateScheduleData()
+    }
+
+    private fun observeShopBadgeData() {
+        shopSettingsInfoViewModel.shopBadgeData.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                shopBadge = it.data
+                if (tv_power_merchant_type.text.isNotEmpty()) {
+                    iv_logo_power_merchant.loadImage(shopBadge)
+                } else if (tv_official_store.text.isNotEmpty()) {
+                    iv_logo_official_store.loadImage(shopBadge)
+                }
+            }
+        })
     }
 
     override fun onPause() {
@@ -258,21 +274,20 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun observeShopStatus() {
-        shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, Observer {
+        shopSettingsInfoViewModel.shopStatusData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    val shopStatusData = it.data.result.data
-                    userSession.setIsGoldMerchant(!(shopStatusData.isRegularMerchantOrPending()
-                            ?: true))
+                    val pmStatus = it.data
+                    userSession.setIsGoldMerchant(pmStatus.isPowerMerchant())
 
-                    if (shopStatusData.isRegularMerchantOrPending()) {
-                        showRegularMerchantMembership(shopStatusData)
-                    } else {
+                    if (pmStatus.isPowerMerchant()) {
                         shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
                             if (!isOfficialStore) {
                                 showPowerMerchant()
                             }
                         }
+                    } else {
+                        showRegularMerchantMembership(pmStatus)
                     }
                 }
                 is Fail -> {
@@ -319,7 +334,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data.getIsOfficial.let { osData ->
+                    it.data.let { osData ->
                         val errMessage = osData.messageError
                         val isOS = osData.data.isOfficial
                         val expiration = osData.data.expiredDate
@@ -426,7 +441,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showRegularMerchantMembership(shopStatusModel: ShopStatusModel?) {
+    private fun showRegularMerchantMembership(shopStatusModel: PMStatusUiModel?) {
         shopStatusModel?.let {
             container_regular_merchant.visibility = View.VISIBLE
             container_power_merchant.visibility = View.GONE
@@ -440,7 +455,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_regular_merchant.visibility = View.GONE
         container_official_store.visibility = View.GONE
         iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.setImageResource(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+        iv_logo_power_merchant.loadImage(shopBadge)
         tv_power_merchant_type.text = getString(R.string.label_power_merchant)
     }
 
@@ -449,7 +464,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         container_regular_merchant.visibility = View.GONE
         container_power_merchant.visibility = View.GONE
         iv_logo_official_store.visibility = View.VISIBLE
-        iv_logo_official_store.setImageResource(R.drawable.ic_shop_setting_official_store)
+        iv_logo_official_store.loadImage(shopBadge)
         tv_official_store.text = getString(R.string.label_official_store)
         tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
     }

@@ -5,7 +5,7 @@ import com.tokopedia.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-class HomeMockResponseConfig: MockModelConfig() {
+internal open class HomeMockResponseConfig: MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "channel_ids=65312"
@@ -15,7 +15,6 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
-        const val KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD = "PopularKeywords"
         const val KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC = "add_to_cart_occ"
         const val KEY_CONTAINS_WIDGET_TAB = "widget_tab"
         const val KEY_CONTAINS_WIDGET_GRID = "widget_grid"
@@ -25,6 +24,16 @@ class HomeMockResponseConfig: MockModelConfig() {
         const val KEY_CONTAINS_RECHARGE = "rechargeRecommendation"
         const val KEY_CONTAINS_RECHARGE_BU_WIDGET = "getBUWidget"
         const val KEY_CONTAINS_SALAM = "salamWidget"
+        const val KEY_CONTAINS_POPULAR_KEYWORDS = "PopularKeywords"
+        const val KEY_CONTAINS_RECOMMENDATION_TAB = "getRecommendation"
+        const val KEY_CONTAINS_UNIVERSE_PLACEHOLDER = "universe_placeholder"
+        const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
+        const val KEY_CONTAINS_TOKOPOINTS_LIST = "tokopointsDrawerList"
+        const val KEY_CONTAINS_WALLET = "wallet"
+        const val KEY_CONTAINS_FLAG = "homeData"
+        const val KEY_CONTAINS_PRODUCT_REVIEW = "suggestedProductReview"
+        const val KEY_CONTAINS_PRODUCT_RECOMMENDATION = "productRecommendation"
+        const val KEY_CONTAINS_HEADLINE_ADS = "DisplayHeadlineAds"
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -59,7 +68,7 @@ class HomeMockResponseConfig: MockModelConfig() {
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
-                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_only),
+                getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
@@ -68,9 +77,9 @@ class HomeMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS)
 
         addMockResponse(
-                KEY_QUERY_DYNAMIC_HOME_POPULAR_KEYWORD,
+                KEY_CONTAINS_POPULAR_KEYWORDS,
                 getRawString(context, R.raw.response_mock_data_dynamic_home_popular_keyword),
-                FIND_BY_QUERY_NAME)
+                FIND_BY_CONTAINS)
 
         addMockResponse(
                 KEY_QUERY_DYNAMIC_HOME_SUCCESS_OCC,
@@ -114,6 +123,56 @@ class HomeMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS
         )
 
+        addMockResponse(
+                KEY_CONTAINS_RECOMMENDATION_TAB,
+                getRawString(context, R.raw.response_mock_data_dynamic_home_recom_feed_tab),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_UNIVERSE_PLACEHOLDER,
+                getRawString(context, R.raw.response_mock_data_universe_placeholder),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_QUERY_FLOATING_EGG,
+                getRawString(context, R.raw.response_mock_data_home_egg),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_WALLET,
+                getRawString(context, R.raw.response_mock_data_wallet),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_TOKOPOINTS_LIST,
+                getRawString(context, R.raw.response_mock_data_tokopoints_list),
+                FIND_BY_CONTAINS)
+
+        addMockResponse(
+                KEY_CONTAINS_FLAG,
+                getRawString(context, R.raw.response_mock_data_home_flag),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_PRODUCT_REVIEW,
+                getRawString(context, R.raw.response_mock_data_suggested_product_review),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_PRODUCT_RECOMMENDATION,
+                getRawString(context, R.raw.response_mock_data_best_selling_widget),
+                FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+                KEY_CONTAINS_HEADLINE_ADS,
+                getRawString(context, R.raw.response_mock_data_headline_ads),
+                FIND_BY_CONTAINS
+        )
         return this
     }
 }

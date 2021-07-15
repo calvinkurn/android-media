@@ -3,6 +3,7 @@ package com.tokopedia.applink.order
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.DIGITAL_ORDER_LIST_INTERNAL
@@ -15,9 +16,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.UNIFY_ORDER_ONGOING
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.TRAIN_ORDER_LIST
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import java.util.*
 
 /**
  * Created by fwidjaja on 27/08/20.
@@ -26,10 +27,55 @@ object DeeplinkMapperUohOrder {
     const val UOH_AB_TEST_KEY = "uoh_android_v2"
     const val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
+    private const val REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_EXPERIMENT_NAME = "bomdetail"
+    private const val REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_VALUE = "bomdetail"
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
     const val PATH_PAYMENT_ID = "payment_id"
     const val PATH_CART_STRING = "cart_string"
+
+    fun isNavigationUohOrder(deeplink: String):Boolean{
+        val d = deeplink.toLowerCase(Locale.getDefault())
+        val td = trimDeeplink(d)
+        return td == BELANJA_ORDER ||
+                d.startsWith(MARKETPLACE_ORDER)||
+                d.startsWith(MARKETPLACE_ORDER_SUB) ||
+                td == ORDER_LIST ||
+                td == ORDER_LIST_WEBVIEW ||
+                d.startsWith(DIGITAL_ORDER) ||
+                td == ORDER_HISTORY ||
+                td == EVENTS_ORDER ||
+                td == DEALS_ORDER ||
+                td == FLIGHT_ORDER ||
+                td == TRAIN_ORDER ||
+                td == GIFT_CARDS_ORDER ||
+                td == INSURANCE_ORDER ||
+                td == MODAL_TOKO_ORDER ||
+                td == HOTEL_ORDER ||
+                td == PURCHASE_ORDER ||
+                td == PURCHASE_CONFIRMED ||
+                td == PURCHASE_PROCESSED ||
+                td == PURCHASE_SHIPPING_CONFIRM ||
+                td == PURCHASE_SHIPPED ||
+                td == PURCHASE_DELIVERED ||
+                d.startsWith(PURCHASE_HISTORY) ||
+                td == ORDER_HISTORY ||
+                d.startsWith(OMS_ORDER_DETAIL) ||
+                td == TRAVEL_AND_ENTERTAINMENT_ORDER ||
+                td == PURCHASE_ONGOING
+    }
+
+    private fun trimDeeplink(deeplink: String): String {
+        val qIndex = deeplink.indexOf('?')
+        val deeplinkWithoutQuery = if (qIndex > 0) {
+            deeplink.substring(0, qIndex)
+        } else deeplink
+        return if (deeplinkWithoutQuery.endsWith("/")) {
+            deeplinkWithoutQuery.substringBeforeLast("/")
+        } else {
+            deeplinkWithoutQuery
+        }
+    }
 
     fun getRegisteredNavigationUohOrder(context: Context, deeplink: String): String {
         var returnedDeeplink = ""
@@ -125,7 +171,7 @@ object DeeplinkMapperUohOrder {
         return try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
 
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val remoteConfig = FirebaseRemoteConfigInstance.get(context)
             val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_UOH)
             return (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
 
@@ -203,7 +249,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL else ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -220,7 +266,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL else ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -253,6 +299,14 @@ object DeeplinkMapperUohOrder {
                         .toString()
             }
             else -> ""
+        }
+    }
+
+    fun useRevampedBuyerOrderDetail(): Boolean {
+        return try {
+            return RemoteConfigInstance.getInstance().abTestPlatform.getString(REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_EXPERIMENT_NAME, "") == REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_VALUE
+        } catch (e: Exception) {
+            false
         }
     }
 }

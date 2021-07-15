@@ -54,7 +54,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -204,6 +203,7 @@ public class MainParentActivity extends BaseActivity implements
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
     private boolean useNewInbox = false;
+    private boolean useNewNotificationOnNewInbox = false;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
@@ -241,6 +241,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         initInboxAbTest();
+        initNotifcenterOnNewInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -268,9 +269,26 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
+        try {
+            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
+                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
+            ).equals(AbTestPlatform.VARIANT_NEW_INBOX) && isNewNavigation;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initNotifcenterOnNewInboxAbTest() {
+        try {
+            useNewNotificationOnNewInbox = RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .getString(
+                            AbTestPlatform.KEY_NEW_NOTFICENTER,
+                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                    ).equals(AbTestPlatform.VARIANT_NEW_NOTFICENTER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void installDFonBackground() {
@@ -288,6 +306,7 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
+        moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
@@ -673,7 +692,13 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
-        fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+
+        Bundle cartBundle = getIntent().getExtras();
+        if (cartBundle == null) {
+            cartBundle = new Bundle();
+        }
+        cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
         fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
 
         return fragmentList;
@@ -752,11 +777,15 @@ public class MainParentActivity extends BaseActivity implements
 
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
+                int totalNotification = notification.getTotalNotif();
                 if (useNewInbox) {
                     totalInbox = notification.totalNewInbox;
                 }
+                if (useNewNotificationOnNewInbox) {
+                    totalNotification = notification.totalNotificationOnNewInbox;
+                }
                 ((AllNotificationListener) fragment).onNotificationChanged(
-                        notification.getTotalNotif(),
+                        totalNotification,
                         totalInbox,
                         notification.getTotalCart());
             }
@@ -788,8 +817,8 @@ public class MainParentActivity extends BaseActivity implements
                 .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
                 .textSizeRes(R.dimen.sp_12)
                 .titleTextSizeRes(R.dimen.sp_16)
-                .nextStringRes(R.string.next)
-                .prevStringRes(R.string.previous)
+                .nextStringRes(R.string.navigation_showcase_next)
+                .prevStringRes(R.string.navigation_showcase_prev)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)

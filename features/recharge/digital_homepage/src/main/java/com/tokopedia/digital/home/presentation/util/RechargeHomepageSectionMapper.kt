@@ -80,7 +80,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_URGENCY_WIDGET -> {
                         // Check if it is initial sections or not
                         if (it.title.isEmpty() && it.items.isEmpty()) {
-                            ReminderWidgetModel(ReminderWidget(id), ReminderEnum.RECHARGE)
+                            ReminderWidgetModel(id=id, data = ReminderWidget(id), source = ReminderEnum.RECHARGE)
                         } else {
                             getReminderWidgetModel(it)
                         }
@@ -107,7 +107,9 @@ object RechargeHomepageSectionMapper {
                             getDynamicLegoBannerModel(it)
                         }
                     }
-                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
+                    SECTION_PRODUCT_CARD_ROW, SECTION_PRODUCT_CARD_ROW_1X1 -> {
+                        RechargeHomepageProductCardsModel(it)
+                    }
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
                         /**
                          * Count down widget is always from cloud because
@@ -132,7 +134,8 @@ object RechargeHomepageSectionMapper {
 
     private fun getReminderWidgetModel(section: RechargeHomepageSections.Section): ReminderWidgetModel? {
         section.items.firstOrNull()?.run {
-            return ReminderWidgetModel(ReminderWidget(section.id,
+            return ReminderWidgetModel(id = section.id,
+                    data = ReminderWidget(section.id,
                     listOf(ReminderData(
                             applink,
                             id = section.id,
@@ -152,7 +155,7 @@ object RechargeHomepageSectionMapper {
                                 else -> ReminderState.NEUTRAL
                             }
                     ))
-            ), ReminderEnum.RECHARGE)
+            ), source = ReminderEnum.RECHARGE)
         }
         return null
     }

@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class RatesFeature(
-    @SerializedName("ontime_delivery_guarantee")
-    var ontimeDeliveryGuarantee: OntimeDeliveryGuarantee? = null
-): Parcelable
+        @SerializedName("ontime_delivery_guarantee")
+        var ontimeDeliveryGuarantee: OntimeDeliveryGuarantee? = null
+) : Parcelable

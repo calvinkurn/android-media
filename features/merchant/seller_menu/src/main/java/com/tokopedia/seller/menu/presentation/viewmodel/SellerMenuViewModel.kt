@@ -3,7 +3,6 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
@@ -13,7 +12,11 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
+import com.tokopedia.seller.menu.domain.usecase.GetShopScoreLevelUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToNotificationUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToProductUiModel
@@ -28,12 +31,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerMenuViewModel @Inject constructor(
-    private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
-    private val getProductListMetaUseCase: GetProductListMetaUseCase,
-    private val getSellerMenuNotifications: GetSellerNotificationUseCase,
-    private val getShopScoreUseCase: GetShopScoreUseCase,
-    private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
+        private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
+        private val getProductListMetaUseCase: GetProductListMetaUseCase,
+        private val getSellerMenuNotifications: GetSellerNotificationUseCase,
+        private val getShopScoreLevelUseCase: GetShopScoreLevelUseCase,
+        private val userSession: UserSessionInterface,
+        private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -53,18 +57,32 @@ class SellerMenuViewModel @Inject constructor(
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
 
+    val shopAccountInfo: LiveData<Result<ShopInfoPeriodUiModel>>
+        get() = _shopAccountInfo
+
     private val _settingShopInfoLiveData = MutableLiveData<Result<ShopInfoUiModel>>()
     private val _shopProductLiveData = MutableLiveData<Result<ShopProductUiModel>>()
     private val _sellerMenuNotification = MutableLiveData<Result<NotificationUiModel>>()
     private val _isToasterAlreadyShown = MutableLiveData(false)
+    private val _shopAccountInfo = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
-    fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
-        if (isToasterRetry) {
-            launch(coroutineContext) {
-                checkDelayErrorResponseTrigger()
+    fun getShopAccountInfo() {
+        launchCatchError(block = {
+            val data = withContext(dispatchers.io) {
+                getShopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
+                getShopInfoPeriodUseCase.executeOnBackground()
             }
+            _shopAccountInfo.postValue(Success(data))
+        }, onError = {
+            _shopAccountInfo.postValue(Fail(it))
+        })
+    }
+
+    fun getAllSettingShopInfo(isToasterRetry: Boolean = false, shopAge: Long) {
+        if (isToasterRetry) {
+            checkDelayErrorResponseTrigger()
         }
-        getAllShopInfoData()
+        getAllShopInfoData(shopAge)
     }
 
     fun getProductCount() {
@@ -72,9 +90,9 @@ class SellerMenuViewModel @Inject constructor(
             val response = withContext(dispatchers.io) {
                 getProductListMetaUseCase.setParams(userSession.shopId)
                 getProductListMetaUseCase.executeOnBackground()
-                    .productListMetaWrapper
-                    .productListMetaData
-                    .tabs
+                        .productListMetaWrapper
+                        .productListMetaData
+                        .tabs
             }
 
             _shopProductLiveData.value = Success(mapToProductUiModel(response, userSession.isShopOwner))
@@ -96,8 +114,9 @@ class SellerMenuViewModel @Inject constructor(
         })
     }
 
-    private fun getAllShopInfoData() {
+    private fun getAllShopInfoData(shopAge: Long) {
         launchCatchError(block = {
+            val shopId = userSession.shopId
             val getShopInfo = withContext(dispatchers.io) {
                 async {
                     val response = getAllShopInfoUseCase.executeOnBackground()
@@ -112,17 +131,14 @@ class SellerMenuViewModel @Inject constructor(
 
             val getShopScore = withContext(dispatchers.io) {
                 async {
-                    val shopId = userSession.shopId
-                    val requestParams = GetShopScoreUseCase.createRequestParams(shopId)
-                    getShopScoreUseCase.getData(requestParams)
+                    getShopScoreLevelUseCase.execute(shopId).shopScore
                 }
             }
 
             val shopInfoResponse = getShopInfo.await()
             val shopScoreResponse = getShopScore.await()
 
-            val shopScore = shopScoreResponse.data.value
-            val data = ShopInfoUiModel(shopInfoResponse, shopScore)
+            val data = ShopInfoUiModel(shopInfoResponse, shopScore = shopScoreResponse, shopAge = shopAge)
 
             _settingShopInfoLiveData.value = Success(data)
         }, onError = {
@@ -130,12 +146,14 @@ class SellerMenuViewModel @Inject constructor(
         })
     }
 
-    private suspend fun checkDelayErrorResponseTrigger() {
-        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-            if (isToasterAlreadyShown == false) {
-                _isToasterAlreadyShown.value = true
-                delay(DELAY_TIME)
-                _isToasterAlreadyShown.value = false
+    private fun checkDelayErrorResponseTrigger() {
+        launch(coroutineContext) {
+            _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
+                if (!isToasterAlreadyShown) {
+                    _isToasterAlreadyShown.value = true
+                    delay(DELAY_TIME)
+                    _isToasterAlreadyShown.value = false
+                }
             }
         }
     }

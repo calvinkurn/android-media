@@ -30,7 +30,8 @@ data class ShopCardModel(
         val isOfficial: Boolean = false,
         val gaKey: String = "",
         val isRecommendation: Boolean = false,
-        val impressHolder: ImpressHolder? = null
+        val impressHolder: ImpressHolder? = null,
+        val isPMPro: Boolean = false,
 ) {
 
     val isGoldShop = goldShop == KEY_SHOP_IS_GOLD

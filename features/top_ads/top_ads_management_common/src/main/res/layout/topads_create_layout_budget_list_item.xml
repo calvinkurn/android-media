@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="@tools:sample/first_names" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:gravity="center_vertical"
+            android:text="@string/topads_create_keyword_data"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/keywordName"
+            app:typographyType="body_3"
+            tools:text="Specific" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typeKeyword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/keywordData"
+            app:typographyType="body_3"
+            tools:text="Luas" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/editType"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_4"
+            app:icon_color_light_enable="@color/Unify_G600"
+            app:icon_name="EDIT"
+            app:layout_constraintStart_toEndOf="@id/typeKeyword"
+            app:layout_constraintBottom_toBottomOf="@id/typeKeyword" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordBudget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/editType"
+            app:typographyType="body_3"
+            tools:text="800" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/editBudget"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_4"
+            app:icon_color_light_enable="@color/Unify_G600"
+            app:icon_name="EDIT"
+            app:layout_constraintStart_toEndOf="@id/keywordBudget"
+            app:layout_constraintBottom_toBottomOf="@id/keywordBudget" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btnDelete"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            app:icon_name="DELETE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/editType" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

@@ -33,9 +33,8 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.utils.RegisterUtil
-import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -62,7 +61,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/25/18.
  */
-class RegisterEmailFragment : BaseDaggerFragment() {
+open class RegisterEmailFragment : BaseDaggerFragment() {
     var NAME = "NAME"
     var PASSWORD = "PASSWORD"
     var EMAIL = "EMAIL"
@@ -102,11 +101,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        val daggerLoginComponent = DaggerRegisterInitialComponent
-                .builder()
-                .loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
-                .build() as DaggerRegisterInitialComponent
-        daggerLoginComponent.inject(this)
+        getComponent(RegisterInitialComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String {
@@ -165,19 +160,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             } else if (registerRequestDataResult is Fail) {
                 val throwable = registerRequestDataResult.throwable
                 dismissLoadingProgress()
+                val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                 if(throwable is MessageErrorException){
                     throwable.message?.run {
                         if(this.contains(ALREADY_REGISTERED)){
                             showInfo()
                         } else {
-                            onErrorRegister(throwable.message)
+                            onErrorRegister(errorMessage)
                         }
                     }
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (errorMessage == forbiddenMessage) {
                             onForbidden()
                         } else {

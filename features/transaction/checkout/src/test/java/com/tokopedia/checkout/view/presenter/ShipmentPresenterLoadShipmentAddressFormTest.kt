@@ -4,11 +4,14 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -25,6 +28,7 @@ import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -236,29 +240,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN load checkout page with no error and address list is not empty but the user address data is null THEN should trigger finish activity`() {
-        // Given
-        val data = CartShipmentAddressFormData(errorCode = 0, groupAddress = listOf(GroupAddress().apply {
-            userAddress = null
-        }))
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
-
-        // When
-        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.resetPromoBenefit()
-            view.clearTotalBenefitPromoStacking()
-            view.hideLoading()
-            view.onShipmentAddressFormEmpty()
-            view.stopTrace()
-        }
-    }
-
-
-    @Test
     fun `WHEN load checkout page get state address id match THEN should render checkout page`() {
         // Given
         val groupAddress = GroupAddress().apply {
@@ -360,16 +341,12 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN load checkout page get error code open address list and user address is null THEN should navigate to address list page with default address state`() {
+    fun `WHEN load checkout page get error code open address list and group address is empty THEN should navigate to address list page with default address state`() {
         // Given
         val defaultAddressState = 0
         val data = CartShipmentAddressFormData().apply {
             errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST
-            groupAddress = listOf(
-                    GroupAddress().apply {
-                        userAddress = null
-                    }
-            )
+            groupAddress = listOf()
         }
 
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
@@ -461,6 +438,26 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun `WHEN reload checkout page success with error ticker THEN should initialize shipment ticker error model with error ticker and other data is disabled`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val errorTicker = "error ticker message"
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(errorTicker = errorTicker,
+                groupAddress = listOf(groupAddress), donation = Donation(), egoldAttributes = EgoldAttributeModel()))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(errorTicker, presenter.shipmentTickerErrorModel.errorMessage)
+        assertEquals(true, presenter.shipmentTickerErrorModel.isError)
+        assertEquals(false, presenter.shipmentDonationModel.isEnabled)
+        assertEquals(false, presenter.egoldAttributeModel.isEnabled)
+    }
+
+    @Test
     fun `WHEN reload checkout page failed THEN should render checkout page`() {
         // Given
         val errorMessage = "error"
@@ -538,5 +535,4 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN] == true)
         assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID] == deviceId)
     }
-
 }

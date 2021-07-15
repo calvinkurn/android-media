@@ -1,10 +1,10 @@
 package com.tokopedia.shop.common.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -27,7 +27,7 @@ class GQLCheckWishlistUseCase @Inject constructor(
 
     private val query = """
             query CheckWishList(${'$'}productID:String!){
-              checkWishlist(productID:${'$'}productID){
+              checkWishlistV2(productID:${'$'}productID){
                 product_id
                 is_wishlist
               }

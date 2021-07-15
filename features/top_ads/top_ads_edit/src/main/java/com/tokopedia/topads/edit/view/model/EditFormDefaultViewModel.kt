@@ -30,16 +30,18 @@ import javax.inject.Inject
  */
 
 class EditFormDefaultViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
-        private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
-        private val bidInfoUseCase: BidInfoUseCase,
-        private val getAdsUseCase: GetAdsUseCase,
-        private val getAdKeywordUseCase: GetAdKeywordUseCase,
-        private val groupInfoUseCase: GroupInfoUseCase,
-        private val editSingleAdUseCase: EditSingleAdUseCase,
-        private val getAdInfoUseCase: TopAdsGetPromoUseCase,
-        private val userSession: UserSessionInterface,
-        private val topAdsCreateUseCase: TopAdsCreateUseCase) : BaseViewModel(dispatcher) {
+    dispatcher: CoroutineDispatcher,
+    private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
+    private val bidInfoUseCase: BidInfoUseCase,
+    private val bidInfoDefaultUseCase: BidInfoUseCase,
+    private val getAdsUseCase: GetAdsUseCase,
+    private val getAdKeywordUseCase: GetAdKeywordUseCase,
+    private val groupInfoUseCase: GroupInfoUseCase,
+    private val editSingleAdUseCase: EditSingleAdUseCase,
+    private val getAdInfoUseCase: TopAdsGetPromoUseCase,
+    private val userSession: UserSessionInterface,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase
+) : BaseViewModel(dispatcher) {
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
         validGroupUseCase.setParams(groupName)
@@ -53,14 +55,14 @@ class EditFormDefaultViewModel @Inject constructor(
     }
 
     fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
-        bidInfoUseCase.setParams(suggestions, ParamObject.PRODUCT)
-        bidInfoUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topadsBidInfo.data)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+        bidInfoDefaultUseCase.setParams(suggestions, ParamObject.PRODUCT)
+        bidInfoDefaultUseCase.executeQuerySafeMode(
+            {
+                onSuccess(it.topadsBidInfo.data)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
     fun editSingleAd(adId: String, priceBid: Float, priceDaily: Float) {
@@ -73,9 +75,9 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getAds(page: Int, groupId: Int?, onSuccess: (List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) -> Unit) {
+    fun getAds(page: Int, groupId: String?, source: String, onSuccess: (List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) -> Unit) {
 
-        getAdsUseCase.setParams(page, groupId)
+        getAdsUseCase.setParams(page, groupId, source)
         getAdsUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topadsGetListProductsOfGroup.data, it.topadsGetListProductsOfGroup.page.total, it.topadsGetListProductsOfGroup.page.perPage)

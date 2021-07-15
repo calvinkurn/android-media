@@ -69,9 +69,6 @@ const val GET_OCC_CART_PAGE_OVO_ACTIVATED_REVAMP_RESPONSE_PATH = "cart/get_occ_c
 const val GET_OCC_CART_PAGE_OVO_LOW_WALLET_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_ovo_low_wallet_revamp_response.json"
 const val GET_OCC_CART_PAGE_OVO_TOP_UP_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_ovo_top_up_revamp_response.json"
 
-@Deprecated("will be removed in next iteration")
-const val GET_OCC_CART_PAGE_NO_PROFILE_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_no_profile_revamp_response.json"
-
 const val GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_one_profile_revamp_response.json"
 const val GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_many_profile_revamp_response.json"
 
@@ -93,6 +90,8 @@ const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_WITH_TICKER_RESPONSE_PATH = "car
 
 const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_post_no_address_response.json"
 const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_SHIPMENT_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_post_no_shipment_response.json"
+
+const val GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH = "cart/get_occ_cart_page_shop_type_pm_pro_response.json"
 
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"

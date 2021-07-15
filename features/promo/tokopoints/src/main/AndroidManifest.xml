@@ -92,7 +92,7 @@
         </activity>
 
         <activity
-            android:name=".view.pointhistory.PointHistoryActivity"
+            android:name=".view.merchantcoupon.MerchantCouponActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
@@ -103,7 +103,7 @@
 
                 <data
                     android:host="@string/host_tokopoints"
-                    android:pathPrefix="@string/path_tokopoints_history"
+                    android:pathPrefix="@string/path_tokopoints_merchant_couponlist"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

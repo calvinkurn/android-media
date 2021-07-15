@@ -56,6 +56,7 @@ object AccountConstants {
             const val EVENT_CLICK_ACCOUNT = "clickAccount"
             const val EVENT_PRODUCT_CLICK = "productClick"
             const val EVENT_PRODUCT_VIEW = "productView"
+            const val EVENT_CLICK_SETTING = "clickSetting"
         }
 
         object Category {
@@ -63,6 +64,7 @@ object AccountConstants {
             const val CATEGORY_ACCOUNT_PAGE_BUYER = "account page - buyer"
             const val CATEGORY_ACCOUNT_BUYER = "akun saya pembeli"
             const val CATEGORY_OVO_HOMEPAGE = "ovo home page"
+            const val CATEGORY_SETTING_PAGE = "setting page"
         }
 
         object Action {
@@ -79,6 +81,7 @@ object AccountConstants {
             const val ACTION_CLICK_APP_SETTING_SECTION = "click on application setting section"
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
+            const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
         }
 
         object Label {
@@ -102,6 +105,7 @@ object AccountConstants {
             const val LABEL_STICKER_TOKOPEDIA = "Sticker Tokopedia"
             const val LABEL_IMAGE_QUALITY = "Kualitas Gambar"
             const val LABEL_CLEAN_CACHE = "Bersihkan Cache"
+            const val LABEL_SCREEN_RECORD = "Perekam Layar"
             const val LABEL_VIEW_MODE = "Mode Tampilan"
             const val LABEL_ABOUT_TOKOPEDIA = "Seputar Tokopedia"
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"
@@ -166,6 +170,7 @@ object AccountConstants {
         const val SETTING_DEV_OPTIONS = -1
         const val SETTING_APP_REVIEW_ID = 10
         const val SETTING_APP_ADVANCED_CLEAR_CACHE = 20
+        const val SETTING_APP_ADVANCED_SCREEN_RECORD = 21
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
@@ -179,6 +184,7 @@ object AccountConstants {
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_TOKOPOINTS = 48
         const val SETTING_QUALITY_SETTING = 49
+        const val SETTING_DARK_MODE = 50
     }
 
     object KEY {

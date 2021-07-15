@@ -49,7 +49,8 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
             if (fintechProduct.info.title.isNotEmpty()) {
                 widgetMyBills.setTitle(fintechProduct.info.title)
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
-                widgetMyBills.hasMoreInfo(true)
+                widgetMyBills.hasMoreInfo(fintechProduct.info.urlLink.isNotEmpty() ||
+                        fintechProduct.info.tooltipText.isNotEmpty())
 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {

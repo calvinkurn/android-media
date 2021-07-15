@@ -114,7 +114,8 @@ object MockSearchProductModel {
                 imageUrl = "",
                 url = "https://staging.tokopedia.com/aqua/tes-hidden-category-blazer-1-hitam?refined=true&trkid=f%3DCa83L000P0W0S0Sh%2C%2C%2C%2C%2CCo0Po0Fr0Cb0_src%3Dsearch_page%3D1_ob%3D203_q%3Dbaju+kaos+anak+balapan_bmexp%3D1_po%3D1_catid%3D148_bmexp%3D1&whid=0",
                 applink = "tokopedia://product/15340985?",
-                priceString = ""
+                priceString = "",
+                carouselProductType = BroadMatchProduct(false),
         )
     }
 
@@ -152,21 +153,13 @@ object MockSearchProductModel {
         )
     }
 
-    fun getCpmViewModel(): CpmDataView {
-        val cpmViewModel = CpmDataView()
-        cpmViewModel.cpmModel = CpmModel(cpmJSONObject)
+    fun getCpmViewModel() = CpmDataView(CpmModel(cpmJSONObject))
 
-        return cpmViewModel
-    }
-
-    fun getSuggestionViewModel(): SuggestionDataView {
-        val suggestionViewModel = SuggestionDataView()
-        suggestionViewModel.suggestionText = "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?"
-        suggestionViewModel.suggestion = "baju batik"
-        suggestionViewModel.suggestedQuery = "q=baju batik&rf=true"
-
-        return suggestionViewModel
-    }
+    fun getSuggestionViewModel() = SuggestionDataView(
+            suggestionText = "Menampilkan hasil untuk <strong>\"bju batik\"</strong>. </br> Apakah yang anda maksud <strong><font color=\"#42b549\">\"baju batik\"</font></strong> ?",
+            suggestion = "baju batik",
+            suggestedQuery = "q=baju batik&rf=true",
+        )
 
     fun getEmptySearchProductViewModel(): EmptySearchProductDataView {
         val emptySearchProductViewModel = EmptySearchProductDataView()

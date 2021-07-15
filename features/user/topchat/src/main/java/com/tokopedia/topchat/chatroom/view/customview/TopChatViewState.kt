@@ -16,9 +16,11 @@ interface TopChatViewState : BaseChatViewState {
 
     fun getLastItem(): Parcelable?
 
-    fun onCheckChatBlocked(opponentRole: String,
-                           opponentName: String,
-                           blockedStatus: BlockedStatus)
+    fun onCheckChatBlocked(
+        opponentRole: String,
+        opponentName: String,
+        blockedStatus: BlockedStatus
+    )
 
     fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 
@@ -37,6 +39,14 @@ interface TopChatViewState : BaseChatViewState {
     fun showConfirmationBlockChat()
 
     fun hasProductPreviewShown(): Boolean
-    fun showTemplateChatIfReady(lastMessageBroadcast: Boolean, amIBuyer: Boolean)
+    fun showTemplateChatIfReady(
+        lastMessageBroadcast: Boolean,
+        lastMessageSrwBubble: Boolean,
+        amIBuyer: Boolean
+    )
+
     fun attachFragmentView(fragmentView: TopChatContract.View)
+    fun hideKeyboard()
+    fun hasVisibleSendablePreview(): Boolean
+    fun isKeyboardOpen(): Boolean
 }

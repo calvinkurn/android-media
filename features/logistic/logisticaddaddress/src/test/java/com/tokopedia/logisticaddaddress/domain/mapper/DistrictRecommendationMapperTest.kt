@@ -2,46 +2,41 @@ package com.tokopedia.logisticaddaddress.domain.mapper
 
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
 import org.junit.Assert
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Test
 
-object DistrictRecommendationMapperTest: Spek({
+class DistrictRecommendationMapperTest {
 
-    Feature("transformResponse") {
+    @Test
+    fun `transform Response return success model`() {
         val mapperUT = DistrictRecommendationMapper()
 
+        val t = DiscomDummyProvider.getSuccessResponse()
+        val actual = mapperUT.transform(t)
 
-        Scenario("transformResponse_returnSuccessModel"){
-           val t = DiscomDummyProvider.getSuccessResponse()
-           val actual = mapperUT.transform(t)
-
-           Then("return success model "){
-               Assert.assertEquals(t.keroDistrictRecommendation.district.size, actual.addresses.size)
-               Assert.assertEquals(t.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
-           }
-
-       }
-
-        Scenario("transformEmpty_returnEmptyModel") {
-            val t = DiscomDummyProvider.getEmptyResponse()
-            val actual = mapperUT.transform(t)
-
-            Then("return empty model") {
-                Assert.assertTrue(actual.addresses.isEmpty())
-                Assert.assertFalse(actual.isNextAvailable)
-            }
-        }
-
-        Scenario("transformEmptyZip_returnSuccessModel") {
-            val t = DiscomDummyProvider.getEmptyZipResponse()
-            val actual = mapperUT.transform(t)
-
-            Then("return success model") {
-                Assert.assertTrue(actual.addresses[0].zipCodes.isEmpty())
-                Assert.assertEquals(t.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
-            }
-        }
-
+        Assert.assertEquals(t.keroDistrictRecommendation.district.size, actual.addresses.size)
+        Assert.assertEquals(t.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
     }
 
-})
+    @Test
+    fun `transform empty return empty model`() {
+        val mapperUT = DistrictRecommendationMapper()
+
+        val t = DiscomDummyProvider.getEmptyResponse()
+        val actual = mapperUT.transform(t)
+
+        Assert.assertTrue(actual.addresses.isEmpty())
+        Assert.assertFalse(actual.isNextAvailable)
+    }
+
+    @Test
+    fun `transform empty zip return empty model`() {
+        val mapperUT = DistrictRecommendationMapper()
+
+        val t = DiscomDummyProvider.getEmptyZipResponse()
+        val actual = mapperUT.transform(t)
+
+        Assert.assertTrue(actual.addresses[0].zipCodes.isEmpty())
+        Assert.assertEquals(t.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
+    }
+ }
+

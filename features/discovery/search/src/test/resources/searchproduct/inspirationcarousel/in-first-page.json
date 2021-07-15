@@ -1161,7 +1161,17 @@
                 "applink": "tokopedia://product/294464499",
                 "description": [],
                 "original_price": "Rp 215.000",
-                "discount_percentage": 9
+                "discount_percentage": 9,
+                "badges": [
+                  {
+                    "title": "Official Store",
+                    "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "city": "Jakarta Pusat"
+                }
               },
               {
                 "id": 294464495,
@@ -1175,7 +1185,17 @@
                 "applink": "tokopedia://product/294464495",
                 "description": [],
                 "original_price": "Rp 215.000",
-                "discount_percentage": 9
+                "discount_percentage": 9,
+                "badges": [
+                  {
+                    "title": "Power Badge",
+                    "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "city": "Jakarta Pusat"
+                }
               },
               {
                 "id": 13179536,
@@ -1189,7 +1209,17 @@
                 "applink": "tokopedia://product/13179536",
                 "description": [],
                 "original_price": "",
-                "discount_percentage": 0
+                "discount_percentage": 0,
+                "badges": [
+                  {
+                    "title": "Power Badge",
+                    "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png",
+                    "show": true
+                  }
+                ],
+                "shop": {
+                  "city": "Jakarta Pusat"
+                }
               }
             ]
           }

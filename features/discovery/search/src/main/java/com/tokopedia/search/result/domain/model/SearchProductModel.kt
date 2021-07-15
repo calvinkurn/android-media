@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
@@ -182,6 +183,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,
@@ -324,6 +326,7 @@ data class SearchProductModel(
             @Expose
             val imageUrl700: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -665,6 +668,7 @@ data class SearchProductModel(
             @Expose
             val name: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: Int = 0,
@@ -715,7 +719,35 @@ data class SearchProductModel(
 
             @SerializedName("discount_percentage")
             @Expose
-            val discountPercentage: Int = 0
+            val discountPercentage: Int = 0,
+
+            @SerializedName("badges")
+            @Expose
+            val badgeList: List<InspirationCarouselProductBadge> = listOf(),
+
+            @SerializedName("shop")
+            @Expose
+            val shop: InspirationCarouselProductShop = InspirationCarouselProductShop(),
+    )
+
+    data class InspirationCarouselProductBadge(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("image_url")
+            @Expose
+            val imageUrl: String = "",
+
+            @SerializedName("show")
+            @Expose
+            val isShown: Boolean = false
+    )
+
+    data class InspirationCarouselProductShop(
+            @SerializedName("city")
+            @Expose
+            val city: String = ""
     )
 
     data class SearchInspirationWidget(

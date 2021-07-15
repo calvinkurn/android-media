@@ -8,7 +8,7 @@
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -28,13 +28,13 @@
             android:name="com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent"/>
+            android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
             android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
             android:label="@string/saldo_detail_title_header_saldo_intro"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent">
+            android:theme="@style/Theme.WhiteUnify">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -52,6 +52,7 @@
 
         <activity android:name=".view.activity.SaldoHoldInfoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent"/>
+            android:label="@string/saldo_info_toolbar_title"
+            android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>

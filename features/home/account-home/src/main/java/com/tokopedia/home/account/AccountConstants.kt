@@ -63,6 +63,7 @@ object AccountConstants {
         const val DEVELOPER_OPTIONS = "developer options"
         const val LOGOUT = "logout"
         const val CLEAR_CACHE = "clear cache"
+        const val SCREEN_RECORDER = "perekam layar"
         const val USER_DATA = "user_data"
         const val ADVANCED_SETTING = "pengaturan tambahan"
         const val PERSONAL_DATA = "personal data"
@@ -186,6 +187,8 @@ object AccountConstants {
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"
+        const val CATEGORY_SETTING_PAGE = "setting page"
+        const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
     }
 
     object MOENGAGE {

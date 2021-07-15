@@ -1,9 +1,10 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.view.View
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
@@ -36,7 +37,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String)
     fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String)
     fun onClickMixTopBannerItem(applink: String)
-    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String)
+    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String = "")
 
     fun onClickMixLeftBannerImage(channel: Channel, position: Int)
     fun onMixLeftBannerImpressed(channel: Channel, position: Int)
@@ -48,5 +49,8 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String)
     fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
     fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
+
+    fun getOSCategory(): Category?
+    fun isLogin(): Boolean
 
 }
