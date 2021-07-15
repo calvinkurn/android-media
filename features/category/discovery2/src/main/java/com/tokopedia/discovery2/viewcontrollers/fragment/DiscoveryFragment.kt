@@ -920,25 +920,46 @@ class DiscoveryFragment :
     }
 
     fun showCustomContent(view: View){
+        hideSystemUi()
         coordinatorLayout.hide()
         view.rotation = 90f
-        val offset = parentLayout.width - parentLayout.height
+        val offset = Resources.getSystem().displayMetrics.widthPixels-
+                Resources.getSystem().displayMetrics.heightPixels
         view.translationX = offset.toFloat() / 2
         view.translationY = -offset.toFloat() / 2
 
         val layoutParams = FrameLayout.LayoutParams(
-            parentLayout.height,
-            parentLayout.width
+            Resources.getSystem().displayMetrics.heightPixels,
+            Resources.getSystem().displayMetrics.widthPixels
         )
         view.layoutParams = layoutParams
         parentLayout.addView(view)
     }
 
     fun hideCustomContent(){
+        showSystemUi()
         coordinatorLayout.show()
         if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
         }
-
     }
+
+    private fun hideSystemUi() {
+        activity?.window?.decorView?.apply {
+            systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+        }
+    }
+
+    private fun showSystemUi() {
+        activity?.window?.decorView?.apply {
+            systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+    }
+
+
 }

@@ -32,11 +32,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun setUpWebViewClient() {
         webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-//                val uri = Uri.parse(url)
-//                val id = uri.getQueryParameter("v")
-//                Log.e("TEST_TAG","videoID -> $id")
                 return true
-
             }
         }
         webChromeClient = object : WebChromeClient() {
