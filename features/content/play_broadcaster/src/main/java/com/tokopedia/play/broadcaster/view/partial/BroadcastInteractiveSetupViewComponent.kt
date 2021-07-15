@@ -37,6 +37,7 @@ class BroadcastInteractiveSetupViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_interactive_setup) {
 
+    private val containerSetup = findViewById<ConstraintLayout>(R.id.cl_container_setup)
     private val titleLbl = findViewById<Typography>(R.id.tv_title)
     private val descLbl = findViewById<Typography>(R.id.tv_desc)
     private val editTextTitle = findViewById<PlayBroadcastEditText>(R.id.et_interactive_title)
@@ -64,7 +65,7 @@ class BroadcastInteractiveSetupViewComponent(
         setActiveTitle("${getString(R.string.play_interactive_title_default)} ")
         setFocusOnEditTextTitle()
 
-        rootView.doOnApplyWindowInsets { v, insets, padding, _ ->
+        containerSetup.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
         }
 
