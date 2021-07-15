@@ -97,4 +97,7 @@ object ProductDetailCommonConstant{
     const val BO_TOKONOW = 3
 
     const val KEY_PRODUCT_DETAIL = "product detail"
+
+    //shipping error code
+    const val SHIPPING_ERROR_WEIGHT = 50503
 }

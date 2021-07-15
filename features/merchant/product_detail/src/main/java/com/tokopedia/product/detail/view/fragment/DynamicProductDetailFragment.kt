@@ -2256,7 +2256,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToShipmentErrorAddressOrChat(errorCode: Int) {
-        if (errorCode == ProductDetailConstant.SHIPPING_ERROR_WEIGHT) {
+        if (errorCode == ProductDetailCommonConstant.SHIPPING_ERROR_WEIGHT) {
             onShopChatClicked()
         } else {
             ProductDetailBottomSheetBuilder.openChooseAddressBottomSheet(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {

@@ -1,10 +1,14 @@
 package com.tkpd.atcvariant.util
 
+import android.content.Intent
 import com.tkpd.atcvariant.data.uidata.*
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -296,6 +300,57 @@ object AtcCommonMapper {
         if (requestCode != null) result.requestCode = requestCode
 
         return result
+    }
+
+    fun putChatProductInfoTo(
+            intent: Intent?,
+            productId: String?,
+            productInfo: VariantChild?,
+            variantResp: ProductVariant?,
+            freeOngkirImgUrl: String
+    ) {
+        if (intent == null || productId == null) return
+        val variants = variantResp?.mapSelectedProductVariants(productId)
+        val productImageUrl = productInfo?.picture?.original ?: ""
+        val productName = productInfo?.name ?: ""
+        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
+        val priceBeforeInt = productInfo?.slashPriceInt ?: 0
+        val priceBefore = if (priceBeforeInt > 0) {
+            priceBeforeInt.getCurrencyFormatted()
+        } else {
+            ""
+        }
+        val dropPercentage = productInfo?.discountPercentage ?: ""
+        val productUrl = productInfo?.url ?: ""
+        val isActive = productInfo?.isBuyable ?: true
+        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
+        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
+        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
+        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
+        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
+        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+        val productPreview = ProductPreview(
+                id = productId,
+                imageUrl = productImageUrl,
+                name = productName,
+                price = productPrice,
+                colorVariantId = productColorVariantId,
+                colorVariant = productColorVariant,
+                colorHexVariant = productColorHexVariant,
+                sizeVariantId = productSizeVariantId,
+                sizeVariant = productSizeVariant,
+                url = productUrl,
+                productFsIsActive = productFsIsActive,
+                productFsImageUrl = freeOngkirImgUrl,
+                priceBefore = priceBefore,
+                priceBeforeInt = priceBeforeInt,
+                dropPercentage = dropPercentage,
+                isActive = isActive,
+                remainingStock = productInfo?.getVariantFinalStock() ?: 1
+        )
+        val productPreviews = listOf(productPreview)
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
     /**

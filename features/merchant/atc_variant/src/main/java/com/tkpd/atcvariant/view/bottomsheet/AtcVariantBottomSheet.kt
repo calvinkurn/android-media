@@ -19,6 +19,7 @@ import com.tkpd.atcvariant.data.uidata.VariantErrorDataModel
 import com.tkpd.atcvariant.di.AtcVariantComponent
 import com.tkpd.atcvariant.di.DaggerAtcVariantComponent
 import com.tkpd.atcvariant.util.ATC_LOGIN_REQUEST_CODE
+import com.tkpd.atcvariant.util.AtcCommonMapper
 import com.tkpd.atcvariant.util.BS_SHIPMENT_ERROR_ATC_VARIANT
 import com.tkpd.atcvariant.view.*
 import com.tkpd.atcvariant.view.activity.AtcVariantActivity
@@ -151,6 +152,24 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         }
         setChild(viewContent)
         setupRv(viewContent)
+    }
+
+    private fun goToTopChat() {
+        if (checkLogin()) return
+        val aggregatorData = viewModel.getVariantAggregatorData()
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
+                aggregatorData?.simpleBasicInfo?.shopID ?: "")
+
+        val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
+        val boData = aggregatorData?.getIsFreeOngkirByBoType(productId) ?: false
+        //todo bo image url
+        AtcCommonMapper.putChatProductInfoTo(intent,
+                productId,
+                aggregatorData?.variantData?.getChildByProductId(productId),
+                aggregatorData?.variantData,
+                "bo image url")
+        startActivity(intent)
     }
 
     private fun updateBottomSheetTitle(value: String) {
@@ -577,7 +596,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     bottomSheetData,
                     rates?.p2RatesError?.firstOrNull()?.errorCode ?: 0,
                     onButtonClicked = { errorCode ->
-                        goToChooseAddress()
+                        goToChooseAddress(errorCode)
                     },
                     onHomeClicked = { goToHomePage() }
             ).show(childFragmentManager, BS_SHIPMENT_ERROR_ATC_VARIANT)
@@ -592,24 +611,28 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         activity?.finish()
     }
 
-    private fun goToChooseAddress() {
-        openChooseAddressBottomSheet(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-            override fun onLocalizingAddressServerDown() {
-            }
+    private fun goToChooseAddress(errorCode:Int) {
+        if (errorCode == ProductDetailCommonConstant.SHIPPING_ERROR_WEIGHT) {
+            goToTopChat()
+        } else {
+            openChooseAddressBottomSheet(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+                override fun onLocalizingAddressServerDown() {
+                }
 
-            override fun onAddressDataChanged() {
-                onSuccessUpdateAddress()
-            }
+                override fun onAddressDataChanged() {
+                    onSuccessUpdateAddress()
+                }
 
-            override fun getLocalizingAddressHostSourceBottomSheet(): String = ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
+                override fun getLocalizingAddressHostSourceBottomSheet(): String = ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
 
-            override fun onLocalizingAddressLoginSuccessBottomSheet() {
-            }
+                override fun onLocalizingAddressLoginSuccessBottomSheet() {
+                }
 
-            override fun onDismissChooseAddressBottomSheet() {
-            }
+                override fun onDismissChooseAddressBottomSheet() {
+                }
 
-        })
+            })
+        }
     }
 
     private fun onSuccessUpdateAddress() {

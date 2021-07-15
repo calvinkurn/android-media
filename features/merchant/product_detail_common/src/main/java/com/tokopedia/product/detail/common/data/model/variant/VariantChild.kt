@@ -83,6 +83,24 @@ data class VariantChild(
             }
         }
 
+    val slashPriceInt: Int
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.originalPrice?.toInt() ?: 0
+            } else {
+                0
+            }
+        }
+
+    val discountPercentage: String?
+        get() {
+            return if (campaign?.isActive == true) {
+                campaign.discountedPercentage.toString()
+            } else {
+                ""
+            }
+        }
+
     fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
             ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
 
