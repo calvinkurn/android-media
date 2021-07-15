@@ -2,7 +2,6 @@ package com.tkpd.atcvariant.data.uidata
 
 import android.os.Bundle
 import com.tkpd.atcvariant.util.DEFAULT_ATC_MAX_ORDER
-import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRODUCT_ID_ONLY
 import com.tkpd.atcvariant.view.adapter.AtcVariantTypeFactory
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 
@@ -34,29 +33,10 @@ data class VariantQuantityDataModel(
     }
 
     override fun getChangePayload(newData: AtcVariantVisitable): Bundle? {
-        val bundle = Bundle()
-        return if (newData is VariantQuantityDataModel) {
-            if (allTheSameExceptProductId(newData)) {
-                bundle.putInt("payload", PAYLOAD_UPDATE_PRODUCT_ID_ONLY)
-                return bundle
-            }
-
-            null
-        } else {
-            null
-        }
+        return null
     }
 
     override fun type(typeFactory: AtcVariantTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    private fun allTheSameExceptProductId(newData: VariantQuantityDataModel): Boolean {
-        return minOrder == newData.minOrder &&
-                maxOrder == newData.maxOrder &&
-                shouldShowView == newData.shouldShowView &&
-                quantity == newData.quantity &&
-                shouldShowDeleteButton == newData.shouldShowDeleteButton &&
-                productId != newData.productId
     }
 }

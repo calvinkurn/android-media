@@ -38,7 +38,7 @@ class AtcVariantQuantityViewHolder constructor(
         val LAYOUT = R.layout.atc_variant_quantity_viewholder
 
         private const val QUANTITY_REGEX = "[^0-9]"
-        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000L
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L
     }
 
     private val quantityEditor = view.findViewById<QuantityEditorUnify>(R.id.qty_variant_stock)

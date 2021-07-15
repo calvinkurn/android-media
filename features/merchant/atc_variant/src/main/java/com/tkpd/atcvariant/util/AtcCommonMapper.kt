@@ -222,10 +222,12 @@ object AtcCommonMapper {
         return result
     }
 
-    fun updateDeleteButtonQtyEditor(oldList: List<AtcVariantVisitable>): List<AtcVariantVisitable> {
+    fun updateDeleteButtonQtyEditor(oldList: List<AtcVariantVisitable>, value: Boolean): List<AtcVariantVisitable> {
         return oldList.map {
             if (it is VariantQuantityDataModel) {
-                it.copy(shouldShowDeleteButton = true)
+                val currentQuantity = it.quantity
+                //if value == false we need to reset quantity editor to 0
+                it.copy(shouldShowDeleteButton = value, quantity = if (!value) 0 else currentQuantity)
             } else {
                 it
             }

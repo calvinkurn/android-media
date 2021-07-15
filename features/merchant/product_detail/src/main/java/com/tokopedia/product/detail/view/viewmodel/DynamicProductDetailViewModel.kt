@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -114,6 +115,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
                                                              private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
                                                              private val updateCartUseCase: Lazy<UpdateCartUseCase>,
+                                                             private val deleteCartUseCase: DeleteCartUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -159,6 +161,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _updateCartLiveData = MutableLiveData<Result<String>>()
     val updateCartLiveData: LiveData<Result<String>>
         get() = _updateCartLiveData
+
+    private val _deleteCartLiveData = MutableLiveData<Result<String>>()
+    val deleteCartLiveData: LiveData<Result<String>>
+        get() = _deleteCartLiveData
 
     private val _filterTopAdsProduct = MutableLiveData<ProductRecommendationDataModel>()
     val filterTopAdsProduct: LiveData<ProductRecommendationDataModel>
@@ -278,6 +284,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     .collect {
                         _updateCartLiveData.value = it
                     }
+        }
+    }
+
+    fun deleteProductInCart(productId: String) {
+        launchCatchError(dispatcher.io, block = {
+            val selectedMiniCart =  p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "") ?: return@launchCatchError
+
+            deleteCartUseCase.setParams(listOf(selectedMiniCart))
+            val data = deleteCartUseCase.executeOnBackground()
+
+            _p2Data.value?.miniCart?.remove(productId)
+            _deleteCartLiveData.postValue((data.data.message.firstOrNull() ?: "").asSuccess())
+        }) {
+            _deleteCartLiveData.postValue(it.asFail())
         }
     }
 
@@ -819,15 +839,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            if (result.miniCartItems.isEmpty()) {
-                _miniCartData.postValue(false)
-            } else {
-                val data = result.miniCartItems.associateBy({ it.productId }) {
-                    it
-                }
-                _p2Data.value?.miniCart = data.toMutableMap()
-                _miniCartData.postValue(true)
+            val data = result.miniCartItems.associateBy({ it.productId }) {
+                it
             }
+            _p2Data.value?.miniCart = data.toMutableMap()
+            _miniCartData.postValue(true)
         }) {
         }
     }

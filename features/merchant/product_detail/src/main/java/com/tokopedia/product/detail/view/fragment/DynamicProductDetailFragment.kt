@@ -123,6 +123,7 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAda
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
+import com.tokopedia.product.detail.view.fragment.partialview.TokoNowButtonData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.product.detail.view.util.*
@@ -367,6 +368,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeShippingAddressChanged()
         observeUpdateCart()
         observeMiniCart()
+        observeDeleteCart()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -1296,6 +1298,22 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun observeDeleteCart() {
+        viewModel.deleteCartLiveData.observe(viewLifecycleOwner) {
+            hideProgressDialog()
+            it.doSuccessOrFail({ message ->
+                view?.showToasterSuccess(message.data, ctaText = getString(R.string.label_oke_pdp))
+                updateButtonState()
+            }) { throwable ->
+                view?.showToasterError(
+                        throwable.message ?: "",
+                        ctaText = getString(com.tokopedia.design.R.string.oke)
+                )
+                logException(throwable)
+            }
+        }
+    }
+
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             it.doSuccessOrFail({ success ->
@@ -1445,18 +1463,42 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
             val cartTypeData = viewModel.getCartTypeByProductId()
-            val miniCartItem = if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) viewModel.getMiniCartItem() else null
+            val selectedMiniCartItem = if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) {
+                viewModel.getMiniCartItem()
+            } else {
+                null
+            }
+
+            val totalStockAtcVariant = viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
+
+            val shouldShowTokoNow = if (it.basic.isTokoNow &&
+                    cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false &&
+                    (totalStockAtcVariant != 0 || selectedMiniCartItem != null)) {
+                true
+            } else {
+                false
+            }
+
+            val tokonowVariantButtonData = if (shouldShowTokoNow) {
+                TokoNowButtonData(
+                        totalStockAtcVariant = totalStockAtcVariant ?: 0,
+                        productTitle = viewModel.getDynamicProductInfoP1?.data?.name ?: "",
+                        isVariant = it.data.variant.isVariant,
+                        minQuantity = it.basic.minOrder,
+                        maxQuantity = it.basic.maxOrder,
+                        selectedMiniCart = selectedMiniCartItem
+                )
+            } else {
+                null
+            }
 
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
                     isShopOwner = viewModel.isShopOwner(),
                     hasTopAdsActive = hasTopAds(),
-                    isVariant = it.data.variant.isVariant,
                     cartTypeData = cartTypeData,
-                    minQuantity = it.basic.minOrder,
-                    maxQuantity = it.basic.maxOrder,
-                    miniCartItem = miniCartItem)
+                    tokonowButtonData = tokonowVariantButtonData)
         }
         showOrHideButton()
     }
@@ -2809,6 +2851,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun topChatButtonClicked() {
         DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1)
         onShopChatClicked()
+    }
+
+    override fun onDeleteAtcClicked() {
+        if (!viewModel.isUserSessionActive) {
+            doLoginWhenUserClickButton()
+            return
+        }
+        showProgressDialog()
+        viewModel.deleteProductInCart(viewModel.getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
     override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem, oldValue: Int) {

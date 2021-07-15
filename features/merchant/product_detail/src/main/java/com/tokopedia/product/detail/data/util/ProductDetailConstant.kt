@@ -181,4 +181,5 @@ object ProductDetailConstant {
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
 
     const val DEFAULT_ATC_MAX_ORDER = 100
+    const val DEFAULT_MIN_QTY = 1
 }

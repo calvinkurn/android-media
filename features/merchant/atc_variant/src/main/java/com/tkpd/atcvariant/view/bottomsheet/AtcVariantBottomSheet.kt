@@ -181,6 +181,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeTitleChanged()
         observeButtonState()
         observeCart()
+        observeDeleteCart()
         observeUpdateCart()
         observeWishlist()
     }
@@ -188,6 +189,20 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private fun showToasterSuccess(message: String, ctaText: String = "", ctaListener: () -> Unit = {}) {
         viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant, ctaText = ctaText, ctaListener = {
             ctaListener.invoke()
+        })
+    }
+
+    private fun observeDeleteCart() {
+        viewModel.deleteCartLiveData.observe(viewLifecycleOwner, {
+            loadingProgressDialog?.dismiss()
+
+            when (it) {
+                is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
+                is Fail -> {
+                    showToasterError(getErrorMessage(it.throwable))
+                    logException(it.throwable)
+                }
+            }
         })
     }
 
@@ -429,7 +444,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onDeleteQuantityClicked(productId: String) {
-        super.onDeleteQuantityClicked(productId)
+        showProgressDialog {
+            loadingProgressDialog?.dismiss()
+        }
+
+        viewModel.deleteProductInCart(productId)
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
