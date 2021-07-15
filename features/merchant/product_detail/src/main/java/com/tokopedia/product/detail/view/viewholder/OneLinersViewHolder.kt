@@ -40,7 +40,10 @@ class OneLinersViewHolder(
     override fun bind(element: OneLinersDataModel) {
 
         val content = element.oneLinersContent
-        if (content == null || !content.isVisible) return
+        if (content == null || !content.isVisible){
+            itemView.layoutParams.height = 0
+            return
+        }
 
         view.apply {
             addOnImpressionListener(element.impressHolder) {
