@@ -11,18 +11,14 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
-import com.tokopedia.home.mock.HomeDynamicChannelErrorResponseConfig
 import com.tokopedia.home.mock.HomeRecommendationFeedErrorResponseConfig
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_ATF_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
-import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_ERROR_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.BALANCE_EXP
@@ -34,6 +30,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.VARIANT_NEW_INBOX
 import com.tokopedia.test.application.espresso_component.CommonAssertion
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -71,7 +68,8 @@ class HomeFragmentRecommendationFeedErrorUiTest {
 
     @Before
     fun setupIdlingResource() {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        val recyclerView: RecyclerView =
+            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(recyclerView)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
@@ -103,7 +101,7 @@ class HomeFragmentRecommendationFeedErrorUiTest {
         onView(withId(R.id.home_fragment_recycler_view)).check(
             CommonAssertion.RecyclerViewItemTypeAssertion(
                 itemViewType = RetryViewHolder.LAYOUT,
-                position = (homeRecyclerView.adapter?.itemCount?:0) -1
+                position = (homeRecyclerView.adapter?.itemCount ?: 0) - 1
             )
         )
 
@@ -111,9 +109,13 @@ class HomeFragmentRecommendationFeedErrorUiTest {
             onView(withId(R.id.home_fragment_recycler_view)).perform(ViewActions.swipeUp())
         }
 
-        onView(withText(R.string.home_feed_retry)).check(matches(isDisplayed()))
-        onView(withId(R.id.retry)).check(matches(isDisplayed()))
-        onView(withId(R.id.retry)).check(matches(isClickable()))
+        onView(CommonMatcher.firstView(withText(R.string.home_feed_retry))).check(
+            matches(
+                isDisplayed()
+            )
+        )
+        onView(CommonMatcher.firstView(withId(R.id.retry))).check(matches(isDisplayed()))
+        onView(CommonMatcher.firstView(withId(R.id.retry))).check(matches(isClickable()))
     }
 
     private fun setupAbTestRemoteConfig() {

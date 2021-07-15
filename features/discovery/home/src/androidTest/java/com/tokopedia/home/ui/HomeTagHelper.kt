@@ -8,25 +8,29 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 object HomeTagHelper {
     fun getOvoBalanceWidgetTag(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_balance_widget), BalanceDrawerItemModel.TYPE_WALLET_OVO.toString()
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_WALLET_OVO.toString()
         )
     }
 
     fun getTokopointBalanceWidgetTag(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_balance_widget), BalanceDrawerItemModel.TYPE_TOKOPOINT.toString()
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_TOKOPOINT.toString()
         )
     }
 
     fun getCouponBalanceWidgetTag(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_balance_widget), BalanceDrawerItemModel.TYPE_COUPON.toString()
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_COUPON.toString()
         )
     }
 
     fun getBBOBalanceWidgetTag(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_balance_widget), BalanceDrawerItemModel.TYPE_FREE_ONGKIR.toString()
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_FREE_ONGKIR.toString()
         )
     }
 

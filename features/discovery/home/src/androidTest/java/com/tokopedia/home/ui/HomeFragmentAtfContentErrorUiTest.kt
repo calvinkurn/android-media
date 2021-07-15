@@ -67,7 +67,8 @@ class HomeFragmentAtfContentErrorUiTest {
 
     @Before
     fun setupIdlingResource() {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        val recyclerView: RecyclerView =
+            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(recyclerView)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }

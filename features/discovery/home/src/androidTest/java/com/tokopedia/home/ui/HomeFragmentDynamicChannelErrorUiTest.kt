@@ -67,7 +67,8 @@ class HomeFragmentDynamicChannelErrorUiTest {
 
     @Before
     fun setupIdlingResource() {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        val recyclerView: RecyclerView =
+            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(recyclerView)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }
@@ -85,7 +86,6 @@ class HomeFragmentDynamicChannelErrorUiTest {
         /**
          * Assert home content to match given mock value with dynamic channel content error
          */
-        Thread.sleep(100000)
         val totalData =
             MOCK_HEADER_COUNT + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_ERROR_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
         onView(withId(R.id.home_fragment_recycler_view)).check(matches(isDisplayed()))

@@ -26,7 +26,7 @@ internal open class HomeDynamicChannelErrorResponseConfig : HomeMockResponseConf
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
             getRawString(context, R.raw.response_error_mock_data_dynamic_home_channel_screenshot),
-            FIND_BY_CONTAINS
+            FIND_BY_QUERY_NAME
         )
 
         /**

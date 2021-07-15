@@ -8,10 +8,10 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
 internal open class HomeMockResponseConfig : MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
-        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "channel_ids=65312"
-        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2 = "channel_ids=45397"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "\"param\": \"channel_ids=65312\""
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2 = "\"param\": \"channel_ids=45397\""
 
-        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "\"numOfChannel\": 0"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "getDynamicChannel"
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"

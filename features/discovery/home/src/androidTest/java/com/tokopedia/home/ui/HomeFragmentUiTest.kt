@@ -1,7 +1,6 @@
 package com.tokopedia.home.ui
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -68,7 +67,8 @@ class HomeFragmentUiTest {
 
     @Before
     fun setupIdlingResource() {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+        val recyclerView: RecyclerView =
+            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(recyclerView)
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
     }

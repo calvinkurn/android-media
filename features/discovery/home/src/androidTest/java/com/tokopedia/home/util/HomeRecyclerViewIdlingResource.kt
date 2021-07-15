@@ -4,15 +4,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingResource
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 
 private const val NAME = "Recycler view has item idling resource"
 
 internal class HomeRecyclerViewIdlingResource(
-        private val recyclerView: RecyclerView?,
-        private val name: String? = NAME
-): IdlingResource {
+    private val recyclerView: RecyclerView?,
+    private val name: String? = NAME
+) : IdlingResource {
 
     private var resourceCallback: IdlingResource.ResourceCallback? = null
 
