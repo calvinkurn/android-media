@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -33,11 +34,9 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import kotlinx.android.synthetic.main.activity_new_shop_page.*
 
@@ -74,40 +73,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
-//        val fragTrans = supportFragmentManager.beginTransaction()
-//        val frag = RouteManager.instantiateFragmentDF(
-//                this,
-//                parentViewResourceID,
-//                "com.example.test_fragment_df.TestDfFragment",
-//                intent.extras)
-////            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
-////                    activity as AppCompatActivity,
-////                    "com.example.test_fragment_df.TestDfFragment",
-////                    intentData.extras
-////            ))
-//        fragTrans.add(R.id.parent_view, frag)
-//        fragTrans.commit()
-    }
-
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        return super.onCreateView(name, context, attrs)
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment? {
-//        return RouteManager.instantiateFragmentDF(
-//                this,
-//                "com.example.test_fragment_df.TestDfFragment",
-//                null)
-        return if(ShopUtil.isUsingNewShopPageHeader(this))
-            NewShopPageFragment.createInstance()
-        else
-            ShopPageFragment.createInstance()
-//        return null
-    }
+    override fun getNewFragment(): Fragment = NewShopPageFragment.createInstance()
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 

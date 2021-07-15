@@ -4,17 +4,19 @@ import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.track.TrackApp
-import com.tokopedia.variant_common.model.*
-import com.tokopedia.variant_common.model.ThematicCampaign
 
 object DynamicProductDetailMapper {
 
@@ -41,6 +43,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.MINI_SOCIAL_PROOF_STOCK -> {
+                    listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
                 }
@@ -54,14 +59,26 @@ object DynamicProductDetailMapper {
                             ?: "", content?.firstOrNull()?.icon ?: "")
                     )
                 }
+                ProductDetailConstant.MINI_SHOP_WIDGET -> {
+                    listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.PRODUCT_LIST -> {
-                    listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                    when (component.componentName) {
+                        PDP_7 ->
+                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                        else ->
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                    }
                 }
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.VARIANT -> {
-                    listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
+                    if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
+                        listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))
+                    } else {
+                        listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
+                    }
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
@@ -95,6 +112,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MVC -> {
                     listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.ONE_LINERS -> {
+                    listOfComponent.add(
+                        BestSellerInfoDataModel(type = component.type, name = component.componentName)
+                    )
+                }
             }
         }
         return listOfComponent
@@ -114,11 +136,32 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
+        val bestSellerComponent = data.components.find {
+            it.componentName == ProductDetailConstant.BEST_SELLER
+        }?.componentData?.map {
+            BestSellerInfoContent (
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible
+            )
+        }?.associateBy { it.productID }
+
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
+        return DynamicProductInfoP1(
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent
+        )
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>) {
@@ -137,80 +180,19 @@ object DynamicProductDetailMapper {
 
     // Because the new variant data have several different type, we need to map this into the old one
     // the old variant data was from p2, but changed into p1 now
-    fun mapVariantIntoOldDataClass(data: PdpGetLayout): ProductVariantCommon? {
+    fun mapVariantIntoOldDataClass(data: PdpGetLayout): ProductVariant? {
         val networkData = data.components.find {
             it.type == ProductDetailConstant.VARIANT
         }?.componentData?.firstOrNull() ?: return null
 
-        val variants = networkData.variants.map { it ->
-            val newOption = it.options.map { data ->
-                Option(id = data.id.toIntOrZero(), vuv = data.vuv.toIntOrZero(), value = data.value, hex = data.hex, picture = Picture(original = data.picture?.original
-                        ?: "", thumbnail = data.picture?.thumbnail ?: "", url100 = data.picture?.url100 ?: ""))
-            }
-
-            Variant(pv = it.pv,
-                    v = it.v,
-                    name = it.name,
-                    identifier = it.identifier,
-                    options = newOption)
-        }
-
-        val child = networkData.children.map {
-            val stock = VariantStock(stock = it.stock?.stock.toIntOrZero(), isBuyable = it.stock?.isBuyable, stockWording = it.stock?.stockWording,
-                    stockWordingHTML = it.stock?.stockWordingHTML, minimumOrder = it.stock?.minimumOrder.toIntOrZero())
-
-            val newCampaignData = it.campaign
-            val campaign = Campaign(campaignID = newCampaignData?.campaignID, isActive = newCampaignData?.isActive, originalPrice = newCampaignData?.originalPrice,
-                    originalPriceFmt = newCampaignData?.originalPriceFmt, discountedPercentage = newCampaignData?.discountedPercentage, discountedPrice = newCampaignData?.discountedPrice,
-                    campaignType = newCampaignData?.campaignType.toIntOrZero(), campaignTypeName = newCampaignData?.campaignTypeName,
-                    startDate = newCampaignData?.startDate, endDateUnix = newCampaignData?.endDateUnix, stock = newCampaignData?.stock, isAppsOnly = newCampaignData?.isAppsOnly, applinks = newCampaignData?.applinks,
-                    stockSoldPercentage = newCampaignData?.stockSoldPercentage, isUsingOvo = newCampaignData?.isUsingOvo
-                    ?: false, isCheckImei = newCampaignData?.isCheckImei, minOrder = newCampaignData?.minOrder, hideGimmick = newCampaignData?.hideGimmick,
-                    background = newCampaignData?.background ?: "", campaignIdentifier = newCampaignData?.campaignIdentifier ?: 0)
-
-            val thematicCampaignData = it.thematicCampaign
-            val thematicCampaign = ThematicCampaign(
-                    campaignName = thematicCampaignData?.campaignName,
-                    icon = thematicCampaignData?.icon,
-                    background = thematicCampaignData?.background,
-                    additionalInfo = thematicCampaignData?.additionalInfo)
-
-            VariantChildCommon(productId = it.productId, price = it.price, priceFmt = it.priceFmt, sku = it.sku, stock = stock,
-                    optionIds = it.optionIds, name = it.name, url = it.url, picture = Picture(original = it.picture?.original, thumbnail = it.picture?.thumbnail),
-                    campaign = campaign, thematicCampaign = thematicCampaign,isCod = it.isCod)
-        }
-
-        return ProductVariantCommon(
+        return ProductVariant(
                 parentId = networkData.parentId,
                 errorCode = networkData.errorCode,
-                defaultChild = networkData.defaultChild,
                 sizeChart = networkData.sizeChart,
-                variant = variants,
-                children = child
+                defaultChild = networkData.defaultChild,
+                variants = networkData.variants,
+                children = networkData.children
         )
-    }
-
-    fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
-        return when {
-            atcButton -> ProductDetailConstant.ATC_BUTTON
-            leasing -> ProductDetailConstant.LEASING_BUTTON
-            it == ProductDetailConstant.KEY_NORMAL_BUTTON -> {
-                ProductDetailConstant.BUY_BUTTON
-            }
-            it == ProductDetailConstant.KEY_OCS_BUTTON -> {
-                ProductDetailConstant.OCS_BUTTON
-            }
-            it == ProductDetailConstant.KEY_OCC_BUTTON -> {
-                ProductDetailConstant.OCC_BUTTON
-            }
-            it == ProductDetailConstant.KEY_REMIND_ME -> {
-                ProductDetailConstant.REMIND_ME_BUTTON
-            }
-            it == ProductDetailConstant.KEY_CHECK_WISHLIST -> {
-                ProductDetailConstant.CHECK_WISHLIST_BUTTON
-            }
-            else -> ProductDetailConstant.BUY_BUTTON
-        }
     }
 
     fun mapToWholesale(data: List<Wholesale>?): List<com.tokopedia.product.detail.common.data.model.product.Wholesale>? {
@@ -301,7 +283,7 @@ object DynamicProductDetailMapper {
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
                 ?: "", data?.name ?: "", data?.getProductImageUrl()
                 ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-                ?: listOf(), productInfoContent, forceRefresh)
+                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
@@ -320,5 +302,32 @@ object DynamicProductDetailMapper {
 
     fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
         return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
+    }
+
+    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {
+        val shouldAutoSelect = variantData.autoSelectedOptionIds()
+        val isParent = selectedChild == null
+        val selectedOptionIds =  when {
+            isParent -> {
+                if (shouldAutoSelect.isNotEmpty()) {
+                    //if product parent and able to auto select, do auto select
+                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+                } else {
+                    //if product parent, dont update selected variant
+                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                }
+            }
+            selectedChild?.isBuyable == true -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
+            }
+            shouldAutoSelect.isNotEmpty() -> {
+                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
+            }
+            else -> {
+                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+            }
+        }
+
+        return shouldAutoSelect.isNotEmpty() to selectedOptionIds
     }
 }

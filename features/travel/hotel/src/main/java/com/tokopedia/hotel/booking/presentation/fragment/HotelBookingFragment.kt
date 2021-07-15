@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -171,11 +170,6 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
             }
         })
-
-        bookingViewModel.promoData.observe(viewLifecycleOwner, Observer {
-            promoCode = it.promoCode
-            setupPayNowPromoTicker(it)
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -261,8 +255,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupContactDetail(hotelCart.cart)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
         setupImportantNotes(hotelCart.property)
+        initPromoSection()
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
+
+    private fun initPromoSection(){
+        bookingViewModel.promoData.observe(viewLifecycleOwner, Observer {
+            promoCode = it.promoCode
+            setupPayNowPromoTicker(it)
+        })
     }
 
     private fun initGuestInfoEditText() {
@@ -333,7 +335,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             iv_hotel_info_image.clipToOutline = true
         }
-        iv_hotel_info_image.loadImage(property.image.urlMax300, R.drawable.ic_failed_load_image)
+        iv_hotel_info_image.loadImage(property.image.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
     }
 
     private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {

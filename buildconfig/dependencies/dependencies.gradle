@@ -14,6 +14,7 @@ ext {
     archCoreVersion = "2.1.0"
     workManagerVersion = "2.5.0"
 
+    biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
     supportLibraryVersion = '1.1.0-rc01'
     exifInterfaceVersion = '1.2.0'
@@ -22,6 +23,7 @@ ext {
     playServiceVersion = '11.0.4'
     coroutineVersion = '1.4.3'
     retrofitVersion = '2.6.0'
+    gsonDebugVersion = '2.8.6'
     okHttpVersion = '3.12.5'
     brotliVersion = '0.1.2'
     glideVersion = '4.9.0'
@@ -42,7 +44,7 @@ ext {
     swipeRefreshVersion = '1.0.0'
 
     exoPlayerVersion = '2.11.8'
-    stfalconVersion = '1.0.0'
+    stfalconVersion = '1.0.10'
 
     playServiceFirebaseConfig = '16.1.3'
     playServiceBaseVersion = '17.3.0'
@@ -67,14 +69,15 @@ ext {
     bomVersion = '26.0.0'
 
     JunitVersion = '4.12'
-    JunitJupiterVersion = '5.1.1'
+    JunitJupiterVersion = '5.7.2'
     MockkVersion = '1.9.1'
     kotlinTestVersion = '1.3.70'
     KotlinMockitoVersion = '1.5.0'
     SpekVersion = "1.1.5"
     crashlyticsGradleVersion = '2.2.0'
     googleServiceGradleVersion = '4.3.3'
-    chuckerVersion = '3.1.2'
+    chuckerVersion = '4.0.3-tkpd'
+    chuckerNoopVersion = '3.1.2'
     sliceVersion = '1.0.0-alpha6'
     sliceCoreVersion = '1.0.0'
     transitionVersion = '1.3.1'
@@ -98,11 +101,12 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.7'
     unifyPrinciplesVersion = '1.3.8'
-    unifyComponentsVersion = '1.1.66'
-    unifyCoachMarkVersion = '1.2.13'
+    unifyComponentsVersion = '1.1.67'
+    unifyCoachMarkVersion = '1.2.14'
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
+    unifyLoaderDialogVersion = '1.0.0'
     unifyDatePickerVersion = '1.0.8'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
@@ -112,7 +116,9 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.7'
-    unifyAccordionVersion = '1.1.2'
+    unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
+    unifyTotalAmountVersion = '1.0.3'
+    unifyExplorePromoVersion = '1.0.2'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -232,7 +238,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
-            hansel                : "io.hansel.preprocessor:preprocessor:8.4.4",
+            hansel                : "io.hansel.preprocessor:preprocessor:9.0.0",
             robust                : "com.tokopedia.patch:robust:0.0.1@aar",
             autopatchbase         : "com.tokopedia.patch:autopatchbase:0.0.1",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
@@ -263,9 +269,10 @@ ext {
             liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
+            traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.1.13",
-            androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
+            androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "androidx.work:work-runtime-ktx:$workManagerVersion",
@@ -276,6 +283,7 @@ ext {
             sliceCore             : "androidx.slice:slice-core:$sliceCoreVersion",
             transition            : "androidx.transition:transition:$transitionVersion",
             newRelic              : 'com.newrelic.agent.android:android-agent:5.28.1',
+            biometric             : "androidx.biometric:biometric:$biometricVersion"
     ]
 
     testDependencies = [
@@ -323,8 +331,8 @@ ext {
 
     debugToolsDependencies = [
             stetho          : "com.facebook.stetho:stetho:1.4.2",
-            chuck           : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
-            chuckNoOp       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
+            chuck           : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion@aar",
+            chuckNoOp       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerNoopVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
             leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
@@ -344,6 +352,7 @@ ext {
             calendar        : "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}",
             banner          : "com.tokopedia.unify.compositions:banner:${unifyBannerVersion}@aar",
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
+            loader_dialog    : "com.tokopedia.unify.compositions:loader_dialog:${unifyLoaderDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
@@ -354,6 +363,8 @@ ext {
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
             accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
+            total_amount    : "com.tokopedia.unify.compositions:total_amount:${unifyTotalAmountVersion}@aar",
+            explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }
