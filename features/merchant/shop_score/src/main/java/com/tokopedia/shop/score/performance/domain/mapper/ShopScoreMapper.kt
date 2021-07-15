@@ -183,12 +183,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                         }
                         (powerMerchantResponse.status == PMStatusConst.ACTIVE || powerMerchantResponse.status == PMStatusConst.IDLE)
                                 && !userSession.isShopOfficialStore -> {
-                            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD) {
-                                if (shopAge >= NEW_SELLER_DAYS) {
-                                    add(mapToTransitionPeriodReliefUiModel(shopInfoPeriodUiModel.periodEndDate))
-                                }
-                            }
-
                             if (shopAge >= SHOP_AGE_SIXTY) {
                                 when (isEligiblePMPro) {
                                     true -> {
@@ -552,10 +546,6 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return PeriodDetailPerformanceUiModel(period = shopScoreLevelResponse?.period
                 ?: "-", nextUpdate = shopScoreLevelResponse?.nextUpdate
                 ?: "-", isNewSeller = isNewSeller)
-    }
-
-    private fun mapToTransitionPeriodReliefUiModel(endDate: String): TransitionPeriodReliefUiModel {
-        return TransitionPeriodReliefUiModel(dateTransitionPeriodRelief = DateFormatUtils.formatDate(PATTERN_PERIOD_DATE, PATTERN_DATE_TEXT, endDate), iconTransitionPeriodRelief = IC_SELLER_ANNOUNCE)
     }
 
     private fun mapToItemRecommendationPMUiModel(recommendationTools: List<GetRecommendationToolsResponse.ValuePropositionGetRecommendationTools.RecommendationTool>?): SectionShopRecommendationUiModel {

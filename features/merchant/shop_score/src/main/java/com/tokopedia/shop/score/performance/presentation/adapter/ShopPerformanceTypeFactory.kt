@@ -7,7 +7,6 @@ interface ShopPerformanceTypeFactory {
     fun type(headerShopPerformanceUiModel: HeaderShopPerformanceUiModel): Int
     fun type(periodDetailPerformanceUiModel: PeriodDetailPerformanceUiModel): Int
     fun type(itemDetailPerformanceUiModel: ItemDetailPerformanceUiModel): Int
-    fun type(transitionPeriodReliefUiModel: TransitionPeriodReliefUiModel): Int
     fun type(itemStatusRMUiModel: ItemStatusRMUiModel): Int
     fun type(itemPotentialPMBenefitUIModel: SectionPotentialPMBenefitUiModel): Int
     fun type(itemStatusPMUiModel: ItemStatusPMUiModel): Int

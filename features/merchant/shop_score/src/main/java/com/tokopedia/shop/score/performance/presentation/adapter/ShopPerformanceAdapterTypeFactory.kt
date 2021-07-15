@@ -32,10 +32,6 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return ItemDetailPerformanceViewHolder.LAYOUT
     }
 
-    override fun type(transitionPeriodReliefUiModel: TransitionPeriodReliefUiModel): Int {
-        return TransitionPeriodReliefViewHolder.LAYOUT
-    }
-
     override fun type(itemStatusRMUiModel: ItemStatusRMUiModel): Int {
         return ItemStatusRMViewHolder.LAYOUT
     }
@@ -86,7 +82,6 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             PeriodDetailPerformanceViewHolder.LAYOUT -> PeriodDetailPerformanceViewHolder(parent)
             ItemDetailPerformanceViewHolder.LAYOUT -> ItemDetailPerformanceViewHolder(parent, itemShopPerformanceListener)
             ShopPerformanceShimmerViewHolder.LAYOUT -> ShopPerformanceShimmerViewHolder(parent)
-            TransitionPeriodReliefViewHolder.LAYOUT -> TransitionPeriodReliefViewHolder(parent)
             ItemStatusPMViewHolder.LAYOUT -> ItemStatusPMViewHolder(parent, itemStatusPowerMerchantListener)
             CardPotentialPMBenefitViewHolder.LAYOUT -> CardPotentialPMBenefitViewHolder(parent, itemRegularMerchantListener)
             ItemStatusRMViewHolder.LAYOUT -> ItemStatusRMViewHolder(parent, itemPotentialPowerMerchantListener)
