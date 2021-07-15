@@ -38,13 +38,6 @@ project.properties
 assets/crashlytics-build.properties
 res/values/com_crashlytics_export_strings.xml
 
-# react native
-node_modules/
-jsconfig.json
-reactnative-apps/
-yarn.lock
-package-lock.json
-
 
 # buck
 .buckconfig.local
