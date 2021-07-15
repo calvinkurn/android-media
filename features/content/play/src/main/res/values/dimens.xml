@@ -75,6 +75,8 @@
     <dimen name="play_interactive_prestart_width">152dp</dimen>
     <dimen name="play_interactive_prestart_timer_radius">10dp</dimen>
 
+    <dimen name="play_interactive_error_width">152dp</dimen>
+
     <dimen name="play_interactive_live_width">174dp</dimen>
     <dimen name="play_interactive_live_height">82dp</dimen>
 
@@ -92,6 +94,11 @@
     <dimen name="play_interactive_winner_badge_radius">22dp</dimen>
     
     <dimen name="play_interactive_coachmark_anchor_size">0.1dp</dimen>
+
+    <dimen name="play_interactive_loader_radius">4dp</dimen>
+    <dimen name="play_interactive_loader_2_width">136dp</dimen>
+    <dimen name="play_interactive_loader_3_width">105dp</dimen>
+    <dimen name="play_interactive_loader_4_width">133dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>

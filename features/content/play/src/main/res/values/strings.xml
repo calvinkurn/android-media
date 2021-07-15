@@ -63,6 +63,9 @@
     <string name="play_interactive_prestart_timer_text">Dimulai dalam:</string>
     <string name="play_interactive_prestart_follow_button">Follow Buat Ikutan</string>
 
+    <string name="play_interactive_error_text">Oops, game gagal dimuat. Coba lagi, ya!</string>
+    <string name="play_interactive_error_action">Muat Ulang</string>
+
     <string name="play_interactive_live_timer_text">Berakhir dalam:</string>
 
     <string name="play_interactive_finish_initial_text">Game selesai!</string>
@@ -70,6 +73,8 @@
 
     <string name="play_interactive_tap_action_tap_text">Tap terus!</string>
     <string name="play_interactive_tap_action_follow_text">Follow dulu</string>
+
+    <string name="play_interactive_follow_success">Berhasil follow toko.</string>
 
     <string name="play_interactive_winner_badge_text">Pemenang</string>
 

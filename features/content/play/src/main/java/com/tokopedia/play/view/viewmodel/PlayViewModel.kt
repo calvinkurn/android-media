@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
@@ -602,8 +601,9 @@ class PlayViewModel @Inject constructor(
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             ClickFollowAction -> handleClickFollow(isFromLogin = false)
-            ClickFollowInteractiveAction -> handleClickInteractiveFollow(isFromLogin = false)
+            ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
+            ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
         }
     }
@@ -660,7 +660,7 @@ class PlayViewModel @Inject constructor(
 
         checkLeaderboard(channelData.id)
         //TODO("This is mock")
-        checkInteractive(channelData.id)
+//        checkInteractive(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1068,12 +1068,15 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkInteractive(channelId: String) {
-        if (!channelType.isLive) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
+            if (!channelType.isLive) error("Interactive is not available on non-Live channel")
+
+            _interactive.value = PlayInteractiveUiState.Loading
+
             val interactive = interactiveRepo.getCurrentInteractive(channelId)
             handleInteractiveFromNetwork(interactive)
         }) {
-            _interactive.value = PlayInteractiveUiState.NoInteractive
+            _interactive.value = PlayInteractiveUiState.Error
         }
     }
 
@@ -1376,11 +1379,17 @@ class PlayViewModel @Inject constructor(
     }
 
     /**
-     * @param isFromLogin If true, it means follow action will always be follow,
-     * if false, it depends on the current state
+     * [PartnerFollowAction] from interactive will definitely [PartnerFollowAction.Follow]
      */
-    private fun handleClickInteractiveFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+    private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
+        doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
+
+        viewModelScope.launch {
+            _uiEvent.emit(
+                    ShowToasterEvent.Info(message = UiString.Resource(R.string.play_interactive_follow_success))
+            )
+        }
+
         val channelData = mChannelData ?: return@needLogin
         playAnalytic.clickFollowShopInteractive(channelData.id, channelData.channelInfo.channelType)
     }
@@ -1401,11 +1410,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun handleClickRetryInteractive() {
+        val channelId = mChannelData?.id ?: return
+        checkInteractive(channelId = channelId)
+    }
+
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) return
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
-            REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickInteractiveFollow(isFromLogin = true)
+            REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             else -> {}
         }
     }

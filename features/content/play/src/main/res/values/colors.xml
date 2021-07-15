@@ -39,6 +39,8 @@
 
     <color name="play_dms_interactive_winning_dialog_subtitle">#D6DFEB</color>
 
+    <color name="play_dms_interactive_loader_bg">#66FFFFFF</color>
+
     <!--General Color-->
     <color name="play_dms_R100">#FFEAEF</color>
     <color name="play_dms_G300">#82EF95</color>

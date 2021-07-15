@@ -59,10 +59,7 @@ import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.HideCoachMarkWinnerEvent
-import com.tokopedia.play.view.uimodel.event.OpenPageEvent
-import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
-import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -442,6 +439,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onTapTapClicked(view: InteractiveViewComponent) {
         playViewModel.submitAction(InteractiveTapTapAction)
+    }
+
+    override fun onRetryButtonClicked(view: InteractiveViewComponent) {
+        playViewModel.submitAction(ClickRetryInteractiveAction)
     }
 
     /**
@@ -859,6 +860,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     is OpenPageEvent -> {
                         openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
                     }
+                    is ShowToasterEvent -> handleToasterEvent(event)
                 }
             }
         }
@@ -1370,6 +1372,12 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (isStateChanged) {
             when (state) {
+                PlayInteractiveUiState.Loading -> {
+                    interactiveView?.setLoading()
+                }
+                PlayInteractiveUiState.Error -> {
+                    interactiveView?.setError()
+                }
                 is PlayInteractiveUiState.PreStart -> {
                     interactiveView?.setPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
                         playViewModel.submitAction(InteractivePreStartFinishedAction)
@@ -1411,6 +1419,24 @@ class PlayUserInteractionFragment @Inject constructor(
         toolbarView.setPartnerName(partnerName)
     }
     //endregion
+
+    private fun handleToasterEvent(event: ShowToasterEvent) {
+        val text = getTextFromUiString(event.message)
+        doShowToaster(
+                toasterType = when (event) {
+                    is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
+                    is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
+                },
+                message = text
+        )
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
+    }
 
     /**
      * Change constraint
