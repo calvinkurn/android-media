@@ -12,9 +12,10 @@ import android.view.View
 import android.view.ViewPropertyAnimator
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.promoui.common.dpToPx
+import java.lang.ref.WeakReference
 import java.util.*
 
-class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContainer: MvcTextContainer) {
+class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, val secondContainer: WeakReference<MvcTextContainer>) {
     lateinit var animatedInfoList: List<AnimatedInfos?>
     var currentPositionAnimationInfo = 0
 
@@ -42,12 +43,15 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
     }
 
     fun checkToCancelTimer(){
-        if (firstContainer.context is Activity){
-            val activity = firstContainer.context as Activity
-            if(activity.isFinishing || activity.isDestroyed){
+        firstContainer.get()?.addOnAttachStateChangeListener(object :View.OnAttachStateChangeListener{
+            override fun onViewAttachedToWindow(v: View?) {
+                //Do nothing
+            }
+
+            override fun onViewDetachedFromWindow(v: View?) {
                 timer?.cancel()
             }
-        }
+        })
     }
 
     fun animateView() {
@@ -65,8 +69,8 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
         val invisibleDataPos = if (currentPositionAnimationInfo + 1 >= animatedInfoList.size) 0 else currentPositionAnimationInfo + 1
         currentPositionAnimationInfo = visibleDataPos
 
-        visibleContainer.setData(animatedInfoList[visibleDataPos])
-        invisibleContainer.setData(animatedInfoList[invisibleDataPos])
+        visibleContainer.get()?.setData(animatedInfoList[visibleDataPos])
+        invisibleContainer.get()?.setData(animatedInfoList[invisibleDataPos])
 
     }
 
@@ -78,7 +82,7 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
         timer = Timer()
         timer?.scheduleAtFixedRate(object :TimerTask(){
             override fun run() {
-                visibleContainer.post {
+                visibleContainer.get()?.post {
                     animateView()
                 }
             }
@@ -103,13 +107,13 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
 
     fun reset() {
 
-        firstContainer.clearAnimation()
-        secondContainer.clearAnimation()
+        firstContainer.get()?.clearAnimation()
+        secondContainer.get()?.clearAnimation()
 
-        firstContainer.alpha = 1f
-        firstContainer.translationY = 0f
-        secondContainer.alpha = 0f
-        secondContainer.translationY = dpToPx(48)
+        firstContainer.get()?.alpha = 1f
+        firstContainer.get()?.translationY = 0f
+        secondContainer.get()?.alpha = 0f
+        secondContainer.get()?.translationY = dpToPx(48)
         currentPositionAnimationInfo = 0
 
         visibleContainer = firstContainer
@@ -119,25 +123,31 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
     }
 
     @SuppressLint("Recycle")
-    fun animateTwoViews(viewOne:View, viewTwo:View){
+    fun animateTwoViews(viewOne:WeakReference<MvcTextContainer>, viewTwo:WeakReference<MvcTextContainer>){
 
-        val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
-        val alphaAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewOne, alphaAnimPropOne)
+        viewOne.get()?.let {v1->
 
-        val translateAnimPropOne = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(48))
-        val translateAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewOne, translateAnimPropOne)
 
-        val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-        val alphaAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewTwo, alphaAnimPropTwo)
+            viewTwo.get()?.let {v2->
+                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+                val alphaAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
 
-        val translateAnimPropTwo = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48),0f)
-        val translateAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewTwo, translateAnimPropTwo)
-        translateAnimObjTwo.addListener(animListener)
+                val translateAnimPropOne = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(48))
+                val translateAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
 
-        animatorSet = AnimatorSet()
-        animatorSet?.playTogether(alphaAnimObjOne,translateAnimObjOne,alphaAnimObjTwo,translateAnimObjTwo)
-        animatorSet?.duration = 600L
-        animatorSet?.start()
+                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+                val alphaAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
+
+                val translateAnimPropTwo = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48),0f)
+                val translateAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
+                translateAnimObjTwo.addListener(animListener)
+
+                animatorSet = AnimatorSet()
+                animatorSet?.playTogether(alphaAnimObjOne,translateAnimObjOne,alphaAnimObjTwo,translateAnimObjTwo)
+                animatorSet?.duration = 600L
+                animatorSet?.start()
+            }
+        }
     }
 
     fun slideUpFromMiddle(view: View, duration: Long = 600, completion: (() -> Unit)? = null) {

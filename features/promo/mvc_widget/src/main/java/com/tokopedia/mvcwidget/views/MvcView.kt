@@ -8,6 +8,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
+import java.lang.ref.WeakReference
 import java.util.*
 
 
@@ -35,7 +36,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         initViews()
         setClicks()
 
-        mvcAnimationHandler = MvcAnimationHandler(mvcTextContainerFirst,mvcTextContainerSecond)
+        mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst),WeakReference(mvcTextContainerSecond))
     }
 
     private fun initViews() {
