@@ -418,7 +418,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupToolbarChatIcon(containAskSellerButton: Boolean) {
-        if (containAskSellerButton) {
+        val orderId = viewModel.getOrderId()
+        if (containAskSellerButton || orderId.isBlank() || orderId == "0") {
             toolbarBuyerOrderDetail?.apply {
                 rightContentView.removeAllViews()
                 rightIcons?.clear()

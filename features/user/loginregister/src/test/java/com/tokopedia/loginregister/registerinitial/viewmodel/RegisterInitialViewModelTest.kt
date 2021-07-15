@@ -70,7 +70,7 @@ class RegisterInitialViewModelTest {
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val rawQueries = mapOf(
-            RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test",
+            RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test2",
             RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST to "test"
     )
 
@@ -159,9 +159,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterCheckPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
 
         viewModel.registerCheck(testId)
 
@@ -173,9 +171,7 @@ class RegisterInitialViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerCheck(testId)
 
@@ -189,9 +185,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterRequestData(accessToken = "asda", refreshToken = "asdasd", tokenType = "kfkfk")
         val response = RegisterRequestPojo(data = responseData)
 
-        every { registerRequestUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterRequestPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerRequestUseCase.executeOnBackground() } returns response
 
         viewModel.registerRequest("", "", "", "")
 
@@ -234,9 +228,8 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Failed Register Request`() {
-        every { registerRequestUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+
+        coEvery { registerRequestUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerRequest("", "", "", "")
 

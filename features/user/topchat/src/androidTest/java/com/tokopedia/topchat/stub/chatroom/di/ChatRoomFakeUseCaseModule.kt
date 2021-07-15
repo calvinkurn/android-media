@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingRespon
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
@@ -234,5 +235,21 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
     ): GetChatRoomSettingUseCaseStub {
         return GetChatRoomSettingUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatTokoNowWarehouseUseCase(
+            stub: ChatTokoNowWarehouseUseCaseStub
+    ): ChatTokoNowWarehouseUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatTokoNowWarehouseUseCaseStub(
+            gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
+    ): ChatTokoNowWarehouseUseCaseStub {
+        return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
     }
 }

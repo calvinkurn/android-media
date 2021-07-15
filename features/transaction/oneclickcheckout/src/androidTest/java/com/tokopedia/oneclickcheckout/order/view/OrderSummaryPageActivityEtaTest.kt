@@ -98,20 +98,6 @@ class OrderSummaryPageActivityEtaTest {
                     shippingCourier = "Pengiriman Bebas Ongkir",
                     shippingPrice = null,
                     shippingEta = "Estimasi tiba besok - 3 Feb")
-
-            //    Deprecated Test (will delete in next iteration)
-//            preferenceInterceptor.customGetPreferenceListResponsePath = GET_PREFERENCE_LIST_WITH_ETA_RESPONSE_PATH
-//
-//            clickAddOrChangePreferenceRevamp {
-//                assertProfile(0) {
-//                    val shippingDuration = it.findViewById<Typography>(R.id.tv_new_shipping_duration)
-//                    assertEquals("Estimasi tiba besok", shippingDuration.text)
-//                }
-//                assertProfile(1) {
-//                    val shippingDuration = it.findViewById<Typography>(R.id.tv_new_shipping_duration)
-//                    assertEquals("Estimasi tiba besok - 3 Feb", shippingDuration.text)
-//                }
-//            }
         }
     }
 

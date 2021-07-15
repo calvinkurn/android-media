@@ -50,7 +50,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
+open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
@@ -60,12 +60,12 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var otpData: OtpData
-    private lateinit var adapter: VerificationMethodAdapter
+    protected lateinit var otpData: OtpData
+    protected lateinit var adapter: VerificationMethodAdapter
 
-    private var isMoreThanOneMethod: Boolean = true
+    protected var isMoreThanOneMethod: Boolean = true
 
-    private val viewmodel by lazy {
+    protected val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
 
@@ -125,7 +125,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun setMethodListAdapter() {
+    open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 viewmodel.done = true
@@ -291,7 +291,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onGoToInactivePhoneNumber() {
+    open fun onGoToInactivePhoneNumber() {
         context?.let {
             analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
             analytics.trackClickInactivePhoneLink()
