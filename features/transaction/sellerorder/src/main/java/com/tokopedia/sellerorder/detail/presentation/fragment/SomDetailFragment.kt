@@ -548,23 +548,58 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun renderProducts() {
-        // products
         detailResponse?.run {
-            val nonBundleProducts = listProduct.map { NonProductBundleUiModel(it) }
-            val productBundleDummy = mutableListOf<BaseProductUiModel>()
-            productBundleDummy.addAll(getDummyBundle(listProduct))
-            productBundleDummy.addAll(nonBundleProducts)
-            val dataProducts = SomDetailProducts(productBundleDummy, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
+            val bundleDetailList = mutableListOf<BaseProductUiModel>()
+            bundleDetailList.addAll(getProductBundleList(bundleDetail?.bundle.orEmpty()))
+            bundleDetailList.addAll(getProductNonBundleList(haveProductBundle, bundleDetail?.nonBundle.orEmpty(), listProduct))
+            val dataProducts = SomDetailProducts(bundleDetailList, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         }
     }
 
-    private fun getDummyBundle(listProducts: List<SomDetailOrder.Data.GetSomDetail.Products>): List<ProductBundleUiModel> {
-        return listOf(ProductBundleUiModel(
-                "Bundle Name",
-                listProducts,
-                "Rp5.000.000"
-        ))
+    private fun getProductNonBundleList(
+            haveProductBundle: Boolean,
+            nonBundle: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleDetailProduct>,
+            listProduct: List<SomDetailOrder.Data.GetSomDetail.Products>
+    ): List<BaseProductUiModel> {
+        return if (haveProductBundle) {
+            nonBundle.map {
+                NonProductBundleUiModel(
+                        product = SomDetailOrder.Data.GetSomDetail.Products(
+
+                        )
+                )
+            }
+        } else {
+            listProduct.map {
+                NonProductBundleUiModel(it)
+            }
+        }
+    }
+
+    private fun getProductBundleList(
+            bundleList: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleProduct>
+    ): List<ProductBundleUiModel> {
+        return bundleList.map { bundle ->
+            return@map ProductBundleUiModel(
+                    bundleId = bundle.bundleId,
+                    bundleName = bundle.bundleName,
+                    bundlePrice = bundle.bundlePrice,
+                    quantity = bundle.bundleQuantity,
+                    bundleSubTotal = bundle.bundleSubTotal,
+                    orderDetail = bundle.orderDetail.map {
+                        SomDetailOrder.Data.GetSomDetail.Products(
+                                id = it.productId,
+                                orderDetailId = it.orderDetailId,
+                                name = it.productName,
+                                thumbnail = it.thumbnail,
+                                priceText = it.productPrice,
+                                quantity = bundle.bundleQuantity * it.quantity,
+                                note = it.note
+                        )
+                    }
+            )
+        }
     }
 
     private fun renderShipment() {

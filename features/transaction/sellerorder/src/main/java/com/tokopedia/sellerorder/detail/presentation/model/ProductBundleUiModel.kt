@@ -8,9 +8,12 @@ import com.tokopedia.sellerorder.detail.presentation.adapter.factory.ProductAdap
  */
 
 data class ProductBundleUiModel(
-        val bundleName: String,
-        val products: List<SomDetailOrder.Data.GetSomDetail.Products>,
-        val totalPriceFmt: String
+        val bundleId: String = "",
+        val bundleName: String = "",
+        val bundlePrice: String = "",
+        val quantity: Int = 0,
+        val bundleSubTotal: String = "",
+        val orderDetail: List<SomDetailOrder.Data.GetSomDetail.Products>,
 ) : BaseProductUiModel {
 
     override fun type(typeFactory: ProductAdapterFactory): Int {
