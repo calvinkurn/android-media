@@ -107,13 +107,7 @@ data class SomListOrderListResponse(
                     data class BundleProduct(
                             @Expose
                             @SerializedName("bundle_id")
-                            val bundleId: String = "",
-                            @Expose
-                            @SerializedName("bundle_name")
-                            val bundleName: String = "",
-                            @Expose
-                            @SerializedName("bundle_price")
-                            val bundlePrice: String = "",
+                            val bundleId: String = "0",
                             @Expose
                             @SerializedName("order_detail")
                             val orderDetail: List<OrderProduct> = emptyList()
@@ -129,8 +123,19 @@ data class SomListOrderListResponse(
                         val productName: String = "",
                         @SerializedName("picture")
                         @Expose
-                        val picture: String = ""
-                )
+                        val picture: String = "",
+                        @SerializedName("thumbnail")
+                        @Expose
+                        val thumbnail: String = ""
+                ) {
+                        fun getImageUrl(): String {
+                                return if (picture.isNotBlank()) {
+                                        picture
+                                } else {
+                                        thumbnail
+                                }
+                        }
+                }
 
                 data class Button(
                         @SerializedName("key")

@@ -47,8 +47,6 @@ class OrderListMapper @Inject constructor() {
                     bundle = it.bundle.map { bundle ->
                         BundleProductUiModel(
                                 bundleId = bundle.bundleId,
-                                bundleName = bundle.bundleName,
-                                bundlePrice = bundle.bundlePrice,
                                 orderDetail = mapProductList(bundle.orderDetail)
                         )
                     }
@@ -62,7 +60,7 @@ class OrderListMapper @Inject constructor() {
             SomListOrderUiModel.OrderProduct(
                     productId = it.productId,
                     productName = it.productName.asCamelCase(),
-                    picture = it.picture
+                    picture = it.getImageUrl()
             )
         }
     }

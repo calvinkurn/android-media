@@ -11,7 +11,5 @@ data class BundleDetailUiModel(
 
 data class BundleProductUiModel(
         val bundleId: String = "0",
-        val bundleName: String = "",
-        val bundlePrice: String = "",
         val orderDetail: List<SomListOrderUiModel.OrderProduct> = emptyList()
 )
