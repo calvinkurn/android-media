@@ -12,7 +12,6 @@ import androidx.core.text.TextUtilsCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.*
 import java.util.*
-import kotlin.jvm.Throws
 import kotlin.math.abs
 
 
@@ -31,19 +30,19 @@ import kotlin.math.abs
  * or {@link GravitySnapHelper#setMaxFlingDistance(int)}
  */
 
+/**
+ * @return true if this SnapHelper should snap to the last item
+ */
+/**
+ * Enable snapping of the last item that's snappable.
+ * The default value is false, because you can't see the last item completely
+ * if this is enabled.
+ * *
+ * @param snap true if you want to enable snapping of the last snappable item
+ */
 
 open class GravitySnapHelper @JvmOverloads constructor(private var gravity: Int,
-        /**
-         * @return true if this SnapHelper should snap to the last item
-         */
-                                                  /**
-                                                   * Enable snapping of the last item that's snappable.
-                                                   * The default value is false, because you can't see the last item completely
-                                                   * if this is enabled.
-                                                   *
-                                                   * @param snap true if you want to enable snapping of the last snappable item
-                                                   */
-                                                   private var snapLastItem: Boolean = false) : LinearSnapHelper() {
+                                                       private var snapLastItem: Boolean = false) : LinearSnapHelper() {
     private var isRtl: Boolean = false
     private var nextSnapPosition: Int = 0
     internal var isScrolling = false
@@ -229,8 +228,8 @@ open class GravitySnapHelper @JvmOverloads constructor(private var gravity: Int,
             null
         } else object : LinearSmoothScroller(recyclerView.context) {
             override fun onTargetFound(targetView: View,
-                                                 state: RecyclerView.State,
-                                                 action: Action) {
+                                       state: RecyclerView.State,
+                                       action: Action) {
                 if (!this@GravitySnapHelper::recyclerView.isInitialized || this@GravitySnapHelper.recyclerView.layoutManager == null) {
                     // The associated RecyclerView has been removed so there is no action to take.
                     return
@@ -238,7 +237,7 @@ open class GravitySnapHelper @JvmOverloads constructor(private var gravity: Int,
                 recyclerView.layoutManager?.let {
 
                     calculateDistanceToFinalSnap(it,
-                            targetView)?.let {out ->
+                            targetView)?.let { out ->
                         val dx = out[0]
                         val dy = out[1]
                         val time = calculateTimeForDeceleration(Math.max(Math.abs(dx), Math.abs(dy)))
@@ -526,7 +525,6 @@ open class GravitySnapHelper @JvmOverloads constructor(private var gravity: Int,
     }
 
     companion object {
-
         const val FLING_DISTANCE_DISABLE = -1
         const val FLING_SIZE_FRACTION_DISABLE = -1f
     }

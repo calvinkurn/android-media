@@ -132,7 +132,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         sharedModelPrepaid.selectedFilter.observe(viewLifecycleOwner, Observer {
             if (operatorId.isNotEmpty()) {
-                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it)
+                sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, it,
+                        clientNumber = telcoClientNumberWidget.getInputNumber())
             }
         })
 
@@ -182,6 +183,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         subscribeUi()
         initViewPager()
+        buyWidget.setBuyButtonLabel(getString(R.string.telco_pick_product))
+
+        //load data
         getCatalogMenuDetail()
         getDataFromBundle(savedInstanceState)
         if (rechargeProductFromSlice.isNotEmpty()) {
@@ -469,7 +473,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
-                    productId)
+                    productId, telcoClientNumberWidget.getInputNumber())
         }
     }
 

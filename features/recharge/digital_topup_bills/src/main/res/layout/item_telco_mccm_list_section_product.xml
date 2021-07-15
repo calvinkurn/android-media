@@ -19,8 +19,15 @@
         app:typographyType="heading_4"
         tools:text="Rekomendasi Untukmu" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/telco_mccm_rv"
+
+    <com.tokopedia.topupbills.telco.prepaid.widget.NestedScrollableHost
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/telco_mccm_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.tokopedia.topupbills.telco.prepaid.widget.NestedScrollableHost>
 </LinearLayout>

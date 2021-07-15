@@ -19,7 +19,8 @@ data class TelcoProduct(
         @Expose
         val attributes: TelcoAttributesProduct = TelcoAttributesProduct(),
         var isTitle: Boolean = false,
-        var titleSection: String = "")
+        var titleSection: String = "",
+        var productPosition: Int = 0)
     : Parcelable, Visitable<TelcoProductAdapterFactory> {
     override fun type(typeFactoryProduct: TelcoProductAdapterFactory) = typeFactoryProduct.type(this)
 }

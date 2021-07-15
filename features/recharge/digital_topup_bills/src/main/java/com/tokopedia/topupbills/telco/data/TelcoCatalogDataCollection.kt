@@ -18,5 +18,5 @@ data class TelcoCatalogDataCollection(
     : Parcelable, Visitable<TelcoProductAdapterFactory> {
     override fun type(typeFactoryProduct: TelcoProductAdapterFactory) = typeFactoryProduct.type(this)
 
-    fun isMccm(): Boolean = name == "Flash Sale"
+    fun isMccm(): Boolean = name == "Promo Spesial Buat Kamu"
 }
