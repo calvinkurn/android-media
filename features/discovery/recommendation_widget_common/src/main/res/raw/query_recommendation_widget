@@ -70,6 +70,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
                   key
                   value
         }
+        parentID
       }
     }
   }
