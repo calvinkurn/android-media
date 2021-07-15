@@ -1,6 +1,7 @@
 package com.tokopedia.cart_common.data.response.updatecart
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.cart_common.data.response.common.OutOfService
 
 data class Data(
         @SerializedName("error")

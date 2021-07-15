@@ -16,6 +16,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart_common.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cart_common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -23,7 +25,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -300,9 +301,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun hitUpdateCart(quantity: Int, request: MiniCartItem): Flow<Result<String>> {
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
-
+            val updateCartRequest = UpdateCartRequest(
+                    cartId = copyOfMiniCartItem.cartId,
+                    quantity = copyOfMiniCartItem.quantity,
+                    notes = copyOfMiniCartItem.notes
+            )
             updateCartUseCase.get().setParams(
-                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    updateCartRequestList = listOf(updateCartRequest),
                     source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
             )
             val result = updateCartUseCase.get().executeOnBackground()
