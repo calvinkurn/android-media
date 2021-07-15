@@ -99,6 +99,7 @@ object PublicFolderUtil {
             try {
                 val resultPath = resultFile.absolutePath.replace(resultFile.name, outputFileName)
                 resultFile.renameTo(File(resultPath))
+                resultFile = File(resultPath)
             } catch (ex: Exception) {}
         }
         return resultFile to uri

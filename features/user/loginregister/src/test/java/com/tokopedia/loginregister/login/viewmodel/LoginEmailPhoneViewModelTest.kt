@@ -793,13 +793,10 @@ class LoginEmailPhoneViewModelTest {
     fun `on Failed get ticker`() {
         /* When */
         coEvery { tickerInfoUseCase.createObservable(any()).toBlocking().single() } throws throwable
-
         viewModel.getTickerInfo()
-
         /* Then */
-        verify {
-            getTickerInfoObserver.onChanged(Fail(throwable))
-        }
+        MatcherAssert.assertThat(viewModel.getTickerInfoResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        assertEquals((viewModel.getTickerInfoResponse.value as Fail).throwable.message, throwable.message)
     }
 
     @Test
