@@ -352,7 +352,11 @@ class TopupBillsFavoriteNumberFragment :
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
         } else {
-            numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            if (clientNumbers.isNotEmpty()) {
+                numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            } else {
+                numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+            }
         }
     }
 
@@ -366,6 +370,7 @@ class TopupBillsFavoriteNumberFragment :
 
     fun onSearchReset() {
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.setText("")
+        numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -710,7 +715,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun getOperatorNameByPrefix(clientNumber: String): String {
-        return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.single {
+        return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.singleOrNull() {
             clientNumber.startsWith(it.value)
         }?.operator?.attributes?.name ?: ""
     }
