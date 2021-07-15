@@ -173,6 +173,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val routeApplinkMutableLiveData = SingleLiveEvent<String>()
     val routeApplinkLiveData: LiveData<String> = routeApplinkMutableLiveData
 
+    protected val deleteCartTrackingMutableLiveData = SingleLiveEvent<String>()
+    val deleteCartTrackingLiveData: LiveData<String> = deleteCartTrackingMutableLiveData
+
     init {
         updateQueryParams()
 
@@ -933,11 +936,16 @@ abstract class BaseSearchCategoryViewModel(
     private fun deleteCart(miniCartItem: MiniCartItem, productItem: ProductItemDataView, quantity: Int) {
         deleteCartUseCase.setParams(listOf(miniCartItem))
         deleteCartUseCase.execute({
+            sendDeleteCartTracking(productItem)
             onAddToCartSuccess(productItem, quantity)
             updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
         }, {
             onAddToCartFailed(it)
         })
+    }
+
+    private fun sendDeleteCartTracking(productItem: ProductItemDataView) {
+        deleteCartTrackingMutableLiveData.value = productItem.id
     }
 
     private fun updateCart(miniCartItem: MiniCartItem, productItem: ProductItemDataView, quantity: Int) {

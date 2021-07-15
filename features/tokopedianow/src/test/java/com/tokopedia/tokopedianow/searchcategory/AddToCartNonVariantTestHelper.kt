@@ -411,11 +411,11 @@ class AddToCartNonVariantTestHelper(
         `Given view setup to delete`(deleteCartMessage)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
-        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
-        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productId }!!
 
         val productUpdatedQuantity = 0
-        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+        val productInVisitable = productItemList.find { it.id == productId }!!
 
         `When add to cart a product`(productInVisitable, productUpdatedQuantity)
 
@@ -425,10 +425,9 @@ class AddToCartNonVariantTestHelper(
             productInVisitable,
             deleteCartMessage,
         )
+        `Then verify delete cart tracking is called`(productId)
         `Then assert route to login page event is null`()
     }
-
-
 
     private fun `Given view setup to delete`(deleteCartMessage: String) {
         val deleteCartResponse = RemoveFromCartData(
@@ -489,6 +488,11 @@ class AddToCartNonVariantTestHelper(
         verify(exactly = 0) {
             updateCartUseCase.execute(any(), any())
         }
+    }
+
+    private fun `Then verify delete cart tracking is called`(productId: String) {
+        val increaseQtyTracking = baseViewModel.deleteCartTrackingLiveData.value!!
+        assertThat(increaseQtyTracking, shouldBe(productId))
     }
 
     fun `delete cart failed`() {
