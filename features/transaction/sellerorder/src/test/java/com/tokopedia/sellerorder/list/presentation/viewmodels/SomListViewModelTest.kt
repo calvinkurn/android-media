@@ -763,6 +763,43 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
+    fun bulkRequestPickup_shouldAllNotEligible() = runBlocking {
+        val orderIds = listOf("0", "1", "2", "5", "6", "7")
+        val batchId = "1234566"
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId)
+        val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 0, success = 0)
+        val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "0"))
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "1"))
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "2"))
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "5"))
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "6"))
+            add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "7"))
+        }
+        retryRequestPickup.set(viewModel, 11)
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, errors = failList)
+
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } returns multiShippingStatusUiModel
+
+        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
+
+        viewModel.bulkRequestPickup(orderIds)
+
+        coVerify {
+            bulkRequestPickupUseCase.setParams(orderIds)
+            bulkRequestPickupUseCase.executeOnBackground()
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllNotEligible)
+    }
+
+    @Test
     fun bulkRequestPickup_shouldFailRetry() = runBlocking {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"

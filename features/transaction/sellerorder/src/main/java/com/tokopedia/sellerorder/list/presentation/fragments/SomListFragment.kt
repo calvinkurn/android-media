@@ -1220,11 +1220,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     showErrorBulkRequestPickupStatus()
                 }
                 is AllFailEligible -> {
-                    if (it.isRetry) {
-                        showAllFailEligibleBulkRequestPickup(it.orderIdListFail)
-                    } else {
-                        showErrorBulkRequestPickupStatus()
-                    }
+                    showAllFailEligibleBulkRequestPickup(it.orderIdListFail)
                 }
                 is ServerFail -> {
                     bulkRequestPickupDialog?.dismiss()
@@ -1485,6 +1481,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     }
                 }
             }
+            if (bulkRequestPickupDialog?.getDialogUnify()?.isShowing == true) {
+                bulkRequestPickupDialog?.dismiss()
+            }
         }
     }
 
@@ -1657,9 +1656,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun failOrderListSelected(orderIdsFail: List<String>) {
-        adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.orderId in orderIdsFail }.onEach {
-            it.isChecked = true
-        }
+        adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.orderId in orderIdsFail }
+            .onEach {
+                it.isChecked = true
+            }
         adapter.notifyDataSetChanged()
     }
 

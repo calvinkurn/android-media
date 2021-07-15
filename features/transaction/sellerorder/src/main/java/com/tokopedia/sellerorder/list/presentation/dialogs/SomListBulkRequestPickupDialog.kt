@@ -75,6 +75,8 @@ class SomListBulkRequestPickupDialog(context: Context) {
         }
     }
 
+    fun getDialogUnify() = dialogUnify
+
     fun dismiss() {
         dialogUnify?.dismiss()
     }
