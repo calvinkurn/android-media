@@ -28,6 +28,14 @@ class EmoneyAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, mapEvent)
     }
 
+    private fun addComponentTapcash(mapEvent: MutableMap<String, Any>, irisSessionId: String){
+        mapEvent[Param.CURRENT_SITE] = Param.CURRENT_SITE_EMONEY
+        mapEvent[Param.BUSINESS_UNIT] = Param.BUSINESS_UNIT_EMONEY
+        mapEvent[Param.SESSION_IRIS] = irisSessionId
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     fun openScreenNFC(operatorName: String, userId: String, irisSessionId: String) {
         val stringScreenName = "${Screen.INITIAL_NFC}-${operatorName}"
         addComponentOpenScreenNFC(stringScreenName, userId, irisSessionId)
@@ -112,6 +120,37 @@ class EmoneyAnalytics {
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
+    fun onShowErrorTapcashClickContactCS(irisSessionId: String){
+        val map = TrackAppUtils.gtmData(
+                Event.GENERAL_EVENT,
+                Category.TAPCASH_NFC,
+                Action.CLICK_CONTACT_TOKOPEDIA_CARE,
+                Label.CHECK_BALANCE_PAGE
+        )
+        addComponentTapcash(map, irisSessionId)
+    }
+
+    fun onShowErrorTapcashClickUpdateBalanceCardFailed(irisSessionId: String){
+        val map = TrackAppUtils.gtmData(
+                Event.GENERAL_EVENT,
+                Category.TAPCASH_NFC,
+                Action.IMPRESSION_EVENT_TOP,
+                ""
+        )
+        addComponentTapcash(map, irisSessionId)
+    }
+
+    fun onShowErrorTapcashImpressionUpdateBalanceCardFailed(irisSessionId: String){
+        val map = TrackAppUtils.gtmData(
+                Event.GENERAL_EVENT,
+                Category.TAPCASH_NFC,
+                Action.CLICK_CONTACT_TOKOPEDIA_CARE,
+                Label.TAPCASH_BNI_FAILED
+        )
+        addComponentTapcash(map, irisSessionId)
+    }
+
+
     //---------------------------------------------------------------------------------------------------------
     // OLD ANALYTICS
 
@@ -163,6 +202,7 @@ class EmoneyAnalytics {
         companion object {
             const val CLICK_NFC = "clickNFC"
             const val OPEN_SCREEN = "openScreen"
+            const val GENERAL_EVENT = "digitalGeneralEvent"
         }
     }
 
@@ -178,6 +218,7 @@ class EmoneyAnalytics {
     interface Category {
         companion object {
             const val DIGITAL_NFC = "digital - nfc page"
+            const val TAPCASH_NFC = "dg - bni tapcash"
         }
     }
 
@@ -199,6 +240,9 @@ class EmoneyAnalytics {
             const val SUCCESS_CLICK_CLOSE_PAGE = "click x button success"
             const val FAILED_CLICK_CLOSE_PAGE = "click x button failed"
             const val FAILED_CLICK_CLOSE_PAGE_NFC_NOT_SUPPORTED = "click x button failed nfc"
+
+            const val IMPRESSION_EVENT_TOP = "impression topup bni tapcash failed"
+            const val CLICK_CONTACT_TOKOPEDIA_CARE = "click hubungi tokopedia care"
         }
     }
 
@@ -206,6 +250,8 @@ class EmoneyAnalytics {
         companion object {
             const val EMONEY = "emoney"
             const val BRIZZI = "brizzi"
+            const val TAPCASH_BNI_FAILED = "topup bni tapcash failed"
+            const val CHECK_BALANCE_PAGE = "check saldo page"
         }
     }
 

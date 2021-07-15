@@ -116,6 +116,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                 emoneyAnalytics.clickTopupEmoney(ETOLL_CATEGORY_ID, getOperatorName(issuerId), userSession.userId, irisSessionId)
                 onProcessTopupNow(getPassData(operatorId, issuerId))
             }
+
+            override fun onClickTickerTapcash() {
+                emoneyAnalytics.onShowErrorTapcashClickContactCS(irisSessionId)
+            }
         })
 
         tapETollCardView.setListener(object : TapETollCardView.OnTapEtoll {
@@ -128,6 +132,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             }
 
             override fun goToHelpTapcash() {
+                emoneyAnalytics.onShowErrorTapcashClickUpdateBalanceCardFailed(irisSessionId)
                 RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${HELP_TAPCASH}")
             }
         })
@@ -213,6 +218,10 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
             tapETollCardView.showInitialState()
             tapETollCardView.showErrorState(updatedErrorMessage, errorMessageLabel,
                     imageUrl, isButtonShow, mandiriGetSocketTimeout, tapCashWriteFailed)
+        }
+
+        if(tapCashWriteFailed){
+            emoneyAnalytics.onShowErrorTapcashImpressionUpdateBalanceCardFailed(irisSessionId)
         }
 
         emoneyAnalytics.openScreenFailedReadCardNFC(userSession.userId, irisSessionId)

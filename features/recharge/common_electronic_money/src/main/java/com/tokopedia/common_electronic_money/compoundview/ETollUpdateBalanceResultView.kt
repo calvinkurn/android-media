@@ -73,6 +73,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
                 setHtmlDescription(resources.getString(R.string.emoney_nfc_ticker_desc))
                 setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        listener.onClickTickerTapcash()
                         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
                     }
 
@@ -116,5 +117,6 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
 
     interface OnTopupETollClickListener {
         fun onClick(operatorId: String, issuerId: Int)
+        fun onClickTickerTapcash()
     }
 }
