@@ -86,9 +86,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
     protected var isMoreThanOneMethod = true
-    protected var clear: Boolean = false
-    protected var done = false
-    private var isLoginRegisterFlow = false
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
     private val delayAnimateText: Long = 350
@@ -126,7 +123,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
-        isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
+        viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
                 ?: false
         isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true)
                 ?: true
@@ -156,12 +153,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         hideKeyboard()
     }
 
-    private fun clearOtpLogin() {
-        clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
-        if (clear) {
-            if (!done && isLoginRegisterFlow) {
-                userSession.setToken(null, null, null)
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (::countDownTimer.isInitialized) {
+            countDownTimer.cancel()
         }
     }
 
@@ -252,9 +247,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 is Fail -> onFailedOtpValidate(it.throwable)
             }
         })
-        viewModel.onClearedViewModel.observe(viewLifecycleOwner, Observer {
-            clearOtpLogin()
-        })
     }
 
     open fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
@@ -328,7 +320,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             otpValidateData.success -> {
                 // tracker auto submit success
                 analytics.trackAutoSubmitVerification(otpData, modeListData,true)
-                done = true
+                viewModel.done = true
                 trackSuccess()
                 resetCountDown()
                 val bundle = Bundle().apply {
@@ -544,7 +536,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        done = true
+                        viewModel.done = true
                         analytics.trackClickUseOtherMethod(otpData, modeListData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
@@ -564,7 +556,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        done = true
+                        viewModel.done = true
                         analytics.trackClickUseOtherMethod(otpData, modeListData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }

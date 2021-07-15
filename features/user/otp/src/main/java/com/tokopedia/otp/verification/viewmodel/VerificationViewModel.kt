@@ -11,9 +11,12 @@ import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -27,6 +30,8 @@ open class VerificationViewModel @Inject constructor(
         private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
         private val sendOtpUseCase2FA: SendOtp2FAUseCase,
+        private val userSession: UserSessionInterface,
+        private val remoteConfig: RemoteConfig,
         dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -42,9 +47,8 @@ open class VerificationViewModel @Inject constructor(
     val otpValidateResult: LiveData<Result<OtpValidateData>>
         get() = _otpValidateResult
 
-    private val _onClearedViewModel = MutableLiveData<Unit>()
-    val onClearedViewModel: LiveData<Unit>
-        get() = _onClearedViewModel
+    var done = false
+    var isLoginRegisterFlow = false
 
     fun getVerificationMethod2FA(
             otpType: String,
@@ -237,7 +241,13 @@ open class VerificationViewModel @Inject constructor(
     }
 
     public override fun onCleared() {
-        _onClearedViewModel.value = Unit
+        val clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
+        if(clear) {
+            //if user interrupted login / register otp flow (not done), delete the token
+            if(!done && isLoginRegisterFlow) {
+                userSession.setToken(null, null, null)
+            }
+        }
         super.onCleared()
     }
 }

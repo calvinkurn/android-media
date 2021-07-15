@@ -10,10 +10,13 @@ import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.usecase.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -49,6 +52,12 @@ class VerificationViewModelTest {
     lateinit var sendOtpUseCase: SendOtpUseCase
 
     @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var remoteConfig: RemoteConfig
+
+    @RelaxedMockK
     lateinit var getVerificationMethodResultObserver: Observer<Result<OtpModeListData>>
 
     @RelaxedMockK
@@ -56,9 +65,6 @@ class VerificationViewModelTest {
 
     @RelaxedMockK
     lateinit var otpValidateResultObserver: Observer<Result<OtpValidateData>>
-
-    @RelaxedMockK
-    lateinit var onClearedViewModelObserver: Observer<Unit>
 
     private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
@@ -74,6 +80,8 @@ class VerificationViewModelTest {
                 otpValidateUseCase2FA,
                 sendOtpUseCase,
                 sendOtpUseCase2FA,
+                userSessionInterface,
+                remoteConfig,
                 dispatcherProviderTest
         )
     }
@@ -247,13 +255,15 @@ class VerificationViewModelTest {
     }
 
     @Test
-    fun `On clear view model`() {
-        viewmodel.onClearedViewModel.observeForever(onClearedViewModelObserver)
+    fun `on viewmodel clear`() {
+        viewmodel.done = false
+        viewmodel.isLoginRegisterFlow = true
+        val clearValue = true
+        coEvery { remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true) } returns clearValue
 
         viewmodel.onCleared()
 
-        verify { onClearedViewModelObserver.onChanged(any()) }
-        assert(viewmodel.onClearedViewModel.value is Unit)
+        assert(userSessionInterface.accessToken.isNullOrEmpty())
     }
 
     companion object {
@@ -270,6 +280,5 @@ class VerificationViewModelTest {
                 OtpRequestPojo::class.java
         )
         private val throwable = Throwable()
-        private val unit = Unit
     }
 }
