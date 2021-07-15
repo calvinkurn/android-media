@@ -270,4 +270,29 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.onClickSuggestion(item.applink)
         }
     }
+
+    @Test
+    fun `test tracking click suggestion item light`() {
+        `given suggestion tracker use case capture request params`()
+        `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
+
+        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_LIGHT)
+
+        `when suggestion item clicked`(item)
+        `then verify view tracking click item light is correct`(item)
+    }
+
+    private fun `then verify view tracking click item light is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+            "keyword: $keywordTypedByUser " +
+                    "- product: ${item.title} " +
+                    "- po: ${item.position} " +
+                    "- page: ${item.applink}"
+
+        verify {
+            suggestionView.showSuggestionResult(any())
+            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+            suggestionView.onClickSuggestion(item.applink)
+        }
+    }
 }

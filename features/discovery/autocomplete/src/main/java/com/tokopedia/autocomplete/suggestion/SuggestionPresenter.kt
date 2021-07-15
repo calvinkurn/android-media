@@ -306,6 +306,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             TYPE_PRODUCT -> {
                 view?.trackEventClickProductLine(item, getGlobalEventLabelForTracking(item), getUserId())
             }
+            TYPE_LIGHT -> {
+                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item), item.trackingCode, item.dimension90)
+            }
         }
     }
 
@@ -369,6 +372,17 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 item.searchTerm,
                 item.applink
         )
+    }
+
+    override fun onSuggestionItemImpressed(item: BaseSuggestionDataView) {
+        when (item.type) {
+            TYPE_LIGHT, TYPE_CURATED -> impressCurated(item)
+        }
+    }
+
+    private fun impressCurated(item: BaseSuggestionDataView) {
+        val label = getCuratedEventLabelForTracking(item)
+        view?.trackEventImpressCurated(label, item.trackingCode, item.dimension90)
     }
 
     override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {
