@@ -18,6 +18,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_PENDING_CASHBACK
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.network.exception.MessageErrorException
 
 data class HomeBalanceModel (
         var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
@@ -299,11 +301,21 @@ data class HomeBalanceModel (
     private fun mapWalletApp(walletAppData: WalletAppData?) {
         walletAppData?.let { walletApp ->
             val selectedBalance = walletApp.mapToHomeBalanceItemModel(state = STATE_SUCCESS).getOrNull(0)
-            selectedBalance?.let { balance ->
-                flagStateCondition(
-                    itemType = balance.drawerItemType,
-                    action = { balanceDrawerItemModels[it] = balance }
+            if (selectedBalance != null) {
+                selectedBalance.let { balance ->
+                    flagStateCondition(
+                        itemType = balance.drawerItemType,
+                        action = { balanceDrawerItemModels[it] = balance }
+                    )
+                }
+            } else {
+                HomeServerLogger.logWarning(
+                    type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
+                    throwable = MessageErrorException("Unable to find wallet balance, possibly empty wallet app balance list or no supported wallet partner found in response"),
+                    reason = "Unable to find wallet balance, possibly empty wallet app balance list or no supported wallet partner found in response",
+                    data = ""
                 )
+                throw IllegalStateException("Wallet is null")
             }
         }
     }

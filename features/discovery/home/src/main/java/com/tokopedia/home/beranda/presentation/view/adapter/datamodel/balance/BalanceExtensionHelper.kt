@@ -5,9 +5,12 @@ import com.tokopedia.home.beranda.data.model.TagAttributes
 import com.tokopedia.home.beranda.data.model.TextAttributes
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.domain.model.walletapp.Balance
+import com.tokopedia.home.beranda.domain.model.walletapp.Balances
 import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.network.exception.MessageErrorException
 
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
@@ -151,55 +154,75 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 
 fun WalletAppData.mapToHomeBalanceItemModel(state: Int): List<BalanceDrawerItemModel> {
     val selectedWallet = "PEMUDA"
-    val balanceTitleTextAttribute = BalanceTextAttribute(text = walletappGetBalance.walletName)
-    if (walletappGetBalance.isLinked && walletappGetBalance.balance.isNotEmpty()) {
-        return walletappGetBalance.balance.filter { it.walletCode == selectedWallet }.map {
+    val selectedBalance = walletappGetBalance.balances.getOrNull(0)
+    selectedBalance?.let { balances ->
+        val balanceTitleTextAttribute = BalanceTextAttribute(text = balances.walletName)
+        if (balances.isLinked && balances.balance.isNotEmpty()) {
+            return balances.balance.filter { it.walletCode == selectedWallet }.map {
+                val balanceSubTitleTextAttribute =
+                    buildSubtitleBasedOnLinkedCondition(balances, it)
+                buildWalletAppBalanceDrawerModel(
+                    selectedBalance = balances,
+                    balanceTitleTextAttribute = balanceTitleTextAttribute,
+                    balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
+                    state = state,
+                    walletCode = it.walletCode
+                )
+            }
+        } else {
             val balanceSubTitleTextAttribute =
-                buildSubtitleBasedOnLinkedCondition(it)
-            buildWalletAppBalanceDrawerModel(
-                balanceTitleTextAttribute = balanceTitleTextAttribute,
-                balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
-                state = state,
-                walletCode = it.walletCode
+                buildSubtitleBasedOnLinkedCondition(balances)
+            return listOf(
+                buildWalletAppBalanceDrawerModel(
+                    selectedBalance = balances,
+                    balanceTitleTextAttribute = balanceTitleTextAttribute,
+                    balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
+                    state = state
+                )
             )
         }
-    } else {
-        val balanceSubTitleTextAttribute =
-            buildSubtitleBasedOnLinkedCondition()
-        return listOf(
-            buildWalletAppBalanceDrawerModel(
-                balanceTitleTextAttribute = balanceTitleTextAttribute,
-                balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
-                state = state
-            )
-        )
     }
 
+    return listOf()
 }
 
 private fun WalletAppData.buildSubtitleBasedOnLinkedCondition(
+    selectedBalance: Balances,
     it: Balance? = null
-) = if (walletappGetBalance.isLinked) {
-    BalanceTextAttribute(text = it?.amountFmt?:"")
-} else BalanceTextAttribute(
-    text = walletappGetBalance.activationCta,
-    colourRef = R.color.Unify_G500,
-    isBold = true
-)
+): BalanceTextAttribute {
+    val defaultActivationCta = "Sambungkan"
+    return if (selectedBalance.isLinked) {
+        if (it == null) {
+            HomeServerLogger.logWarning(
+                type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
+                throwable = MessageErrorException("Wallet app is linked but balances return empty list"),
+                reason = "Wallet app is linked but balances return empty list",
+                data = selectedBalance.walletName
+            )
+            throw IllegalStateException("Selected balance must not be null")
+        }
+        BalanceTextAttribute(text = it.amountFmt?:"")
+    } else BalanceTextAttribute(
+        text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
+        colourRef = R.color.Unify_G500,
+        isBold = true
+    )
+}
 
 private fun WalletAppData.buildWalletAppBalanceDrawerModel(
+    selectedBalance: Balances,
     balanceTitleTextAttribute: BalanceTextAttribute,
     balanceSubTitleTextAttribute: BalanceTextAttribute,
     state: Int,
     walletCode: String = ""
 ) = BalanceDrawerItemModel(
-    applinkContainer = walletappGetBalance.redirectUrl,
-    applinkActionText = walletappGetBalance.redirectUrl,
-    iconImageUrl = walletappGetBalance.iconUrl,
-    redirectUrl = walletappGetBalance.redirectUrl,
+    applinkContainer = selectedBalance.redirectUrl,
+    applinkActionText = selectedBalance.redirectUrl,
+    iconImageUrl = selectedBalance.iconUrl,
+    redirectUrl = selectedBalance.redirectUrl,
     balanceTitleTextAttribute = balanceTitleTextAttribute,
     balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
-    drawerItemType = if (walletappGetBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
+    drawerItemType = if (selectedBalance.isLinked) BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED else BalanceDrawerItemModel.TYPE_WALLET_APP_NOT_LINKED,
     state = state,
     trackingAttribute = walletCode
 )

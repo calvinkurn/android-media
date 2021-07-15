@@ -31,9 +31,12 @@ class GetWalletAppBalanceUseCase @Inject constructor(
     }
 
     fun getParams(): RequestParams {
-        val params= RequestParams.create()
-        params.putString(PARTNER_CODE, PARTNER_PEMUDA)
-        return params
+        val reqParams= RequestParams.create()
+        val params= mapOf(
+            PARTNER_CODE to arrayOf(PARTNER_PEMUDA)
+        )
+        reqParams.putAll(params)
+        return reqParams
     }
 
     companion object {

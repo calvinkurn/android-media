@@ -13,6 +13,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUse
 import com.tokopedia.home.beranda.domain.interactor.GetWalletAppBalanceUseCase
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.walletapp.Balance
+import com.tokopedia.home.beranda.domain.model.walletapp.Balances
 import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
 import com.tokopedia.home.beranda.domain.model.walletapp.WalletappGetBalance
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -74,10 +75,14 @@ class HomeViewModelBalanceWidgetUnitTest{
         )
         coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
             WalletappGetBalance(
-                isLinked = true,
-                balance = listOf(Balance(
-                    walletCode = WALLET_CODE_PEMUDA
-                ))
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = WALLET_CODE_PEMUDA
+                        ))
+                    )
+                )
             )
         )
 
@@ -112,10 +117,14 @@ class HomeViewModelBalanceWidgetUnitTest{
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
         coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
             WalletappGetBalance(
-                isLinked = true,
-                balance = listOf(Balance(
-                    walletCode = "PEMUDA"
-                ))
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = "PEMUDA"
+                        ))
+                    )
+                )
             )
         )
 
@@ -144,10 +153,14 @@ class HomeViewModelBalanceWidgetUnitTest{
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
         coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
             WalletappGetBalance(
-                isLinked = true,
-                balance = listOf(Balance(
-                    walletCode = "OTHER"
-                ))
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = "OTHER"
+                        ))
+                    )
+                )
             )
         )
 
@@ -218,10 +231,14 @@ class HomeViewModelBalanceWidgetUnitTest{
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
         coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
             WalletappGetBalance(
-                isLinked = true,
-                balance = listOf(Balance(
-                    walletCode = WALLET_CODE_PEMUDA
-                ))
+                listOf(
+                    Balances(
+                        isLinked = true,
+                        balance = listOf(Balance(
+                            walletCode = WALLET_CODE_PEMUDA
+                        ))
+                    )
+                )
             )
         )
 
@@ -249,8 +266,12 @@ class HomeViewModelBalanceWidgetUnitTest{
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
         coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
             WalletappGetBalance(
-                isLinked = false,
-                balance = listOf(Balance(amountFmt = "ahayy"))
+                listOf(
+                    Balances(
+                        isLinked = false,
+                        balance = listOf(Balance(amountFmt = "ahayy"))
+                    )
+                )
             )
         )
 

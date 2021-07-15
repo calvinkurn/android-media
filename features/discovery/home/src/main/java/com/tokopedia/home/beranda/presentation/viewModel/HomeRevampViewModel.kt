@@ -1245,18 +1245,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             walletAppAbTestCondition(
                 isUsingWalletApp = {
-                    try {
-                        walletAppData = getWalletAppData()
-                        if (walletAppData != null) {
-                            homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
-                        } else {
-                            throw IllegalStateException("Home wallet app data is null")
-                        }
-                    } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-                    }
+                    getHomeBalanceWalletAppData()
                 },
                 isUsingOldWallet = {
                     try {
@@ -1334,21 +1323,7 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             walletAppAbTestCondition(
                 isUsingWalletApp = {
-                    try {
-                        val walletAppData = getWalletAppData()
-                        walletAppData.let { walletContent ->
-                            if (walletContent.walletappGetBalance.balance.isNotEmpty()) {
-                                homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
-                                newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
-                            } else {
-                                throw IllegalStateException("Wallet is empty")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-                    }
+                    getHomeBalanceWalletAppData()
                 },
                 isUsingOldWallet = {
                     try {
@@ -1384,6 +1359,30 @@ open class HomeRevampViewModel @Inject constructor(
 
     private suspend fun getWalletAppData(): WalletAppData {
         return getWalletAppBalanceUseCase.get().executeOnBackground()
+    }
+
+    private suspend fun getHomeBalanceWalletAppData() {
+        try {
+            val walletAppData = getWalletAppData()
+            walletAppData.let { walletContent ->
+                if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
+                    homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
+                    newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                } else {
+                    HomeServerLogger.logWarning(
+                        type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
+                        throwable = MessageErrorException("Unable to parse wallet, wallet app list is empty"),
+                        reason = "Unable to parse wallet, wallet app list is empty",
+                        data = ""
+                    )
+                    throw IllegalStateException("Wallet is empty")
+                }
+            }
+        } catch (e: Exception) {
+            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+            homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
+            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+        }
     }
 
     private suspend fun getPendingTokoCashContent(): PendingCashback {
