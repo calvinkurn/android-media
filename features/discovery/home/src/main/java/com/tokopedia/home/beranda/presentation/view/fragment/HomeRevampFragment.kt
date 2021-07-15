@@ -243,10 +243,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val HOME_SOURCE = "home"
 
         private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/header/xxhdpi/home_header_light_1.png"
-        private const val BACKGROUND_LIGHT_2 = BASE_URL + "home/header/xxhdpi/home_header_light_2.png"
-        private const val BACKGROUND_DARK_1 = BASE_URL + "home/header/xxhdpi/home_header_dark_1.png"
-        private const val BACKGROUND_DARK_2 = BASE_URL + "home/header/xxhdpi/home_header_dark_2.png"
+        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light_2.png"
+        private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
 
@@ -343,6 +341,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isNavRevamp(): Boolean {
         return try {
             return (context as? MainParentStateListener)?.isNavigationRevamp?:false
@@ -352,6 +351,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun isNavOld(): Boolean {
         return try {
             getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
@@ -393,6 +393,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         createDaggerComponent()
         mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
+        requestStatusBarDark()
     }
 
     private fun createDaggerComponent() {
@@ -544,6 +545,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(
                 ifNavOld = {
                     oldToolbar?.setAfterInflationCallable(afterInflationCallable)
+                    oldToolbar?.switchToLightToolbar()
                     oldToolbar?.visibility = View.VISIBLE
                     navToolbar?.visibility = View.GONE
                 },
@@ -563,22 +565,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToDarkToolbar() {
-                                        navAbTestCondition(
-                                                ifNavRevamp = {
-                                                    navToolbar?.hideShadow()
-                                                }
-                                        )
+                                        navToolbar?.hideShadow()
+                                        requestStatusBarLight()
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-
+                                        requestStatusBarDark()
                                     }
 
                                     override fun onYposChanged(yOffset: Int) {
                                         backgroundViewImage.y = -(yOffset.toFloat())
                                     }
-                                },
-                                fixedIconColor = TOOLBAR_LIGHT_TYPE
+                                }
                         ))
                         val icons = IconBuilder(
                                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
@@ -720,6 +718,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark() {
         context?.let {
             coachMarkIsShowing = true
@@ -1423,11 +1422,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            when (fixedIconColor) {
-                FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
-                FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
+            if (offsetAlpha >= 150) {
+                oldToolbar?.switchToDarkToolbar()
+                if (isLightThemeStatusBar) requestStatusBarDark()
+            } else {
+                oldToolbar?.switchToLightToolbar()
+                if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
+//        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+//            when (fixedIconColor) {
+//                FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
+//                FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
+//            }
+//        }
         if (offsetAlpha >= 255) {
             offsetAlpha = 255f
         }
@@ -1437,6 +1445,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setStatusBarAlpha(offsetAlpha)
             }
         }
+    }
+
+    private fun requestStatusBarDark() {
+        isLightThemeStatusBar = false
+        mainParentStatusBarListener?.requestStatusBarDark()
+    }
+
+    private fun requestStatusBarLight() {
+        isLightThemeStatusBar = true
+        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     private object FixedTheme {
@@ -2738,6 +2756,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun String?.safeEncodeUtf8(): String {
         return try {
             this?.encodeToUtf8() ?: ""

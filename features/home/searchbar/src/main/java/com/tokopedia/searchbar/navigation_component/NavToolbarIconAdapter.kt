@@ -217,7 +217,6 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             String.format(
                 context.getString(R.string.tag_counter_id), iconToolbar.name
             )
-        iconImage.notificationRef.invisible()
 
         when {
             iconToolbar.badgeCounter.isZero() -> {
