@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -121,7 +122,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
-                    launch {
+                    lifecycleScope.launch {
                         withContext(Dispatchers.Main) {
                             NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                                 getData(CacheType.ALWAYS_CLOUD)
