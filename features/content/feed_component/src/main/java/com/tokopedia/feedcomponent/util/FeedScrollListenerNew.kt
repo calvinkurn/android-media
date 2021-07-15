@@ -66,10 +66,9 @@ object FeedScrollListenerNew {
 
     private fun isVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
         return (list.size > position && list[position] is DynamicPostUiModel
-                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && (list[position] as DynamicPostUiModel).feedXCard.media[0].type.equals(
-            TYPE_VIDEO,
-            ignoreCase = true
-        ))
+                && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && ((list[position] as DynamicPostUiModel).feedXCard.media.find {
+            it.type == TYPE_VIDEO
+        } != null))
     }
 
     private fun getVideoCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {

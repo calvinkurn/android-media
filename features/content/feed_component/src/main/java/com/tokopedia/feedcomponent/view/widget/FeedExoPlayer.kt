@@ -98,7 +98,6 @@ class FeedExoPlayer(val context: Context) {
         } else {
             exoPlayer.volume = UNMUTE_VOLUME
         }
-        videoStateListener?.configureVolume(isMute)
     }
 
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
@@ -129,5 +128,4 @@ class FeedExoPlayer(val context: Context) {
 interface VideoStateListener {
     fun onInitialStateLoading()
     fun onVideoReadyToPlay()
-    fun configureVolume(isMute: Boolean)
 }

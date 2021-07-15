@@ -884,6 +884,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         id: String,
         type: String,
         isFollowed: Boolean,
+        isVideo: Boolean,
         positionInFeed: Int
     ) {
     }
@@ -893,6 +894,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         context: Context,
         shopId: String
     ) {
+    }
+
+    override fun muteUnmuteVideo(postId: String, mute: Boolean) {
     }
 
     private fun showBottomSheetSellerMigration() {

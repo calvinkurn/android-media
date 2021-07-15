@@ -32,7 +32,7 @@
             android:layout_weight="1"
             android:background="@drawable/bg_round_corner_comment"
             android:fontFamily="sans-serif"
-            android:hint="@string/kol_write_comment_hint"
+            android:hint="@string/write_comment"
             android:inputType="textVisiblePassword|textMultiLine"
             android:maxLines="5"
             android:paddingStart="@dimen/dp_12"

@@ -20,7 +20,6 @@
     <string name="write_comment">Tulis komentar…</string>
 
     <!-- Kol Comment New -->
-    <string name="kol_write_comment_hint">Kirim komentar...</string>
     <string name="kol_activity_title">Komentar</string>
     <string name="kol_delete_1_comment">1 Komentar dihapus.</string>
     <string name="kol_delete_comment_ok">Kembalikan</string>

@@ -674,7 +674,9 @@ open class DynamicPostViewHolder(v: View,
             id: String,
             type: String,
             isFollowed: Boolean,
+            isVideo: Boolean = false,
             positionInFeed: Int
+
         )
 
         fun onReadMoreClicked(postId: String, shopId: String = "")
@@ -683,5 +685,7 @@ open class DynamicPostViewHolder(v: View,
             context: Context,
             shopId: String = ""
         )
+
+        fun muteUnmuteVideo(postId: String, mute: Boolean)
     }
 }
