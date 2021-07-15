@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -40,7 +41,17 @@ class MvcAnimationHandler(val firstContainer: MvcTextContainer, val secondContai
         }
     }
 
+    fun checkToCancelTimer(){
+        if (firstContainer.context is Activity){
+            val activity = firstContainer.context as Activity
+            if(activity.isFinishing || activity.isDestroyed){
+                timer?.cancel()
+            }
+        }
+    }
+
     fun animateView() {
+        checkToCancelTimer()
         isAnimationStarted = true
 
         setDataIntoViews()
