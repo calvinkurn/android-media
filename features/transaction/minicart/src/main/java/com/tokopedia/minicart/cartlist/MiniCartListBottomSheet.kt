@@ -160,7 +160,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
-                viewModel?.addToCartOcc(GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+                viewModel?.addToCart(GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
             it.context?.let { context ->
                 validateTotalAmountView(context, viewBinding)

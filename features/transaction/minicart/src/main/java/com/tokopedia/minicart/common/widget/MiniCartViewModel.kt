@@ -320,7 +320,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         updateCartUseCase.execute(onSuccess = {}, onError = {})
     }
 
-    fun addToCartOcc(observer: Int) {
+    fun addToCart(observer: Int) {
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
             val miniCartItems = mutableListOf<AddToCartOccMultiCartParam>()
             getMiniCartItems().forEach { miniCartItem ->

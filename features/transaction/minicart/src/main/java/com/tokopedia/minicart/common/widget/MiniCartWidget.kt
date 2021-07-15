@@ -234,7 +234,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
                         override fun onRefreshErrorPage() {
                             showProgressLoading()
-                            viewModel?.addToCartOcc(globalEvent.observer)
+                            viewModel?.addToCart(globalEvent.observer)
                         }
                     })
                     analytics.eventClickBuyThenGetBottomSheetError(context.getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
@@ -319,7 +319,7 @@ class MiniCartWidget @JvmOverloads constructor(
             it.amountCtaView.setOnClickListener {
                 sendEventClickBuy()
                 showProgressLoading()
-                viewModel?.addToCartOcc(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                viewModel?.addToCart(GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
         }
         imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
