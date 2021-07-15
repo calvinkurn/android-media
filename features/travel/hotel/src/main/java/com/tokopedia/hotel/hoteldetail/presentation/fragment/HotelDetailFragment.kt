@@ -366,7 +366,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 text = data.property.typeName
                 setType(Typography.BODY_3)
                 setWeight(Typography.BOLD)
-                setPadding(getDimens(R.dimen.dp_6), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.dp_6), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+                setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
             }
             hotel_rating_container.addView(textView)
         }
