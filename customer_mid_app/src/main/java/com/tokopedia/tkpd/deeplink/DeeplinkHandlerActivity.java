@@ -22,6 +22,7 @@ import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
@@ -295,8 +296,18 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private void iniBranchIO(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)) {
-            LinkerManager.getInstance().initSession();
+            LinkerManager.getInstance().initSession(this, uriHaveCampaignData());
         }
+    }
+
+    private boolean uriHaveCampaignData(){
+        boolean uriHaveCampaignData = false;
+        if (getIntent() != null && getIntent().getData()!= null) {
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
+            uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
+        }
+        return uriHaveCampaignData;
     }
 
     private void logDeeplink() {

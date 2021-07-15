@@ -32,6 +32,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -94,6 +95,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private String mGclid = "";
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
 
@@ -886,6 +888,7 @@ public class GTMAnalytics extends ContextAnalytics {
             if (isGtmV5) name += " (v5)";
             GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
             logEventSize(eventName, values);
+            logEventForVerification(eventName, values);
             if (tetraDebugger != null) {
                 tetraDebugger.send(values);
             }
@@ -942,6 +945,20 @@ public class GTMAnalytics extends ContextAnalytics {
         messageMap.put("name", eventName);
         messageMap.put("size", String.valueOf(size));
         ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+    }
+
+    private void logEventForVerification(String eventName, Map<String, Object> values){
+        if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_verification");
+            messageMap.put("name", eventName);
+            messageMap.put("click_time", String.valueOf((System.currentTimeMillis() / 1000L)));
+            messageMap.put("clientId", TrackApp.getInstance().getGTM().getClientIDString());
+            messageMap.put("utm_source", values.get(AppEventTracking.GTM.UTM_SOURCE).toString());
+            messageMap.put("utm_medium", values.get(AppEventTracking.GTM.UTM_MEDIUM).toString());
+            messageMap.put("campaign", values.get(AppEventTracking.GTM.UTM_CAMPAIGN).toString());
+            ServerLogger.log(Priority.P1, "GA_EVENT_VERIFICATION", messageMap);
+        }
     }
 
     public void sendScreenAuthenticated(String screenName) {

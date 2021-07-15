@@ -106,7 +106,7 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
-        checkBranchLinkUTMParams(linkerDeeplinkRequest);
+        checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -171,6 +171,41 @@ public class BranchWrapper implements WrapperInterface {
         };
     }
 
+    private Branch.BranchReferralInitListener getBranchCallbackForUtmParams(Context context, boolean uriHaveCampaignData) {
+        return new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    if(!uriHaveCampaignData) {
+                        sendUtmParameters(context, referringParams);
+                    }else {
+                        logNonBranchLinkData(context, referringParams);
+                    }
+                }
+            }
+        };
+    }
+
+    private void sendUtmParameters(Context context, JSONObject referringParams){
+        String utmSource;
+        String utmCampaign;
+        String utmMedium;
+        String utmTerm = null;
+        String clickTime;
+        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
+        if (!TextUtils.isEmpty(utmSource)) {
+            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
+            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
+        } else {
+            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
+            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
+        }
+        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
+        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
+    }
+
     private void fetchLastAttributeTouchData() {
         Branch.getInstance().getLastAttributedTouchData(
                 new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
@@ -192,6 +227,14 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void initSession() {
         Branch.getInstance().initSession();
+    }
+
+    @Override
+    public void initSession(Activity activity, boolean uriHaveCampaignData){
+        checkBranchLinkUTMParams(activity);
+        Branch.sessionBuilder(activity)
+                .withCallback(getBranchCallbackForUtmParams(activity, uriHaveCampaignData))
+                .init();
     }
 
     @Override
@@ -481,24 +524,7 @@ public class BranchWrapper implements WrapperInterface {
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
         if (context == null) return;
         if (isSkipUtmEvent(context)) return;
-
-        String utmSource;
-        String utmCampaign;
-        String utmMedium;
-        String utmTerm = null;
-        String clickTime;
-        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
-        if (!TextUtils.isEmpty(utmSource)) {
-            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
-            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
-        } else {
-            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
-            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
-        }
-        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
-        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
+        sendUtmParameters(context, referringParams);
     }
 
     private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
@@ -523,9 +549,8 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+    private void checkBranchLinkUTMParams(Activity activity) {
         APP_OPEN_FROM_BRANCH_LINK = false;
-        Activity activity = ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
         if (activity != null && activity.getIntent().getData() != null){
             String intentDataStr = activity.getIntent().getData().toString();
             if(intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_1) ||
