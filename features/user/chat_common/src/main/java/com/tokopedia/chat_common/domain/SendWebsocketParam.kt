@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_ME
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by nisie on 19/12/18.
@@ -37,7 +38,7 @@ object SendWebsocketParam {
     ): JsonObject {
 
         val attributes = JsonObject()
-        attributes.addProperty("id", invoice.id)
+        attributes.addProperty("id", invoice.id.toLongOrZero())
         attributes.addProperty("code", invoice.invoiceCode)
         attributes.addProperty("title", invoice.productName)
         attributes.addProperty("create_time", invoice.date)

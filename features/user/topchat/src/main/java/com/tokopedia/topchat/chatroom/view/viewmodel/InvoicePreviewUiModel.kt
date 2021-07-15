@@ -8,7 +8,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import okhttp3.Interceptor
 
 class InvoicePreviewUiModel(
-        id: Int,
+        id: String,
         invoiceCode: String,
         productName: String,
         date: String,
@@ -39,7 +39,7 @@ class InvoicePreviewUiModel(
                 date.isEmpty() ||
                 imageUrl.isEmpty() ||
                 invoiceUrl.isEmpty() ||
-                statusId == INVALID_ID ||
+                statusId == INVALID_STATUS_ID ||
                 status.isEmpty() ||
                 totalPriceAmount.isEmpty()
     }
@@ -65,6 +65,7 @@ class InvoicePreviewUiModel(
     }
 
     companion object {
-        const val INVALID_ID = -1
+        const val INVALID_ID = "-1"
+        const val INVALID_STATUS_ID = -1
     }
 }

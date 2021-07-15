@@ -1992,7 +1992,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initInvoicePreview(savedInstanceState: Bundle?) {
-        val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        val id = getInvoicePreviewId(savedInstanceState)
         val invoiceCode = getStringArgument(ApplinkConst.Chat.INVOICE_CODE, savedInstanceState)
         val productName = getStringArgument(ApplinkConst.Chat.INVOICE_TITLE, savedInstanceState)
         val date = getStringArgument(ApplinkConst.Chat.INVOICE_DATE, savedInstanceState)
@@ -2003,19 +2003,28 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val totalPriceAmount =
             getStringArgument(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, savedInstanceState)
         val invoiceViewModel = InvoicePreviewUiModel(
-            id.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+            id,
             invoiceCode,
             productName,
             date,
             imageUrl,
             invoiceUrl,
-            statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_ID,
+            statusId.toIntOrNull() ?: InvoicePreviewUiModel.INVALID_STATUS_ID,
             status,
             totalPriceAmount
         )
         if (invoiceViewModel.enoughRequiredData()) {
             presenter.clearAttachmentPreview()
             presenter.addAttachmentPreview(invoiceViewModel)
+        }
+    }
+
+    private fun getInvoicePreviewId(savedInstanceState: Bundle?): String {
+        val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
+        return if(id.isEmpty()) {
+            InvoicePreviewUiModel.INVALID_ID
+        } else {
+            id
         }
     }
 
