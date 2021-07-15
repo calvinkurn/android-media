@@ -737,8 +737,8 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     fun bulkRequestPickup_shouldAllFailEligible() = runBlocking {
         val orderIds = listOf("0", "1", "2", "5", "6", "7")
         val batchId = "1234566"
-        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId, totalOnProcess = 5)
-        val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 5, total_order = 5)
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId)
+        val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 6, total_order = 6, success = 0)
         retryRequestPickup.set(viewModel, 11)
 
         coEvery {
