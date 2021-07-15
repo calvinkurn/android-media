@@ -397,11 +397,13 @@ abstract class BaseSearchCategoryViewModel(
             categoryFilterDataValue: DataValue,
     ) {
         val categoryFilter = categoryFilterDataValue.filter.getOrNull(0)
+        categoryFilter ?: return
 
-        if (categoryFilter != null) {
+        if (isShowCategoryFilter(categoryFilter))
             headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
-        }
     }
+
+    protected open fun isShowCategoryFilter(categoryFilter: Filter) = true
 
     protected fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
         val channel = headerDataView.bannerChannel
@@ -425,14 +427,14 @@ abstract class BaseSearchCategoryViewModel(
             }
 
     private fun createSortFilterItem(filter: Filter): SortFilterItem {
-        val option = filter.options.firstOrNull() ?: Option()
-        val isSelected = filterController.getFilterViewState(option)
+        val isSelected = getQuickFilterIsSelected(filter)
         val chipType = getSortFilterItemType(isSelected)
 
         val sortFilterItem = SortFilterItem(filter.title, chipType)
         sortFilterItem.typeUpdated = false
 
         if (filter.options.size == 1) {
+            val option = filter.options.firstOrNull() ?: Option()
             sortFilterItem.listener = {
                 sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
@@ -448,6 +450,12 @@ abstract class BaseSearchCategoryViewModel(
 
         return sortFilterItem
     }
+
+    private fun getQuickFilterIsSelected(filter: Filter) =
+            filter.options.any {
+                if (it.key.contains(OptionHelper.EXCLUDE_PREFIX)) false
+                else filterController.getFilterViewState(it)
+            }
 
     private fun getSortFilterItemType(isSelected: Boolean) =
             if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL

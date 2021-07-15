@@ -24,7 +24,6 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Assert.assertThat
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 

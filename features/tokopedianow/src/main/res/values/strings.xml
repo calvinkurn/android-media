@@ -6,6 +6,11 @@
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
 
+    <string name="tokopedianow_empty_state_no_address_and_local_cache_title">Masukkan alamat dulu buat akses Tokopedia NOW!</string>
+    <string name="tokopedianow_empty_state_no_address_and_local_cache_description">Supaya bisa dapat rekomendasi produk dari Tokopedia NOW! ke alamatmu.</string>
+    <string name="tokopedianow_empty_state_no_address_and_local_cache_primary_cta">Masukkan Alamat</string>
+    <string name="tokopedianow_empty_state_no_address_and_local_cache_secondary_cta">Ke Home Tokopedia</string>
+
     <string name="tokopedianow_category_list_bottom_sheet_title">Semua kategori</string>
     <string name="tokopedianow_category_list_bottom_sheet_error_not_found_title">Oops, halaman ini gagal dimuat</string>
     <string name="tokopedianow_category_list_bottom_sheet_error_not_found_desc">Klik tombol di bawah ini untuk refresh halaman ini, ya!</string>
