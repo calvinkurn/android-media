@@ -9,7 +9,7 @@ import com.tokopedia.play.R
 
 class PlayCastNotificationAction(context: Context) : NotificationActionsProvider(context) {
     override fun getNotificationActions(): MutableList<NotificationAction> {
-        val actions = arrayListOf<NotificationAction>()
+        val actions = mutableListOf<NotificationAction>()
         actions.add(
             NotificationAction.Builder()
                 .setAction(MediaIntentReceiver.ACTION_TOGGLE_PLAYBACK)
