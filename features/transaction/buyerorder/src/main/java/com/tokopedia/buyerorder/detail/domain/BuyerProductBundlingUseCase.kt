@@ -1,70 +1,101 @@
 package com.tokopedia.buyerorder.detail.domain
 
-import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
+import com.tokopedia.buyerorder.detail.data.productbundling.BuyerProductBundlingParam
+import com.tokopedia.buyerorder.detail.data.productbundling.BuyerProductBundlingResponse
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.ProductBundleItem
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class BuyerProductBundlingUseCase @Inject constructor(private val useCase: GraphqlUseCase<List<BuyerBundlingProductUiModel>>) {
+class BuyerProductBundlingUseCase @Inject constructor(private val useCase: GraphqlUseCase<BuyerProductBundlingResponse>) {
 
     companion object {
+        private const val PARAM_INPUT = "input"
         // TODO: Put actual query
-        private val QUERY = ""
+        private val QUERY = """
+            query GetCancellationProductBundling(${'$'}input: BomDetailV2Request!) {
+              mp_bom_detail(input: ${'$'}input) {
+                bundle_detail {
+                  bundle {
+                    bundle_name
+                    order_detail {
+                      product_name
+                      product_price
+                      thumbnail
+                    }
+                  }
+                }
+        """.trimIndent()
     }
 
-    suspend fun execute(orderId: String): Result<List<BuyerBundlingProductUiModel>> {
-        // TODO: Execute actual logic
+    init {
+        useCase.setTypeClass(BuyerProductBundlingResponse::class.java)
+        useCase.setGraphqlQuery(QUERY)
+    }
+
+    suspend fun execute(orderId: String): List<BuyerProductBundlingUiModel> {
+        useCase.setRequestParams(createRequestParam(orderId))
+        // TODO: Use actual data
+//        return useCase.executeOnBackground().bundleDetail.bundleList
         delay(2000)
-        return Success(getDummyProductBundling())
+        return getDummyProductBundling()
     }
 
-    private fun getDummyProductBundling(): List<BuyerBundlingProductUiModel> {
+    private fun createRequestParam(orderId: String): Map<String, Any> {
+        val params = BuyerProductBundlingParam(orderId = orderId)
+        return RequestParams.create().apply {
+            putObject(PARAM_INPUT, params)
+        }.parameters
+    }
+
+    private fun getDummyProductBundling(): List<BuyerProductBundlingUiModel> {
         return listOf(
-                BuyerBundlingProductUiModel(
+                BuyerProductBundlingUiModel(
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
-                                        priceText = "Rp100.000"
+                                        productPrice = 100000.00
                                 ),
                                 ProductBundleItem(
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
-                                        priceText = "Rp100.000"
+                                        productPrice = 100000.00
                                 )
                         )
                 ),
-                BuyerBundlingProductUiModel(
+                BuyerProductBundlingUiModel(
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
-                                        priceText = "Rp100.000"
+                                        productPrice = 100000.00
                                 ),
                                 ProductBundleItem(
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
-                                        priceText = "Rp100.000"
+                                        productPrice = 100000.00
                                 )
                         )
                 ),
-                BuyerBundlingProductUiModel(
+                BuyerProductBundlingUiModel(
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
-                                        priceText = "Rp100.000"
+                                        productPrice = 100000.00
                                 ),
                                 ProductBundleItem(
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
-                                        priceText = "Rp100.000"
+                                        productPrice = 100000.00
                                 )
                         )
                 )

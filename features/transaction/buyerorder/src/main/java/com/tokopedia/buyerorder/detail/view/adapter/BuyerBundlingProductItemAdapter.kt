@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerUtils.toCurrencyFormatted
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.ProductBundleItem
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -33,7 +34,7 @@ class BuyerBundlingProductItemAdapter(private val itemList: List<ProductBundleIt
             uiModel?.let {
                 buyerBundleProductImage?.setImageUrl(it.productThumbnailUrl)
                 buyerBundleProductNameText?.text = it.productName
-                buyerBundleProductPriceText?.text = it.priceText
+                buyerBundleProductPriceText?.text = it.productPrice.toCurrencyFormatted()
             }
         }
 

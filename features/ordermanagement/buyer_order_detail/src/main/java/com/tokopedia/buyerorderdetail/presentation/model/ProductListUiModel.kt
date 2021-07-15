@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 
@@ -76,6 +77,10 @@ data class ProductListUiModel(
             val productNote: String,
             val productThumbnailUrl: String,
             val quantity: Int,
-            val priceText: String
-    )
+            val productPrice: Double
+    ) {
+        val priceText: String
+            get() = productPrice.toCurrencyFormatted()
+
+    }
 }

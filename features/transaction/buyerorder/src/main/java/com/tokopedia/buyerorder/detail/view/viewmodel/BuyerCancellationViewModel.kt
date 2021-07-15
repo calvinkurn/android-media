@@ -17,7 +17,7 @@ import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerProductBundlingUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
-import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.buyerorder.detail.view.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -62,7 +62,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
 
     private val _buyerOrderId: MutableStateFlow<String?> = MutableStateFlow(null)
     @ExperimentalCoroutinesApi
-    val buyerBundlingProductUiModelListLiveData: LiveData<List<BuyerBundlingProductUiModel>?> = _buyerOrderId.flatMapLatest {
+    val buyerProductBundlingUiModelListLiveData: LiveData<List<BuyerProductBundlingUiModel>?> = _buyerOrderId.flatMapLatest {
         setProductListFlow(it)
     }.asLiveData()
 
@@ -122,21 +122,14 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
         _buyerOrderId.value = orderId
     }
 
-    private fun setProductListFlow(orderId: String?): Flow<List<BuyerBundlingProductUiModel>?> =
+    private fun setProductListFlow(orderId: String?): Flow<List<BuyerProductBundlingUiModel>?> =
             flow {
-                if (orderId == null) {
-                    emit(null)
-                } else {
-                    emit(getCancellationProductList(orderId))
+                val productList = orderId?.let {
+                    buyerProductBundlingUseCase.execute(it)
                 }
+                emit(productList)
+            }.catch {
+                emit(null)
             }.flowOn(dispatcher.io)
 
-    private suspend fun getCancellationProductList(orderId: String): List<BuyerBundlingProductUiModel>? {
-        buyerProductBundlingUseCase.execute(orderId).let { result ->
-            return when(result) {
-                is Success -> result.data
-                else -> null
-            }
-        }
-    }
 }

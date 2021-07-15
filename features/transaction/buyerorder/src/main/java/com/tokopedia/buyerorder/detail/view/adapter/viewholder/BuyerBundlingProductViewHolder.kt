@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerBundlingProductItemAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductItemDivider
-import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class BuyerBundlingProductViewHolder(itemView: View?): AbstractViewHolder<BuyerBundlingProductUiModel>(itemView) {
+class BuyerBundlingProductViewHolder(itemView: View?): AbstractViewHolder<BuyerProductBundlingUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,7 +25,7 @@ class BuyerBundlingProductViewHolder(itemView: View?): AbstractViewHolder<BuyerB
     private val bundleIconImage: ImageUnify? = itemView?.findViewById(R.id.iv_buyer_order_bundling_header)
     private val bundleItemsRecyclerView: RecyclerView? = itemView?.findViewById(R.id.rv_buyer_order_bundling)
 
-    override fun bind(element: BuyerBundlingProductUiModel) {
+    override fun bind(element: BuyerProductBundlingUiModel) {
         bundleNameText?.text = element.bundleName
         bundleIconImage?.setImageUrl(PRODUCT_BUNDLING_ICON_URL)
         bundleItemsRecyclerView?.run {

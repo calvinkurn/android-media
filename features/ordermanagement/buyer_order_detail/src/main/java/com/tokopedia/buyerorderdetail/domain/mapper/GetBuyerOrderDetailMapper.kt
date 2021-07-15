@@ -272,7 +272,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                                 productNote = bundleDetail.notes,
                                 productThumbnailUrl = bundleDetail.thumbnail,
                                 quantity = bundleDetail.quantity,
-                                priceText = bundleDetail.productPrice.toCurrencyFormatted()
+                                productPrice = bundleDetail.productPrice
                         )
                     }
             )

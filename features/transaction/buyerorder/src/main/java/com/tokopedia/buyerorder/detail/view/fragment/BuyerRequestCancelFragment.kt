@@ -51,7 +51,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAd
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductDivider
 import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
-import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProductUiModel
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
@@ -99,7 +99,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listProductsJsonString : String? = null
     private var listProductBundlesJsonString : String? = null
     private var listProduct = emptyList<Items>()
-    private var listBuyerBundlingProductUiModel: List<BuyerBundlingProductUiModel>? = null
+    private var listBuyerProductBundlingUiModel: List<BuyerProductBundlingUiModel>? = null
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -116,7 +116,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         object : TypeToken<List<Items>>() {}.type
     }
     private val productBundleListTypeToken by lazy {
-        object : TypeToken<List<BuyerBundlingProductUiModel>>() {}.type
+        object : TypeToken<List<BuyerProductBundlingUiModel>>() {}.type
     }
 
     private val buyerCancellationViewModel by lazy {
@@ -165,8 +165,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
                 GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
             } ?: emptyList()
-            listBuyerBundlingProductUiModel = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
-                GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<BuyerBundlingProductUiModel>
+            listBuyerProductBundlingUiModel = listProductBundlesJsonString.takeIf { !it.isNullOrBlank() }?.let { bundleJson ->
+                GsonSingleton.instance.fromJson(bundleJson, productBundleListTypeToken) as? List<BuyerProductBundlingUiModel>
             }
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
@@ -241,12 +241,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
         }
 
-        if (listBuyerBundlingProductUiModel == null) {
+        if (listBuyerProductBundlingUiModel == null) {
             observeBuyerProductBundling()
             getProductBundling()
         } else {
             label_see_all_products?.run {
-                val totalItems = listProduct.size + listBuyerBundlingProductUiModel?.getTotalItems().orZero()
+                val totalItems = listProduct.size + listBuyerProductBundlingUiModel?.getTotalItems().orZero()
                 if (totalItems > 1) {
                     text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
                     setOnClickListener { showProductBundleBottomSheet() }
@@ -420,7 +420,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun showProductBundleBottomSheet() {
         val buyerProductBundlingAdapter = BuyerProductBundlingBottomSheetAdapter(
-                bundleProductItems = listBuyerBundlingProductUiModel.orEmpty(),
+                bundleProductBundlingItems = listBuyerProductBundlingUiModel.orEmpty(),
                 normalProductItems = listProduct.mapToNormalProductItems(),
                 adapterTypeFactory = buyerProductBundlingAdapterFactory
         )
@@ -677,8 +677,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     @ExperimentalCoroutinesApi
     private fun observeBuyerProductBundling() {
-        buyerCancellationViewModel.buyerBundlingProductUiModelListLiveData.observe(viewLifecycleOwner) { bundleProductList ->
-            listBuyerBundlingProductUiModel = bundleProductList
+        buyerCancellationViewModel.buyerProductBundlingUiModelListLiveData.observe(viewLifecycleOwner) { bundleProductList ->
+            listBuyerProductBundlingUiModel = bundleProductList
             bundleProductList?.let {
                 label_see_all_products?.run {
                     val totalItems = listProduct.size + it.getTotalItems()
@@ -853,7 +853,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun List<BuyerBundlingProductUiModel>.getTotalItems(): Int {
+    private fun List<BuyerProductBundlingUiModel>.getTotalItems(): Int {
         var totalItems = 0
         forEach { totalItems += it.productList.size }
         return totalItems
