@@ -61,7 +61,7 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
-    <string name="title_loginphone">Login Phone</string>
+    <string name="title_choose_account">Choose Account</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>

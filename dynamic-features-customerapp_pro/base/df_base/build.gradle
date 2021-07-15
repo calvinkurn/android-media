@@ -139,7 +139,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.otp)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
     implementation projectOrAar(rootProject.ext.features.inbox)
 

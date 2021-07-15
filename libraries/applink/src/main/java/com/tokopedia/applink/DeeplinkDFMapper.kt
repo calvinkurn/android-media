@@ -484,7 +484,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PUSH_NOTIFICATION_TROUBLESHOOTER) }, DF_BASE, R.string.applink_notif_troubleshooter))
 
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
-            add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_loginphone))
+            add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_choose_account))
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
 
             // Transaction

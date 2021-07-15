@@ -101,7 +101,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
