@@ -133,8 +133,7 @@ class DiscoveryFragment :
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var showOldToolbar: Boolean = false
     private var userAddressData: LocalCacheModel? = null
-    private var staggeredGridLayoutManager: StaggeredGridLayoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var lastVisibleComponent: ComponentsItem? = null
     private var screenScrollPercentage = 0
 
@@ -288,21 +287,22 @@ class DiscoveryFragment :
         ) {
             return
         }
-        val positionArray = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
-        if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
-            if (discoveryAdapter.currentList.size <= positionArray.first()) return
-            lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
+        staggeredGridLayoutManager?.findLastVisibleItemPositions(null)?.let { positionArray ->
+            if (positionArray.isNotEmpty() && positionArray.first() >= 0) {
+                if (discoveryAdapter.currentList.size <= positionArray.first()) return
+                lastVisibleComponent = discoveryAdapter.currentList[positionArray.first()]
 
-            if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
-                        ComponentsList.ProductCardSprintSaleItem.componentName ||
-                        lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName)
-            ) {
-                lastVisibleComponent = com.tokopedia.discovery2.datamapper
-                    .getComponent(
-                        lastVisibleComponent!!.parentComponentId,
-                        lastVisibleComponent!!.pageEndPoint
-                    )
+                if (lastVisibleComponent != null && (lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardRevampItem.componentName || lastVisibleComponent?.name ==
+                            ComponentsList.ProductCardSprintSaleItem.componentName ||
+                            lastVisibleComponent?.name == ComponentsList.ShimmerProductCard.componentName)
+                ) {
+                    lastVisibleComponent = com.tokopedia.discovery2.datamapper
+                        .getComponent(
+                            lastVisibleComponent!!.parentComponentId,
+                            lastVisibleComponent!!.pageEndPoint
+                        )
+                }
             }
         }
     }
@@ -324,7 +324,7 @@ class DiscoveryFragment :
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
             staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            setLayoutManager(staggeredGridLayoutManager)
+            setLayoutManager(staggeredGridLayoutManager!!)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
