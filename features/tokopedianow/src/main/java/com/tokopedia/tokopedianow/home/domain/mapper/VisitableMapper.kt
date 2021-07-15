@@ -8,27 +8,25 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 
 object VisitableMapper {
 
-    fun List<HomeLayoutItemUiModel>.updateItemById(id: String?, block: () -> HomeLayoutItemUiModel?): List<HomeLayoutItemUiModel> {
-        return getItemIndex(id)?.let { index ->
-            toMutableList().let {
-                block.invoke()?.let { item ->
-                    it[index] = item
-                    it
-                }
+    fun MutableList<HomeLayoutItemUiModel>.updateItemById(id: String?, block: () -> HomeLayoutItemUiModel?) {
+        getItemIndex(id)?.let { index ->
+            block.invoke()?.let { item ->
+                removeAt(index)
+                add(index, item)
             }
-        } ?: this
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.getItemIndex(visitableId: String?): Int? {
+        return firstOrNull { it.layout.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
-            is TokoNowLayoutUiModel -> visitableId
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
+            is TokoNowLayoutUiModel -> visitableId
             else -> null
         }
-    }
-
-    private fun List<HomeLayoutItemUiModel>.getItemIndex(visitableId: String?): Int? {
-        return firstOrNull { it.layout.getVisitableId() == visitableId }?.let { indexOf(it) }
     }
 }

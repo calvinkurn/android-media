@@ -78,7 +78,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         }
 
         configureButtonApplyVisibility(selectedOption.index)
-        updateResultCount()
+        selectedOption?.let { callback?.getResultCount(it.value) }
         buttonApply?.setOnClickListener(::onButtonApplyClicked)
     }
 
@@ -95,14 +95,8 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         callback?.onApplyCategory(selectedOption.value)
     }
 
-    private fun updateResultCount() {
-        val totalData = selectedOption?.value?.totalData ?: "0"
-        val buttonApplyText = String.format(
-                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
-                totalData
-        )
-
-        buttonApply?.text = buttonApplyText
+    fun setResultCountText(resultCount: String) {
+        buttonApply?.text = resultCount
     }
 
     override fun onChecked(position: Int, option: Option, isChecked: Boolean) {
@@ -114,7 +108,8 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         updateSelectedOption(position, option)
         notifyAdapterSelection(previousPosition, position)
         configureButtonApplyVisibility(position)
-        updateResultCount()
+
+        callback?.getResultCount(option)
     }
 
     private fun updateSelectedOption(position: Int, option: Option) {
@@ -221,6 +216,8 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     interface Callback {
 
         fun onApplyCategory(selectedOption: Option)
+
+        fun getResultCount(selectedOption: Option)
     }
 
     companion object {

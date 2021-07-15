@@ -9,6 +9,7 @@ interface BaseShopHeaderComponentUiModel : Visitable<BaseAdapterTypeFactory> {
         const val IMAGE_ONLY = "image_only"
         const val BADGE_TEXT_VALUE = "badge_text_value"
         const val BUTTON = "button"
+        const val IMAGE_TEXT = "image_text"
     }
 
     object ComponentName {

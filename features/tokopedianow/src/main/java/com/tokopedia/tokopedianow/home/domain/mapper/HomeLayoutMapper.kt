@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutType.Companion.PRODUCT
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
@@ -22,6 +23,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCat
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
+import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemIndex
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -37,8 +39,8 @@ object HomeLayoutMapper {
      */
     private val STATIC_LAYOUT_ID = listOf(
             CHOOSE_ADDRESS_WIDGET_ID,
-            TICKER_WIDGET_ID,
             EMPTY_STATE_NO_ADDRESS,
+            EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE,
             EMPTY_STATE_FAILED_TO_FETCH_DATA
     )
 
@@ -50,70 +52,52 @@ object HomeLayoutMapper {
         PRODUCT_RECOM
     )
 
-    fun addLoadingIntoList(): List<HomeLayoutItemUiModel> {
-        val layoutList = mutableListOf<HomeLayoutItemUiModel>()
+    fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
         val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
-        layoutList.add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
-        return layoutList
+        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
     }
 
-    fun addEmptyStateIntoList(id: String): List<HomeLayoutItemUiModel> {
-        val layoutList = mutableListOf<HomeLayoutItemUiModel>()
+    fun MutableList<HomeLayoutItemUiModel>.addEmptyStateIntoList(id: String) {
         val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         val homeEmptyStateUiModel = HomeEmptyStateUiModel(id = id)
-        layoutList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-        layoutList.add(HomeLayoutItemUiModel(homeEmptyStateUiModel, HomeLayoutItemState.LOADED))
-        return layoutList
+        add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
+        add(HomeLayoutItemUiModel(homeEmptyStateUiModel, HomeLayoutItemState.LOADED))
     }
 
-    fun mapHomeLayoutList(response: List<HomeLayoutResponse>, tickers: List<TickerData>): List<HomeLayoutItemUiModel> {
-        val layoutList = mutableListOf<HomeLayoutItemUiModel>()
+    fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(response: List<HomeLayoutResponse>, hasTickerBeenRemoved: Boolean) {
         val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        layoutList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
+        add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
 
-        if (!tickers.isNullOrEmpty()) {
-            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickers)
-            layoutList.add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED))
+        if(!hasTickerBeenRemoved) {
+            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())
+            add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
         }
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             mapToHomeUiModel(it)?.let { item ->
-                layoutList.add(item)
+                add(item)
             }
         }
-        return layoutList
     }
 
-    fun List<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(
-        item: HomeComponentVisitable,
-        response: HomeLayoutResponse
-    ): List<HomeLayoutItemUiModel> {
-        return updateItemById(item.visitableId()) {
-            mapToHomeUiModel(response, HomeLayoutItemState.LOADED)
+    fun MutableList<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(item: HomeComponentVisitable, response: HomeLayoutResponse) {
+        updateItemById(item.visitableId()) { mapToHomeUiModel(response, HomeLayoutItemState.LOADED) }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(item: HomeLayoutUiModel, response: HomeLayoutResponse) {
+        updateItemById(item.visitableId) { mapToHomeUiModel(response, HomeLayoutItemState.LOADED) }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.updateStateToLoading(item: HomeLayoutItemUiModel) {
+        item.layout.let { layout ->
+            updateItemById(layout.getVisitableId()) {
+                HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADING)
+            }
         }
     }
 
-    fun List<HomeLayoutItemUiModel>.mapGlobalHomeLayoutData(
-        item: HomeLayoutUiModel,
-        response: HomeLayoutResponse
-    ): List<HomeLayoutItemUiModel> {
-        return updateItemById(item.visitableId) {
-            mapToHomeUiModel(response, HomeLayoutItemState.LOADED)
-        }
-    }
-
-    fun List<HomeLayoutItemUiModel>.updateStateToLoading(item: HomeLayoutItemUiModel): List<HomeLayoutItemUiModel> {
-        val layout = item.layout
-        return updateItemById(layout.getVisitableId()) {
-            HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADING)
-        }
-    }
-
-    fun List<HomeLayoutItemUiModel>.mapHomeCategoryGridData(
-        item: TokoNowCategoryGridUiModel,
-        response: List<CategoryResponse>?
-    ): List<HomeLayoutItemUiModel> {
-        return updateItemById(item.visitableId) {
+    fun MutableList<HomeLayoutItemUiModel>.mapHomeCategoryGridData(item: TokoNowCategoryGridUiModel, response: List<CategoryResponse>?) {
+        updateItemById(item.visitableId) {
             if (!response.isNullOrEmpty()) {
                 val categoryList = mapToCategoryList(response)
                 val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
@@ -123,6 +107,21 @@ object HomeLayoutMapper {
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADED)
             }
         }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapTickerData(item: HomeTickerUiModel, tickerData: List<TickerData>) {
+        updateItemById(item.visitableId) {
+            val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
+            HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
+        getItemIndex(id)?.let { removeAt(it) }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.findNextIndex(): Int? {
+        return firstOrNull { it.state == HomeLayoutItemState.NOT_LOADED }?.let { indexOf(it) }
     }
 
     fun Visitable<*>.isNotStaticLayout(): Boolean {

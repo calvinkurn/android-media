@@ -51,31 +51,32 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
@@ -133,7 +134,6 @@ class TokoNowHomeFragment: Fragment(),
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
-    private var hasTickerBeenRemoved: Boolean = false
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
@@ -198,9 +198,8 @@ class TokoNowHomeFragment: Fragment(),
         getMiniCart()
     }
 
-    override fun onTickerDismissed() {
-        hasTickerBeenRemoved = true
-        adapter.removeTickerWidget()
+    override fun onTickerDismissed(id: String) {
+        viewModelTokoNow.removeTickerWidget(id)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -300,7 +299,7 @@ class TokoNowHomeFragment: Fragment(),
                     viewModelTokoNow.getChooseAddress(SOURCE)
                 }
                 warehouseId == 0L -> {
-                    showEmptyState(EMPTY_STATE_NO_ADDRESS)
+                    showEmptyStateNoAddress()
                 }
                 else -> {
                     showLayout()
@@ -317,6 +316,14 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showFailedToFetchData() {
         showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    }
+
+    private fun showEmptyStateNoAddress() {
+        if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
+            showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
+        } else {
+            showEmptyState(EMPTY_STATE_NO_ADDRESS)
+        }
     }
 
     private fun showLayout() {
@@ -514,7 +521,7 @@ class TokoNowHomeFragment: Fragment(),
                         warehouseId = it.data.tokonow.warehouseId
                 )
             } else {
-                showEmptyState(EMPTY_STATE_NO_ADDRESS)
+                showEmptyStateNoAddress()
             }
         }
 
@@ -578,20 +585,20 @@ class TokoNowHomeFragment: Fragment(),
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-            miniCartWidget.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
-            miniCartWidget.show()
+            miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
+            miniCartWidget?.show()
         } else {
-            miniCartWidget.hide()
+            miniCartWidget?.hide()
         }
     }
 
     private fun setupPadding(data: MiniCartSimplifiedData) {
-        miniCartWidget.post {
-            val paddingBottom = if(data.isShowMiniCartWidget) {
-                miniCartWidget.height
+        miniCartWidget?.post {
+            val paddingBottom = if (data.isShowMiniCartWidget) {
+                miniCartWidget?.height.orZero()
             } else {
                 activity?.resources?.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
             }
             swipeLayout?.setPadding(0, 0, 0, paddingBottom)
         }
@@ -626,23 +633,20 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
         val initialLoad = data.isInitialLoad
-        val initialLoadFinished = data.isInitialLoadFinished
+        val isLoadDataFinished = data.isLoadDataFinished
+        showHomeLayout(data)
 
         when {
             initialLoad -> {
                 showHeaderBackground()
-                showHomeLayout(data)
                 loadNextItem(data)
             }
-            initialLoadFinished -> {
+            isLoadDataFinished -> {
                 rvHome?.post {
                     addLoadMoreListener()
                 }
             }
-            else -> {
-                showHomeLayout(data)
-                loadNextItem(data)
-            }
+            !isLoadDataFinished -> loadNextItem(data)
         }
     }
 
@@ -704,13 +708,12 @@ class TokoNowHomeFragment: Fragment(),
         addHomeComponentScrollListener()
     }
 
-    private fun loadVisibleLayoutData(index: Int) {
+    private fun loadVisibleLayoutData(index: Int?) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         val layoutManager = rvHome.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        val isVisible = index in firstVisibleItemIndex..lastVisibleItemIndex
-        viewModelTokoNow.getInitialLayoutData(index, warehouseId, isVisible)
+        viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
     }
 
     private fun loadMoreLayoutData() {
@@ -722,7 +725,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getHomeLayout() {
-        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved)
+        viewModelTokoNow.getHomeLayout()
     }
 
     private fun getMiniCart()  {

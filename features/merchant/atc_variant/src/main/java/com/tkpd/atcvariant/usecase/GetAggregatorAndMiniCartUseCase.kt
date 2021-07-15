@@ -21,6 +21,7 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
     private var requestParamsAggregator: Map<String, Any?> = mapOf()
     private var shopIds: List<String> = listOf()
     private var isTokoNow: Boolean = false
+    private var isLoggedIn: Boolean = false
 
     override val coroutineContext: CoroutineContext
         get() = dispatcher.main + SupervisorJob()
@@ -30,10 +31,12 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
                                     warehouseId: String? = null,
                                     pdpSession: String? = null,
                                     shopId: String,
-                                    isTokoNow:Boolean): AggregatorMiniCartUiModel {
+                                    isLoggedIn: Boolean,
+                                    isTokoNow: Boolean): AggregatorMiniCartUiModel {
         this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, warehouseId, pdpSession)
         this.shopIds = listOf(shopId)
         this.isTokoNow = isTokoNow
+        this.isLoggedIn = isLoggedIn
         return executeOnBackground()
     }
 
