@@ -473,9 +473,14 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 setNewStartTimeInfo(selectedChildView, selectedHour, selectedMinute)
 
                 // update endTime to +1 hour after, to avoid endTime < startTime
-                val oneHourAheadAfterSelectedStartTime = (selectedHour.toIntOrZero() + 1).toString()
-                setNewEndTimeInfo(selectedChildView, oneHourAheadAfterSelectedStartTime, selectedMinute)
-                updateEndTimeByPosition(currentExpandedAccordionPosition, oneHourAheadAfterSelectedStartTime, selectedMinute)
+                val oneHourAfterAheadSelectedStartTime = selectedHour.toIntOrZero() + 1
+                val oneHourAheadAfterSelectedStartTimeString = if (oneHourAfterAheadSelectedStartTime < 10) {
+                    "0${oneHourAfterAheadSelectedStartTime}"
+                } else {
+                    oneHourAfterAheadSelectedStartTime.toString()
+                }
+                setNewEndTimeInfo(selectedChildView, oneHourAheadAfterSelectedStartTimeString, selectedMinute)
+                updateEndTimeByPosition(currentExpandedAccordionPosition, oneHourAheadAfterSelectedStartTimeString, selectedMinute)
 
                 // set new updated startTime for selected day
                 updateStartTimeByPosition(currentExpandedAccordionPosition, selectedHour, selectedMinute)
