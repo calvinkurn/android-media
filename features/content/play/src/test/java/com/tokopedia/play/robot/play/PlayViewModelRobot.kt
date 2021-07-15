@@ -1,10 +1,13 @@
 package com.tokopedia.play.robot.play
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.ReportSummaries
-import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
+import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.play.result.PlayViewModelRobotResult
@@ -17,17 +20,12 @@ import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -48,9 +46,7 @@ class PlayViewModelRobot(
         videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
         getChannelStatusUseCase: GetChannelStatusUseCase,
         getSocketCredentialUseCase: GetSocketCredentialUseCase,
-        private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
         getProductTagItemsUseCase: GetProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
@@ -65,6 +61,7 @@ class PlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket,
         interactiveRepo: PlayViewerInteractiveRepository,
         partnerRepo: PlayViewerPartnerRepository,
+        private val likeRepo: PlayViewerLikeRepository,
         playAnalytic: PlayNewAnalytic,
 ) {
 
@@ -81,7 +78,6 @@ class PlayViewModelRobot(
                 getChannelStatusUseCase,
                 getSocketCredentialUseCase,
                 getReportSummariesUseCase,
-                getIsLikeUseCase,
                 getCartCountUseCase,
                 getProductTagItemsUseCase,
                 trackProductTagBroadcasterUseCase,
@@ -96,6 +92,7 @@ class PlayViewModelRobot(
                 playChannelWebSocket,
                 interactiveRepo,
                 partnerRepo,
+                likeRepo,
                 playAnalytic
         )
     }
@@ -113,11 +110,7 @@ class PlayViewModelRobot(
     }
 
     fun setMockResponseIsLike(response: Boolean) {
-        coEvery { getIsLikeUseCase.executeOnBackground() } returns response
-    }
-
-    fun setMockPartnerInfoResponse(response: ShopInfo) {
-        coEvery { getPartnerInfoUseCase.executeOnBackground() } returns response
+        coEvery { likeRepo.getIsLiked(any(), any()) } returns response
     }
 
     fun setMockCartCountResponse(response: Int) {
@@ -208,6 +201,10 @@ class PlayViewModelRobot(
     }
 
     fun isPiPAllowed() = viewModel.isPiPAllowed
+
+    fun submitAction(action: PlayViewerNewAction) {
+        viewModel.submitAction(action)
+    }
 }
 
 fun givenPlayViewModelRobot(
@@ -217,14 +214,11 @@ fun givenPlayViewModelRobot(
         videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory = mockk(relaxed = true),
         getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
         getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
-        getPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true),
         getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-        getIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true),
         getCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true),
         getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
-        playSocket: PlaySocket = mockk(relaxed = true),
         playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
         playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
         userSession: UserSessionInterface = mockk(relaxed = true),
@@ -235,6 +229,7 @@ fun givenPlayViewModelRobot(
         playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
         interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true),
         partnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true),
+        likeRepo: PlayViewerLikeRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
@@ -245,14 +240,11 @@ fun givenPlayViewModelRobot(
             videoBufferGovernorFactory = videoBufferGovernorFactory,
             getChannelStatusUseCase = getChannelStatusUseCase,
             getSocketCredentialUseCase = getSocketCredentialUseCase,
-            getPartnerInfoUseCase = getPartnerInfoUseCase,
             getReportSummariesUseCase = getReportSummariesUseCase,
-            getIsLikeUseCase = getIsLikeUseCase,
             getCartCountUseCase = getCartCountUseCase,
             getProductTagItemsUseCase = getProductTagItemsUseCase,
             trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
             trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-            playSocket = playSocket,
             playSocketToModelMapper = playSocketToModelMapper,
             playUiModelMapper = playUiModelMapper,
             userSession = userSession,
@@ -263,6 +255,7 @@ fun givenPlayViewModelRobot(
             playChannelWebSocket = playChannelWebSocket,
             interactiveRepo = interactiveRepo,
             partnerRepo = partnerRepo,
+            likeRepo = likeRepo,
             playAnalytic = playAnalytic
     ).apply(fn)
 }
