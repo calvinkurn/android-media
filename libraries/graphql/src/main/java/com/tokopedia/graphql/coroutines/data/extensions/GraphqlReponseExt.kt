@@ -10,7 +10,7 @@ inline fun <reified T> GraphqlResponse.getSuccessData(): T {
         return getData(T::class.java)
     } else {
         val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
-        LoggingUtils.logGqlErrorBackend("getSuccessData", "", errorMessage)
+        LoggingUtils.logGqlErrorBackend("getSuccessData", "", errorMessage, httpStatusCode.toString())
         throw MessageErrorException(errorMessage)
     }
 }

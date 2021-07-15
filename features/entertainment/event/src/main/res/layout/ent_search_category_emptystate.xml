@@ -1,72 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/spacing_lvl4"
-    android:background="@color/Unify_N0"
+    tools:ignore="Overdraw"
+    android:background="@color/Unify_Background"
     android:visibility="gone">
 
-    <ImageView
-        android:id="@+id/imgNyasar"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimen_dp_200"
-        android:src="@drawable/ent_ic_empty_item"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ent_search_oops"
-        android:textColor="@color/Unify_N700"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgNyasar"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/noCari"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ent_search_intip_kategori"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:textAlignment="center"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/Unify_N100"
-        app:typographyType="body_3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/resetFilterButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_text_reset_filter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noCari"
-        android:layout_marginTop="@dimen/spacing_lvl5">
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ent_search_reset_filter"
-            android:textColor="@color/Unify_N0"
-            app:typographyType="body_1"
-            app:typographyWeight="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+   <com.tokopedia.globalerror.GlobalError
+       android:gravity="center"
+       android:id="@+id/globalerror_category_event"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       />
+</LinearLayout>

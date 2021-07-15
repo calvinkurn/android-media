@@ -15,11 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
@@ -60,6 +58,9 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.util.*
@@ -127,11 +128,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
             if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
-                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
-                                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD))
                 hotelHomepageModel.checkOutDate = it.getString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE,
-                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
-                                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
+                        DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2).toString(DateUtil.YYYY_MM_DD))
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
                 hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")
@@ -463,7 +462,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 1 -> {
-                    iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_first_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     iv_first_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_first_photo_preview)
@@ -471,7 +470,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 2 -> {
-                    iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_second_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     iv_second_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_second_photo_preview)
@@ -479,7 +478,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 3 -> {
-                    iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                    iv_third_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     iv_third_photo_preview.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, iv_third_photo_preview)
@@ -488,7 +487,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
-                iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
+                iv_main_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                 iv_main_photo_preview.setOnClickListener {
                     onPhotoClicked()
                     openImagePreview(imageList, imageIndex, iv_main_photo_preview)

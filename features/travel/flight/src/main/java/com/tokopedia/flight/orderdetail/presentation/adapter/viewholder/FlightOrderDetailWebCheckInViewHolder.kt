@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailSimpleAdapter
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.android.synthetic.main.item_flight_order_detail_web_checkin.view.*
 
 /**
@@ -111,9 +112,9 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
     private fun renderCheckInStatus(element: FlightOrderDetailJourneyModel) {
         with(itemView) {
             if (element.webCheckIn.webUrl.isNotEmpty()) {
-                val checkInOpenDate = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, element.webCheckIn.startTime)
-                val checkInCloseDate = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, element.webCheckIn.endTime)
-                val currentTime = FlightDateUtil.currentDate
+                val checkInOpenDate = element.webCheckIn.startTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val checkInCloseDate = element.webCheckIn.endTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val currentTime = DateUtil.getCurrentDate()
 
                 when {
                     currentTime.before(checkInOpenDate) -> {

@@ -69,6 +69,17 @@ fun ImageView.loadImageRounded(
 ) = this.setImageResource(resource)
 
 inline fun ImageView.loadImageRounded(
+        data: Bitmap,
+        rounded: Float = DEFAULT_ROUNDED,
+        crossinline properties: Properties.() -> Unit = {}
+) {
+    call(data, Properties()
+            .apply(properties)
+            .setRoundedRadius(rounded)
+    )
+}
+
+inline fun ImageView.loadImageRounded(
         url: String?,
         rounded: Float = DEFAULT_ROUNDED,
         crossinline properties: Properties.() -> Unit = {}

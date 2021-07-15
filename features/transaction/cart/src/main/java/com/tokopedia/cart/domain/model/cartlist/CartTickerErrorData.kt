@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class CartTickerErrorData(
-        var errorInfo: String? = null,
-        var actionInfo: String? = null,
+        var errorInfo: String = "",
+        var actionInfo: String = "",
         var errorCount: Int = 0
 ) : Parcelable

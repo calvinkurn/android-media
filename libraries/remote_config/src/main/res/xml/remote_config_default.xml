@@ -585,4 +585,8 @@
         <key>android_enable_seller_global_feedback</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_main_app_enable_tokopedia_now</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

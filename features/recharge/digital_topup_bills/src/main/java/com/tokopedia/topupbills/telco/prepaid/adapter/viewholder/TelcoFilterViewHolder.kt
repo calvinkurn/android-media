@@ -15,7 +15,11 @@ class TelcoFilterViewHolder(itemView: View?, checkableInteractionListener: Check
     private lateinit var checkbox: CheckBox
 
     init {
-        itemView?.let {
+        initView()
+    }
+
+    private fun initView() {
+        itemView.let {
             checkbox = itemView.findViewById(R.id.telco_filter_checkbox)
         }
     }

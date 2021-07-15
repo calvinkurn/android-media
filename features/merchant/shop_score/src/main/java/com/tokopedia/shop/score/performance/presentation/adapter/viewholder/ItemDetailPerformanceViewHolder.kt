@@ -1,8 +1,10 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
+import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
@@ -14,6 +16,7 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerform
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
+import timber.log.Timber
 
 class ItemDetailPerformanceViewHolder(view: View,
                                       private val itemShopPerformanceListener: ItemShopPerformanceListener)
@@ -63,11 +66,11 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            cardItemDetailShopPerformance?.setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
+            setContainerBackground()
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {
-                cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                setCardItemDetailPerformanceBackground()
                 cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
             } else {
                 cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
@@ -89,18 +92,45 @@ class ItemDetailPerformanceViewHolder(view: View,
         }
     }
 
-    private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
+    private fun setContainerBackground() {
+        try {
+            with(itemView) {
+                context?.let {
+                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
+                }
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
 
-        when (colorValueDetailPerformance) {
-            getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+    private fun setCardItemDetailPerformanceBackground() {
+        try {
+            with(itemView) {
+                context?.let {
+                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(context, R.drawable.corner_rounded_performance_list)
+                }
             }
-            getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
+    private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
+        try {
+            when (colorValueDetailPerformance) {
+                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+                }
+                getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                }
+                getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                }
             }
-            getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
-                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
         }
     }
 

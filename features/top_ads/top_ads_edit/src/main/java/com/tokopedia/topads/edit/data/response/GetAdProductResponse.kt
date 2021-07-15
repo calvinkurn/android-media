@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 data class GetAdProductResponse(
 
-        @field:SerializedName("topadsGetListProductsOfGroup")
+        @field:SerializedName("topadsGetListProductsOfGroupV2")
         val topadsGetListProductsOfGroup: TopadsGetListProductsOfGroup = TopadsGetListProductsOfGroup()
 ) {
     data class TopadsGetListProductsOfGroup(
@@ -33,7 +33,7 @@ data class GetAdProductResponse(
                 val adID: String = "0",
 
                 @field:SerializedName("groupID")
-                val groupID: Int = 0,
+                val groupID: String = "0",
 
                 @field:SerializedName("adDetailProduct")
                 val adDetailProduct: AdDetailProduct = AdDetailProduct()

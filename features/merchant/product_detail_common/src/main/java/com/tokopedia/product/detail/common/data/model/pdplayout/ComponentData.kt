@@ -1,8 +1,11 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
         //region General data
@@ -43,12 +46,13 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
         val stock: Stock = Stock(),
         @SerializedName("variant")
-        val variant: Variant = Variant(),
+        val variant: VariantBasic = VariantBasic(),
         @SerializedName("videos")
         val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
@@ -68,9 +72,22 @@ data class ComponentData(
         @SerializedName("defaultChild")
         val defaultChild: String = "",
         @SerializedName("variants")
-        val variants: List<ProductP1Variant> = listOf(),
+        val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
+        val children : List<VariantChild> = listOf(),
+        //endregioncopy
+
+        //region best seller data
+        @SerializedName("productID")
+        val productId: String = "",
+        @SerializedName("oneLinerContent")
+        val oneLinerContent: String = "",
+        @SerializedName("linkText")
+        val linkText: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("isVisible")
+        val isVisible: Boolean = true
         //endregioncopy
 )  {
     companion object{

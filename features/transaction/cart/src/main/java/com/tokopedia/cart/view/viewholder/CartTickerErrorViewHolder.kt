@@ -12,8 +12,8 @@ import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 class CartTickerErrorViewHolder(private val binding: HolderItemCartTickerErrorBinding, private val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(data: CartItemTickerErrorHolderData) {
-        binding.tickerError.setTextDescription(data.cartTickerErrorData?.errorInfo ?: "")
-        binding.tickerAction.setOnClickListener { v -> actionListener?.onSeeErrorProductsClicked() }
+        binding.tickerError.setTextDescription(data.cartTickerErrorData.errorInfo)
+        binding.tickerAction.setOnClickListener { actionListener?.onSeeErrorProductsClicked() }
     }
 
     companion object {
