@@ -17,6 +17,9 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 object Utils {
     private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
@@ -26,6 +29,8 @@ object Utils {
     private const val STRING_BUTTON_VARIANT_FILLED = "filled"
     private const val STRING_BUTTON_VARIANT_GHOST = "ghost"
     private const val STRING_BUTTON_VARIANT_TEXT_ONLY = "text_only"
+
+    private const val CURRENCY_RUPIAH = "Rp"
 
     fun parseColorHex(context: Context, colorHex: String, defaultColor: Int): Int {
         return try {
@@ -80,5 +85,13 @@ object Utils {
         return SpannableString(productNote).apply {
             setSpan(StyleSpan(Typeface.ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+    }
+
+    fun Double.toCurrencyFormatted(): String {
+        val value =  BigDecimal(this).apply {
+            setScale(0, RoundingMode.HALF_UP)
+        }
+        val values = CurrencyFormatHelper.convertToRupiah(value.toString())
+        return "$CURRENCY_RUPIAH $values"
     }
 }

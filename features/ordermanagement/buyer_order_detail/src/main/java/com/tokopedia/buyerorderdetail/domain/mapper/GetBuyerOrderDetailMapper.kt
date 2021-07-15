@@ -8,6 +8,7 @@ import android.text.style.StyleSpan
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
+import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
         )
     }
@@ -50,10 +51,11 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
         return ProductListUiModel(
                 productList = mapProductList(products, orderId, orderStatusId),
-                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId)
+                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
+                productBundlingList = mapProductBundle(bundleDetail, orderStatusId)
         )
     }
 
@@ -249,6 +251,45 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 quantity = product.quantity,
                 totalPrice = product.totalPrice,
                 totalPriceText = product.totalPriceText
+        )
+    }
+
+    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel> {
+        return bundleDetail.bundleList.map { bundle ->
+            ProductListUiModel.ProductBundlingUiModel(
+                    // TODO: get actual dummy action button (if exist)
+                    button = getDummyActionButton(),
+                    bundleName = bundle.bundleName,
+                    totalPrice = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
+                    totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
+                    bundleItemList = bundle.orderDetailList.map { bundleDetail ->
+                        ProductListUiModel.ProductBundlingItemUiModel(
+                                orderId = bundleDetail.orderId.toString(),
+                                orderDetailId = bundleDetail.orderDetailId.toString(),
+                                orderStatusId = orderStatusId,
+                                productId = bundleDetail.productId.toString(),
+                                productName = bundleDetail.productName,
+                                productNote = bundleDetail.notes,
+                                productThumbnailUrl = bundleDetail.thumbnail,
+                                quantity = bundleDetail.quantity,
+                                priceText = bundleDetail.productPrice.toCurrencyFormatted()
+                        )
+                    }
+            )
+        }
+    }
+
+    private fun getDummyActionButton(): ActionButtonsUiModel.ActionButton {
+        return ActionButtonsUiModel.ActionButton(
+                key = "",
+                label = "Beli Lagi gan",
+                popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                        body = "Tes",
+                        title = "tes"
+                ),
+                variant = "",
+                type = "tes",
+                url = ""
         )
     }
 

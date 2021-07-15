@@ -55,10 +55,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerBundlingProduct
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -249,8 +246,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             getProductBundling()
         } else {
             label_see_all_products?.run {
-                text = "${getString(R.string.see_all_placeholder)} (${listProduct.size + listBuyerBundlingProductUiModel?.getTotalItems().orZero()})"
-                setOnClickListener { showProductBundleBottomSheet() }
+                val totalItems = listProduct.size + listBuyerBundlingProductUiModel?.getTotalItems().orZero()
+                if (totalItems > 1) {
+                    text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
+                    setOnClickListener { showProductBundleBottomSheet() }
+                    show()
+                } else {
+                    gone()
+                }
             }
         }
 
@@ -678,8 +681,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             listBuyerBundlingProductUiModel = bundleProductList
             bundleProductList?.let {
                 label_see_all_products?.run {
-                    text = "${getString(R.string.see_all_placeholder)} (${listProduct.size + it.getTotalItems()})"
-                    setOnClickListener { showProductBundleBottomSheet() }
+                    val totalItems = listProduct.size + it.getTotalItems()
+                    if (totalItems > 1) {
+                        text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
+                        setOnClickListener { showProductBundleBottomSheet() }
+                        show()
+                    } else {
+                        gone()
+                    }
                 }
             }
         }
