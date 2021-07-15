@@ -118,10 +118,13 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     private fun observeResetButtonState() {
         sortFilterViewModel.resetButtonState.observe(viewLifecycleOwner, {
             if(it) {
-                setResetButton()
-                bottomSheetAction.show()
+                bottomSheetAction.apply {
+                    text = getString(R.string.review_reading_reset_filter)
+                    setOnClickListener { resetFilters() }
+                    show()
+                }
             } else {
-                bottomSheetAction.hide()
+                bottomSheetAction.text = ""
             }
         })
     }
@@ -194,10 +197,6 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
                     false
             }
         }
-    }
-
-    private fun setResetButton() {
-        setAction(getString(R.string.review_reading_reset_filter)) { resetFilters() }
     }
 
     private fun resetFilters() {
