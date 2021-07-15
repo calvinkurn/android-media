@@ -32,6 +32,7 @@ includeIfEnabled("features:im:moengage_wrapper")
 
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:tradein")
+includeIfEnabled("features:category:moneyin")
 includeIfEnabled("features:category:age_restriction")
 includeIfEnabled("features:category:explore_category")
 includeIfEnabled("features:category:discovery2")
