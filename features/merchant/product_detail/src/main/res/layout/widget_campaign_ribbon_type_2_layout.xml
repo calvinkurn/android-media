@@ -34,7 +34,7 @@
             app:layout_constraintStart_toEndOf="@+id/left_margin_view"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.tokopedia.variant_common.view.customview.ProductRoundedImageView
+            <com.tokopedia.product.detail.common.data.views.ProductRoundedImageView
                 android:id="@+id/iu_campaign_logo_s2"
                 android:layout_width="@dimen/pdp_dp_40"
                 android:layout_height="@dimen/pdp_dp_40"
