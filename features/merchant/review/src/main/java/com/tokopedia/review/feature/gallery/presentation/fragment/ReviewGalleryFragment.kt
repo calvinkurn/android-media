@@ -187,6 +187,9 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         imagesRecyclerView?.apply {
             adapter = this@ReviewGalleryFragment.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            setOnClickListener {
+                onImageClicked()
+            }
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })

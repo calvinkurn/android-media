@@ -25,9 +25,6 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
         image?.apply {
             mLoaderView.hide()
             mImageView.loadImage(imageUrl)
-            setOnClickListener {
-                imageListener.onImageClicked()
-            }
             onImageDoubleClickListener = {
                 if (mScaleFactor == UNZOOM_SCALE_FACTOR) {
                     setScaleFactor(ZOOM_SCALE_FACTOR)

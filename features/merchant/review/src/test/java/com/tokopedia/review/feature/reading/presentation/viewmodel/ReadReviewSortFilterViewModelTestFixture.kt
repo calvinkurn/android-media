@@ -19,7 +19,6 @@ abstract class ReadReviewSortFilterViewModelTestFixture {
     protected lateinit var viewModel: ReadReviewSortFilterViewModel
 
     val originalFilter = setOf("Kualitas Produk", "Pelayanan Toko", "Kemasan Produk", "Harga", "Pengiriman")
-    val originalSort = "Paling Membantu"
 
     @Before
     fun setup() {

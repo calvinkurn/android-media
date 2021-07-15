@@ -147,7 +147,7 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
-        setOnClickListener {
+        satisfactionRate?.setOnClickListener {
             readReviewHeaderListener.onHeaderClicked()
         }
     }

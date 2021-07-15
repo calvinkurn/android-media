@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
@@ -23,7 +24,15 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
 
     companion object {
         const val TAG = "ReadReviewFilterBottomSheet Tag"
-        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterBottomSheetType: SortFilterBottomSheetType, selectedFilter: Set<String> = setOf(), selectedSort: String = "", index: Int): ReadReviewFilterBottomSheet {
+        fun newInstance(
+            title: String,
+            filterList: ArrayList<ListItemUnify>,
+            readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener,
+            sortFilterBottomSheetType: SortFilterBottomSheetType,
+            selectedFilter: Set<String> = setOf(),
+            selectedSort: String = "",
+            index: Int
+        ): ReadReviewFilterBottomSheet {
             return ReadReviewFilterBottomSheet().apply {
                 setTitle(title)
                 this.filterData = filterList
@@ -32,6 +41,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
                 this.previouslySelectedFilter = selectedFilter
                 this.previouslySelectedSortOption = selectedSort
                 this.index = index
+                clearContentPadding = true
             }
         }
     }
@@ -54,7 +64,11 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
         component?.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = View.inflate(context, R.layout.bottomsheet_read_review_filter, null)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -63,15 +77,15 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     override fun getComponent(): ReadReviewComponent? {
         return activity?.run {
             DaggerReadReviewComponent.builder()
-                    .reviewComponent(ReviewInstance.getComponent(application))
-                    .build()
+                .reviewComponent(ReviewInstance.getComponent(application))
+                .build()
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        sortFilterViewModel.setInitialValues(previouslySelectedFilter, previouslySelectedSortOption, filterData)
+        sortFilterViewModel.setInitialValues(previouslySelectedFilter, filterData)
         setListUnifyData()
         if (isSortMode()) {
             setSortItemListener()
@@ -80,14 +94,15 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
                 configSortData()
             }
         } else {
+            setResetButton()
+            observeSubmitButtonState()
+            observeResetButtonState()
             setFilterItemListener()
             setSubmitFilterButton()
-            setResetButton()
             listUnify?.onLoadFinish {
                 configFilterData()
             }
         }
-        observeSortFilter()
     }
 
     private fun bindViews(view: View) {
@@ -95,9 +110,15 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
         submitButton = view.findViewById(R.id.read_review_submit_filter)
     }
 
-    private fun observeSortFilter() {
-        sortFilterViewModel.buttonState.observe(viewLifecycleOwner, Observer {
+    private fun observeSubmitButtonState() {
+        sortFilterViewModel.buttonState.observe(viewLifecycleOwner, {
             submitButton?.isEnabled = it
+        })
+    }
+
+    private fun observeResetButtonState() {
+        sortFilterViewModel.resetButtonState.observe(viewLifecycleOwner, {
+            bottomSheetAction.showWithCondition(it)
         })
     }
 
@@ -115,21 +136,19 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
     private fun setFilterItemListener() {
         listUnify?.setOnItemClickListener { _, _, position, _ ->
             (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.let {
-                it.listRightCheckbox?.let { checkbox ->
-                    checkbox.toggle()
-                }
+                it.listRightCheckbox?.toggle()
             }
         }
     }
 
     private fun configSortData() {
         getFilterData().forEachIndexed { index, listItemUnify ->
+            if (listItemUnify.listTitleText == previouslySelectedSortOption && previouslySelectedSortOption.isNotBlank()) {
+                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked =
+                    true
+            }
             (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
                 onSortCheckChange(isChecked, listItemUnify, index)
-            }
-            val originalSort = sortFilterViewModel.getOriginalSort()
-            if (listItemUnify.listTitleText == originalSort && originalSort.isNotBlank()) {
-                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked = true
             }
         }
     }
@@ -142,30 +161,34 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
             val originalFilters = sortFilterViewModel.getOriginalFilters()
             if (originalFilters.contains(listItemUnify.listTitleText) && originalFilters.isNotEmpty()) {
                 sortFilterViewModel.updateSelectedFilter(listItemUnify)
-                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = true
+                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked =
+                    true
             }
         }
     }
 
     private fun setSubmitSortButton() {
-        submitButton?.setOnClickListener {
-            dismiss()
-            listener?.onSortSubmitted(sortFilterViewModel.getSelectedSort())
-        }
+        submitButton?.hide()
     }
 
     private fun setSubmitFilterButton() {
         submitButton?.setOnClickListener {
             dismiss()
-            listener?.onFilterSubmitted(this.bottomSheetTitle.text.toString(), sortFilterViewModel.getSelectedFilters(), sortFilterBottomSheetType
-                    ?: SortFilterBottomSheetType.RatingFilterBottomSheet, index)
+            listener?.onFilterSubmitted(
+                this.bottomSheetTitle.text.toString(),
+                sortFilterViewModel.getSelectedFilters(),
+                sortFilterBottomSheetType
+                    ?: SortFilterBottomSheetType.RatingFilterBottomSheet,
+                index
+            )
         }
     }
 
     private fun clearOtherItems(position: Int) {
         getFilterData().forEachIndexed { index, _ ->
             if (position != index) {
-                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked = false
+                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked =
+                    false
             }
         }
     }
@@ -176,7 +199,8 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
 
     private fun resetFilters() {
         getFilterData().forEachIndexed { index, _ ->
-            (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = false
+            (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked =
+                false
         }
         clearAllFilters()
     }
@@ -197,10 +221,15 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify(), HasComponent<ReadReviewC
         sortFilterViewModel.onFilterCheckChange(isChecked, itemUnify)
     }
 
-    private fun onSortCheckChange(isChecked: Boolean, selectedSortOption: ListItemUnify, position: Int) {
+    private fun onSortCheckChange(
+        isChecked: Boolean,
+        selectedSortOption: ListItemUnify,
+        position: Int
+    ) {
         if (isChecked) {
-            sortFilterViewModel.onSortCheckChange(isChecked, selectedSortOption)
             clearOtherItems(position)
+            dismiss()
+            listener?.onSortSubmitted(selectedSortOption)
         }
     }
 }

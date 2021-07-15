@@ -43,7 +43,6 @@
         android:id="@+id/review_reading_rating_count"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/layout_lvl2"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

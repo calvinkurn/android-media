@@ -377,6 +377,7 @@
     <string name="review_reading_topic_filter_title">Topik ulasan</string>
     <string name="review_reading_sort_title">Urutkan</string>
     <string name="review_reading_like">Membantu</string>
+    <string name="review_reading_like_count">%d orang terbantu</string>
     <string name="review_reading_show_response">Lihat Balasan</string>
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>

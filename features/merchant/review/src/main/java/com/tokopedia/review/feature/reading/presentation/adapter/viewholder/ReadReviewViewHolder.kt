@@ -149,7 +149,10 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             text = if (likeDislike.totalLike == 0) {
                 getString(R.string.review_reading_like)
             } else {
-                likeDislike.totalLike.toString()
+                String.format(getString(R.string.review_reading_like_count), likeDislike.totalLike)
+            }
+            setOnClickListener {
+                readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
             }
         }
     }
