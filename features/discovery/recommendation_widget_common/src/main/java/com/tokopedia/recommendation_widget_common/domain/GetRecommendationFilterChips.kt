@@ -73,7 +73,7 @@ class GetRecommendationFilterChips (
         return recommendationFilterChipsEntity.recommendationFilterChips.data
     }
 
-    fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String="", type: String=""){
+    fun setParams(userId: Int=0, productIDs: String="", pageName: String="", xSource: String="", queryParam: String="", type: String="", isTokonow: Boolean = false){
         params.parameters.clear()
         if (userId != 0 ) params.putInt(PARAM_USER_ID, userId)
         if (productIDs.isNotEmpty()) params.putString(PARAM_PRODUCT_IDS, productIDs)
@@ -81,6 +81,8 @@ class GetRecommendationFilterChips (
         if (xSource.isNotEmpty()) params.putString(PARAM_X_SOURCE, xSource)
         if (queryParam.isNotEmpty()) params.putString(PARAM_QUERY_PARAM, queryParam)
         if (type.isNotEmpty()) params.putString(PARAM_FILTER_TYPE, type)
+        if (isTokonow) params.putBoolean(PARAM_TOKONOW, isTokonow)
+
     }
 
     companion object{
@@ -90,6 +92,7 @@ class GetRecommendationFilterChips (
         private const val PARAM_X_SOURCE = "xSource"
         private const val PARAM_FILTER_TYPE = "filterType"
         private const val PARAM_QUERY_PARAM = "queryParam"
+        private const val PARAM_TOKONOW = "tokoNow"
         const val FULL_FILTER = "full_filter"
         const val QUICK_FILTER = "quick_filter"
     }
