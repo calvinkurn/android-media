@@ -95,15 +95,4 @@ class OneLinersViewHolder(
         adapterPosition + 1
     )
 
-    private fun View.setVisible(isVisible: Boolean) {
-        if (isVisible) {
-            val params: ViewGroup.LayoutParams = this.layoutParams
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            this.layoutParams = params
-        } else {
-            val params: ViewGroup.LayoutParams = this.layoutParams
-            params.height = 0
-            this.layoutParams = params
-        }
-    }
 }
