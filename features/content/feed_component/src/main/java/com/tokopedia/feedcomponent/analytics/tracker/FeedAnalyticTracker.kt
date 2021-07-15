@@ -20,7 +20,6 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
@@ -59,11 +58,11 @@ class FeedAnalyticTracker
         private const val KEY_BUSINESS_UNIT_EVENT = "businessUnit"
         private const val KEY_CURRENT_SITE_EVENT = "currentSite"
         private const val KEY_EVENT_USER_ID = "userId"
-        private const val KEY_SESSION_IRIS = "sessionIris"
         private const val SGC_IMAGE = "sgc image"
         private const val SGC_IMAGE_RECOM = "sgc image recom"
         private const val ASGC = "asgc"
-        private const val ASGC_RECOM= "asgc recom"
+        private const val VIDEO = "sgc video"
+        private const val ASGC_RECOM = "asgc recom"
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT= "FeedXCardProductsHighlight"
     }
 
@@ -216,22 +215,18 @@ class FeedAnalyticTracker
         const val PROFILE_FOLLOW_RECOM_RECOM_IDENTIFIER = "{usertype}"
     }
 
-    @Inject
-    lateinit var irisSession: IrisSession
-
-    private fun getPostType(type: String, isFollowed: Boolean):String{
-        return if(type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
+    private fun getPostType(type: String, isFollowed: Boolean, isVideo: Boolean = false): String {
+        return if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
             ASGC_RECOM
         else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
             ASGC
+        else if (isVideo)
+            VIDEO
         else if(type!= TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
             SGC_IMAGE_RECOM
         else
             SGC_IMAGE
     }
-
-    private fun getIrisSessionId(): String = irisSession.getSessionId()
-
 
     //    https://docs.google.com/spreadsheets/d/1GZuybElS3H9_H_wI3z7f4Q8Y8eGZhaFnE-OK9DnYsk4/edit#gid=956196839
     //    screenshot 47
@@ -240,7 +235,7 @@ class FeedAnalyticTracker
             Event.CLICK_SOCIAL_COMMERCE,
             if (shopId.equals(userSessionInterface.shopId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
             Action.CLICK_CONTENT_DETAIL_SHOP,
-            String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+            String.format(FORMAT_TWO_PARAM, shopId, activityId)
         )
     }
 
@@ -251,7 +246,7 @@ class FeedAnalyticTracker
             Event.CLICK_SOCIAL_COMMERCE,
             if (userId.equals(userSessionInterface.userId)) Category.MY_CONTENT_DETAIL else Category.CONTENT_DETAIL,
             Action.CLICK_CONTENT_DETAIL_AFFILIATE,
-            String.format(Action.FORMAT_TWO_PARAM, userId, activityId)
+            String.format(FORMAT_TWO_PARAM, userId, activityId)
         )
     }
 
@@ -283,13 +278,13 @@ class FeedAnalyticTracker
                 "shop",
                 getPostType(type, isFollowed)),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
                 shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -306,13 +301,13 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
                 shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -334,13 +329,13 @@ class FeedAnalyticTracker
                 getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
                 shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -351,24 +346,30 @@ class FeedAnalyticTracker
         activityId: String, type: String,
         isFollowed: Boolean,
         shopId: String,
+        isVideo: Boolean,
     ) {
+        val typeAction = if (isVideo)
+            "tag product"
+        else
+            "lihat produk"
+
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
-                "lihat produk",
-                getPostType(type,isFollowed)
+                typeAction,
+                getPostType(type, isFollowed, isVideo)
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
                 shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to "content",
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -389,13 +390,13 @@ class FeedAnalyticTracker
                getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
                 shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -422,7 +423,7 @@ class FeedAnalyticTracker
                 ),
                 KEY_BUSINESS_UNIT_EVENT to CONTENT,
                 KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-                KEY_SESSION_IRIS to getIrisSessionId(),
+
                 KEY_EVENT_USER_ID to userSessionInterface.userId
             )
         )
@@ -443,13 +444,13 @@ class FeedAnalyticTracker
                     getPostType(type,isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 ),
                 KEY_BUSINESS_UNIT_EVENT to CONTENT,
                 KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-                KEY_SESSION_IRIS to getIrisSessionId(),
+
                 KEY_EVENT_USER_ID to userSessionInterface.userId
             )
         )
@@ -469,13 +470,13 @@ class FeedAnalyticTracker
                     getPostType(type,isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 ),
                 KEY_BUSINESS_UNIT_EVENT to CONTENT,
                 KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-                KEY_SESSION_IRIS to getIrisSessionId(),
+
                 KEY_EVENT_USER_ID to userSessionInterface.userId
             )
         )
@@ -528,13 +529,13 @@ class FeedAnalyticTracker
                 getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 activityId,
                 shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -565,7 +566,7 @@ class FeedAnalyticTracker
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 )
@@ -717,7 +718,7 @@ fun eventImpressionProductASGC(
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 )
@@ -737,7 +738,7 @@ fun eventImpressionProductASGC(
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 )
@@ -777,7 +778,7 @@ fun eventImpressionProductASGC(
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 )
@@ -846,7 +847,7 @@ fun eventImpressionProductASGC(
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -864,7 +865,7 @@ fun eventImpressionProductASGC(
                     getPostType(type,isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 )
@@ -994,7 +995,7 @@ fun eventImpressionProductASGC(
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     shopId
                 )
@@ -1010,7 +1011,7 @@ fun eventImpressionProductASGC(
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to loginState,
             KEY_EVENT_SCREEN_NAME to "/feed/comment-detail",
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -1034,7 +1035,7 @@ fun eventImpressionProductASGC(
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
 
@@ -1052,13 +1053,13 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
 
@@ -1076,13 +1077,13 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
 
@@ -1100,13 +1101,13 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
 
@@ -1124,13 +1125,13 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
 
@@ -1148,13 +1149,13 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -1171,13 +1172,13 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
@@ -1194,14 +1195,59 @@ fun eventImpressionProductASGC(
                 SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_TWO_PARAM,
+                FORMAT_TWO_PARAM,
                 actvityId,
                 userSessionInterface.shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickMuteButton(activityId: String, isMute: Boolean) {
+        val mute = if (isMute)
+            "unmute"
+        else
+            "mute"
+        var map = getCommonMap()
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    mute,
+                    getPostType("", isFollowed = false, isVideo = true)
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
+
+    fun clickOnVideo(activityId: String) {
+        var map = getCommonMap()
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "video area",
+                    getPostType("", isFollowed = false, isVideo = true)
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
@@ -1213,7 +1259,7 @@ fun eventImpressionProductASGC(
             KEY_EVENT_CATEGORY to category,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
     }
@@ -1223,7 +1269,7 @@ fun eventImpressionProductASGC(
             KEY_EVENT_CATEGORY to category,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-            KEY_SESSION_IRIS to getIrisSessionId(),
+
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
     }
@@ -1249,7 +1295,7 @@ fun eventImpressionProductASGC(
             CLICK_FEED,
             Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
             Action.CLICK_FEED_PRODUCT_DETAIL,
-            String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
+            String.format(FORMAT_TWO_PARAM, shopId, activityId)
         )
     }
 

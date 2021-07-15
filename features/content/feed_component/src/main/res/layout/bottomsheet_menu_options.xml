@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/dp_18"
+    android:paddingBottom="@dimen/dp_18"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,8 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/feed_component_report_it"
         android:textColor="@color/Red_R600"
         app:typographyType="body_2"
@@ -22,6 +20,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/div1"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_18"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/dp_16" />
 
@@ -31,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/feed_component_unfollow"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
@@ -41,6 +39,7 @@
         android:id="@+id/div2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_16" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +48,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginBottom="@dimen/dp_18"
         android:text="@string/feed_delete_comment"
         android:textColor="@color/Red_R600"
         android:visibility="gone"

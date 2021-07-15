@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.data.feedrevamp
 
+import android.view.View
 import com.google.gson.annotations.SerializedName
 
 data class FeedXMedia(
@@ -19,6 +20,7 @@ data class FeedXMedia(
     var tagging: List<FeedXMediaTagging>,
     @SerializedName("mods")
     var mods: List<String>,
-    var videoTime: Long = 0L
+    var videoTime: Long = 0L,
+    var videoView: View? = null
 )
 

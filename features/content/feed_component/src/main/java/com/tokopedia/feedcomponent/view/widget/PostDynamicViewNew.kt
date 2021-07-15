@@ -728,6 +728,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.author.id,
                                         feedXCard.typename,
                                         feedXCard.followers.isFollowed,
+                                        false,
                                         positionInFeed
                                     )
                                 }
@@ -741,6 +742,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.author.id,
                                         feedXCard.typename,
                                         feedXCard.followers.isFollowed,
+                                        false,
                                         positionInFeed
                                     )
                                 }
@@ -761,7 +763,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedXCard.author.id,
                                 feedXCard.typename,
                                 feedXCard.followers.isFollowed,
-                                isVideoVisible,
                                 index
                             )
                         )
@@ -781,7 +782,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
                         else {
-                            videoPlayer?.start(media[current].mediaUrl, isMute)
+                            playVideo(feedXCard, current)
                         }
                     }
                 }
@@ -799,7 +800,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         id: String,
         type: String,
         isFollowed: Boolean,
-        isVideoVisible: Boolean,
         index: Int
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
@@ -808,8 +808,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         videoItem?.layoutParams = param
-        setVideoControl(isVideoVisible, videoItem, feedMedia, postId, index)
+        feedMedia.videoView = videoItem
         videoItem?.run {
+            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
@@ -819,6 +820,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         id,
                         type,
                         isFollowed,
+                        true,
                         positionInFeed
                     )
                 }
@@ -826,6 +828,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             volumeIcon.setOnClickListener {
                 isMute = !isMute
+                listener?.muteUnmuteVideo(postId, isMute)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
@@ -834,14 +837,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun setVideoControl(
-        isVideoVisible: Boolean,
-        videoItem: View?,
         feedMedia: FeedXMedia,
         postId: String,
         index: Int
     ) {
+        val videoItem = feedMedia.videoView
         videoItem?.run {
-            videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             var time = feedMedia.videoTime
             if (time == 0L) {
                 scopeDef.launch {
@@ -871,9 +872,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                     }
                 }
-                if (isVideoVisible) {
-                    videoPlayer?.start(feedMedia.mediaUrl, isMute)
-                }
+                videoPlayer?.start(feedMedia.mediaUrl, isMute)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
@@ -894,10 +893,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 timer_view.gone()
                             }
                         }.start()
-                    }
-
-                    override fun configureVolume(isMute: Boolean) {
-                        setupVolume(isMute)
                     }
                 })
             }
@@ -926,10 +921,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun toggleVolume(isMute: Boolean) {
         videoPlayer?.toggleVideoVolume(isMute)
-    }
-
-    private fun setupVolume(isMute: Boolean) {
-        //  volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
     }
 
     private fun setGridASGCLayout(feedXCard: FeedXCard) {
@@ -1089,5 +1080,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         videoPlayer?.destroy()
+    }
+
+    fun playVideo(feedXCard: FeedXCard, position: Int = 0) {
+        setVideoControl(feedXCard.media[position], feedXCard.id, position)
     }
 }

@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_menu_options.*
@@ -40,6 +43,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         val contentView = View.inflate(context, R.layout.bottomsheet_menu_options, null)
+        clearContentPadding = true
         setChild(contentView)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -47,12 +51,21 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         report.showWithCondition(!canBeDeleted && isReportable)
-
-        div1.showWithCondition(!canBeDeleted && canBeUnFollow)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
-
-        div2.showWithCondition(canBeDeleted)
         delete.showWithCondition(canBeDeleted)
+
+        if(canBeDeleted && report.isVisible && follow.isVisible) {
+            div1.show()
+            div2.show()
+        }
+        else{
+            if(!canBeDeleted || !report.isVisible || !follow.isVisible){
+                div1.gone()
+            }
+            if((!report.isVisible && !follow.isVisible)||(!canBeDeleted && !follow.isVisible )){
+                div2.gone()
+            }
+        }
 
         follow.setOnClickListener {
             onFollow?.invoke()

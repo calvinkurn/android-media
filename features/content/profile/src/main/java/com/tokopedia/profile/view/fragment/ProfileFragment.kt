@@ -1224,6 +1224,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         id: String,
         type: String,
         isFollowed: Boolean,
+        isVideo: Boolean,
         positionInFeed: Int
     ) {
     }
@@ -1234,6 +1235,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         shopId: String
     ) {
 
+    }
+
+    override fun muteUnmuteVideo(postId: String, mute: Boolean) {
     }
 
     override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {

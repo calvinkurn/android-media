@@ -1012,11 +1012,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, int positionInFeed) {
-
-    }
-
-    @Override
     public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId) {
 
     }
@@ -1039,6 +1034,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void userGridPostImpression(int positionInFeed, @NotNull String activityId, @NotNull String postType, @NotNull String shopId) {
+
+    }
+
+    @Override
+    public void muteUnmuteVideo(@NotNull String postId, boolean mute) {
+
+    }
+
+    @Override
+    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id, @NotNull String type, boolean isFollowed, boolean isVideo, int positionInFeed) {
 
     }
 }

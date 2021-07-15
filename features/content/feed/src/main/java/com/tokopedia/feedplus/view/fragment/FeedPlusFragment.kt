@@ -1792,6 +1792,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventImageClicked(activityId, type, isFollowed, shopId)
     }
 
+    override fun onTagClicked(
+        postId: Int,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        id: String,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean,
+        positionInFeed: Int
+    ) {
+        feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id, isVideo)
+        productTagBS.show(childFragmentManager, products, listener, postId, id, type, isFollowed, positionInFeed)
+        productTagBS.closeClicked = {
+            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed, id)
+        }
+        productTagBS.disMissed = {
+            feedAnalytics.eventClickGreyArea(postId.toString(), type, isFollowed, id)
+        }
+    }
+
     fun addToWishList(postId: Int, productId: String, type: String, isFollowed: Boolean, shopId: String) {
 
         feedAnalytics.eventAddToWishlistClicked(postId.toString(), productId, type, isFollowed, shopId)
@@ -1828,25 +1848,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
-    }
-
-    override fun onTagClicked(
-        postId: Int,
-        products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        positionInFeed: Int
-    ) {
-        feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id)
-        productTagBS.show(childFragmentManager, products, listener, postId, id, type, isFollowed, positionInFeed)
-        productTagBS.closeClicked = {
-            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed, id)
-        }
-        productTagBS.disMissed = {
-            feedAnalytics.eventClickGreyArea(postId.toString(), type, isFollowed, id)
-        }
     }
 
     private fun onShareProduct(
@@ -1916,11 +1917,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         }
         sheet.addToCartCB = {
-          onTagSheetItemBuy(item.postId,item.positionInFeed, item.product, item.shopId,item.postType,item.isFollowed)
+            onTagSheetItemBuy(
+                item.postId,
+                item.positionInFeed,
+                item.product,
+                item.shopId,
+                item.postType,
+                item.isFollowed
+            )
         }
         sheet.addToWIshListCB = {
             addToWishList(item.postId, item.id, item.postType, item.isFollowed, item.shopId)
         }
+    }
+
+    override fun muteUnmuteVideo(postId: String, mute: Boolean) {
+        feedAnalytics.clickMuteButton(postId, mute)
     }
 
     override fun onGridItemClick(
@@ -1962,6 +1974,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectUrl: String
     ) {
         if (activity != null) {
+            feedAnalytics.clickOnVideo(postId)
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
             videoDetailIntent.putExtra(PARAM_CALL_SOURCE, PARAM_FEED)

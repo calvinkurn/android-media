@@ -52,7 +52,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.libraries.track)
 
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -85,7 +85,6 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    implementation project(path: ':libraries:iris_session')
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
 

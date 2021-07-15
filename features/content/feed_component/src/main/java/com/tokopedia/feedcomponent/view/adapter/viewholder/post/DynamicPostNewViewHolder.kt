@@ -42,7 +42,7 @@ open class DynamicPostNewViewHolder(
         when (payloads.firstOrNull() as Int) {
             PAYLOAD_ANIMATE_LIKE -> postDynamicView.bindLike(element.feedXCard)
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
-            PAYLOAD_PLAY_VIDEO -> postDynamicView.bindItems(element.feedXCard, true)
+            PAYLOAD_PLAY_VIDEO -> postDynamicView.playVideo(element.feedXCard)
         }
     }
 
