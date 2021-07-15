@@ -41,8 +41,8 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val extras = intent.extras
         extras?.let {
-            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER, "")
-            this.number = extras.getString(EXTRA_NUMBER, "")
+            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER_TYPE, "")
+            this.number = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST) ?: listOf()
         }
         super.onCreate(savedInstanceState)
@@ -63,8 +63,8 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
     companion object {
 
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
+        const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
-        const val EXTRA_NUMBER = "EXTRA_NUMBER"
 
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
         const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
@@ -72,8 +72,8 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
         fun getCallingIntent(context: Context, clientNumberType: String,
                              number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
             val intent = Intent(context, TopupBillsSearchNumberActivity::class.java)
-            intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
-            intent.putExtra(EXTRA_NUMBER, number)
+            intent.putExtra(EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            intent.putExtra(EXTRA_CLIENT_NUMBER, number)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             return intent
         }
