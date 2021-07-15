@@ -407,8 +407,8 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `test delete cart success`() {
-        val updateCartSuccessMessage = "1 barang telah dihapus."
-        `Given view setup to delete`(updateCartSuccessMessage)
+        val deleteCartMessage = "1 barang telah dihapus."
+        `Given view setup to delete`(deleteCartMessage)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
@@ -420,9 +420,10 @@ class AddToCartNonVariantTestHelper(
         `When add to cart a product`(productInVisitable, productUpdatedQuantity)
 
         `Then assert delete cart`(
-                productUpdatedQuantity,
-                productInMiniCart,
-                productInVisitable,
+            productUpdatedQuantity,
+            productInMiniCart,
+            productInVisitable,
+            deleteCartMessage,
         )
         `Then assert route to login page event is null`()
     }
@@ -457,8 +458,10 @@ class AddToCartNonVariantTestHelper(
         productUpdatedQuantity: Int,
         productInMiniCart: MiniCartItem,
         productInVisitable: ProductItemDataView,
+        deleteCartMessage: String,
     ) {
         `Then assert delete cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(expectedSuccessMessage = deleteCartMessage)
         `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
         `Then assert add to cart use case is not called`()
         `Then assert update cart use case is not called`()

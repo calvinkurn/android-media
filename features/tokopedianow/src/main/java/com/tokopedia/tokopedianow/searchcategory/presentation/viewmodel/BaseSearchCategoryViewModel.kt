@@ -934,6 +934,7 @@ abstract class BaseSearchCategoryViewModel(
         deleteCartUseCase.setParams(listOf(miniCartItem))
         deleteCartUseCase.execute({
             onAddToCartSuccess(productItem, quantity)
+            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
         }, {
             onAddToCartFailed(it)
         })
