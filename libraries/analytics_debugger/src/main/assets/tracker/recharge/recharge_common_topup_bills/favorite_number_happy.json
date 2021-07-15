@@ -1,5 +1,5 @@
 {
-  "readme": "Tracker Seamless Favorite Number Page",
+  "readme": "Tracker Seamless Favorite Number Page Happy Flow",
   "mode": "exact",
   "query": [
     {
@@ -7,30 +7,10 @@
       "eventCategory": "digital - pdp favorite number",
       "currentSite": "tokopediadigitalRecharge",
       "event": "digitalGeneralEventIris",
-      "userId": ".*",
-      "eventAction": "view empty favorite number",
-      "sessionIris": ".+",
-      "eventLabel": ".+"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEvent",
       "userId": ".+",
       "eventAction": "view coachmark",
       "sessionIris": ".+",
       "eventLabel": ".+"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEvent",
-      "userId": ".*",
-      "eventAction": "click lanjut transaksi",
-      "sessionIris": ".+",
-      "eventLabel": ".+ - .+"
     },
     {
       "businessUnit": "recharge",
@@ -89,16 +69,6 @@
       "event": "digitalGeneralEventIris",
       "userId": ".+",
       "eventAction": "view deletion success toaster",
-      "sessionIris": ".+",
-      "eventLabel": ".+ - .+"
-    },
-    {
-      "businessUnit": "recharge",
-      "eventCategory": "digital - pdp favorite number",
-      "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEventIris",
-      "userId": ".+",
-      "eventAction": "view deletion failed toaster",
       "sessionIris": ".+",
       "eventLabel": ".+ - .+"
     }

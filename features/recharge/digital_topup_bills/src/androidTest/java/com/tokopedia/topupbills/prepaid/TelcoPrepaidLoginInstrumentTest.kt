@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.util.Log
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -34,8 +33,6 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
-import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
-import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFragment
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment
@@ -66,13 +63,13 @@ class TelcoPrepaidLoginInstrumentTest {
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_MENU_DETAIL_LOGIN),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(KEY_QUERY_FAV_NUMBER, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_FAV_NUMBER_LOGIN),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(KEY_QUERY_PREFIX_SELECT, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_PREFIX_SELECT),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(KEY_QUERY_PRODUCT_MULTI_TAB, ResourceUtils.getJsonFromResource(PATH_RESPONSE_PREPAID_PRODUCT_MULTITAB),
-                    MockModelConfig.FIND_BY_CONTAINS)
+                MockModelConfig.FIND_BY_CONTAINS)
         }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -84,10 +81,6 @@ class TelcoPrepaidLoginInstrumentTest {
         }
         mActivityRule.launchActivity(intent)
 
-//        val fragment = mActivityRule.activity.supportFragmentManager
-//                .findFragmentByTag(TelcoPrepaidActivity.TAG_FRAGMENT_TELCO_PREPAID) as DigitalTelcoPrepaidFragment
-//        fragment.isSeamlessFavoriteNumber = false
-
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
@@ -96,14 +89,14 @@ class TelcoPrepaidLoginInstrumentTest {
         val resultData = Intent()
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-                TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
+            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
     private fun stubSearchNumber() {
         Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberActivity")))
-                .respondWith(createOrderNumberTypeManual())
+            ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberActivity")))
+            .respondWith(createOrderNumberTypeManual())
     }
 
     @Test
@@ -120,7 +113,7 @@ class TelcoPrepaidLoginInstrumentTest {
         click_item_recent_widget_login()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
-                hasAllSuccess())
+            hasAllSuccess())
     }
 
     fun validate_coachmark() {
@@ -144,7 +137,6 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
-        Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_PHONE_NUMBER)))
 
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
@@ -153,7 +145,7 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_FAV_PHONE_NUMBER)))
 
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        onView(withId(R.id.telco_input_number)).perform(click())
         onView(withId(R.id.searchbar_icon)).perform(click())
         onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
@@ -161,7 +153,6 @@ class TelcoPrepaidLoginInstrumentTest {
 
     fun click_on_tab_menu_login() {
         onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
@@ -197,7 +188,7 @@ class TelcoPrepaidLoginInstrumentTest {
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Paket Data"))).perform(click())
         onView(withId(R.id.telco_buy_widget)).check(matches(IsNot.not(isDisplayed())))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(1,
-                CommonActions.clickChildViewWithId(R.id.telco_see_more_btn)))
+            CommonActions.clickChildViewWithId(R.id.telco_see_more_btn)))
         Thread.sleep(2000)
         onView(AllOf.allOf(withId(R.id.telco_button_select_item), isDisplayed())).check(matches(isDisplayed()))
         onView(withId(R.id.telco_button_select_item)).perform(click())
@@ -224,9 +215,9 @@ class TelcoPrepaidLoginInstrumentTest {
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
+            withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions
-                .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
+            .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
         Thread.sleep(3000)
     }
 

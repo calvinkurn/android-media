@@ -15,6 +15,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+
 }
 
 android {
@@ -33,6 +34,9 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -88,6 +92,7 @@ dependencies {
     }
     androidTestImplementation project(path: ':libraries:analytics_debugger')
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 project.ext {

@@ -99,7 +99,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private var currentCategoryName = ""
     private var number: String = ""
-    private var isNeedShowCoachmark = true
+    private var isHideCoachmark = false
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentFavoriteNumberBinding? = null
@@ -118,8 +118,8 @@ class TopupBillsFavoriteNumberFragment :
     @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
         arguments?.run {
-            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
-            number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
+            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
+            number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
@@ -146,7 +146,7 @@ class TopupBillsFavoriteNumberFragment :
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
-        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
+        isHideCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
     }
 
     fun initView() {
@@ -258,7 +258,7 @@ class TopupBillsFavoriteNumberFragment :
             if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
 
-        if (isNeedShowCoachmark && numberListAdapter.visitables.isNotEmpty()) {
+        if (!isHideCoachmark && numberListAdapter.visitables.isNotEmpty()) {
             if (numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
                 showCoachmark()
             }
@@ -540,8 +540,9 @@ class TopupBillsFavoriteNumberFragment :
                     }
                     coachMark.showCoachMark(coachMarkItem)
                 }
+                isHideCoachmark = true
                 localCacheHandler.apply {
-                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, false)
+                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, true)
                     applyEditor()
                 }
             }, COACH_MARK_START_DELAY)
@@ -717,8 +718,8 @@ class TopupBillsFavoriteNumberFragment :
     companion object {
         const val REQUEST_CODE_CONTACT_PICKER = 75
 
-        const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
-        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
@@ -734,8 +735,8 @@ class TopupBillsFavoriteNumberFragment :
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
-            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
-            bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(Locale.getDefault()))
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)
