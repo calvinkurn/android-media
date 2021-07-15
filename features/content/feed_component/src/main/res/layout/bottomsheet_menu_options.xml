@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/dp_18"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_18">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/report"
@@ -20,9 +20,11 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/div1"
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dp_18"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginStart="@dimen/dp_16" />
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_18"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/follow"
@@ -39,8 +41,10 @@
         android:id="@+id/div2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_16" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/delete"

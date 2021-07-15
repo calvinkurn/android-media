@@ -27,7 +27,7 @@ object FeedScrollListenerNew {
                 if (isVideoCard(list, i)) {
                     val item = getVideoCardViewModel(list, i)
                     if (item != null) {
-                        getVideoModelScrollListener(layoutManager, recyclerView, i)
+                        getVideoModelScrollListener(layoutManager, recyclerView, i, item)
                     }
                 }
             }
@@ -37,7 +37,8 @@ object FeedScrollListenerNew {
     private fun getVideoModelScrollListener(
         layoutManager: LinearLayoutManager?,
         recyclerView: RecyclerView,
-        i: Int
+        i: Int,
+        item: FeedXMedia
     ) {
         val rvRect = Rect()
         recyclerView.getGlobalVisibleRect(rvRect)
@@ -56,8 +57,17 @@ object FeedScrollListenerNew {
                 videoViewRect.bottom - rvRect.top
             }
             percentVideo = visibleVideo * 100 / imageView.height
-            val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
-            if (isStateChanged) {
+            var isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
+
+            if (!item.currentlyPlaying && isStateChanged) {
+                item.currentlyPlaying = true
+
+            } else if (!isStateChanged) {
+                item.currentlyPlaying = false
+            } else if (item.currentlyPlaying)
+                isStateChanged = false
+
+            if (item.currentlyPlaying && isStateChanged) {
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
             }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -54,17 +53,18 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
 
-        if(canBeDeleted && report.isVisible && follow.isVisible) {
+        if (canBeDeleted && report.isVisible && follow.isVisible) {
             div1.show()
             div2.show()
-        }
-        else{
-            if(!canBeDeleted || !report.isVisible || !follow.isVisible){
-                div1.gone()
+        } else {
+            if (report.isVisible && follow.isVisible) {
+                div1.show()
             }
-            if((!report.isVisible && !follow.isVisible)||(!canBeDeleted && !follow.isVisible )){
-                div2.gone()
+            if (follow.isVisible && canBeDeleted) {
+                div2.show()
             }
+            if (report.isVisible && canBeDeleted)
+                div2.show()
         }
 
         follow.setOnClickListener {

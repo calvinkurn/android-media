@@ -152,7 +152,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         this.positionInFeed = adapterPosition
         this.imagePostListener = imagePostListener
         bindFollow(feedXCard)
-        bindItems(feedXCard, false)
+        bindItems(feedXCard)
         bindCaption(feedXCard)
         bindPublishedAt(feedXCard.publishedAt, feedXCard.subTitle)
         bindLike(feedXCard)
@@ -164,7 +164,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.author.type,
             feedXCard.author.id,
             feedXCard.typename,
-            feedXCard.followers.isFollowed
+            feedXCard.followers.isFollowed,
+            feedXCard.media.firstOrNull()?.type ?: ""
         )
         shareButton.setOnClickListener {
             val desc = context.getString(R.string.feed_share_default_text)
@@ -421,6 +422,29 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 authorType = authorType,
                 isFollow = caption.followers.isFollowed
             )
+        val cs: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                listener?.onAvatarClick(
+                    positionInFeed,
+                    caption.author.appLink,
+                    caption.id.toIntOrZero(),
+                    "",
+                    followCta,
+                    caption.typename,
+                    caption.followers.isFollowed,
+                    caption.author.id
+                )
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Neutral_N600
+                )
+            }
+        }
         captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
             if (caption.text.length > DynamicPostViewHolder.MAX_CHAR ||
                 hasSecondLine(caption.text)
@@ -458,9 +482,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         colorLinkHashtag
                     ) { hashtag -> onHashtagClicked(hashtag) }
                     spannableString = SpannableString(MethodChecker.fromHtml(txt))
-
+                    spannableString.setSpan(
+                        cs,
+                        0,
+                        caption.author.name.length - 1,
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                    )
+                    captionText.text = spannableString
+                    captionText.movementMethod = LinkMovementMethod.getInstance()
                 }
-                captionText.movementMethod = LinkMovementMethod.getInstance()
 
             } else {
 
@@ -485,32 +515,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         captionTxt
                     )
                 )
-                captionText.movementMethod = LinkMovementMethod.getInstance()
             }
-
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    listener?.onAvatarClick(
-                        positionInFeed,
-                        caption.appLink,
-                        caption.id.toIntOrZero(),
-                        "",
-                        followCta,
-                        caption.typename,
-                        caption.followers.isFollowed,
-                        caption.author.id
-                    )
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Neutral_N600
-                    )
-                }
-            }, 0, caption.author.name.length - 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            spannableString.setSpan(
+                cs,
+                0,
+                caption.author.name.length - 1,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            captionText.text = spannableString
+            captionText.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
@@ -543,7 +556,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         authorType: Int,
         authorId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        mediaType: String
     ) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
@@ -576,20 +590,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
         var authId = ""
         if (authorType != 1)
             authId = authorId
+        val isVideo = mediaType != TYPE_IMAGE
+
+
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
         }
     }
 
-    fun bindItems(
+    private fun bindItems(
         feedXCard: FeedXCard,
-        isVideoVisible: Boolean,
     ) {
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
@@ -762,8 +778,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 products,
                                 feedXCard.author.id,
                                 feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                index
+                                feedXCard.followers.isFollowed
                             )
                         )
                     }
@@ -799,8 +814,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         products: List<FeedXProduct>,
         id: String,
         type: String,
-        isFollowed: Boolean,
-        index: Int
+        isFollowed: Boolean
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
@@ -828,7 +842,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             volumeIcon.setOnClickListener {
                 isMute = !isMute
-                listener?.muteUnmuteVideo(postId, isMute)
+                listener?.muteUnmuteVideo(postId, isMute, id)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
@@ -839,7 +853,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun setVideoControl(
         feedMedia: FeedXMedia,
         postId: String,
-        index: Int
+        index: Int,
+        id: String
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
@@ -868,7 +883,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             positionInFeed,
                             index,
                             postId,
-                            feedMedia.appLink
+                            feedMedia.appLink,
+                            id
                         )
                     }
                 }
@@ -881,7 +897,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoReadyToPlay() {
                         hideVideoLoading()
-                        time = feedMedia.videoTime
+                        time = if (feedMedia.videoTime == 0L) 10L else feedMedia.videoTime
                         object : CountDownTimer(TIMER_TO_BE_SHOWN, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
@@ -1083,6 +1099,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun playVideo(feedXCard: FeedXCard, position: Int = 0) {
-        setVideoControl(feedXCard.media[position], feedXCard.id, position)
+        setVideoControl(feedXCard.media[position], feedXCard.id, position, feedXCard.author.id)
     }
 }

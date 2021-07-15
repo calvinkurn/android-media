@@ -278,6 +278,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         //region Kol Comment Param
         private const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
+        private const val ARGS_VIDEO = "ARGS_VIDEO"
         private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
         private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
         private const val COMMENT_ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
@@ -1060,8 +1061,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     fun gotToKolComment(
-        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-        activityType: String, authorType: String
+        rowNumber: Int, id: Int, authorType: String,
+        isVideo: Boolean
     ) {
         val intent = RouteManager.getIntent(
             requireContext(),
@@ -1074,6 +1075,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             id.toString()
         )
         intent.putExtra(ARGS_AUTHOR_TYPE, authorType)
+        intent.putExtra(ARGS_VIDEO, isVideo)
         startActivityForResult(intent, OPEN_KOL_COMMENT)
         trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT)
     }
@@ -1516,10 +1518,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         authorType: String,
         type: String,
         isFollowed: Boolean,
+        isVideo: Boolean,
         shopId: String
     ) {
         feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, authorType)
-        gotToKolComment(positionInFeed, id, false, "", authorType)
+        gotToKolComment(positionInFeed, id, authorType, isVideo)
     }
 
     override fun onShareClick(
@@ -1931,8 +1934,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean) {
-        feedAnalytics.clickMuteButton(postId, mute)
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
+        feedAnalytics.clickMuteButton(postId, mute, id)
     }
 
     override fun onGridItemClick(
@@ -1971,10 +1974,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int,
         contentPosition: Int,
         postId: String,
-        redirectUrl: String
+        redirectUrl: String,
+        authorId: String
     ) {
         if (activity != null) {
-            feedAnalytics.clickOnVideo(postId)
+            feedAnalytics.clickOnVideo(postId, authorId)
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
             videoDetailIntent.putExtra(PARAM_CALL_SOURCE, PARAM_FEED)
@@ -2775,7 +2779,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
     }
-    fun showNoInterNetDialog( context: Context) {
+    private fun showNoInterNetDialog(context: Context) {
         val sheet = FeedNetworkErrorBottomSheet.newInstance()
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
 

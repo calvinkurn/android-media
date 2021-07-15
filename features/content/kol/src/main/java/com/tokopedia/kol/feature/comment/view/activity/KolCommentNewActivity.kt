@@ -69,7 +69,10 @@ class KolCommentNewActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        feedAnalytics.clickBackButtonCommentPage(postId ?: "0")
+        feedAnalytics.clickBackButtonCommentPage(
+            postId ?: "0",
+            intent.getBooleanExtra(ARGS_VIDEO, false)
+        )
         super.onBackPressed()
     }
 
@@ -78,6 +81,8 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         const val ARGS_ID = "ARGS_ID"
         private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
         const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
+        const val ARGS_VIDEO = "ARGS_VIDEO"
+
 
         @JvmStatic
         fun getCallingIntent(context: Context, id: Int, rowNumber: Int): Intent {
@@ -85,6 +90,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
             val bundle = Bundle()
             bundle.putInt(ARGS_ID, id)
             bundle.putInt(ARGS_POSITION, rowNumber)
+            bundle.putBoolean(ARGS_VIDEO, true)
             intent.putExtras(bundle)
             return intent
         }

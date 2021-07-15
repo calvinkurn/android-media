@@ -621,6 +621,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         authorType: String,
         type: String,
         isFollowed: Boolean,
+        isVideo: Boolean,
         shopId: String
     ) {
         onGoToKolComment(positionInFeed, id, false, "")
@@ -838,16 +839,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String, redirectUrl: String) {
+    override fun onVideoPlayerClicked(
+        positionInFeed: Int,
+        contentPosition: Int,
+        postId: String,
+        redirectUrl: String,
+        authorId: String
+    ) {
         onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
-                    trackingPostModel.postId.toString(),
-                    trackingPostModel.activityName,
-                    trackingPostModel.mediaType,
-                    trackingPostModel.mediaUrl,
-                    positionInFeed)
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType,
+                trackingPostModel.mediaUrl,
+                positionInFeed
+            )
         }
     }
 
@@ -896,7 +904,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
     }
 
     private fun showBottomSheetSellerMigration() {

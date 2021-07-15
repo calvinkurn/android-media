@@ -891,6 +891,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         authorType: String,
         type: String,
         isFollowed: Boolean,
+        isVideo: Boolean,
         shopId: String
     ) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
@@ -1170,10 +1171,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onVideoPlayerClicked(
-            positionInFeed: Int,
-            contentPosition: Int,
-            postId: String,
-            redirectUrl: String) {
+        positionInFeed: Int,
+        contentPosition: Int,
+        postId: String,
+        redirectUrl: String,
+        authorId: String
+    ) {
         onGoToLink(redirectUrl)
     }
 
@@ -1237,7 +1240,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
     }
 
     override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {

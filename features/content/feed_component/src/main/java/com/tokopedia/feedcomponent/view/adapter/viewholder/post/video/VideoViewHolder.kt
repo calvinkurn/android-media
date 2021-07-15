@@ -31,10 +31,12 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
             itemView.image.setOnClickListener {
                 if (!element.url.isBlank()) {
                     listener.onVideoPlayerClicked(
-                            element.positionInFeed,
-                            pagerPosition,
-                            element.postId.toString(),
-                            element.redirectLink)
+                        element.positionInFeed,
+                        pagerPosition,
+                        element.postId.toString(),
+                        element.redirectLink,
+                        ""
+                    )
                 }
             }
         } else {
@@ -103,10 +105,13 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
 
     interface VideoViewListener {
 
-        fun onVideoPlayerClicked(positionInFeed: Int,
-                                 contentPosition: Int,
-                                 postId: String,
-                                 redirectUrl: String)
+        fun onVideoPlayerClicked(
+            positionInFeed: Int,
+            contentPosition: Int,
+            postId: String,
+            redirectUrl: String,
+            authorId: String
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }

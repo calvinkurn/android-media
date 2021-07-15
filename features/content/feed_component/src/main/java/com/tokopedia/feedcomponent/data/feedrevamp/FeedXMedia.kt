@@ -21,6 +21,7 @@ data class FeedXMedia(
     @SerializedName("mods")
     var mods: List<String>,
     var videoTime: Long = 0L,
-    var videoView: View? = null
+    var videoView: View? = null,
+    var currentlyPlaying: Boolean = false
 )
 

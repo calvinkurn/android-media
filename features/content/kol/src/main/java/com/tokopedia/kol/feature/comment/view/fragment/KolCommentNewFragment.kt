@@ -34,6 +34,7 @@ import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_ID
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -67,6 +68,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var mentionAdapter: MentionableUserAdapter? = null
     private var totalNewComment = 0
     private lateinit var globalError: GlobalError
+    var postId: String = "0"
+    private var authorId: String = "0"
+    private var isVideoPost: Boolean = false
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
@@ -110,6 +114,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         super.onCreate(savedInstanceState)
         userSession = UserSession(activity)
         totalNewComment = 0
+        postId = (arguments?.getInt(ARGS_ID) ?: 0).toString()
+        authorId = arguments?.getString(ARGS_AUTHOR_TYPE) ?: "0"
+        isVideoPost = arguments?.getBoolean(ARGS_VIDEO) ?: false
     }
 
     companion object {
@@ -155,7 +162,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                         Toaster.TYPE_NORMAL,
                         getString(R.string.kol_delete_comment_ok)
                     ) {
-                        feedAnalytics.clickKembalikanCommentPage(ARGS_ID)
+                        feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost)
                         adapter?.clearList()
                         presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
                         toBeDeleted = false
@@ -189,7 +196,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         reasonDesc: String
     ) {
         presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
-        feedAnalytics.clickReportCommentPage(id)
+        feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost)
     }
 
     override fun onMenuClicked(
@@ -263,11 +270,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onHashTagClicked(hashTag: String?, id: String?) {
-        feedAnalytics.clickHashTag(hashTag ?: "", id ?: "0")
+        feedAnalytics.clickHashTag(hashTag ?: "", authorId, postId, isVideoPost)
     }
 
     override fun onGoToProfile(url: String) {
-        feedAnalytics.clickShopCommentPage(ARGS_ID)
+        feedAnalytics.clickCreatorPageCommentPage(postId, authorId, isVideoPost)
         openRedirectUrl(url)
     }
 
@@ -292,6 +299,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun openRedirectUrl(url: String) {
+        feedAnalytics.clickShopCommentPage(postId, authorId, isVideoPost)
         routeUrl(url)
     }
 
@@ -350,7 +358,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     private fun deleteComment(adapterPosition: Int) {
-        feedAnalytics.clickDeleteCommentPage(ARGS_ID)
+        feedAnalytics.clickDeleteCommentPage(postId, authorId, isVideoPost)
         adapter?.deleteItem(adapterPosition)
     }
 
@@ -476,7 +484,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listComment?.adapter = adapter
         sendButton?.setOnClickListener { v: View? ->
-            feedAnalytics.clickSendCommentPage(ARGS_ID)
+            feedAnalytics.clickSendCommentPage(postId, authorId, isVideoPost)
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
                     arguments?.getInt(ARGS_ID) ?: 0,

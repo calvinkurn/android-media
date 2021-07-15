@@ -707,7 +707,12 @@ fun eventImpressionProductASGC(
         )
     }
 
-    fun eventClickOpenComment(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    fun eventClickOpenComment(
+        activityId: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String
+    ) {
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -933,10 +938,6 @@ fun eventImpressionProductASGC(
             "dimension39", "/feed - sgc "
         )
 
-
-
-
-
     fun eventCloseThreeDotBS(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
         map = map.plus(
@@ -1017,7 +1018,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickHashTag(hashTag: String, activityId: String) {
+    fun clickHashTag(hashTag: String, authorId: String, postId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1025,13 +1026,13 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "hashtag",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_THREE_PARAM,
-                activityId,
-                userSessionInterface.shopId,
-                "$hashTag"
+                postId,
+                authorId,
+                hashTag
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1042,7 +1043,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickBackButtonCommentPage(actvityId: String) {
+    fun clickBackButtonCommentPage(actvityId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1050,7 +1051,8 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "back",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
+
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -1066,7 +1068,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickShopCommentPage(actvityId: String) {
+    fun clickShopCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1074,12 +1076,12 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "shop",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                authorId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1090,7 +1092,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickCreatorPageCommentPage(actvityId: String) {
+    fun clickCreatorPageCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1098,12 +1100,14 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "comment creator",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
+
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                authorId,
+                userSessionInterface.userId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1114,7 +1118,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickReportCommentPage(actvityId: String) {
+    fun clickReportCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1122,12 +1126,12 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "report",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                authorId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1138,7 +1142,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickDeleteCommentPage(actvityId: String) {
+    fun clickDeleteCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1146,12 +1150,12 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "delete",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                authorId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1161,20 +1165,20 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickSendCommentPage(actvityId: String) {
+    fun clickSendCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
             EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
-                "delete",
-                SGC_IMAGE
+                "send",
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                authorId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1184,7 +1188,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickKembalikanCommentPage(actvityId: String) {
+    fun clickKembalikanCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1192,12 +1196,12 @@ fun eventImpressionProductASGC(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "kembalikan to undo delete",
-                SGC_IMAGE
+                getPostType("", isFollowed = false, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                authorId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1207,7 +1211,7 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickMuteButton(activityId: String, isMute: Boolean) {
+    fun clickMuteButton(activityId: String, isMute: Boolean, id: String) {
         val mute = if (isMute)
             "unmute"
         else
@@ -1224,7 +1228,7 @@ fun eventImpressionProductASGC(
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
                     activityId,
-                    userSessionInterface.shopId
+                    id
                 )
             )
         )
@@ -1232,7 +1236,7 @@ fun eventImpressionProductASGC(
 
     }
 
-    fun clickOnVideo(activityId: String) {
+    fun clickOnVideo(activityId: String, authorId: String) {
         var map = getCommonMap()
         map = map.plus(
             mutableMapOf(
@@ -1245,7 +1249,7 @@ fun eventImpressionProductASGC(
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
                     activityId,
-                    userSessionInterface.shopId
+                    authorId
                 )
             )
         )

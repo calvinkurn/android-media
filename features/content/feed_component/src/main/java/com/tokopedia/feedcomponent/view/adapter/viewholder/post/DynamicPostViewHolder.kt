@@ -393,7 +393,8 @@ open class DynamicPostViewHolder(v: View,
                         id,
                         "",
                         "",
-                        isFollowed = false
+                        isFollowed = false,
+                        false
                     )
                 }
                 itemView.commentText.setOnClickListener {
@@ -401,7 +402,8 @@ open class DynamicPostViewHolder(v: View,
                         adapterPosition,
                         id, "",
                         "",
-                        false
+                        isFollowed = false,
+                        isVideo = false
                     )
                 }
                 bindComment(footer.comment)
@@ -624,6 +626,7 @@ open class DynamicPostViewHolder(v: View,
             authorType: String,
             type: String,
             isFollowed: Boolean = false,
+            isVideo: Boolean,
             shopId: String = ""
         )
 
@@ -686,6 +689,6 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = ""
         )
 
-        fun muteUnmuteVideo(postId: String, mute: Boolean)
+        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String)
     }
 }
