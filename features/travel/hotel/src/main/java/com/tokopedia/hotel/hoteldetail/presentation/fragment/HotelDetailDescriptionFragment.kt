@@ -1,12 +1,12 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.hotel.databinding.SimpleTextViewCompatItemBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import androidx.fragment.app.Fragment
 
 /**
  * @author by furqan on 07/05/19

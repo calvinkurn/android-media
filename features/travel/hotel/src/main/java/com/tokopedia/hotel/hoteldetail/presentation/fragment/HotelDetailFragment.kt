@@ -474,24 +474,39 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 1 -> {
+<<<<<<< HEAD
                     binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
+=======
+                    iv_first_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    iv_first_photo_preview.setOnClickListener {
+>>>>>>> dec35f3a2d57aea910221655060b4ce1f50ee3c7
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivFirstPhotoPreview)
                     }
                     imageCounter++
                 }
                 2 -> {
+<<<<<<< HEAD
                     binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
+=======
+                    iv_second_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    iv_second_photo_preview.setOnClickListener {
+>>>>>>> dec35f3a2d57aea910221655060b4ce1f50ee3c7
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivSecondPhotoPreview)
                     }
                     imageCounter++
                 }
                 3 -> {
+<<<<<<< HEAD
                     binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
+=======
+                    iv_third_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    iv_third_photo_preview.setOnClickListener {
+>>>>>>> dec35f3a2d57aea910221655060b4ce1f50ee3c7
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivThirdPhotoPreview)
                     }
@@ -499,8 +514,13 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
+<<<<<<< HEAD
                 binding?.ivMainPhotoPreview?.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                 binding?.ivMainPhotoPreview?.setOnClickListener {
+=======
+                iv_main_photo_preview.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                iv_main_photo_preview.setOnClickListener {
+>>>>>>> dec35f3a2d57aea910221655060b4ce1f50ee3c7
                     onPhotoClicked()
                     openImagePreview(imageList, imageIndex, binding?.ivMainPhotoPreview)
                 }
