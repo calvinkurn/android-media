@@ -51,7 +51,7 @@ class CatalogFragmentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
-    var idlingResource: TkpdIdlingResource? = null
+    private var idlingResource: TkpdIdlingResource? = null
 
 
     @Before
@@ -72,21 +72,6 @@ class CatalogFragmentTest {
         onView(CommonMatcher.firstView(AllOf.allOf(
                 withId(R.id.product_name),
                 ViewMatchers.isDisplayed())))
-    }
-
-    @Test
-    fun check_image_gallery_section() {
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.catalog_images_rv),
-                ViewMatchers.isDisplayed())))
-        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.catalog_images_rv).let {
-            it.adapter!!.itemCount
-        }
-        if (itemCount > 1) {
-            assert(true)
-        } else {
-            assert(false)
-        }
     }
 
     @Test
@@ -146,13 +131,6 @@ class CatalogFragmentTest {
     }
 
     @Test
-    fun check_description_component() {
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.product_description),
-                ViewMatchers.isDisplayed())))
-    }
-
-    @Test
     fun check_lihat_description_page_opening() {
         actionTest {
             onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))), ViewActions.scrollTo()))
@@ -177,12 +155,6 @@ class CatalogFragmentTest {
             )
             assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
         }
-    }
-
-    @Test
-    fun check_specification_component() {
-        onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_specification_rv))), ViewActions.scrollTo()))
-        onView(withId(R.id.catalog_specification_rv)).perform(CatalogViewActions.ScrollToBottomAction())
     }
 
     @Test
@@ -253,14 +225,6 @@ class CatalogFragmentTest {
     }
 
     @Test
-    fun check_comparison_section() {
-        onView(withId(R.id.catalog_detail_rv)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_videos_rv))), ViewActions.scrollTo()))
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.first_catalog_image),
-                ViewMatchers.isDisplayed())))
-    }
-
-    @Test
     fun check_comparison_section_opening() {
         actionTest {
             Thread.sleep(3000)
@@ -303,7 +267,6 @@ class CatalogFragmentTest {
             launchProductListingBottomSheet()
             closeProductListingBottomSheet()
             launchProductListingBottomSheet()
-            closeProductListingBottomSheet()
         }.assertTest {
             val query = listOf(
                     mapOf(
@@ -385,7 +348,7 @@ class CatalogFragmentTest {
                                 GeneralSwipeAction(
                                         Swipe.FAST,
                                         GeneralLocation.VISIBLE_CENTER,
-                                        CoordinatesProvider { view: View -> floatArrayOf(view.width / 2.toFloat(), 0f) },
+                                        { view: View -> floatArrayOf(view.width / 2.toFloat(), 0f) },
                                         Press.FINGER),
                                 ViewMatchers.isDisplayingAtLeast(5)))
         Thread.sleep(3000)
@@ -398,7 +361,7 @@ class CatalogFragmentTest {
                                 GeneralSwipeAction(
                                         Swipe.FAST,
                                         GeneralLocation.TOP_CENTER,
-                                        CoordinatesProvider { view: View -> floatArrayOf(view.width / 2.toFloat(),view.height.toFloat()) },
+                                        { view: View -> floatArrayOf(view.width / 2.toFloat(),view.height.toFloat()) },
                                         Press.FINGER),
                                 ViewMatchers.isDisplayingAtLeast(5)))
         Thread.sleep(3000)
