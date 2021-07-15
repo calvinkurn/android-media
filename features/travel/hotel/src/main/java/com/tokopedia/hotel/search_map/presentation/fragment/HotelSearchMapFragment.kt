@@ -312,6 +312,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     override fun onRetryClicked() {
         view?.let {
             container_error.hide()
+            halfExpandBottomSheet()
         }
         super.onRetryClicked()
     }
