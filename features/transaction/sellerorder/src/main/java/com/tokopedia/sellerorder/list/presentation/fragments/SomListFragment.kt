@@ -2025,7 +2025,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     somListLayoutManager?.findViewByPosition(firstNewOrderPosition)?.findViewById<UnifyButton>(R.id.btnQuickAction)?.let {
                         if (getVisiblePercent(it) == 0) {
                             CoachMarkPreference.setShown(it.context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
-                            rvSomList?.clearOnScrollListeners()
+                            rvSomList?.removeOnScrollListener(recyclerViewScrollListener)
                             rvSomList?.addOnScrollListener(recyclerViewScrollListener)
                             currentNewOrderWithCoachMark = firstNewOrderPosition
                             shouldShowCoachMark = false
