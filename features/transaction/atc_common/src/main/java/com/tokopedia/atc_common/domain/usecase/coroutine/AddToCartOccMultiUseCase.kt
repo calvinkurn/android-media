@@ -73,7 +73,8 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
                 },
                 PARAM_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress(),
                 PARAM_LANG to addToCartRequest.lang,
-                PARAM_SOURCE to addToCartRequest.source
+                PARAM_SOURCE to addToCartRequest.source,
+                PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequest.atcFromExternalSource
         ))
     }
 
@@ -92,5 +93,6 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
         private const val PARAM_CHOSEN_ADDRESS = "chosen_address"
         private const val PARAM_LANG = "lang"
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atc_from_external_source"
     }
 }
