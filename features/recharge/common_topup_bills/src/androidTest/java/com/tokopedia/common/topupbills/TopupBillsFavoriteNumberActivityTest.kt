@@ -281,7 +281,7 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     companion object {
-        const val APPLINK = ApplinkConsInternalDigital.SEAMLESS_FAVORITE_NUMBER
+        const val APPLINK = ApplinkConsInternalDigital.FAVORITE_NUMBER
         const val ANALYTICS_FAVORITE_NUMBER_HAPPY = "tracker/recharge/recharge_common_topup_bills/favorite_number_happy.json"
         const val ANALYTICS_FAVORITE_NUMBER_UNHAPPY = "tracker/recharge/recharge_common_topup_bills/favorite_number_unhappy.json"
         const val ANALYTICS_FAVORITE_NUMBER_DETAIL_UNHAPPY = "tracker/recharge/recharge_common_topup_bills/favorite_number_detail_unhappy.json"

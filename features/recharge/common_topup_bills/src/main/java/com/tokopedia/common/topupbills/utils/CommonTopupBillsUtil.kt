@@ -11,13 +11,12 @@ class CommonTopupBillsUtil {
 
         fun isSeamlessFavoriteNumber(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
-//            return remoteConfig.getBoolean(DeeplinkMapperDigital.REMOTE_CONFIG_MAINAPP_DIGITAL_FAVORITE_NUMBER, true)
-            return false
+            return remoteConfig.getBoolean(DeeplinkMapperDigital.REMOTE_CONFIG_MAINAPP_DIGITAL_FAVORITE_NUMBER, true)
         }
 
         fun getApplinkFavoriteNumber(context: Context): String {
             return if (isSeamlessFavoriteNumber(context))
-                ApplinkConsInternalDigital.SEAMLESS_FAVORITE_NUMBER else ApplinkConsInternalDigital.FAVORITE_NUMBER
+                ApplinkConsInternalDigital.FAVORITE_NUMBER else ApplinkConsInternalDigital.SEARCH_NUMBER
         }
     }
 }

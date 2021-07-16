@@ -64,8 +64,18 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
+
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
         const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
+
+        fun getCallingIntent(context: Context, clientNumberType: String,
+                             number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
+            val intent = Intent(context, TopupBillsSearchNumberActivity::class.java)
+            intent.putExtra(EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            intent.putExtra(EXTRA_CLIENT_NUMBER, number)
+            intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
+            return intent
+        }
     }
 
 }

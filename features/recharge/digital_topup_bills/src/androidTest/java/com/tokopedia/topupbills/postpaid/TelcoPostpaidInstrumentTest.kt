@@ -6,12 +6,10 @@ import android.app.Instrumentation
 import android.content.Intent
 import android.provider.ContactsContract
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -20,13 +18,9 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.TelcoContactHelper
@@ -35,6 +29,13 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import com.tokopedia.topupbills.utils.CommonTelcoActions.click3DotsMenu
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClearBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClientNumberWidget
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clickCopyPromoBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.validate3MenuContents
+import com.tokopedia.topupbills.utils.CommonTelcoActions.validateTextClientNumberWidget
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
@@ -84,21 +85,6 @@ class TelcoPostpaidInstrumentTest {
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
-        val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
-
-    private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.hasComponent(
-            ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberActivity")))
-            .respondWith(createOrderNumberTypeManual())
-    }
-
     private fun stubContactNumber() {
         val telcoContactHelper = TelcoContactHelper()
         val contentResolver = mActivityRule.activity.contentResolver
@@ -110,59 +96,25 @@ class TelcoPostpaidInstrumentTest {
 
     @Test
     fun validate_postpaid_non_login() {
-        stubSearchNumber()
 
         validate_show_contents_pdp_telco_not_login()
         validate_interaction_menu()
-        validate_click_done_keyboard_fav_number()
+        validate_pdp_client_number_widget_interaction()
 //        validate_click_on_contact_picker_and_list_fav_number()
 //        click_phonebook_and_clear()
-        choose_fav_number_from_list_fav_number()
         validate_interaction_promo()
 
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_NON_LOGIN),
             hasAllSuccess())
     }
 
-    fun validate_click_done_keyboard_fav_number() {
+    fun validate_pdp_client_number_widget_interaction() {
+        stubSearchNumber(
+            VALID_PHONE_NUMBER,
+            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
         Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
-        onView(withId(R.id.searchbar_icon)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER), pressImeActionButton())
-
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_PHONE_NUMBER)))
-    }
-
-    /**
-     * activate this test for local instrumentation test only because it contains contact picker
-     */
-    fun validate_click_on_contact_picker_and_list_fav_number() {
-        stubContactNumber()
-
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
-        Thread.sleep(2000)
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.telco_search_number_contact_picker)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchbar_textfield)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
-        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(AnyOf.anyOf(withText(VALID_PHONE_BOOK), withText(VALID_PHONE_BOOK_RAW))))
-    }
-
-    fun choose_fav_number_from_list_fav_number() {
-        Thread.sleep(2000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
-        onView(withId(R.id.searchbar_icon)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER), ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText(VALID_PHONE_NUMBER)))
-        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText(VALID_PHONE_NUMBER)))
+        clickClientNumberWidget()
+        validateTextClientNumberWidget(VALID_PHONE_NUMBER)
     }
 
     fun validate_show_contents_pdp_telco_not_login() {
@@ -173,15 +125,15 @@ class TelcoPostpaidInstrumentTest {
     }
 
     fun validate_interaction_promo() {
-        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
+        clickClearBtn()
+        validateTextClientNumberWidget(EMPTY_TEXT)
 
         val viewInteraction = onView(AllOf.allOf(
-            AllOf.allOf(withId(R.id.recycler_view_menu_component), withParent(withId(R.id.layout_widget)),
+            AllOf.allOf(withId(R.id.recycler_view_menu_component),
+                withParent(withId(R.id.layout_widget)),
                 isDisplayed()))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(0,
-            CommonActions.clickChildViewWithId(R.id.btn_copy_promo)))
 
+        clickCopyPromoBtn(viewInteraction)
         Thread.sleep(2000)
 
         //TODO: fix error this intending to promo detail page
@@ -193,11 +145,9 @@ class TelcoPostpaidInstrumentTest {
     }
 
     fun validate_interaction_menu() {
-        onView(withId(R.id.action_overflow_menu)).perform(click())
+        click3DotsMenu()
         Thread.sleep(1000)
-        onView(withId(R.id.menu_promo)).check(matches(isDisplayed()))
-        onView(withId(R.id.menu_help)).check(matches(isDisplayed()))
-        onView(withId(R.id.menu_order_list)).check(matches(isDisplayed()))
+        validate3MenuContents()
         Thread.sleep(1000)
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
@@ -227,6 +177,8 @@ class TelcoPostpaidInstrumentTest {
     }
 
     companion object {
+        private const val EMPTY_TEXT = ""
+
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
         private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"

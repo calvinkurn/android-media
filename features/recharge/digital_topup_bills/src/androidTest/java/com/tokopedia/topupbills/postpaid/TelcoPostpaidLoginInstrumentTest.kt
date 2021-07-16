@@ -35,6 +35,11 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
 import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFragment
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
+import com.tokopedia.topupbills.utils.CommonTelcoActions
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClearBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClientNumberWidget
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
+import com.tokopedia.topupbills.utils.CommonTelcoActions.validateTextClientNumberWidget
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -83,37 +88,15 @@ class TelcoPostpaidLoginInstrumentTest {
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun createOrderNumberTypeManual(): Instrumentation.ActivityResult {
-        val orderClientNumber = TopupBillsFavNumberItem(clientNumber = VALID_PHONE_NUMBER)
-        val resultData = Intent()
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-                TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
-        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-    }
-
-    private fun stubSearchNumber() {
-        Intents.intending(IntentMatchers.hasComponent(
-                ComponentNameMatchers.hasShortClassName(".DigitalSearchNumberActivity")))
-                .respondWith(createOrderNumberTypeManual())
-    }
-
     @Test
     fun validate_postpaid_login() {
-//        val fragment = mActivityRule.activity.supportFragmentManager
-//                .findFragmentByTag(TelcoPostpaidActivity.TAG_FRAGMENT_TELCO_POSTPAID) as DigitalTelcoPostpaidFragment
-//        fragment.isSeamlessFavoriteNumber = false
-//
-//        Log.d("fragmentcheck", "=====> ${fragment.isSeamlessFavoriteNumber}")
-//        print("=====> ${fragment.isSeamlessFavoriteNumber}")
+        Thread.sleep(3000)
+
+        stubSearchNumber(VALID_PHONE_NUMBER, TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
 
         Thread.sleep(3000)
 
-        stubSearchNumber()
-
-        Thread.sleep(3000)
-
-        click_on_fav_number_login()
+        validate_pdp_client_number_widget_interaction()
         enquiry_phone_number()
         enquiry_new_input_phone_number()
         click_on_tab_menu_login()
@@ -123,31 +106,19 @@ class TelcoPostpaidLoginInstrumentTest {
                 hasAllSuccess())
     }
 
-    fun click_on_fav_number_login() {
-        Thread.sleep(2000)
-        onView(withId(R.id.telco_field_input_number)).perform(click())
-        onView(withId(R.id.searchbar_icon)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER), ViewActions.pressImeActionButton())
-        onView(withId(R.id.telco_field_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
 
+    fun validate_pdp_client_number_widget_interaction() {
+        stubSearchNumber(
+            VALID_PHONE_NUMBER,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE)
         Thread.sleep(2000)
-
-        onView(withId(R.id.telco_field_input_number)).perform(click())
-        val viewInteraction = onView(withId(R.id.telco_search_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
-        onView(withId(R.id.telco_field_input_number)).check(matches(withText(VALID_PHONE_NUMBER)))
-
-        Thread.sleep(2000)
-        onView(withId(R.id.telco_field_input_number)).perform(click())
-        onView(withId(R.id.searchbar_icon)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<TelcoProductViewHolder>(0, click()))
+        clickClientNumberWidget()
+        validateTextClientNumberWidget(VALID_PHONE_NUMBER)
     }
 
     fun click_on_tab_menu_login() {
-        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(R.id.telco_field_input_number)).check(matches(withText("")))
+        clickClearBtn()
+        validateTextClientNumberWidget(EMPTY_TEXT)
         Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(3000)
@@ -165,12 +136,12 @@ class TelcoPostpaidLoginInstrumentTest {
     }
 
     fun enquiry_new_input_phone_number() {
+        stubSearchNumber(
+            VALID_PHONE_NUMBER_2,
+            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
         Thread.sleep(2000)
-        onView(withId(R.id.telco_field_input_number)).perform(click())
-        onView(withId(R.id.searchbar_icon)).perform(click())
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(VALID_PHONE_NUMBER_2), ViewActions.pressImeActionButton())
-        onView(withId(R.id.telco_field_input_number)).check(matches(withText(VALID_PHONE_NUMBER_2)))
+        clickClientNumberWidget()
+        validateTextClientNumberWidget(VALID_PHONE_NUMBER_2)
 
         Thread.sleep(2000)
         onView(withId(R.id.telco_buy_widget)).check(matches(IsNot.not(isDisplayed())))
@@ -205,6 +176,7 @@ class TelcoPostpaidLoginInstrumentTest {
     }
 
     companion object {
+        private const val EMPTY_TEXT = ""
         private const val KEY_QUERY_MENU_DETAIL = "catalogMenuDetail"
         private const val KEY_QUERY_FAV_NUMBER = "favouriteNumber"
         private const val KEY_QUERY_PREFIX_SELECT = "telcoPrefixSelect"
