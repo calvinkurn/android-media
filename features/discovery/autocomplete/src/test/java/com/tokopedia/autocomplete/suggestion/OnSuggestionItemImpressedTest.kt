@@ -16,23 +16,23 @@ internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() 
     }
 
     @Test
-    fun `test click suggestion item type light`() {
+    fun `test impress suggestion item type light`() {
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
         val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_LIGHT)
 
         `when suggestion item impressed` (item)
-        `then verify view interaction is correct`(item)
+        `then verify view interaction for impression type light is correct`(item)
     }
 
     private fun `when suggestion item impressed`(item: BaseSuggestionDataView) {
         suggestionPresenter.onSuggestionItemImpressed(item)
     }
 
-    private fun `then verify view interaction is correct`(item: BaseSuggestionDataView) {
+    private fun `then verify view interaction for impression type light is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
             "keyword: $keywordTypedByUser " +
-                    "- product: ${item.title} " +
+                    "- product: ${item.subtitle} " +
                     "- po: ${item.position} " +
                     "- page: ${item.applink}"
 
@@ -42,12 +42,24 @@ internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() 
     }
 
     @Test
-    fun `test click suggestion item type curated`() {
+    fun `test impress suggestion item type curated`() {
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
         val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_CURATED)
 
         `when suggestion item impressed` (item)
-        `then verify view interaction is correct`(item)
+        `then verify view interaction for impression type curated is correct`(item)
+    }
+
+    private fun `then verify view interaction for impression type curated is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+            "keyword: $keywordTypedByUser " +
+                    "- product: ${item.title} " +
+                    "- po: ${item.position} " +
+                    "- page: ${item.applink}"
+
+        verifyOrder {
+            suggestionView.trackEventImpressCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+        }
     }
 }

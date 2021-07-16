@@ -285,7 +285,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     private fun `then verify view tracking click item light is correct`(item: BaseSuggestionDataView) {
         val expectedEventLabel =
             "keyword: $keywordTypedByUser " +
-                    "- product: ${item.title} " +
+                    "- product: ${item.subtitle} " +
                     "- po: ${item.position} " +
                     "- page: ${item.applink}"
 
