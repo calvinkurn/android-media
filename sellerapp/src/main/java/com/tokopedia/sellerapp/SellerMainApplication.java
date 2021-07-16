@@ -259,6 +259,13 @@ public class SellerMainApplication extends SellerRouterApplication implements
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
+
+            @NotNull
+            @Override
+            public String getEmbraceConfig() {
+                //no op because embrace for now not yet implemented in sellerapp
+                return "";
+            }
         });
     }
 

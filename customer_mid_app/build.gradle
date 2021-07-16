@@ -224,7 +224,8 @@ dependencies {
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
-
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     // unify dependencies
     implementation rootProject.ext.unifyDependencies.principles
