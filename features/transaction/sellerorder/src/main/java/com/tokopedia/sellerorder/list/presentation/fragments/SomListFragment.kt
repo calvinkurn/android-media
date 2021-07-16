@@ -1222,6 +1222,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 is AllFailEligible -> {
                     showAllFailEligibleBulkRequestPickup(it.orderIdListFail)
                 }
+                is AllNotEligible -> {
+                    showErrorBulkRequestPickup()
+                }
                 is ServerFail -> {
                     bulkRequestPickupDialog?.dismiss()
                     showGlobalError(it.throwable)

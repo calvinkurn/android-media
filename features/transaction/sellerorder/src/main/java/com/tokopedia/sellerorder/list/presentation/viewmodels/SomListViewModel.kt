@@ -267,20 +267,16 @@ class SomListViewModel @Inject constructor(
                             )
                         }
                         //case 7 will happen fail bulk process due to all validation failed
-                        else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED) &&
-                            retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
-                            retryRequestPickupUser++
+                        else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED)) {
                             bulkRequestPickupFinalResultMediator.postValue(AllValidationFail)
                         }
                         //case 8 when All Not Eligible, total fail & success always 0
-                        else if (totalNotEligible > 0L && it.data.fail == 0L && it.data.success == 0L && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
-                        ) {
-                            retryRequestPickupUser++
+                        else if (totalNotEligible > 0L && it.data.fail == 0L && it.data.success == 0L) {
                             bulkRequestPickupFinalResultMediator.postValue(
                                 AllNotEligible
                             )
                         }
-                        //case 8 when All Fail Eligible and should be retry the first time
+                        //case 9 when All Fail Eligible and should be retry the first time
                         else if (it.data.fail == it.data.total_order && it.data.fail > 0 &&
                             totalNotEligible == 0L && it.data.success == 0L && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
                         ) {
@@ -294,7 +290,7 @@ class SomListViewModel @Inject constructor(
                             if (retryRequestPickupUser >= MAX_RETRY_REQUEST_PICKUP_USER) {
                                 retryRequestPickupUser = 0
                             }
-                            //Case 9 will happen when after 10x retry is still fail
+                            //Case 10 will happen when after 10x retry is still fail
                             bulkRequestPickupFinalResultMediator.postValue(FailRetry)
                         }
                     }
