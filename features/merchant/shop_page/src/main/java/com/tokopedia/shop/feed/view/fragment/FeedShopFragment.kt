@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -536,7 +537,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         followCta: FollowCta,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        isVideo: Boolean,
+        isCaption: Boolean
     ) {}
 
 
@@ -545,7 +548,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         id: String,
         type: String,
         isFollow: Boolean,
-        postType: String
+        postType: String,
+        isVideo: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
@@ -607,7 +611,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         postType: String,
         isFollowed: Boolean,
         type: Boolean,
-        shopId: String
+        shopId: String,
+        isVideo: Boolean
     ) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -638,7 +643,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         typeASGC: Boolean,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        video: Boolean
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -675,7 +681,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         shopId: String,
         isFollowed: Boolean,
     ) {
-        TODO("Not yet implemented")
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
@@ -855,7 +860,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         contentPosition: Int,
         postId: String,
         redirectUrl: String,
-        authorId: String
+        authorId: String,
+        authorType: String
     ) {
         onGoToLink(redirectUrl)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
@@ -894,7 +900,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         postId: String,
         shopId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        isVideo: Boolean
     ) {
     }
 
@@ -921,6 +928,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
+    }
+
+    override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
+    }
+
+    override fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard) {
     }
 
     private fun showBottomSheetSellerMigration() {

@@ -71,6 +71,8 @@ data class FeedXCard(
     var hashtagAppLinkFmt: String = "",
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
+    val impressHolder: ImpressHolder = ImpressHolder()
+
 ) : ImpressHolder() {
     fun copyPostData(): FeedXCard {
         return FeedXCard(
@@ -96,7 +98,8 @@ data class FeedXCard(
             share = share,
             followers = followers,
             publishedAt = publishedAt,
-            mods = mods
+            mods = mods,
+            impressHolder = impressHolder
         )
     }
 }

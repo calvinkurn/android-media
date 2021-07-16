@@ -470,6 +470,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     private fun setAvatar() {
+        /*check if the user commenting is a shop to show shop avatar*/
         val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
         ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
         if (authorId?.isNotEmpty() == true && authorId == userSession?.shopId) {
