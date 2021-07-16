@@ -38,7 +38,7 @@ class FavoriteNumberModifyBottomSheet(
         if (favNumberItem.clientName.isNotEmpty()) {
             childView.common_topupbills_favorite_number_name_field.run {
                 setLabelStatic(true)
-                textFieldWrapper.hint = favNumberItem.clientName
+                textFieldInput.setText(favNumberItem.clientName)
                 textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         textFieldWrapper.hint = ""
@@ -46,9 +46,6 @@ class FavoriteNumberModifyBottomSheet(
                         textFieldWrapper.hint = favNumberItem.clientName
                     }
                 }
-                textFieldInput.setTextColor(
-                    resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
-                )
             }
 
         }
