@@ -194,6 +194,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         smart_bills_checkout_view.setVisibilityLayout(false)
                         adapter.renderEmptyState()
                     }
+                    smartBillsAnalytics.eventOpenScreen((bills?.isEmpty()) ?: true, bills?.size ?: 0)
                 }
                 is Fail -> {
                     var throwable = it.throwable
@@ -210,7 +211,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 is Success -> {
                     // Check if all items' transaction succeeds; if they do, navigate to payment
                     if (it.data.attributes.allSuccess) {
-                        smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size)
+                        smartBillsAnalytics.clickPay(adapter.checkedDataList, listBills.size, totalPrice)
 
                         val paymentPassData = PaymentPassData()
                         paymentPassData.convertToPaymenPassData(it.data)
@@ -287,7 +288,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
             )
         } else {
             smartBillsAnalytics.userId = userSession.userId
-            smartBillsAnalytics.eventOpenScreen()
 
             context?.let { context ->
                 // Setup ticker
