@@ -34,12 +34,15 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
     val voucherGameOperatorDetails = MutableLiveData<Result<VoucherGameOperator>>()
     val voucherGameProducts = MutableLiveData<Result<VoucherGameDetailData>>()
 
+    // get voucher game operator detail when it is not passed via Intent from category page
     fun getVoucherGameOperators(rawQuery: String, mapParam: Map<String, Any>, isForceRefresh: Boolean = false, operatorId: String) {
         launch {
             val response = voucherGameUseCase.getVoucherGameOperators(rawQuery, mapParam, "", isForceRefresh)
             if (response is Success) {
-                val data = response.data.operators.firstOrNull { it.id.toString() == operatorId } ?: throw MessageErrorException()
-                voucherGameOperatorDetails.value = Success(data)
+                val data = response.data.operators.firstOrNull { it.id.toString() == operatorId }
+                if (data != null) {
+                    voucherGameOperatorDetails.value = Success(data)
+                }
             } else {
                 voucherGameOperatorDetails.value = Fail((response as Fail).throwable)
             }
