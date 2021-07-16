@@ -1391,6 +1391,28 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
+    fun eventWatchVideo(activityId: String, authorId: String, isFollowed: Boolean, time: Long) {
+        var map = getCommonMap()
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    "watch",
+                    "video ",
+                    getPostType("", isFollowed = isFollowed, isVideo = true)
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_THREE_PARAM,
+                    activityId,
+                    authorId,
+                    time
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
+
 
     private fun getCommonMap(category: String = CATEGORY_FEED_TIMELINE): Map<String, String> {
         return mapOf(

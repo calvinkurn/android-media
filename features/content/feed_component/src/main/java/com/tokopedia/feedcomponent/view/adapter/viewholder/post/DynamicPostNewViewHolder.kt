@@ -28,7 +28,7 @@ open class DynamicPostNewViewHolder(
     companion object {
         const val PAYLOAD_ANIMATE_LIKE = 47
         const val PAYLOAD_ANIMATE_FOLLOW = 7
-        const val ANIMATE_COUNTER = 77
+        const val PAYLOAD_ANIMATE_POST = 77
 
         @LayoutRes
         val LAYOUT = R.layout.item_dynamic_post_new
@@ -43,6 +43,7 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_ANIMATE_LIKE -> postDynamicView.bindLike(element.feedXCard)
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
             PAYLOAD_PLAY_VIDEO -> postDynamicView.playVideo(element.feedXCard)
+            PAYLOAD_ANIMATE_POST -> postDynamicView.bindLike(element.feedXCard)
         }
     }
 

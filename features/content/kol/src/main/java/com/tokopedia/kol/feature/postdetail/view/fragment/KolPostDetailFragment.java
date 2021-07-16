@@ -1061,4 +1061,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onHashtagClickedFeed(@NotNull String hashtagText, @NotNull FeedXCard feedXCard) {
 
     }
+
+    @Override
+    public void onVideoStopTrack(@NotNull FeedXCard feedXCard, long duration) {
+
+    }
 }

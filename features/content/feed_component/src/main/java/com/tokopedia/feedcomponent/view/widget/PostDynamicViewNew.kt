@@ -106,6 +106,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var positionInFeed: Int = 0
     var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
+    var totalRunnTime = 0L
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
@@ -493,35 +494,35 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             .plus("</b></font>")
                     )
                 }
-                captionText.text = tagConverter.convertToLinkifyHashtag(
+                spannableString = tagConverter.convertToLinkifyHashtag(
                     SpannableString(MethodChecker.fromHtml(captionTxt)), colorLinkHashtag
                 ) { hashtag -> onHashtagClicked(hashtag, caption) }
 
-                spannableString = SpannableString(MethodChecker.fromHtml(captionTxt))
                 captionText.setOnClickListener {
-                    listener?.onReadMoreClicked(
-                        caption.id,
-                        caption.author.id,
-                        caption.typename,
-                        caption.followers.isFollowed,
-                        isVideo(caption.media.firstOrNull())
-                    )
-                    val txt: String = buildString {
-                        append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
+                    if (captionText.text.contains(context.getString(R.string.feed_component_read_more_button))) {
+                        listener?.onReadMoreClicked(
+                            caption.id,
+                            caption.author.id,
+                            caption.typename,
+                            caption.followers.isFollowed,
+                            isVideo(caption.media.firstOrNull())
+                        )
+                        val txt: String = buildString {
+                            append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
+                        }
+                        spannableString = tagConverter.convertToLinkifyHashtag(
+                            SpannableString(MethodChecker.fromHtml(txt)),
+                            colorLinkHashtag
+                        ) { hashtag -> onHashtagClicked(hashtag, caption) }
+                        spannableString.setSpan(
+                            cs,
+                            0,
+                            caption.author.name.length - 1,
+                            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                        )
+                        captionText.text = spannableString
+                        captionText.movementMethod = LinkMovementMethod.getInstance()
                     }
-                    captionText.text = tagConverter.convertToLinkifyHashtag(
-                        SpannableString(MethodChecker.fromHtml(txt)),
-                        colorLinkHashtag
-                    ) { hashtag -> onHashtagClicked(hashtag, caption) }
-                    spannableString = SpannableString(MethodChecker.fromHtml(txt))
-                    spannableString.setSpan(
-                        cs,
-                        0,
-                        caption.author.name.length - 1,
-                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                    )
-                    captionText.text = spannableString
-                    captionText.movementMethod = LinkMovementMethod.getInstance()
                 }
 
             } else {
@@ -533,7 +534,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                     )
                 }
-                captionText.text = tagConverter
+                spannableString = tagConverter
                     .convertToLinkifyHashtag(
                         SpannableString(
                             MethodChecker.fromHtml(
@@ -542,11 +543,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         ),
                         colorLinkHashtag
                     ) { hashtag -> onHashtagClicked(hashtag, caption) }
-                spannableString = SpannableString(
-                    MethodChecker.fromHtml(
-                        captionTxt
-                    )
-                )
             }
             spannableString.setSpan(
                 cs,
@@ -891,6 +887,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         index: Int,
         authorId: String,
         type: Int,
+        feedXCard: FeedXCard,
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
@@ -948,6 +945,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 timer_view.gone()
                             }
                         }.start()
+                    }
+
+                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+                        feedMedia.canPlay = false
+                        videoListener?.onVideoStopTrack(feedXCard, videoDuration / 1000)
                     }
                 })
             }
@@ -1145,10 +1147,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.id,
                 position,
                 feedXCard.author.id,
-                feedXCard.author.type
+                feedXCard.author.type,
+                feedXCard
             )
-        } else {
-            videoPlayer?.pause()
         }
     }
 

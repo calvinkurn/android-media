@@ -810,7 +810,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             OPEN_VIDEO_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val positionInFeed = data.getIntExtra(PARAM_POST_POSITION, 0)
-                    adapter.notifyItemChanged(positionInFeed)
+                    adapter.notifyItemChanged(
+                        positionInFeed,
+                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_POST
+                    )
                 }
             }
             else -> {
@@ -2109,6 +2112,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
             videoDetailIntent.putExtra(PARAM_VIDEO_AUTHOR_TYPE, authorType)
             startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL)
         }
+    }
+
+    override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
+        feedAnalytics.eventWatchVideo(
+            feedXCard.id,
+            feedXCard.author.id,
+            feedXCard.followers.isFollowed,
+            duration
+        )
     }
 
     override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
