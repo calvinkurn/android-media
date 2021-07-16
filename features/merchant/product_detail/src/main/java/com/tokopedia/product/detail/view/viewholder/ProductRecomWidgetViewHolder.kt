@@ -93,6 +93,14 @@ class ProductRecomWidgetViewHolder (
         }
     }
 
+    override fun onRecomProductCardAddToCartNonVariant(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+
+    }
+
+    override fun onRecomProductCardAddVariantClick(data: RecommendationCarouselData, recomItem: RecommendationItem, adapterPosition: Int) {
+
+    }
+
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
     }
 
