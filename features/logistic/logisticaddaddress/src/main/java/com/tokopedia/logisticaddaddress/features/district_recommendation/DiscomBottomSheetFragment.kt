@@ -268,7 +268,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private fun setViewListener() {
         binding.etSearchDistrictRecommendation.apply {
             isFocusableInTouchMode = true
-            requestFocus()
             setOnClickListener {
                 if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
             }

@@ -99,7 +99,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAddressFormBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -503,7 +503,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
         districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true, isPinpoint)
         districtRecommendationBottomSheetFragment.setActionListener(this)
-        childFragmentManager?.run {
+        childFragmentManager.run {
             districtRecommendationBottomSheetFragment.show(this, "")
         }
     }
@@ -666,6 +666,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchLabelAddress(type: String) {
         if (isPositiveFlow) {
             binding.formAddress.etLabel.textFieldInput.apply {
@@ -847,8 +848,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
        districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
     }
 
-    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
-        val kotaKecamatanText = "${districtAddress.districtName}, ${districtAddress.cityName} $zipCode"
+    override fun onChooseZipcode(districtAddress: Address, postalCode: String, isPinpoint: Boolean) {
+        val kotaKecamatanText = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
         formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
         currentDistrictName = districtAddress.districtName.toString()
         binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
@@ -862,8 +863,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.provinceId = districtAddress.provinceId
         saveDataModel?.districtId = districtAddress.districtId
         saveDataModel?.zipCodes = districtAddress.zipCodes
-        saveDataModel?.postalCode = zipCode
-        currentKodepos = zipCode
+        saveDataModel?.postalCode = postalCode
+        currentKodepos = postalCode
 
         if (isPinpoint) goToPinpointPage()
     }
