@@ -1,5 +1,6 @@
 package com.tokopedia.track.builder.`interface`
 
+import android.os.Bundle
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 /**
@@ -38,6 +39,15 @@ interface BaseTrackerBuilderInterface {
                                    buildCustomList: ((BaseTrackerConst.Product) -> String)? = null
     ): BaseTrackerBuilderInterface
 
+    fun constructBasicProductClickBundle(event: String,
+                                   eventCategory: String,
+                                   eventAction: String,
+                                   eventLabel: String,
+                                   list: String,
+                                   products: List<BaseTrackerConst.Product>,
+                                   buildCustomList: ((BaseTrackerConst.Product) -> String)? = null
+    ): BaseTrackerBuilderInterface
+
     fun constructBasicGeneralClick(event: String,
                                    eventCategory: String,
                                    eventAction: String,
@@ -63,4 +73,8 @@ interface BaseTrackerBuilderInterface {
     fun appendCustomKeyValue(key: String, value: Any): BaseTrackerBuilderInterface
 
     fun build(): Map<String, Any>
+
+    fun appendBusinessUnitBundle(value: String): BaseTrackerBuilderInterface
+    fun appendCurrentSiteBundle(value: String): BaseTrackerBuilderInterface
+    fun buildBundle(): Bundle
 }

@@ -30,7 +30,7 @@
             app:typographyWeight="bold"
             android:layout_width="match_parent"
             android:layout_height="@dimen/comparison_title_text_height"
-            android:textColor="#F531353B"
+            android:textColor="@color/light_N700_96"
             android:lines="1"
             android:textSize="@dimen/comparison_summary_text_height"/>
         <com.tokopedia.unifyprinciples.Typography
@@ -38,7 +38,7 @@
             app:typographyType="body_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#F531353B"
+            android:textColor="@color/light_N700_96"
             android:textSize="@dimen/comparison_summary_text_height"/>
 
     </LinearLayout>

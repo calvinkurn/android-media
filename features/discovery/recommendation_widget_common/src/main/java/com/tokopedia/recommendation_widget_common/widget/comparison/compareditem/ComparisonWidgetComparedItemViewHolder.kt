@@ -30,7 +30,7 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
         userSession: UserSessionInterface,
         comparedProductPosition: Int = -1
     ) {
-        if(comparedProductPosition ==0)
+        if (comparedProductPosition == 0)
             view.visibility = View.INVISIBLE
 
         view.specsView.setSpecsInfo(comparisonModel.specsModel)
@@ -47,7 +47,7 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
                         product.imageUrl
                     )
                 }
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.SELECT_CONTENT,
                     ProductRecommendationTracking.getClickProductTracking(
                         recommendationItems = listOf(
                             comparisonModel.recommendationItem

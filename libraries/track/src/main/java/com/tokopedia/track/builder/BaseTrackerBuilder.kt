@@ -1,5 +1,6 @@
 package com.tokopedia.track.builder
 
+import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.builder.`interface`.BaseTrackerBuilderInterface
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -10,6 +11,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
 
     private var dataLayer: MutableMap<String, Any> = mutableMapOf()
+    private val bundle = Bundle()
 
     override fun constructBasicPromotionView(event: String,
                                              eventCategory: String,
@@ -69,6 +71,24 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list, buildCustomList))
+        return this
+    }
+
+    override fun constructBasicProductClickBundle(
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        list: String,
+        products: List<Product>,
+        buildCustomList: ((Product) -> String)?
+    ): BaseTrackerBuilderInterface {
+        bundle.putString(Event.KEY, event)
+        bundle.putString(Category.KEY, eventCategory)
+        bundle.putString(Action.KEY, eventAction)
+        bundle.putString(Label.KEY, eventLabel)
+        bundle.putBundle(Ecommerce.KEY, Ecommerce.getEcommerceProductClickBundle(products, list, buildCustomList))
+
         return this
     }
 
@@ -158,5 +178,19 @@ class BaseTrackerBuilder : BaseTrackerConst(), BaseTrackerBuilderInterface{
 
     override fun build(): Map<String, Any> {
         return dataLayer
+    }
+
+    override fun appendBusinessUnitBundle(value: String): BaseTrackerBuilderInterface {
+        bundle.putString(BusinessUnit.KEY, value)
+        return this
+    }
+
+    override fun appendCurrentSiteBundle(value: String): BaseTrackerBuilderInterface {
+        bundle.putString(CurrentSite.KEY, value)
+        return this
+    }
+
+    override fun buildBundle(): Bundle {
+        return bundle
     }
 }

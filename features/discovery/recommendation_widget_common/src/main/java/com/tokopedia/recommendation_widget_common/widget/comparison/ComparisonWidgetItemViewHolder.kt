@@ -39,7 +39,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                             product.imageUrl
                     )
                 }
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ProductRecommendationTracking.SELECT_CONTENT,
                         ProductRecommendationTracking.getClickProductTracking(
                                 recommendationItems = listOf(
                                         comparisonModel.recommendationItem

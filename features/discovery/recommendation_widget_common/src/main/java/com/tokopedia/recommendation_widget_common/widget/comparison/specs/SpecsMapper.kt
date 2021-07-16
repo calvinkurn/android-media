@@ -44,7 +44,7 @@ object SpecsMapper {
         size: Int
     ): Int {
         if (index == 0) return R.drawable.bg_specs_start_end_top
-        else if (index != size-1) return R.drawable.bg_specs
+        else if (index != size - 1) return R.drawable.bg_specs
         return R.drawable.bg_specs_start_end_bottom
     }
 

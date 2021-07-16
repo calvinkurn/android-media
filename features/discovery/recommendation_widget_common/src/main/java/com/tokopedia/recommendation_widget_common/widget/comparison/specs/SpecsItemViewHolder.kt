@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_spec.view.*
 
 class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     fun bind(specsModel: SpecsModel, position: Int) {
-        if(position == 0) view.view_divider.visibility = View.INVISIBLE
+        if (position == 0) view.view_divider.visibility = View.INVISIBLE
         view.tv_spec_title.text = specsModel.specsTitle
         view.tv_spec_summary.text = MethodChecker.fromHtml(specsModel.specsSummary)
 

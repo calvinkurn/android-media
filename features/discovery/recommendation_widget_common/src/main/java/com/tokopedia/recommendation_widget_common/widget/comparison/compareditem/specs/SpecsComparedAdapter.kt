@@ -11,7 +11,7 @@ class SpecsComparedAdapter(var listModel: SpecsListModel): RecyclerView.Adapter<
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_spec_compared_item, parent, false)
         if (viewType != -1 && viewType < listModel.specs.size) {
             val layoutParams = view.layoutParams
-            layoutParams.height = listModel.specsConfig.heightPositionMap[viewType]?:0
+            layoutParams.height = listModel.specsConfig.heightPositionMap[viewType] ?: 0
             view.layoutParams = layoutParams
         }
         return SpecsComparedItemViewHolder(view)
