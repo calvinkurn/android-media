@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemD
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
@@ -201,5 +202,12 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
 
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         CategoryTracking.sendDecreaseQtyEvent(getViewModel().categoryL1)
+    }
+
+    override fun onBindRecommendationCarousel(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
+        getViewModel().onBindRecommendationCarousel(element, adapterPosition)
     }
 }

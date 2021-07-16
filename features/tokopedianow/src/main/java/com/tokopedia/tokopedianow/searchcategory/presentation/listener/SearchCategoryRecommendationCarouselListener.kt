@@ -4,7 +4,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.Recommendati
 
 interface SearchCategoryRecommendationCarouselListener {
 
-    fun onBind(element: RecommendationCarouselDataView, adapterPosition: Int)
+    fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int)
 
     fun onImpressed()
 

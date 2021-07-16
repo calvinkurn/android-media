@@ -10,6 +10,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
@@ -54,6 +55,7 @@ class TokoNowSearchViewModel @Inject constructor (
         addToCartUseCase: AddToCartUseCase,
         updateCartUseCase: UpdateCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        getRecommendationUseCase: GetRecommendationUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
         userSession: UserSessionInterface,
@@ -66,6 +68,7 @@ class TokoNowSearchViewModel @Inject constructor (
         addToCartUseCase,
         updateCartUseCase,
         getWarehouseUseCase,
+        getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,

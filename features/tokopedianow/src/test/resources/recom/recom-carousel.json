@@ -1,0 +1,1529 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "k3taxWnh0AB_GI6wsi5ecpCFHPw=",
+        "source": "custom",
+        "title": "Rekomendasi Untuk Anda",
+        "subtitle": "",
+        "foreignTitle": "Recommendation For You",
+        "widgetUrl": "",
+        "pageName": "account",
+        "seeMoreAppLink": "",
+        "layoutType": "horizontal-atc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": [
+          {
+            "id": 1221703271,
+            "name": "Vacuum Vacum cleaner mobil Portable Penyedot Debu Mobil 12V 120W - Hitam",
+            "categoryBreadcrumbs": "Otomotif/Perawatan Kendaraan/Vacuum Cleaner Mobil",
+            "url": "https://www.tokopedia.com/lbagstore/vacuum-vacum-cleaner-mobil-portable-penyedot-debu-mobil-12v-120w-hitam",
+            "appUrl": "tokopedia://product/1221703271",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2854&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1221703271&pos=1&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/lbagstore/vacuum-vacum-cleaner-mobil-portable-penyedot-debu-mobil-12v-120w-hitam?catid2854=%26ref=account_pa1_po1%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2019/11/28/458544/458544_f3da3060-5b85-4358-aae9-d3f7bb3e403c_950_950",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2019/11/28/458544/458544_f3da3060-5b85-4358-aae9-d3f7bb3e403c_950_950",
+            "price": "Rp 85.000",
+            "priceInt": 85000,
+            "discountPercentage": 11,
+            "slashedPrice": "Rp 95.000",
+            "slashedPriceInt": 95000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 112468,
+              "name": "lbagstore",
+              "city": "Kota Depok",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2854,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 5 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Selalu OS",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/2/bca1506c-b547-4ff0-af96-01b77c8f19b3.png"
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 1772,
+            "ratingAverage": "4.8",
+            "recommendationType": "best_seller",
+            "stock": 575,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 617608087
+          },
+          {
+            "id": 1015961283,
+            "name": "Bantal Kepala Callista Elegance (1Bantal) Murah - BOGOR",
+            "categoryBreadcrumbs": "Rumah Tangga/Kamar Tidur/Guling",
+            "url": "https://www.tokopedia.com/olccabangbogor/bantal-kepala-callista-elegance-1bantal-murah-bogor",
+            "appUrl": "tokopedia://product/1015961283",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=998&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1015961283&pos=2&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/olccabangbogor/bantal-kepala-callista-elegance-1bantal-murah-bogor?catid0998=%26ref=account_pa1_po2%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/27/2d264cce-5f5a-4653-ad7d-5081a6ef9111.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/27/2d264cce-5f5a-4653-ad7d-5081a6ef9111.jpg",
+            "price": "Rp 35.000",
+            "priceInt": 35000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 8357387,
+              "name": "Oscarliving Cabang Bogor",
+              "city": "Kota Bogor",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 998,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 2,2 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 638,
+            "ratingAverage": "4.8",
+            "recommendationType": "best_seller",
+            "stock": 1167,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1061799112,
+            "name": "H1 Fingertip Pulse Oximeter Alat Ukur Kadar Oksigen SpO2",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Bantu Pernafasan",
+            "url": "https://www.tokopedia.com/mixacc88/h1-fingertip-pulse-oximeter-alat-ukur-kadar-oksigen-spo2",
+            "appUrl": "tokopedia://product/1061799112",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2521&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1061799112&pos=3&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/mixacc88/h1-fingertip-pulse-oximeter-alat-ukur-kadar-oksigen-spo2?catid2521=%26ref=account_pa1_po3%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/3/4ef48777-421d-442c-a77a-08d01f8b4479.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/12/3/4ef48777-421d-442c-a77a-08d01f8b4479.jpg",
+            "price": "Rp 198.000",
+            "priceInt": 198000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 2168578,
+              "name": "Mix acc88",
+              "city": "Jakarta Utara",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2521,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              },
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Gratis Ongkir",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 11 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 4751,
+            "ratingAverage": "4.8",
+            "recommendationType": "best_seller",
+            "stock": 49880,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1068157321,
+            "name": "Garuda Kacang Telur - 100g x 3 Pcs (TGD)",
+            "categoryBreadcrumbs": "Makanan & Minuman/Makanan Ringan/Kacang",
+            "url": "https://www.tokopedia.com/garudafood/garuda-kacang-telur-100g-x-3-pcs-tgd",
+            "appUrl": "tokopedia://product/1068157321",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2804&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1068157321&pos=4&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/garudafood/garuda-kacang-telur-100g-x-3-pcs-tgd?catid2804=%26ref=account_pa1_po4%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/9/18/582451/582451_860dd3c6-664b-48fb-9513-99464074c242_1280_1280",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/9/18/582451/582451_860dd3c6-664b-48fb-9513-99464074c242_1280_1280",
+            "price": "Rp 27.000",
+            "priceInt": 27000,
+            "discountPercentage": 10,
+            "slashedPrice": "Rp 30.000",
+            "slashedPriceInt": 30000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 554158,
+              "name": "GarudaFood",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2804,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1,9 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Selalu OS",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/2/bca1506c-b547-4ff0-af96-01b77c8f19b3.png"
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 723,
+            "ratingAverage": "4.9",
+            "recommendationType": "best_seller",
+            "stock": 117,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1142831344,
+            "name": "Sanitizer Saniter Spray Desinfektan Anti Virus Aerosol 400ML",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Kebersihan/Toilet Seat Spray",
+            "url": "https://www.tokopedia.com/yogieyo/sanitizer-saniter-spray-desinfektan-anti-virus-aerosol-400ml",
+            "appUrl": "tokopedia://product/1142831344",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3772&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1142831344&pos=5&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/yogieyo/sanitizer-saniter-spray-desinfektan-anti-virus-aerosol-400ml?catid3772=%26ref=account_pa1_po5%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/9/2/cf860bd6-9b48-4aab-bb7b-031808073171.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/9/2/cf860bd6-9b48-4aab-bb7b-031808073171.jpg",
+            "price": "Rp 42.900",
+            "priceInt": 42900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 1755155,
+              "name": "Yogieyo",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3772,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 44 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 5786,
+            "ratingAverage": "4.9",
+            "recommendationType": "best_seller",
+            "stock": 966,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1067831618,
+            "name": "Blackmores Bio C 1000mg (90)",
+            "categoryBreadcrumbs": "Kesehatan/Vitamin & Multivitamin/Sistem Kekebalan Tubuh",
+            "url": "https://www.tokopedia.com/blackmores/blackmores-bio-c-1000mg-90",
+            "appUrl": "tokopedia://product/1067831618",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=726&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1067831618&pos=6&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/blackmores/blackmores-bio-c-1000mg-90?catid0726=%26ref=account_pa1_po6%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/10/7/81816978/81816978_adf94363-e856-4b5c-87cc-47a34b70032b_1000_1000",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/10/7/81816978/81816978_adf94363-e856-4b5c-87cc-47a34b70032b_1000_1000",
+            "price": "Rp 355.000",
+            "priceInt": 355000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 7195967,
+              "name": "Blackmores Wellness",
+              "city": "Kota Tangerang Selatan",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 726,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 6,9 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Healthy Living",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/11/5099d468-7272-4585-b199-1bc6ccc00b38.png"
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 2686,
+            "ratingAverage": "4.9",
+            "recommendationType": "best_seller",
+            "stock": 398,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1046920950,
+            "name": "Susu beruang / Bear brand 189ml x30pc",
+            "categoryBreadcrumbs": "Makanan & Minuman/Produk Susu/Susu segar & Pasteurisasi",
+            "url": "https://www.tokopedia.com/cprint/susu-beruang-bear-brand-189ml-x30pc",
+            "appUrl": "tokopedia://product/1046920950",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2715&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1046920950&pos=7&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/cprint/susu-beruang-bear-brand-189ml-x30pc?catid2715=%26ref=account_pa1_po7%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/24/53e35996-0e5b-4fc2-9080-8810ba61c04d.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/24/53e35996-0e5b-4fc2-9080-8810ba61c04d.jpg",
+            "price": "Rp 362.000",
+            "priceInt": 362000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 3380117,
+              "name": "Centraprint",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2715,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 3,7 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 1511,
+            "ratingAverage": "5.0",
+            "recommendationType": "best_seller",
+            "stock": 96,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1066911658,
+            "name": "5 Pcs Pisang Goreng Madu Bu Nanik (RESMI)",
+            "categoryBreadcrumbs": "Makanan & Minuman/Makanan Jadi/Makanan Manis",
+            "url": "https://www.tokopedia.com/bunanik/5-pcs-pisang-goreng-madu-bu-nanik-resmi",
+            "appUrl": "tokopedia://product/1066911658",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2813&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1066911658&pos=8&recommendation=best_seller&rectype=best_seller&redirect=https://www.tokopedia.com/bunanik/5-pcs-pisang-goreng-madu-bu-nanik-resmi?catid2813=%26ref=account_pa1_po8%26src=r3best_seller&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/8/10/19826517/19826517_a04f766e-cd90-4614-9243-98499cef8c10_1280_1280",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/8/10/19826517/19826517_a04f766e-cd90-4614-9243-98499cef8c10_1280_1280",
+            "price": "Rp 35.000",
+            "priceInt": 35000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 2794483,
+              "name": "Pisang Goreng Madu Bu Nanik",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2813,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Gratis Ongkir",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 13 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Tokopedia NYAM!",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/6/30/fd905539-0671-46e1-af0d-8a5e20e14156.png"
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 5070,
+            "ratingAverage": "4.9",
+            "recommendationType": "best_seller",
+            "stock": 8323,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1984093968,
+            "name": "Yuwell YU300 OXYGEN CONCENTRATOR mesin oksigen konsentrator 3 liter",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Alat Bantu Pernafasan",
+            "url": "https://www.tokopedia.com/japos/yuwell-yu300-oxygen-concentrator-mesin-oksigen-konsentrator-3-liter",
+            "appUrl": "tokopedia://product/1984093968",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2521&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1984093968&pos=9&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/japos/yuwell-yu300-oxygen-concentrator-mesin-oksigen-konsentrator-3-liter?catid2521=%26ref=account_pa1_po9%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/13/2f033b64-6b3d-4f14-94b3-b80355ba02dd.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/13/2f033b64-6b3d-4f14-94b3-b80355ba02dd.jpg",
+            "price": "Rp 13.000.000",
+            "priceInt": 13000000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 2423962,
+              "name": "Wiliam store",
+              "city": "Kota Tangerang Selatan",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2521,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "gimmick",
+                "title": "Produk Terbaru",
+                "type": "textDarkOrange",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 2,
+            "ratingAverage": "5.0",
+            "recommendationType": "trending_search",
+            "stock": 1,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1728591515,
+            "name": "PEMANGGANG ROTI WAFFLE 2 LAPIS ADVANCE WAFFLE MAKER WF-206",
+            "categoryBreadcrumbs": "Elektronik/Elektronik Dapur/Toaster",
+            "url": "https://www.tokopedia.com/beofficialstore/pemanggang-roti-waffle-2-lapis-advance-waffle-maker-wf-206",
+            "appUrl": "tokopedia://product/1728591515",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3959&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1728591515&pos=10&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/beofficialstore/pemanggang-roti-waffle-2-lapis-advance-waffle-maker-wf-206?catid3959=%26ref=account_pa1_po10%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2021/4/13/5009736/5009736_835f5f52-3887-4118-b878-0bb8c643e930.jpeg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2021/4/13/5009736/5009736_835f5f52-3887-4118-b878-0bb8c643e930.jpeg",
+            "price": "Rp 250.000",
+            "priceInt": 250000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 5009736,
+              "name": "Belanja Elektronik",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 3959,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 180",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 55,
+            "ratingAverage": "5.0",
+            "recommendationType": "trending_search",
+            "stock": 52,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1338932903,
+            "name": "ASUS TUF GAMING RTX 3070 OC 8GB GDDR6",
+            "categoryBreadcrumbs": "Komputer & Laptop/Komponen Komputer/VGA Card",
+            "url": "https://www.tokopedia.com/tokoexpert/asus-tuf-gaming-rtx-3070-oc-8gb-gddr6",
+            "appUrl": "tokopedia://product/1338932903",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3951&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1338932903&pos=11&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/tokoexpert/asus-tuf-gaming-rtx-3070-oc-8gb-gddr6?catid3951=%26ref=account_pa1_po11%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/12/c810f484-1945-4d82-ada7-f1488bf12f2e.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/12/c810f484-1945-4d82-ada7-f1488bf12f2e.jpg",
+            "price": "Rp 22.850.000",
+            "priceInt": 22850000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 1103429,
+              "name": "toko expert komputer",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3951,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "Terjual 51",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Tokopedia Tekno ",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/13/42e1d677-c850-41b7-9a0f-36bc3dfb6dff.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant",
+                "imageUrl": "https://images.tokopedia.net/img/power_merchant_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 27,
+            "ratingAverage": "5.0",
+            "recommendationType": "trending_search",
+            "stock": 1,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1744249359,
+            "name": "Multi One Plus 3 ply Premium Face Mask - Kids - Masker Anak 3Ply - Motif Random",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+            "url": "https://www.tokopedia.com/hitshopindonesia/multi-one-plus-3-ply-premium-face-mask-kids-masker-anak-3ply-motif-random",
+            "appUrl": "tokopedia://product/1744249359",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2520&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1744249359&pos=12&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/hitshopindonesia/multi-one-plus-3-ply-premium-face-mask-kids-masker-anak-3ply-motif-random?catid2520=%26ref=account_pa1_po12%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/4/8/d9a1332f-da9f-4f46-a452-560c0cfccc3d.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/4/8/d9a1332f-da9f-4f46-a452-560c0cfccc3d.jpg",
+            "price": "Rp 39.500",
+            "priceInt": 39500,
+            "discountPercentage": 64,
+            "slashedPrice": "Rp 110.000",
+            "slashedPriceInt": 110000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 5302911,
+              "name": "HITSHOP INDONESIA",
+              "city": "Jakarta Selatan",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2520,
+            "labels": [
+              {
+                "title": "Gratis Ongkir",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Gratis Ongkir",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 445",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 167,
+            "ratingAverage": "4.9",
+            "recommendationType": "trending_search",
+            "stock": 773,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1521796751
+          },
+          {
+            "id": 1809698669,
+            "name": "BOLDe Masker Korea KF94 4ply isi 10 - Hitam",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+            "url": "https://www.tokopedia.com/mac88/bolde-masker-korea-kf94-4ply-isi-10-hitam",
+            "appUrl": "tokopedia://product/1809698669",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2520&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1809698669&pos=13&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/mac88/bolde-masker-korea-kf94-4ply-isi-10-hitam?catid2520=%26ref=account_pa1_po13%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/4/29/94657420-9e0a-4c5e-b9bd-f8c27cd90d22.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/4/29/94657420-9e0a-4c5e-b9bd-f8c27cd90d22.jpg",
+            "price": "Rp 35.000",
+            "priceInt": 35000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 1054217,
+              "name": "MAC Housewares",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 2520,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              },
+              {
+                "title": "Grosir",
+                "color": "#ffffff"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Grosir",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Grosir",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 1,9 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Healthy Living",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/11/5099d468-7272-4585-b199-1bc6ccc00b38.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [
+              {
+                "price": 32500,
+                "quantityMax": 3,
+                "quantityMin": 2,
+                "priceString": "Rp 32.500"
+              },
+              {
+                "price": 31000,
+                "quantityMax": 9,
+                "quantityMin": 4,
+                "priceString": "Rp 31.000"
+              },
+              {
+                "price": 30000,
+                "quantityMax": 10000,
+                "quantityMin": 10,
+                "priceString": "Rp 30.000"
+              }
+            ],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 362,
+            "ratingAverage": "4.9",
+            "recommendationType": "trending_search",
+            "stock": 441,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1809642730
+          },
+          {
+            "id": 1035266494,
+            "name": "INTEL Mini PC NUC 10i5FNH",
+            "categoryBreadcrumbs": "Komputer & Laptop/Desktop & Mini PC/Mini PC",
+            "url": "https://www.tokopedia.com/it-shoponline/intel-mini-pc-nuc-10i5fnh",
+            "appUrl": "tokopedia://product/1035266494",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3850&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1035266494&pos=14&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/it-shoponline/intel-mini-pc-nuc-10i5fnh?catid3850=%26ref=account_pa1_po14%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/15/a87e1775-ebcd-4782-8734-44092323546c.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/15/a87e1775-ebcd-4782-8734-44092323546c.jpg",
+            "price": "Rp 5.600.000",
+            "priceInt": 5600000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 147199,
+              "name": "IT-SHOP-ONLINE",
+              "city": "Kota Surabaya",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 3850,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 59",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Tokopedia Tekno ",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/13/42e1d677-c850-41b7-9a0f-36bc3dfb6dff.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 29,
+            "ratingAverage": "5.0",
+            "recommendationType": "trending_search",
+            "stock": 10,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1621259762,
+            "name": "Masker KN95 5ply Per box isi 10 pcs Masker KN 95 Original - Putih",
+            "categoryBreadcrumbs": "Kesehatan/Masker/Masker Kesehatan",
+            "url": "https://www.tokopedia.com/bintang898/masker-kn95-5ply-per-box-isi-10-pcs-masker-kn-95-original-putih",
+            "appUrl": "tokopedia://product/1621259762",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4632&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1621259762&pos=15&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/bintang898/masker-kn95-5ply-per-box-isi-10-pcs-masker-kn-95-original-putih?catid4632=%26ref=account_pa1_po15%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/16/adb9adb4-544d-4221-947d-ddd7dbfe3530.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/16/adb9adb4-544d-4221-947d-ddd7dbfe3530.jpg",
+            "price": "Rp 32.000",
+            "priceInt": 32000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 8484032,
+              "name": "Bintang898",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 4632,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 3,9 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 140,
+            "ratingAverage": "4.9",
+            "recommendationType": "trending_search",
+            "stock": 315,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1325245403
+          },
+          {
+            "id": 498226059,
+            "name": "SALE GROSIR Mesin Wafel Hamilton Beach Waffle Maker MURAH",
+            "categoryBreadcrumbs": "Dapur/Alat Masak Khusus/Waffle Maker",
+            "url": "https://www.tokopedia.com/kedaifitri/sale-grosir-mesin-wafel-hamilton-beach-waffle-maker-murah",
+            "appUrl": "tokopedia://product/498226059",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3489&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=498226059&pos=16&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/kedaifitri/sale-grosir-mesin-wafel-hamilton-beach-waffle-maker-murah?catid3489=%26ref=account_pa1_po16%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/9/5f33c749-ed8d-420c-bdd3-6ffd6acf84a8.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/7/9/5f33c749-ed8d-420c-bdd3-6ffd6acf84a8.jpg",
+            "price": "Rp 1.499.500",
+            "priceInt": 1499500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 4431007,
+              "name": "Kedai Fitri",
+              "city": "Jakarta Pusat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3489,
+            "labels": [
+              {
+                "title": "PO",
+                "color": "#ffffff"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "offers",
+                "title": "PO",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "status",
+                "title": "Preorder",
+                "type": "transparentBlack",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 54",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 22,
+            "ratingAverage": "5.0",
+            "recommendationType": "trending_search",
+            "stock": 10,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1816111535,
+            "name": "Angola Cover Penahan Angin AC D13 Talang AC/AC Reflector/AC Windshield - Putih",
+            "categoryBreadcrumbs": "Elektronik/Alat Pendingin Ruangan/AC Reflektor",
+            "url": "https://www.tokopedia.com/angolaofficia/angola-cover-penahan-angin-ac-d13-talang-ac-ac-reflector-ac-windshield-putih",
+            "appUrl": "tokopedia://product/1816111535",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3940&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1816111535&pos=17&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/angolaofficia/angola-cover-penahan-angin-ac-d13-talang-ac-ac-reflector-ac-windshield-putih?catid3940=%26ref=account_pa1_po17%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/1/4f3ee579-2433-4264-acf5-de623f57c0e6.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/5/1/4f3ee579-2433-4264-acf5-de623f57c0e6.jpg",
+            "price": "Rp 59.000",
+            "priceInt": 59000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 7827497,
+              "name": "Angola Official Store",
+              "city": "Kab. Tangerang",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 3940,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 418",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Tokopedia Tekno ",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/13/42e1d677-c850-41b7-9a0f-36bc3dfb6dff.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 163,
+            "ratingAverage": "4.8",
+            "recommendationType": "trending_search",
+            "stock": 52,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1816111534
+          },
+          {
+            "id": 1580141188,
+            "name": "Masker SENSI Duckbill, Masker Duckbil 3ply Sensi, Sensi 3 ply Original",
+            "categoryBreadcrumbs": "Kesehatan/Perlengkapan Medis/Disposable Consumable",
+            "url": "https://www.tokopedia.com/bigoneonline/masker-sensi-duckbill-masker-duckbil-3ply-sensi-sensi-3-ply-original",
+            "appUrl": "tokopedia://product/1580141188",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2520&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1580141188&pos=18&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/bigoneonline/masker-sensi-duckbill-masker-duckbil-3ply-sensi-sensi-3-ply-original?catid2520=%26ref=account_pa1_po18%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2021/5/20/8709318/8709318_0509ac12-b6ce-49e3-b6dc-0ba06114a616.jpeg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2021/5/20/8709318/8709318_0509ac12-b6ce-49e3-b6dc-0ba06114a616.jpeg",
+            "price": "Rp 158.900",
+            "priceInt": 158900,
+            "discountPercentage": 14,
+            "slashedPrice": "Rp 184.900",
+            "slashedPriceInt": 184900,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 8709318,
+              "name": "BigOneOnline",
+              "city": "Jakarta Timur",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 2520,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 8 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Selalu OS",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/2/bca1506c-b547-4ff0-af96-01b77c8f19b3.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 3025,
+            "ratingAverage": "4.9",
+            "recommendationType": "trending_search",
+            "stock": 99,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1703694409,
+            "name": "Masker 3ply 3 ply duckbill 3D headloop orlee Hijab Kemenkes isi 10pcs - Putih",
+            "categoryBreadcrumbs": "Otomotif/Aksesoris Pengendara Motor/Masker Buff",
+            "url": "https://www.tokopedia.com/lbagstore/masker-3ply-3-ply-duckbill-3d-headloop-orlee-hijab-kemenkes-isi-10pcs-putih",
+            "appUrl": "tokopedia://product/1703694409",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1320&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1703694409&pos=19&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/lbagstore/masker-3ply-3-ply-duckbill-3d-headloop-orlee-hijab-kemenkes-isi-10pcs-putih?catid1320=%26ref=account_pa1_po19%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/25/231e6f63-4418-49c2-8949-7e6c4a405f59.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/25/231e6f63-4418-49c2-8949-7e6c4a405f59.png",
+            "price": "Rp 10.500",
+            "priceInt": 10500,
+            "discountPercentage": 25,
+            "slashedPrice": "Rp 14.000",
+            "slashedPriceInt": 14000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 112468,
+              "name": "lbagstore",
+              "city": "Kota Depok",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "departmentId": 1320,
+            "labels": [
+              {
+                "title": "Grosir",
+                "color": "#ffffff"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "offers",
+                "title": "Dilayani Tokopedia",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "offers",
+                "title": "Grosir",
+                "type": "lightGrey",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 42 rb",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Bangga Lokal",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/phOWBv/2021/7/14/7e45f8cb-cded-49cd-9d8a-2e1373e6590a.png"
+              }
+            ],
+            "badges": [
+              {
+                "title": "Official Store",
+                "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+              }
+            ],
+            "wholesalePrice": [
+              {
+                "price": 13500,
+                "quantityMax": 49,
+                "quantityMin": 10,
+                "priceString": "Rp 13.500"
+              },
+              {
+                "price": 13000,
+                "quantityMax": 99,
+                "quantityMin": 50,
+                "priceString": "Rp 13.000"
+              },
+              {
+                "price": 12500,
+                "quantityMax": 10000,
+                "quantityMin": 100,
+                "priceString": "Rp 12.500"
+              }
+            ],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 6204,
+            "ratingAverage": "4.8",
+            "recommendationType": "trending_search",
+            "stock": 80198,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 1703694405
+          },
+          {
+            "id": 1298015148,
+            "name": "MSI GeForce RTX 3070 GAMING X TRIO 8GB GDDR6",
+            "categoryBreadcrumbs": "Komputer & Laptop/Komponen Komputer/VGA Card",
+            "url": "https://www.tokopedia.com/sportonlineshop/msi-geforce-rtx-3070-gaming-x-trio-8gb-gddr6",
+            "appUrl": "tokopedia://product/1298015148",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category=3951&event=click&experimentVersion=v1.4&page=1&page_name=account&pid=1298015148&pos=20&recommendation=trending_search&rectype=trending_search&redirect=https://www.tokopedia.com/sportonlineshop/msi-geforce-rtx-3070-gaming-x-trio-8gb-gddr6?catid3951=%26ref=account_pa1_po20%26src=r3trending_search&tid=k3taxWnh0AB_GI6wsi5ecpCFHPw=&uid=0&unique_id=&utime=1626427269&widget=r3_widget&xdevice=android",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/23/5c20a714-ce42-440f-a3e2-0ea8d1d20171.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2020/11/23/5c20a714-ce42-440f-a3e2-0ea8d1d20171.png",
+            "price": "Rp 20.510.000",
+            "priceInt": 20510000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "shop": {
+              "id": 273123,
+              "name": "SOS SPORT ONLINE SHOP",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": false
+            },
+            "departmentId": 3951,
+            "labels": [
+              {
+                "title": "Cashback",
+                "color": "#42b549"
+              }
+            ],
+            "labelgroup": [
+              {
+                "position": "promo",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Cashback",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "integrity",
+                "title": "Terjual 32",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Power Merchant Pro",
+                "imageUrl": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@2x.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": true,
+              "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+            },
+            "rating": 5,
+            "countReview": 22,
+            "ratingAverage": "5.0",
+            "recommendationType": "trending_search",
+            "stock": 1,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+}
+}

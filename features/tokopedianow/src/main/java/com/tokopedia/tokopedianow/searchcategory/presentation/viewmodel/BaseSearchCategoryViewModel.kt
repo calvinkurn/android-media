@@ -38,6 +38,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
@@ -80,6 +81,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val addToCartUseCase: AddToCartUseCase,
         protected val updateCartUseCase: UpdateCartUseCase,
         protected val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        protected val getRecommendationUseCase: GetRecommendationUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
         protected val userSession: UserSessionInterface,

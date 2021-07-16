@@ -38,7 +38,7 @@ class RecommendationCarouselViewHolder(
                 widgetListener = this,
         )
 
-        recommendationCarouselListener.onBind(element, adapterPosition)
+        recommendationCarouselListener.onBindRecommendationCarousel(element, adapterPosition)
     }
 
     override fun onRecomProductCardImpressed(

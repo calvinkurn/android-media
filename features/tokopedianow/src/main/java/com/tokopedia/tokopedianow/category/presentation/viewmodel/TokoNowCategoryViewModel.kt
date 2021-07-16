@@ -5,9 +5,16 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -49,6 +56,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         addToCartUseCase: AddToCartUseCase,
         updateCartUseCase: UpdateCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        getRecommendationUseCase: GetRecommendationUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
         userSession: UserSessionInterface,
@@ -61,6 +69,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         addToCartUseCase,
         updateCartUseCase,
         getWarehouseUseCase,
+        getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
@@ -166,5 +175,37 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     private fun onGetCategoryLoadMorePageError(throwable: Throwable) {
 
+    }
+
+    fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int) {
+        launchCatchError(
+                block = { getRecommendationCarousel(element, adapterPosition) },
+                onError = { getRecommendationCarouselError(element, adapterPosition) },
+        )
+    }
+
+    private suspend fun getRecommendationCarousel(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
+        if (element.carouselData.state == STATE_READY) return
+
+        val recommendationList = getRecommendationUseCase.getData(GetRecommendationRequestParam())
+
+        element.carouselData = RecommendationCarouselData(
+                state = STATE_READY,
+                recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
+        )
+
+        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+    }
+
+    private fun getRecommendationCarouselError(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
+        element.carouselData = RecommendationCarouselData(state = STATE_FAILED)
+
+        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
     }
 }
