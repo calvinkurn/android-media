@@ -23,12 +23,8 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
             comparisonWidgetInterface: ComparisonWidgetInterface,
             recommendationTrackingModel: RecommendationTrackingModel,
             trackingQueue: TrackingQueue?,
-            userSession: UserSessionInterface,
-            position: Int,
-            isComparedItem : Boolean
+            userSession: UserSessionInterface
     ) {
-        if(position ==0 && !isComparedItem)
-            view.visibility = View.INVISIBLE
         view.specsView.setSpecsInfo(comparisonModel.specsModel)
         view.productCardView.setProductModel(comparisonModel.productCardModel)
         if (!comparisonModel.isCurrentItem) {

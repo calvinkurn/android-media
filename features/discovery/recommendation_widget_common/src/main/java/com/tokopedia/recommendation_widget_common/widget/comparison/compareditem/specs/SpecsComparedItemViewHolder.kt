@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsModel
-import kotlinx.android.synthetic.main.item_spec2.view.*
+import kotlinx.android.synthetic.main.item_spec_compared_item.view.*
 
 class SpecsComparedItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     fun bind(specsModel: SpecsModel, position: Int, currentRecommendationPosition: Int, totalRecommendations: Int) {

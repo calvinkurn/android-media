@@ -8,7 +8,7 @@ import com.tokopedia.recommendation_widget_common.widget.comparison.specs.SpecsL
 
 class SpecsComparedAdapter(var listModel: SpecsListModel): RecyclerView.Adapter<SpecsComparedItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecsComparedItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_spec2, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_spec_compared_item, parent, false)
         if (viewType != -1 && viewType < listModel.specs.size) {
             val layoutParams = view.layoutParams
             layoutParams.height = listModel.specsConfig.heightPositionMap[viewType]?:0

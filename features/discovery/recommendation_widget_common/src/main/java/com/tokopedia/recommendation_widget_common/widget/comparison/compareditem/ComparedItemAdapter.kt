@@ -20,7 +20,7 @@ class ComparedItemAdapter(
     private val isComparedItem: Boolean = false
 ): RecyclerView.Adapter<ComparisonWidgetComparedItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetComparedItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_widget2, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_compared_widget, parent, false)
         val productCardView = view.productCardView
         val layoutParams = productCardView.layoutParams
         layoutParams.height = comparisonListModel.comparisonWidgetConfig.productCardHeight

@@ -13,7 +13,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.item_comparison_widget2.view.*
+import kotlinx.android.synthetic.main.item_comparison_compared_widget.view.*
 
 class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     companion object {

@@ -57,10 +57,6 @@ class PdpComparisonWidgetViewHolder(
         }
     }
 
-    override fun onSeeAllSpecClicked(comparisonListModel: ComparisonListModel) {
-
-    }
-
     private fun getComponentTrackData(element: PdpComparisonWidgetDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
 }

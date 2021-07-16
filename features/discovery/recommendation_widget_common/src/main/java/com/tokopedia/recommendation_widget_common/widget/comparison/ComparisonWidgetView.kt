@@ -24,19 +24,17 @@ import kotlinx.android.synthetic.main.view_comparison_widget.view.comparison_wid
 import kotlinx.android.synthetic.main.view_comparison_widget.view.rv_compared_item
 import kotlinx.android.synthetic.main.view_comparison_widget.view.rv_comparison_widget
 import kotlinx.android.synthetic.main.view_comparison_widget.view.tv_header_title
-import kotlinx.android.synthetic.main.view_comparison_widget2.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollInterface  {
+class ComparisonWidgetView: FrameLayout, CoroutineScope  {
 
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
     private var adapter: ComparedItemAdapter? = null
     private var comparedAdapter: ComparisonWidgetAdapter? = null
-    private var disableScrollTemp: Boolean = false
 
     private var userSessionInterface = UserSession(context)
 
@@ -108,8 +106,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                             comparisonWidgetInterface = comparisonWidgetInterface,
                             trackingQueue = trackingQueue,
                             userSessionInterface = userSessionInterface,
-                            recommendationTrackingModel = recommendationTrackingModel,
-                            isComparedItem = true
+                            recommendationTrackingModel = recommendationTrackingModel
                         )
                         rootView.rv_compared_item.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rootView.rv_compared_item.adapter = comparedAdapter
@@ -171,9 +168,5 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
             rootView.viewTreeObserver.removeOnScrollChangedListener(this.specOnScrollChangedListener)
             this.specOnScrollChangedListener = null
         }
-    }
-
-    override fun scrollX(x: Int) {
-        if (!disableScrollTemp) rv_comparison_widget.scrollBy(x, 0)
     }
 }

@@ -14,8 +14,7 @@ class ComparisonWidgetAdapter(
         val comparisonWidgetInterface: ComparisonWidgetInterface,
         val trackingQueue: TrackingQueue?,
         val recommendationTrackingModel: RecommendationTrackingModel,
-        val userSessionInterface: UserSessionInterface,
-        private val isComparedItem: Boolean = false
+        val userSessionInterface: UserSessionInterface
 ): RecyclerView.Adapter<ComparisonWidgetItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_widget, parent, false)
@@ -31,7 +30,7 @@ class ComparisonWidgetAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if(isComparedItem) 1 else comparisonListModel.comparisonData.size
+        return 1
     }
 
     //viewType == position
@@ -47,9 +46,7 @@ class ComparisonWidgetAdapter(
                     comparisonWidgetInterface,
                     recommendationTrackingModel,
                     trackingQueue,
-                    userSessionInterface,
-                    position,
-                    isComparedItem
+                    userSessionInterface
             )
         }
     }
