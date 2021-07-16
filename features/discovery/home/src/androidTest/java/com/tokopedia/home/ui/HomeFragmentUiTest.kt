@@ -251,8 +251,6 @@ class HomeFragmentUiTest {
 
         onView(withId(R.id.tab_layout_home_feeds)).check(matches(isDisplayed()))
         onView(withId(R.id.view_pager_home_feeds)).check(matches(isDisplayed()))
-
-        Thread.sleep(5000)
     }
 
     /**
