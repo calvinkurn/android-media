@@ -21,35 +21,34 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_reply_from"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_15"
             android:layout_marginTop="@dimen/dp_topchat_10"
+            android:layout_marginEnd="@dimen/dp_topchat_15"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Official Store"
             android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_6" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tp_reply_msg"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_15"
+            android:layout_marginEnd="@dimen/dp_topchat_15"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Tampilan sisi penerima"
             android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tp_reply_from"
             app:typographyType="body_3" />
-
-        <ImageView
-            android:layout_width="@dimen/dp_topchat_41"
-            android:layout_height="@dimen/dp_topchat_35"
-            android:paddingHorizontal="@dimen/dp_topchat_14"
-            android:paddingVertical="@dimen/unify_space_12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/topchat_ic_close" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
