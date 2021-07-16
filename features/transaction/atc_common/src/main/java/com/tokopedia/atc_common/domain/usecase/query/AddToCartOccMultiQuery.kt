@@ -8,10 +8,26 @@ val QUERY_ADD_TO_CART_OCC_MULTI = """
             data {
                 message
                 success
+                out_of_service {
+                    id
+                    code
+                    image
+                    title
+                    description
+                    buttons {
+                        id
+                        code
+                        message
+                        color
+                    }
+                }
+                toaster_action {
+                    text
+                    show_cta
+                }
                 carts {
                     cart_id
                     customer_id
-                    is_scp
                     is_trade_in
                     notes
                     product_id

@@ -10,7 +10,18 @@ import com.tokopedia.atc_common.data.model.response.occ.DataOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.occ.DetailOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.ocs.OcsDataResponse
-import com.tokopedia.atc_common.domain.model.response.*
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiCartData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientBalance
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientButton
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientDetails
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientTopup
+import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import javax.inject.Inject
 
@@ -101,7 +112,9 @@ class AddToCartDataMapper @Inject constructor() {
         return AddToCartOccMultiData(
                 success = dataResponse.success,
                 message = dataResponse.message,
-                cart = mapAddToCartOccMultiCartData(dataResponse.detail)
+                cart = mapAddToCartOccMultiCartData(dataResponse.detail),
+                outOfService = dataResponse.outOfService,
+                toasterAction = dataResponse.toasterAction
         )
     }
 

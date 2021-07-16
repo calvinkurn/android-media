@@ -30,7 +30,7 @@ class GroupShopOccResponse(
         @SerializedName("warehouse")
         val warehouse: WarehouseDataResponse = WarehouseDataResponse(),
         @SerializedName("cart_details")
-        val cartDetails: List<ProductDataResponse> = emptyList()
+        val cartDetails: List<CartDetailsResponse> = emptyList()
 )
 
 class CourierSelectionError(
@@ -38,4 +38,9 @@ class CourierSelectionError(
         val title: String = "",
         @SerializedName("description")
         val description: String = ""
+)
+
+class CartDetailsResponse(
+        @SerializedName("products")
+        val products: List<ProductDataResponse> = emptyList()
 )

@@ -47,36 +47,24 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
-  get_occ_cart_page(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
+        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_multi(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
+  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
     error_message
     status
     data {
+      errors
       error_code
       pop_up_message
-      max_quantity
       max_char_note
-      messages {
-        ErrorFieldBetween
-        ErrorFieldMaxChar
-        ErrorFieldRequired
-        ErrorProductAvailableStock
-        ErrorProductAvailableStockDetail
-        ErrorProductMaxQuantity
-        ErrorProductMinQuantity
-      }
+      kero_token
+      kero_unix_time
+      kero_discom_token
+      error_ticker
       tickers {
         id
         message
         page
         title
-      }
-      ticker_message {
-        message
-        replacement {
-            identifier
-            value
-        }
       }
       occ_main_onboarding {
         force_show_coachmark
@@ -98,50 +86,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
         }
       }
-      kero_token
-      kero_unix_time
-      kero_discom_token
-      errors
-      cart_list {
+      group_shop_occ {
         errors
-        cart_id
-        product {
-          product_tracker_data {
-            attribution
-            tracker_list_name
-          }
-          product_id
-          product_name
-          product_price
-          category_id
-          category
-          wholesale_price {
-            qty_min_fmt
-            qty_max_fmt
-            qty_min
-            qty_max
-            prd_prc
-            prd_prc_fmt
-          }
-          product_weight
-          product_weight_actual
-          is_preorder
-          product_cashback
-          product_min_order
-          product_max_order
-          product_invenage_value
-          product_switch_invenage
-          product_image {
-            image_src_200_square
-          }
-          product_notes
-          product_quantity
-          campaign_id
-          product_original_price
-          product_price_original_fmt
-          is_slash_price
-          product_finsurance
-          warehouse_id
+        errors_unblocking
+        cart_string
+        payment_profile
+        is_disable_change_courier
+        auto_courier_selection
+        shipment_information {
+          shop_location
           free_shipping {
             eligible
             badge_url
@@ -150,37 +103,37 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             eligible
             badge_url
           }
-          product_preorder {
-            duration_day
+          pre_order {
+            is_preorder
+            duration
           }
         }
-        cart_string
-        payment_profile
-        purchase_protection_plan_data {
-          protection_available
-          protection_type_id
-          protection_price_per_product
-          protection_price
-          protection_title
-          protection_subtitle
-          protection_link_text
-          protection_link_url
-          protection_opt_in
-          protection_checkbox_disabled
-          unit
-          source
+        courier_selection_error {
+          title
+          description
         }
-        toko_cabang {
-          message
-          badge_url
+        bo_metadata {
+          bo_type
+          bo_eligibilities {
+            key
+            value
+          }
+          additional_attributes {
+            key
+            value
+          }
         }
         shop {
           shop_id
-          user_id
           shop_name
+          shop_alert_message
+          shop_ticker
+          maximum_weight_wording
+          maximum_shipping_weight
           is_gold
           is_gold_badge
           is_official
+          is_tokonow
           gold_merchant {
             is_gold
             is_gold_badge
@@ -202,7 +155,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           latitude
           longitude
           district_id
-          city_name
           shop_shipments {
             ship_id
             ship_name
@@ -219,12 +171,79 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
           }
         }
+        cart_details {
+          products {
+            product_tracker_data {
+              attribution
+              tracker_list_name
+            }
+            cart_id
+            product_id
+            product_name
+            product_price
+            category_id
+            category
+            wholesale_price {
+              qty_min_fmt
+              qty_max_fmt
+              qty_min
+              qty_max
+              prd_prc
+              prd_prc_fmt
+            }
+            product_weight
+            product_weight_actual
+            is_preorder
+            product_cashback
+            product_min_order
+            product_max_order
+            product_invenage_value
+            product_switch_invenage
+            product_image {
+              image_src_200_square
+            }
+            product_notes
+            product_quantity
+            campaign_id
+            product_original_price
+            product_price_original_fmt
+            is_slash_price
+            slash_price_label
+            product_finsurance
+            warehouse_id
+            free_shipping {
+              eligible
+            }
+            free_shipping_extra {
+              eligible
+            }
+            product_preorder {
+              duration_day
+            }
+            purchase_protection_plan_data {
+              protection_available
+              protection_type_id
+              protection_price_per_product
+              protection_price
+              protection_title
+              protection_subtitle
+              protection_link_text
+              protection_link_url
+              protection_opt_in
+              protection_checkbox_disabled
+              unit
+              source
+            }
+          }
+        }
+        toko_cabang {
+          message
+          badge_url
+        }
         warehouse {
           is_fulfillment
         }
       }
-      profile_index_wording
-      profile_recommendation_wording
       profile {
         has_preference
         is_changed_profile
@@ -555,7 +574,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         change_cc_link
         callback_url
       }
-      error_ticker
       prompt {
         type
         title
@@ -566,19 +584,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           link
           action
           color
-        }
-      }
-      occ_revamp {
-        enable
-        total_profile
-        change_template_text
-      }
-      occ_remove_profile {
-        enable
-        ui_type
-        message {
-          title
-          description
         }
       }
     }

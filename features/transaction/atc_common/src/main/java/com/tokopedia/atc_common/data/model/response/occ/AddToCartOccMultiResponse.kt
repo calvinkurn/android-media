@@ -1,13 +1,15 @@
 package com.tokopedia.atc_common.data.model.response.occ
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
+import com.tokopedia.purchase_platform.common.feature.toasteraction.ToasterActionData
 
-data class AddToCartOccMultiGqlResponse(
+class AddToCartOccMultiGqlResponse(
         @SerializedName("add_to_cart_occ_multi")
         val response: AddToCartOccMultiResponse = AddToCartOccMultiResponse()
 )
 
-data class AddToCartOccMultiResponse(
+class AddToCartOccMultiResponse(
         @SerializedName("error_message")
         val errorMessage: List<String> = emptyList(),
         @SerializedName("status")
@@ -16,24 +18,26 @@ data class AddToCartOccMultiResponse(
         val data: DataOccMultiResponse = DataOccMultiResponse()
 )
 
-data class DataOccMultiResponse(
+class DataOccMultiResponse(
         @SerializedName("success")
         val success: Int = 0,
         @SerializedName("message")
         val message: List<String> = emptyList(),
         @SerializedName("carts")
-        val detail: List<DetailOccMultiResponse> = emptyList()
+        val detail: List<DetailOccMultiResponse> = emptyList(),
+        @SerializedName("toaster_action")
+        val toasterAction: ToasterActionData = ToasterActionData(),
+        @SerializedName("out_of_service")
+        val outOfService: OutOfServiceData = OutOfServiceData()
 )
 
-data class DetailOccMultiResponse(
+class DetailOccMultiResponse(
         @SerializedName("cart_id")
         val cartId: String = "",
         @SerializedName("product_id")
         val productId: String = "",
         @SerializedName("quantity")
         val quantity: String = "",
-        @SerializedName("categories")
-        val categories: List<OccMultiCategoryResponse> = emptyList(),
         @SerializedName("notes")
         val notes: String = "",
         @SerializedName("shop_id")
@@ -42,13 +46,4 @@ data class DetailOccMultiResponse(
         val customerId: String = "",
         @SerializedName("warehouse_id")
         val warehouseId: String = ""
-)
-
-data class OccMultiCategoryResponse(
-        @SerializedName("category_id")
-        val categoryId: String = "",
-        @SerializedName("category_name")
-        val categoryName: String = "",
-        @SerializedName("category_level")
-        val categoryLevel: Int = 0
 )

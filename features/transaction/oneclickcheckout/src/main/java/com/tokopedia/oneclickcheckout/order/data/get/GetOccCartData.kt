@@ -16,8 +16,6 @@ class GetOccCartData(
         val occMainOnboarding: OccMainOnboardingResponse = OccMainOnboardingResponse(),
         @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
-        @SerializedName("ticker_message")
-        val tickerMessage: OccTickerMessage = OccTickerMessage(),
         @SerializedName("kero_token")
         val keroToken: String = "",
         @SerializedName("kero_unix_time")

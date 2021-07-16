@@ -165,8 +165,9 @@ class GetOccCartMapper @Inject constructor() {
     private fun generateOrderProducts(groupShop: GroupShopOccResponse, shop: OrderShop, data: GetOccCartData): Pair<MutableList<OrderProduct>, Int> {
         val productList = ArrayList<OrderProduct>()
         var firstProductErrorIndex = -1
-        for (index in groupShop.cartDetails.indices) {
-            val product = generateOrderProduct(groupShop.cartDetails[index], shop, data)
+        val cartDetail = groupShop.cartDetails.first()
+        for (index in cartDetail.products.indices) {
+            val product = generateOrderProduct(cartDetail.products[index], shop, data)
             if (product.isError && firstProductErrorIndex == -1) {
                 firstProductErrorIndex = index
             }
