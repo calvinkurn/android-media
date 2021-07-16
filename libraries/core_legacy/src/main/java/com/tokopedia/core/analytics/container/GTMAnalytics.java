@@ -949,15 +949,17 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void logEventForVerification(String eventName, Map<String, Object> values){
         if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "event_verification");
-            messageMap.put("name", eventName);
-            messageMap.put("click_time", String.valueOf((System.currentTimeMillis() / 1000L)));
-            messageMap.put("clientId", TrackApp.getInstance().getGTM().getClientIDString());
-            messageMap.put("utm_source", values.get(AppEventTracking.GTM.UTM_SOURCE).toString());
-            messageMap.put("utm_medium", values.get(AppEventTracking.GTM.UTM_MEDIUM).toString());
-            messageMap.put("campaign", values.get(AppEventTracking.GTM.UTM_CAMPAIGN).toString());
-            ServerLogger.log(Priority.P1, "GA_EVENT_VERIFICATION", messageMap);
+            if(!TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "event_verification");
+                messageMap.put("name", eventName);
+                messageMap.put("click_time", String.valueOf((System.currentTimeMillis() / 1000L)));
+                messageMap.put("clientId", TrackApp.getInstance().getGTM().getClientIDString());
+                messageMap.put("utm_source", values.get(AppEventTracking.GTM.UTM_SOURCE).toString());
+                messageMap.put("utm_medium", values.get(AppEventTracking.GTM.UTM_MEDIUM).toString());
+                messageMap.put("campaign", values.get(AppEventTracking.GTM.UTM_CAMPAIGN).toString());
+                ServerLogger.log(Priority.P1, "GA_EVENT_VERIFICATION", messageMap);
+            }
         }
     }
 
