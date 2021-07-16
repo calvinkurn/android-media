@@ -1,4 +1,4 @@
-package com.tokopedia.cart_common.data.response.updatecart
+package com.tokopedia.cartcommon.data.response.updatecart
 
 import com.google.gson.annotations.SerializedName
 

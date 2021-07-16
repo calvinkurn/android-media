@@ -1,6 +1,6 @@
-package com.tokopedia.cart_common.domain.data
+package com.tokopedia.cartcommon.domain.data
 
-import com.tokopedia.cart_common.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
 
 data class UndoDeleteCartDomainModel(
         var undoDeleteCartDataResponse: UndoDeleteCartDataResponse,

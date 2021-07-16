@@ -1,11 +1,11 @@
-package com.tokopedia.cart_common.domain.usecase
+package com.tokopedia.cartcommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.cart_common.data.response.deletecart.DeleteCartGqlResponse
-import com.tokopedia.cart_common.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.deletecart.DeleteCartGqlResponse
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

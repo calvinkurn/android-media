@@ -7,10 +7,9 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.cart_common.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cart_common.data.response.updatecart.Data
-import com.tokopedia.cart_common.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.usecase.RequestParams

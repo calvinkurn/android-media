@@ -1,6 +1,6 @@
-package com.tokopedia.cart_common.domain.data
+package com.tokopedia.cartcommon.domain.data
 
-import com.tokopedia.cart_common.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 
 data class RemoveFromCartDomainModel(
         var removeFromCartData: RemoveFromCartData = RemoveFromCartData(),

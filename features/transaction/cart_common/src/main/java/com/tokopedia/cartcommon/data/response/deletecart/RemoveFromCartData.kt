@@ -1,7 +1,6 @@
-package com.tokopedia.cart_common.data.response.deletecart
+package com.tokopedia.cartcommon.data.response.deletecart
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.cart_common.data.response.deletecart.Data
 
 data class RemoveFromCartData(
         @SerializedName("status")

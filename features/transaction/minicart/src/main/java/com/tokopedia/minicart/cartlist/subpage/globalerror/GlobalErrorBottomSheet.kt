@@ -3,8 +3,8 @@ package com.tokopedia.minicart.cartlist.subpage.globalerror
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.cart_common.data.response.common.Button
-import com.tokopedia.cart_common.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.common.Button
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
