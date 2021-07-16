@@ -106,8 +106,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
         <Spinner
                 android:enabled="false"
@@ -128,7 +128,7 @@
             android:id="@+id/text_count_char"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="24dp"
             android:text="@string/total_chars_translated"
             app:typographyWeight="reguler"
             app:typographyType="body_1"/>
@@ -137,7 +137,7 @@
             android:id="@+id/text_count_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="16dp"
             android:text="@string/total_words_translated"
             android:visibility="gone"
             app:typographyWeight="reguler"
