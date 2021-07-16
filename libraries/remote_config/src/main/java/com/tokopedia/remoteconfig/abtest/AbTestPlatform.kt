@@ -47,22 +47,27 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?, defaultValue: Double): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?): Long {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?, defaultValue: Long): Long {
         throw RuntimeException("Method is not implemented yet")
     }
