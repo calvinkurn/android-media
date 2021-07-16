@@ -104,6 +104,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private val todayDate = Calendar.getInstance(TimeZone.getDefault()).time
     private val tomorrowDate = Calendar.getInstance(TimeZone.getDefault()).apply { add(Calendar.DAY_OF_YEAR, 1) }.time
     private val defaultMaxDate = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.time // next year
+    private val todayOrdinalDayOfWeek = OperationalHoursUtil.getOrdinalDate(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
 
     private var headerOpsHour: HeaderUnify? = null
     private var icEditOpsHour: IconUnify? = null
@@ -408,15 +409,20 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     if (holidayInfo.closeDetail.status == 0 || holidayInfo.closeDetail.status == 1) {
                         // closed because operational hours
                         isShopOnScheduledHoliday = false
-                        renderHolidaySection(isClosedBySchedule = false)
+                        val idxOfDay = todayOrdinalDayOfWeek - 1
+                        val shopStartTime = opsHourListUiModel.operationalHourList[idxOfDay].startTime
+                        val shopEndTime = opsHourListUiModel.operationalHourList[idxOfDay].endTime
+                        val shopTodayDateTime = OperationalHoursUtil.generateDatetime(shopStartTime, shopEndTime)
+                        val isHolidayByOperational = shopTodayDateTime == OperationalHoursUtil.HOLIDAY
+                        renderHolidaySection(isHolidayBySchedule = false, isHolidayByOperational = isHolidayByOperational)
                     } else {
                         // closed because holiday schedule
                         isShopOnScheduledHoliday = true
-                        renderHolidaySection(isClosedBySchedule = true)
+                        renderHolidaySection(isHolidayBySchedule = true)
                     }
                 } else {
                     isShopOnScheduledHoliday = false
-                    renderHolidaySection(isClosedBySchedule = false)
+                    renderHolidaySection(isHolidayBySchedule = false)
                     if (isNeedToShowOpenShopToaster) {
                         isNeedToShowToaster = true
                     }
@@ -526,11 +532,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         isNeedToShowToaster = true
     }
 
-    private fun renderHolidaySection(isClosedBySchedule: Boolean = false) {
+    private fun renderHolidaySection(isHolidayBySchedule: Boolean = false, isHolidayByOperational: Boolean = false) {
         // render holiday switcher container
-        shopIsOnHolidayContainer?.shouldShowWithAction(isShopClosed) {
+        shopIsOnHolidayContainer?.shouldShowWithAction(isHolidayBySchedule || isHolidayByOperational) {
             // set "until" end date text
-            shopIsOnHolidayEndDateText?.shouldShowWithAction(isClosedBySchedule) {
+            shopIsOnHolidayEndDateText?.shouldShowWithAction(isHolidayBySchedule) {
                 shopIsOnHolidayEndDateText?.text = getString(
                         R.string.shop_operational_hour_is_on_holiday_until,
                         OperationalHoursUtil.toShortDateFormat(selectedEndDate)
@@ -542,7 +548,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 isChecked = isShopClosed
                 setOnCheckedChangeListener { _, isChecked ->
                     if (!isChecked) {
-                        showConfirmDialogForOpenShopNow(isClosedBySchedule)
+                        showConfirmDialogForOpenShopNow(isHolidayBySchedule)
                     }
                 }
             }
@@ -826,9 +832,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     if (isClosedBySchedule) {
                         deleteShopHolidaySchedule()
                     } else {
-                        resetShopOperationalHoursByDay(day = OperationalHoursUtil.getOrdinalDate(
-                                Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-                        ))
+                        resetShopOperationalHoursByDay(day = todayOrdinalDayOfWeek)
                     }
                 },
                 secondaryCTAListener = {
