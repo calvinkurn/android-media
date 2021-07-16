@@ -39,6 +39,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl1"
             app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24"
+            android:contentDescription="@null"
             android:layout_gravity="center"/>
 
         <com.tokopedia.unifyprinciples.Typography

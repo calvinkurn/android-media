@@ -23,14 +23,15 @@
         <ImageView
             android:id="@+id/image"
             android:layout_width="wrap_content"
-            android:maxWidth="@dimen/layout_lvl7"
             android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:maxWidth="@dimen/layout_lvl7"
             android:scaleType="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/Unify_N200"
-            android:adjustViewBounds="true"/>
+            tools:background="@color/Unify_N200" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
