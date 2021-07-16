@@ -127,6 +127,8 @@ open class HomeRevampViewModel @Inject constructor(
         const val GRID = "grid"
         const val QUANTITY = "quantity"
         const val POSITION = "position"
+
+        const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
     }
 
     val homeLiveData: LiveData<HomeDataModel>
@@ -1371,11 +1373,10 @@ open class HomeRevampViewModel @Inject constructor(
                 } else {
                     HomeServerLogger.logWarning(
                         type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
-                        throwable = MessageErrorException("Unable to parse wallet, wallet app list is empty"),
-                        reason = "Unable to parse wallet, wallet app list is empty",
-                        data = ""
+                        throwable = MessageErrorException(error_unable_to_parse_wallet),
+                        reason = error_unable_to_parse_wallet
                     )
-                    throw IllegalStateException("Wallet is empty")
+                    throw IllegalStateException(error_unable_to_parse_wallet)
                 }
             }
         } catch (e: Exception) {

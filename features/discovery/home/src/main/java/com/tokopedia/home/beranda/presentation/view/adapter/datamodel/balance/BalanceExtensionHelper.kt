@@ -12,6 +12,8 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
 
+const val selectedWallet = "PEMUDA"
+
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
     return BalanceDrawerItemModel(
@@ -153,7 +155,6 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
 }
 
 fun WalletAppData.mapToHomeBalanceItemModel(state: Int): List<BalanceDrawerItemModel> {
-    val selectedWallet = "PEMUDA"
     val selectedBalance = walletappGetBalance.balances.getOrNull(0)
     selectedBalance?.let { balances ->
         val balanceTitleTextAttribute = BalanceTextAttribute(text = balances.walletName)
