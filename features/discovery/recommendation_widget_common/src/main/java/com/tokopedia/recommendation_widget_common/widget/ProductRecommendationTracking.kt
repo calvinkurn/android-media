@@ -63,7 +63,6 @@ object ProductRecommendationTracking: BaseTrackerConst() {
             recommendationType: String,
             isTopads: Boolean,
             widgetType: String,
-            productId: String,
             position: Int,
             isLoggedIn: Boolean,
             anchorProductId: String

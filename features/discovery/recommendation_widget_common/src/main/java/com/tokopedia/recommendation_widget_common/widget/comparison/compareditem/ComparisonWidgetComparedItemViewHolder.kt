@@ -58,7 +58,6 @@ class ComparisonWidgetComparedItemViewHolder(val view: View): RecyclerView.ViewH
                         recomPageName = comparisonModel.recommendationItem.pageName,
                         isTopads = comparisonModel.recommendationItem.isTopAds,
                         widgetType = comparisonModel.recommendationItem.type,
-                        productId = comparisonModel.recommendationItem.productId.toString(),
                         position = (adapterPosition+1),
                         isLoggedIn = userSession.isLoggedIn,
                         recommendationType = comparisonModel.recommendationItem.recommendationType,
