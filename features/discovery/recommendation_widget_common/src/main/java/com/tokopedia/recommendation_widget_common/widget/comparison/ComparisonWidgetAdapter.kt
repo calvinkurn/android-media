@@ -30,6 +30,7 @@ class ComparisonWidgetAdapter(
     }
 
     override fun getItemCount(): Int {
+        // for sticky product on the left
         return if(comparisonListModel.comparisonData.isNotEmpty()) 1 else 0
     }
 
