@@ -253,7 +253,6 @@ public class BranchHelper {
         eventDataMap.put(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
         eventDataMap.put("event", "marketplace_first_txn");
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
-        Log.d("First_Txn_Firebase", new JSONObject(eventDataMap).toString());
     }
 
     private static void saveBranchEvent(BranchEvent branchEvent) {
