@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
@@ -534,24 +535,24 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
 
     private fun `Then assert inspiration carousel chips`(searchProductModel: SearchProductModel) {
         val visitableList = visitableListSlot.captured
+        val searchInspirationCarousel = searchProductModel.searchInspirationCarousel
+
         visitableList.forEachIndexed { index, visitable ->
-            // Position 12 should not be rendered because no product list
+            // Position 6 should not be rendered because no product list
             when (index) {
                 4 -> {
-                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                            "visitable list at index $index should be InspirationCarouselViewModel"
-                    )
-                    assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS) {
-                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS}"
-                    }
-
-                    val expectedInspirationCarousel = searchProductModel.searchInspirationCarousel.data[0]
-                    visitable.assertInspirationCarouselDataView(expectedInspirationCarousel)
-                    visitable.options.forEachIndexed { optionIndex, option ->
-                        val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
-                        option.identifier shouldBe expectedOption.identifier
-                        option.isChipsActive shouldBe (optionIndex == 0)
-                    }
+                    val expectedInspirationCarousel = searchInspirationCarousel.data[0]
+                    visitable.assertInspirationCarouselChips(index, expectedInspirationCarousel)
+                }
+                9 -> {
+                    val expectedInspirationCarousel = searchInspirationCarousel.data[2]
+                    visitable.assertInspirationCarouselChips(index, expectedInspirationCarousel)
+                    visitable.assertInspirationCarouselHexColor(expectedInspirationCarousel)
+                }
+                12 -> {
+                    val expectedInspirationCarousel = searchInspirationCarousel.data[3]
+                    visitable.assertInspirationCarouselChips(index, expectedInspirationCarousel)
+                    visitable.assertInspirationCarouselChipImageUrl(expectedInspirationCarousel)
                 }
                 else -> {
                     (visitable is InspirationCarouselDataView).shouldBe(
@@ -560,6 +561,54 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
                     )
                 }
             }
+        }
+    }
+
+    private fun Visitable<*>.assertInspirationCarouselChips(
+            index: Int,
+            expectedInspirationCarousel: SearchProductModel.InspirationCarouselData,
+    ) {
+        shouldBeInstanceOf<InspirationCarouselDataView>(
+                "visitable list at index $index should be InspirationCarouselViewModel"
+        )
+        assert((this as InspirationCarouselDataView).layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS) {
+            "Inspiration Carousel layout should be $LAYOUT_INSPIRATION_CAROUSEL_CHIPS"
+        }
+
+        assertInspirationCarouselDataView(expectedInspirationCarousel)
+
+        options.forEachIndexed { optionIndex, option ->
+            val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
+            option.identifier shouldBe expectedOption.identifier
+            option.isChipsActive shouldBe (optionIndex == 0)
+        }
+    }
+
+    private fun Visitable<*>.assertInspirationCarouselHexColor(
+            expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
+    ) {
+        if (this !is InspirationCarouselDataView)
+            throw AssertionError("Not inspiration carousel data view")
+
+        options.forEachIndexed { optionIndex, option ->
+            val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
+
+            option.hexColor shouldBe expectedOption.meta
+            option.chipImageUrl shouldBe ""
+        }
+    }
+
+    private fun Visitable<*>.assertInspirationCarouselChipImageUrl(
+            expectedInspirationCarousel: SearchProductModel.InspirationCarouselData
+    ) {
+        if (this !is InspirationCarouselDataView)
+            throw AssertionError("Not inspiration carousel data view")
+
+        options.forEachIndexed { optionIndex, option ->
+            val expectedOption = expectedInspirationCarousel.inspirationCarouselOptions[optionIndex]
+
+            option.chipImageUrl shouldBe expectedOption.meta
+            option.hexColor shouldBe ""
         }
     }
 
@@ -653,12 +702,19 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         applink shouldBe inspirationCarouselProduct.applink
         priceString shouldBe inspirationCarouselProduct.priceStr
         ratingAverage shouldBe inspirationCarouselProduct.ratingAverage
+        shopLocation shouldBe inspirationCarouselProduct.shop.city
 
         labelGroupDataList.listShouldBe(inspirationCarouselProduct.labelGroupList) { actual, expected ->
             actual.title shouldBe expected.title
             actual.position shouldBe expected.position
             actual.type shouldBe expected.type
             actual.imageUrl shouldBe expected.url
+        }
+
+        badgeItemDataViewList.listShouldBe(inspirationCarouselProduct.badgeList) { actual, expected ->
+            actual.title shouldBe  expected.title
+            actual.imageUrl shouldBe expected.imageUrl
+            actual.isShown shouldBe expected.isShown
         }
 
         carouselProductType.shouldBeInstanceOf<DynamicCarouselProduct>()

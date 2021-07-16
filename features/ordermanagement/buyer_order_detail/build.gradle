@@ -45,6 +45,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
