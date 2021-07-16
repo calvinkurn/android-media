@@ -35,7 +35,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = "minicart"
+    artifactId = "cart_common"
     groupId = "com.tokopedia.cart_common"
     versionName = "0.0.1"
     artifactName = "cart_common-release"
