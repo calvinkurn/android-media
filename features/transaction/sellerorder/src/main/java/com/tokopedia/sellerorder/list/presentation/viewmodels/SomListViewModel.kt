@@ -68,6 +68,7 @@ class SomListViewModel @Inject constructor(
     private var retryCount = 0
 
     private var retryRequestPickup = 0
+    private var retryRequestPickupUser = 0
 
     private var getOrderListJob: Job? = null
     private var getFiltersJob: Job? = null
@@ -266,26 +267,33 @@ class SomListViewModel @Inject constructor(
                             )
                         }
                         //case 7 will happen fail bulk process due to all validation failed
-                        else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED)) {
+                        else if (it.data.success == 0L && (requestPickupUiModel?.status == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED) &&
+                            retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
+                            retryRequestPickupUser++
                             bulkRequestPickupFinalResultMediator.postValue(AllValidationFail)
                         }
                         //case 8 when All Not Eligible, total fail & success always 0
-                        else if (totalNotEligible > 0L && it.data.fail == 0L && it.data.success == 0L
+                        else if (totalNotEligible > 0L && it.data.fail == 0L && it.data.success == 0L && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
                         ) {
+                            retryRequestPickupUser++
                             bulkRequestPickupFinalResultMediator.postValue(
                                 AllNotEligible
                             )
                         }
                         //case 8 when All Fail Eligible and should be retry the first time
                         else if (it.data.fail == it.data.total_order && it.data.fail > 0 &&
-                            totalNotEligible == 0L && it.data.success == 0L
+                            totalNotEligible == 0L && it.data.success == 0L && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
                         ) {
+                            retryRequestPickupUser++
                             bulkRequestPickupFinalResultMediator.postValue(
                                 AllFailEligible(
                                     orderIdListFail
                                 )
                             )
                         } else {
+                            if (retryRequestPickupUser >= MAX_RETRY_REQUEST_PICKUP_USER) {
+                                retryRequestPickupUser = 0
+                            }
                             //Case 9 will happen when after 10x retry is still fail
                             bulkRequestPickupFinalResultMediator.postValue(FailRetry)
                         }
