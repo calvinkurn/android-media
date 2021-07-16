@@ -47,7 +47,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.profileCommon)
     implementation projectOrAar(rootProject.ext.features.seamlessLoginCommon)
@@ -105,7 +104,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.retrofitMockWebser
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation projectOrAar(rootProject.ext.features.managepassword)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
