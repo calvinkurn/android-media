@@ -99,7 +99,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _selectedFilter.postValue(filter)
     }
 
-    // cache in 10 minutes
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
                               filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0, clientNumber: String) {
         launchCatchError(block = {
@@ -114,9 +113,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
             _loadingProductList.postValue(false)

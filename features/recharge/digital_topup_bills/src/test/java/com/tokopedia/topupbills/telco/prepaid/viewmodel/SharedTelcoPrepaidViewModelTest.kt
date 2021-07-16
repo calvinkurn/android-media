@@ -140,6 +140,7 @@ class SharedTelcoPrepaidViewModelTest {
     @Test
     fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
+        val clientNumber = "08152832"
         val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
         val autoSelectProductId = 9
 
@@ -149,7 +150,7 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId)
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
@@ -164,6 +165,7 @@ class SharedTelcoPrepaidViewModelTest {
     @Test
     fun getCatalogProductList_DataValid_FailedGetData() {
         //given
+        val clientNumber = "08152832"
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -173,7 +175,7 @@ class SharedTelcoPrepaidViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
-        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), 9)
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(),clientNumber = clientNumber)
 
         //then
         val actualData = sharedTelcoPrepaidViewModel.productList.value
@@ -183,5 +185,15 @@ class SharedTelcoPrepaidViewModelTest {
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(null, sharedTelcoPrepaidViewModel.favNumberSelected.value)
         assertEquals(errorGql.message, error.message)
+    }
+
+    @Test
+    fun setExpandInputNumberView_shouldShowCorrectData() {
+        //given
+        sharedTelcoPrepaidViewModel.setExpandInputNumberView(true)
+        Thread.sleep(500)
+
+        //then
+        assert(sharedTelcoPrepaidViewModel.expandView.value ?: false)
     }
 }

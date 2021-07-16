@@ -17,7 +17,7 @@
     <string name="digital_title_price">Harga</string>
     <string name="digital_title_details_bills">Detail Tagihan</string>
     <string name="digital_see_more_btn">Lihat Detail</string>
-    <string name="Telco_title_showcase_client_number">Nggak perlu repot pilih provider</string>
+    <string name="telco_title_showcase_client_number">Nggak perlu repot pilih provider</string>
     <string name="telco_label_showcase_client_number">Cukup masukkan nomor HP, langsung tersedia pilihan pulsa dan paket data yang sesuai</string>
     <string name="telco_title_showcase_promo">Diskon spesial buat kamu</string>
     <string name="telco_label_showcase_promo">Mau beli pulsa dan paket data lebih hemat? Pilih sendiri kode promonya!</string>

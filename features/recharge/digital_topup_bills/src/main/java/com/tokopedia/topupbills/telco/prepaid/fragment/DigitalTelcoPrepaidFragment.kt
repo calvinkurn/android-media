@@ -638,7 +638,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             val coachMarks = ArrayList<CoachMark2Item>()
             coachMarks.add(CoachMark2Item(telcoClientNumberWidget,
-                    getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_title_showcase_client_number),
                     getString(R.string.telco_label_showcase_client_number)))
             coachMarks.add(CoachMark2Item(viewPager,
                     getString(R.string.telco_title_showcase_promo),

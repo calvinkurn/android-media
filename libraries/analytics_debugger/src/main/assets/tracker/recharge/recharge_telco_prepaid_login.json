@@ -70,6 +70,54 @@
           "price": "\\d*.\\d*|\\d.\\d+E\\d"
         }
       ]
+    },
+    {
+      "event":"view_item",
+      "eventAction":"view promo card",
+      "eventCategory":"digital - homepage",
+      "eventLabel":".+ - .+",
+      "businessUnit":"recharge",
+      "sessionIris": ".+",
+      "clientId": ".+",
+      "currentSite":"tokopediadigitalRecharge",
+      "promotions":[
+        {
+          "creative_name":".+ - .+",
+          "creative_slot":".+",
+          "item_id":".+",
+          "item_name":".+"
+        }
+      ],
+      "userId":".+"
+    },
+    {
+      "event":"select_content",
+      "eventAction":"click promo card",
+      "eventCategory":"digital - homepage",
+      "eventLabel":".+ - .+",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigitalRecharge",
+      "sessionIris": ".+",
+      "clientId": ".+",
+      "promotions":[
+        {
+          "creative_name":".+ - .+",
+          "creative_slot":".+",
+          "item_id":".+",
+          "item_name":".+"
+        }
+      ],
+      "userId":".+"
+    },
+    {
+      "event":"digitalGeneralEvent",
+      "eventAction":"click detail in promo card",
+      "eventCategory":"digital - homepage",
+      "eventLabel":".+ - .+",
+      "businessUnit":"recharge",
+      "currentSite":"tokopediadigitalRecharge",
+      "userId":".+",
+      "sessionIris": ".+"
     }
   ]
 }
