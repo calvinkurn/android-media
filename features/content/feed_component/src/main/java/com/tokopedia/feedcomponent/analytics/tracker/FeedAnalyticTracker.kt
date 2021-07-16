@@ -268,15 +268,21 @@ class FeedAnalyticTracker
     //1
     fun eventClickFeedAvatar(
         activityId: String,
-        type: String, isFollowed: Boolean, shopId: String,
+        type: String, isFollowed: Boolean, shopId: String, isVideo: Boolean, isCaption: Boolean,
     ) {
+        val actionField = if (isCaption)
+            "shop name below"
+        else
+            "shop"
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
-            KEY_EVENT_ACTION to String.format(FORMAT_THREE_PARAM,
+            KEY_EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
                 CLICK,
-                "shop",
-                getPostType(type, isFollowed)),
+                actionField,
+                getPostType(type, isFollowed, isVideo)
+            ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 activityId,
@@ -290,7 +296,13 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun evenClickMenu(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    fun evenClickMenu(
+        activityId: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        isVideo: Boolean
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -298,7 +310,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "three dots",
-                getPostType(type, isFollowed)
+                getPostType(type, isFollowed, isVideo)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -549,6 +561,7 @@ class FeedAnalyticTracker
         type: String,
         isFollowed: Boolean,
         shopId: String,
+        isVideo: Boolean,
     ) {
         val likeType = if (doubleTap && isLiked)
             "double tap like"
@@ -563,7 +576,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     likeType,
-                    getPostType(type, isFollowed)
+                    getPostType(type, isFollowed, isVideo)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
@@ -573,24 +586,6 @@ class FeedAnalyticTracker
             )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
-    }
-
-    private fun getImpressionList(media: List<FeedXMedia>): Any {
-        val list: MutableList<Map<String, String>> = mutableListOf()
-        var count = 0
-        for (i in media) {
-            count++
-            val map = mapOf(
-                "creative" to i.mediaUrl,
-                "category" to "",
-                "id" to i.id,
-                "list" to "/feed - sgc image",
-                "name" to "/feed - sgc image - image",
-                "position" to "{product horizontal position from $count}",
-            )
-            list.add(map)
-        }
-        return list
     }
 
     private fun getImpressionPostASGC(
@@ -618,15 +613,29 @@ class FeedAnalyticTracker
         Promotion.POSITION, position + 1,
     )
 
+    private fun getImpressionPostSGCType(
+        imageUrl: String,
+        activityId: String,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean
+    ): Map<String, Any> = DataLayer.mapOf(
+        Promotion.CREATIVE, imageUrl,
+        Promotion.ID, activityId,
+        Promotion.NAME, "/content feed - ${getPostType(type, isFollowed, isVideo)} - post",
+        Promotion.POSITION, position + 1,
+    )
 
-fun eventImpressionProductASGC(
-    activityId: String,
-    productId: String,
-    products: List<FeedXProduct>,
-    shopId: String,
-) {
-    trackEnhancedEcommerceEventNew(
-        PRODUCT_VIEW,
+
+    fun eventImpressionProductASGC(
+        activityId: String,
+        productId: String,
+        products: List<FeedXProduct>,
+        shopId: String,
+    ) {
+        trackEnhancedEcommerceEventNew(
+            PRODUCT_VIEW,
         CONTENT_FEED_TIMELINE,
         String.format(
             FORMAT_THREE_PARAM,
@@ -709,11 +718,53 @@ fun eventImpressionProductASGC(
         )
     }
 
+    fun eventPostImpression(
+        activityId: String,
+        media: FeedXMedia,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        isVideo: Boolean
+    ) {
+        trackEnhancedEcommerceEventNew(
+            PROMO_VIEW,
+            CONTENT_FEED_TIMELINE,
+            String.format(
+                FORMAT_THREE_PARAM,
+                "impression",
+                "post",
+                getPostType(type, isFollowed, isVideo)
+            ),
+            String.format(
+                FORMAT_TWO_PARAM,
+                activityId,
+                shopId
+            ),
+            getPromoViewData(
+                getPromotionsData(
+                    listOf(
+                        getImpressionPostSGCType(
+                            media.mediaUrl,
+                            activityId,
+                            position,
+                            type,
+                            isFollowed,
+                            isVideo
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+
     fun eventClickOpenComment(
         activityId: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        isVideo: Boolean
     ) {
         var map = getCommonMap()
         map = map.plus(
@@ -722,7 +773,7 @@ fun eventImpressionProductASGC(
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "comment",
-                    getPostType(type, isFollowed)
+                    getPostType(type, isFollowed, isVideo)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
@@ -734,7 +785,13 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickOpenShare(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    fun eventClickOpenShare(
+        activityId: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        video: Boolean
+    ) {
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -742,7 +799,7 @@ fun eventImpressionProductASGC(
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "share",
-                    getPostType(type, isFollowed)
+                    getPostType(type, isFollowed, video)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
@@ -754,7 +811,13 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickReadMoreNew(activityId: String, shopId: String, type: String, isFollowed: Boolean) {
+    fun eventClickReadMoreNew(
+        activityId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean
+    ) {
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -762,7 +825,7 @@ fun eventImpressionProductASGC(
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "lihat selengkapnya",
-                    getPostType(type, isFollowed)
+                    getPostType(type, isFollowed, isVideo)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
@@ -908,24 +971,6 @@ fun eventImpressionProductASGC(
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    private fun getProductItem(feedXProduct: List<FeedXProduct>): List<Map<String, String>> {
-        val list: MutableList<Map<String, String>> = mutableListOf()
-        for (i in feedXProduct) {
-            val map = mapOf(
-                "item_brand" to "",
-                "item_category" to "",
-                "item_id" to i.id,
-                "list" to "/feed - sgc image",
-                "name" to i.name,
-                "position" to "{product horizontal position from 1}",
-                "price" to i.priceFmt,
-                "item_variant" to ""
-            )
-            list.add(map)
-        }
-        return list
-    }
-
     private fun getProductItemASGC(feedXProduct: List<FeedXProduct>): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         for (i in feedXProduct) {
@@ -1001,6 +1046,7 @@ fun eventImpressionProductASGC(
         type: String,
         isFollowed: Boolean,
         shopId: String,
+        isVideo: Boolean,
     ) {
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
         map = map.plus(
@@ -1009,7 +1055,7 @@ fun eventImpressionProductASGC(
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "three dots menu",
-                    getPostType(type, isFollowed)
+                    getPostType(type, isFollowed, isVideo)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_THREE_PARAM,
@@ -1106,7 +1152,6 @@ fun eventImpressionProductASGC(
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-
 
     fun clickHashTag(hashTag: String, authorId: String, postId: String, isVideoPost: Boolean) {
         val map = mapOf(

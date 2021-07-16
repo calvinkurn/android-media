@@ -46,6 +46,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
@@ -776,7 +777,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         followCta: FollowCta,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        isVideo: Boolean,
+        isCaption: Boolean
     ) {
         onGoToLink(redirectUrl)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
@@ -795,7 +798,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         id: String,
         type: String,
         isFollow: Boolean,
-        postType: String
+        postType: String,
+        isVideo: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
@@ -876,7 +880,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         postType: String,
         isFollowed: Boolean,
         type: Boolean,
-        shopId: String
+        shopId: String,
+        isVideo: Boolean
     ) {
         profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
@@ -909,7 +914,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         typeASGC: Boolean,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        video: Boolean
     ) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
@@ -1186,7 +1192,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         contentPosition: Int,
         postId: String,
         redirectUrl: String,
-        authorId: String
+        authorId: String,
+        authorType: String
     ) {
         onGoToLink(redirectUrl)
     }
@@ -1225,7 +1232,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         )
     }
 
-    override fun onReadMoreClicked(postId: String, shopId: String,type: String, isFollowed: Boolean) {
+    override fun onReadMoreClicked(
+        postId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean,
+        isVideo: Boolean
+    ) {
     }
 
     override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
@@ -1252,6 +1265,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
+    }
+
+    override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
+    }
+
+    override fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard) {
     }
 
     override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {

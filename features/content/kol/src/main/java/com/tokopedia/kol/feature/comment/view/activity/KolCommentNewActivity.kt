@@ -85,12 +85,13 @@ class KolCommentNewActivity : BaseSimpleActivity() {
 
 
         @JvmStatic
-        fun getCallingIntent(context: Context, id: Int, rowNumber: Int): Intent {
+        fun getCallingIntent(context: Context, id: Int, rowNumber: Int, authorId: String?): Intent {
             val intent = Intent(context, KolCommentNewActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(ARGS_ID, id)
             bundle.putInt(ARGS_POSITION, rowNumber)
             bundle.putBoolean(ARGS_VIDEO, true)
+            bundle.putString(ARGS_AUTHOR_TYPE, authorId)
             intent.putExtras(bundle)
             return intent
         }

@@ -57,17 +57,17 @@ object FeedScrollListenerNew {
                 videoViewRect.bottom - rvRect.top
             }
             percentVideo = visibleVideo * 100 / imageView.height
-            var isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
 
-            if (!item.currentlyPlaying && isStateChanged) {
-                item.currentlyPlaying = true
+            var isStateChanged = false
+            if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
+                if (!item.canPlay) isStateChanged = true
+                item.canPlay = true
+            } else {
+                //  if (item.canPlay) isStateChanged = true
+                item.canPlay = false
+            }
 
-            } else if (!isStateChanged) {
-                item.currentlyPlaying = false
-            } else if (item.currentlyPlaying)
-                isStateChanged = false
-
-            if (item.currentlyPlaying && isStateChanged) {
+            if (isStateChanged) {
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO)
             }

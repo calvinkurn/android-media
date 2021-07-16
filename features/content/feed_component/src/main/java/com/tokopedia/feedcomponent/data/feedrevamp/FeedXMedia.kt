@@ -22,6 +22,6 @@ data class FeedXMedia(
     var mods: List<String>,
     var videoTime: Long = 0L,
     var videoView: View? = null,
-    var currentlyPlaying: Boolean = false
+    var canPlay: Boolean = false
 )
 

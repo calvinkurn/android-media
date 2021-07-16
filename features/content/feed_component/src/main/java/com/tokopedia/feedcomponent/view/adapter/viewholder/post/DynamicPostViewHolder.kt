@@ -18,6 +18,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
@@ -230,12 +231,16 @@ open class DynamicPostViewHolder(v: View,
         followCta: FollowCta,
         shopId: String,
     ) {
-        listener.onAvatarClick(adapterPosition,
+        listener.onAvatarClick(
+            adapterPosition,
             redirectUrl,
             activityId,
             activityName,
             followCta,
-            shopId=shopId)
+            shopId = shopId,
+            isVideo = false,
+            isCaption = false
+        )
     }
 
     private fun bindFollow(followCta: FollowCta) {
@@ -249,10 +254,11 @@ open class DynamicPostViewHolder(v: View,
 
         itemView.headerAction.setOnClickListener {
             listener.onHeaderActionClick(
-                    adapterPosition,
-                    followCta.authorID,
-                    followCta.authorType,
-                    followCta.isFollow
+                adapterPosition,
+                followCta.authorID,
+                followCta.authorType,
+                followCta.isFollow,
+                isVideo = false
             )
         }
     }
@@ -369,18 +375,23 @@ open class DynamicPostViewHolder(v: View,
             if (template.like) {
                 itemView.likeGroup.show()
                 itemView.likeIcon.setOnClickListener {
-                    listener.onLikeClick(adapterPosition,
+                    listener.onLikeClick(
+                        adapterPosition,
                         id,
                         footer.like.isChecked,
                         "",
-                        false)
+                        false,
+                        false, "", false
+                    )
                 }
                 itemView.likeText.setOnClickListener {
-                    listener.onLikeClick(adapterPosition,
+                    listener.onLikeClick(
+                        adapterPosition,
                         id,
                         footer.like.isChecked,
                         "",
-                        false)
+                        isFollowed = false, type = false, "", false
+                    )
                 }
                 bindLike(footer.like)
             } else {
@@ -418,22 +429,24 @@ open class DynamicPostViewHolder(v: View,
                 itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
-                            adapterPosition,
-                            id,
-                            footer.share.title,
-                            footer.share.description,
-                            footer.share.url,
-                            footer.share.imageUrl
+                        adapterPosition,
+                        id,
+                        footer.share.title,
+                        footer.share.description,
+                        footer.share.url,
+                        footer.share.imageUrl,
+                        video = false
                     )
                 }
                 itemView.shareText.setOnClickListener {
                     listener.onShareClick(
-                            adapterPosition,
-                            id,
-                            footer.share.title,
-                            footer.share.description,
-                            footer.share.url,
-                            footer.share.imageUrl
+                        adapterPosition,
+                        id,
+                        footer.share.title,
+                        footer.share.description,
+                        footer.share.url,
+                        footer.share.imageUrl,
+                        video = false
                     )
                 }
 
@@ -586,7 +599,9 @@ open class DynamicPostViewHolder(v: View,
             followCta: FollowCta,
             type: String = "",
             isFollowed: Boolean = false,
-            shopId: String
+            shopId: String,
+            isVideo: Boolean,
+            isCaption: Boolean
         )
 
         fun onHeaderActionClick(
@@ -594,7 +609,8 @@ open class DynamicPostViewHolder(v: View,
             id: String,
             type: String,
             isFollow: Boolean,
-            postType: String=""
+            postType: String = "",
+            isVideo: Boolean
         )
 
         fun onMenuClick(
@@ -605,7 +621,7 @@ open class DynamicPostViewHolder(v: View,
             editable: Boolean,
             isFollowed: Boolean,
             authorId: String,
-            authorType: String ,
+            authorType: String,
             postType: String = "",
             isVideo: Boolean
         )
@@ -619,8 +635,8 @@ open class DynamicPostViewHolder(v: View,
             postType: String = "",
             isFollowed: Boolean = false,
             type: Boolean = false,
-            shopId: String = ""
-
+            shopId: String = "",
+            isVideo: Boolean = false
         )
 
         fun onCommentClick(
@@ -643,9 +659,10 @@ open class DynamicPostViewHolder(v: View,
             url: String,
             imageUrl: String,
             postTypeASGC: Boolean = false,
-            type: String="",
+            type: String = "",
             isFollowed: Boolean = false,
-            shopId: String=""
+            shopId: String = "",
+            video: Boolean
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
@@ -692,7 +709,14 @@ open class DynamicPostViewHolder(v: View,
 
         )
 
-        fun onReadMoreClicked(postId: String, shopId: String = "", type: String, isFollowed: Boolean)
+        fun onReadMoreClicked(
+            postId: String,
+            shopId: String = "",
+            type: String,
+            isFollowed: Boolean,
+            isVideo: Boolean
+        )
+
         fun onBottomSheetMenuClicked(
             item: ProductPostTagViewModelNew,
             context: Context,
@@ -700,5 +724,10 @@ open class DynamicPostViewHolder(v: View,
         )
 
         fun muteUnmuteVideo(postId: String, mute: Boolean, id: String)
+
+        fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
+
+        fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard)
+
     }
 }

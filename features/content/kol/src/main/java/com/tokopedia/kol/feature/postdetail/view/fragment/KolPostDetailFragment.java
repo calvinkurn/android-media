@@ -30,6 +30,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard;
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia;
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
@@ -65,7 +66,7 @@ import com.tokopedia.feedcomponent.view.widget.PostStatisticBottomSheet;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
@@ -424,7 +425,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onGoToKolComment(int rowNumber, int id) {
         analytics.eventClickComment(userSession.getUserId());
         if (userSession != null && userSession.isLoggedIn()) {
-            Intent intent = KolCommentNewActivity.getCallingIntent(getContext(), id, rowNumber);
+            Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         } else {
             RouteManager.route(getActivity(), ApplinkConst.LOGIN);
@@ -591,7 +592,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, int activityId, @NotNull String activityName, @NotNull FollowCta followCta, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
+    public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl, int activityId, @NotNull String activityName, @NotNull FollowCta followCta, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean isVideo, boolean isCaption) {
 
         if (followCta.getAuthorType().equals(FollowCta.AUTHOR_SHOP)) {
             feedAnalytics.eventContentDetailClickShopNameAvatar(String.valueOf(activityId), followCta.getAuthorID());
@@ -602,7 +603,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow, @NotNull String postType) {
+    public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow, @NotNull String postType, boolean isVideo) {
 
         if (userSession != null && userSession.isLoggedIn()) {
 
@@ -683,16 +684,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId) {
-
-        if (isLiked) {
-            onUnlikeKolClicked(positionInFeed, id);
-        } else {
-            onLikeKolClicked(positionInFeed, id);
-        }
-    }
-
-    @Override
     public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId) {
         onGoToKolComment(positionInFeed, id);
     }
@@ -708,7 +699,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
 
@@ -868,7 +859,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, @NotNull String redirectUrl, @NotNull String authorId) {
+    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, @NotNull String redirectUrl, @NotNull String authorId, @NotNull String authorType) {
         Intent videoDetailIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.VIDEO_DETAIL, postId);
         videoDetailIntent.putExtra(PARAM_VIDEO_INDEX, contentPosition);
         startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL);
@@ -1012,7 +1003,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId, @NotNull String postType, boolean isFollowed) {
+    public void onReadMoreClicked(@NotNull String postId, @NotNull String shopId, @NotNull String postType, boolean isFollowed, boolean isVideo) {
 
     }
 
@@ -1049,6 +1040,25 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onPostTagItemBSImpression(@NotNull String activityId, @NotNull List<FeedXProduct> postTagItemList, @NotNull String type, @NotNull String shopId, boolean isFollowed) {
+
+    }
+
+    @Override
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, boolean isVideo) {
+        if (isLiked) {
+            onUnlikeKolClicked(positionInFeed, id);
+        } else {
+            onLikeKolClicked(positionInFeed, id);
+        }
+    }
+
+    @Override
+    public void onImpressionTracking(@NotNull FeedXCard feedXCard, int positionInFeed) {
+
+    }
+
+    @Override
+    public void onHashtagClickedFeed(@NotNull String hashtagText, @NotNull FeedXCard feedXCard) {
 
     }
 }
