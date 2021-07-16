@@ -106,7 +106,8 @@ class KolCommentNewCardView : LinearLayout {
             val profileUrl = element.userUrl
             listener?.onAvatarClicked(
                 if (!profileUrl.isNullOrEmpty()) profileUrl
-                else constructProfileApplink(element.isShop, element.userId ?: "0")
+                else constructProfileApplink(element.isShop, element.userId ?: "0"),
+                element.userId
             )
         }
 
@@ -217,7 +218,7 @@ class KolCommentNewCardView : LinearLayout {
 
     interface Listener {
         fun onHashtagClicked(hashtag: String, id: String)
-        fun onAvatarClicked(profileUrl: String)
+        fun onAvatarClicked(profileUrl: String, userId: String?)
         fun onMentionedProfileClicked(authorId: String)
         fun onTokopediaUrlClicked(url: String)
         fun onReplyClicked(mentionableUser: MentionableUserViewModel)

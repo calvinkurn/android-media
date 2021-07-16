@@ -50,7 +50,6 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
@@ -263,6 +262,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
         private const val PARAM_POST_POSITION = "position"
+        private const val PARAM_COMMENT_COUNT = "comment_count"
+        private const val PARAM_LIKE_COUNT = "like_count"
+
         private const val PARAM_CALL_SOURCE = "call_source"
         private const val PARAM_FEED = "feed"
 
@@ -816,9 +818,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
             OPEN_VIDEO_DETAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val positionInFeed = data.getIntExtra(PARAM_POST_POSITION, 0)
+                    val totalComment = data.getIntExtra(PARAM_COMMENT_COUNT, 0)
+                    val changeLike = data.getBooleanExtra(PARAM_LIKE_COUNT, true)
+                    val newList = adapter.getlist()
+                    if (newList.size > positionInFeed && newList[positionInFeed] is DynamicPostUiModel) {
+                        val item = (newList[positionInFeed] as DynamicPostUiModel)
+                        item.feedXCard.comments.count = totalComment
+                        item.feedXCard.comments.countFmt = totalComment.toString()
+                        if (changeLike != item.feedXCard.like.isLiked)
+                            onSuccessLikeDislikeKolPost(positionInFeed)
+                    }
                     adapter.notifyItemChanged(
                         positionInFeed,
-                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_POST
+                        DynamicPostNewViewHolder.PAYLOAD_COMMENT
                     )
                 }
             }
@@ -1073,7 +1085,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     fun gotToKolComment(
         rowNumber: Int, id: Int, authorType: String,
-        isVideo: Boolean,isFollowed: Boolean, type: String
+        isVideo: Boolean, isFollowed: Boolean, type: String
     ) {
         val intent = RouteManager.getIntent(
             requireContext(),
@@ -1180,21 +1192,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        if (rowNumber != DEFAULT_VALUE
-            && newList.size > rowNumber
-        ) {
-            val (_, _, _, _, footer) = newList[rowNumber]
-            val comment = footer.comment
-            try {
-                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
-                comment.fmt = commentValue.toString()
-            } catch (ignored: NumberFormatException) {
-            }
-
-            comment.value = comment.value + totalNewComment
-            adapter.updateList(newList)
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
+            val item = (newList[rowNumber] as DynamicPostUiModel)
+            item.feedXCard.comments.count = item.feedXCard.comments.count + totalNewComment
+            item.feedXCard.comments.countFmt =
+                (item.feedXCard.comments.count).toString()
         }
+        adapter.notifyItemChanged(rowNumber, DynamicPostNewViewHolder.PAYLOAD_COMMENT)
     }
 
     private fun onSuccessReportContent() {
@@ -1698,7 +1703,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         postPosition: Int
     ) {
-        feedAnalytics.eventImpression(activityId, media, positionInFeed, type, isFollowed, shopId, (postPosition+1).toString())
+        feedAnalytics.eventImpression(
+            activityId,
+            media,
+            positionInFeed,
+            type,
+            isFollowed,
+            shopId,
+            (postPosition + 1).toString()
+        )
     }
 
     override fun userGridPostImpression(
@@ -2116,7 +2129,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean
     ) {
         if (activity != null) {
-            feedAnalytics.clickOnVideo(postId, authorId,isFollowed)
+            feedAnalytics.clickOnVideo(postId, authorId, isFollowed)
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
             videoDetailIntent.putExtra(PARAM_CALL_SOURCE, PARAM_FEED)

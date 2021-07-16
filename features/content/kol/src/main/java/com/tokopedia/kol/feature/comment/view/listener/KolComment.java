@@ -70,7 +70,7 @@ public interface KolComment {
 
 
         interface ViewHolder {
-            void onGoToProfile(String url);
+            void onGoToProfile(String url, String userId);
 
             void onClickMentionedProfile(String id);
 

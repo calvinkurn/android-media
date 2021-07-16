@@ -77,7 +77,7 @@ class FeedExoPlayer(val context: Context) {
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
         toggleVideoVolume(isMute)
         exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
-        exoPlayer.playWhenReady = isConnectedToWifi
+        exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
     }
 

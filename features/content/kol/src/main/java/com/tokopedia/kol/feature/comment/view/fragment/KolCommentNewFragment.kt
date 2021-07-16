@@ -76,8 +76,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var isFollowed: Boolean = true
     private var postType: String = ""
 
-
-
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
 
@@ -279,11 +277,26 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onHashTagClicked(hashTag: String?, id: String?) {
-        feedAnalytics.clickHashTag(hashTag ?: "", authorId, postId, postType, isVideoPost, isFollowed, true)
+        feedAnalytics.clickHashTag(
+            hashTag ?: "",
+            authorId,
+            postId,
+            postType,
+            isVideoPost,
+            isFollowed,
+            true
+        )
     }
 
-    override fun onGoToProfile(url: String) {
-        feedAnalytics.clickCreatorPageCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
+    override fun onGoToProfile(url: String, userId: String) {
+        feedAnalytics.clickCreatorPageCommentPage(
+            postId,
+            authorId,
+            isVideoPost,
+            isFollowed,
+            postType,
+            userId
+        )
         openRedirectUrl(url)
     }
 

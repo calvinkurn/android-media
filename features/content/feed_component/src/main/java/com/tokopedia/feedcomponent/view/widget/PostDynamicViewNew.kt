@@ -106,8 +106,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var positionInFeed: Int = 0
     var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
-    var totalRunnTime = 0L
-
+    var startTime = System.currentTimeMillis()
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
         val view =
@@ -588,9 +587,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         isFollowed: Boolean,
         mediaType: String
     ) {
-        seeAllCommentText.showWithCondition(comments.count != 0)
-        seeAllCommentText.text =
-            context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
+
+        setCommentCount(comments)
         comments.commentItems.firstOrNull()?.let {
             commentUserImage1.setImageUrl(it.author.badgeURL)
             commentUserImage1.showWithCondition(it.author.badgeURL.isNotEmpty())
@@ -629,6 +627,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         addCommentHint.setOnClickListener {
             listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
         }
+    }
+
+    fun setCommentCount(comments: FeedXComments) {
+        seeAllCommentText.showWithCondition(comments.count != 0)
+        seeAllCommentText.text =
+            context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
     }
 
     private fun bindItems(
@@ -814,6 +818,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        pageControl.setCurrentIndicator(current)
                         imagePostListener.userCarouselImpression(
                             feedXCard.id,
                             media[current],
@@ -823,11 +828,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             feedXCard.author.id,
                             positionInFeed
                         )
-                        pageControl.setCurrentIndicator(current)
                         if (media[current].type == TYPE_IMAGE)
                             videoPlayer?.pause()
                         else {
-                            detach()
+                            detach(true)
                             media[current].canPlay = true
                             playVideo(feedXCard, current)
                         }
@@ -924,7 +928,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             authorId,
                             authorType,
                             feedXCard.followers.isFollowed
-
                         )
                     }
                 }
@@ -936,6 +939,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoReadyToPlay() {
+                        startTime = System.currentTimeMillis()
                         hideVideoLoading()
                         timer_view.visible()
                         var time = if (feedMedia.videoTime == 0L) 10L else feedMedia.videoTime
@@ -953,8 +957,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                        feedMedia.canPlay = false
-                        videoListener?.onVideoStopTrack(feedXCard, videoDuration / 1000)
+                        val endTime = System.currentTimeMillis()
+                        videoListener?.onVideoStopTrack(feedXCard, (endTime - startTime) / 1000)
                     }
                 })
             }
@@ -1129,7 +1133,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoPlayer?.pause()
     }
 
-    fun detach() {
+    fun detach(fromSlide: Boolean = false) {
+        if (!fromSlide)
+            carouselView.activeIndex = 0
         if (videoPlayer != null) {
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()

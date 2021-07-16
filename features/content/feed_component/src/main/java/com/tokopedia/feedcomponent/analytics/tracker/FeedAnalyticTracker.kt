@@ -1244,7 +1244,14 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickCreatorPageCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
+    fun clickCreatorPageCommentPage(
+        actvityId: String,
+        authorId: String,
+        isVideoPost: Boolean,
+        isFollowed: Boolean,
+        postType: String,
+        userId: String
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1259,7 +1266,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 actvityId,
                 authorId,
-                userSessionInterface.userId
+                userId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,

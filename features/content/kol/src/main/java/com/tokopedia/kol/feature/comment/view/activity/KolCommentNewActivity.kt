@@ -71,10 +71,10 @@ class KolCommentNewActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         feedAnalytics.clickBackButtonCommentPage(
             postId ?: "0",
-            intent.getStringExtra(ARGS_AUTHOR_TYPE),
+            intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: "",
             intent.getBooleanExtra(ARGS_VIDEO, false),
             intent.getBooleanExtra(IS_POST_FOLLOWED, true),
-            intent.getStringExtra(POST_TYPE)
+            intent.getStringExtra(POST_TYPE) ?: ""
         )
         super.onBackPressed()
     }

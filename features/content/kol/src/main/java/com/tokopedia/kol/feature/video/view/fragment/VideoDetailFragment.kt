@@ -55,7 +55,8 @@ const val PARAM_FEED = "feed"
 const val PARAM_VIDEO_AUTHOR_TYPE = "video_author_type"
 const val PARAM_POST_TYPE = "POST_TYPE"
 const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
-
+const val PARAM_COMMENT_COUNT = "comment_count"
+const val PARAM_LIKE_COUNT = "like_count"
 
 class VideoDetailFragment :
     BaseDaggerFragment(),
@@ -294,6 +295,8 @@ class VideoDetailFragment :
         ivClose.setOnClickListener {
             val intent = Intent()
             intent.putExtra(POST_POSITION, arguments?.getInt(POST_POSITION))
+            intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.footer.comment.value)
+            intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.footer.like.isChecked)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
@@ -324,7 +327,14 @@ class VideoDetailFragment :
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
                 if (callSource == PARAM_FEED) {
-                    val intent = getCallingIntent(requireContext(), id.toInt(), 0, authorId, isFollowed, postType)
+                    val intent = getCallingIntent(
+                        requireContext(),
+                        id.toInt(),
+                        0,
+                        authorId,
+                        isFollowed,
+                        postType
+                    )
                     startActivityForResult(intent, INTENT_COMMENT)
 
                 } else {
