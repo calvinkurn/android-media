@@ -80,6 +80,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
+import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
@@ -540,7 +541,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         }
                         source = SOURCE_OTHERS
                         shouldShowToaster = false
-                        refresh(isFullRefresh = it.isFullRefresh)
+                        refresh(isFullRefresh = it.isFullRefresh, uiMessage = it.uiMessage)
                     }
                 }
                 is OccGlobalEvent.Error -> {
@@ -646,6 +647,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.Prompt -> {
                     progressDialog?.dismiss()
                     showPrompt(it.prompt)
+                }
+                is OccGlobalEvent.ToasterAction -> {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        Toaster.build(v, it.toast.message, type = Toaster.TYPE_ERROR, actionText = it.toast.ctaText, clickListener = {
+                            binding.rvOrderSummaryPage.smoothScrollToPosition(0)
+                        }).show()
+                    }
                 }
                 is OccGlobalEvent.ForceOnboarding -> {
                     forceShowOnboarding(it.onboarding)
@@ -891,7 +900,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 showLayoutNoAddress()
             }
             else -> {
-                updateLocalCacheAddressData(addressState.address)
+                if (addressState.address.addressId > 0) {
+                    updateLocalCacheAddressData(addressState.address)
+                }
             }
         }
     }
@@ -1212,14 +1223,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         binding.globalError.animateShow()
     }
 
-    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
+    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true, uiMessage: OccUIMessage? = null) {
         if (shouldHideAll) {
             binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateGone()
             binding.loaderContent.animateShow()
         }
-        viewModel.getOccCart(isFullRefresh, source)
+        viewModel.getOccCart(isFullRefresh, source, uiMessage)
     }
 
     private fun atcOcc(productId: String) {

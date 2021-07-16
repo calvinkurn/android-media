@@ -7,7 +7,7 @@ import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.analytics.AddToCartOccExternalAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartExternalDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
-import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART_OCC
+import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART_OCC_EXTERNAL_MULTI
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -44,7 +44,7 @@ class AddToCartOccMultiExternalUseCase @Inject constructor(@ApplicationContext p
             throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
         }
 
-        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC, AddToCartOccMultiExternalGqlResponse::class.java, getParams(sentParams))
+        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC_EXTERNAL_MULTI, AddToCartOccMultiExternalGqlResponse::class.java, getParams(sentParams))
         val addToCartOccExternalGqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiExternalGqlResponse>()
 
         val result = addToCartExternalDataMapper.map(addToCartOccExternalGqlResponse)

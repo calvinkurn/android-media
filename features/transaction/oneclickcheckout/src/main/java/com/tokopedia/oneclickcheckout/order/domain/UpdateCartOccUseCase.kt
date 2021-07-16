@@ -13,13 +13,15 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccGqlResponse
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
+import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
+import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import java.util.*
 import javax.inject.Inject
 
 class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                                private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
-    suspend fun executeSuspend(param: UpdateCartOccRequest): OccPrompt? {
+    suspend fun executeSuspend(param: UpdateCartOccRequest): OccUIMessage? {
         val request = GraphqlRequest(QUERY, UpdateCartOccGqlResponse::class.java, generateParam(param))
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartOccGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
@@ -28,6 +30,9 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
         val prompt = mapPrompt(response.response.data.prompt)
         if (prompt.shouldShowPrompt()) {
             return prompt
+        }
+        if (response.response.data.toasterAction.showCta) {
+            return OccToasterAction(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE, response.response.data.toasterAction.text)
         }
         throw MessageErrorException(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
@@ -50,8 +55,8 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
         const val PARAM_KEY = "update"
 
         val QUERY = """
-        mutation update_cart_occ(${"$"}update: OneClickCheckoutUpdateCartParam) {
-            update_cart_occ(param: ${"$"}update) {
+        mutation update_cart_occ_multi(${"$"}update: OneClickCheckoutMultiUpdateCartParam) {
+            update_cart_occ_multi(param: ${"$"}update) {
                 error_message
                 status
                 data {

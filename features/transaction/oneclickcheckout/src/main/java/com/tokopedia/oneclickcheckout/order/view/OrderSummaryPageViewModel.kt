@@ -92,7 +92,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return profile.address.addressId <= 0 && addressState.errorCode != AddressState.ERROR_CODE_OPEN_ANA
     }
 
-    fun getOccCart(isFullRefresh: Boolean, source: String) {
+    fun getOccCart(isFullRefresh: Boolean, source: String, uiMessage: OccUIMessage? = null) {
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
@@ -115,8 +115,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
             orderPromo.value = result.orderPromo
-            result.globalEvent?.also {
-                globalEvent.value = it
+            if (result.globalEvent != null) {
+                globalEvent.value = result.globalEvent
+            } else if (uiMessage is OccToasterAction) {
+                globalEvent.value = OccGlobalEvent.ToasterAction(uiMessage)
             }
             if (orderCart.products.isNotEmpty() && result.orderProfile.isValidProfile) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)

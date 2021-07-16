@@ -120,11 +120,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
     }
 
-    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>): ShippingRecommendationData {
+    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>, shipmentProfile: OrderProfileShipment): ShippingRecommendationData {
         val data = ratesResponseStateConverter.fillState(shippingRecommendationData, listShopShipment, orderShipment.shipperProductId.toZeroIfNull(), orderShipment.serviceId.toZeroIfNull())
         if (data.shippingDurationViewModels != null) {
             val logisticPromo = data.logisticPromo
-            if (logisticPromo != null) {
+            if (logisticPromo != null && !shipmentProfile.isDisableChangeCourier) {
                 // validate army courier
                 // TODO: 07/07/21 check tokonow bbo
                 val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
@@ -157,7 +157,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     )
                 }
                 val shippingRecommendationData = ratesUseCase.execute(param)
-                        .map { mapShippingRecommendationData(it, orderShipment, listShopShipment) }
+                        .map { mapShippingRecommendationData(it, orderShipment, listShopShipment, orderProfile.shipment) }
                         .toBlocking().single()
                 val profileShipment = orderProfile.shipment
                 var shipping = orderShipment

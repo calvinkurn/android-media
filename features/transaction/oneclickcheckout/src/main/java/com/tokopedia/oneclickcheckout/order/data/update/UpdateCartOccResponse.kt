@@ -26,6 +26,15 @@ data class UpdateCartDataOcc(
         val messages: List<String> = emptyList(),
         @SerializedName("success")
         val success: Int = 0,
+        @SerializedName("toaster_action")
+        val toasterAction: UpdateCartToasterAction = UpdateCartToasterAction(),
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse()
+)
+
+data class UpdateCartToasterAction(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("show_cta")
+        val showCta: Boolean = false
 )

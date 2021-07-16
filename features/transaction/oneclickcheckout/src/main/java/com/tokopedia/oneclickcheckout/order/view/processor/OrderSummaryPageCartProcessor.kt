@@ -60,7 +60,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
-                t.printStackTrace()
                 return@withContext ResultGetOccCart(
                         orderCart = OrderCart(),
                         orderPreference = OrderPreference(),
@@ -155,9 +154,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val prompt = updateCartOccUseCase.executeSuspend(param)
-                if (prompt != null) {
-                    return@withContext false to OccGlobalEvent.Prompt(prompt)
+                val uiMessage = updateCartOccUseCase.executeSuspend(param)
+                if (uiMessage is OccPrompt) {
+                    return@withContext false to OccGlobalEvent.Prompt(uiMessage)
+                } else if (uiMessage is OccToasterAction) {
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(uiMessage = uiMessage)
                 }
                 return@withContext true to OccGlobalEvent.TriggerRefresh()
             } catch (t: Throwable) {
@@ -176,9 +177,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val prompt = updateCartOccUseCase.executeSuspend(param)
-                if (prompt != null) {
-                    return@withContext false to OccGlobalEvent.Prompt(prompt)
+                val uiMessage = updateCartOccUseCase.executeSuspend(param)
+                if (uiMessage is OccPrompt) {
+                    return@withContext false to OccGlobalEvent.Prompt(uiMessage)
+                } else if (uiMessage is OccToasterAction) {
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(uiMessage = uiMessage)
                 }
                 return@withContext true to OccGlobalEvent.Normal
             } catch (t: Throwable) {
@@ -197,9 +200,11 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val prompt = updateCartOccUseCase.executeSuspend(param)
-                if (prompt != null) {
-                    return@withContext false to OccGlobalEvent.Prompt(prompt)
+                val uiMessage = updateCartOccUseCase.executeSuspend(param)
+                if (uiMessage is OccPrompt) {
+                    return@withContext false to OccGlobalEvent.Prompt(uiMessage)
+                } else if (uiMessage is OccToasterAction) {
+                    return@withContext false to OccGlobalEvent.TriggerRefresh(uiMessage = uiMessage)
                 }
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
