@@ -209,7 +209,9 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
                 val isMainStock = tabPosition == MAIN_TAB_POSITION
                 isVariant?.run {
-                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock, source)
+                    ProductManageTracking.eventClickAllocationSaveStock(
+                        this, isMainStock, source, mViewModel.productId, mViewModel.shopId
+                    )
                 }
             }
         }
