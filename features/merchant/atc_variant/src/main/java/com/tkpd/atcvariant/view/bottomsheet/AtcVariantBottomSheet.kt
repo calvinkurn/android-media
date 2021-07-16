@@ -359,7 +359,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 productId = productId,
                 shopId = variantAggregatorData?.simpleBasicInfo?.shopID ?: "",
                 productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
-                productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
+                productPrice = adapter.getHeaderDataModel()?.headerData?.finalPriceDouble ?: 0.0,
                 quantity = selectedQuantity,
                 variantName = viewModel.titleVariantName.value ?: "",
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
