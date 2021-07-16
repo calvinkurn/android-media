@@ -344,6 +344,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         val aggregatorParams = sharedViewModel.aggregatorParams.value
         val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
         val variantAggregatorData = viewModel.getVariantAggregatorData()
+        val selectedQuantity = if (viewModel.getSelectedQuantity(productId) == 0) {
+            variantAggregatorData?.variantData?.getChildByProductId(productId)?.getFinalMinOrder()
+                    ?: 0
+        } else {
+            viewModel.getSelectedQuantity(productId)
+        }
 
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
@@ -354,7 +360,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 shopId = variantAggregatorData?.simpleBasicInfo?.shopID ?: "",
                 productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
                 productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
-                quantity = viewModel.getSelectedQuantity(productId),
+                quantity = selectedQuantity,
                 variantName = viewModel.titleVariantName.value ?: "",
                 isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false,
                 shopType = variantAggregatorData?.shopType ?: "",
