@@ -4,20 +4,14 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
-import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductBundlingViewHolder(
@@ -43,9 +37,6 @@ class ProductBundlingViewHolder(
     private var bundlingIconImage: ImageUnify? = null
     private var bundlingItemRecyclerView: RecyclerView? = null
     private var bundlingPriceText: Typography? = null
-    private var bundlingActionButton: UnifyButton? = null
-
-    private var element: ProductListUiModel.ProductBundlingUiModel? = null
 
     init {
         itemView?.run {
@@ -54,17 +45,13 @@ class ProductBundlingViewHolder(
             bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
             bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
             bundlingPriceText = findViewById(R.id.tv_bom_detail_bundling_price_value)
-            bundlingActionButton = findViewById(R.id.btn_bom_detail_bundling_action)
         }
-
-        setupClickListener()
     }
 
     override fun bind(element: ProductListUiModel.ProductBundlingUiModel) {
         setupBundleHeader(element.bundleName)
         setupBundleAdapter(element.bundleItemList)
         setupBundleTotalPrice(element.totalPriceText)
-        setupBundleButton(element.button, element.isProcessing)
     }
 
     override fun onBundleItemClicked(orderId: String, orderDetailId: String, orderStatusId: String) {
@@ -76,10 +63,13 @@ class ProductBundlingViewHolder(
         }
     }
 
-    private fun setupClickListener() {
-        bundlingActionButton?.setOnClickListener {
-            onActionClick()
-        }
+    override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductBundlingItemUiModel) {
+        listener.onPurchaseAgainButtonClicked(uiModel)
+    }
+
+    override fun onBundleItemSeeSimilarProducts(uiModel: ProductListUiModel.ProductBundlingItemUiModel) {
+        navigator.openAppLink(uiModel.button.url, false)
+        // TODO: Set correct tracker
     }
 
     private fun setupBundleHeader(bundleName: String) {
@@ -101,41 +91,8 @@ class ProductBundlingViewHolder(
         bundlingPriceText?.text = price
     }
 
-    private fun setupBundleButton(actionButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
-        bundlingActionButton?.run {
-            isLoading = processing
-            text = actionButton.label
-            buttonVariant = Utils.mapButtonVariant(actionButton.variant)
-            buttonType = Utils.mapButtonType(actionButton.type)
-            showWithCondition(actionButton.label.isNotBlank())
-            setOnClickListener {
-                onActionClick()
-            }
-        }
-    }
-
-    private fun onActionClick() {
-        when(element?.button?.key) {
-            BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
-            BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
-        }
-    }
-
-    private fun addToCart() {
-        element?.let {
-            listener.onPurchaseAgainButtonClicked(it)
-        }
-    }
-
-    private fun seeSimilarProducts() {
-        element?.let {
-            navigator.openAppLink(it.button.url, false)
-            // TODO: Set correct tracker
-        }
-    }
-
     interface Listener {
-        fun onPurchaseAgainButtonClicked(productBundlingUiModel: ProductListUiModel.ProductBundlingUiModel)
+        fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductBundlingItemUiModel)
     }
 
 }

@@ -11,6 +11,7 @@ import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class GetBuyerOrderDetailMapper @Inject constructor(
@@ -258,12 +259,12 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         return bundleDetail.bundleList.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
                     // TODO: get actual dummy action button (if exist)
-                    button = getDummyActionButton(),
                     bundleName = bundle.bundleName,
                     totalPrice = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                     totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                     bundleItemList = bundle.orderDetailList.map { bundleDetail ->
                         ProductListUiModel.ProductBundlingItemUiModel(
+                                button = getDummyActionButton(),
                                 orderId = bundleDetail.orderId.toString(),
                                 orderDetailId = bundleDetail.orderDetailId.toString(),
                                 orderStatusId = orderStatusId,
@@ -282,13 +283,13 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     private fun getDummyActionButton(): ActionButtonsUiModel.ActionButton {
         return ActionButtonsUiModel.ActionButton(
                 key = "",
-                label = "Beli Lagi gan",
+                label = "Beli Lagi",
                 popUp = ActionButtonsUiModel.ActionButton.PopUp(
                         body = "Tes",
                         title = "tes"
                 ),
-                variant = "",
-                type = "tes",
+                variant = "ghost",
+                type = "main",
                 url = ""
         )
     }

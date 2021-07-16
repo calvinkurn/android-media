@@ -15,7 +15,6 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
 
     companion object {
         private const val PARAM_INPUT = "input"
-        // TODO: Put actual query
         private val QUERY = """
             query GetCancellationProductBundling(${'$'}input: BomDetailV2Request!) {
               mp_bom_detail(input: ${'$'}input) {

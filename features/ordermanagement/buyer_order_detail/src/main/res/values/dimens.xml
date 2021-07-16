@@ -11,4 +11,5 @@
     <dimen name="buyer_order_detail_bundling_info_margin">10dp</dimen>
     <dimen name="buyer_order_detail_bundling_card_padding_bottom">14dp</dimen>
     <dimen name="buyer_order_detail_bundling_icon_size">20dp</dimen>
+    <dimen name="buyer_order_detail_bundling_button_width">110dp</dimen>
 </resources>

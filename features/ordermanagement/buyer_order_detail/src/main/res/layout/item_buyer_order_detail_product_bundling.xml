@@ -79,22 +79,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Rp150.000"/>
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_bom_detail_bundling_action"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="@string/buy_again_label"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintWidth_default="wrap"
-            app:unifyButtonSize="small"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

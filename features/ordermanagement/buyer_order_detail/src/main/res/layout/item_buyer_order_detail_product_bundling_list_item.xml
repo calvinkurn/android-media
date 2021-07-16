@@ -57,4 +57,20 @@
         app:typographyType="body_3"
         tools:text="43 Size. Packing rapi plis." />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_item_bom_detail_bundling_action"
+        android:layout_width="@dimen/buyer_order_detail_bundling_button_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/buy_again_label"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tv_item_bom_detail_bundling_product_note"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:unifyButtonSize="micro"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:visibility="visible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

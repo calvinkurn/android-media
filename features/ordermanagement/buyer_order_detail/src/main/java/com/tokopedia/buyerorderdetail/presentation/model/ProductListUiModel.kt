@@ -56,12 +56,10 @@ data class ProductListUiModel(
     }
 
     data class ProductBundlingUiModel(
-            val button: ActionButtonsUiModel.ActionButton,
             val bundleName: String,
             val totalPrice: String,
             val totalPriceText: String,
-            val bundleItemList: List<ProductBundlingItemUiModel>,
-            val isProcessing: Boolean = false
+            val bundleItemList: List<ProductBundlingItemUiModel>
     ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
             return typeFactory.type(this)
@@ -69,6 +67,7 @@ data class ProductListUiModel(
     }
 
     data class ProductBundlingItemUiModel(
+            val button: ActionButtonsUiModel.ActionButton,
             val orderId: String,
             val orderDetailId: String,
             val orderStatusId: String,
@@ -77,7 +76,8 @@ data class ProductListUiModel(
             val productNote: String,
             val productThumbnailUrl: String,
             val quantity: Int,
-            val productPrice: Double
+            val productPrice: Double,
+            val isProcessing: Boolean = false
     ) {
         val priceText: String
             get() = productPrice.toCurrencyFormatted()
