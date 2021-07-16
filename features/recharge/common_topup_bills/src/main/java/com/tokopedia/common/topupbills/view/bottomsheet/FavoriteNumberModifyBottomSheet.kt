@@ -35,6 +35,23 @@ class FavoriteNumberModifyBottomSheet(
         childView = View.inflate(context, R.layout.bottom_sheet_seamless_favorite_number_modify, null)
         setChild(childView)
 
+        if (favNumberItem.clientName.isNotEmpty()) {
+            childView.common_topupbills_favorite_number_name_field.run {
+                setLabelStatic(true)
+                textFieldWrapper.hint = favNumberItem.clientName
+                textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        textFieldWrapper.hint = ""
+                    } else {
+                        textFieldWrapper.hint = favNumberItem.clientName
+                    }
+                }
+                textFieldInput.setTextColor(
+                    resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
+                )
+            }
+
+        }
         childView.common_topupbills_favorite_number_phone_field.textFieldWrapper.hint = favNumberItem.clientNumber
         childView.common_topupbills_favorite_number_phone_field.textFiedlLabelText.setTextColor(
                 resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75)
