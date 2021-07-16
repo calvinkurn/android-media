@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
@@ -1838,12 +1839,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {
         val products = orders.map { it.orderProduct }.flatten().groupBy { it.productId }
-
         return products.filter { it.value.isNotEmpty() }.map {
             SomListBulkProcessOrderProductUiModel(
                     productName = it.value.first().productName,
                     picture = it.value.first().picture,
-                    amount = it.value.size
+                    amount = it.value.sumOf { prod -> prod.quantity }
             )
         }
     }

@@ -180,14 +180,7 @@ open class SomListOrderViewHolder(
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
             }
-            val haveBundle = element.haveBundleProduct && !element.bundleDetail?.bundle.isNullOrEmpty()
-            val displayedProduct = if (haveBundle) {
-                val firstBundleProduct = element.bundleDetail?.bundle?.firstOrNull()?.orderDetail?.firstOrNull()
-                        ?: element.orderProduct.firstOrNull()
-                firstBundleProduct
-            } else {
-                element.orderProduct.firstOrNull()
-            }
+            val displayedProduct = element.orderProduct.firstOrNull()
             displayedProduct?.let { product ->
                 val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
