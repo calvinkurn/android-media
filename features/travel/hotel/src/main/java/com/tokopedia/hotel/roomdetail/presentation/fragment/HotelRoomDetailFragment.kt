@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal

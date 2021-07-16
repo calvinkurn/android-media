@@ -89,7 +89,6 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
-import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -134,7 +133,6 @@ import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
-import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
@@ -158,6 +156,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stickylogin.common.StickyLoginConstant
@@ -708,39 +707,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
-        context?.let {
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, youtubeVideos.map { it.url }, index))
-            } else {
-                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + youtubeVideos[index].url)))
-                } catch (e: Throwable) {
-                }
-            }
-        }
-    }
-
     override fun getApplicationContext(): Application? {
         return activity?.application
     }
 
     override fun getLifecycleFragment(): Lifecycle {
         return lifecycle
-    }
-
-    override fun gotoDescriptionTab(textDescription: String, componentTrackDataModel: ComponentTrackDataModel) {
-        viewModel.getDynamicProductInfoP1?.let {
-            val data = ProductDetailUtil.generateDescriptionData(it, textDescription)
-            context?.let { ctx ->
-                startActivity(ProductFullDescriptionActivity.createIntent(ctx, data))
-                activity?.overridePendingTransition(R.anim.pull_up, 0)
-                DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            }
-        }
     }
 
     /**
@@ -1847,11 +1819,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             val shopStatus = viewModel.getShopInfo().statusInfo.shopStatus
-            val shouldShowSellerButtonByShopType = shopStatus != ProductShopStatusTypeDef.DELETED && shopStatus != ProductShopStatusTypeDef.MODERATED_PERMANENTLY
+            val shouldShowSellerButtonByShopType = shopStatus != ShopStatusDef.DELETED && shopStatus != ShopStatusDef.MODERATED_PERMANENTLY
             if (viewModel.isShopOwner()) {
                 actionButtonView.visibility = shouldShowSellerButtonByShopType
             } else {
-                actionButtonView.visibility = !isAffiliate && viewModel.getShopInfo().statusInfo.shopStatus == ProductShopStatusTypeDef.OPEN
+                actionButtonView.visibility = !isAffiliate && viewModel.getShopInfo().statusInfo.shopStatus == ShopStatusDef.OPEN
             }
             return
         }
@@ -2597,9 +2569,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
-        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
-            content.row == "bottom"
-        }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, viewModel.userId, pdpUiUpdater?.productDetailInfoData?.getDescription()
+                ?: "")
         sendIntentResultWishlistChange(productId ?: "", true)
         if (isProductOos()) {
             refreshPage()

@@ -18,7 +18,7 @@ dependencies {
 	implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.miscDependencies.gson
 
-    implementation project(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }

@@ -15,5 +15,6 @@ interface ProductDetailInfoListener {
     fun goToApplink(url: String)
     fun goToCategory(url: String)
     fun goToEtalase(url: String)
+    fun goToCatalog(url: String, catalogName: String)
     fun goToDiscussion(discussionCount: Int)
 }

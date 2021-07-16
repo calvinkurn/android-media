@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SendOtp2FAUseCase @Inject constructor(
+open class SendOtp2FAUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpRequestPojo>(dispatcher) {

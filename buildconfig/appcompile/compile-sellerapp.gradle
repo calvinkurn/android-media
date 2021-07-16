@@ -1,186 +1,186 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("sellerapp")
 
-include "features:category:tradein"
+includeIfEnabled("features:category:tradein")
+includeIfEnabled("features:category:moneyin")
 
-include "features:common:developer_options"
-include "features:common:developer_options_noop"
-include "features:common:nps"
-include "features:common:internal_review"
-include "features:common:resources_common"
-include "features:category:common_tradein"
+includeIfEnabled("features:common:developer_options")
+includeIfEnabled("features:common:developer_options_noop")
+includeIfEnabled("features:common:nps")
+includeIfEnabled("features:common:internal_review")
+includeIfEnabled("features:common:resources_common")
+includeIfEnabled("features:category:common_tradein")
 
-include "features:home:navigation-common"
+includeIfEnabled("features:home:navigation-common")
 
-//include "features:communication:broadcast_message_no_op"
+//includeIfEnabled("features:communication:broadcast_message_no_op")
 
-include "features:content:affiliate_common"
-include "features:content:feed_component"
-include "features:content:createpost"
-include "features:content:kol"
-include "features:content:kol_common"
-include "features:content:profile"
-include "features:content:play_common"
-include "features:content:play_broadcaster"
-include "features:content:play_widget"
+includeIfEnabled("features:content:affiliate_common")
+includeIfEnabled("features:content:feed_component")
+includeIfEnabled("features:content:createpost")
+includeIfEnabled("features:content:kol")
+includeIfEnabled("features:content:kol_common")
+includeIfEnabled("features:content:profile")
+includeIfEnabled("features:content:play_common")
+includeIfEnabled("features:content:play_broadcaster")
+includeIfEnabled("features:content:play_widget")
 
-include "features:recharge:common_digital"
-include "features:recharge:digitalproduct"
+includeIfEnabled("features:recharge:common_digital")
+includeIfEnabled("features:recharge:digitalproduct")
 
-include "features:discovery:discovery_common"
-include "features:discovery:category_common"
-include 'features:discovery:productcard'
-include 'features:discovery:carousel_productcard'
-include 'features:discovery:recommendation_widget_common'
-include "features:discovery:topadssdk"
-include "features:discovery:wishlist_common"
-include "features:discovery:carousel_productcard"
-include "features:discovery:productcard_options"
-include "features:discovery:filter"
-include "features:home:searchbar"
-include "features:discovery:shopwidget"
+includeIfEnabled("features:discovery:discovery_common")
+includeIfEnabled("features:discovery:category_common")
+includeIfEnabled("features:discovery:productcard")
+includeIfEnabled("features:discovery:carousel_productcard")
+includeIfEnabled("features:discovery:recommendation_widget_common")
+includeIfEnabled("features:discovery:topadssdk")
+includeIfEnabled("features:discovery:wishlist_common")
+includeIfEnabled("features:discovery:carousel_productcard")
+includeIfEnabled("features:discovery:productcard_options")
+includeIfEnabled("features:discovery:filter")
+includeIfEnabled("features:home:searchbar")
+includeIfEnabled("features:discovery:shopwidget")
 
-include "features:fintech:home_credit"
-include "features:fintech:saldo_details"
-include "features:fintech:common_wallet"
-include "features:fintech:layanan_finansial"
+includeIfEnabled("features:fintech:home_credit")
+includeIfEnabled("features:fintech:saldo_details")
+includeIfEnabled("features:fintech:common_wallet")
+includeIfEnabled("features:fintech:layanan_finansial")
 
-include "features:user:fcm_common"
+includeIfEnabled("features:user:fcm_common")
 
-include "features:im:common_promo"
-include "features:im:referral"
+includeIfEnabled("features:im:common_promo")
+includeIfEnabled("features:im:referral")
 
-include "features:logistic:logisticaddaddress"
-include "features:logistic:logisticCommon"
-include "features:logistic:logisticorder"
-include "features:logistic:logisticcart"
-include "features:logistic:editshipping"
-include "features:logistic:activation"
-include "features:logistic:manageaddress"
-include "features:logistic:localizationchooseaddress"
-include "features:logistic:localizationchooseaddress_common"
+includeIfEnabled("features:logistic:logisticaddaddress")
+includeIfEnabled("features:logistic:logisticCommon")
+includeIfEnabled("features:logistic:logisticorder")
+includeIfEnabled("features:logistic:logisticcart")
+includeIfEnabled("features:logistic:editshipping")
+includeIfEnabled("features:logistic:activation")
+includeIfEnabled("features:logistic:manageaddress")
+includeIfEnabled("features:logistic:localizationchooseaddress")
+includeIfEnabled("features:logistic:localizationchooseaddress_common")
 
-include "features:media:mediauploader"
-include "features:media:media-common"
-include "features:media:medialoader"
+includeIfEnabled("features:media:mediauploader")
+includeIfEnabled("features:media:media-common")
+includeIfEnabled("features:media:medialoader")
 
-include "features:merchant:gold_merchant_common"
-include "features:merchant:power_merchant_subscribe"
-include "features:merchant:product_detail"
-include "features:merchant:product_detail_common"
-include "features:merchant:atc_variant"
-include "features:merchant:product_add_edit"
-include "features:merchant:product_manage_common"
-include "features:merchant:product_manage_list"
-include "features:merchant:product_share"
-include "features:merchant:report"
-include "features:merchant:reputation_common"
-include "features:merchant:review_product"
-include "features:merchant:seller_action"
-include "features:merchant:seller_active_common"
-include "features:merchant:seller_app_widget"
-include "features:merchant:seller_home"
-include "features:merchant:seller_home_common"
-include "features:merchant:seller_menu"
-include "features:merchant:seller_menu_common"
-include "features:merchant:seller_migration_common"
-include "features:merchant:seller_onboarding"
-include "features:merchant:review"
-include "features:merchant:seller_search"
-include "features:merchant:shop_common"
-include "features:merchant:shop_page"
-//include "features:merchant:shop_page_no_op"
-include "features:merchant:shop_score"
-include "features:merchant:shop_showcase"
-include "features:merchant:shop_open"
-include "features:merchant:shop_settings"
-include "features:merchant:statistic"
-include "features:merchant:variant_common"
-include "features:merchant:talk"
-include ':features:merchant:youtube_common'
-include "features:merchant:voucher_creation"
-include "features:merchant:seller_feedback"
+includeIfEnabled("features:merchant:gold_merchant_common")
+includeIfEnabled("features:merchant:power_merchant_subscribe")
+includeIfEnabled("features:merchant:product_detail")
+includeIfEnabled("features:merchant:product_detail_common")
+includeIfEnabled("features:merchant:atc_variant")
+includeIfEnabled("features:merchant:product_add_edit")
+includeIfEnabled("features:merchant:product_manage_common")
+includeIfEnabled("features:merchant:product_manage_list")
+includeIfEnabled("features:merchant:product_share")
+includeIfEnabled("features:merchant:report")
+includeIfEnabled("features:merchant:reputation_common")
+includeIfEnabled("features:merchant:review_product")
+includeIfEnabled("features:merchant:seller_action")
+includeIfEnabled("features:merchant:seller_active_common")
+includeIfEnabled("features:merchant:seller_app_widget")
+includeIfEnabled("features:merchant:seller_home")
+includeIfEnabled("features:merchant:seller_home_common")
+includeIfEnabled("features:merchant:seller_menu")
+includeIfEnabled("features:merchant:seller_menu_common")
+includeIfEnabled("features:merchant:seller_migration_common")
+includeIfEnabled("features:merchant:seller_onboarding")
+includeIfEnabled("features:merchant:review")
+includeIfEnabled("features:merchant:seller_search")
+includeIfEnabled("features:merchant:shop_common")
+includeIfEnabled("features:merchant:shop_page")
+//includeIfEnabled("features:merchant:shop_page_no_op")
+includeIfEnabled("features:merchant:shop_score")
+includeIfEnabled("features:merchant:shop_showcase")
+includeIfEnabled("features:merchant:shop_open")
+includeIfEnabled("features:merchant:shop_settings")
+includeIfEnabled("features:merchant:statistic")
+includeIfEnabled("features:merchant:variant_common")
+includeIfEnabled("features:merchant:talk")
+includeIfEnabled("features:merchant:youtube_common")
+includeIfEnabled("features:merchant:voucher_creation")
+includeIfEnabled("features:merchant:seller_feedback")
 
-include "features:operational:contact_us"
-include "features:operational:csat_rating"
+includeIfEnabled("features:operational:contact_us")
+includeIfEnabled("features:operational:csat_rating")
 
-include "features:payment:common_payment"
-include "features:payment:payment"
-include "features:payment:withdraw"
-include "features:payment:payment_setting"
+includeIfEnabled("features:payment:common_payment")
+includeIfEnabled("features:payment:payment")
+includeIfEnabled("features:payment:withdraw")
+includeIfEnabled("features:payment:payment_setting")
 
-include "features:merchant:gallery"
+includeIfEnabled("features:merchant:gallery")
 
-include "features:promo:loyalty"
-include "features:promo:loyalty_common"
-include "features:promo:merchant_voucher"
-include "features:promo:promo_checkout"
-include "features:promo:promo_checkout_common"
-include "features:promo:promo_ui_common"
-include "features:promo:mvc_widget"
+includeIfEnabled("features:promo:loyalty")
+includeIfEnabled("features:promo:loyalty_common")
+includeIfEnabled("features:promo:merchant_voucher")
+includeIfEnabled("features:promo:promo_checkout")
+includeIfEnabled("features:promo:promo_checkout_common")
+includeIfEnabled("features:promo:promo_ui_common")
+includeIfEnabled("features:promo:mvc_widget")
 
-include "features:top_ads:top_ads_dashboard"
-include "features:top_ads:top_ads_management"
-include "features:top_ads:top_ads_autoads"
-include "features:top_ads:top_ads_create"
-include "features:top_ads:top_ads_edit"
-//include "features:top_ads:top_ads_management_no_op"
-include "features:top_ads:top_ads_free_claim"
-include "features:top_ads:top_ads_management_common"
-include "features:top_ads:top_ads_management_sourcetagging"
-include "features:top_ads:top_ads_detail_sheet"
-include "features:top_ads:top_ads_headline"
+includeIfEnabled("features:top_ads:top_ads_dashboard")
+includeIfEnabled("features:top_ads:top_ads_management")
+includeIfEnabled("features:top_ads:top_ads_autoads")
+includeIfEnabled("features:top_ads:top_ads_create")
+includeIfEnabled("features:top_ads:top_ads_edit")
+//includeIfEnabled("features:top_ads:top_ads_management_no_op")
+includeIfEnabled("features:top_ads:top_ads_free_claim")
+includeIfEnabled("features:top_ads:top_ads_management_common")
+includeIfEnabled("features:top_ads:top_ads_management_sourcetagging")
+includeIfEnabled("features:top_ads:top_ads_detail_sheet")
+includeIfEnabled("features:top_ads:top_ads_headline")
 
-include "features:transaction:atc_common"
-include "features:transaction:purchase_platform_common"
-include "features:transaction:sellerorder"
-include "features:transaction:minicart"
-include "features:ordermanagement:snapshot"
-include "features:ordermanagement:orderhistory"
+includeIfEnabled("features:transaction:atc_common")
+includeIfEnabled("features:transaction:purchase_platform_common")
+includeIfEnabled("features:transaction:sellerorder")
+includeIfEnabled("features:transaction:minicart")
+includeIfEnabled("features:ordermanagement:snapshot")
+includeIfEnabled("features:ordermanagement:orderhistory")
 
-include "features:communication:push-notification-common"
-include "features:im:moengage_wrapper"
+includeIfEnabled("features:communication:push-notification-common")
+includeIfEnabled("features:im:moengage_wrapper")
 
-include "features:user:attachproduct"
-include "features:user:attachcommon"
-include "features:user:chat_common"
-include "features:user:attachinvoice"
-include "features:user:attachvoucher"
-include "features:user:chatbot"
-include "features:user:changephonenumber"
-include "features:user:loginregister"
-include "features:user:loginphone"
-include "features:user:logout"
-include "features:user:managepassword"
-include 'features:user:media-common'
-include "features:user:medialoader"
-include "features:user:notifcenter"
-include "features:user:otp"
-include "features:user:phoneverification"
-include "features:user:settingbank"
-include "features:user:settingnotif"
-include "features:user:sessioncommon"
-include "features:user:topchat"
-include "features:user:updateinactivephone"
-include "features:user:user_identification_common"
-include "features:user:vote"
-include "features:user:profilecompletion"
-include "features:user:stickylogin"
-include "features:user:seamless_login_common"
-include "features:user:kyc_centralized"
-include "features:user:profilecommon"
-include "features:user:liveness"
-include "features:user:loginfingerprint"
-include 'features:user:notif-troubleshooter'
-include "features:user:additional_check"
-include "features:user:inbox_common"
+includeIfEnabled("features:user:attachproduct")
+includeIfEnabled("features:user:attachcommon")
+includeIfEnabled("features:user:chat_common")
+includeIfEnabled("features:user:attachinvoice")
+includeIfEnabled("features:user:attachvoucher")
+includeIfEnabled("features:user:chatbot")
+includeIfEnabled("features:user:changephonenumber")
+includeIfEnabled("features:user:loginregister")
+includeIfEnabled("features:user:loginphone")
+includeIfEnabled("features:user:logout")
+includeIfEnabled("features:user:managepassword")
+includeIfEnabled("features:user:media-common")
+includeIfEnabled("features:user:medialoader")
+includeIfEnabled("features:user:notifcenter")
+includeIfEnabled("features:user:otp")
+includeIfEnabled("features:user:phoneverification")
+includeIfEnabled("features:user:settingbank")
+includeIfEnabled("features:user:settingnotif")
+includeIfEnabled("features:user:sessioncommon")
+includeIfEnabled("features:user:topchat")
+includeIfEnabled("features:user:updateinactivephone")
+includeIfEnabled("features:user:user_identification_common")
+includeIfEnabled("features:user:vote")
+includeIfEnabled("features:user:profilecompletion")
+includeIfEnabled("features:user:stickylogin")
+includeIfEnabled("features:user:seamless_login_common")
+includeIfEnabled("features:user:kyc_centralized")
+includeIfEnabled("features:user:profilecommon")
+includeIfEnabled("features:user:liveness")
+includeIfEnabled("features:user:loginfingerprint")
+includeIfEnabled("features:user:notif-troubleshooter")
+includeIfEnabled("features:user:additional_check")
+includeIfEnabled("features:user:inbox_common")
 
-include "features:category:age_restriction"
-include "features:category:basemvvm"
-include "features:fintech:merchant_lending_widget"
+includeIfEnabled("features:category:age_restriction")
+includeIfEnabled("features:category:basemvvm")
+includeIfEnabled("features:fintech:merchant_lending_widget")
 
-include 'tkpdcore'
-include 'tkpddesign'
-include 'tkpdabstraction'
-
-include 'sellerapp'
+includeIfEnabled("tkpdcore")
+includeIfEnabled("tkpddesign")
+includeIfEnabled("tkpdabstraction")
+includeIfEnabled("sellerapp")

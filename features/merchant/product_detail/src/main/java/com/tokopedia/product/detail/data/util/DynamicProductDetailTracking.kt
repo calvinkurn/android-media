@@ -393,8 +393,10 @@ object DynamicProductDetailTracking {
         fun onSingleVariantClicked(productInfo: DynamicProductInfoP1?, variantUiData: ProductSingleVariantDataModel?, variantCommonData: ProductVariant?, variantPosition: Int) {
 
             val variantLevel = variantCommonData?.variants?.size?.toString()?.toList()?.joinToString(prefix = "level : ", postfix = ";")
-            val variantTitle = variantCommonData?.variants?.mapNotNull { it.identifier }?.joinToString(",", prefix = "variant_title : ", postfix = ";") ?: ""
-            val variantValue = "variant_value: " + generateVariantString(variantCommonData, productInfo?.basic?.productID ?: "") + ";"
+            val variantTitle = variantCommonData?.variants?.mapNotNull { it.identifier }?.joinToString(",", prefix = "variant_title : ", postfix = ";")
+                    ?: ""
+            val variantValue = "variant_value: " + generateVariantString(variantCommonData, productInfo?.basic?.productID
+                    ?: "") + ";"
             val variantId = "variant : " + productInfo?.basic?.productID + ";"
 
             val mapEvent = TrackAppUtils.gtmData(
@@ -1064,7 +1066,7 @@ object DynamicProductDetailTracking {
             }
         }
 
-        fun eventClickBuyToVariantBottomSheet( productId: String?) {
+        fun eventClickBuyToVariantBottomSheet(productId: String?) {
             if (productId.isNullOrEmpty()) {
                 return
             }
@@ -1461,7 +1463,7 @@ object DynamicProductDetailTracking {
                     dimension83 = dimension83,
                     dimension81 = productInfo?.shopTypeString ?: "",
                     dimension98 = dimension98,
-                    dimension90 = if(affiliateUniqueId.isNotBlank()) "affiliate" else null,
+                    dimension90 = if (affiliateUniqueId.isNotBlank()) "affiliate" else null,
                     dimension113 = affiliateUniqueId,
                     index = 1
             ))
@@ -1826,6 +1828,21 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CATEGORY_BOTTOM_SHEET)
+        }
+
+        fun onCatalogBottomSheetClicked(productInfo: DynamicProductInfoP1?, userId: String, catalogName: String) {
+            val categoryName = productInfo?.basic?.catalogID ?: ""
+
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_CATALOG_BOTTOM_SHEET,
+                    "catalog_id:${categoryName}; catalog_name:${catalogName}")
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
+                    ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CATALOG_BOTTOM_SHEET)
         }
 
         fun onEtalaseBottomSheetClicked(productInfo: DynamicProductInfoP1?, userId: String) {

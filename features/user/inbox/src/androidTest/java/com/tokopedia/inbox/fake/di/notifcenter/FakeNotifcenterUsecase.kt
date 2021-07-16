@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifOrderListUseCase
+import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterCacheManager
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterDetailUseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterFilterV2UseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.recom.FakeGetRecommendationUseCase
@@ -41,7 +42,7 @@ class FakeNotifcenterUsecase {
         @Named(NotifOrderListUseCase.QUERY_ORDER_LIST)
         query: String,
         gqlUseCase: FakeGraphqlUseCase<NotifOrderListResponse>,
-        cacheManager: NotifcenterCacheManager,
+        cacheManager: FakeNotifcenterCacheManager,
         userSession: UserSessionInterface
     ): FakeNotifOrderListUseCase {
         return FakeNotifOrderListUseCase(
