@@ -859,7 +859,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, @NotNull String redirectUrl, @NotNull String authorId, @NotNull String authorType) {
+    public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId, @NotNull String redirectUrl, @NotNull String authorId, @NotNull String authorType, boolean isFollowed) {
         Intent videoDetailIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalContent.VIDEO_DETAIL, postId);
         videoDetailIntent.putExtra(PARAM_VIDEO_INDEX, contentPosition);
         startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL);
@@ -1029,7 +1029,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id) {
+    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed) {
 
     }
 

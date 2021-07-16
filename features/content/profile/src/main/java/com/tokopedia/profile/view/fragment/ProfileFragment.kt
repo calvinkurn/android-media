@@ -1193,7 +1193,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         postId: String,
         redirectUrl: String,
         authorId: String,
-        authorType: String
+        authorType: String,
+        isFollowed: Boolean
     ) {
         onGoToLink(redirectUrl)
     }
@@ -1264,7 +1265,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {

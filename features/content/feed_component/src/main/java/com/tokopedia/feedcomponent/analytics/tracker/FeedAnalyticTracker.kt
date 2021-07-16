@@ -1153,7 +1153,14 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickHashTag(hashTag: String, authorId: String, postId: String, isVideoPost: Boolean) {
+    fun clickHashTag(
+        hashTag: String,
+        authorId: String,
+        postId: String,
+        postType: String,
+        isVideoPost: Boolean,
+        isFollowed: Boolean,
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1161,7 +1168,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "hashtag",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed ,isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_THREE_PARAM,
@@ -1178,7 +1185,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickBackButtonCommentPage(actvityId: String, isVideoPost: Boolean) {
+    fun clickBackButtonCommentPage(actvityId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1186,7 +1193,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "back",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed , isVideo = isVideoPost)
 
             ),
             KEY_EVENT_LABEL to String.format(
@@ -1203,7 +1210,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickShopCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
+    fun clickShopCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1211,7 +1218,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "shop",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -1227,7 +1234,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickCreatorPageCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
+    fun clickCreatorPageCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1235,7 +1242,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "comment creator",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed, isVideo = isVideoPost)
 
             ),
             KEY_EVENT_LABEL to String.format(
@@ -1253,7 +1260,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickReportCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
+    fun clickReportCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1261,7 +1268,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "report",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -1277,7 +1284,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickDeleteCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
+    fun clickDeleteCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1285,7 +1292,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "delete",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -1300,7 +1307,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickSendCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
+    fun clickSendCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1308,7 +1315,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "send",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -1323,7 +1330,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickKembalikanCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean) {
+    fun clickKembalikanCommentPage(actvityId: String, authorId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1331,7 +1338,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "kembalikan to undo delete",
-                getPostType("", isFollowed = false, isVideo = isVideoPost)
+                getPostType(postType, isFollowed, isVideo = isVideoPost)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
@@ -1346,7 +1353,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickMuteButton(activityId: String, isMute: Boolean, id: String) {
+    fun clickMuteButton(activityId: String, isMute: Boolean, id: String, isFollowed: Boolean) {
         val mute = if (isMute)
             "unmute"
         else
@@ -1358,7 +1365,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     mute,
-                    getPostType("", isFollowed = false, isVideo = true)
+                    getPostType("", isFollowed , isVideo = true)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,
@@ -1371,7 +1378,7 @@ class FeedAnalyticTracker
 
     }
 
-    fun clickOnVideo(activityId: String, authorId: String) {
+    fun clickOnVideo(activityId: String, authorId: String, isFollowed: Boolean) {
         var map = getCommonMap()
         map = map.plus(
             mutableMapOf(
@@ -1379,7 +1386,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "video area",
-                    getPostType("", isFollowed = false, isVideo = true)
+                    getPostType("", isFollowed, isVideo = true)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_TWO_PARAM,

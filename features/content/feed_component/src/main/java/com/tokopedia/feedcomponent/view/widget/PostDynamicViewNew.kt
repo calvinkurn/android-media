@@ -877,7 +877,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             volumeIcon.setOnClickListener {
                 isMute = !isMute
-                listener?.muteUnmuteVideo(postId, isMute, id)
+                listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
@@ -891,6 +891,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         index: Int,
         authorId: String,
         type: Int,
+        isFollowed: Boolean
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
@@ -922,7 +923,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             postId,
                             feedMedia.appLink,
                             authorId,
-                            authorType
+                            authorType,
+                            isFollowed
+
                         )
                     }
                 }
@@ -1145,7 +1148,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.id,
                 position,
                 feedXCard.author.id,
-                feedXCard.author.type
+                feedXCard.author.type,
+                feedXCard.followers.isFollowed
             )
         } else {
             videoPlayer?.pause()

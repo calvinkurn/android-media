@@ -53,6 +53,8 @@ const val PARAM_VIDEO_INDEX = "video_index"
 const val PARAM_CALL_SOURCE = "call_source"
 const val PARAM_FEED = "feed"
 const val PARAM_VIDEO_AUTHOR_TYPE = "video_author_type"
+const val PARAM_POST_TYPE = "POST_TYPE"
+const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
 
 
 class VideoDetailFragment :
@@ -316,11 +318,13 @@ class VideoDetailFragment :
     private fun onCommentSectionClicked(): View.OnClickListener {
         val callSource = arguments?.getString(PARAM_CALL_SOURCE)
         val authorId = arguments?.getString(PARAM_VIDEO_AUTHOR_TYPE)
+        val postType = arguments?.getString(PARAM_POST_TYPE)
+        val isFollowed = arguments?.getBoolean(PARAM_IS_POST_FOLLOWED, true)
 
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
                 if (callSource == PARAM_FEED) {
-                    val intent = getCallingIntent(requireContext(), id.toInt(), 0, authorId)
+                    val intent = getCallingIntent(requireContext(), id.toInt(), 0, authorId, isFollowed, postType)
                     startActivityForResult(intent, INTENT_COMMENT)
 
                 } else {

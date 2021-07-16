@@ -36,7 +36,8 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                         element.postId.toString(),
                         element.redirectLink,
                         "",
-                        ""
+                        "",
+                        true
                     )
                 }
             }
@@ -112,7 +113,8 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
             postId: String,
             redirectUrl: String,
             authorId: String,
-            authorType: String
+            authorType: String,
+            isFollowed: Boolean
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)

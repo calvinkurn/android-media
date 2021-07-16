@@ -268,6 +268,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         private const val PARAM_VIDEO_INDEX = "video_index"
         private const val PARAM_VIDEO_AUTHOR_TYPE = "video_author_type"
+        const val PARAM_POST_TYPE = "POST_TYPE"
+        const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
 
 
         //region Content Report Param
@@ -282,6 +284,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         //region Kol Comment Param
         private const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
         private const val ARGS_VIDEO = "ARGS_VIDEO"
+        const val ARGS_POST_TYPE = "POST_TYPE"
+        const val ARGS_IS_POST_FOLLOWED = "IS_FOLLOWED"
         private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
         private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
         private const val COMMENT_ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
@@ -1064,7 +1068,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     fun gotToKolComment(
         rowNumber: Int, id: Int, authorType: String,
-        isVideo: Boolean
+        isVideo: Boolean,isFollowed: Boolean, type: String
     ) {
         val intent = RouteManager.getIntent(
             requireContext(),
@@ -1078,6 +1082,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
         intent.putExtra(ARGS_AUTHOR_TYPE, authorType)
         intent.putExtra(ARGS_VIDEO, isVideo)
+        intent.putExtra(ARGS_POST_TYPE, type)
+        intent.putExtra(ARGS_IS_POST_FOLLOWED, isFollowed)
         startActivityForResult(intent, OPEN_KOL_COMMENT)
     }
 
@@ -1562,7 +1568,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String
     ) {
         feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, authorType, isVideo)
-        gotToKolComment(positionInFeed, id, authorType, isVideo)
+        gotToKolComment(positionInFeed, id, authorType, isVideo, isFollowed, type)
     }
 
     override fun onShareClick(
@@ -2032,8 +2038,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String) {
-        feedAnalytics.clickMuteButton(postId, mute, id)
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+        feedAnalytics.clickMuteButton(postId, mute, id, isFollowed)
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
@@ -2053,7 +2059,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             hashtagText,
             feedXCard.author.id,
             feedXCard.id,
-            feedXCard.media[0].type != "image"
+            feedXCard.typename,
+            feedXCard.media[0].type != "image",
+            feedXCard.followers.isFollowed
         )
     }
 
@@ -2097,16 +2105,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postId: String,
         redirectUrl: String,
         authorId: String,
-        authorType: String
+        authorType: String,
+        isFollowed: Boolean
     ) {
         if (activity != null) {
-            feedAnalytics.clickOnVideo(postId, authorId)
+            feedAnalytics.clickOnVideo(postId, authorId,isFollowed)
             val videoDetailIntent =
                 RouteManager.getIntent(context, ApplinkConstInternalContent.VIDEO_DETAIL, postId)
             videoDetailIntent.putExtra(PARAM_CALL_SOURCE, PARAM_FEED)
             videoDetailIntent.putExtra(PARAM_POST_POSITION, positionInFeed)
             videoDetailIntent.putExtra(PARAM_VIDEO_INDEX, contentPosition)
             videoDetailIntent.putExtra(PARAM_VIDEO_AUTHOR_TYPE, authorType)
+            videoDetailIntent.putExtra(PARAM_POST_TYPE, "sgc")
+            videoDetailIntent.putExtra(PARAM_IS_POST_FOLLOWED, isFollowed)
             startActivityForResult(videoDetailIntent, OPEN_VIDEO_DETAIL)
         }
     }

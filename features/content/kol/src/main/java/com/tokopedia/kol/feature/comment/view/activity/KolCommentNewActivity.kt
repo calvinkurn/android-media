@@ -71,7 +71,9 @@ class KolCommentNewActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         feedAnalytics.clickBackButtonCommentPage(
             postId ?: "0",
-            intent.getBooleanExtra(ARGS_VIDEO, false)
+            intent.getBooleanExtra(ARGS_VIDEO, false),
+            intent.getBooleanExtra(IS_POST_FOLLOWED, true),
+            intent.getStringExtra(POST_TYPE)
         )
         super.onBackPressed()
     }
@@ -82,16 +84,24 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
         const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
         const val ARGS_VIDEO = "ARGS_VIDEO"
+        const val POST_TYPE = "POST_TYPE"
+        const val IS_POST_FOLLOWED = "IS_FOLLOWED"
 
 
         @JvmStatic
-        fun getCallingIntent(context: Context, id: Int, rowNumber: Int, authorId: String?): Intent {
+        fun getCallingIntent(context: Context, id: Int, rowNumber: Int, authorId: String?, isFollowed: Boolean? = true, postType: String?): Intent {
             val intent = Intent(context, KolCommentNewActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(ARGS_ID, id)
             bundle.putInt(ARGS_POSITION, rowNumber)
             bundle.putBoolean(ARGS_VIDEO, true)
             bundle.putString(ARGS_AUTHOR_TYPE, authorId)
+            bundle.putString(POST_TYPE, postType)
+            if (isFollowed != null)
+                bundle.putBoolean(IS_POST_FOLLOWED, isFollowed)
+            else
+                bundle.putBoolean(IS_POST_FOLLOWED, true)
+
             intent.putExtras(bundle)
             return intent
         }

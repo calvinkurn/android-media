@@ -35,6 +35,8 @@ import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_ID
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_VIDEO
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.IS_POST_FOLLOWED
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.POST_TYPE
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -71,6 +73,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     var postId: String = "0"
     private var authorId: String = "0"
     private var isVideoPost: Boolean = false
+    private var isFollowed: Boolean = true
+    private var postType: String = ""
+
+
 
     @Inject
     internal lateinit var feedAnalytics: FeedAnalyticTracker
@@ -117,6 +123,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         postId = (arguments?.getInt(ARGS_ID) ?: 0).toString()
         authorId = arguments?.getString(ARGS_AUTHOR_TYPE) ?: "0"
         isVideoPost = arguments?.getBoolean(ARGS_VIDEO) ?: false
+        isFollowed = arguments?.getBoolean(IS_POST_FOLLOWED) ?: false
+        postType = arguments?.getString(POST_TYPE) ?: "0"
+
     }
 
     companion object {
@@ -162,7 +171,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                         Toaster.TYPE_NORMAL,
                         getString(R.string.kol_delete_comment_ok)
                     ) {
-                        feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost)
+                        feedAnalytics.clickKembalikanCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
                         adapter?.clearList()
                         presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
                         toBeDeleted = false
@@ -196,7 +205,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         reasonDesc: String
     ) {
         presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
-        feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost)
+        feedAnalytics.clickReportCommentPage(id, authorId, isVideoPost, isFollowed, postType)
     }
 
     override fun onMenuClicked(
@@ -270,11 +279,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onHashTagClicked(hashTag: String?, id: String?) {
-        feedAnalytics.clickHashTag(hashTag ?: "", authorId, postId, isVideoPost)
+        feedAnalytics.clickHashTag(hashTag ?: "", authorId, postId, postType, isVideoPost, isFollowed)
     }
 
     override fun onGoToProfile(url: String) {
-        feedAnalytics.clickCreatorPageCommentPage(postId, authorId, isVideoPost)
+        feedAnalytics.clickCreatorPageCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
         openRedirectUrl(url)
     }
 
@@ -299,7 +308,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun openRedirectUrl(url: String) {
-        feedAnalytics.clickShopCommentPage(postId, authorId, isVideoPost)
+        feedAnalytics.clickShopCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
         routeUrl(url)
     }
 
@@ -358,7 +367,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     private fun deleteComment(adapterPosition: Int) {
-        feedAnalytics.clickDeleteCommentPage(postId, authorId, isVideoPost)
+        feedAnalytics.clickDeleteCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
         adapter?.deleteItem(adapterPosition)
     }
 
@@ -485,7 +494,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listComment?.adapter = adapter
         sendButton?.setOnClickListener { v: View? ->
-            feedAnalytics.clickSendCommentPage(postId, authorId, isVideoPost)
+            feedAnalytics.clickSendCommentPage(postId, authorId, isVideoPost, isFollowed, postType)
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
                     arguments?.getInt(ARGS_ID) ?: 0,
