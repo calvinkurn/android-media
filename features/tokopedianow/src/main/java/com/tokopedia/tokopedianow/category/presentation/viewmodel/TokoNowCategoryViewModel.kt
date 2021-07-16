@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
@@ -128,11 +129,10 @@ class TokoNowCategoryViewModel @Inject constructor (
         onGetFirstPageSuccess(headerDataView, contentDataView)
     }
 
-    private fun onGetCategoryFirstPageError(throwable: Throwable) {
-
-    }
-
-    override fun createFooterVisitableList() = listOf(createAisleDataView())
+    override fun createFooterVisitableList() = listOf(
+            createAisleDataView(),
+            RecommendationCarouselDataView(),
+    )
 
     private fun createAisleDataView() = CategoryAisleDataView(
             listOf(

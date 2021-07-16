@@ -11,10 +11,11 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerCom
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
@@ -28,6 +29,7 @@ class CategoryTypeFactoryImpl(
         emptyProductListener: EmptyProductListener,
         private val categoryAisleListener: CategoryAisleListener,
         outOfCoverageListener: OutOfCoverageListener,
+        recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
@@ -37,6 +39,7 @@ class CategoryTypeFactoryImpl(
         productItemListener,
         emptyProductListener,
         outOfCoverageListener,
+        recommendationCarouselListener
 ), CategoryTypeFactory {
 
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT
