@@ -59,7 +59,7 @@ abstract class InboxTest {
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         baseComponent = null
         inboxComponent = null
         chatListComponent = null

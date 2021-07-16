@@ -328,11 +328,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
-                formAddress.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamat.textFieldWrapper, null))
+                formAddress.etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamatNew.textFieldWrapper, null))
             }
         }
 
-        binding.btnSaveAddress.setOnClickListener {
+        binding.btnSaveAddressNew.setOnClickListener {
             if (validateForm()) {
                 doSaveAddress()
             }
@@ -376,19 +376,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etAlamat.textFieldInput.text.toString().isEmpty() || formAddress.etAlamat.textFieldInput.text.toString() == " ") {
+                if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
                     validated = false
                     field += getString(R.string.field_alamat)
-                    setWrapperError(formAddress.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
+                    setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etLabel.textFieldInput.text.toString().length < 3) {
+                if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_label_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
-                if (formAddress.etAlamat.textFieldInput.text.toString().length < 3) {
+                if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
@@ -406,14 +406,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < 3) {
+                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_label_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
 
-                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < 3) {
+                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
@@ -632,7 +632,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
 
-            formAddress.etAlamat.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            formAddress.etAlamatNew.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     AddNewAddressRevampAnalytics.onClickFieldAlamatPositive(userSession.userId)
                 }
@@ -771,9 +771,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
         if (isPositiveFlow) {
             if (binding.formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
+                saveDataModel?.address1 = "${binding.formAddress.etAlamatNew.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
             } else {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text}"
+                saveDataModel?.address1 = "${binding.formAddress.etAlamatNew.textFieldInput.text}"
             }
             saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
             saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
@@ -813,6 +813,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
+
+        const val MINIMUM_CHAR = 3
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
