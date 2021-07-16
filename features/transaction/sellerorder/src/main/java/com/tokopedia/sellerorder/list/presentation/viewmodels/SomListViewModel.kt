@@ -158,7 +158,15 @@ class SomListViewModel @Inject constructor(
             addSource(_bulkRequestPickupResult) {
                 when (it) {
                     is Success -> {
-                        getMultiShippingStatus(it.data.data.jobId, 0L)
+                        //case 3 when All Not Eligible, total fail & success always 0
+                        val totalNotEligible = it.data.errors.size.toLong()
+                        if (it.data.data.totalOnProcess == 0L && totalNotEligible > 0) {
+                            bulkRequestPickupFinalResultMediator.postValue(
+                                AllNotEligible
+                            )
+                        } else {
+                            getMultiShippingStatus(it.data.data.jobId, 0L)
+                        }
                     }
                 }
             }
@@ -219,15 +227,9 @@ class SomListViewModel @Inject constructor(
                     val totalOrderIds =
                         requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
 
-                    // case 2 When All Orders Success
+                    // case 3 When All Orders Success
                     if (it.data.success == it.data.total_order && totalOrderIds == it.data.total_order && it.data.success > 0) {
                         bulkRequestPickupFinalResultMediator.postValue(AllSuccess(it.data.success))
-                    }
-                    //case 3 when All Not Eligible, total fail & success always 0
-                    else if (requestPickupUiModel?.data?.totalOnProcess == 0L && totalNotEligible > 0) {
-                        bulkRequestPickupFinalResultMediator.postValue(
-                            AllNotEligible
-                        )
                     }
                     //case 4 when total order != it.data.processed and retry < 10
                     else if (it.data.total_order != it.data.processed && retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
@@ -237,7 +239,7 @@ class SomListViewModel @Inject constructor(
                             DELAY_GET_MULTI_SHIPPING_STATUS
                         )
                     } else {
-                        // case 4 when partial success but there's not eligible and failed
+                        // case 5 when partial success but there's not eligible and failed
                         if (it.data.success > 0 && it.data.fail > 0 && totalNotEligible > 0 &&
                             retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
                             retryRequestPickupUser++
@@ -249,7 +251,7 @@ class SomListViewModel @Inject constructor(
                                 )
                             )
                         }
-                        // case 5 when All Fail but there's not eligible
+                        // case 6 when All Fail but there's not eligible
                         else if (it.data.fail == requestPickupUiModel?.data?.totalOnProcess && it.data.fail > 0
                             && totalNotEligible > 0 && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
                             retryRequestPickupUser++
@@ -260,7 +262,7 @@ class SomListViewModel @Inject constructor(
                                 )
                             )
                         }
-                        // case 6 When partial success but there's failed
+                        // case 7 When partial success but there's failed
                         else if (it.data.success > 0 && it.data.fail > 0 && totalNotEligible == 0L && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
                             retryRequestPickupUser++
                             bulkRequestPickupFinalResultMediator.postValue(
@@ -270,7 +272,7 @@ class SomListViewModel @Inject constructor(
                                 )
                             )
                         }
-                        // case 7 When Partial success but there's not eligible
+                        // case 8 When Partial success but there's not eligible
                         else if (it.data.success > 0 && it.data.fail == 0L && totalNotEligible > 0) {
                             bulkRequestPickupFinalResultMediator.postValue(
                                 PartialSuccessNotEligible(
@@ -279,11 +281,11 @@ class SomListViewModel @Inject constructor(
                                 )
                             )
                         }
-                        //case 8 will happen fail bulk process due to all validation failed
+                        //case 9 will happen fail bulk process due to all validation failed
                         else if (requestPickupUiModel?.status == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED) {
                             bulkRequestPickupFinalResultMediator.postValue(AllValidationFail)
                         }
-                        //case 9 when All Fail Eligible and should be retry the first time
+                        //case 10 when All Fail Eligible and should be retry the first time
                         else if (it.data.fail == it.data.total_order && it.data.fail > 0 &&
                             totalNotEligible == 0L && it.data.success == 0L && retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
                         ) {
@@ -297,7 +299,7 @@ class SomListViewModel @Inject constructor(
                             if (retryRequestPickupUser >= MAX_RETRY_REQUEST_PICKUP_USER) {
                                 retryRequestPickupUser = 0
                             }
-                            //Case 10 will happen when after 10x retry is still fail
+                            //Case 11 will happen when after 10x retry is still fail
                             bulkRequestPickupFinalResultMediator.postValue(FailRetry)
                         }
                     }
@@ -312,7 +314,7 @@ class SomListViewModel @Inject constructor(
                             DELAY_GET_MULTI_SHIPPING_STATUS
                         )
                     } else {
-                        //Case 10 will happen when there's a server error/down from BE
+                        //Case 12 will happen when there's a server error/down from BE
                         bulkRequestPickupFinalResultMediator.postValue(ServerFail(it.throwable))
                     }
                 }
