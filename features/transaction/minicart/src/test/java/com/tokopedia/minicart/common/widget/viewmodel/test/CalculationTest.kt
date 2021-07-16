@@ -2,6 +2,9 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cart_common.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cart_common.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cart_common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
