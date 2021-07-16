@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,7 @@ class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
         val newResult: MutableList<Validator> = mutableListOf()
         testCases.forEach { case ->
             val tests = logs.findAllContaining(case)
-            val matched = tests.first.map { it.toUiModel() }
+            val matched = tests.listGtmLog.map { it.toUiModel() }
             if (matched.isNotEmpty()) {
                 // in order mode still need to be reviewed (not being used). taking last found for mvp
                 val status = when {
@@ -53,9 +54,9 @@ class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
                         Status.SUCCESS
                     }
                 }
-                newResult.add(case.copy(status = status, matches = matched, errors = tests.second))
+                newResult.add(case.copy(status = status, matches = matched, errors = tests.errorCause))
             } else {
-                newResult.add(case.copy(status = Status.FAILURE, errors = tests.second))
+                newResult.add(case.copy(status = Status.FAILURE, errors = tests.errorCause))
             }
         }
         return newResult
@@ -69,35 +70,37 @@ class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
         }
     }
 
-    private fun List<GtmLogDB>.findAllContaining(comparator: Validator): Pair<List<GtmLogDB>, String> {
+    private fun List<GtmLogDB>.findAllContaining(comparator: Validator): CassavaValidateResult {
         val resultList: MutableList<GtmLogDB> = mutableListOf()
         val errors = StringBuilder()
         var alreadyFoundEvent = false
         for (gtm in this) {
             val mapGtm = gtm.data.toJsonMap()
-            if (comparator.data.haveSameEventAndLabel(mapGtm)) {
-                val result = comparator.data.canValidateWithErrorMessage(mapGtm, currentMode.isInExact())
-                if (result.first) resultList.add(gtm)
-                else errors.append(buildErrorStringWithEventAndLabel(
+            val result = comparator.data.canValidate(mapGtm, currentMode.isInExact())
+
+            if (result.isValid) {
+                resultList.add(gtm)
+            } else {
+                errors.append(buildErrorStringWithEventAndLabel(
                         comparator.data[EVENT_KEY].toString(),
                         mapGtm[EVENT_LABEL_KEY].toString(),
-                        result.second,
+                        result.errorCause,
                         alreadyFoundEvent))
-                alreadyFoundEvent = true
-            } else if (comparator.data.canValidate(mapGtm, currentMode.isInExact())) {
-                resultList.add(gtm)
             }
+
+            alreadyFoundEvent = true
+
         }
         if (resultList.isEmpty() && errors.isEmpty())
             errors.append("No query match with these regex in GTM Log.").appendLine()
 
-        return Pair(resultList, errors.toString())
+        return CassavaValidateResult(true, errors.toString(), resultList)
     }
 
     private fun List<GtmLogDB>.findContaining(comparator: Validator): GtmLogDB? {
         for (gtm in this) {
             val mapGtm = gtm.data.toJsonMap()
-            if (comparator.data.canValidate(mapGtm, currentMode.isInExact())) {
+            if (comparator.data.canValidate(mapGtm, currentMode.isInExact()).isValid) {
                 return gtm
             }
         }

@@ -11,57 +11,24 @@ class ComparatorKtTest {
     private val fu: FileUtils by lazy { FileUtils() }
 
     @Test
-    fun `regular subset should return true`() {
-        val tes = fu.getJsonArrayResources("ana.json")
-        val db = fu.getJsonArrayResources("ana_actual.json")
-
-        assertTrue(tes.first().canValidate(db.first()))
-    }
-
-    @Test
-    fun `regular subset with strictly compare should return false`() {
-        val tes = fu.getJsonArrayResources("ana.json")
-        val db = fu.getJsonArrayResources("ana_actual.json")
-
-        assertFalse(tes.first().canValidate(db.first(), strict = true))
-    }
-
-    @Test
-    fun `nested object subset should return true`() {
-        val tesCase = fu.getJsonArrayResources("nested_obj.json")
-        val tes = tesCase[0]
-        val db = tesCase[1]
-
-        assertTrue(tes.canValidate(db))
-    }
-
-    @Test
-    fun `nested array subset should return true`() {
-        val tesCase = fu.getJsonArrayResources("nested_arr.json")
-        val tes = tesCase[0]
-        val db = tesCase[1]
-
-        assertTrue(tes.canValidate(db))
-    }
-
-    @Test
-    fun `exact object should return true`() {
-        val tesCase = fu.getJsonArrayResources("exact_nested_obj.json")
-        val tes = tesCase[0]
-        val db = tesCase[1]
-
-        assertTrue(tes.canValidate(db, strict = true))
-    }
-
-    @Test
     fun `regular subset should return false with message when regex is not matched`() {
-        val tes = mapOf<String, Any>("field" to "\\d")
-        val db = mapOf<String, Any>("field" to "some value")
+        val tes = mapOf<String, Any>("event" to "event name","eventLabel" to ".*", "field" to "\\d")
+        val db = mapOf<String, Any>("event" to "event name", "eventLabel" to "event label", "field" to "some value")
 
-        val result = tes.canValidateWithErrorMessage(db)
+        val result = tes.canValidate(db)
 
-        assertFalse(result.first)
-        assert(result.second == "Regex \"\\d\" didn't match with \"some value\" in field field")
+        assertFalse(result.isValid)
+        assert(result.errorCause == "Regex \"\\d\" didn't match with \"some value\" in field field")
+    }
+    @Test
+    fun `regular subset should return false with message when key is not found in db`() {
+        val tes = mapOf<String, Any>("event" to "event name","eventLabel" to ".*", "field" to ".*", "someOtherField" to ".*")
+        val db = mapOf<String, Any>("event" to "event name", "eventLabel" to "event label", "field" to "some value")
+
+        val result = tes.canValidate(db)
+
+        assertFalse(result.isValid)
+        assert(result.errorCause == "Key \"someOtherField\" not found in GTM Log")
     }
 
     @Test
@@ -69,10 +36,10 @@ class ComparatorKtTest {
         val tes = fu.getJsonArrayResources("ana.json")
         val db = fu.getJsonArrayResources("ana_actual.json")
 
-        val result = tes.first().canValidateWithErrorMessage(db.first())
+        val result = tes.first().canValidate(db.first())
 
-        assertTrue(result.first)
-        assert(result.second == "")
+        assertTrue(result.isValid)
+        assert(result.errorCause == "")
     }
 
     @Test
@@ -80,9 +47,9 @@ class ComparatorKtTest {
         val tes = fu.getJsonArrayResources("ana.json")
         val db = fu.getJsonArrayResources("ana_actual.json")
 
-        val result = tes.first().canValidateWithErrorMessage(db.first(), strict = true)
-        assertFalse(result.first)
-        assert(result.second == "Map size is different")
+        val result = tes.first().canValidate(db.first(), strict = true)
+        assertFalse(result.isValid)
+        assert(result.errorCause == "")
     }
 
     @Test
@@ -91,7 +58,7 @@ class ComparatorKtTest {
         val tes = tesCase[0]
         val db = tesCase[1]
 
-        assertTrue(tes.canValidateWithErrorMessage(db).first)
+        assertTrue(tes.canValidate(db).isValid)
     }
 
     @Test
@@ -100,7 +67,7 @@ class ComparatorKtTest {
         val tes = tesCase[0]
         val db = tesCase[1]
 
-        assertTrue(tes.canValidateWithErrorMessage(db).first)
+        assertTrue(tes.canValidate(db).isValid)
     }
 
     @Test
@@ -109,25 +76,25 @@ class ComparatorKtTest {
         val tes = tesCase[0]
         val db = tesCase[1]
 
-        assertTrue(tes.canValidateWithErrorMessage(db, strict = true).first)
+        assertTrue(tes.canValidate(db, strict = true).isValid)
     }
 
     @Test
-    fun `regex match given * when compared to any string should return true`() {
+    fun `regex match given when compared to any string should return true`() {
         val tesVal = ".*"
         val objVal = "any string would match"
         assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
-    fun `regex match given d* when compared to any string should return true`() {
+    fun `regex match given d when compared to any string should return true`() {
         val tesVal = "\\d*"
         val objVal = "55643"
         assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
-    fun `regex match given idd* when compared to any string should return true`() {
+    fun `regex match given idd when compared to any string should return true`() {
         val tesVal = "id/\\d*"
         val objVal = "id/55643"
         assertTrue(regexEquals(tesVal, objVal))
