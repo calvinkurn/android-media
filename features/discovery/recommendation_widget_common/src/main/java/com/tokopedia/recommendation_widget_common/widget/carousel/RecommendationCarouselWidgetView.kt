@@ -101,7 +101,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
-        widgetListener?.onRecomProductCardAddToCartNonVariant(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition, quantity)
+        widgetListener?.onRecomProductCardAddToCartNonVariant(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition, quantity = quantity)
     }
 
     override fun onRecomProductCardAddVariantClick(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int) {
