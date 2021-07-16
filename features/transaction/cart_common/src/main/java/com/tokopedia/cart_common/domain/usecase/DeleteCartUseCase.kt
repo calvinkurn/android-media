@@ -14,7 +14,7 @@ class DeleteCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     private var params: Map<String, Any>? = null
 
-    fun setParamsFromUiModel(cartIdList: List<String>) {
+    fun setParams(cartIdList: List<String>) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADD_TO_WISHLIST to 0,
