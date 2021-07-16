@@ -21,9 +21,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.cart_common.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cart_common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
@@ -385,8 +386,13 @@ class AtcVariantViewModel @Inject constructor(
     private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
+            val updateCartRequest = UpdateCartRequest(
+                    cartId = copyOfMiniCartItem.cartId,
+                    quantity = copyOfMiniCartItem.quantity,
+                    notes = copyOfMiniCartItem.notes
+            )
             updateCartUseCase.setParams(
-                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    updateCartRequestList = listOf(updateCartRequest),
                     source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
             )
             val result = withContext(dispatcher.io) {
