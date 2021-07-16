@@ -923,21 +923,24 @@ class DiscoveryFragment :
         hideSystemUi()
         coordinatorLayout.hide()
         view.rotation = 90f
-        val offset = Resources.getSystem().displayMetrics.widthPixels-
-                Resources.getSystem().displayMetrics.heightPixels
+        val height = Resources.getSystem().displayMetrics.heightPixels
+        val width = Resources.getSystem().displayMetrics.widthPixels
+
+        val offset = width-height
         view.translationX = offset.toFloat() / 2
         view.translationY = -offset.toFloat() / 2
 
-        val layoutParams = FrameLayout.LayoutParams(
-            Resources.getSystem().displayMetrics.heightPixels,
-            Resources.getSystem().displayMetrics.widthPixels
-        )
+        val layoutParams = FrameLayout.LayoutParams(height,width)
         view.layoutParams = layoutParams
+
+        parentLayout.setBackgroundColor(Color.BLACK)
         parentLayout.addView(view)
+        parentLayout.requestFocus()
     }
 
     fun hideCustomContent(){
         showSystemUi()
+        parentLayout.setBackgroundColor(Color.WHITE)
         coordinatorLayout.show()
         if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
@@ -945,14 +948,15 @@ class DiscoveryFragment :
     }
 
     private fun hideSystemUi() {
-        activity?.window?.decorView?.apply {
-            systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        activity?.window?.apply {
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
+
     }
 
     private fun showSystemUi() {
