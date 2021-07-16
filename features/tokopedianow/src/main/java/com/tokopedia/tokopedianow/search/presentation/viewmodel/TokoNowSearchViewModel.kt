@@ -142,8 +142,6 @@ class TokoNowSearchViewModel @Inject constructor (
         return quickFilterIndex + 1
     }
 
-    override fun isShowCategoryFilter(categoryFilter: Filter) = categoryFilter.options.size > 1
-
     private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
         val eventLabel = query +
                 "|${searchProductHeader.keywordProcess}" +
