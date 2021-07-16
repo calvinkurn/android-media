@@ -53,7 +53,7 @@ object ReviewUtil {
         return RouteManager.route(context, webviewUrl)
     }
 
-    fun reviewDescFormatter(context: Context, review: String, maxChar: Int, allowClick: Boolean): Pair<CharSequence?, Boolean> {
+    fun formatReviewExpand(context: Context, review: String, maxChar: Int, allowClick: Boolean): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
         return if (formattedText.length > maxChar) {
             val subDescription = formattedText.substring(0, maxChar)
@@ -62,6 +62,11 @@ object ReviewUtil {
         } else {
             Pair(formattedText, !allowClick)
         }
+    }
+
+    fun formatReviewCollapse(context: Context, review: String): CharSequence? {
+        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
+        return HtmlLinkHelper(context, formattedText.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
     }
 }
 

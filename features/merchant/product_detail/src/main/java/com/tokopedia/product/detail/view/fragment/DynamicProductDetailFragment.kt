@@ -1247,7 +1247,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToReviewDetail(productId: String, productName: String) {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_REVIEW, productId)
             intent?.run {
                 intent.putExtra(ProductDetailConstant.REVIEW_PRD_NM, productName)
                 startActivity(intent)

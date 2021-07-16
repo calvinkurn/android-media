@@ -21,7 +21,6 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItem
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -119,19 +118,32 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             }
             return
         }
+        setExpandableReview(message, feedbackId, productId)
+    }
+
+    private fun setExpandableReview(message: String, feedbackId: String, productId: String) {
         reviewMessage?.apply {
             isEnabled = true
-            val formattingResult = ReviewUtil.reviewDescFormatter(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
+            val formattingResult = ReviewUtil.formatReviewExpand(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
             maxLines = MAX_LINES_REVIEW
             text = formattingResult.first
             if (formattingResult.second) {
                 setOnClickListener {
                     ReadReviewTracking.trackOnSeeFullReviewClicked(feedbackId, productId)
-                    maxLines = Integer.MAX_VALUE
-                    text = HtmlLinkHelper(context, message).spannedString ?: ""
+                    setCollapsableReview(message, feedbackId, productId)
                 }
             }
             show()
+        }
+    }
+
+    private fun setCollapsableReview(message: String, feedbackId: String, productId: String) {
+        reviewMessage?.apply {
+            text = ReviewUtil.formatReviewCollapse(context, message)
+            maxLines = Integer.MAX_VALUE
+            setOnClickListener {
+                setExpandableReview(message, feedbackId, productId)
+            }
         }
     }
 

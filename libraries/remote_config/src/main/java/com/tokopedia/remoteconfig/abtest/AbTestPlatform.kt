@@ -244,6 +244,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         const val VARIANT_OLD_NOTFICENTER = "NotifCenter_Old"
 
         const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
+
+        const val EXPERIMENT_NAME_REVIEW_PRODUCT_READING = "review_pdp"
+        const val VARIANT_NEW_REVIEW_PRODUCT_READING = "new_review_pdp"
+        const val VARIANT_OLD_REVIEW_PRODUCT_READING = "old_review_pdp"
     }
 
 }

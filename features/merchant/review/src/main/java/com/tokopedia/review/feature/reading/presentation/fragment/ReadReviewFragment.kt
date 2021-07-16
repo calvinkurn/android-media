@@ -567,6 +567,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
+        if (viewModel.ratingAndTopic.value is Fail) {
+            return
+        }
         hideError()
         if (productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
             showFilteredEmpty()
@@ -581,7 +584,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                     shopInfo.name
                 ), hasNext
             )
-            if (isListEmpty) hideFab()
+            if (isListEmpty || currentPage == 0) hideFab() else showFab()
         }
     }
 
