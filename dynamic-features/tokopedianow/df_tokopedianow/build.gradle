@@ -6,6 +6,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -48,5 +49,5 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
-    implementation project(rootProject.ext.features.tokopediaNow)
+    implementation projectOrAar(rootProject.ext.features.tokopediaNow)
 }

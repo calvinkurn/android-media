@@ -125,6 +125,7 @@
 /features/recharge/rechargeocr                          @tokopedia/android-minionmark-dev
 /features/recharge/smart_bills                          @tokopedia/android-minionmark-dev
 /features/recharge/voucher_game                         @tokopedia/android-minionmark-dev
+/features/recharge/recharge_pdp_emoney                  @tokopedia/android-minionmark-dev
 
 /features/entertainment/deals               	        @tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev

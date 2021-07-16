@@ -28,7 +28,10 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)
         toolbar.visibility = View.GONE
-        updateTitle(getString(R.string.tp_title_tokopoints))
+        try {
+            updateTitle(getString(R.string.tp_title_tokopoints))
+        } catch (e: Exception) {
+        }
     }
 
     override fun getNewFragment(): Fragment? {

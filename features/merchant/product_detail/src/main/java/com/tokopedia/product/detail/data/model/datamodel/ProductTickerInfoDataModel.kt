@@ -2,9 +2,9 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 /**
@@ -33,7 +33,7 @@ data class ProductTickerInfoDataModel(
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     fun shouldRemoveComponent(): Boolean {
-        return (statusInfo == null || (statusInfo?.shopStatus == ProductShopStatusTypeDef.OPEN && statusInfo?.isIdle != true)) &&
+        return (statusInfo == null || (statusInfo?.shopStatus == ShopStatusDef.OPEN && statusInfo?.isIdle != true)) &&
                 !isOutOfStock && !isProductWarehouse
     }
 
