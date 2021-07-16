@@ -1008,7 +1008,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void userCarouselImpression(@NotNull String activityId, @NotNull FeedXMedia media, int positionInFeed, String type, boolean isFollowed, @NotNull String shopId) {
+    public void userCarouselImpression(@NotNull String activityId, @NotNull FeedXMedia media, int positionInFeed, String type, boolean isFollowed, @NotNull String shopId, int postPosition) {
 
     }
 

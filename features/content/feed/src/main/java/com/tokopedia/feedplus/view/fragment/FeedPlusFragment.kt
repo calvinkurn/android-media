@@ -1693,9 +1693,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        postPosition: Int
     ) {
-        feedAnalytics.eventImpression(activityId, media, positionInFeed, type, isFollowed, shopId)
+        feedAnalytics.eventImpression(activityId, media, positionInFeed, type, isFollowed, shopId, (postPosition+1).toString())
     }
 
     override fun userGridPostImpression(
@@ -2064,7 +2065,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.id,
             feedXCard.typename,
             feedXCard.media[0].type != "image",
-            feedXCard.followers.isFollowed
+            feedXCard.followers.isFollowed,
+            false
         )
     }
 

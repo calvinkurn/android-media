@@ -623,7 +623,7 @@ class FeedAnalyticTracker
     ): Map<String, Any> = DataLayer.mapOf(
         Promotion.CREATIVE, imageUrl,
         Promotion.ID, activityId,
-        Promotion.NAME, "/content feed - ${getPostType(type, isFollowed, isVideo)} - post",
+        Promotion.NAME, "/feed - ${getPostType(type, isFollowed, isVideo)} - post",
         Promotion.POSITION, position + 1,
     )
 
@@ -692,7 +692,8 @@ class FeedAnalyticTracker
         position: Int,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        postPosition: String
     ) {
         trackEnhancedEcommerceEventNew(
             PROMO_VIEW,
@@ -704,9 +705,10 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed)
             ),
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                postPosition
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -737,9 +739,10 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, isVideo)
             ),
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                "1"
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -1160,10 +1163,11 @@ class FeedAnalyticTracker
         postType: String,
         isVideoPost: Boolean,
         isFollowed: Boolean,
+        isCommentPage: Boolean
     ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
-            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_CATEGORY to if (isCommentPage) CATEGORY_FEED_TIMELINE_COMMENT else CATEGORY_FEED_TIMELINE,
             EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
@@ -1185,7 +1189,13 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickBackButtonCommentPage(actvityId: String, isVideoPost: Boolean, isFollowed: Boolean, postType: String) {
+    fun clickBackButtonCommentPage(
+        actvityId: String,
+        shopId: String,
+        isVideoPost: Boolean,
+        isFollowed: Boolean,
+        postType: String,
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
@@ -1199,7 +1209,7 @@ class FeedAnalyticTracker
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 actvityId,
-                userSessionInterface.shopId
+                shopId
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,

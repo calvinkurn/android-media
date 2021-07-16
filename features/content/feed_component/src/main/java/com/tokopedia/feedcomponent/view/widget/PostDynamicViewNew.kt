@@ -657,7 +657,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     0,
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
-                    feedXCard.author.id
+                    feedXCard.author.id,
+                    positionInFeed
                 )
                 media.forEachIndexed { index, feedMedia ->
 
@@ -819,7 +820,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             current,
                             feedXCard.typename,
                             feedXCard.followers.isFollowed,
-                            feedXCard.author.id
+                            feedXCard.author.id,
+                            positionInFeed
                         )
                         pageControl.setCurrentIndicator(current)
                         if (media[current].type == TYPE_IMAGE)

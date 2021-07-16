@@ -1034,7 +1034,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         positionInFeed: Int,
         postType: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        postPosition: Int
     ) {
     }
 

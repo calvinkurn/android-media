@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.image
 
 import android.os.Build
 import android.view.ViewTreeObserver
+import com.tokopedia.design.viewpagerindicator.TitlePageIndicator
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -54,7 +55,8 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
             positionInFeed: Int,
             postType: String,
             isFollowed: Boolean,
-            shopId: String
+            shopId: String,
+            postPosition: Int
         )
         fun userGridPostImpression(
             positionInFeed: Int,

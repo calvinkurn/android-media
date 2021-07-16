@@ -279,7 +279,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onHashTagClicked(hashTag: String?, id: String?) {
-        feedAnalytics.clickHashTag(hashTag ?: "", authorId, postId, postType, isVideoPost, isFollowed)
+        feedAnalytics.clickHashTag(hashTag ?: "", authorId, postId, postType, isVideoPost, isFollowed, true)
     }
 
     override fun onGoToProfile(url: String) {
