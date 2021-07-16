@@ -165,6 +165,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupNavToolbar()
+        stickyLoginSetup()
         setupStatusBar()
         setupRecyclerView()
         setupSwipeRefreshLayout()
@@ -322,6 +323,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun onRefreshLayout() {
         resetMovingPosition()
         removeAllScrollListener()
+        hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
     }
@@ -454,7 +456,7 @@ class TokoNowHomeFragment: Fragment(),
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
-                stickyLoginSetup()
+                stickyLoginLoadContent()
             }
         }
 
@@ -515,10 +517,15 @@ class TokoNowHomeFragment: Fragment(),
                 }
             })
         }
+        hideStickyLogin()
     }
 
     private fun stickyLoginLoadContent(){
         sticky_login_tokonow.loadContent()
+    }
+
+    private fun hideStickyLogin(){
+        sticky_login_tokonow.hide()
     }
 
     private fun resetMovingPosition() {
@@ -530,6 +537,7 @@ class TokoNowHomeFragment: Fragment(),
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
             miniCartWidget?.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget?.show()
+            hideStickyLogin()
         } else {
             miniCartWidget?.hide()
         }
@@ -591,7 +599,6 @@ class TokoNowHomeFragment: Fragment(),
             }
             !isLoadDataFinished -> loadNextItem(data)
         }
-        stickyLoginLoadContent()
     }
 
     private fun loadNextItem(data: HomeLayoutListUiModel) {
