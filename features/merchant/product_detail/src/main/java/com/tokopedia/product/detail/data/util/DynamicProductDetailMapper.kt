@@ -35,9 +35,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.DISCUSSION_FAQ -> {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.PRODUCT_INFO -> {
-                    listOfComponent.add(ProductInfoDataModel(type = component.type, name = component.componentName, data = mapToProductInfoContent(component.componentData)))
-                }
                 ProductDetailConstant.PRODUCT_DETAIL -> {
                     listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
                 }
@@ -223,16 +220,6 @@ object DynamicProductDetailMapper {
     fun convertMediaToDataModel(media: MutableList<Media>): List<MediaDataModel> {
         return media.map {
             MediaDataModel(it.id, it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
-        }
-    }
-
-    private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
-        return if (listOfData.isEmpty()) {
-            null
-        } else {
-            listOfData.map {
-                ProductInfoContent(it.row, it.content)
-            }
         }
     }
 

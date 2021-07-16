@@ -4,7 +4,6 @@ import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 
 data class PdpComparisonWidgetDataModel(
         val type: String = "",
@@ -13,9 +12,6 @@ data class PdpComparisonWidgetDataModel(
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
-
-    val isRecomenDataEmpty: Boolean
-        get() = recommendationWidget.recommendationItemList.isEmpty()
 
     override fun type(): String = type
 
