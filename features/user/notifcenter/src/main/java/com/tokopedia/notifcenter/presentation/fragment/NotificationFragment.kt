@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.app.Activity
+import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -275,6 +276,20 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             }
         })
 
+        viewModel.notificationItemsSeller.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderNotificationsSeller(it.data)
+                    if (!viewModel.hasFilter() && isVisible) {
+                        viewModel.clearNotifCounter(containerListener?.role)
+                    }
+                }
+                is Fail -> showGetListError(it.throwable)
+                else -> {
+                }
+            }
+        })
+
         viewModel.topAdsBanner.observe(viewLifecycleOwner, Observer {
             rvAdapter?.addTopAdsBanner(it)
         })
@@ -381,6 +396,14 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private fun renderNotifications(data: NotificationDetailResponseModel) {
         val hasNext = isInfiniteNotificationScroll(data)
         renderList(data.items, hasNext)
+        if (hasNext) {
+            showLoading()
+        }
+    }
+
+    private fun renderNotificationsSeller(data: Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) {
+        val hasNext = isInfiniteNotificationScroll(data.second)
+        renderList((data.first.items + data.second.items), hasNext)
         if (hasNext) {
             showLoading()
         }

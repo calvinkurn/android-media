@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.config.GlobalConfig
@@ -12,7 +13,6 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.notifcenter.presentation.fragment.NotificationFragment
-import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateSellerFragment
 
 /**
  * Created by faisalramd on 05/02/20.
@@ -23,8 +23,8 @@ class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer 
     override fun onCreate(savedInstanceState: Bundle?) {
         setThemeWhiteIfSellerApp()
         super.onCreate(savedInstanceState)
-
         setWhiteStatusBarIfSellerApp()
+        setupBackground()
     }
 
     override fun getNewFragment(): Fragment {
@@ -37,10 +37,18 @@ class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer 
         }
     }
 
+    private fun setupBackground() {
+        val whiteColor = ContextCompat.getColor(
+                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+        )
+        window.decorView.setBackgroundColor(whiteColor)
+    }
+
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
             setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
+        supportActionBar?.elevation = 0F
     }
 
     companion object {

@@ -9,21 +9,18 @@ import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailRespo
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.Paging
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 
 open class NotifcenterDetailUseCase @Inject constructor(
-    @Named(QUERY_NOTIFCENTER_DETAIL_V3)
-    private val query: String,
-    private val gqlUseCase: GraphqlUseCase<NotifcenterDetailResponse>,
-    private val mapper: NotifcenterDetailMapper,
-    private var dispatchers: CoroutineDispatchers
+        @Named(QUERY_NOTIFCENTER_DETAIL_V3)
+        private val query: String,
+        private val gqlUseCase: GraphqlUseCase<NotifcenterDetailResponse>,
+        private val mapper: NotifcenterDetailMapper,
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     var timeZone = TimeZone.getDefault().id
@@ -34,11 +31,11 @@ open class NotifcenterDetailUseCase @Inject constructor(
         get() = SupervisorJob() + dispatchers.main
 
     fun getFirstPageNotification(
-        filter: Long,
-        @RoleType
-        role: Int,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
+            filter: Long,
+            @RoleType
+            role: Int,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
+            onError: (Throwable) -> Unit
     ) {
         val fields = if (!hasFilter(filter)) {
             arrayOf("new")
@@ -46,63 +43,95 @@ open class NotifcenterDetailUseCase @Inject constructor(
             emptyArray()
         }
         val params = generateParam(
-            filter, role, "", fields
+                filter, role, "", fields
         )
         val needSectionTitle = !hasFilter(filter)
         val needLoadMoreButton = needSectionTitle
         getNotifications(
-            params, onSuccess, onError,
-            { response ->
-                mapper.mapFirstPage(response, needSectionTitle, needLoadMoreButton)
-            },
-            { response ->
-                updateNewPaging(response)
-                updateEarlierPaging(response)
-            }
+                params, onSuccess, onError,
+                { response ->
+                    mapper.mapFirstPage(response, needSectionTitle, needLoadMoreButton)
+                },
+                { response ->
+                    updateNewPaging(response)
+                    updateEarlierPaging(response)
+                }
+        )
+    }
+
+    fun getFirstPageNotificationSeller(
+            filter: Long,
+            @RoleType
+            role: Int,
+            onSuccess: (Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        val fields = if (!hasFilter(filter)) {
+            arrayOf("new")
+        } else {
+            emptyArray()
+        }
+        val params = generateParam(
+                filter, role, "", fields
+        )
+        val needSectionTitle = !hasFilter(filter)
+        val needLoadMoreButton = needSectionTitle
+        chainGetNotifications(
+                params, onSuccess, onError,
+                { response ->
+                    mapper.mapFirstPage(response, needSectionTitle, false)
+                },
+                { response ->
+                    mapper.mapEarlierSection(response, false, needLoadMoreButton)
+                },
+                { response ->
+                    updateNewPaging(response)
+                    updateEarlierPaging(response)
+                }
         )
     }
 
     fun getMoreNewNotifications(
-        filter: Long,
-        @RoleType
-        role: Int,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
+            filter: Long,
+            @RoleType
+            role: Int,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
+            onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
-            filter, role, pagingNew.lastNotifId, arrayOf("new")
+                filter, role, pagingNew.lastNotifId, arrayOf("new")
         )
         val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
-            params, onSuccess, onError,
-            { response ->
-                mapper.mapNewSection(response, false, needLoadMoreButton)
-            },
-            { response ->
-                updateNewPaging(response)
-            }
+                params, onSuccess, onError,
+                { response ->
+                    mapper.mapNewSection(response, false, needLoadMoreButton)
+                },
+                { response ->
+                    updateNewPaging(response)
+                }
         )
     }
 
     fun getMoreEarlierNotifications(
-        filter: Long,
-        @RoleType
-        role: Int,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit
+            filter: Long,
+            @RoleType
+            role: Int,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
+            onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
-            filter, role, pagingEarlier.lastNotifId, emptyArray()
+                filter, role, pagingEarlier.lastNotifId, emptyArray()
         )
         val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
-            params, onSuccess, onError,
-            { response ->
-                mapper.mapEarlierSection(response, false, needLoadMoreButton)
-            },
-            { response ->
-                updateEarlierPaging(response)
-            }
+                params, onSuccess, onError,
+                { response ->
+                    mapper.mapEarlierSection(response, false, needLoadMoreButton)
+                },
+                { response ->
+                    updateEarlierPaging(response)
+                }
         )
     }
 
@@ -111,31 +140,74 @@ open class NotifcenterDetailUseCase @Inject constructor(
     }
 
     private fun getNotifications(
-        params: Map<String, Any?>,
-        onSuccess: (NotificationDetailResponseModel) -> Unit,
-        onError: (Throwable) -> Unit,
-        mapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
-        onResponseReady: (response: NotifcenterDetailResponse) -> Unit
+            params: Map<String, Any?>,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
+            onError: (Throwable) -> Unit,
+            mapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
+            onResponseReady: (response: NotifcenterDetailResponse) -> Unit
     ) {
         launchCatchError(
-            dispatchers.io,
-            {
-                val response = gqlUseCase.apply {
-                    setTypeClass(NotifcenterDetailResponse::class.java)
-                    setRequestParams(params)
-                    setGraphqlQuery(query)
-                }.executeOnBackground()
-                val items = mapping(response)
-                withContext(dispatchers.main) {
-                    onResponseReady(response)
-                    onSuccess(items)
+                dispatchers.io,
+                {
+                    val response = gqlUseCase.apply {
+                        setTypeClass(NotifcenterDetailResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    val items = mapping(response)
+                    withContext(dispatchers.main) {
+                        onResponseReady(response)
+                        onSuccess(items)
+                    }
+                },
+                {
+                    withContext(dispatchers.main) {
+                        onError(it)
+                    }
                 }
-            },
-            {
-                withContext(dispatchers.main) {
-                    onError(it)
+        )
+    }
+
+    fun chainGetNotifications(
+            params: Map<String, Any?>,
+            onSuccess: (Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) -> Unit,
+            onError: (Throwable) -> Unit,
+            firstMapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
+            secondMapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
+            onResponseReady: (response: NotifcenterDetailResponse) -> Unit
+    ) {
+        launchCatchError(
+                dispatchers.io,
+                {
+                    val response = gqlUseCase.apply {
+                        setTypeClass(NotifcenterDetailResponse::class.java)
+                        setRequestParams(params)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground()
+                    val secondParams = mapOf(
+                            PARAM_TYPE_ID to params.get(PARAM_TYPE_ID),
+                            PARAM_TAG_ID to params.get(PARAM_TAG_ID),
+                            PARAM_TIMEZONE to timeZone,
+                            PARAM_LAST_NOTIF_ID to response.notifcenterDetail.list.last().notifId,
+                            PARAM_FIELDS to emptyArray<String>()
+                    )
+                    val response2 = gqlUseCase.apply {
+                        setTypeClass(NotifcenterDetailResponse::class.java)
+                        setRequestParams(secondParams)
+                        setGraphqlQuery(query)
+                    }.executeOnBackground();
+                    val items = firstMapping(response)
+                    val items2 = secondMapping(response2)
+                    withContext(dispatchers.main) {
+                        onResponseReady(response2)
+                        onSuccess(items to items2)
+                    }
+                },
+                {
+                    withContext(dispatchers.main) {
+                        onError(it)
+                    }
                 }
-            }
         )
     }
 
@@ -148,18 +220,18 @@ open class NotifcenterDetailUseCase @Inject constructor(
     }
 
     private fun generateParam(
-        filter: Long,
-        @RoleType
-        role: Int,
-        lastNotifId: String,
-        fields: Array<String>
+            filter: Long,
+            @RoleType
+            role: Int,
+            lastNotifId: String,
+            fields: Array<String>
     ): Map<String, Any?> {
         return mapOf(
-            PARAM_TYPE_ID to role,
-            PARAM_TAG_ID to filter,
-            PARAM_TIMEZONE to timeZone,
-            PARAM_LAST_NOTIF_ID to lastNotifId,
-            PARAM_FIELDS to fields
+                PARAM_TYPE_ID to role,
+                PARAM_TAG_ID to filter,
+                PARAM_TIMEZONE to timeZone,
+                PARAM_LAST_NOTIF_ID to lastNotifId,
+                PARAM_FIELDS to fields
         )
     }
 
