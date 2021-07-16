@@ -1655,18 +1655,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                val enableComparisonWidget = remoteConfig()?.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
-                if (enableComparisonWidget) {
-                    if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                        pdpUiUpdater?.updateComparisonDataModel(it.data)
-                        updateUi()
+                if (it.data.recommendationItemList.isNotEmpty()) {
+                    val enableComparisonWidget = remoteConfig()?.getBoolean(
+                            RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
+                    if (enableComparisonWidget) {
+                        if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                            pdpUiUpdater?.updateComparisonDataModel(it.data)
+                            updateUi()
+                        } else {
+                            pdpUiUpdater?.updateRecommendationData(it.data)
+                            updateUi()
+                        }
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
                         updateUi()
                     }
                 } else {
-                    pdpUiUpdater?.updateRecommendationData(it.data)
+                    //recomUiPageName used because there is possibilites gql recom return empty pagename
+                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
                     updateUi()
                 }
             }, {
