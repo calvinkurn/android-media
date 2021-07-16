@@ -36,11 +36,12 @@ class GetGqlHowToPayInstructions @Inject constructor(
         }
     }
 
-    private fun getRequestParams(appLinkPaymentInfo: AppLinkPaymentInfo): Map<String, Any?> {
-        var t = appLinkPaymentInfo.transactionId
-        var m = appLinkPaymentInfo.merchantCode
-        return mapOf(TRANSACTION_ID to t, MERCHANT_CODE to m)
-    }
+    private fun getRequestParams(appLinkPaymentInfo: AppLinkPaymentInfo) =
+        mapOf(
+            TRANSACTION_ID to appLinkPaymentInfo.transactionId,
+            MERCHANT_CODE to appLinkPaymentInfo.merchantCode
+        )
+
 
     companion object {
 

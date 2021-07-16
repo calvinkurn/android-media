@@ -47,11 +47,11 @@
     <string name="payment_label_succes_upload_proof">Bukti fisik pembayaran berhasil diunggah</string>
     <string name="payment_label_save_image">Simpan Gambar</string>
     <string name="payment_label_error_empty_user_id">User ID Klik BCA harus diisi</string>
+
     <string name="pms_hwp_rp">Rp%s</string>
     <string name="pms_hwp_screenshot">Simpan Screenshot</string>
     <string name="pms_hwp_payment_code">Kode Pembayaran</string>
     <string name="pms_hwp_VA_code">Nomor Virtual Account</string>
-    <string name="pms_hwp_user_id">User ID</string>
     <string name="pms_hwp_account_number">Nomor Rekening</string>
     <string name="pms_hwp_copy">Salin</string>
     <string name="pms_hwp_transfer_3_digit_info">Penting! Transfer dengan jumlah yang tepat hingga 3 digit terakhir.</string>
@@ -82,6 +82,5 @@
     <string name="pms_payment_cancel">Batalkan</string>
     <string name="pms_payment_detail">Detail</string>
     <string name="pms_payment_item_heading">Transaksi %1$d - %2$s</string>
-
 
 </resources>

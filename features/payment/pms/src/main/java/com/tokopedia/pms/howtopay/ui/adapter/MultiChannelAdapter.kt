@@ -10,7 +10,7 @@ import com.tokopedia.pms.howtopay.ui.adapter.viewHolder.MultiChannelViewHolder
 class MultiChannelAdapter (private val paymentChannels: ArrayList<HtpPaymentChannel>) :
         RecyclerView.Adapter<MultiChannelViewHolder>(){
 
-    private var expandedChannel : HtpPaymentChannel? = null
+    private var lastExpandedPosition: Int = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiChannelViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.pms_hwp_item_multi_channel,
@@ -24,14 +24,16 @@ class MultiChannelAdapter (private val paymentChannels: ArrayList<HtpPaymentChan
        holder.bindView(paymentChannels[position],(position == itemCount-1) ,::onExpand)
     }
 
-    private fun onExpand(paymentChannel: HtpPaymentChannel){
-        if(paymentChannel.isExpanded){
-            expandedChannel?.isExpanded =  false
-            expandedChannel = paymentChannel
-            this.notifyDataSetChanged()
-        }else{
-            expandedChannel = null
-            this.notifyDataSetChanged()
+    private fun onExpand(paymentChannel: HtpPaymentChannel, position: Int){
+        if(paymentChannel.isExpanded) {
+            paymentChannel.isExpanded = false
+            notifyItemChanged(position)
+        } else {
+            paymentChannels[lastExpandedPosition].isExpanded = false
+            notifyItemChanged(lastExpandedPosition)
+            paymentChannel.isExpanded = true
+            notifyItemChanged(position)
+            lastExpandedPosition = position
         }
     }
 

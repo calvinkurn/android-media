@@ -159,20 +159,16 @@ class HowToPayFragment : BaseDaggerFragment() {
     }
 
     private fun setHeaderData(data: HowToPayData) {
-        val paymentCodeHeading = if (data.paymentCodeHint.isNullOrEmpty())
-            getString(R.string.pms_hwp_payment_code) else data.paymentCodeHint
+        val paymentCodeHeading = getPaymentCodeHeading(data.paymentCodeHint)
 
         val amount = if (data.combineAmount > 0)
             CurrencyFormatUtil.convertPriceValueToIdrFormat(data.combineAmount, false)
         else data.netAmount
-
+        val amountString = getString(R.string.pms_hwp_rp, amount)
         val displayAmount = if (data.isManualTransfer)
-            highlightLastThreeDigits(
-                getString(
-                    R.string.pms_hwp_rp,
-                    amount
-                )
-            ) else amount
+            highlightLastThreeDigits(amountString)
+        else amountString
+
 
         setCommonPaymentDetails(
             data.gatewayName,
@@ -192,7 +188,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                     IconUnify.COPY
                 ) {
                     copyToClipBoard(context, data.transactionCode, data.gatewayCode)
-                    showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
+                    showToast(getString(R.string.pms_hwp_common_copy_success, paymentCodeHeading))
                 }
             }
         }
@@ -235,7 +231,12 @@ class HowToPayFragment : BaseDaggerFragment() {
             IconUnify.COPY
         ) {
             copyToClipBoard(context, data.transactionCode, data.gatewayCode)
-            showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
+            showToast(
+                getString(
+                    R.string.pms_hwp_common_copy_success,
+                    getPaymentCodeHeading(data.paymentCodeHint)
+                )
+            )
         }
     }
 
@@ -269,7 +270,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         actionIcon: Int, clickAction: (() -> Unit)
     ) {
         // for account number copy
-        if (!howToPayData.hideCopyAccountNum) {
+        if (howToPayData.isOfflineStore || !howToPayData.hideCopyAccountNum) {
             ivTakeScreenshot.setImage(actionIcon)
             ivTakeScreenshot.setOnClickListener { clickAction.invoke() }
 
@@ -395,6 +396,10 @@ class HowToPayFragment : BaseDaggerFragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         screenshotHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }
+
+    private fun getPaymentCodeHeading(paymentCodeHint: String) =
+        if (paymentCodeHint.isEmpty())
+            getString(R.string.pms_hwp_account_number) else paymentCodeHint
 
     override fun onDestroyView() {
         screenshotHelper.cancel()

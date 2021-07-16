@@ -21,7 +21,7 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun bindView(
         paymentChannel: HtpPaymentChannel, isLastItem: Boolean,
-        onExpand: (HtpPaymentChannel) -> Unit
+        onExpand: (HtpPaymentChannel, Int) -> Unit
     ) {
 
         tvChannelName.text = paymentChannel.channelTitle
@@ -39,8 +39,7 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         }
 
         itemView.setOnClickListener {
-            paymentChannel.isExpanded = !paymentChannel.isExpanded
-            onExpand(paymentChannel)
+            onExpand(paymentChannel, adapterPosition)
         }
         if (isLastItem)
             divider.gone()
