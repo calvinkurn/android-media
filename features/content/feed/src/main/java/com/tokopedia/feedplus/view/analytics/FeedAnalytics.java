@@ -561,13 +561,13 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventDetailProductClick(ProductEcommerce product, int userId) {
+    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId) {
         trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
                         EVENT_ACTION, "click - product - asgc",
-                        EVENT_LABEL, product.getProductId(),
+                        EVENT_LABEL, activityId+" - "+shopId+" - "+product.getProductId(),
                         KEY_USER_ID, userId,
                         KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
                         KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,

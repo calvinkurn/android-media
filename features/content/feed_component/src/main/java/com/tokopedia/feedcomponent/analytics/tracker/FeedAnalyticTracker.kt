@@ -913,7 +913,7 @@ class FeedAnalyticTracker
             ),
             DataLayer.mapOf(CLICK, mapOf(
                 "actionField" to mapOf(
-                    "list" to "feed - sgc image"
+                    "list" to "feed - ${getPostType(type, isFollowed)}"
                 ),
                 "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed)
             )
@@ -1139,7 +1139,7 @@ class FeedAnalyticTracker
             EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
-                "delete confirm",
+                "confirm delete",
                 getPostType(type, isFollowed, isVideo)
             ),
             KEY_EVENT_LABEL to String.format(
@@ -1364,17 +1364,13 @@ class FeedAnalyticTracker
     }
 
     fun clickMuteButton(activityId: String, isMute: Boolean, id: String, isFollowed: Boolean) {
-        val mute = if (isMute)
-            "unmute"
-        else
-            "mute"
         var map = getCommonMap()
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
                     FORMAT_THREE_PARAM,
                     CLICK,
-                    mute,
+                    "mute",
                     getPostType("", isFollowed , isVideo = true)
                 ),
                 KEY_EVENT_LABEL to String.format(

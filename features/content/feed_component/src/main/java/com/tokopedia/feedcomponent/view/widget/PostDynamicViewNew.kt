@@ -874,8 +874,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             volumeIcon.setOnClickListener {
-                isMute = !isMute
+                if(isMute)
                 listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
+                isMute = !isMute
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 toggleVolume(videoPlayer?.isMute() != true)
             }

@@ -268,6 +268,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         private const val PARAM_VIDEO_INDEX = "video_index"
         private const val PARAM_VIDEO_AUTHOR_TYPE = "video_author_type"
+        private const val PARAM_SHOP_ID = "shop_id"
+        private const val PARAM_ACTIVITY_ID = "activity_id"
         const val PARAM_POST_TYPE = "POST_TYPE"
         const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
 
@@ -2080,7 +2082,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         product: FeedXProduct
     ) {
-        onGoToLink(redirectLink)
+        onGoToLinkASGCProductDetail(redirectLink, shopId, activityId.toString())
 
         if (redirectLink.contains(FEED_DETAIL)) {
             feedAnalytics.eventGridMoreProductCLicked(
@@ -2504,6 +2506,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
 
+    }
+    private fun onGoToLinkASGCProductDetail(link: String, shopId: String, activityId: String) {
+        context?.let {
+            if (!TextUtils.isEmpty(link)) {
+                if (RouteManager.isSupportApplink(it, link)) {
+                    val intent = RouteManager.getIntent(context, link)
+                    intent.putExtra(PARAM_SHOP_ID, shopId)
+                    intent.putExtra(PARAM_ACTIVITY_ID, activityId)
+                    if (activity != null)
+                        requireActivity().startActivity(intent)
+                } else {
+                    RouteManager.route(
+                        it,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                    )
+                }
+            }
+        }
     }
 
     private fun onGoToLink(link: String) {
