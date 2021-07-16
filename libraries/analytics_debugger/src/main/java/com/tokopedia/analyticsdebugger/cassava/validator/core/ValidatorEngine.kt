@@ -80,7 +80,7 @@ class ValidatorEngine @Inject constructor(private val dao: GtmLogDBSource) {
 
             if (result.isValid) {
                 resultList.add(gtm)
-            } else {
+            } else if (result.errorCause.isNotEmpty()) {
                 errors.append(buildErrorStringWithEventAndLabel(
                         comparator.data[EVENT_KEY].toString(),
                         mapGtm[EVENT_LABEL_KEY].toString(),

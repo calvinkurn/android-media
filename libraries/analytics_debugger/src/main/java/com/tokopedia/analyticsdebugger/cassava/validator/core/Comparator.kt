@@ -43,7 +43,7 @@ internal fun Map<String, Any>.canValidate(obj: Map<String, Any>, strict: Boolean
         val objVal = obj[entry.key]
         val eqResult = entry.value.eq(objVal!!)
         if (!eqResult.isValid) {
-            if (isNeedCause) {
+            if (isNeedCause && eqResult.errorCause.isNotEmpty()) {
                 eqResult.errorCause += " in field ${entry.key}"
             } else {
                 eqResult.errorCause = ""
