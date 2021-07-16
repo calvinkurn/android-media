@@ -17,13 +17,6 @@ buildscript {
     }
 }
 
-android {
-    defaultConfig {
-        multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-    }
-}
-
 dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
