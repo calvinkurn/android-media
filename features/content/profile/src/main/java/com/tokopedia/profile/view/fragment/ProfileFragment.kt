@@ -1184,7 +1184,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         shopId: String,
         productList: List<FeedXProduct>
     ) {
-        TODO("Not yet implemented")
     }
 
     override fun onVideoPlayerClicked(
@@ -1197,6 +1196,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isFollowed: Boolean
     ) {
         onGoToLink(redirectUrl)
+    }
+
+    override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
     }
 
     override fun onEmptyComponentClicked() {

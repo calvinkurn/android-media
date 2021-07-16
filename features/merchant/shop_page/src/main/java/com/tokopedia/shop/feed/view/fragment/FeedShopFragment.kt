@@ -877,6 +877,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
+    }
+
     override fun onAddToCartSuccess() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
     }
