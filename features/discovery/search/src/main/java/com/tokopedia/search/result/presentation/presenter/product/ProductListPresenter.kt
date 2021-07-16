@@ -7,6 +7,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
@@ -40,6 +41,7 @@ import com.tokopedia.search.result.presentation.model.BannerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.presentation.model.CarouselProductType
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
@@ -1280,18 +1282,21 @@ class ProductListPresenter @Inject constructor(
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()
 
         broadMatchVisitableList.add(SeparatorDataView())
-        broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView())
+        broadMatchVisitableList.add(SuggestionDataView(data.title))
+        broadMatchVisitableList.addAll(data.options.mapToBroadMatchDataView(data.type))
         broadMatchVisitableList.add(SeparatorDataView())
 
         return broadMatchVisitableList
     }
 
-    private fun List<InspirationCarouselDataView.Option>.mapToBroadMatchDataView(): List<Visitable<*>> {
+    private fun List<InspirationCarouselDataView.Option>.mapToBroadMatchDataView(
+            type: String,
+    ): List<Visitable<*>> {
         return map { option ->
             BroadMatchDataView(
                     keyword = option.title,
                     applink = option.applink,
-                    broadMatchItemDataViewList = option.product.map { product ->
+                    broadMatchItemDataViewList = option.product.mapIndexed { index, product ->
                         BroadMatchItemDataView(
                                 id = product.id,
                                 name = product.name,
@@ -1302,13 +1307,25 @@ class ProductListPresenter @Inject constructor(
                                 priceString = product.priceStr,
                                 ratingAverage = product.ratingAverage,
                                 labelGroupDataList = product.labelGroupDataList,
-                                carouselProductType = DynamicCarouselProduct(option.inspirationCarouselType),
                                 badgeItemDataViewList = product.badgeItemDataViewList,
                                 shopLocation = product.shopLocation,
+                                position = index + 1,
+                                alternativeKeyword = option.title,
+                                carouselProductType = determineInspirationCarouselProductType(type, option),
                         )
                     }
             )
         }
+    }
+
+    private fun determineInspirationCarouselProductType(
+            type: String,
+            option: InspirationCarouselDataView.Option
+    ): CarouselProductType {
+        return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
+            BroadMatchProduct(isOrganicAds = false, hasThreeDots = false)
+        else
+            DynamicCarouselProduct(option.inspirationCarouselType)
     }
 
     private fun processBannerAndBroadmatchInSamePosition(
