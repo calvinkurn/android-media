@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -23,6 +22,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -431,6 +431,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         observeRatingAndTopics()
         observeProductReviews()
         observeToggleLikeReview()
+        observePage()
     }
 
     override fun loadInitialData() {
@@ -497,7 +498,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun observeRatingAndTopics() {
-        viewModel.ratingAndTopic.observe(viewLifecycleOwner, Observer {
+        viewModel.ratingAndTopic.observe(viewLifecycleOwner, {
             hideFullPageLoading()
             when (it) {
                 is Success -> onSuccessGetRatingAndTopic(it.data)
@@ -507,7 +508,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun observeProductReviews() {
-        viewModel.productReviews.observe(viewLifecycleOwner, Observer {
+        viewModel.productReviews.observe(viewLifecycleOwner, {
             hideListOnlyLoading()
             when (it) {
                 is Success -> onSuccessGetProductReviews(it.data)
@@ -517,11 +518,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun observeToggleLikeReview() {
-        viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
+        viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> updateLike(it.data)
                 is Fail -> logToCrashlytics(it.throwable)
             }
+        })
+    }
+
+    private fun observePage() {
+        viewModel.page.observe(viewLifecycleOwner, {
+            goToTopFab?.showWithCondition(it > ReadReviewViewModel.INITIAL_PAGE)
         })
     }
 
@@ -574,7 +581,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                     shopInfo.name
                 ), hasNext
             )
-            if (isListEmpty) hideFab() else showFab()
+            if (isListEmpty) hideFab()
         }
     }
 
@@ -606,8 +613,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 message,
                 Toaster.toasterLength,
                 Toaster.TYPE_ERROR,
-                getString(R.string.review_refresh),
-                View.OnClickListener { action.invoke() }).show()
+                getString(R.string.review_refresh)
+            ) { action.invoke() }.show()
         }
     }
 

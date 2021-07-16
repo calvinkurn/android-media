@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.AvailableFilters
 import com.tokopedia.review.feature.reading.data.ProductRating
@@ -19,9 +21,15 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewHeader : BaseCustomView {
+
+    companion object {
+        const val RATING_STAR_WIDTH = 24
+        const val RATING_STAR_HEIGHT = 24
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -95,7 +103,16 @@ class ReadReviewHeader : BaseCustomView {
     private fun updateFilterChip(sortFilterItem: SortFilterItem?, isEmpty: Boolean, title: String, drawable: Drawable? = null) {
         sortFilterItem?.apply {
             this.title = title
-            iconDrawable = drawable
+            drawable?.let {
+                refChipUnify.chip_image_icon.apply {
+                    layoutParams.apply {
+                        width = RATING_STAR_WIDTH.toPx()
+                        height = RATING_STAR_HEIGHT.toPx()
+                    }
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                }
+                iconDrawable = it
+            }
             type = if (isEmpty) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
         }
     }
@@ -127,7 +144,7 @@ class ReadReviewHeader : BaseCustomView {
             }
             else -> {
                 Pair(selectedFilter.firstOrNull()?.listTitleText
-                        ?: context.getString(R.string.review_reading_filter_all_ratings), ContextCompat.getDrawable(context, R.drawable.ic_rating_star_item))
+                        ?: context.getString(R.string.review_reading_filter_all_ratings), getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300)))
             }
         }
     }
@@ -147,7 +164,7 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun setListener(readReviewHeaderListener: ReadReviewHeaderListener) {
-        setOnClickListener {
+        satisfactionRate?.setOnClickListener {
             readReviewHeaderListener.onHeaderClicked()
         }
     }

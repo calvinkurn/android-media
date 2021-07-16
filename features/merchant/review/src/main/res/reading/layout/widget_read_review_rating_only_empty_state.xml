@@ -8,8 +8,9 @@
     <ProgressBar
         android:id="@+id/rating_only_circular_progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="@dimen/layout_lvl5"
         android:background="@drawable/review_reading_rating_only_progress_bar_background"
         android:indeterminate="false"
         android:max="100"
@@ -21,17 +22,16 @@
     <FrameLayout
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintTop_toTopOf="@id/rating_only_circular_progress_bar"
         app:layout_constraintBottom_toBottomOf="@id/rating_only_circular_progress_bar"
+        app:layout_constraintEnd_toEndOf="@id/rating_only_circular_progress_bar"
         app:layout_constraintStart_toStartOf="@id/rating_only_circular_progress_bar"
-        app:layout_constraintEnd_toEndOf="@id/rating_only_circular_progress_bar">
+        app:layout_constraintTop_toTopOf="@id/rating_only_circular_progress_bar">
 
         <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
             android:id="@+id/rating_only_rating_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
     </FrameLayout>
 
@@ -51,6 +51,7 @@
         android:id="@+id/rating_only_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_satisfaction_rate"
@@ -63,8 +64,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_count"
         app:read_review_rating="5" />
 
@@ -73,8 +76,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_five_progress_bar"
         app:read_review_rating="4" />
 
@@ -83,8 +88,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_four_progress_bar"
         app:read_review_rating="3" />
 
@@ -93,8 +100,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_three_progress_bar"
         app:read_review_rating="2" />
 
@@ -103,8 +112,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_two_progress_bar"
         app:read_review_rating="1" />
 
