@@ -432,7 +432,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initBlockCanary();
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue());
 
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());

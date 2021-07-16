@@ -29,7 +29,7 @@
       "event": "clickPDP",
       "eventCategory": "product detail page",
       "eventAction": ".*",
-      "eventLabel": ".*;",
+      "eventLabel": ".*",
       "productId": "\\d{1,}",
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
       "sessionIris": ".{1,}",

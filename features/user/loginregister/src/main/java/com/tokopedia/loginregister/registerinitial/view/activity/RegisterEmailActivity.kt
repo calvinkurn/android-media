@@ -10,14 +10,18 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterEmailFragment.Companion.createInstance
 
 /**
  * @author by nisie on 10/25/18.
  */
-class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<Any?> {
+open class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<RegisterInitialComponent> {
+
+    private var registerInitialComponent: RegisterInitialComponent? = null
+
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         if (intent.extras != null) {
@@ -26,13 +30,25 @@ class RegisterEmailActivity : BaseSimpleActivity(), HasComponent<Any?> {
         return createInstance(bundle)
     }
 
+    override fun getComponent(): RegisterInitialComponent {
+        return registerInitialComponent ?: initializeRegisterInitialComponent()
+    }
+
+    protected open fun initializeRegisterInitialComponent(): RegisterInitialComponent {
+        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
+        return DaggerRegisterInitialComponent
+            .builder()
+            .loginRegisterComponent(loginRegisterComponent)
+            .build().also {
+                registerInitialComponent = it
+            }
+    }
+
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         toolbar.setPadding(0, 0, 30, 0)
-    }
-
-    override fun getComponent(): LoginRegisterComponent {
-        return DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
     }
 
     override fun onBackPressed() {
