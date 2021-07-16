@@ -1,10 +1,8 @@
 package com.tokopedia.linker.helper;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
@@ -18,7 +16,6 @@ import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.track.TrackApp;
 
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
