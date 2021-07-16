@@ -30,7 +30,7 @@ class ComparisonWidgetAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 1
+        return if(comparisonListModel.comparisonData.isNotEmpty()) 1 else 0
     }
 
     //viewType == position
