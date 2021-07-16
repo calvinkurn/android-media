@@ -38,7 +38,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -52,7 +52,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
-        DiscomBottomSheetFragment.ActionListener {
+        DiscomBottomSheetRevamp.DiscomRevampListener {
 
 
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
@@ -66,8 +66,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var isPositiveFlow: Boolean = true
     /*To differentiate user pinpoint on ANA Negative*/
     private var isPinpoint: Boolean = false
-    /*To differentiate flow from logistic or not*/
-    private var isLogisticLabel: Boolean = true
     private var validated: Boolean = true
     private val toppers: String = "Toppers-"
     private var currentKotaKecamatan: String? = ""
@@ -79,7 +77,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private lateinit var districtRecommendationBottomSheetFragment: DiscomBottomSheetFragment
+//    private lateinit var districtRecommendationBottomSheetFragment: DiscomBottomSheetFragment
+    private var districtBottomSheet: DiscomBottomSheetRevamp? = null
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
 
@@ -501,11 +500,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true, isPinpoint)
+        /*districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true, isPinpoint)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         childFragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
-        }
+        }*/
+        districtBottomSheet = DiscomBottomSheetRevamp()
+        districtBottomSheet?.setListener(this)
+        districtBottomSheet?.show(this.childFragmentManager)
     }
 
     private fun checkKotaKecamatan() {
@@ -844,7 +846,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onGetDistrict(districtAddress: Address) {
-       districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
+        districtBottomSheet?.getDistrict(districtAddress)
     }
 
     override fun onChooseZipcode(districtAddress: Address, postalCode: String, isPinpoint: Boolean) {
