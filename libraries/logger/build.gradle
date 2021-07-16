@@ -20,6 +20,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
+
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.junit
