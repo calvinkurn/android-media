@@ -2021,7 +2021,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun getInvoicePreviewId(savedInstanceState: Bundle?): String {
         val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
-        return if(id.isEmpty()) {
+        return if(id.toLongOrNull() == null) {
             InvoicePreviewUiModel.INVALID_ID
         } else {
             id
