@@ -8,19 +8,28 @@ class ShopDataResponse(
         @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
         val shopId: Long = 0,
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("user_id")
-        val userId: Long = 0,
         @SerializedName("shop_name")
         val shopName: String = "",
+        @SerializedName("shop_alert_message")
+        val shopAlertMessage: String = "",
+        @SerializedName("shop_ticker")
+        val shopTicker: String = "",
+        @SerializedName("maximum_weight_wording")
+        val maximumWeightWording: String = "",
+        @SerializedName("maximum_shipping_weight")
+        val maximumShippingWeight: Long = 0,
         @SerializedName("is_gold")
         val isGold: Int = 0,
-        @SerializedName("is_gold_badge")
-        val isGoldBadge: Boolean = false,
         @SerializedName("is_official")
         val isOfficial: Int = 0,
         @SerializedName("is_tokonow")
         val isTokoNow: Boolean = false,
+        @SerializedName("gold_merchant")
+        val goldMerchant: GoldMerchant = GoldMerchant(),
+        @SerializedName("official_store")
+        val officialStore: OfficialStore = OfficialStore(),
+        @SerializedName("shop_type_info")
+        val shopType: ShopTypeResponse = ShopTypeResponse(),
         @SerializedName("postal_code")
         val postalCode: String = "",
         @SerializedName("latitude")
@@ -29,24 +38,8 @@ class ShopDataResponse(
         val longitude: String = "",
         @SerializedName("district_id")
         val districtId: String = "",
-        @SerializedName("city_name")
-        val cityName: String = "",
         @SerializedName("shop_shipments")
-        val shopShipments: List<OccShopShipment> = emptyList(),
-        @SerializedName("gold_merchant")
-        val goldMerchant: GoldMerchant = GoldMerchant(),
-        @SerializedName("official_store")
-        val officialStore: OfficialStore = OfficialStore(),
-        @SerializedName("shop_type_info")
-        val shopType: ShopTypeResponse = ShopTypeResponse(),
-        @SerializedName("shop_alert_message")
-        val shopAlertMessage: String = "",
-        @SerializedName("shop_ticker")
-        val shopTicker: String = "",
-        @SerializedName("maximum_weight_wording")
-        val maximumWeightWording: String = "",
-        @SerializedName("maximum_shipping_weight")
-        val maximumShippingWeight: Int = 0
+        val shopShipments: List<OccShopShipment> = emptyList()
 )
 
 class OccShopShipment(

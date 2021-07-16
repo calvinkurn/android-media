@@ -173,10 +173,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
         cart_details {
           products {
-            product_tracker_data {
-              attribution
-              tracker_list_name
-            }
             cart_id
             product_id
             product_name
@@ -207,7 +203,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             campaign_id
             product_original_price
             product_price_original_fmt
-            is_slash_price
             slash_price_label
             product_finsurance
             warehouse_id
@@ -220,6 +215,17 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             product_preorder {
               duration_day
             }
+            product_tracker_data {
+              attribution
+              tracker_list_name
+            }
+            variant_description_detail {
+              variant_name
+              variant_description
+            }
+            product_warning_message
+            product_alert_message
+            product_information
             #purchase_protection_plan_data {
             #  protection_available
             #  protection_type_id
@@ -245,16 +251,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
       }
       profile {
-        onboarding_header_message
-        onboarding_component {
-          header_title
-          body_image
-          body_message
-          info_component {
-            text
-            link
-          }
-        }
         address {
           address_id
           receiver_name
@@ -270,7 +266,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           longitude
           latitude
           postal_code
-          geolocation
           state
           state_detail
           status
@@ -286,13 +281,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           gateway_name
           image
           description
-          fee
           minimum_amount
           maximum_amount
-          flags {
-            pin
-          }
           wallet_amount
+          fee
           metadata
           mdr
           credit_card {
@@ -328,7 +320,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             }
           }
           ticker_message
-          is_enable_next_button
           is_disable_pay_button
           is_ovo_only_campaign
           ovo_additional_data {

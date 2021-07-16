@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName
 class ShipmentInformationResponse(
         @SerializedName("shop_location")
         val shopLocation: String = "",
-        @SerializedName("estimation")
-        val estimation: String = "",
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")

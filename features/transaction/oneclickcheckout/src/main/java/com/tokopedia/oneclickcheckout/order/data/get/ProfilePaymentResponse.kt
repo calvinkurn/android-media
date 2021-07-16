@@ -19,10 +19,10 @@ class Payment(
         val minimumAmount: Long = 0,
         @SerializedName("maximum_amount")
         val maximumAmount: Long = 0,
-        @SerializedName("fee")
-        val fee: Double = 0.0,
         @SerializedName("wallet_amount")
         val walletAmount: Long = 0,
+        @SerializedName("fee")
+        val fee: Double = 0.0,
         @SerializedName("metadata")
         val metadata: String = "",
         @SerializedName("mdr")
@@ -35,8 +35,6 @@ class Payment(
         val occRevampErrorMessage: PaymentRevampErrorMessage = PaymentRevampErrorMessage(),
         @SerializedName("ticker_message")
         val tickerMessage: String = "",
-        @SerializedName("is_enable_next_button")
-        val isEnableNextButton: Boolean = false,
         @SerializedName("is_disable_pay_button")
         val isDisablePayButton: Boolean = false,
         @SerializedName("is_ovo_only_campaign")

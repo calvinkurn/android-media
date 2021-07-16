@@ -127,7 +127,6 @@ class GetOccCartMapper @Inject constructor() {
         val shop = groupShop.shop
         return OrderShop().apply {
             shopId = shop.shopId
-            userId = shop.userId
             shopName = shop.shopName
             shopBadge = shop.shopType.badge
             shopTier = shop.shopType.shopTier
@@ -261,9 +260,6 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapProfile(profileResponse: ProfileResponse, groupShop: GroupShopOccResponse): OrderProfile {
         return OrderProfile(
-                profileId = profileResponse.profileId,
-                enable = profileResponse.enable,
-                message = profileResponse.message,
                 address = mapAddress(profileResponse.address),
                 shipment = mapShipment(profileResponse.shipment, groupShop),
                 payment = mapPayment(profileResponse.payment)
@@ -336,7 +332,6 @@ class GetOccCartMapper @Inject constructor() {
                 errorMessage = mapPaymentErrorMessage(payment.errorMessage),
                 revampErrorMessage = mapPaymentRevampErrorMessage(payment.occRevampErrorMessage),
                 errorTickerMessage = data.errorTicker,
-                isEnableNextButton = payment.isEnableNextButton,
                 isDisablePayButton = payment.isDisablePayButton,
                 isOvoOnlyCampaign = payment.isOvoOnlyCampaign,
                 ovoData = mapPaymentOvoData(payment.ovoAdditionalData, data),

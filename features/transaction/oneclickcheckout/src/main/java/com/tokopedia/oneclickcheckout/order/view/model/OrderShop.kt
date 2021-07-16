@@ -6,7 +6,6 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 data class OrderShop(
         var shopId: Long = 0,
-        var userId: Long = 0,
         var shopName: String = "",
         var shopBadge: String = "",
         var shopTier: Int = 0,
@@ -32,7 +31,7 @@ data class OrderShop(
         var firstProductErrorIndex: Int = -1,
         var shopTicker: String = "",
         var isTokoNow: Boolean = false,
-        var maximumWeight: Int = 0,
+        var maximumWeight: Long = 0,
         var maximumWeightWording: String = "",
         var overweight: Double = 0.0,
         var boMetadata: BoMetadata = BoMetadata()

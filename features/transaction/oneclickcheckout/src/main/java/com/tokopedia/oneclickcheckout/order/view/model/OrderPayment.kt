@@ -16,7 +16,6 @@ data class OrderPayment(
     val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
     val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
     val errorTickerMessage: String = "",
-    val isEnableNextButton: Boolean = false,
     val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
     val isOvoOnlyCampaign: Boolean = false,

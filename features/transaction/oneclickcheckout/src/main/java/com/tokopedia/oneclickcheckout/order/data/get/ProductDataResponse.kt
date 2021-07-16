@@ -16,19 +16,15 @@ class ProductDataResponse(
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("product_price")
-        @SuppressLint("Invalid Data Type")
         val productPrice: Long = 0,
         @SerializedName("category_id")
         val categoryId: String = "",
         @SerializedName("category")
         val category: String = "",
         @SerializedName("wholesale_price")
-        @SuppressLint("Invalid Data Type")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight")
         val productWeight: Int = 0,
-        @SerializedName("product_weight_fmt")
-        val productWeightFmt: String = "",
         @SerializedName("product_weight_actual")
         val productWeightActual: Int = 0,
         @SerializedName("is_preorder")
@@ -50,14 +46,13 @@ class ProductDataResponse(
         @SerializedName("product_quantity")
         val productQuantity: Int = 0,
         @SerializedName("campaign_id")
-        @SuppressLint("Invalid Data Type")
         val campaignId: String = "",
         @SerializedName("product_original_price")
-        @SuppressLint("Invalid Data Type")
         val productOriginalPrice: Long = 0,
         @SerializedName("product_price_original_fmt")
-        @SuppressLint("Invalid Data Type")
         val productPriceOriginalFmt: String = "",
+        @SerializedName("slash_price_label")
+        val slashPriceLabel: String = "",
         @SerializedName("product_finsurance")
         val productFinsurance: Int = 0,
         @SerializedName("warehouse_id")
@@ -79,8 +74,6 @@ class ProductDataResponse(
         val productWarningMessage: String = "",
         @SerializedName("product_alert_message")
         val productAlertMessage: String = "",
-        @SerializedName("slash_price_label")
-        val slashPriceLabel: String = "",
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList()
 )
