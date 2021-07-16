@@ -94,7 +94,6 @@ class SomListBulkRequestPickupDialog(context: Context) {
 
     fun showOnProgress() {
         ivBulkAcceptDialog?.hide()
-        descDialog?.hide()
         loaderBulkAccept?.show()
     }
 

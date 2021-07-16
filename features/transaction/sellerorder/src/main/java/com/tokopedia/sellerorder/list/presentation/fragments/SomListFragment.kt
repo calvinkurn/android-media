@@ -1223,7 +1223,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     showAllFailEligibleBulkRequestPickup(it.orderIdListFail)
                 }
                 is AllNotEligible -> {
-                    showErrorBulkRequestPickup()
+                    showErrorBulkRequestPickupStatus()
                 }
                 is ServerFail -> {
                     bulkRequestPickupDialog?.dismiss()
@@ -1272,7 +1272,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                 )
             ) {
                 refreshData()
-                showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
+                showProgressBulkRequestPickupDialog(orderIdsFail.size.toLong().orZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
@@ -1336,7 +1336,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             ) {
                 refreshData()
                 failOrderListSelected(orderIdsFail)
-                showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
+                showProgressBulkRequestPickupDialog(orderIdsFail.size.toLong().orZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
@@ -1369,7 +1369,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     orderIdsFail.size.toString()
                 )
             ) {
-                showProgressBulkRequestPickupDialog(getSelectedOrderIds().size.toLong().orZero())
+                showProgressBulkRequestPickupDialog(orderIdsFail.size.toLong().orZero())
                 viewModel.bulkRequestPickup(orderIdsFail)
             }
             setSecondaryButton(getString(R.string.som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry)) {
@@ -1410,7 +1410,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     private fun showAllFailEligibleBulkRequestPickup(orderIdsFail: List<String>) {
         val totalFail = orderIdsFail.size.toLong().toString()
         bulkRequestPickupDialog?.run {
-            setTitle(getString(R.string.som_list_bulk_request_pickup_title_fail_eligible))
+            setTitle(getString(R.string.som_list_bulk_request_pickup_title_fail))
             setDescription(
                 getString(
                     R.string.som_list_bulk_request_pickup_partial_partial_fail_success,
@@ -1468,10 +1468,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun initBulkRequestPickupDialog() {
+        if (bulkRequestPickupDialog?.getDialogUnify()?.isShowing == true) {
+            bulkRequestPickupDialog?.dismiss()
+        }
         context?.let { context ->
-            if (bulkRequestPickupDialog?.getDialogUnify()?.isShowing == true) {
-                bulkRequestPickupDialog?.dismiss()
-            }
             bulkRequestPickupDialog = SomListBulkRequestPickupDialog(context).apply {
                 setOnDismiss {
                     resetOrderSelectedStatus()
