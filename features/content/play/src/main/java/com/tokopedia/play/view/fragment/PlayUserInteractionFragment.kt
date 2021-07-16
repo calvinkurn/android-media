@@ -851,7 +851,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         }.show(childFragmentManager)
                     }
                     is ShowCoachMarkWinnerEvent -> {
-                        if (interactiveWinnerBadgeView?.isHidden() == true) return@collect
+                        if (interactiveWinnerBadgeView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
                         interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
                     }
                     HideCoachMarkWinnerEvent -> {
