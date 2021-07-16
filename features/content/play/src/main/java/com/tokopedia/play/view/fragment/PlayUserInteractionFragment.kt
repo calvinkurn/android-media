@@ -846,6 +846,7 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is ShowWinningDialogEvent -> {
+                        if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
                             setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
                         }.show(childFragmentManager)

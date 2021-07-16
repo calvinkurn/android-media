@@ -3,14 +3,16 @@ package com.tokopedia.play.viewmodel.follow
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.robot.play.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.thenVerify
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfo
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
@@ -28,12 +30,21 @@ class PlayFollowOthersShopTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val isOwnShop = false
-
     private val testDispatcher = CoroutineTestDispatchers
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
-    private val mockChannelData = channelDataBuilder.buildChannelData()
+    private val partnerInfoModelBuilder = PlayPartnerInfoModelBuilder()
+    private val mockChannelData = channelDataBuilder.buildChannelData(
+            partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
+                    id = 2L
+            )
+    )
+
+    private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
+
+    init {
+        every { mockUserSession.shopId } returns "1"
+    }
 
     @Before
     fun setUp() {
@@ -48,14 +59,12 @@ class PlayFollowOthersShopTest {
     @Test
     fun `given user is logged in and has not followed shop, when click follow, the shop should be followed`() {
         val mockPartnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getPartnerFollowInfo(any()) } returns PlayPartnerFollowInfo(
-                isOwnShop = isOwnShop,
-                isFollowing = false
-        )
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
 
         givenPlayViewModelRobot(
                 partnerRepo = mockPartnerRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                userSession = mockUserSession,
         ) {
             setLoggedIn(true)
             createPage(mockChannelData)
@@ -74,14 +83,12 @@ class PlayFollowOthersShopTest {
     @Test
     fun `given user is logged in and has followed shop, when click follow, the shop should be unfollowed`() {
         val mockPartnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getPartnerFollowInfo(any()) } returns PlayPartnerFollowInfo(
-                isOwnShop = isOwnShop,
-                isFollowing = true
-        )
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns true
 
         givenPlayViewModelRobot(
                 partnerRepo = mockPartnerRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                userSession = mockUserSession,
         ) {
             setLoggedIn(true)
             createPage(mockChannelData)
@@ -100,14 +107,12 @@ class PlayFollowOthersShopTest {
     @Test
     fun `given user is not logged in, when click follow, the shop should stay unfollowed`() {
         val mockPartnerRepo: PlayViewerPartnerRepository = mockk(relaxed = true)
-        coEvery { mockPartnerRepo.getPartnerFollowInfo(any()) } returns PlayPartnerFollowInfo(
-                isOwnShop = isOwnShop,
-                isFollowing = false
-        )
+        coEvery { mockPartnerRepo.getIsFollowingPartner(any()) } returns false
 
         givenPlayViewModelRobot(
                 partnerRepo = mockPartnerRepo,
-                dispatchers = testDispatcher
+                dispatchers = testDispatcher,
+                userSession = mockUserSession,
         ) {
             setLoggedIn(false)
             createPage(mockChannelData)

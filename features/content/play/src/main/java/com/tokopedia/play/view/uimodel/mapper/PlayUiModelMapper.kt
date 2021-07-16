@@ -7,7 +7,6 @@ import com.tokopedia.play.data.Voucher
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfo
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
@@ -16,14 +15,12 @@ import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created by jegul on 01/02/21
  */
 class PlayUiModelMapper @Inject constructor(
-        private val userSession: UserSessionInterface,
         private val productTagMapper: PlayProductTagUiMapper,
         private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
         private val chatMapper: PlayChatUiMapper,
@@ -48,10 +45,9 @@ class PlayUiModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusFromResponse(input)
     }
 
-    fun mapPartnerInfo(input: ShopInfo) = PlayPartnerFollowInfo(
-            isOwnShop = userSession.shopId == input.shopCore.shopId,
-            isFollowing = input.favoriteData.alreadyFavorited == 1
-    )
+    fun mapPartnerInfo(input: ShopInfo): Boolean {
+        return input.favoriteData.alreadyFavorited == 1
+    }
 
     fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
         return channelInteractiveMapper.mapInteractive(input)

@@ -895,12 +895,16 @@ class PlayViewModel @Inject constructor(
     /**
      * Update channel data
      */
+
+    /**
+     * Follow status should only be retrieved if and only if the partner is a [PartnerType.Shop]
+     * and if it is not the viewer's own shop id
+     */
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.type == PartnerType.Shop) {
+        if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
-                val followInfo = partnerRepo.getPartnerFollowInfo(partnerId = partnerInfo.id)
-                val status = if (!followInfo.isOwnShop) PlayPartnerFollowStatus.Followable(followInfo.isFollowing) else PlayPartnerFollowStatus.NotFollowable
-                _partnerInfo.setValue { copy(status = status) }
+                val isFollowing = partnerRepo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
             }, onError = {
 
             })
