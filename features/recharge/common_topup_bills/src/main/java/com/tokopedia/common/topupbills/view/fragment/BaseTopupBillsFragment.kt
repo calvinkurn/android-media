@@ -101,7 +101,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     private fun subscribeUi() {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> navigateToCart()
+                is Success -> navigateToCart(it.data)
                 is Fail -> showErrorMessage(it.throwable)
             }
             onLoadingAtc(false)
@@ -482,10 +482,11 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToCart() {
+    private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             if (::checkoutPassData.isInitialized) {
                 val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+                checkoutPassData.categoryId = categoryId
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
             }
