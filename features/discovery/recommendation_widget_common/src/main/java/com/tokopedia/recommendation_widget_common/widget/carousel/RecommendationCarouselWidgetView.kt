@@ -100,6 +100,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         widgetListener?.onRecomProductCardClicked(data = carouselData, recomItem = recomItem, applink = applink, itemPosition = position, adapterPosition = adapterPosition)
     }
 
+    override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
+        widgetListener?.onRecomProductCardAddToCartNonVariant(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition, quantity = quantity)
+    }
+
+    override fun onRecomProductCardAddVariantClick(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int) {
+        widgetListener?.onRecomProductCardAddVariantClick(data = carouselData, recomItem = recomItem, adapterPosition = adapterPosition)
+    }
+
     override fun onSeeMoreCardClicked(data: RecommendationWidget, applink: String) {
         widgetListener?.onSeeAllBannerClicked(data = carouselData, applink = applink)
     }
