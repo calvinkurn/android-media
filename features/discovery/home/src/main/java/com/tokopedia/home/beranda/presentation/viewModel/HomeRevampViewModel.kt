@@ -502,16 +502,16 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun onRefreshTokoCash() {
+        if (!userSession.get().isLoggedIn) return
+        updateHeaderViewModel(
+            homeHeaderWalletAction = null,
+            isWalletDataError = false
+        )
         balanceRemoteConfigCondition(
                 isNewBalanceWidget = {
                     getWalletBalanceData()
                 },
                 isOldBalanceWidget = {
-                    if (!userSession.get().isLoggedIn) return@balanceRemoteConfigCondition
-                    updateHeaderViewModel(
-                            homeHeaderWalletAction = null,
-                            isWalletDataError = false
-                    )
                     getTokocashBalance()
                 }
         )
@@ -1247,7 +1247,7 @@ open class HomeRevampViewModel @Inject constructor(
 
             walletAppAbTestCondition(
                 isUsingWalletApp = {
-                    getHomeBalanceWalletAppData()
+                    getHomeBalanceWalletAppData(updateView = false)
                 },
                 isUsingOldWallet = {
                     try {
@@ -1325,7 +1325,7 @@ open class HomeRevampViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             walletAppAbTestCondition(
                 isUsingWalletApp = {
-                    getHomeBalanceWalletAppData()
+                    getHomeBalanceWalletAppData(updateView = true)
                 },
                 isUsingOldWallet = {
                     try {
@@ -1363,13 +1363,13 @@ open class HomeRevampViewModel @Inject constructor(
         return getWalletAppBalanceUseCase.get().executeOnBackground()
     }
 
-    private suspend fun getHomeBalanceWalletAppData() {
+    private suspend fun getHomeBalanceWalletAppData(updateView: Boolean = false) {
         try {
             val walletAppData = getWalletAppData()
             walletAppData.let { walletContent ->
                 if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
                     homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
-                    newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                    if (updateView) newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
                 } else {
                     HomeServerLogger.logWarning(
                         type = HomeServerLogger.TYPE_WALLET_APP_ERROR,

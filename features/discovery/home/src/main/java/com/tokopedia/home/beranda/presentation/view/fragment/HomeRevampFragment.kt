@@ -341,6 +341,22 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
+    private val TIME_TO_WAIT = 3000L
+    private val coachmarkHandler = Handler()
+    private var coachmarkRunnable = Runnable {
+        if (!coachMarkIsShowing && !bottomSheetIsShowing)
+            showCoachMark()
+    }
+
+    private fun stopCoachmarkHandler() {
+        coachmarkHandler.removeCallbacks(coachmarkRunnable)
+    }
+
+    private fun restartCoachmarkHandler() {
+        stopCoachmarkHandler()
+        coachmarkHandler.postDelayed(coachmarkRunnable, TIME_TO_WAIT);
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun isNavRevamp(): Boolean {
         return try {
@@ -638,11 +654,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
                 onboardingView.onboarding_button.setOnClickListener {
                     bottomSheet.dismiss()
-                    if (!coachMarkIsShowing) showCoachMark()
+                    adapter?.currentList?.let {
+                        showCoachmarkWithDataValidation(it)
+                    }
                 }
 
                 bottomSheet.setOnDismissListener {
-                    if (!coachMarkIsShowing) showCoachMark()
+                    adapter?.currentList?.let {
+                        showCoachmarkWithDataValidation(it)
+                    }
                 }
 
                 bottomSheet.setTitle("")
@@ -660,7 +680,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
+    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark(skipBalanceWidget: Boolean) {
         //inbox
         if (!isInboxCoachmarkShown(requireContext())) {
             val inboxIcon = navToolbar?.getInboxIconView()
@@ -689,7 +709,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //add balance widget
         //uncomment this to activate balance widget coachmark
 
-        if (!isBalanceWidgetCoachmarkShown(requireContext())) {
+        if (!skipBalanceWidget && true) {
             val balanceWidget = getTokopointsBalanceWidgetView()
             balanceWidget?.let {
                 this.add(
@@ -704,7 +724,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isUsingWalletApp()) {
-            if (!isWalletAppCoachmarkShown(requireContext())) {
+            if (true) {
                 val gopayWidget = getGopayBalanceWidgetView()
                 gopayWidget?.let {
                     this.add(
@@ -718,7 +738,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
             }
 
-            if (!isWalletApp2CoachmarkShown(requireContext())) {
+            if (true) {
                 val balanceWidget = getBalanceWidgetView()
                 balanceWidget?.let {
                     this.add(
@@ -749,12 +769,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun showCoachMark() {
+    private fun showCoachMark(skipBalanceWidget: Boolean = false) {
         context?.let {
-            coachMarkIsShowing = true
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmark = CoachMark2(it)
-            coachMarkItem.buildHomeCoachmark()
+            coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
@@ -801,6 +820,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
                         it.showCoachMark(step = coachMarkItem, index = 0)
+                        coachMarkIsShowing = true
                         coachMarkItem[0].setCoachmarkShownPref()
                     }
                 } catch (e: Exception) {
@@ -1466,17 +1486,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
-            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
-                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                        ?: false
-                if (isBalanceWidgetNotEmpty) {
-                    val isTokopointsOrOvoFailed = it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
-                    if (!isTokopointsOrOvoFailed) {
-                        Handler().postDelayed({
-                            if (!coachMarkIsShowing && !bottomSheetIsShowing)
-                                showCoachMark()
-                        }, 3000)
-                    }
+            showCoachmarkWithDataValidation(data)
+        }
+    }
+
+    private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
+        (data?.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+            val isBalanceWidgetNotEmpty =
+                it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                    ?: false
+            if (isBalanceWidgetNotEmpty) {
+                val isTokopointsOrOvoFailed =
+                    it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
+                if (!isTokopointsOrOvoFailed) {
+                    restartCoachmarkHandler()
                 }
             }
         }
@@ -1860,6 +1883,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
+        coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
