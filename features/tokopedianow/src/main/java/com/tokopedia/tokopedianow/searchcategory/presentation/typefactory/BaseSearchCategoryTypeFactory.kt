@@ -10,6 +10,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 
 interface BaseSearchCategoryTypeFactory: AdapterTypeFactory {
 
@@ -22,4 +23,5 @@ interface BaseSearchCategoryTypeFactory: AdapterTypeFactory {
     fun type(productItemDataView: ProductItemDataView): Int
     fun type(emptyProductDataView: EmptyProductDataView): Int
     fun type(outOfCoverageDataView: OutOfCoverageDataView): Int
+    fun type(recommendationCarouselDataView: RecommendationCarouselDataView): Int
 }

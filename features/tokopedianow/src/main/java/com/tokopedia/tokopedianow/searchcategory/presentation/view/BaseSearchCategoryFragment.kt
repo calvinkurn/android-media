@@ -66,7 +66,9 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.CustomStaggeredGridLayoutManager
@@ -90,7 +92,8 @@ abstract class BaseSearchCategoryFragment:
         ProductItemListener,
         EmptyProductListener,
         ChooseAddressBottomSheetListener,
-        OutOfCoverageListener {
+        OutOfCoverageListener,
+        SearchCategoryRecommendationCarouselListener {
 
     companion object {
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
@@ -755,4 +758,24 @@ abstract class BaseSearchCategoryFragment:
     override fun onLocalizingAddressLoginSuccessBottomSheet() { }
 
     override fun onDismissChooseAddressBottomSheet() { }
+
+    override fun onBind(element: RecommendationCarouselDataView, adapterPosition: Int) {
+
+    }
+
+    override fun onImpressed() {
+
+    }
+
+    override fun onClicked() {
+
+    }
+
+    override fun onATCNonVariant() {
+
+    }
+
+    override fun onAddVariant() {
+
+    }
 }
