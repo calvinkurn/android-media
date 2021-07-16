@@ -6,12 +6,13 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cart_common.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cart_common.data.response.updatecart.Data
+import com.tokopedia.cart_common.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cart_common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -278,12 +279,12 @@ class AddToCartNonVariantTestHelper(
             productUpdatedQuantity: Int,
             productInMiniCart: MiniCartItem,
     ) {
-        val updateCartParamSlot = slot<List<MiniCartItem>>()
+        val updateCartParamSlot = slot<List<UpdateCartRequest>>()
         val updateCartParam by lazy { updateCartParamSlot.captured }
 
         verify {
             updateCartUseCase.setParams(
-                    miniCartItemList = capture(updateCartParamSlot),
+                    updateCartRequestList = capture(updateCartParamSlot),
                     source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
             )
         }
