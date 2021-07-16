@@ -102,7 +102,10 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_page_happy_flow() {
-        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(isHappyTest = true, true))
+        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(
+            isMockFilledFavoriteNumber = true,
+            isMockUpdateFavoriteDetail = true
+        ))
         mActivityRule.launchActivity(intent)
 
         Thread.sleep(3000)
@@ -120,7 +123,10 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_empty_unhappy_flow() {
-        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(isHappyTest = false, false))
+        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(
+            isMockFilledFavoriteNumber = false,
+            isMockUpdateFavoriteDetail = false
+        ))
         disableCoachMark(targetContext)
         mActivityRule.launchActivity(intent)
 
@@ -134,7 +140,10 @@ class TopupBillsFavoriteNumberActivityTest {
 
     @Test
     fun validate_favorite_number_page_favorite_detail_error_flow() {
-        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(isHappyTest = true, false))
+        setupGraphqlMockResponse(TopupBillsFavoriteNumberMockResponseConfig(
+            isMockFilledFavoriteNumber = true,
+            isMockUpdateFavoriteDetail = false
+        ))
         disableCoachMark(targetContext)
         mActivityRule.launchActivity(intent)
 

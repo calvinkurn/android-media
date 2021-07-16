@@ -100,8 +100,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         return null
     }
 
-//    override fun isSeamlessFavoriteNumber(): Boolean = true
-
     private fun isProductExist(telcoProduct: TelcoProduct): Boolean {
         return telcoProduct.id != ID_PRODUCT_EMPTY
     }

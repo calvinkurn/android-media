@@ -36,19 +36,11 @@ class TelcoPostpaidActivity : BaseTelcoActivity(), HasComponent<DigitalTelcoComp
         return DigitalTelcoPostpaidFragment.newInstance(digitalTelcoExtraParam, rechargeProductFromSlice)
     }
 
-    override fun getTagFragment(): String {
-        return TAG_FRAGMENT_TELCO_POSTPAID
-    }
-
     override fun getComponent(): DigitalTelcoComponent {
         return DigitalTelcoInstance.getComponent(application)
     }
 
     override fun sendTrackingDotsMenuTelco(userId: String) {
         topupAnalytics.eventClickDotsMenuTelco(categoryId, userId)
-    }
-
-    companion object {
-        const val TAG_FRAGMENT_TELCO_POSTPAID = "TAG_FRAGMENT_TELCO_POSTPAID"
     }
 }

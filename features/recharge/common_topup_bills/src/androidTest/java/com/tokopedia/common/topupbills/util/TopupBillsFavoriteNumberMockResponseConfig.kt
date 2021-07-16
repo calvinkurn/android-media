@@ -7,7 +7,7 @@ import com.tokopedia.common.topupbills.test.R
 
 
 class TopupBillsFavoriteNumberMockResponseConfig(
-    private val isHappyTest: Boolean,
+    private val isMockFilledFavoriteNumber: Boolean,
     private val isMockUpdateFavoriteDetail: Boolean,
 ): MockModelConfig() {
 
@@ -20,7 +20,7 @@ class TopupBillsFavoriteNumberMockResponseConfig(
         if (isMockUpdateFavoriteDetail) {
             addMockUpdateFavoriteDetail(context)
         }
-        if (isHappyTest) {
+        if (isMockFilledFavoriteNumber) {
             addHappyMockModel(context)
         } else {
             addUnhappyMockModel(context)
