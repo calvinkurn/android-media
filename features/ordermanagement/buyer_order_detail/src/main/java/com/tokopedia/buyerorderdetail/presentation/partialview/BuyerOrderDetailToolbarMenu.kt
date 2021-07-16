@@ -21,59 +21,17 @@ class BuyerOrderDetailToolbarMenu @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0
-) : MotionLayout(context, attrs, defStyleAttr), CoroutineScope {
-    companion object {
-        private const val NO_TRANSITION = -1
-    }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
-
-    private val transitionQueue = MutableStateFlow(NO_TRANSITION)
-    private val onTransitionEnd = Channel<Int>()
+) : MotionLayout(context, attrs, defStyleAttr) {
 
     private var viewModel: BuyerOrderDetailViewModel? = null
     private var navigator: BuyerOrderDetailNavigator? = null
 
     private var chatIcon: IconUnify? = null
 
-    private val transitionListener = object : TransitionListener {
-        override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
-        }
-
-        override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
-        }
-
-        override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-            onTransitionEnd.offer(0)
-        }
-
-        override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-        }
-    }
-
-    init {
-        setTransitionListener(transitionListener)
-        initTransitionQueue()
-        transitionToState(R.id.initial)
-    }
-
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         bindViews()
         setClickListeners()
-    }
-
-    private fun initTransitionQueue() {
-        launch {
-            transitionQueue.collect {
-                if (it != NO_TRANSITION) {
-                    setTransition(getTransition(it))
-                    transitionToEnd()
-                    onTransitionEnd.receive()
-                }
-            }
-        }
     }
 
     private fun bindViews() {
@@ -93,16 +51,20 @@ class BuyerOrderDetailToolbarMenu @JvmOverloads constructor(
         }
     }
 
+    private fun startTransition(
+        start: Int,
+        end: Int
+    ) {
+        setTransition(start, end)
+        transitionToEnd()
+    }
+
     private fun startTransitionFromShowChatIconToInitial() {
-        launch {
-            transitionQueue.emit(R.id.buyerOrderDetailShowChatIconToInitial)
-        }
+        startTransition(R.id.show_chat_icon, R.id.initial)
     }
 
     private fun startTransitionFromInitialToShowChatIcon() {
-        launch {
-            transitionQueue.emit(R.id.buyerOrderDetailInitialToShowChatIcon)
-        }
+        startTransition(R.id.initial, R.id.show_chat_icon)
     }
 
     fun transitionToEmpty() {

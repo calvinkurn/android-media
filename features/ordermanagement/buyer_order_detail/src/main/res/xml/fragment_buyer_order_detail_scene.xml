@@ -183,12 +183,12 @@
 
     <!--  Transition from show content with sticky button to error state  -->
     <Transition
-        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToErrorStateIntermediary"
+        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToErrorState"
         motion:constraintSetEnd="@+id/show_content_error_state_intermediary"
         motion:constraintSetStart="@+id/show_content_with_sticky_button"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
-        android:id="@+id/buyerOrderDetailErrorStateIntermediaryToErrorState"
+        motion:autoTransition="animateToEnd"
         motion:constraintSetEnd="@+id/error_state"
         motion:constraintSetStart="@+id/show_content_error_state_intermediary"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
@@ -202,12 +202,12 @@
 
     <!--  Transition from show content with sticky button to empty state error  -->
     <Transition
-        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToEmptyStateErrorIntermediary"
+        android:id="@+id/buyerOrderDetailShowContentWithStickyButtonToEmptyStateError"
         motion:constraintSetEnd="@+id/show_content_empty_state_error_intermediary"
         motion:constraintSetStart="@+id/show_content_with_sticky_button"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
-        android:id="@+id/buyerOrderDetailEmptyStateErrorIntermediaryToEmptyStateError"
+        motion:autoTransition="animateToEnd"
         motion:constraintSetEnd="@+id/empty_state_error"
         motion:constraintSetStart="@+id/show_content_empty_state_error_intermediary"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
@@ -228,19 +228,17 @@
 
     <!--  Transition from show content without sticky button to error state  -->
     <Transition
-        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToErrorStateIntermediary"
+        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToErrorState"
         motion:constraintSetEnd="@+id/show_content_error_state_intermediary"
         motion:constraintSetStart="@+id/show_content_without_sticky_button"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
-    <!--  After this, run buyerOrderDetailErrorStateIntermediaryToErrorState  -->
 
-    <!--  Transition from show content without sticky button to empty stat error  -->
+    <!--  Transition from show content without sticky button to empty state error  -->
     <Transition
-        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToEmptyStateErrorIntermediary"
+        android:id="@+id/buyerOrderDetailShowContentWithoutStickyButtonToEmptyStateError"
         motion:constraintSetEnd="@+id/show_content_empty_state_error_intermediary"
         motion:constraintSetStart="@+id/show_content_without_sticky_button"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
-    <!--  After this, run buyerOrderDetailEmptyStateErrorIntermediaryToEmptyStateError  -->
 
     <!--  Transition from show content without sticky button to show content with sticky button  -->
     <Transition
@@ -251,93 +249,25 @@
 
     <!--  Transition from error state to loading state  -->
     <Transition
-        android:id="@+id/buyerOrderDetailErrorStateToErrorStateLoadingIntermediary"
+        android:id="@+id/buyerOrderDetailErrorStateToErrorStateLoading"
         motion:constraintSetEnd="@+id/error_state_loading_intermediary"
         motion:constraintSetStart="@+id/error_state"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
-        android:id="@+id/buyerOrderDetailErrorStateLoadingIntermediaryToLoading"
+        motion:autoTransition="animateToEnd"
         motion:constraintSetEnd="@+id/loading"
         motion:constraintSetStart="@+id/error_state_loading_intermediary"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
 
-    <!--  Transition from error state to show content with sticky button  -->
-    <Transition
-        android:id="@+id/buyerOrderDetailErrorStateToErrorStateIntermediary"
-        motion:constraintSetEnd="@+id/show_content_error_state_intermediary"
-        motion:constraintSetStart="@+id/error_state"
-        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
-    <Transition
-        android:id="@+id/buyerOrderDetailErrorStateIntermediaryToShowContentWithStickyButton"
-        motion:constraintSetEnd="@+id/show_content_with_sticky_button"
-        motion:constraintSetStart="@+id/show_content_error_state_intermediary"
-        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
-        <KeyFrameSet>
-            <KeyAttribute
-                android:alpha="0"
-                motion:framePosition="75"
-                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
-        </KeyFrameSet>
-    </Transition>
-
-    <!--  Transition from error state to show content without sticky button  -->
-    <!--  First, Run buyerOrderDetailErrorStateToErrorStateIntermediary, then:  -->
-    <Transition
-        android:id="@+id/buyerOrderDetailErrorStateIntermediaryToShowContentWithoutStickyButton"
-        motion:constraintSetEnd="@+id/show_content_without_sticky_button"
-        motion:constraintSetStart="@+id/show_content_error_state_intermediary"
-        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
-        <KeyFrameSet>
-            <KeyAttribute
-                android:alpha="0"
-                motion:framePosition="75"
-                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
-        </KeyFrameSet>
-    </Transition>
-
     <!--  Transition from empty state error to loading state  -->
     <Transition
-        android:id="@+id/buyerOrderDetailEmptyStateErrorToEmptyStateErrorLoadingIntermediary"
+        android:id="@+id/buyerOrderDetailEmptyStateErrorToEmptyStateErrorLoading"
         motion:constraintSetEnd="@+id/empty_state_error_loading_intermediary"
         motion:constraintSetStart="@+id/empty_state_error"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
-        android:id="@+id/buyerOrderDetailEmptyStateErrorLoadingIntermediaryToLoading"
+        motion:autoTransition="animateToEnd"
         motion:constraintSetEnd="@+id/loading"
         motion:constraintSetStart="@+id/empty_state_error_loading_intermediary"
         motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
-
-    <!--  Transition from empty state error to show content with sticky button  -->
-    <Transition
-        android:id="@+id/buyerOrderDetailEmptyStateErrorToEmptyStateErrorIntermediary"
-        motion:constraintSetEnd="@+id/empty_state_error_loading_intermediary"
-        motion:constraintSetStart="@+id/empty_state_error"
-        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
-    <Transition
-        android:id="@+id/buyerOrderDetailEmptyStateErrorIntermediaryToShowContentWithStickyButton"
-        motion:constraintSetEnd="@+id/show_content_with_sticky_button"
-        motion:constraintSetStart="@+id/show_content_empty_state_error_intermediary"
-        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
-        <KeyFrameSet>
-            <KeyAttribute
-                android:alpha="0"
-                motion:framePosition="75"
-                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
-        </KeyFrameSet>
-    </Transition>
-
-    <!--  Transition from empty state error to show content without sticky button  -->
-    <!--  First, Run buyerOrderDetailEmptyStateErrorToEmptyStateErrorIntermediary, then:  -->
-    <Transition
-        android:id="@+id/buyerOrderDetailEmptyStateErrorIntermediaryToShowContentWithoutStickyButton"
-        motion:constraintSetEnd="@+id/show_content_without_sticky_button"
-        motion:constraintSetStart="@+id/show_content_empty_state_error_intermediary"
-        motion:duration="@integer/buyer_order_detail_motion_layout_duration_short">
-        <KeyFrameSet>
-            <KeyAttribute
-                android:alpha="0"
-                motion:framePosition="75"
-                motion:motionTarget="@+id/swipeRefreshBuyerOrderDetail" />
-        </KeyFrameSet>
-    </Transition>
 </MotionScene>

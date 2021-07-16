@@ -89,7 +89,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         BuyerOrderDetailContentAnimator(containerBuyerOrderDetail)
     }
     private val toolbarMenuAnimator by lazy {
-        BuyerOrderDetailToolbarMenuAnimator(toolbarMenuIcons)
+        toolbarMenuIcons?.let {
+            BuyerOrderDetailToolbarMenuAnimator(it)
+        }
     }
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext(), true)
@@ -117,12 +119,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
-    private val toolbarMenuIcons: BuyerOrderDetailToolbarMenu by lazy {
+    private val toolbarMenuIcons: BuyerOrderDetailToolbarMenu? by lazy {
         createToolbarMenuIcons(requireContext())
     }
 
-    private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu {
-        return (View.inflate(context, R.layout.partial_buyer_order_detail_toolbar_menu, null) as BuyerOrderDetailToolbarMenu).apply {
+    private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu? {
+        return (View.inflate(context, R.layout.partial_buyer_order_detail_toolbar_menu, null) as? BuyerOrderDetailToolbarMenu)?.apply {
             setViewModel(viewModel)
             setNavigator(navigator)
         }
@@ -325,7 +327,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupToolbarMenu(showChatIcon: Boolean) {
         if (showChatIcon) {
-            toolbarMenuAnimator.transitionToShowChatIcon()
+            toolbarMenuAnimator?.transitionToShowChatIcon()
         }
     }
 
@@ -384,7 +386,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 contentVisibilityAnimator.animateToErrorState()
             }
         }
-        toolbarMenuAnimator.transitionToEmpty()
+        toolbarMenuAnimator?.transitionToEmpty()
         stopLoadTimeMonitoring()
     }
 
@@ -398,7 +400,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupToolbarMenuIcon() {
         toolbarBuyerOrderDetail?.apply {
-            addCustomRightContent(toolbarMenuIcons)
+            toolbarMenuIcons?.let {
+                addCustomRightContent(it)
+            }
         }
     }
 

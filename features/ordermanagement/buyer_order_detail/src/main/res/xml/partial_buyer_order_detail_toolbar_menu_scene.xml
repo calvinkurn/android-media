@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:motion="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ConstraintSet android:id="@+id/initial" />
 
@@ -23,8 +22,7 @@
         android:id="@+id/buyerOrderDetailInitialToShowChatIcon"
         app:constraintSetEnd="@id/show_chat_icon"
         app:constraintSetStart="@id/initial"
-        app:duration="@integer/buyer_order_detail_motion_layout_duration_short"
-        motion:motionInterpolator="cubic(0,0,0,1)" />
+        app:duration="@integer/buyer_order_detail_motion_layout_duration_short" />
     <Transition
         android:id="@+id/buyerOrderDetailShowChatIconToInitial"
         app:constraintSetEnd="@id/initial"
