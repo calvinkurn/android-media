@@ -3001,7 +3001,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             price = data.finalPrice.toString()
                         }
                 ),
-                userId = viewModel.userId
+                userId = viewModel.userId,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
         )
         viewModel.addToCart(addToCartOccRequestParams)
     }

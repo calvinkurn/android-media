@@ -75,7 +75,8 @@ object AtcCommonMapper {
                                     price = selectedChild?.finalPrice?.toString() ?: ""
                                 }
                         ),
-                        userId = userId
+                        userId = userId,
+                        atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                 )
             }
             else -> {

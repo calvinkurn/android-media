@@ -90,7 +90,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         errors
         errors_unblocking
         cart_string
-        payment_profile
+        #payment_profile
         is_disable_change_courier
         auto_courier_selection
         shipment_information {
@@ -103,7 +103,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             eligible
             badge_url
           }
-          pre_order {
+          preorder {
             is_preorder
             duration
           }
@@ -220,20 +220,20 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             product_preorder {
               duration_day
             }
-            purchase_protection_plan_data {
-              protection_available
-              protection_type_id
-              protection_price_per_product
-              protection_price
-              protection_title
-              protection_subtitle
-              protection_link_text
-              protection_link_url
-              protection_opt_in
-              protection_checkbox_disabled
-              unit
-              source
-            }
+            #purchase_protection_plan_data {
+            #  protection_available
+            #  protection_type_id
+            #  protection_price_per_product
+            #  protection_price
+            #  protection_title
+            #  protection_subtitle
+            #  protection_link_text
+            #  protection_link_url
+            #  protection_opt_in
+            #  protection_checkbox_disabled
+            #  unit
+            #  source
+            #}
           }
         }
         toko_cabang {
@@ -245,9 +245,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
       }
       profile {
-        has_preference
-        is_changed_profile
-        message
         onboarding_header_message
         onboarding_component {
           header_title
@@ -258,10 +255,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             link
           }
         }
-        profile_revamp_wording
-        is_recom
-        profile_id
-        status
         address {
           address_id
           receiver_name

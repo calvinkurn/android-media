@@ -23,6 +23,7 @@ import com.tokopedia.atc_common.domain.model.response.OvoInsufficientDetails
 import com.tokopedia.atc_common.domain.model.response.OvoInsufficientTopup
 import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
 
 /**
@@ -222,12 +223,12 @@ class AddToCartDataMapper @Inject constructor() {
         return DataModel(
                 success = data.success,
                 cartId = cart.cartId,
-                productId = cart.productId.toLong(),
+                productId = cart.productId.toLongOrZero(),
                 quantity = cart.quantity,
                 notes = cart.notes,
-                shopId = cart.shopId.toLong(),
-                customerId = cart.customerId.toLong(),
-                warehouseId = cart.warehouseId.toLong()
+                shopId = cart.shopId.toLongOrZero(),
+                customerId = cart.customerId.toLongOrZero(),
+                warehouseId = cart.warehouseId.toLongOrZero()
         )
     }
 
