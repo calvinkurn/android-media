@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.item_hotel_fragment_loading_state.view.*
 import kotlinx.android.synthetic.main.item_network_error_view.view.*
 

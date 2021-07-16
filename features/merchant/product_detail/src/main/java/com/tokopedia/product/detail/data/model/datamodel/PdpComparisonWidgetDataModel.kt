@@ -14,9 +14,6 @@ data class PdpComparisonWidgetDataModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    val isRecomenDataEmpty: Boolean
-        get() = recommendationWidget.recommendationItemList.isEmpty()
-
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
