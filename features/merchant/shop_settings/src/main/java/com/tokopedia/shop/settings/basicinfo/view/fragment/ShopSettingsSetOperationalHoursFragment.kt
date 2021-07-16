@@ -32,6 +32,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -64,6 +65,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         private const val MIN_OPEN_MINUTE = 0
         private const val MAX_CLOSE_HOUR = 23
         private const val MAX_CLOSE_MINUTE = 59
+        private const val MAX_CLOSE_MINUTE_BY_TIME_PICKER = 55
 
         @JvmStatic
         fun createInstance(): ShopSettingsSetOperationalHoursFragment = ShopSettingsSetOperationalHoursFragment()
@@ -173,6 +175,10 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     showToaster(getString(R.string.shop_operational_hour_set_holiday_schedule_failed), Toaster.TYPE_ERROR)
                     opsHourAccordion?.collapseAllGroup()
                 }
+            }
+            if (result is Fail) {
+                hideLoader()
+                showToaster(getString(R.string.shop_operational_hour_set_holiday_schedule_failed), Toaster.TYPE_ERROR)
             }
         }
     }
@@ -466,19 +472,34 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             startTimePicker?.datePickerButton?.text = getString(R.string.label_choose)
             startTimePicker?.datePickerButton?.setOnClickListener {
                 val selectedHour = startTimePicker?.timePicker?.hourPicker?.activeValue
-                val selectedMinute = startTimePicker?.timePicker?.minutePicker?.activeValue
+                var selectedMinute = startTimePicker?.timePicker?.minutePicker?.activeValue
                 val selectedChildView = getAccordionChildViewByPosition(currentExpandedAccordionPosition)
 
                 // set new startTime info to selected textField
                 setNewStartTimeInfo(selectedChildView, selectedHour, selectedMinute)
 
                 // update endTime to +1 hour after, to avoid endTime < startTime
-                val oneHourAfterAheadSelectedStartTime = selectedHour.toIntOrZero() + 1
+                val oneHourAfterAheadSelectedStartTime = if (selectedHour.toIntOrZero() < MAX_CLOSE_HOUR) {
+                    selectedHour.toIntOrZero() + 1
+                } else if(selectedHour.toIntOrZero() == MAX_CLOSE_HOUR && selectedMinute.toIntOrZero() == MAX_CLOSE_MINUTE_BY_TIME_PICKER) {
+                    selectedMinute = "0${MIN_OPEN_MINUTE}"
+                    MIN_OPEN_HOUR
+                } else {
+                    selectedHour.toIntOrZero()
+                }
+
                 val oneHourAheadAfterSelectedStartTimeString = if (oneHourAfterAheadSelectedStartTime < 10) {
                     "0${oneHourAfterAheadSelectedStartTime}"
                 } else {
                     oneHourAfterAheadSelectedStartTime.toString()
                 }
+
+                selectedMinute = if (oneHourAfterAheadSelectedStartTime == MAX_CLOSE_HOUR) {
+                    MAX_CLOSE_MINUTE_BY_TIME_PICKER.toString()
+                } else {
+                    selectedMinute
+                }
+
                 setNewEndTimeInfo(selectedChildView, oneHourAheadAfterSelectedStartTimeString, selectedMinute)
                 updateEndTimeByPosition(currentExpandedAccordionPosition, oneHourAheadAfterSelectedStartTimeString, selectedMinute)
 
