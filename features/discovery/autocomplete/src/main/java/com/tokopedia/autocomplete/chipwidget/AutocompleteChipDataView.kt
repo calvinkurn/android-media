@@ -8,5 +8,6 @@ data class AutocompleteChipDataView(
         val title: String = "",
         val searchTerm: String = "",
         val dimension90: String = "",
-        val position: Int = 0
+        val position: Int = 0,
+        val featureId: String = ""
 )

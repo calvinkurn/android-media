@@ -41,7 +41,8 @@ class InitialStateChipWidgetViewHolder(
                     url = it.url,
                     title = it.title,
                     dimension90 = it.dimension90,
-                    position = it.position
+                    position = it.position,
+                    featureId = it.featureId
             )
         }
     }
@@ -54,7 +55,8 @@ class InitialStateChipWidgetViewHolder(
                 url = url,
                 title = title,
                 dimension90 = dimension90,
-                position = position
+                position = position,
+                featureId = featureId
         )
     }
 }
