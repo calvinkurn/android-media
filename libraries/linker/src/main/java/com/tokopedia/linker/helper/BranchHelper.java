@@ -239,16 +239,16 @@ public class BranchHelper {
 
     public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice){
         Map<String, Object> eventDataMap = new HashMap<>();
-        eventDataMap.put("order_id", branchIOPayment.getOrderId());
-        eventDataMap.put("currency", CurrencyType.IDR);
-        eventDataMap.put("shipping_price", shippingPrice);
-        eventDataMap.put("revenue", revenuePrice);
+        eventDataMap.put(LinkerConstants.KEY_ORDERID, branchIOPayment.getOrderId());
+        eventDataMap.put(LinkerConstants.KEY_CURRENCY, CurrencyType.IDR);
+        eventDataMap.put(LinkerConstants.KEY_SHIPPING_PRICE, shippingPrice);
+        eventDataMap.put(LinkerConstants.KEY_REVENUE, revenuePrice);
         eventDataMap.put(LinkerConstants.KEY_PAYMENT, branchIOPayment.getPaymentId());
         eventDataMap.put(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType());
         eventDataMap.put(LinkerConstants.KEY_USERID, userId);
         eventDataMap.put(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
         eventDataMap.put(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
-        eventDataMap.put("event", "marketplace_first_txn");
+        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FB_FIRST_TXN);
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
     }
 
