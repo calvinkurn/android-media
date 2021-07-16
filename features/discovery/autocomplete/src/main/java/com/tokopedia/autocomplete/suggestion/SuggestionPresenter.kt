@@ -400,7 +400,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     override fun onSuggestionChipClicked(item: BaseSuggestionDataView.ChildItem) {
-        val label = "keyword: ${item.title} - value: ${item.searchTerm} - po: ${item.position} - screen: ${item.applink}"
+        val label = "keyword: ${item.title} - value: ${item.searchTerm} - po: ${item.position} - page: ${item.applink}"
         view?.trackClickChip(label, item.dimension90)
 
         view?.dropKeyBoard()
