@@ -1,10 +1,13 @@
 package com.tokopedia.atc_common.data.model.request
 
+import com.tokopedia.atc_common.AtcFromExternalSource
+
 data class AddToCartOccMultiRequestParams(
         var carts: List<AddToCartOccMultiCartParam>,
         var lang: String = "id",
         var userId: String = "",
-        var source: String = SOURCE_PDP
+        var source: String = SOURCE_PDP,
+        var atcFromExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
 ) {
     companion object {
         const val SOURCE_PDP = "pdp"

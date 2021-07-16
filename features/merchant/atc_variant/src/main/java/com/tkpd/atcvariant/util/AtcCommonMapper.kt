@@ -2,6 +2,7 @@ package com.tkpd.atcvariant.util
 
 import com.tkpd.atcvariant.data.uidata.*
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -87,7 +88,7 @@ object AtcCommonMapper {
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
                     warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
-                    atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""

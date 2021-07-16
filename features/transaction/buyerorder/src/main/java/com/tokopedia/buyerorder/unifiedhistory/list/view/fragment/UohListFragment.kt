@@ -51,6 +51,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_PROCES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
@@ -1752,7 +1753,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 quantity = recommendationItem.quantity,
                 shopId = recommendationItem.shopId,
                 category = recommendationItem.categoryBreadcrumbs,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION)
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION)
         uohListViewModel.doAtc(atcParam)
 
         // analytics

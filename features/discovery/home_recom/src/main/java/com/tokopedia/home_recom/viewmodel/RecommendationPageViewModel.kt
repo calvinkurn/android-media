@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -279,7 +280,7 @@ open class RecommendationPageViewModel @Inject constructor(
             addToCartRequestParams.shopId = productDetailData.shop.id
             addToCartRequestParams.quantity = productDetailData.minOrder
             addToCartRequestParams.notes = ""
-            addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_DISCOVERY
+            addToCartRequestParams.atcFromExternalSource = AtcFromExternalSource.ATC_FROM_DISCOVERY
             addToCartRequestParams.productName = productDetailData.name
             addToCartRequestParams.category = productDetailData.categoryBreadcrumbs
             addToCartRequestParams.price = productDetailData.price

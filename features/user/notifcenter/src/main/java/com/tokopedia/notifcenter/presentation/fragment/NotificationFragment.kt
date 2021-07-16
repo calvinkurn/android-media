@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -598,7 +599,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                 productId = product.productId.toLongOrZero(),
                 shopId = product.shop.id.toInt(),
                 quantity = product.minOrder,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_NOTIFCENTER
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_NOTIFCENTER
         )
         return RequestParams.create().apply {
             putObject(

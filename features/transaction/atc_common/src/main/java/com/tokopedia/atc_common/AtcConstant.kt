@@ -8,3 +8,15 @@ object AtcConstant {
 
     const val ERROR_PARAMETER_NOT_INITIALIZED = "Parameters has not been initialized!"
 }
+
+object AtcFromExternalSource {
+    const val ATC_FROM_WISHLIST = "wishlist_list"
+    const val ATC_FROM_RECENT_VIEW = "last_seen_list"
+    const val ATC_FROM_RECOMMENDATION = "recommendation_list"
+    const val ATC_FROM_TOPCHAT = "topchat"
+    const val ATC_FROM_NOTIFCENTER = "notifcenter"
+    const val ATC_FROM_DISCOVERY = "discovery_page"
+    const val ATC_FROM_PLAY = "play"
+    const val ATC_FROM_PDP = "pdp_atc"
+    const val ATC_FROM_OTHERS = "others"
+}
