@@ -429,7 +429,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {
-        launchCatchError(block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
                 val campaignId = model.campaignId
                 getCampaignNotifyMe(campaignId)
@@ -437,7 +437,7 @@ class ShopHomeViewModel @Inject constructor(
             val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
                     getCampaignNotifyMeModel
             )
-            _campaignNplRemindMeStatusData.postValue(Success(getCampaignNotifyMeUiModel))
+            _campaignNplRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
         }) {}
     }
 
