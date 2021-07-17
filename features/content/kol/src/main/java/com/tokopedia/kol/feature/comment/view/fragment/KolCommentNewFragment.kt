@@ -297,7 +297,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             postType,
             userId
         )
-        openRedirectUrl(url)
+        routeUrl(url)
     }
 
     override fun onClickMentionedProfile(id: String?) {
