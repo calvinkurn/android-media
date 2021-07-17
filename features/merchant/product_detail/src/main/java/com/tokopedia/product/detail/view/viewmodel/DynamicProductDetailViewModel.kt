@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -110,6 +111,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val submitHelpTicketUseCase: Lazy<SubmitHelpTicketUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
+                                                             private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
                                                              private val addToCartOccUseCase: Lazy<AddToCartOccUseCase>,
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
@@ -340,6 +342,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         submitTicketSubscription?.unsubscribe()
         updateCartCounterSubscription?.unsubscribe()
         addToCartUseCase.get().unsubscribe()
+        deleteCartUseCase.get().cancelJobs()
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
@@ -965,12 +968,37 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun onAtcNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
         if (recomItem.quantity == quantity) return
-        if (recomItem.quantity == 0) {
+        if (quantity == 0) {
+            deleteItemFromCart(recomItem, quantity)
+        }
+        else if (recomItem.quantity == 0) {
             atcNonVariant(recomItem, quantity)
         } else {
             updateCartNonVariant(recomItem, quantity)
         }
     }
+    private fun deleteItemFromCart(recomItem: RecommendationItem, quantity: Int) {
+        launchCatchError(block = {
+            val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
+            miniCartItem?.let {
+                val copyOfMiniCartItem = it.copy(quantity = quantity)
+                deleteCartUseCase.get().setParams(
+                        miniCartItems = listOf(copyOfMiniCartItem),
+                )
+                val result = deleteCartUseCase.get().executeOnBackground()
+                val isSuccess = result.data.success == 0 || !result.status.equals("OK", true)
+                if (!isSuccess) {
+                    val error = result.errorMessage.firstOrNull() ?: result.data.message.firstOrNull()
+                    onFailedATC(Throwable(error ?: ""))
+                } else {
+                    updateMiniCartAfterATC()
+                }
+            }
+        }) {
+            onFailedATC(it)
+        }
+    }
+
 
     private fun atcNonVariant(recomItem: RecommendationItem, quantity: Int) {
         launchCatchError(block = {
