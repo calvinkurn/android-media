@@ -15,6 +15,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
     const val EVENT_LABEL_PRODUCT = "%s - %s"
     const val EVENT_LIST_PRODUCT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
     const val SELECT_CONTENT = "select_content"
+    const val PRODUCT_CLICK = Event.PRODUCT_CLICK
 
     fun getImpressionProductTracking(
             recommendationItems: List<RecommendationItem>,
@@ -70,7 +71,7 @@ object ProductRecommendationTracking: BaseTrackerConst() {
         val trackingBuilder =
                 BaseTrackerBuilder()
                         .constructBasicProductClickBundle(
-                                event = Event.PRODUCT_CLICK,
+                                event = SELECT_CONTENT,
                                 eventCategory = androidPageName,
                                 eventAction = String.format(
                                         EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
