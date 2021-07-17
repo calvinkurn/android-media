@@ -1508,6 +1508,9 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify {
             removeWishlistUseCase.unsubscribe()
         }
+        verify {
+            deleteCartUseCase.cancelJobs()
+        }
     }
 
     private fun getUserLocationCache(): LocalCacheModel {
