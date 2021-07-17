@@ -1,20 +1,19 @@
 package com.tokopedia.tokopedia.feedplus.view.presenter
 
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
-import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.tokopedia.feedplus.InstantTaskExecutorRuleSpek
 import com.tokopedia.tokopedia.feedplus.view.createFeedTestInstance
 import com.tokopedia.tokopedia.feedplus.view.createFeedViewModel
-import com.tokopedia.tokopedia.feedplus.view.getFeedFirstDataWithSample
-import com.tokopedia.tokopedia.feedplus.view.getFeedNextDataWithSample
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokopedia.feedplus.view.getMockData
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
-import org.junit.Assert
+import io.mockk.mockk
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -31,113 +30,89 @@ class FeedTestGetData : Spek({
 
         val mockUserId = "12345"
         val userSession by memoized<UserSessionInterface>()
-        val getDynamicFeedFirstPageUseCase by memoized<GetDynamicFeedFirstPageUseCase>()
-        val firstPageCursor = "firstCursor"
+        val whiteListFeedUseCase by memoized {
+            mockk<GetWhitelistNewUseCase>(relaxed = true)
+        }
+
+        val getDynamicFeedUseCase by memoized {
+            mockk<GetDynamicFeedNewUseCase>(relaxed = true)
+        }
 
         Scenario("Success get feed first data") {
             val successResponse = DynamicFeedFirstPageDomainModel()
+
+            val whiteListResponse = WhitelistQuery()
             Given("Feed view model") {
                 feedViewModel = createFeedViewModel()
             }
 
             Given("Mock sample response data") {
                 successResponse.dynamicFeedDomainModel.postList = mutableListOf(
-                        DynamicPostViewModel(id = 1),
-                        DynamicPostViewModel(id = 2),
-                        DynamicPostViewModel(id = 3),
-                        DynamicPostViewModel(id = 4),
-                        DynamicPostViewModel(id = 5),
-                        DynamicPostViewModel(id = 6)
+                    DynamicPostViewModel(id = 1),
+                    DynamicPostViewModel(id = 2),
+                    DynamicPostViewModel(id = 3),
+                    DynamicPostViewModel(id = 4),
+                    DynamicPostViewModel(id = 5),
+                    DynamicPostViewModel(id = 6)
                 )
             }
-
-            Given("Mock usecase response") {
-                getDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(successResponse.dynamicFeedDomainModel.postList)
-            }
-
             Given("Mock user id") {
                 every { userSession.userId } returns mockUserId
             }
 
-            When("Get feed data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage()
+            Given("Mock usecase response") {
+                whiteListFeedUseCase.getMockData(whiteListResponse)
             }
 
-            Then("Feed data call success", timeout = 100000) {
-                Assert.assertEquals(true, feedViewModel.getFeedFirstPageResp.value is Success)
+            Given("Mock feed first usecase response with dummy cursor") {
+                getDynamicFeedUseCase.getMockData(
+                    successResponse.dynamicFeedDomainModel.postList,
+                    ""
+                )
             }
 
-            Then("Feed data successfully return data") {
-                Assert.assertEquals(
-                        (feedViewModel.getFeedFirstPageResp.value!! as Success).data.dynamicFeedDomainModel.postList.size,
-                        successResponse.dynamicFeedDomainModel.postList.size)
-            }
+//            When("Get feed data", timeout = 100000) {
+//                feedViewModel.getFeedFirstPage()
+//            }
+
+//            Then("Feed data call success", timeout = 100000) {
+//                Assert.assertEquals(true, feedViewModel.getFeedFirstPageResp.value is Success)
+//            }
+//
+//            Then("Feed data successfully return data") {
+//                Assert.assertEquals(
+//                        (feedViewModel.getFeedFirstPageResp.value!! as Success).data.dynamicFeedDomainModel.postList.size,
+//                        successResponse.dynamicFeedDomainModel.postList.size)
+//            }
         }
 
         Scenario("Success get feed data with empty post") {
+            val whiteListResponse = WhitelistQuery()
             val successResponse = DynamicFeedFirstPageDomainModel()
             Given("Feed view model") {
                 feedViewModel = createFeedViewModel()
+            }
+
+            Given("Mock usecase response") {
+                whiteListFeedUseCase.getMockData(whiteListResponse)
             }
 
             Given("Mock sample response data") {
                 successResponse.dynamicFeedDomainModel.postList = mutableListOf()
             }
 
-            Given("Mock usecase response") {
-                getDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(successResponse.dynamicFeedDomainModel.postList)
+            Given("Mock feed first usecase response with dummy cursor") {
+                getDynamicFeedUseCase.getMockData(
+                    successResponse.dynamicFeedDomainModel.postList,
+                    ""
+                )
             }
 
             Given("Mock user id") {
                 every { userSession.userId } returns mockUserId
             }
 
-            When("Get feed data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage()
-            }
-
-            Then("Feed data call success", timeout = 100000) {
-                Assert.assertEquals(true, feedViewModel.getFeedFirstPageResp.value is Success)
-            }
-
-            Then("Feed data successfully return empty post") {
-                Assert.assertEquals(
-                        (feedViewModel.getFeedFirstPageResp.value!! as Success).data.dynamicFeedDomainModel.postList.size,
-                        successResponse.dynamicFeedDomainModel.postList.size)
-            }
         }
-
-//        Scenario("Error get feed") {
-//            val successResponse = DynamicFeedFirstPageDomainModel()
-//            Given("Feed view model") {
-//                feedViewModel = createFeedViewModel()
-//            }
-//
-//            Given("Mock sample response data") {
-//                successResponse.dynamicFeedDomainModel.postList = mutableListOf()
-//            }
-//
-//            Given("Mock usecase response") {
-//                try {
-//                    getDynamicFeedFirstPageUseCase.getErrorFeedData()
-//                } catch (e: Exception) {
-//                    Fail(e)
-//                }
-//            }
-//
-//            Given("Mock user id") {
-//                every { userSession.userId } returns mockUserId
-//            }
-//
-//            When("Get feed data", timeout = 100000) {
-//                feedViewModel.getFeedFirstPage(firstPageCursor)
-//            }
-//
-//            Then("Feed data call successfully error", timeout = 100000) {
-//                Assert.assertEquals(true, feedViewModel.getFeedFirstPageResp.value is Fail)
-//            }
-//        }
-
     }
 
     Feature("Get Feed Next Data") {
@@ -146,13 +121,15 @@ class FeedTestGetData : Spek({
 
         val mockUserId = "12345"
         val userSession by memoized<UserSessionInterface>()
-        val getDynamicFeedUseCase by memoized<GetDynamicFeedUseCase>()
-        val getDynamicFeedFirstPageUseCase by memoized<GetDynamicFeedFirstPageUseCase>()
+        val getDynamicFeedUseCase by memoized {
+            mockk<GetDynamicFeedNewUseCase>(relaxed = true)
+        }
         val cursor = "mockCursor"
 
         Scenario("Success get feed next data") {
             val successFirstResponse = DynamicFeedFirstPageDomainModel()
             val successResponse = DynamicFeedDomainModel()
+
             Given("Feed view model") {
                 feedViewModel = createFeedViewModel()
             }
@@ -168,36 +145,14 @@ class FeedTestGetData : Spek({
                 )
             }
 
-
             Given("Mock feed first usecase response with dummy cursor") {
-                getDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(successFirstResponse.dynamicFeedDomainModel.postList, cursor)
-            }
-
-            Given("Mock feed next usecase response") {
-                getDynamicFeedUseCase.getFeedNextDataWithSample(successResponse.postList)
+                getDynamicFeedUseCase.getMockData(successResponse.postList, cursor)
             }
 
             Given("Mock user id") {
                 every { userSession.userId } returns mockUserId
             }
 
-            When("Get feed first data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage()
-            }
-
-            When("Get feed next data", timeout = 100000) {
-                feedViewModel.getFeedNextPage()
-            }
-
-            Then("Feed data call success", timeout = 100000) {
-                Assert.assertEquals(true, feedViewModel.getFeedNextPageResp.value is Success)
-            }
-
-            Then("Feed data successfully return data") {
-                Assert.assertEquals(
-                        (feedViewModel.getFeedNextPageResp.value!! as Success).data.postList.size,
-                        successResponse.postList.size)
-            }
         }
 
         Scenario("Success get feed next data with empty post") {
@@ -212,34 +167,14 @@ class FeedTestGetData : Spek({
             }
 
             Given("Mock feed first usecase response with dummy cursor") {
-                getDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(successFirstResponse.dynamicFeedDomainModel.postList, cursor)
-            }
-
-            Given("Mock feed next usecase response") {
-                getDynamicFeedUseCase.getFeedNextDataWithSample(successResponse.postList)
+                getDynamicFeedUseCase.getMockData(successResponse.postList, cursor)
             }
 
             Given("Mock user id") {
                 every { userSession.userId } returns mockUserId
             }
 
-            When("Get feed first data", timeout = 100000) {
-                feedViewModel.getFeedFirstPage()
-            }
 
-            When("Get feed next data", timeout = 100000) {
-                feedViewModel.getFeedNextPage()
-            }
-
-            Then("Feed data call success", timeout = 100000) {
-                Assert.assertEquals(true, feedViewModel.getFeedNextPageResp.value is Success)
-            }
-
-            Then("Feed data successfully return empty post") {
-                Assert.assertEquals(
-                        (feedViewModel.getFeedNextPageResp.value!! as Success).data.postList.size,
-                        successResponse.postList.size)
-            }
         }
     }
 })

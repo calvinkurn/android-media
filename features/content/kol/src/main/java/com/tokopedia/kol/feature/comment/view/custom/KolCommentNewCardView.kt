@@ -58,7 +58,6 @@ class KolCommentNewCardView : LinearLayout {
     private val time: Typography
     private val btnReply: UnifyButton
     private val mainView: ConstraintLayout
-    private var likeBtn: ImageView
 
     private val onMentionClicked = object : MentionSpan.OnClickListener {
         override fun onClick(userId: String) {
@@ -77,7 +76,6 @@ class KolCommentNewCardView : LinearLayout {
             time = findViewById(R.id.time)
             btnReply = findViewById(R.id.btn_reply)
             mainView = findViewById(R.id.main_view)
-            likeBtn = findViewById(R.id.btn_like)
 
         }
         orientation = VERTICAL
@@ -151,7 +149,6 @@ class KolCommentNewCardView : LinearLayout {
     private fun handleHeaderComment(element: KolCommentHeaderNewModel) {
         btnReply.gone()
         time.gone()
-        likeBtn.gone()
         val tagConverter = TagConverter()
         val commentText: String = buildString {
             if (badge.isVisible) append(SPACE)
@@ -175,7 +172,6 @@ class KolCommentNewCardView : LinearLayout {
     private fun handleGeneralComment(element: KolCommentNewModel) {
         btnReply.visible()
         time.visible()
-        likeBtn.gone()
         comment.movementMethod = LinkMovementMethod.getInstance()
 
         val commentText: Spanned = if (element.isOfficial) {

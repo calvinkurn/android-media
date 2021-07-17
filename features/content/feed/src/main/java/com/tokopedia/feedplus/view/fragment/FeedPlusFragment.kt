@@ -409,17 +409,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                             onSuccessFollowUnfollowKol(data.rowNumber)
                             if (!data.isFollow) {
                                 showToast(
-                                    getString(R.string.feed_component_unfollow_success_toast),
+                                    getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
                                     Toaster.TYPE_NORMAL
                                 )
                             }
                         } else {
                             if (data.isFollow)
                                 data.errorMessage =
-                                    getString(R.string.feed_component_unfollow_fail_toast)
+                                    getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_fail_toast)
                             else
                                 data.errorMessage =
-                                    getString(R.string.feed_component_follow_fail_toast)
+                                    getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_fail_toast)
                             onErrorFollowUnfollowKol(data)
                         }
                     }

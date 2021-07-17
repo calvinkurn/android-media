@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedia.feedplus.view
 
-import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -8,15 +7,13 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
+import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.data.DataItem
 import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -24,8 +21,8 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.TestBody
@@ -48,22 +45,26 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val playWidgetTools by memoized<PlayWidgetTools>()
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
     val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
+    val addWishListUseCase by memoized<AddWishListUseCase>()
+    val sendReportUseCase by memoized<SendReportUseCase>()
 
     return FeedViewModel(
-            CoroutineTestDispatchersProvider,
-            userSession,
-            getInterestPickUseCase,
-            submitInterestPickUseCase,
-            doFavoriteShopUseCase,
-            followKolPostGqlUseCase,
-            likeKolPostUseCase,
-            atcUseCase,
-            trackAffiliateClickUseCase,
-            deletePostUseCase,
-            sendTopAdsUseCase,
-            playWidgetTools,
-            getDynamicFeedNewUseCase,
-            getWhitelistNewUseCase
+        CoroutineTestDispatchersProvider,
+        userSession,
+        getInterestPickUseCase,
+        submitInterestPickUseCase,
+        doFavoriteShopUseCase,
+        followKolPostGqlUseCase,
+        likeKolPostUseCase,
+        atcUseCase,
+        trackAffiliateClickUseCase,
+        deletePostUseCase,
+        sendTopAdsUseCase,
+        playWidgetTools,
+        getDynamicFeedNewUseCase,
+        getWhitelistNewUseCase,
+        sendReportUseCase,
+        addWishListUseCase
     )
 }
 
@@ -88,10 +89,6 @@ fun FeatureBody.createFeedTestInstance() {
 
     val getDynamicFeedFirstPageUseCase by memoized {
         mockk<GetDynamicFeedFirstPageUseCase>(relaxed = true)
-    }
-
-    val getDynamicFeedUseCase by memoized {
-        mockk<GetDynamicFeedUseCase>(relaxed = true)
     }
 
     val doFavoriteShopUseCase by memoized {
@@ -127,38 +124,27 @@ fun FeatureBody.createFeedTestInstance() {
     val getDynamicFeedNewUseCase by memoized {
         mockk<GetDynamicFeedNewUseCase>(relaxed = true)
     }
+    val addWishListUseCase by memoized {
+        mockk<AddWishListUseCase>(relaxed = true)
+    }
+    val sendReportUseCase by memoized {
+        mockk<SendReportUseCase>(relaxed = true)
+    }
+
 }
 
-fun GetDynamicFeedFirstPageUseCase.getFeedFirstDataWithSample(data: MutableList<Visitable<*>>, cursor: String = "") {
+fun GetDynamicFeedNewUseCase.getMockData(data: MutableList<Visitable<*>>, cursor: String = "") {
     coEvery {
-        createObservable(any())
-                .toBlocking().single()
-    } returns
-            DynamicFeedFirstPageDomainModel(DynamicFeedDomainModel(postList = data, cursor = cursor), false)
-}
-
-fun GetDynamicFeedUseCase.getFeedNextDataWithSample(data: MutableList<Visitable<*>>) {
-    coEvery {
-        createObservable(any())
-                .toBlocking().single()
+        execute(cursor)
     } returns
             DynamicFeedDomainModel(postList = data)
 }
 
-fun GetInterestPickUseCase.getInterestPickDataWithSample(pojodata: MutableList<DataItem>, resultObserver: Observer<Result<OnboardingViewModel>>) {
+fun GetWhitelistNewUseCase.getMockData(data: WhitelistQuery) {
     coEvery {
-        execute({
-            it.feedUserOnboardingInterests.data = pojodata
-        },any())
-    } answers {
+        execute("interest")
+    } returns data
 
-    }
-}
-
-fun ToggleFavouriteShopUseCase.doFavoriteShopWithSample(isSuccess: Boolean) {
-    coEvery {
-        createObservable(any()).toBlocking().single()
-    } returns isSuccess
 }
 
 fun LikeKolPostUseCase.doLikeKolWithSample(isSuccess: Boolean) {

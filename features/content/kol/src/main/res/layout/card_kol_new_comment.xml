@@ -47,7 +47,7 @@
             app:typographyType="body_3"
             tools:text="     Hakuna Matata! What a wonderful phrase Hakuna Matata! Ain't no passing craze It means no worries For the rest of your days It's our problem-free philosophy Hakuna Matata! " />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/btn_like"
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
@@ -58,7 +58,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/comment"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_placeholder="@drawable/thumb" />
+            app:icon_name="THUMB" />
 
         <LinearLayout
             android:layout_width="wrap_content"
