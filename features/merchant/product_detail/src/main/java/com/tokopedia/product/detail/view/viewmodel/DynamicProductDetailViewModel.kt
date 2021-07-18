@@ -1011,7 +1011,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 addToCartUseCase.get().createObservable(param).toBlocking().single()
             }
             if (result.isStatusError()) {
-                onFailedATC(Throwable(result.status))
+                onFailedATC(Throwable(result.errorMessage.firstOrNull() ?: result.status))
             } else {
                 updateMiniCartAfterATC()
             }
