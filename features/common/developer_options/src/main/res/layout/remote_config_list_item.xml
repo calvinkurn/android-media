@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:padding="6dp"
         android:textAlignment="center"
-        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/fontSize_lvl1"
         android:background="@drawable/remote_config_key_bg"
         android:text="@string/remote_config_key_label"
