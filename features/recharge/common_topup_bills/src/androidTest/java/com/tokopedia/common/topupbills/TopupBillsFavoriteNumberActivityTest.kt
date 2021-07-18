@@ -165,90 +165,59 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     fun validate_coachmark_favorite_number() {
-        onView(withText("Lanjut"))
-            .inRoot(RootMatchers.isPlatformPopup())
-            .perform(click());
-        onView(withText("Mengerti"))
-            .inRoot(RootMatchers.isPlatformPopup())
-            .perform(click());
-    }
-
-    fun validate_pick_number_from_contact_book() {
-        Thread.sleep(2000)
-        onView(withId(R.id.searchbar_textfield)).check(matches(withText("")))
-        onView(withId(R.id.common_topupbills_search_number_contact_picker)).perform(click())
-        Thread.sleep(2000)
-        intended(toPackage("com.android.contacts"))
+        coachMark_clickButtonWithText("Lanjut")
+        coachMark_clickButtonWithText("Mengerti")
     }
 
     fun validate_menu_bottom_sheet_favorite_number() {
-        val viewInteraction = onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
-            0, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
+        favoriteNumberItem_clickMenu(0)
 
         Thread.sleep(1000)
-        onView(withId(R.id.common_topupbills_favorite_number_change_name)).check(matches(isDisplayed()))
-        onView(withId(R.id.common_topup_bills_favorite_number_delete)).check(matches(isDisplayed()))
+        favoriteNumberMenu_validateContents()
 
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
     fun validate_modify_bottom_sheet_favorite_number() {
-        val viewInteraction = onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
-            0, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
-
+        favoriteNumberItem_clickMenu(0)
         onView(withId(R.id.common_topupbills_favorite_number_change_name)).perform(click())
 
         Thread.sleep(1000)
-        onView(withId(R.id.common_topupbills_favorite_number_name_field)).check(matches(isDisplayed()))
-        onView(withId(R.id.common_topupbills_favorite_number_phone_field)).check(matches(isDisplayed()))
+        modifyBottomSheet_validateTextFields()
 
         // Invalid Input
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         onView(withId(R.id.common_topupbills_favorite_number_name_field)).perform(click())
         modifyBottomSheet_typeNewClientName(INVALID_CLIENT_NAME_LESS_THAN_MIN)
-        onView(withId(R.id.common_topupbills_favorite_number_modify_button)).perform(click())
-        Thread.sleep(1000)
-        onView(withText(R.string.common_topup_fav_number_validator_less_than_3_char))
-            .check(matches(isDisplayed()))
+        modifyBottomSheet_clickUpdateNameButton()
+        modifyBottomSheet_validateErrorMessageText(R.string.common_topup_fav_number_validator_less_than_3_char)
 
-        Thread.sleep(1000)
         modifyBottomSheet_typeNewClientName(INVALID_CLIENT_NAME_MORE_THAN_MAX)
-        onView(withId(R.id.common_topupbills_favorite_number_modify_button)).perform(click())
-        Thread.sleep(1000)
-        onView(withText(R.string.common_topup_fav_number_validator_more_than_18_char))
-            .check(matches(isDisplayed()))
+        modifyBottomSheet_clickUpdateNameButton()
+        modifyBottomSheet_validateErrorMessageText(R.string.common_topup_fav_number_validator_more_than_18_char)
 
-        Thread.sleep(1000)
         modifyBottomSheet_typeNewClientName(INVALID_CLIENT_NAME_NON_ALPHANUMERIC)
-        onView(withId(R.id.common_topupbills_favorite_number_modify_button)).perform(click())
-        Thread.sleep(1000)
-        onView(withText(R.string.common_topup_fav_number_validator_alphanumeric))
-            .check(matches(isDisplayed()))
+        modifyBottomSheet_clickUpdateNameButton()
+        modifyBottomSheet_validateErrorMessageText(R.string.common_topup_fav_number_validator_alphanumeric)
 
         // Valid input
-        Thread.sleep(1000)
         modifyBottomSheet_typeNewClientName(VALID_CLIENT_NAME)
-        onView(withId(R.id.common_topupbills_favorite_number_modify_button)).perform(click())
+        modifyBottomSheet_clickUpdateNameButton()
         Thread.sleep(1000)
     }
 
     fun validate_delete_favorite_number() {
-        val viewInteraction = onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
-            0, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
+        favoriteNumberItem_clickMenu(0)
 
         // Cancel
-        onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
-        onView(withId(R.id.dialog_btn_secondary)).perform(click())
+        menuBottomSheet_clickDelete()
+        deleteConfirmationDialog_clickCancel()
 
         // Redo & Proceed
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
-            0, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
+        favoriteNumberItem_clickMenu(0)
 
-        onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
-        onView(withId(R.id.dialog_btn_primary)).perform(click())
+        menuBottomSheet_clickDelete()
+        deleteConfirmationDialog_clickConfirm()
     }
 
     fun validate_undo_delete_favorite_number() {
@@ -258,22 +227,28 @@ class TopupBillsFavoriteNumberActivityTest {
 
     fun validate_empty_state() {
         onView(withId(R.id.common_topupbills_not_found_state_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(CLIENT_NUMBER))
-        onView(withId(R.id.common_topupbills_empty_state_button)).perform(click())
+        onView(withId(R.id.searchbar_textfield))
+            .perform(clearText())
+            .perform(typeText(CLIENT_NUMBER))
+        onView(withId(R.id.common_topupbills_not_found_state_button)).perform(click())
     }
 
     fun validate_delete_favorite_number_fail() {
-        val viewInteraction = onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
-            0, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
+        favoriteNumberItem_clickMenu(0)
 
-        onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
-        onView(withId(R.id.dialog_btn_primary)).perform(click())
+        menuBottomSheet_clickDelete()
+        deleteConfirmationDialog_clickConfirm()
 
         Thread.sleep(3000)
     }
 
+    fun validate_pick_number_from_contact_book() {
+        onView(withId(R.id.common_topupbills_search_number_contact_picker)).perform(click())
+        intended(toPackage("com.android.contacts"))
+    }
+
     private fun modifyBottomSheet_typeNewClientName(name: String) {
+        Thread.sleep(1000)
         onView(allOf(withId(com.tokopedia.unifycomponents.R.id.text_field_input),
             isDescendantOfA(withId(R.id.common_topupbills_favorite_number_name_field))))
             .perform(
@@ -287,6 +262,49 @@ class TopupBillsFavoriteNumberActivityTest {
             it.putBoolean(CACHE_SHOW_COACH_MARK_KEY, true)
             it.applyEditor()
         }
+    }
+
+    private fun modifyBottomSheet_clickUpdateNameButton() {
+        onView(withId(R.id.common_topupbills_favorite_number_modify_button)).perform(click())
+    }
+
+    private fun modifyBottomSheet_validateErrorMessageText(stringRes: Int) {
+        Thread.sleep(1000)
+        onView(withText(stringRes)).check(matches(isDisplayed()))
+    }
+
+    private fun modifyBottomSheet_validateTextFields() {
+        onView(withId(R.id.common_topupbills_favorite_number_name_field)).check(matches(isDisplayed()))
+        onView(withId(R.id.common_topupbills_favorite_number_phone_field)).check(matches(isDisplayed()))
+    }
+
+    private fun menuBottomSheet_clickDelete() {
+        onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
+    }
+
+    private fun favoriteNumberItem_clickMenu(position: Int) {
+        val viewInteraction = onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+            position, CommonActions.clickChildViewWithId(R.id.common_topupbills_favorite_number_menu)))
+    }
+
+    private fun favoriteNumberMenu_validateContents() {
+        onView(withId(R.id.common_topupbills_favorite_number_change_name)).check(matches(isDisplayed()))
+        onView(withId(R.id.common_topup_bills_favorite_number_delete)).check(matches(isDisplayed()))
+    }
+
+    private fun coachMark_clickButtonWithText(text: String) {
+        onView(withText(text))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .perform(click());
+    }
+
+    private fun deleteConfirmationDialog_clickCancel() {
+        onView(withId(R.id.dialog_btn_secondary)).perform(click())
+    }
+
+    private fun deleteConfirmationDialog_clickConfirm() {
+        onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
 
     companion object {

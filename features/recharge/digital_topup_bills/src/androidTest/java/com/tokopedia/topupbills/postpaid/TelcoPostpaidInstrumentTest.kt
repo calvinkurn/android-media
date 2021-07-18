@@ -18,9 +18,11 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.TelcoContactHelper
@@ -136,12 +138,11 @@ class TelcoPostpaidInstrumentTest {
         clickCopyPromoBtn(viewInteraction)
         Thread.sleep(2000)
 
-        //TODO: fix error this intending to promo detail page
-//        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-//        viewInteraction.perform(RecyclerViewActions
-//                .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(3,
-//                        CommonActions.clickChildViewWithId(R.id.promo_container)))
-//        Thread.sleep(3000)
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        viewInteraction.perform(RecyclerViewActions
+                .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(3,
+                        CommonActions.clickChildViewWithId(R.id.promo_container)))
+        Thread.sleep(3000)
     }
 
     fun validate_interaction_menu() {
