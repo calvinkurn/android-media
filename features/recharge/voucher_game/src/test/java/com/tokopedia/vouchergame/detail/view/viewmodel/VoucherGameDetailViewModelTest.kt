@@ -13,6 +13,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
+import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel.Companion.VOUCHER_NOT_FOUND_ERROR
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
@@ -158,7 +159,8 @@ class VoucherGameDetailViewModelTest {
         // then
         // no operator detail found
         val actualData = voucherGameDetailViewModel.voucherGameOperatorDetails.value
-        assertNull(actualData)
+        assert(actualData is Fail)
+        assert((actualData as Fail).throwable.message == VOUCHER_NOT_FOUND_ERROR)
     }
 
     @Test

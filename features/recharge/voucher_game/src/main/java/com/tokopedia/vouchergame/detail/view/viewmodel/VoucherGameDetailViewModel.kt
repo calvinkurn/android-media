@@ -15,10 +15,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
-import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
-import com.tokopedia.vouchergame.list.view.viewmodel.VoucherGameListViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -38,13 +36,19 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
     fun getVoucherGameOperators(rawQuery: String, mapParam: Map<String, Any>, isForceRefresh: Boolean = false, operatorId: String) {
         launch {
             val response = voucherGameUseCase.getVoucherGameOperators(rawQuery, mapParam, "", isForceRefresh)
-            if (response is Success) {
-                val data = response.data.operators.firstOrNull { it.id.toString() == operatorId }
-                if (data != null) {
-                    voucherGameOperatorDetails.value = Success(data)
+
+            when (response) {
+                is Success -> {
+                    val data = response.data.operators.firstOrNull { it.id.toString() == operatorId }
+                    if (data != null) {
+                        voucherGameOperatorDetails.value = Success(data)
+                    } else {
+                        voucherGameOperatorDetails.value = Fail(MessageErrorException(VOUCHER_NOT_FOUND_ERROR))
+                    }
                 }
-            } else {
-                voucherGameOperatorDetails.value = Fail((response as Fail).throwable)
+                is Fail -> {
+                    voucherGameOperatorDetails.value = response
+                }
             }
         }
     }
@@ -81,7 +85,7 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
         return params
     }
 
-    fun createMenuDetailParams(menuID: Int): Map<String,Any> {
+    fun createMenuDetailParams(menuID: Int): Map<String, Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
         params[PARAM_MENU_ID] = menuID
         return params
@@ -90,6 +94,8 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
     companion object {
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_OPERATOR = "operator"
+
+        const val VOUCHER_NOT_FOUND_ERROR = "VOUCHER_NOT_FOUND_ERROR"
     }
 
 }

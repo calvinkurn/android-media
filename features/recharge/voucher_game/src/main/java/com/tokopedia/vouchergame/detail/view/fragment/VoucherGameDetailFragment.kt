@@ -140,9 +140,19 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         voucherGameViewModel.voucherGameOperatorDetails.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                voucherGameOperatorData = it.data.attributes
-                setupOperatorDetail()
+            when (it) {
+                is Success -> {
+                    voucherGameOperatorData = it.data.attributes
+                    setupOperatorDetail()
+                }
+                is Fail -> {
+                    val message = if (it.throwable.message == VoucherGameDetailViewModel.VOUCHER_NOT_FOUND_ERROR) {
+                        getString(R.string.vg_empty_state_title)
+                    } else {
+                        ErrorHandler.getErrorMessage(requireContext(), it.throwable)
+                    }
+                    Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
             }
         })
 
