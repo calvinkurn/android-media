@@ -21,7 +21,7 @@
         android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/et_alamat"
+        android:id="@+id/et_alamat_new"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
