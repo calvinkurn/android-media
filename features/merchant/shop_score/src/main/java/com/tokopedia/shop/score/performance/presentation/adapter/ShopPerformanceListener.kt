@@ -13,8 +13,12 @@ interface ItemShopPerformanceListener {
     fun onItemClickedToFaqClicked()
 }
 
-interface ItemPotentialPMProListener {
+interface ItemRMPotentialPMProListener {
     fun onGotoPMProPage()
+}
+
+interface ItemPMPotentialPMProListener {
+    fun onGotoBenefitPMPro()
 }
 
 interface ItemRegularMerchantListener {

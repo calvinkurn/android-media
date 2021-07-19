@@ -49,11 +49,14 @@
     <string name="title_content_pm_section">Nikmati berbagai keuntungan eksklusif dengan gabung PM PRO, yuk!</string>
     <string name="desc_content_pm_section">Tingkatkan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
 
+    <string name="desc_content_pm_section">Tingkatkan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
     <!--> PM Pro -->
     <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif Power Merchant PRO!</string>
     <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="desc_content_pm_to_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya.</string>
 
     <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant Pro!</string>
     <string name="desc_potential_pm_pro">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
@@ -69,7 +72,7 @@
     <string name="example_title_detail_penalty">Manipulasi transaksi</string>
     <string name="example_date_penalty_detail">Tanggal pelanggaran 31 Des 2020</string>
     <string name="example_date_result_detail_penalty">Mulai aktif pada: 31 Des 2020</string>
-    <string name="example_regarding_penalty_pm_value">Power Merchant Gold</string>
+    <string name="example_regarding_penalty_pm_value">Power Merchant</string>
     <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
     <string name="desc_non_eligible_power_merchant">Batas skor untuk bergabung adalah 60. Pelajari selengkapnya di pengaturan Power Merchant.</string>
     <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
@@ -279,6 +282,7 @@
     <string name="item_detail_performance_value">%1s %2s</string>
     <string name="item_detail_performance_target">Target %s</string>
     <string name="desc_potential_eligible_power_merchant">Batas skor PM adalah 60. Daftar Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
+    <string name="desc_potential_rm_eligible_power_merchant_pro">Batas skor PM PRO adalah 70. Daftar PM PRO dan nikmati berbagai keuntungan eksklusifnya, ya!</string>
 
     <string name="shop_performance_level_header">Level %s</string>
     

@@ -33,7 +33,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:text="@string/desc_potential_pm_pro"
+            android:text="@string/desc_potential_rm_eligible_power_merchant_pro"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

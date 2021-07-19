@@ -21,8 +21,6 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PERIOD_DATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
-import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_1
-import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_2
 import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_3
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
@@ -667,8 +665,8 @@ class ShopScoreMapper @Inject constructor(
             })
     }
 
-    private fun mapToSectionPMPro(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMProUiModel {
-        return SectionPotentialPMProUiModel(
+    private fun mapToSectionPMPro(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionRMPotentialPMProUiModel {
+        return SectionRMPotentialPMProUiModel(
             potentialPMProPMBenefitList = mapToItemPMProBenefit(),
             transitionEndDate = DateFormatUtils.formatDate(
                 PATTERN_PERIOD_DATE,
@@ -678,26 +676,26 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemPMProBenefit(): List<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel> {
+    private fun mapToItemPMProBenefit(): List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel> {
         val itemPotentialPMBenefitList =
-            mutableListOf<SectionPotentialPMProUiModel.ItemPMProBenefitUIModel>()
+            mutableListOf<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>()
         itemPotentialPMBenefitList.apply {
             add(
-                SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel(
                     iconPotentialPMProUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
                     titlePotentialPMPro = R.string.title_item_rm_section_pm_benefit_1
                 )
             )
 
             add(
-                SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel(
                     iconPotentialPMProUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
                     titlePotentialPMPro = R.string.title_item_rm_section_pm_benefit_2
                 )
             )
 
             add(
-                SectionPotentialPMProUiModel.ItemPMProBenefitUIModel(
+                SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel(
                     iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_3,
                     titlePotentialPMPro = R.string.title_item_rm_section_pm_benefit_3
                 )

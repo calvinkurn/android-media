@@ -16,7 +16,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
                                         private val sectionFaqListener: SectionFaqListener,
                                         private val globalErrorListener: GlobalErrorListener,
                                         private val itemRegularMerchantListener: ItemRegularMerchantListener,
-                                        private val potentialPMProListener: ItemPotentialPMProListener,
+                                        private val potentialPMProListener: ItemRMPotentialPMProListener,
                                         private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener
 ) : BaseAdapterTypeFactory(), ShopPerformanceTypeFactory {
 
@@ -68,8 +68,12 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return ShopPerformanceShimmerViewHolder.LAYOUT
     }
 
-    override fun type(sectionPMProBenefitUIModel: SectionPotentialPMProUiModel): Int {
-        return ItemPotentialPMProViewHolder.LAYOUT
+    override fun type(sectionRMPMProBenefitUIModel: SectionRMPotentialPMProUiModel): Int {
+        return ItemRMPotentialPMProViewHolder.LAYOUT
+    }
+
+    override fun type(sectionPMPotentialPMProUiModel: SectionPMPotentialPMProUiModel): Int {
+        return ItemPMPotentialPMProViewHolder.LAYOUT
     }
 
     override fun type(itemStatusPMProUiModel: ItemStatusPMProUiModel): Int {
@@ -90,7 +94,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
             SectionFaqViewHolder.LAYOUT -> SectionFaqViewHolder(parent, sectionFaqListener)
             ItemShopPerformanceErrorViewHolder.LAYOUT -> ItemShopPerformanceErrorViewHolder(parent, globalErrorListener)
             ItemLevelScoreProjectViewHolder.LAYOUT -> ItemLevelScoreProjectViewHolder(parent)
-            ItemPotentialPMProViewHolder.LAYOUT -> ItemPotentialPMProViewHolder(parent, potentialPMProListener)
+            ItemRMPotentialPMProViewHolder.LAYOUT -> ItemRMPotentialPMProViewHolder(parent, potentialPMProListener)
             ItemStatusPMProViewHolder.LAYOUT -> ItemStatusPMProViewHolder(parent, itemStatusPowerMerchantProListener)
             else -> return super.createViewHolder(parent, type)
         }
