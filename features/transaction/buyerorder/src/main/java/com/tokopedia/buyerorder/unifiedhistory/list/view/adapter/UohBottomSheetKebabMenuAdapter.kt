@@ -5,11 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.list.data.Order
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohListOrder
-import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import kotlinx.android.synthetic.main.bottomsheet_kebab_uoh_item.view.*
-import kotlinx.android.synthetic.main.bottomsheet_option_uoh_item.view.*
 
 /**
  * Created by fwidjaja on 05/07/20.

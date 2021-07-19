@@ -79,7 +79,7 @@ import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.detail.data.ConditionalInfo;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.buyerorder.detail.data.PaymentData;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;

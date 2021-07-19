@@ -3,7 +3,6 @@ package com.tokopedia.buyerorder.detail.view.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -39,7 +38,7 @@ import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.utils.view.DoubleTextView;
 

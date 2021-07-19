@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder.list.data;
+package com.tokopedia.buyerorder.detail.data;
 
 /**
  * Created by baghira on 20/04/18.
