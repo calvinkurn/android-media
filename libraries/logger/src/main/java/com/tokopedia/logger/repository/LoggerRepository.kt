@@ -19,7 +19,6 @@ import com.tokopedia.logger.utils.LoggerReporting
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
-import kotlin.math.log
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
@@ -138,7 +137,7 @@ class LoggerRepository(private val logDao: LoggerDao,
                 messageNewRelicList.add(addEventNewRelic(message))
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
-                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMap(message)))
+                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
             }
         }
         return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
@@ -159,10 +158,6 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
-    private fun jsonToMap(message: String): HashMap<String, Any> {
-        return Gson().fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
-    }
-
     private fun addEventNewRelic(message: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
         gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
@@ -175,6 +170,10 @@ class LoggerRepository(private val logDao: LoggerDao,
         } else {
             str
         }
+    }
+
+    private fun jsonToMapEmbrace(message: String): HashMap<String, Any> {
+        return Gson().fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 
     override val coroutineContext: CoroutineContext
