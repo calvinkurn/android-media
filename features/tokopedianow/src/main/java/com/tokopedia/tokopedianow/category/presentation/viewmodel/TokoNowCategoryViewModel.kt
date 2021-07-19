@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
+import com.tokopedia.tokopedianow.category.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
@@ -190,7 +191,10 @@ class TokoNowCategoryViewModel @Inject constructor (
     ) {
         if (element.carouselData.state == STATE_READY) return
 
-        val recommendationList = getRecommendationUseCase.getData(GetRecommendationRequestParam())
+        val getRecommendationRequestParam = GetRecommendationRequestParam(
+                pageName = TOKONOW_CLP
+        )
+        val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
 
         element.carouselData = RecommendationCarouselData(
                 state = STATE_READY,

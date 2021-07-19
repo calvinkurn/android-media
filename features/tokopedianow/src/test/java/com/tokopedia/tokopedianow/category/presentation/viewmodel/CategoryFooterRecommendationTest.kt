@@ -7,6 +7,7 @@ import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.category.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import io.mockk.coEvery
@@ -22,7 +23,7 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
     private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
 
     private val recommendationWidgetList = recommendationEntity.mapToRecommendationWidgetList()
-    private val getRecommendationParams = slot<GetRecommendationRequestParam>()
+    private val getRecommendationParamsSlot = slot<GetRecommendationRequestParam>()
 
     @Test
     fun `load category recommendation success`() {
@@ -36,13 +37,14 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
 
         `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
 
+        `Then assert get recommendation request`()
         `Then assert recommendation data view is updated to ready with recom widget`(recomWidget)
         `Then assert updated visitable list`(recomWidgetPosition)
     }
 
     private fun `Given get recommendation will be successful`() {
         coEvery {
-            getRecommendationUseCase.getData(capture(getRecommendationParams))
+            getRecommendationUseCase.getData(capture(getRecommendationParamsSlot))
         } returns recommendationWidgetList
     }
 
@@ -60,6 +62,12 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
             recomWidgetPosition: Int,
     ) {
         tokoNowCategoryViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)
+    }
+
+    private fun `Then assert get recommendation request`() {
+        val getRecommendationParams = getRecommendationParamsSlot.captured
+
+        assertThat(getRecommendationParams.pageName, shouldBe(TOKONOW_CLP))
     }
 
     private fun `Then assert recommendation data view is updated to ready with recom widget`(
@@ -95,7 +103,7 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
 
     private fun `Given get recommendation will fail`() {
         coEvery {
-            getRecommendationUseCase.getData(capture(getRecommendationParams))
+            getRecommendationUseCase.getData(capture(getRecommendationParamsSlot))
         } throws Throwable("Get recommendation failed")
     }
 
