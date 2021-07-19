@@ -3,15 +3,19 @@ package com.tokopedia.play_common.ui.leaderboard
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.unifycomponents.UnifyButton
 
 
 /**
@@ -23,6 +27,7 @@ class PlayInteractiveLeaderboardViewComponent(
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
 
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
+    private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -31,26 +36,6 @@ class PlayInteractiveLeaderboardViewComponent(
             listener.onChatWinnerButtonClicked(this@PlayInteractiveLeaderboardViewComponent, winner, position)
         }
     })
-
-    /**
-     * TODO: please delete
-     */
-    private val mockLeaderboardItems = List(5) {
-        PlayLeaderboardUiModel(
-            title = listOf("Giveaway Kotak Pensil", "Giveaway LCD tv", "Giveaway CD Blackpink").random(),
-            winners = if (it%2 == 1) emptyList() else List(5) { child ->
-                PlayWinnerUiModel(
-                        rank = it + child + 1,
-                        id = "${child + 1}",
-                        name = listOf("Nick", "Elon", "Selena", "Suzane", "Eggy").random(),
-                        imageUrl = "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/gueo3qthwrv8y5laemzs/joyride-run-flyknit-running-shoe-sqfqGQ.jpg",
-                        allowChat = { true },
-                        topChatMessage = "Selamat"
-                )
-            },
-            otherParticipantText =  if (it%2 == 1) "" else "Dari 100 peserta game"
-        )
-    }
 
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
@@ -63,7 +48,9 @@ class PlayInteractiveLeaderboardViewComponent(
 
         rvLeaderboard.adapter = leaderboardAdapter
 
-        setData(mockLeaderboardItems)
+        findViewById<UnifyButton>(R.id.btn_action_leaderboard_error).setOnClickListener {
+            listener.onRefreshButtonClicked(this)
+        }
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
@@ -88,6 +75,16 @@ class PlayInteractiveLeaderboardViewComponent(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
+    fun showError(shouldShow: Boolean) {
+        if (shouldShow) {
+            errorView.show()
+            rvLeaderboard.hide()
+        } else {
+            errorView.hide()
+            rvLeaderboard.show()
+        }
+    }
+
     interface Listener {
         fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
         fun onChatWinnerButtonClicked(
@@ -95,6 +92,8 @@ class PlayInteractiveLeaderboardViewComponent(
             winner: PlayWinnerUiModel,
             position: Int
         ) {
+        }
+        fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         }
     }
 }

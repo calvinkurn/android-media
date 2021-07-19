@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,11 +21,15 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -50,6 +55,10 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+
+    private lateinit var rvLeaderboard: RecyclerView
+    private lateinit var errorView: ConstraintLayout
+    private lateinit var btnRefresh: UnifyButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +87,9 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
 
     private fun setupView(view: View) {
         with(view) {
-            val rvLeaderboard: RecyclerView = findViewById(commonR.id.rv_leaderboard)
+            rvLeaderboard = findViewById(commonR.id.rv_leaderboard)
+            errorView = findViewById(commonR.id.cl_leaderboard_error)
+            btnRefresh = findViewById(commonR.id.btn_action_leaderboard_error)
 
             findViewById<TextView>(commonR.id.tv_sheet_title)
                 .setText(com.tokopedia.play_common.R.string.play_interactive_leaderboard_title)
@@ -88,6 +99,10 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                    dismiss()
                 }
 
+            btnRefresh.setOnClickListener {
+                parentViewModel.getLeaderboardData()
+            }
+
             rvLeaderboard.adapter = leaderboardAdapter
         }
     }
@@ -96,9 +111,33 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         show(fragmentManager, TAG)
     }
 
+    private fun showError(shouldShow: Boolean) {
+        if (shouldShow) {
+            errorView.show()
+            rvLeaderboard.hide()
+        } else {
+            errorView.hide()
+            rvLeaderboard.show()
+        }
+    }
+
     private fun observeLeaderboardInfo() {
         parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
-            leaderboardAdapter.setItems(it.leaderboardWinners)
+           when (it) {
+               NetworkResult.Loading -> {
+                   showError(false)
+                   btnRefresh.isLoading = true
+               }
+               is NetworkResult.Fail -> {
+                   showError(true)
+                   btnRefresh.isLoading = false
+               }
+               is NetworkResult.Success -> {
+                   showError(false)
+                   btnRefresh.isLoading = false
+                   leaderboardAdapter.setItems(it.data.leaderboardWinners)
+               }
+           }
         })
     }
 
@@ -121,6 +160,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
-        private const val HEIGHT_MULTIPLIER = 0.80f
+        private const val HEIGHT_MULTIPLIER = 0.67f
     }
 }

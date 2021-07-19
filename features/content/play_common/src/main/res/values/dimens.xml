@@ -25,5 +25,7 @@
 
     <!--Engagement Tools-->
     <dimen name="play_interactive_common_radius">12dp</dimen>
+    <dimen name="play_interactive_illustration_width">240dp</dimen>
+    <dimen name="play_interactive_illustration_height">180dp</dimen>
 
 </resources>

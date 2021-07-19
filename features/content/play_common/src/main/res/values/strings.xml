@@ -7,4 +7,7 @@
     <string name="play_interactive_leaderboard_title">Pemenang &amp; peserta game</string>
     <string name="play_interactive_winner">Pemenang</string>
     <string name="play_interactive_empty">Belum ada yang ikut main di sesi ini</string>
+    <string name="play_interactive_leaderboard_empty_title">Oops, pemenangnya gagal dimuat</string>
+    <string name="play_interactive_leaderboard_empty_desc">Cek notifikasi atau tunggu chat dari toko jika kamu menang.</string>
+    <string name="play_interactive_leaderboard_empty_action">Refresh</string>
 </resources>
