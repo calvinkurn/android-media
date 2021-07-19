@@ -24,12 +24,12 @@ class BuyerAccountStaticMapper @Inject constructor(
         private val userSession: UserSession
 ) {
 
-    fun getStaticBuyerModel(useUoh: Boolean): BuyerViewModel {
+    fun getStaticBuyerModel(): BuyerViewModel {
         val items: ArrayList<ParcelableViewModel<*>> = ArrayList()
 
         val model = BuyerViewModel()
         items.add(getBuyerProfile())
-        items.addAll(getStaticModel(useUoh))
+        items.addAll(getStaticModel())
         model.items = items
 
         return model

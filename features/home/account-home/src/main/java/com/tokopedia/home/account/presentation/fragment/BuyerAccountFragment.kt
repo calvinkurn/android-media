@@ -259,7 +259,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         } else {
             context?.let {
                 adapter?.clearAllElements()
-                adapter?.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig(), useUoh()))
+                adapter?.setElement(StaticBuyerModelGenerator.getModel(it, null, getRemoteConfig()))
             }
         }
 
@@ -269,7 +269,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
 
     private fun loadStaticBuyerData() {
         adapter?.clearAllElements()
-        adapter?.setElement(buyerAccountStaticMapper.getStaticBuyerModel(useUoh()).items)
+        adapter?.setElement(buyerAccountStaticMapper.getStaticBuyerModel().items)
     }
 
     private fun showLoading() {
@@ -532,18 +532,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             recommendationList.add(RecommendationProductViewModel(item, recommendationWidget.title))
         }
         return recommendationList
-    }
-
-    private fun useUoh(): Boolean {
-        return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(UOH_AB_TEST_KEY, "")
-
-            val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
-            (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
-
-        } catch (e: Exception) {
-            true
-        }
     }
 
     override fun onIconWarningNameClick(element: BuyerCardViewModel) {
