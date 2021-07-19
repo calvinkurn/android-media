@@ -1,9 +1,9 @@
 package com.tokopedia.hotel.evoucher.presentation.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import kotlinx.android.synthetic.main.item_hotel_share_as_pdf.view.*
 
