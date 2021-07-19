@@ -161,6 +161,8 @@ class ProductRecommendationViewHolder(
                 },
                 carouselProductCardOnItemATCNonVariantClickListener = object : CarouselProductCardListener.OnATCNonVariantClickListener {
                     override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
+                        listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
+
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         listener.onAddToCartNonVariantQuantityChangedClick(
                                 recomItem = productRecommendation,
@@ -171,6 +173,8 @@ class ProductRecommendationViewHolder(
                 },
                 carouselProductCardOnItemAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
                     override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
+
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         listener.onAddVariantClick(
                                 recomItem = productRecommendation,
