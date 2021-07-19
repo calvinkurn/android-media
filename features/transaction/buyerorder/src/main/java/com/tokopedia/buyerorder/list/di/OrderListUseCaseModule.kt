@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.buyerorder.detail.di.OrderListDetailModule
+import com.tokopedia.buyerorder.detail.di.OrderDetailModule
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl
@@ -19,7 +19,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class, OrderListDetailModule::class])
+@Module(includes = [TopAdsWishlistModule::class, RecommendationModule::class, OrderDetailModule::class])
 class OrderListUseCaseModule {
 
     @Provides

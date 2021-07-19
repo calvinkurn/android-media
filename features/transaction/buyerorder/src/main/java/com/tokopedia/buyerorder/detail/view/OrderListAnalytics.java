@@ -1,20 +1,15 @@
 package com.tokopedia.buyerorder.detail.view;
 
-import android.os.Bundle;
-
 import javax.inject.Inject;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationsItem;
-import com.tokopedia.buyerorder.list.data.Order;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -415,34 +410,6 @@ public class OrderListAnalytics {
                 "position", String.valueOf(position)));
     }
 
-    public void eventRecommendationAddToCart(OrderListRecomUiModel orderListRecomUiModel, AddToCartDataModel addToCartDataModel){
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
-                "event", "addToCart",
-                "eventCategory", "my purchase list - mp - bom_empty",
-                "eventAction", "click add to cart on my purchase list page",
-                "eventLabel", orderListRecomUiModel.getRecomTitle(),
-                "ecommerce", DataLayer.mapOf(
-                        "currencyCode", "IDR",
-                        "add", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomUiModel.getRecommendationItem().getRecommendationType() + (orderListRecomUiModel.getRecommendationItem().isTopAds() ? " - product topads" : "")),
-                                "products", DataLayer.listOf(DataLayer.mapOf(
-                                        "name", orderListRecomUiModel.getRecommendationItem().getName(),
-                                        "id", orderListRecomUiModel.getRecommendationItem().getProductId(),
-                                        "price", orderListRecomUiModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
-                                        "brand", "none/other",
-                                        "category", orderListRecomUiModel.getRecommendationItem().getCategoryBreadcrumbs(),
-                                        "variant", "none/other",
-                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomUiModel.getRecommendationItem().getRecommendationType() + (orderListRecomUiModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
-                                        "dimension45", addToCartDataModel.getData().getCartId(),
-                                        "quantity", orderListRecomUiModel.getRecommendationItem().getMinOrder(),
-                                        "shop_id", String.valueOf(orderListRecomUiModel.getRecommendationItem().getShopId()),
-                                        "shop_type", orderListRecomUiModel.getRecommendationItem().getShopType(),
-                                        "shop_name", orderListRecomUiModel.getRecommendationItem().getShopName(),
-                                        "category_id", NONE
-                                )))
-                )));
-    }
-
     public void sendWishListClickEvent(Boolean isAdd) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 TrackAppUtils.gtmData(
@@ -569,29 +536,6 @@ public class OrderListAnalytics {
         map.put("screenName", page);
         map.put("isLoggedInStatus", "true");
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
-
-    }
-
-
-    public void sendProductViewEvent(Order order, String categoryName, int position, String total) {
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, PRODUCT_EVENT_DETAIL,
-                EVENT_ACTION, "view product list",
-                EVENT_LABEL, order.status(),
-                ECOMMERCE, DataLayer.mapOf(
-                        CURRENCY_CODE, IDR,
-                        IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
-                                NAME, categoryName,
-                                ID, order.getOrderId(),
-                                PRICE, total,
-                                LIST, "/order list "+order.status(),
-                                KEY_CATEGORY, NONE,
-                                BRAND, NONE,
-                                VARIANT, NONE,
-                                POSITION, position + 1
-                                )))));
 
     }
 

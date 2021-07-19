@@ -4,8 +4,6 @@ import android.net.Uri;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.buyerorder.list.data.ConditionalInfo;
-import com.tokopedia.buyerorder.list.data.PaymentData;
 
 import java.util.List;
 

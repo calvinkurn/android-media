@@ -26,8 +26,8 @@ import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.list.data.ConditionalInfo;
-import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.buyerorder.detail.data.ConditionalInfo;
+import com.tokopedia.buyerorder.detail.data.PaymentData;
 
 import java.util.List;
 

@@ -21,7 +21,7 @@ import dagger.Provides;
 import okhttp3.Interceptor;
 
 @Module
-public class OrderListDetailModule {
+public class OrderDetailModule {
 
     @Provides
     PostCancelReasonUseCase providePostCancelUseCase(@ApplicationContext Context context) {
