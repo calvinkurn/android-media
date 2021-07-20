@@ -25,7 +25,7 @@
         android:textColor="@color/clr_31353B"
         android:textSize="@dimen/sp_12"
         app:typographyType="body_3"
-        android:text="@string/share_facebook"
+        android:text="@string/label_facebook_story"
         android:layout_marginTop="@dimen/dp_4"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"

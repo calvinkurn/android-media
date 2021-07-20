@@ -12,7 +12,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.Toaster
