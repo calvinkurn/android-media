@@ -161,13 +161,12 @@ class HowToPayFragment : BaseDaggerFragment() {
     private fun setHeaderData(data: HowToPayData) {
         val paymentCodeHeading = getPaymentCodeHeading(data.paymentCodeHint)
 
-        val amount = if (data.combineAmount > 0)
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(data.combineAmount, false)
-        else data.netAmount
-        val amountString = getString(R.string.pms_hwp_rp, amount)
+        val totalAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+            howToPayViewModel.getTotalTransactionAmount(data), false)
+
         val displayAmount = if (data.isManualTransfer)
-            highlightLastThreeDigits(amountString)
-        else amountString
+            highlightLastThreeDigits(totalAmount)
+        else totalAmount
 
 
         setCommonPaymentDetails(
@@ -178,15 +177,10 @@ class HowToPayFragment : BaseDaggerFragment() {
             displayAmount
         )
         when {
-            data.isManualTransfer -> addBankTransferPayment(data, displayAmount)
-            data.isOfflineStore -> addStoreTransferPayment(data, displayAmount)
+            data.isManualTransfer -> addBankTransferPayment(data)
+            data.isOfflineStore -> addStoreTransferPayment(data)
             else -> {
-                setActionInfo(
-                    data,
-                    displayAmount,
-                    getString(R.string.pms_hwp_copy),
-                    IconUnify.COPY
-                ) {
+                setActionInfo(data, getString(R.string.pms_hwp_copy), IconUnify.COPY) {
                     copyToClipBoard(context, data.transactionCode, data.gatewayCode)
                     showToast(getString(R.string.pms_hwp_common_copy_success, paymentCodeHeading))
                 }
@@ -214,7 +208,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun addBankTransferPayment(data: HowToPayData, displayAmount: CharSequence?) {
+    private fun addBankTransferPayment(data: HowToPayData) {
         val bankInfo = getString(
             R.string.pms_hwp_bank_info,
             data.destAccountName, data.destBankBranch
@@ -224,29 +218,14 @@ class HowToPayFragment : BaseDaggerFragment() {
         tickerAmountNote.visible()
         tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
 
-        setActionInfo(
-            data,
-            displayAmount,
-            getString(R.string.pms_hwp_copy),
-            IconUnify.COPY
-        ) {
+        setActionInfo(data, getString(R.string.pms_hwp_copy), IconUnify.COPY) {
             copyToClipBoard(context, data.transactionCode, data.gatewayCode)
-            showToast(
-                getString(
-                    R.string.pms_hwp_common_copy_success,
-                    getPaymentCodeHeading(data.paymentCodeHint)
-                )
-            )
+            showToast(getString(R.string.pms_hwp_common_copy_success, getPaymentCodeHeading(data.paymentCodeHint)))
         }
     }
 
-    private fun addStoreTransferPayment(data: HowToPayData, displayAmount: CharSequence?) {
-        setActionInfo(
-            data,
-            displayAmount,
-            getString(R.string.pms_hwp_screenshot),
-            IconUnify.DOWNLOAD
-        ) {
+    private fun addStoreTransferPayment(data: HowToPayData) {
+        setActionInfo(data, getString(R.string.pms_hwp_screenshot), IconUnify.DOWNLOAD) {
             takeScreenShot(data.gatewayCode)
         }
         tvStorePaymentNote.visible()
@@ -265,7 +244,6 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun setActionInfo(
         howToPayData: HowToPayData,
-        displayAmount: CharSequence?,
         actionText: String?,
         actionIcon: Int, clickAction: (() -> Unit)
     ) {
@@ -283,22 +261,15 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
         // for amount copy
         if (!howToPayData.hideCopyAmount) {
+            val totalAmount = howToPayViewModel.getTotalTransactionAmount(howToPayData)
             tvPaymentAmountAction.text = getString(R.string.pms_hwp_copy)
             ivAmountAction.setImage(IconUnify.COPY)
             tvPaymentAmountAction.setOnClickListener {
-                copyToClipBoard(
-                    context,
-                    displayAmount?.toString() ?: "",
-                    howToPayData.gatewayCode
-                )
+                copyToClipBoard(context, totalAmount.toLong().toString(), howToPayData.gatewayCode)
                 showToast(getString(R.string.pms_hwp_amount_copy_success))
             }
             ivAmountAction.setOnClickListener {
-                copyToClipBoard(
-                    context,
-                    displayAmount?.toString() ?: "",
-                    howToPayData.gatewayCode
-                )
+                copyToClipBoard(context, totalAmount.toLong().toString(), howToPayData.gatewayCode)
                 showToast(getString(R.string.pms_hwp_amount_copy_success))
             }
         } else {

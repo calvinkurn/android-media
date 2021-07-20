@@ -52,7 +52,7 @@ class GetGqlHowToPayInstructions @Inject constructor(
             """query howToPayData(${'$'}transactionID: String!,${'$'}merchantCode:String!) {
             howToPayData(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
                 expiredIn
-                nettAmount
+                nettAmountUnf
                 combineAmount
                 gatewayImage
                 gatewayName

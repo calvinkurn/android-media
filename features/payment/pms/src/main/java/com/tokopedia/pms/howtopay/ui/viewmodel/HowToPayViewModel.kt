@@ -53,6 +53,9 @@ class HowToPayViewModel @Inject constructor(
             })
     }
 
+    fun getTotalTransactionAmount(data: HowToPayData) =
+        if (data.combineAmount > 0) data.combineAmount else data.netAmount
+
     override fun onCleared() {
         super.onCleared()
         appLinkPaymentUseCase.cancelJobs()
