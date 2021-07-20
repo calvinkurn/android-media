@@ -1,4 +1,3 @@
-
 package com.tokopedia.otp.verification.view.fragment
 
 import android.app.Activity
@@ -49,11 +48,15 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 /**
  * Created by Ade Fulki on 02/06/20.
@@ -70,6 +73,12 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     protected lateinit var otpData: OtpData
     protected lateinit var modeListData: ModeListData
     private lateinit var countDownTimer: CountDownTimer
@@ -77,7 +86,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
     protected var isMoreThanOneMethod = true
-
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
     private val delayAnimateText: Long = 350
@@ -164,15 +172,25 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     protected fun sendOtp() {
         if (isCountdownFinished()) {
-            viewModel.sendOtp(
-                    otpType = otpData.otpType.toString(),
-                    mode = modeListData.modeText,
-                    msisdn = otpData.msisdn,
-                    email = otpData.email,
-                    otpDigit = modeListData.otpDigit,
-                    validateToken = otpData.accessToken,
-                    userIdEnc = otpData.userIdEnc
-            )
+            if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
+                viewModel.sendOtp2FA(
+                        otpType = otpData.otpType.toString(),
+                        mode = modeListData.modeText,
+                        msisdn = otpData.msisdn,
+                        email = otpData.email,
+                        otpDigit = modeListData.otpDigit,
+                        validateToken = otpData.accessToken,
+                        userIdEnc = otpData.userIdEnc
+                )
+            } else {
+                viewModel.sendOtp(
+                        otpType = otpData.otpType.toString(),
+                        mode = modeListData.modeText,
+                        msisdn = otpData.msisdn,
+                        email = otpData.email,
+                        otpDigit = modeListData.otpDigit
+                )
+            }
         } else {
             setFooterText()
         }
@@ -190,16 +208,30 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-        viewModel.otpValidate(
-                code = code,
-                otpType = otpData.otpType.toString(),
-                msisdn = otpData.msisdn,
-                email = otpData.email,
-                mode = modeListData.modeText,
-                userId = otpData.userId.toIntOrZero(),
-                userIdEnc = otpData.userIdEnc,
-                validateToken = otpData.accessToken
-        )
+        if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
+                        otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()) &&
+                otpData.userIdEnc.isNotEmpty()) {
+            viewModel.otpValidate2FA(
+                    code = code,
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    userIdEnc = otpData.userIdEnc,
+                    validateToken = otpData.accessToken
+            )
+        } else {
+            viewModel.otpValidate(
+                    code = code,
+                    otpType = otpData.otpType.toString(),
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    mode = modeListData.modeText,
+                    userId = otpData.userId.toIntOrZero(),
+                    fpData = "",
+                    getSL = "",
+                    signature = "",
+                    timeUnix = ""
+            )
+        }
     }
 
     private fun initObserver() {
@@ -350,7 +382,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
             }
             // tracker auto submit failed
-            analytics.trackAutoSubmitVerification(otpData, modeListData,false, message)
+            analytics.trackAutoSubmitVerification(otpData, modeListData, false, message)
             viewBound.pin?.isError = true
             showKeyboard()
         }

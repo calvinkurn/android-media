@@ -867,7 +867,6 @@ class AddEditProductPreviewFragment :
         doneButton?.show()
         enablePhotoEdit()
         enableDetailEdit()
-        showProductPhotoPreview(productInputModel)
         showProductDetailPreview(productInputModel)
     }
 
@@ -1222,12 +1221,10 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
-        var pictureIndex = 0
-        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
-            if (urlOrPath.startsWith(HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
-            else urlOrPath
-        }
-        productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())
+        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
+        val pictureList = productInputModel.detailInputModel.pictureList
+
+        viewModel.updateProductPhotos(imageUrlOrPathList, pictureList)
     }
 
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
