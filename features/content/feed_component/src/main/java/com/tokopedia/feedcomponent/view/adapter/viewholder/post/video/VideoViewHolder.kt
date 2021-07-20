@@ -6,6 +6,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
@@ -16,7 +17,8 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
 /**
  * @author by yfsx on 20/03/19.
  */
-class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHolder<VideoViewModel>() {
+class VideoViewHolder(private val listener: VideoViewListener) :
+    BasePostViewHolder<VideoViewModel>() {
 
     override var layoutRes = R.layout.item_post_video
     var isPlaying = false
@@ -31,30 +33,34 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
             itemView.image.setOnClickListener {
                 if (!element.url.isBlank()) {
                     listener.onVideoPlayerClicked(
-                            element.positionInFeed,
-                            pagerPosition,
-                            element.postId.toString(),
-                            element.redirectLink)
+                        element.positionInFeed,
+                        pagerPosition,
+                        element.postId.toString(),
+                        element.redirectLink,
+                        "",
+                        "",
+                        true
+                    )
                 }
             }
         } else {
             itemView.ic_play.visibility = View.GONE
         }
         itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = itemView.image.viewTreeObserver
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            viewTreeObserver.removeGlobalOnLayoutListener(this)
-                        }
-
-                        itemView.image.maxHeight = itemView.image.width
-                        itemView.image.requestLayout()
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val viewTreeObserver = itemView.image.viewTreeObserver
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        viewTreeObserver.removeGlobalOnLayoutListener(this)
                     }
+
+                    itemView.image.maxHeight = itemView.image.width
+                    itemView.image.requestLayout()
                 }
+            }
         )
         itemView.image.loadImage(element.thumbnail)
         if (canPlayVideo(element)) {
@@ -103,10 +109,17 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
 
     interface VideoViewListener {
 
-        fun onVideoPlayerClicked(positionInFeed: Int,
-                                 contentPosition: Int,
-                                 postId: String,
-                                 redirectUrl: String)
+        fun onVideoPlayerClicked(
+            positionInFeed: Int,
+            contentPosition: Int,
+            postId: String,
+            redirectUrl: String,
+            authorId: String,
+            authorType: String,
+            isFollowed: Boolean
+        )
+
+        fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }

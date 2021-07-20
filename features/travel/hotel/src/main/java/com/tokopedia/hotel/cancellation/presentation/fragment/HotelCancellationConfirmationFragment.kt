@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
@@ -103,7 +102,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        cancellationViewModel.cancellationSubmitData.observe(this, Observer {
+        cancellationViewModel.cancellationSubmitData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     initView(it.data)
