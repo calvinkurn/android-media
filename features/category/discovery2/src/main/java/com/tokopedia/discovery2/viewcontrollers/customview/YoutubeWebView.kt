@@ -31,7 +31,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun setUpWebViewClient() {
         webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                return true
+                return false
             }
 
             override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
