@@ -122,10 +122,8 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
     }
 
     private fun safeStartPreview() {
-        Handler().postDelayed({
-            streamer?.startVideoCapture()
-            streamer?.startAudioCapture()
-        }, 500)
+        streamer?.startVideoCapture()
+        streamer?.startAudioCapture()
     }
 
     override fun stopPreview() {
