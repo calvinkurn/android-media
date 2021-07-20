@@ -48,7 +48,7 @@ class FeedExoPlayer(val context: Context) {
                         videoStateListener?.onInitialStateLoading()
                     }
                 }
-                if (!playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION && playbackState == ExoPlayer.STATE_READY) {
+                if (!exoPlayer.playWhenReady && exoPlayer.currentPosition != VIDEO_AT_FIRST_POSITION) {
                     //Track only when video stop
                     videoStateListener?.onVideoStateChange(
                         exoPlayer.currentPosition,
