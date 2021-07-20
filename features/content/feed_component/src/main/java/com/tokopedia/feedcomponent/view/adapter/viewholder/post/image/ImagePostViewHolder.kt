@@ -35,7 +35,7 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
                 }
             }
         )
-        imageView.loadImage(element.image)
+        itemView.image.loadImage(element.image)
         listener.userImagePostImpression(element.positionInFeed, pagerPosition)
     }
 
