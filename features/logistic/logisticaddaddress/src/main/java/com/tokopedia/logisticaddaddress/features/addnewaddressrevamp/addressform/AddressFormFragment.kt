@@ -72,7 +72,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private val toppers: String = "Toppers-"
     private var currentKotaKecamatan: String? = ""
     private var currentAlamat: String = ""
-    private var currentKodepos: String = ""
+    private var currentPostalCode: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
 
@@ -156,7 +156,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         currentLong = it.longitude.toDouble()
                         binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
                         binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentKodepos
+                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentPostalCode
                     }
                 }
             }
@@ -518,13 +518,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun goToPinpointPage() {
         val bundle = Bundle()
-        bundle.putDouble(AddAddressConstant.EXTRA_LATITUDE, currentLat)
-        bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, currentLong)
+        bundle.putDouble(EXTRA_LAT, currentLat)
+        bundle.putDouble(EXTRA_LONG, currentLong)
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
         bundle.putString(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
+        bundle.putString(EXTRA_POSTAL_CODE, currentPostalCode)
         if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPONT_PAGE)
     }
@@ -866,7 +867,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.districtId = districtAddress.districtId
         saveDataModel?.zipCodes = districtAddress.zipCodes
         saveDataModel?.postalCode = postalCode
-        currentKodepos = postalCode
+        currentPostalCode = postalCode
 
         if (isPinpoint) goToPinpointPage()
     }

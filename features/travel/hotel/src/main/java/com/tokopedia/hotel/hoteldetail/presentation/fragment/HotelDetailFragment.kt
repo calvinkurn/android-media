@@ -368,7 +368,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
         tv_hotel_address.text = data.property.address
 
-        iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
+        iv_hotel_detail_location.setImageUrl(data.property.locationImageStatic)
 
         setupSafetyBadgeLayout(data.safetyBadge)
         setupPolicySwitcher(data)
