@@ -87,8 +87,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
 
-    private var pagingRowCount = 20
-
     private lateinit var catalogTypeFactory: CatalogTypeFactory
 
     private lateinit var userSession: UserSession
@@ -101,6 +99,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+        private const val PAGING_ROW_COUNT = 20
+        private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
 
         @JvmStatic
         fun newInstance(catalogId: String, catalogUrl : String?): BaseCategorySectionFragment {
@@ -381,10 +381,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         val param = RequestParams.create()
         val searchProductRequestParams = RequestParams.create()
         searchProductRequestParams.apply {
-            putString(CategoryNavConstants.START, (start * pagingRowCount).toString())
+            putString(CategoryNavConstants.START, (start * PAGING_ROW_COUNT).toString())
             putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
             putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-            putString(CategoryNavConstants.ROWS, pagingRowCount.toString())
+            putString(CategoryNavConstants.ROWS, PAGING_ROW_COUNT.toString())
             putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
             putString(CategoryNavConstants.CTG_ID, catalogId)
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
@@ -427,7 +427,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
-            startActivityForResult(intent, 1002)
+            startActivityForResult(intent, REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE)
             CatalogDetailAnalytics.trackProductCardClick(catalogId,viewModel.catalogUrl,userSession.userId,
                     item,(adapterPosition + 1).toString(),viewModel.searchParametersMap.value)
         }
