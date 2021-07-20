@@ -2281,6 +2281,7 @@ class NewShopPageFragment :
                         shopPageHeaderDataModel?.shopName,
                         linkerShareData?.shareContents
                     )
+                    shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     // send gql tracker
                     shareModel.socialMediaName?.let { name ->
@@ -2323,7 +2324,8 @@ class NewShopPageFragment :
                     ?: "", shopPageHeaderDataModel?.avatar ?: shopImageFilePath, shopImageFilePath
             )
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
-            show(fragmentManager)
+            imageSaved(shopImageFilePath)
         }
+        universalShareBottomSheet?.show(fragmentManager)
     }
 }

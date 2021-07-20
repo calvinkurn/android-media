@@ -326,8 +326,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             shareOnlyLink = isImageOnlySharing
         }
         copyLinkImage?.setOnClickListener {
-            copyLinkShareModel.ogImgUrl = ogImageUrl
-            bottomSheetListener?.onShareOptionClicked(copyLinkShareModel)
+            executeShareOptionClick(copyLinkShareModel)
         }
 
         val otherOptionsShareModel = ShareModel.Others().apply {
@@ -338,8 +337,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             shareOnlyLink = isImageOnlySharing
         }
         otherOptionsImage?.setOnClickListener {
-            otherOptionsShareModel.ogImgUrl = ogImageUrl
-            bottomSheetListener?.onShareOptionClicked(otherOptionsShareModel)
+            executeShareOptionClick(otherOptionsShareModel)
         }
 
         if(!isImageOnlySharing) {
@@ -356,8 +354,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             }
 
             smsImage?.setOnClickListener {
-                smsShareModel.ogImgUrl = ogImageUrl
-                bottomSheetListener?.onShareOptionClicked(smsShareModel)
+                executeShareOptionClick(smsShareModel)
             }
         }
 
@@ -372,8 +369,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
 
         emailImage?.setOnClickListener {
-            emailShareModel.ogImgUrl = ogImageUrl
-            bottomSheetListener?.onShareOptionClicked(emailShareModel)
+            executeShareOptionClick(emailShareModel)
         }
     }
 
@@ -438,11 +434,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun setUtmCampaignData(pageName: String, userId: String, pageId: String, feature: String){
-        val sharingDate: String = SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(
+        val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
             Date()
         )
         var tempUsr = userId
-        if(!TextUtils.isEmpty(tempUsr)){
+        if(TextUtils.isEmpty(tempUsr)){
             tempUsr = "0"
         }
         campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"

@@ -973,7 +973,7 @@ class DiscoveryFragment :
             )
             //set the Image Url of the Image that represents page
             setOgImageUrl("{og_img_url}")
-            show(fragmentManager)
         }
+        universalShareBottomSheet?.show(fragmentManager)
     }
 }

@@ -7,6 +7,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.text.TextUtils
 import android.view.View
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -104,10 +106,13 @@ class SharingUtil {
         }
 
         fun executeShareIntent(shareModel: ShareModel, linkerShareData: LinkerShareResult?, activity: Activity?, view: View?, shareStringContainer: String){
-            val shareImageFileUri = MethodChecker.getUri(activity, File(shareModel.savedImageFilePath))
-            shareModel.appIntent?.clipData = ClipData.newRawUri("", shareImageFileUri)
-            shareModel.appIntent?.removeExtra(Intent.EXTRA_STREAM)
-            shareModel.appIntent?.removeExtra(Intent.EXTRA_TEXT)
+            var shareImageFileUri: Uri? = null
+            if(!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
+                shareImageFileUri = MethodChecker.getUri(activity, File(shareModel.savedImageFilePath))
+                shareModel.appIntent?.clipData = ClipData.newRawUri("", shareImageFileUri)
+                shareModel.appIntent?.removeExtra(Intent.EXTRA_STREAM)
+                shareModel.appIntent?.removeExtra(Intent.EXTRA_TEXT)
+            }
 
             var shareString = shareStringContainer
             when (shareModel) {
@@ -135,7 +140,9 @@ class SharingUtil {
                     if(shareModel.shareOnlyLink) {
                         activity?.startActivity(shareModel.appIntent?.apply {
                             setDataAndType(shareImageFileUri, "image/*")
-                            putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            if(shareImageFileUri != null) {
+                                putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            }
                             putExtra(Intent.EXTRA_TITLE, shareString)
                         })
                     }
@@ -147,7 +154,9 @@ class SharingUtil {
                 }
                 is ShareModel.Whatsapp -> {
                     activity?.startActivity(shareModel.appIntent?.apply {
-                        putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                        if(shareImageFileUri != null) {
+                            putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                        }
                         type = UniversalShareBottomSheet.MimeType.TEXT.type
                         if(shareModel.shareOnlyLink){
                             shareString = linkerShareData?.url.toString()
@@ -158,7 +167,9 @@ class SharingUtil {
 
                 is ShareModel.Email -> {
                     activity?.startActivity(shareModel.appIntent?.apply {
-                        putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                        if(shareImageFileUri != null) {
+                            putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                        }
                         type = UniversalShareBottomSheet.MimeType.IMAGE.type
                         if(shareModel.shareOnlyLink){
                             shareString = linkerShareData?.url.toString()
@@ -171,8 +182,10 @@ class SharingUtil {
                 is ShareModel.Others -> {
                     activity?.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
                         if(shareModel.shareOnlyLink){
+                            if(shareImageFileUri != null){
+                                putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            }
                             type = UniversalShareBottomSheet.MimeType.IMAGE.type
-                            putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
                             shareString = linkerShareData?.url ?: ""
                         }
                         else{
@@ -184,7 +197,9 @@ class SharingUtil {
                 is ShareModel.Line -> {
                     activity?.startActivity(shareModel.appIntent?.apply {
                         if(shareModel.shareOnlyLink){
-                            putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            if(shareImageFileUri != null) {
+                                putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                            }
                             shareString = linkerShareData?.url ?: ""
                         }
                         putExtra(Intent.EXTRA_TEXT, shareString)
@@ -193,7 +208,9 @@ class SharingUtil {
                 }
                 else -> {
                     activity?.startActivity(shareModel.appIntent?.apply {
-                        putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                        if(shareImageFileUri != null) {
+                            putExtra(Intent.EXTRA_STREAM, shareImageFileUri)
+                        }
                         type = UniversalShareBottomSheet.MimeType.IMAGE.type
                         if(shareModel.shareOnlyLink){
                             shareString = linkerShareData?.url ?: ""
