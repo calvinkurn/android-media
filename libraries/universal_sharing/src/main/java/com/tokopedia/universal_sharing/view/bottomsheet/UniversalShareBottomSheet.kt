@@ -56,8 +56,22 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val PACKAGE_NAME_TWITTER = "com.twitter.android"
         private const val PACKAGE_NAME_TELEGRAM = "org.telegram.messenger"
         private const val PACKAGE_NAME_GMAIL = "com.google.android.gm"
+        //add remote config handling
+        private var featureFlagRemoteConfigKey: String = "android_enable_custom_sharing"
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
+
+        fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = ""): Boolean{
+            val isEnabled: Boolean
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            isEnabled = if(!TextUtils.isEmpty(remoteConfigKey)){
+                featureFlagRemoteConfigKey = remoteConfigKey
+                remoteConfig.getBoolean(remoteConfigKey)
+            } else{
+                remoteConfig.getBoolean(featureFlagRemoteConfigKey)
+            }
+            return isEnabled
+        }
     }
 
     enum class MimeType(val type: String) {
@@ -96,8 +110,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var channelStr: String = ""
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
-    //add remote config handling
-    private var featureFlagRemoteConfigKey: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -146,7 +158,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             setTitle(context.getString(R.string.label_to_social_media_text))
             setChild(this)
             setCloseClickListener {
-                bottomSheetListener?.onCloseBottomSheet()
+                bottomSheetListener?.onCloseOptionClicked()
                 dismiss()
             }
         }
@@ -315,7 +327,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
         copyLinkImage?.setOnClickListener {
             copyLinkShareModel.ogImgUrl = ogImageUrl
-            bottomSheetListener?.onItemBottomsheetShareClicked(copyLinkShareModel)
+            bottomSheetListener?.onShareOptionClicked(copyLinkShareModel)
         }
 
         val otherOptionsShareModel = ShareModel.Others().apply {
@@ -327,7 +339,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
         otherOptionsImage?.setOnClickListener {
             otherOptionsShareModel.ogImgUrl = ogImageUrl
-            bottomSheetListener?.onItemBottomsheetShareClicked(otherOptionsShareModel)
+            bottomSheetListener?.onShareOptionClicked(otherOptionsShareModel)
         }
 
         if(!isImageOnlySharing) {
@@ -345,7 +357,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
             smsImage?.setOnClickListener {
                 smsShareModel.ogImgUrl = ogImageUrl
-                bottomSheetListener?.onItemBottomsheetShareClicked(smsShareModel)
+                bottomSheetListener?.onShareOptionClicked(smsShareModel)
             }
         }
 
@@ -361,7 +373,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         emailImage?.setOnClickListener {
             emailShareModel.ogImgUrl = ogImageUrl
-            bottomSheetListener?.onItemBottomsheetShareClicked(emailShareModel)
+            bottomSheetListener?.onShareOptionClicked(emailShareModel)
         }
     }
 
@@ -429,7 +441,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         val sharingDate: String = SimpleDateFormat("dd-MM-yy", Locale.getDefault()).format(
             Date()
         )
-        campaignStr = pageName+"-"+userId+"-"+pageId+"-"+sharingDate
+        var tempUsr = userId
+        if(!TextUtils.isEmpty(tempUsr)){
+            tempUsr = "0"
+        }
+        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate"
         channelStr = feature
     }
 
@@ -444,7 +460,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun executeShareOptionClick(shareModel: ShareModel){
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
-        bottomSheetListener?.onItemBottomsheetShareClicked(shareModel)
+        bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
     fun setFeatureFlagRemoteConfigKey(key: String){
@@ -461,7 +477,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             super.show(manager, tag)
         }else{
             //call the native bottom sheet share
-            bottomSheetListener?.onItemBottomsheetShareClicked(getNaviteShareIntent())
+            bottomSheetListener?.onShareOptionClicked(getNaviteShareIntent())
         }
     }
 

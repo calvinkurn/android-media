@@ -24,7 +24,7 @@ addGitMetadata()
 
 void setup() {
     buildScan.server = "http://172.21.57.32"
-//    buildScan.publishAlways()
+    buildScan.publishAlways()
 }
 
 void tagOs() {
