@@ -43,11 +43,13 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberList
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
@@ -75,7 +77,8 @@ class TopupBillsFavoriteNumberFragment :
         OnFavoriteNumberClickListener,
         FavoriteNumberMenuListener,
         FavoriteNumberEmptyStateListener,
-        FavoriteNumberModifyListener
+        FavoriteNumberModifyListener,
+        FavoriteNumberErrorStateListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -100,6 +103,7 @@ class TopupBillsFavoriteNumberFragment :
     private var currentCategoryName = ""
     private var number: String = ""
     private var isNeedShowCoachmark = true
+    private var isLastFetchSuccess = true
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentFavoriteNumberBinding? = null
@@ -178,7 +182,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun initRecyclerView() {
-        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
+        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this, this)
         numberListAdapter = TopupBillsFavoriteNumberListAdapter(
                 getListOfShimmeringDataView(), typeFactory
         )
@@ -245,6 +249,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
+        isLastFetchSuccess = true
         clientNumbers = newClientNumbers
         if (clientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(
@@ -265,8 +270,8 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    // TODO: [Misael] ini message yg undo delete n default belom bener
     private fun onFailedGetFavoriteNumber(err: Throwable) {
+        isLastFetchSuccess = false
         view?.let {
             when (err.message) {
                 ERROR_FETCH_AFTER_UPDATE -> {
@@ -288,10 +293,7 @@ class TopupBillsFavoriteNumberFragment :
                     ) { undoDelete() }.show()
                 }
                 else -> {
-                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch)
-                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.common_topup_fav_number_refresh)
-                    ) { getSeamlessFavoriteNumber() }.show()
+                    numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
                 }
             }
         }
@@ -352,10 +354,14 @@ class TopupBillsFavoriteNumberFragment :
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
         } else {
-            if (clientNumbers.isNotEmpty()) {
-                numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            if (isLastFetchSuccess) {
+                if (clientNumbers.isNotEmpty()) {
+                    numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+                } else {
+                    numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+                }
             } else {
-                numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
             }
         }
     }
@@ -668,6 +674,10 @@ class TopupBillsFavoriteNumberFragment :
                     currentCategoryName, operatorName, userSession.userId
             )
         }
+    }
+
+    override fun refreshFavoriteNumberPage() {
+        getSeamlessFavoriteNumber()
     }
 
     enum class InputNumberActionType {
