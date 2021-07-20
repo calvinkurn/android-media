@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -30,6 +31,11 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     private fun setUpWebViewClient() {
         webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                return true
+            }
+
+            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                customViewInterface?.renderProcessKilled()
                 return true
             }
         }
