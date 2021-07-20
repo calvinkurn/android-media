@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.TopAdsViewAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -22,7 +21,6 @@ class TopAdsView @JvmOverloads constructor(
 
     private val layout = R.layout.thanks_topads_view
     private lateinit var recyclerView: RecyclerView
-    private lateinit var thanksPageData: ThanksPageData
 
     val adapter: TopAdsViewAdapter by lazy(LazyThreadSafetyMode.NONE) {
         TopAdsViewAdapter(arrayListOf(), ::onClick)
@@ -33,10 +31,8 @@ class TopAdsView @JvmOverloads constructor(
     }
 
     fun addData(
-        topAdsParams: TopAdsRequestParams,
-        thanksPageData: ThanksPageData
+        topAdsParams: TopAdsRequestParams
     ) {
-        this.thanksPageData = thanksPageData
         if (!topAdsParams.topAdsImageViewModel.isNullOrEmpty()) {
             visible()
             if (topAdsParams.title.isNotBlank())

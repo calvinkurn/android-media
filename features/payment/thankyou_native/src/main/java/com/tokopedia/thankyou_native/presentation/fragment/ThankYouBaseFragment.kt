@@ -279,13 +279,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
     private fun addDataToTopAdsView(data: TopAdsRequestParams) {
-        if (::thanksPageData.isInitialized) {
-            if (!data.topAdsImageViewModel.isNullOrEmpty()) {
-                getTopAdsView()?.visible()
-                getTopAdsView()?.addData(data, thanksPageData)
-            } else {
-                getTopAdsView()?.gone()
-            }
+        if (!data.topAdsImageViewModel.isNullOrEmpty()) {
+            getTopAdsView()?.visible()
+            getTopAdsView()?.addData(data)
+        } else {
+            getTopAdsView()?.gone()
         }
     }
 

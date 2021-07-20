@@ -75,8 +75,12 @@ class ThanksPageDataViewModel @Inject constructor(
         thanksPageData: ThanksPageData
     ) {
         thankYouTopAdsViewModelUseCase.getAppLinkPaymentInfo(topAdsRequestParams, thanksPageData, {
-            topAdsRequestParams.topAdsImageViewModel = it
-            topAdsDataLiveData.postValue(topAdsRequestParams)
+            if(it.isNotEmpty()){
+                topAdsRequestParams.topAdsImageViewModel = it
+                topAdsDataLiveData.postValue(topAdsRequestParams)
+            }else {
+                postGyroRecommendation(gyroResponseLiveData.value)
+            }
         },{
             postGyroRecommendation(gyroResponseLiveData.value)
         })
@@ -141,6 +145,7 @@ class ThanksPageDataViewModel @Inject constructor(
         topTickerDataUseCase.cancelJobs()
         thanksPageDataUseCase.cancelJobs()
         gyroEngineRequestUseCase.cancelJobs()
+        thankYouTopAdsViewModelUseCase.cancelJobs()
         super.onCleared()
     }
 
