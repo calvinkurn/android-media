@@ -72,7 +72,9 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -93,9 +95,9 @@ const val PAGE_REFRESH_LOGIN = 35771
 private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
-private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
+private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
+private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
 
 class DiscoveryFragment :
         BaseDaggerFragment(),
@@ -855,11 +857,16 @@ class DiscoveryFragment :
 
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
-            Color.parseColor(textColor)
+            if(textColor.isNullOrEmpty()){
+                ContextCompat.getColor(context, R.color.Unify_G500)
+            }else{
+                Color.parseColor(textColor)
+            }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, R.color.Green_G500)
+            ContextCompat.getColor(context, R.color.Unify_G500)
         }
     }
+
 
     override fun onLocalizingAddressUpdatedFromWidget() {
         updateChooseAddressWidget()

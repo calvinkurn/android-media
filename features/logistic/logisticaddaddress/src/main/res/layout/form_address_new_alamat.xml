@@ -21,12 +21,12 @@
         android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/et_alamat"
+        android:id="@+id/et_alamat_new"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
-        app:text_field_label="Alamat"
+        app:text_field_label="@string/txt_alamat_lengkap"
         app:text_field_counter="200"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify

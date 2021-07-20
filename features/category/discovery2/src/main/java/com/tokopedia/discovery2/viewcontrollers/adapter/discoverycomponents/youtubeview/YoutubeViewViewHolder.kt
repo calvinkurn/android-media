@@ -21,7 +21,7 @@ class YoutubeViewViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private lateinit var youTubeViewViewModel: YouTubeViewViewModel
     private var videoId: String = ""
     private var videoName: String = ""
-    private val widthOfPlayer:Int = ((Resources.getSystem().displayMetrics.widthPixels- (2*itemView.context.resources.getDimensionPixelSize(R.dimen.disco_youtube_view_padding)))/ Resources.getSystem().displayMetrics.density).toInt()
+    private val widthOfPlayer:Int = ((Resources.getSystem().displayMetrics.widthPixels- (2*itemView.context.resources.getDimensionPixelSize(R.dimen.disco_youtube_horizontal_padding)))/ Resources.getSystem().displayMetrics.density).toInt()
 
     init {
         youtubeWebView.customViewInterface = this

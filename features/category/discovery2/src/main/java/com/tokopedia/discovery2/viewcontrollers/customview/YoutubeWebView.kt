@@ -1,9 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.customview
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebChromeClient
@@ -97,6 +95,8 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun getYoutubePlayerHtml(videoId: String, width: Int): String {
+        val ratio = 0.5625 //9:16
+        val height = (ratio*width).toInt()
         return "<html>\n" +
                 "  <body>\n" +
                 "    <div id=\"player\"" +
@@ -112,7 +112,7 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                 "      var player;\n" +
                 "      function onYouTubeIframeAPIReady() {\n" +
                 "        player = new YT.Player('player', {\n" +
-                "          height: 200,\n" +
+                "          height: ${height},\n" +
                 "          width: '${width}',\n" +
                 "          videoId: '${videoId}',\n" +
                 "          playerVars: {\n" +

@@ -9,7 +9,7 @@ import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -34,10 +34,10 @@ class InboxActivityApplinkTest {
     private fun forceAbNewInbox() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         applyAbKeyValue(
-            AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_NEW_INBOX
+            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_NEW_INBOX
         )
         applyAbKeyValue(
-            AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+            RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_REVAMP
         )
     }
 
@@ -130,7 +130,7 @@ class InboxActivityApplinkTest {
     fun should_point_to_new_inbox_when_whitelisted_ab_old_to_new_notifcenter() {
         // Given
         applyAbKeyValue(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_NEW_NOTFICENTER
+            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_NEW_NOTFICENTER
         )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 
@@ -147,7 +147,7 @@ class InboxActivityApplinkTest {
     fun should_point_to_old_inbox_when_not_whitelisted_ab_old_to_new_notifcenter() {
         // Given
         applyAbKeyValue(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
         )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 
@@ -163,7 +163,7 @@ class InboxActivityApplinkTest {
         // Given
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         applyAbKeyValue(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_NEW_NOTFICENTER
+            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_NEW_NOTFICENTER
         )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 

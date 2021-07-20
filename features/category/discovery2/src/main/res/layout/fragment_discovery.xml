@@ -7,17 +7,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/parent_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/parent_coordinator"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
