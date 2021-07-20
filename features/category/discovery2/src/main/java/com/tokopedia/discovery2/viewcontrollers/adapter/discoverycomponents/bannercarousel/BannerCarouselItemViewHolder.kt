@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -22,7 +24,8 @@ private const val DEFAULT_DESIGN = 2.1
 class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val parentView: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
     private var titleTextView: TextView = itemView.findViewById(R.id.subTitle_tv)
-    private val bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
+    private var bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
+    private val cardView: CardView = itemView.findViewById(R.id.banner_image_container)
     private lateinit var bannerCarouselItemViewModel: BannerCarouselItemViewModel
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
@@ -46,8 +49,14 @@ class BannerCarouselItemViewHolder(itemView: View, private val fragment: Fragmen
                     if (it.isNotEmpty()) {
                         val itemData = it[0]
                         try {
-                            parentView.layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
+                            val layoutParams: ViewGroup.LayoutParams = bannerImage.layoutParams
+                            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
                                     / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
+                            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                            bannerImage.layoutParams = layoutParams
+//                            cardView.layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
+//                                    / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
+
                             bannerImage.loadImageWithoutPlaceholder(itemData.image)
                             itemData.description?.let { title ->
                                 if (title.isEmpty()) {
