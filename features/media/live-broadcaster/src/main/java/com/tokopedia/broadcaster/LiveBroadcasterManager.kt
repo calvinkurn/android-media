@@ -54,7 +54,10 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
         builder.setListener(this)
 
         // default config: 44.1kHz, Mono, CAMCORDER input
-        builder.setAudioConfig(AudioConfig()) // TODO: edit default audio config
+        builder.setAudioConfig(AudioConfig().apply {
+            sampleRate = mConfig.audioRate
+            type = mConfig.getAudioType()
+        })
 
         builder.setCamera2(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 
@@ -203,7 +206,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
             Streamer.CONNECTION_STATE.IDLE -> broadcastState(BroadcasterState.Idle)
             Streamer.CONNECTION_STATE.INITIALIZED,
             Streamer.CONNECTION_STATE.SETUP -> {
-                // ignored
+                broadcastState(BroadcasterState.Connecting)
             }
             Streamer.CONNECTION_STATE.CONNECTED -> mStatistic.init(streamer, connectionId)
             Streamer.CONNECTION_STATE.RECORD -> {
@@ -219,10 +222,12 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
             }
             Streamer.CONNECTION_STATE.DISCONNECTED -> {
                 if (lastState is BroadcasterState.Pause) return // ignore and just call resume()
+
                 if (status == null) {
                     broadcastState(BroadcasterState.Error("network: unknown network fail"))
                     return
                 }
+
                 when(status) {
                     Streamer.STATUS.CONN_FAIL -> broadcastState(
                         BroadcasterState.Error(
@@ -238,7 +243,7 @@ class LiveBroadcasterManager : LiveBroadcaster, Streamer.Listener {
                         }
                     }
                     Streamer.STATUS.SUCCESS -> {
-                        // ignored
+                        broadcastState(BroadcasterState.Error("network: streamer disconnected"))
                     }
                 }
             }
