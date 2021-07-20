@@ -3,7 +3,6 @@ package com.tokopedia.notifications.image.downloaderFactory
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.*
-import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.notifications.model.BaseNotificationModel
