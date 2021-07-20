@@ -42,7 +42,6 @@ class ReportBottomSheet : BottomSheetUnify() {
 
     private fun sendReport() {
         getReason()
-        setFinalView()
         onReportOptionsClick?.onReportAction(reasonType, reasonDesc)
     }
 
@@ -100,7 +99,7 @@ class ReportBottomSheet : BottomSheetUnify() {
         sendReport()
     }
 
-    private fun setFinalView() {
+     fun setFinalView() {
         layout1?.gone()
         layout2?.gone()
         layout3.visible()

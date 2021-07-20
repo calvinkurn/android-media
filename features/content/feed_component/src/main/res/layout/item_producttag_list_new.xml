@@ -139,7 +139,7 @@
                 android:id="@+id/freeShipping"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_20"
-                android:adjustViewBounds="true"
+                android:adjustViewBounds="false"
                 android:scaleType="fitStart" />
         </LinearLayout>
 
