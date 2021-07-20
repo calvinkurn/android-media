@@ -802,17 +802,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 }
                             }
                             setOnTouchListener { v, event ->
-                                when (event.action) {
-                                    MotionEvent.ACTION_DOWN -> {
-
-                                    }
-                                    MotionEvent.ACTION_UP -> {
-                                        gd.onTouchEvent(event)
-                                        v.performClick()
-                                    }
-                                    else -> {
-                                    }
-                                }
+                                gd.onTouchEvent(event)
                                 true
                             }
                         }

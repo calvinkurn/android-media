@@ -12,7 +12,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoListener
-import com.tokopedia.device.info.DeviceConnectionInfo
 
 class FeedExoPlayer(val context: Context) {
 
@@ -24,8 +23,6 @@ class FeedExoPlayer(val context: Context) {
         .setTrackSelector(DefaultTrackSelector(context))
         .setLoadControl(loadControl)
         .build()
-
-    private val isConnectedToWifi: Boolean = DeviceConnectionInfo.isConnectWifi(context)
 
     init {
         exoPlayer.volume = MUTE_VOLUME
