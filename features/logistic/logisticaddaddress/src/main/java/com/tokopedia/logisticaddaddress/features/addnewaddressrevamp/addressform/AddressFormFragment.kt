@@ -99,7 +99,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAddressFormBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -503,7 +503,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
         districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true, isPinpoint)
         districtRecommendationBottomSheetFragment.setActionListener(this)
-        childFragmentManager?.run {
+        childFragmentManager.run {
             districtRecommendationBottomSheetFragment.show(this, "")
         }
     }
@@ -852,7 +852,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onChooseZipcode(districtAddress: Address, postalCode: String, isPinpoint: Boolean) {
-        val kotaKecamatanText = "${districtAddress.districtName}, ${districtAddress.cityName} $postalCode"
+        val kotaKecamatanText = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
         formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
         currentDistrictName = districtAddress.districtName.toString()
         binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
