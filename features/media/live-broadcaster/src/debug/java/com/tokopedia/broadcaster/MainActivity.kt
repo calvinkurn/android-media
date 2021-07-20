@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {}
 
             override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) {
-                broadcaster.startPreview(surfaceView)
+                broadcaster.stopPreview()
             }
 
             override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
