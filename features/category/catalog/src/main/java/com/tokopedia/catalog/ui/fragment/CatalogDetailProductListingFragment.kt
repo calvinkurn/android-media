@@ -495,7 +495,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun onQuickFilterSelected(option: Option) {
         if (!isQuickFilterSelected(option)) {
-            val filter = getSelectedFilter()
+            val filter = getAllFilterParameters()
             filter[option.key] = option.value
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
@@ -507,12 +507,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId)
         } else {
-            val filter = getSelectedFilter()
+            val filter = getAllFilterParameters()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
         }
+    }
+
+    private fun getAllFilterParameters(): HashMap<String, String> {
+        return if (filterController == null) HashMap() else HashMap(filterController.getParameter())
     }
 
     override fun isQuickFilterSelected(option: Option): Boolean {
