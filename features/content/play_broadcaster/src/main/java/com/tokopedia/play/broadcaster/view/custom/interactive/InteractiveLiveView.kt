@@ -27,6 +27,12 @@ class InteractiveLiveView : RoundedConstraintLayout {
             true
     )
 
+    init {
+        binding.root.setCornerRadius(
+                resources.getDimension(R.dimen.play_interactive_live_radius)
+        )
+    }
+
     fun setMode(mode: Mode) {
         when (mode) {
             is Mode.Scheduled -> setScheduledMode(mode)
