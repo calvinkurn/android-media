@@ -12,10 +12,6 @@ import com.tokopedia.play.view.activity.PlayActivity
 import java.lang.Exception
 
 class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
-    override fun onReceive(p0: Context?, p1: Intent?) {
-        super.onReceive(p0, p1)
-    }
-
     override fun onReceiveOtherAction(p0: Context?, p1: String?, p2: Intent?) {
         super.onReceiveOtherAction(p0, p1, p2)
         p0?.let {
