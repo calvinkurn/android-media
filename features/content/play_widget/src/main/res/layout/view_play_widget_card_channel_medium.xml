@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:background="@color/play_widget_dms_light_gray">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/play_widget_thumbnail"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
