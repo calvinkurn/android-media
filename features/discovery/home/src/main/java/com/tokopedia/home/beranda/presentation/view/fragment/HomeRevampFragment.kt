@@ -245,6 +245,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
         private const val TIME_TO_WAIT = 500L
+        private const val ITEM_MOVE_DURATION = 150L
+        private const val ITEM_VIEW_CACHE_SIZE = 20
+        private const val MAX_OFFSET_ALPHA = 255f
+        private const val EMPTY_OFFSET_ALPHA = 0f
+        private const val OFFSET_ALPHA_TRESHOLD = 150
+        private const val EMPTY_TIME_MILLIS = 0L
+        private const val MONTH_DAY_COUNT = 30
+        private const val TIME_MILLIS_MINUTE = 60000
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -607,7 +615,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
-        homeRecyclerView?.itemAnimator?.moveDuration = 150
+        homeRecyclerView?.itemAnimator?.moveDuration = ITEM_MOVE_DURATION
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
@@ -970,7 +978,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
     private fun setupHomeRecyclerView() {
-        homeRecyclerView?.setItemViewCacheSize(20)
+        homeRecyclerView?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -1584,13 +1592,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
         val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / maxTransitionOffset * (offset - startToTransitionOffset)
+        var offsetAlpha = MAX_OFFSET_ALPHA / maxTransitionOffset * (offset - startToTransitionOffset)
         //2.5 is maximum
-        if (offsetAlpha < 0) {
-            offsetAlpha = 0f
+        if (offsetAlpha < EMPTY_OFFSET_ALPHA) {
+            offsetAlpha = EMPTY_OFFSET_ALPHA
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= 150) {
+            if (offsetAlpha >= OFFSET_ALPHA_TRESHOLD) {
                 oldToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
@@ -1604,11 +1612,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 //                FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
 //            }
 //        }
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
+        if (offsetAlpha >= MAX_OFFSET_ALPHA) {
+            offsetAlpha = MAX_OFFSET_ALPHA
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+            if (offsetAlpha >= EMPTY_OFFSET_ALPHA && offsetAlpha <= MAX_OFFSET_ALPHA) {
                 oldToolbar?.setBackgroundAlpha(offsetAlpha)
                 setStatusBarAlpha(offsetAlpha)
             }
@@ -2126,8 +2134,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0)
-                if (firstInstallCacheValue == 0L) return false
-                firstInstallCacheValue += (30 * 60000).toLong()
+
+                if (firstInstallCacheValue == EMPTY_TIME_MILLIS) return false
+                firstInstallCacheValue += (MONTH_DAY_COUNT * TIME_MILLIS_MINUTE).toLong()
                 val now = Date()
                 val firstInstallTime = Date(firstInstallCacheValue)
                 if (now.compareTo(firstInstallTime) <= 0) {

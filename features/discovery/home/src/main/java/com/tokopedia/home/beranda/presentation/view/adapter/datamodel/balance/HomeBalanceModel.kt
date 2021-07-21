@@ -79,20 +79,20 @@ data class HomeBalanceModel(
         balanceDrawerItemModels.clear()
         when (balanceType) {
             TYPE_STATE_1 -> {
-                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
             }
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[3] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = BalanceDrawerItemModel()
             }
             TYPE_STATE_3 -> {
-                balanceDrawerItemModels[0] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[1] = BalanceDrawerItemModel()
-                balanceDrawerItemModels[2] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = BalanceDrawerItemModel()
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = BalanceDrawerItemModel()
             }
         }
     }
