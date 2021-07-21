@@ -30,6 +30,7 @@ object RollenceKey {
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
 
     const val HOME_WALLETAPP = "gopay_on"
+    const val HOME_PAYMENT_ABC = "PaymentABC"
 
     //home component rollence section
     const val HOME_COMPONENT_LEGO4BANNER_EXP= "lego4_test"

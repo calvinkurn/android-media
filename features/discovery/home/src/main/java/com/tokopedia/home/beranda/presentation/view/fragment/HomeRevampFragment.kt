@@ -137,13 +137,13 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.*
 import com.tokopedia.remoteconfig.RollenceKey.HOME_WALLETAPP
+import com.tokopedia.remoteconfig.RollenceKey.HOME_PAYMENT_ABC
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -353,11 +353,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun isUsingWalletApp(): Boolean {
+        return isEligibleForWalletApp() && isEligibleForPaymentABC()
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun isEligibleForWalletApp(): Boolean {
         return try {
             getAbTestPlatform().getString(HOME_WALLETAPP, "") == HOME_WALLETAPP
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun isEligibleForPaymentABC(): Boolean {
+        return try {
+            getAbTestPlatform().getString(HOME_PAYMENT_ABC, "") == HOME_PAYMENT_ABC
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 
