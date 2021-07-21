@@ -12,7 +12,6 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -22,7 +21,6 @@ import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.*
@@ -314,14 +312,16 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     fun updateCart() {
         val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
-        val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
+        val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
         val visitables = getVisitables()
         visitables.forEach {
             if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                miniCartProductUiModels.add(it)
+                miniCartProductUiModels.add(
+                        UpdateCartRequest(cartId = it.cartId, quantity = it.productQty, notes = it.productNotes)
+                )
             }
         }
-        updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, source)
+        updateCartUseCase.setParams(miniCartProductUiModels, source)
         // No-op for booth onSuccess & onError
         updateCartUseCase.execute(onSuccess = {}, onError = {})
     }
