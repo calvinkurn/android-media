@@ -11,11 +11,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -59,7 +61,6 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_other_menu.*
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
@@ -140,6 +141,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private var statusHeaderImage: AppCompatImageView? = null
+    private var statusIconImage: AppCompatImageView? = null
+    private var whiteBackgroundView: View? = null
+    private var recyclerView: RecyclerView? = null
+    private var statusBarBackgroundView: View? = null
+    private var scrollView: NestedScrollView? = null
+
     override fun onResume() {
         super.onResume()
         otherMenuViewModel.getAllOtherMenuData()
@@ -158,6 +166,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOffset()
+        initView(view)
         setupView(view)
         observeLiveData()
         observeShopPeriod()
@@ -689,11 +698,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setupView(view: View) {
-        view.run {
-            statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
-        }
+        statusBarBackgroundView?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
         populateAdapterData()
-        recycler_view.layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = LinearLayoutManager(context)
         context?.let {
             otherMenuViewHolder = OtherMenuViewHolder(
                 itemView = view,
@@ -716,6 +723,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observeRecyclerViewScrollListener()
     }
 
+    private fun initView(view: View) {
+        with(view) {
+            statusHeaderImage = findViewById(R.id.iv_sah_other_status_header)
+            statusIconImage = findViewById(R.id.iv_sah_other_status_icon)
+            whiteBackgroundView = findViewById(R.id.bg_white_other_menu)
+            statusBarBackgroundView = findViewById(R.id.view_sah_other_status_bar_background)
+            recyclerView = findViewById(R.id.recycler_view)
+            scrollView = findViewById(R.id.sv_sah_other_menu)
+        }
+    }
+
     private fun setupOffset() {
         activity?.theme?.let {
             val tv = TypedValue()
@@ -727,7 +745,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeRecyclerViewScrollListener() {
-        this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
+        scrollView?.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
             calculateSearchBarView(scrollView.scrollY)
         })
     }
@@ -744,17 +762,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 setDarkStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
-            iv_sah_other_status_header?.gone()
-            iv_sah_other_status_icon?.gone()
-            bg_white_other_menu?.gone()
+            statusHeaderImage?.gone()
+            statusIconImage?.gone()
+            whiteBackgroundView?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
-            iv_sah_other_status_header?.visible()
-            iv_sah_other_status_icon?.visible()
-            bg_white_other_menu?.visible()
+            statusHeaderImage?.visible()
+            statusIconImage?.visible()
+            whiteBackgroundView?.visible()
         }
     }
 
@@ -764,7 +782,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 activity?.requestStatusBarLight()
             }
             setStatusBarStateInitialIsLight(true)
-            statusBarBackground?.hide()
+            statusBarBackgroundView?.hide()
         }
     }
 
@@ -772,7 +790,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarStateInitialIsLight(false)
             activity?.requestStatusBarDark()
-            statusBarBackground?.show()
+            statusBarBackgroundView?.show()
         }
     }
 

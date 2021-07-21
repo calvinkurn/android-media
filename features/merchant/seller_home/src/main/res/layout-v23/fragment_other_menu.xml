@@ -29,7 +29,7 @@
         tools:src="@drawable/ic_pm_icon_header"/>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/otherMenuScrollView"
+        android:id="@+id/sv_sah_other_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <include
-                android:id="@+id/shopInfoLayout"
+                android:id="@+id/view_sah_other_shop_info"
                 layout="@layout/view_sah_other_header"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -58,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
+                app:layout_constraintTop_toBottomOf="@id/view_sah_other_shop_info"/>
 
             <View
                 android:layout_width="match_parent"
@@ -70,7 +70,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <View
-        android:id="@+id/statusBarBackground"
+        android:id="@+id/view_sah_other_status_bar_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_status_bar_height"
         app:layout_constraintTop_toTopOf="parent"
