@@ -72,19 +72,19 @@ object ReviewUtil {
 
 fun getReviewStar(ratingCount: Int): Int {
     return when (ratingCount) {
-        1 -> {
+        ReviewConstants.RATING_ONE -> {
             R.drawable.review_ic_rating_star_one
         }
-        2 -> {
+        ReviewConstants.RATING_TWO -> {
             R.drawable.review_ic_rating_star_two
         }
-        3 -> {
+        ReviewConstants.RATING_THREE -> {
             R.drawable.review_ic_rating_star_three
         }
-        4 -> {
+        ReviewConstants.RATING_FOUR -> {
             R.drawable.review_ic_rating_star_four
         }
-        5 -> {
+        ReviewConstants.RATING_FIVE -> {
             R.drawable.review_ic_rating_star_five
         }
         else -> {

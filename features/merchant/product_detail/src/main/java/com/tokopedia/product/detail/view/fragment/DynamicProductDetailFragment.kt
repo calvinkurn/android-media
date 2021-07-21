@@ -595,7 +595,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         Handler().postDelayed({
             vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected()
                     ?: -1)
-        }, 200)
+        }, ProductDetailConstant.VARIANT_SCROLL_DELAY)
     }
 
     private fun trackVideoState() {
@@ -1477,7 +1477,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 ServerLogger.log(Priority.P2, "LOAD_PAGE_FAILED",
                         mapOf("type" to "pdp",
                                 "desc" to it.message.orEmpty(),
-                                "err" to Log.getStackTraceString(it).take(1000).trim()
+                                "err" to Log.getStackTraceString(it).take(ProductDetailConstant.LOG_MAX_LENGTH).trim()
                         ))
                 logException(it)
                 context?.let { ctx ->
@@ -2617,7 +2617,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
-        (activity as AppCompatActivity).supportActionBar?.elevation = 10F
+        (activity as AppCompatActivity).supportActionBar?.elevation = ProductDetailConstant.TOOLBAR_ELEVATION
 
         et_search.setOnClickListener {
             DynamicProductDetailTracking.Click.eventSearchToolbarClicked(viewModel.getDynamicProductInfoP1)

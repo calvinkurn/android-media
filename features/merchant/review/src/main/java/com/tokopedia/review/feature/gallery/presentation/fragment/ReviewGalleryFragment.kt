@@ -133,14 +133,24 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun disableScroll() {
-        imagesRecyclerView?.layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
-            override fun canScrollHorizontally(): Boolean = false
+        imagesRecyclerView?.apply {
+            isNestedScrollingEnabled = false
+            requestLayout()
         }
     }
 
     override fun enableScroll() {
-        imagesRecyclerView?.layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
-            override fun canScrollHorizontally(): Boolean = true
+        imagesRecyclerView?.apply {
+            isNestedScrollingEnabled = true
+            requestLayout()
+        }
+    }
+
+    override fun onImageLoadFailed(isSuccess: Boolean, index: Int) {
+        if(!isSuccess) {
+            showToaster(getString(R.string.review_reading_connection_error), getString(R.string.review_refresh), View.OnClickListener {
+                adapter.reloadImageAtIndex(index)
+            })
         }
     }
 
@@ -311,9 +321,9 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(message: String, actionText: String = "", onClickListener: View.OnClickListener = View.OnClickListener {  }) {
         coordinatorLayout?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL).show()
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL, actionText, onClickListener).show()
         }
     }
 

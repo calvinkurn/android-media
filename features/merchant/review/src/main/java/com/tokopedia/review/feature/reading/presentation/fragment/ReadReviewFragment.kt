@@ -10,19 +10,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
@@ -106,6 +108,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var goToTopFab: FloatingButtonUnify? = null
     private var errorType = GlobalError.NO_CONNECTION
 
+    private var currentScrollPosition = 0
+
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
     }
@@ -167,6 +171,24 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentScrollPosition += dy
+                if(currentScrollPosition == 0) {
+                    goToTopFab?.hide()
+                } else {
+                    goToTopFab?.show()
+                }
+            }
+        }
+    }
+
     override fun onLikeButtonClicked(
         reviewId: String,
         shopId: String,
@@ -201,7 +223,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    override fun onHeaderClicked() {
+    override fun openStatisticsBottomSheet() {
         ReadReviewTracking.trackOnClickPositiveReviewPercentage(
             getSatisfactionRate(),
             getRatingAndTopics().rating.totalRating,
@@ -431,7 +453,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         observeRatingAndTopics()
         observeProductReviews()
         observeToggleLikeReview()
-        observePage()
     }
 
     override fun loadInitialData() {
@@ -526,12 +547,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         })
     }
 
-    private fun observePage() {
-        viewModel.page.observe(viewLifecycleOwner, {
-            goToTopFab?.showWithCondition(it > ReadReviewViewModel.INITIAL_PAGE)
-        })
-    }
-
     private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         if (ratingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
@@ -546,6 +561,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 show()
             }
             hideListOnlyLoading()
+            swipeToRefresh?.hide()
             return
         }
         reviewHeader?.apply {
@@ -567,7 +583,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
-        if (viewModel.ratingAndTopic.value is Fail) {
+        if (viewModel.ratingAndTopic.value !is Success) {
             return
         }
         hideError()

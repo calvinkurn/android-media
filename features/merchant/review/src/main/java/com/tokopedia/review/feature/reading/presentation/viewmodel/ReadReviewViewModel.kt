@@ -50,8 +50,6 @@ class ReadReviewViewModel @Inject constructor(
         get() = _toggleLikeReview
 
     private val currentPage = MutableLiveData<Int>()
-    val page: LiveData<Int>
-        get() = currentPage
 
     private var productId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM

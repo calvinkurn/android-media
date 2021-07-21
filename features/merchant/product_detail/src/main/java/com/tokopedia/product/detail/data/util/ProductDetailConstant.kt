@@ -185,4 +185,7 @@ object ProductDetailConstant {
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
 
     const val DEFAULT_ATC_MAX_ORDER = 100
+    const val VARIANT_SCROLL_DELAY = 200L
+    const val LOG_MAX_LENGTH = 1000
+    const val TOOLBAR_ELEVATION = 10F
 }

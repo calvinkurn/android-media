@@ -140,6 +140,12 @@ object ReviewConstants {
     const val REVIEW_READING_PLT_PREPARE_METRICS = "review_reading_plt_prepare_metrics"
     const val REVIEW_READING_PLT_NETWORK_METRICS = "review_reading_plt_network_metrics"
     const val REVIEW_READING_PLT_RENDER_METRICS = "review_reading_plt_render_metrics"
+
+    const val RATING_ONE = 1
+    const val RATING_TWO = 2
+    const val RATING_THREE = 3
+    const val RATING_FOUR = 4
+    const val RATING_FIVE = 5
 }
 
 

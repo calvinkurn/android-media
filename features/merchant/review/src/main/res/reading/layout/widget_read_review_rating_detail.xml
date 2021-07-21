@@ -41,15 +41,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/review_reading_rating_count"
-        android:layout_width="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl4"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="5" />
+        tools:text="43 rb" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

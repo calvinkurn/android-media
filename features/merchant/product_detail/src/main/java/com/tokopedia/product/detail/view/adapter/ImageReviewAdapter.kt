@@ -42,7 +42,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
 
         fun bind(item: ImageReviewItem, type: Int, listItem: List<ImageReviewItem>) {
             with(view) {
-                image_review.loadImageRounded(item.imageUrlThumbnail, 16f)
+                image_review.loadImageRounded(item.imageUrlThumbnail, ROUNDED_IMAGE_EDGES)
                 if (type == VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER) {
                     overlay_see_all.visible()
                     txt_see_all.text = item.imageCount
@@ -65,5 +65,6 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
         private const val VIEW_TYPE_IMAGE = 77
         private const val VIEW_TYPE_IMAGE_WITH_SEE_ALL_LAYER = 88
         private const val TOTAL_REVIEW_IMAGE_VISIBLE_NEW_VIEWHOLDER = 5
+        private const val ROUNDED_IMAGE_EDGES = 16f
     }
 }

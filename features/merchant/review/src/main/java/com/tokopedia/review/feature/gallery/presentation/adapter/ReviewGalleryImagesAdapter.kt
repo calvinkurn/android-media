@@ -27,4 +27,8 @@ class ReviewGalleryImagesAdapter(private val imageListener: ReviewGalleryImageLi
     fun setData(images: List<String>) {
         this.images = images
     }
+
+    fun reloadImageAtIndex(index: Int) {
+        notifyItemChanged(index)
+    }
 }

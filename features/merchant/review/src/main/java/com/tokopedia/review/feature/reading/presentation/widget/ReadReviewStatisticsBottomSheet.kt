@@ -63,7 +63,7 @@ class ReadReviewStatisticsBottomSheet : BottomSheetUnify() {
     }
 
     private fun bindProgressBarData(progressBar: ReadReviewRatingBar?, reviewDetail: ProductReviewDetail) {
-        progressBar?.setProgressAndRatingCount(reviewDetail.percentage.toInt(), reviewDetail.totalReviews)
+        progressBar?.setProgressAndRatingCount(reviewDetail.percentage, reviewDetail.totalReviews)
     }
 
     private fun getListOfProgressBars(): List<ReadReviewRatingBar?> {

@@ -12,7 +12,7 @@ data class ToggleLikeReviewResponse(
 data class ToggleProductReviewLike(
         @SerializedName("id")
         @Expose
-        val reviewId: Long = 0,
+        val reviewId: String = "",
         @SerializedName("likeStatus")
         @Expose
         val likeStatus: Int = 0,

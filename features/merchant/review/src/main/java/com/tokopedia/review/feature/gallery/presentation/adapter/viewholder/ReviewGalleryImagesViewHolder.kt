@@ -49,6 +49,7 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
                     }
                 }
             }
+            this.mImageView.onUrlLoaded = { imageListener.onImageLoadFailed(it, adapterPosition) }
         }
     }
 }
