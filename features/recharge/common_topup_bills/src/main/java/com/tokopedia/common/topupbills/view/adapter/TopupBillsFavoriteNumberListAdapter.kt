@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactory
@@ -50,6 +51,11 @@ class TopupBillsFavoriteNumberListAdapter (
 
     fun setNotFound(notFoundDataView: List<TopupBillsFavNumberNotFoundDataView>) {
         this.visitables = notFoundDataView
+        notifyDataSetChanged()
+    }
+
+    fun setErrorState(errorDataView: List<TopupBillsFavNumberErrorDataView>) {
+        this.visitables = errorDataView
         notifyDataSetChanged()
     }
 }

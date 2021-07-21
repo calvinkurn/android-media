@@ -43,11 +43,13 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberList
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
@@ -75,7 +77,8 @@ class TopupBillsFavoriteNumberFragment :
         OnFavoriteNumberClickListener,
         FavoriteNumberMenuListener,
         FavoriteNumberEmptyStateListener,
-        FavoriteNumberModifyListener
+        FavoriteNumberModifyListener,
+        FavoriteNumberErrorStateListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -178,7 +181,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun initRecyclerView() {
-        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
+        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this, this)
         numberListAdapter = TopupBillsFavoriteNumberListAdapter(
                 getListOfShimmeringDataView(), typeFactory
         )
@@ -255,7 +258,12 @@ class TopupBillsFavoriteNumberFragment :
                     currentCategoryName, userSession.userId)
         }
         binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (clientNumbers.isNullOrEmpty()) hide() else show()
+            if (numberListAdapter.visitables.isNotEmpty() &&
+                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
+                show()
+            } else {
+                hide()
+            }
         }
 
         if (isNeedShowCoachmark && numberListAdapter.visitables.isNotEmpty()) {
@@ -265,7 +273,6 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    // TODO: [Misael] ini message yg undo delete n default belom bener
     private fun onFailedGetFavoriteNumber(err: Throwable) {
         view?.let {
             when (err.message) {
@@ -288,10 +295,7 @@ class TopupBillsFavoriteNumberFragment :
                     ) { undoDelete() }.show()
                 }
                 else -> {
-                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch)
-                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.common_topup_fav_number_refresh)
-                    ) { getSeamlessFavoriteNumber() }.show()
+                    numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
                 }
             }
         }
@@ -351,12 +355,18 @@ class TopupBillsFavoriteNumberFragment :
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
+            binding?.commonTopupbillsFavoriteNumberClue?.show()
         } else {
-            if (clientNumbers.isNotEmpty()) {
-                numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
+                if (clientNumbers.isNotEmpty()) {
+                    numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+                } else {
+                    numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+                }
             } else {
-                numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
             }
+            binding?.commonTopupbillsFavoriteNumberClue?.hide()
         }
     }
 
@@ -370,7 +380,8 @@ class TopupBillsFavoriteNumberFragment :
 
     fun onSearchReset() {
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.setText("")
-        numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+        if (clientNumbers.isEmpty())
+            numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -668,6 +679,10 @@ class TopupBillsFavoriteNumberFragment :
                     currentCategoryName, operatorName, userSession.userId
             )
         }
+    }
+
+    override fun refreshFavoriteNumberPage() {
+        getSeamlessFavoriteNumber()
     }
 
     enum class InputNumberActionType {

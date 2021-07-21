@@ -59,4 +59,7 @@
     <string name="common_topup_fav_number_failed_fetch_after_update">Maaf, nama belum berhasil ke-update. Coba refresh, yuk.</string>
     <string name="common_topup_fav_number_failed_fetch_after_delete">Maaf, daftar Nomor Favorit belum berhasil ke-update. Coba refresh, yuk.</string>
     <string name="common_topup_fav_number_failed_fetch_after_undo_delete">Maaf, nomor belum berhasil dikembalikan. Mau coba lagi?</string>
+    <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
+    <string name="common_topup_fav_number_error_state_desc">Coba refresh atau lanjut transaksi dulu, ya.</string>
+    <string name="common_topup_fav_number_error_state_button">Refresh</string>
 </resources>
