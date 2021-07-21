@@ -4,27 +4,27 @@ import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemPropertySearchResultHorizontalBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.data.model.PropertyPrice
-import kotlinx.android.synthetic.main.item_property_search_result_horizontal.view.*
 
-class HotelSearchMapItemViewHolder(view: View) : AbstractViewHolder<Property>(view) {
+class HotelSearchMapItemViewHolder(val binding: ItemPropertySearchResultHorizontalBinding) : AbstractViewHolder<Property>(binding.root) {
     override fun bind(element: Property) {
-        with(itemView) {
+        with(binding) {
             image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
             title.text = element.name
 
             if (element.review.score == 0f) {
-                rating_counter.visibility = View.INVISIBLE
+                ratingCounter.visibility = View.INVISIBLE
                 rate.visibility = View.INVISIBLE
             } else {
-                rating_counter.visibility = View.VISIBLE
+                ratingCounter.visibility = View.VISIBLE
                 rate.visibility = View.VISIBLE
-                rating_counter.text = element.review.score.toString()
+                ratingCounter.text = element.review.score.toString()
                 rate.text = element.review.description
             }
 
@@ -38,18 +38,18 @@ class HotelSearchMapItemViewHolder(view: View) : AbstractViewHolder<Property>(vi
             price.text = propertyPrice.price
 
             if (propertyPrice.deals.price.isNotEmpty()) {
-                price_origin.visibility = View.VISIBLE
-                price_origin.text = propertyPrice.deals.price
-                price_origin.paintFlags = price_origin.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                priceOrigin.visibility = View.VISIBLE
+                priceOrigin.text = propertyPrice.deals.price
+                priceOrigin.paintFlags = priceOrigin.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
-                price_origin.visibility = View.GONE
+                priceOrigin.visibility = View.GONE
             }
             if (element.propertySafetyBadge.isShow && element.propertySafetyBadge.title.isNotEmpty()) {
-                tv_tag_hotel_badge.show()
-                ic_tag_hotel_badge_outline.show()
+                tvTagHotelBadge.show()
+                icTagHotelBadgeOutline.show()
             } else {
-                tv_tag_hotel_badge.hide()
-                ic_tag_hotel_badge_outline.hide()
+                tvTagHotelBadge.hide()
+                icTagHotelBadgeOutline.hide()
             }
         }
     }

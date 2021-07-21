@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.*
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemPropertyHorizontalSearchShimmeringBinding
+import com.tokopedia.hotel.databinding.ItemPropertySearchResultBinding
+import com.tokopedia.hotel.databinding.ItemPropertySearchResultHorizontalBinding
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search_map.data.model.HotelLoadingModel
@@ -28,12 +31,21 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            SearchPropertyViewHolder.LAYOUT -> SearchPropertyViewHolder(parent)
+            SearchPropertyViewHolder.LAYOUT -> {
+                val binding = ItemPropertySearchResultBinding.bind(parent)
+                return SearchPropertyViewHolder(binding)
+            }
             ErrorNetworkViewHolder.LAYOUT -> ErrorNetworkViewHolder(parent)
             R.layout.property_search_shimmer_loading -> LoadingViewholder(parent)
             EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
-            HotelSearchMapItemViewHolder.LAYOUT -> HotelSearchMapItemViewHolder(parent)
-            HotelLoadingViewHolder.LAYOUT -> HotelLoadingViewHolder(parent)
+            HotelSearchMapItemViewHolder.LAYOUT -> {
+                val binding = ItemPropertySearchResultHorizontalBinding.bind(parent)
+                return HotelSearchMapItemViewHolder(binding)
+            }
+            HotelLoadingViewHolder.LAYOUT -> {
+                val binding = ItemPropertyHorizontalSearchShimmeringBinding.bind(parent)
+                HotelLoadingViewHolder(binding)
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
