@@ -34,4 +34,7 @@
     <string name="desc_card_pm_end_game_bottom_sheet">Tingkatkan Performa Tokomu untuk dapat keuntungan Power Merchant lagi, ya!</string>
     <string name="desc_card_pm_pro_end_game_bottom_sheet">Tingkatkan Performa Tokomu untuk dapat keuntungan PM PRO lagi, ya!</string>
 
+    <string name="title_end_game_period_information_interrupt">Sejak %s masa transisi skema Performa Toko baru sudah berakhir</string>
+    <string name="status_end_game_period_information_interrupt">Status Power Merchant dengan skor <![CDATA[<b>di bawah 60</b>]]> akan otomatis dinonaktifkan</string>
+    <string name="gmc_check_your_shop_performance">Cek Performa Tokomu</string>
 </resources>
