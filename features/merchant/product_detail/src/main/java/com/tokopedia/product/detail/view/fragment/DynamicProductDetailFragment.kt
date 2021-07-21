@@ -150,6 +150,7 @@ import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -730,10 +731,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         when (componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl())
+                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl(), viewModel.userId)
             else -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, "", "")
+                            viewModel.getDynamicProductInfoP1, "", "", viewModel.userId)
 
         }
     }
@@ -1683,18 +1684,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
-                val enableComparisonWidget = remoteConfig()?.getBoolean(
-                        RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
-                if (enableComparisonWidget) {
-                    if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
-                        pdpUiUpdater?.updateComparisonDataModel(it.data)
-                        updateUi()
+                if (it.data.recommendationItemList.isNotEmpty()) {
+                    val enableComparisonWidget = remoteConfig()?.getBoolean(
+                            RemoteConfigKey.RECOMMENDATION_ENABLE_COMPARISON_WIDGET, true) ?: true
+                    if (enableComparisonWidget) {
+                        if (it.data.layoutType == RecommendationTypeConst.TYPE_COMPARISON_WIDGET) {
+                            pdpUiUpdater?.updateComparisonDataModel(it.data)
+                            updateUi()
+                        } else {
+                            pdpUiUpdater?.updateRecommendationData(it.data)
+                            updateUi()
+                        }
                     } else {
                         pdpUiUpdater?.updateRecommendationData(it.data)
                         updateUi()
                     }
                 } else {
-                    pdpUiUpdater?.updateRecommendationData(it.data)
+                    //recomUiPageName used because there is possibilites gql recom return empty pagename
+                    pdpUiUpdater?.removeComponent(it.data.recomUiPageName)
                     updateUi()
                 }
             }, {
@@ -3546,7 +3553,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun isNavOld(): Boolean {
         return try {
             getAbTestPlatform()?.let {
-                return it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD) == AbTestPlatform.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
+                return it.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD) == RollenceKey.NAVIGATION_VARIANT_OLD || GlobalConfig.isSellerApp()
             }
             return true
         } catch (e: Exception) {
@@ -3610,5 +3617,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String) {
         val position = getComponentPosition(model)
         DynamicProductDetailTracking.Impression.eventTopAdsImageViewImpression(trackingQueue, viewModel.userId, bannerId, position, bannerName)
+    }
+
+    override fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String) {
+        DynamicProductDetailTracking.Click.eventClickBestSeller(componentTrackDataModel, viewModel.getDynamicProductInfoP1, "", viewModel.userId)
+        goToApplink(appLink)
     }
 }

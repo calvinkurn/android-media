@@ -1,9 +1,9 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
@@ -40,8 +40,8 @@ class RelatedPostAdapter(private val relatedPostList: List<RelatedPostItemViewMo
             with(itemView) {
                 val content = element.data.content
                 val firstMedia = content.body.media.firstOrNull()?.thumbnail ?: ""
-                image.loadImage(firstMedia)
-                image.addOnImpressionListener(element.impressionHolder) {
+                videoPreviewImage.loadImage(firstMedia)
+                videoPreviewImage.addOnImpressionListener(element.impressionHolder) {
                     listener.onRelatedPostImpression(element.data)
                 }
                 val avatarBadge = content.header.avatarBadge

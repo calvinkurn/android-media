@@ -81,6 +81,7 @@ object ProductTrackingConstant {
         const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
+        const val SELECT_CONTENT = "select_content"
 
         //Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
@@ -197,7 +198,7 @@ object ProductTrackingConstant {
         const val VIEW_SHIPMENT_ERROR_BOTTOM_SHEET = "impression - bottomsheet on pdp"
         const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHAT = "click - chat penjual on bottomsheet error"
         const val CLICK_BUTTON_SHIPMENT_ERROR_BOTTOM_SHEET_CHOOSE_ADDRESS = "click - ganti alamat on bottomsheet error"
-
+        const val CLICK_MODULAR_COMPONENT = "click - modular component"
         const val CLICK_VARIANT_BUY_BUTTON = "click - Beli Langsung on pdp - to global variant bottomsheet"
         const val CLICK_VARIANT_ATC_BUTTON = "click - tambah ke keranjang on pdp - to global variant bottomsheet"
 
@@ -223,6 +224,10 @@ object ProductTrackingConstant {
         const val EVENT_LABEL_CLICK_SHIPMENT = "title:%s;labelShipping:%s;cod:%s"
         const val EVENT_LABEL_CLICK_SHIPMENT_ERROR = "error message:%s;"
         const val VIEW_LABEL_CLICK_SHIPMENT_ERROR_BOTTOM_SHEET = "bottomsheet title:%s;"
+        const val EVENT_LABEL_CLICK_BEST_SELLER = "label:%s;category_id:%s;category_name:%s;"
+        const val EVENT_COMPONENT_CLICK_BEST_SELLER = "comp:%s;temp:%s;elem:%s;cpos:%s;"
+        const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
+        const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
 
     }
 
