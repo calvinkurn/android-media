@@ -58,7 +58,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -346,13 +346,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         val pmProAbTestValue =
                 try {
                     remoteConfigInstance?.abTestPlatform?.getString(
-                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+                            RollenceKey.POWER_MERCHANT_PRO_POP_UP)
                 } catch (e: Exception) {
                     false
                 }
 
         val isPmProRollenceActive =
-                pmProAbTestValue == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP
+                pmProAbTestValue == RollenceKey.POWER_MERCHANT_PRO_POP_UP
 
         return if (pmProCoachmark == null && isPmProRollenceActive) {
             coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
