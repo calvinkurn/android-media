@@ -25,12 +25,12 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import com.tokopedia.variant_common.view.ProductVariantListener
 
 /**
  * Created by jegul on 31/07/20
@@ -38,7 +38,7 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 class VariantSheetViewComponent(
         container: ViewGroup,
         private val listener: Listener
-) : ViewComponent(container, R.id.cl_variant_sheet), ProductVariantListener {
+) : ViewComponent(container, R.id.cl_variant_sheet), AtcVariantListener {
 
     private val clProductVariant: ConstraintLayout = findViewById(R.id.cl_product_variant)
     private val phProductVariant: ConstraintLayout = findViewById(R.id.ph_product_variant)
@@ -121,7 +121,7 @@ class VariantSheetViewComponent(
 
         if (!listOfVariants.isNullOrEmpty()) {
             val pairSelectedProduct = VariantCommonMapper.selectedProductData(
-                    variantSheetUiModel?.parentVariant?: ProductVariantCommon())
+                    variantSheetUiModel?.parentVariant?: ProductVariant())
             val selectedProduct = pairSelectedProduct?.second
             if (selectedProduct != null) {
                 val stock = selectedProduct.stock
@@ -131,7 +131,7 @@ class VariantSheetViewComponent(
                         shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
-                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
+                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock ?: 0),
                         isVariantAvailable = true,
                         price = if (selectedProduct.campaign?.isActive == true) {
                             DiscountedPrice(

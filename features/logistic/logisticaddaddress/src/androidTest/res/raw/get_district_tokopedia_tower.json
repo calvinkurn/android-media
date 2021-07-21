@@ -1,0 +1,99 @@
+[
+  {
+    "data": {
+      "kero_places_get_district": {
+        "error_code": 0,
+        "data": {
+          "title": "Tokopedia Tower",
+          "formatted_address": "Jl. Prof. DR. Satrio, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta",
+          "district_id": 2270,
+          "city_id": 175,
+          "province_id": 13,
+          "district_name": "Setiabudi",
+          "postal_code": "12950",
+          "latitude": "-6.221285299999999",
+          "longitude": "106.8194558",
+          "full_data": [
+            {
+              "long_name": "No.Kav. 11",
+              "short_name": "No.Kav. 11",
+              "types": [
+                "street_number"
+              ]
+            },
+            {
+              "long_name": "Jalan Professor Doktor Satrio",
+              "short_name": "Jl. Prof. DR. Satrio",
+              "types": [
+                "route"
+              ]
+            },
+            {
+              "long_name": "3",
+              "short_name": "3",
+              "types": [
+                "political"
+              ]
+            },
+            {
+              "long_name": "3",
+              "short_name": "3",
+              "types": [
+                "political"
+              ]
+            },
+            {
+              "long_name": "Karet Semanggi",
+              "short_name": "Karet Semanggi",
+              "types": [
+                "administrative_area_level_4",
+                "political"
+              ]
+            },
+            {
+              "long_name": "Kecamatan Setiabudi",
+              "short_name": "Kecamatan Setiabudi",
+              "types": [
+                "administrative_area_level_3",
+                "political"
+              ]
+            },
+            {
+              "long_name": "Kota Jakarta Selatan",
+              "short_name": "Kota Jakarta Selatan",
+              "types": [
+                "administrative_area_level_2",
+                "political"
+              ]
+            },
+            {
+              "long_name": "Daerah Khusus Ibukota Jakarta",
+              "short_name": "Daerah Khusus Ibukota Jakarta",
+              "types": [
+                "administrative_area_level_1",
+                "political"
+              ]
+            },
+            {
+              "long_name": "Indonesia",
+              "short_name": "ID",
+              "types": [
+                "country",
+                "political"
+              ]
+            },
+            {
+              "long_name": "12950",
+              "short_name": "12950",
+              "types": [
+                "postal_code"
+              ]
+            }
+          ]
+        },
+        "status": "OK",
+        "message_error": []
+      }
+    }
+  }
+]

@@ -135,10 +135,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.*
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
@@ -235,14 +232,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
-        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        private const val EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV
+        private const val VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
+        private const val VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
         private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light.png"
+        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light_2.png"
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
@@ -617,8 +614,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun initInboxAbTest() {
         useNewInbox = getAbTestPlatform().getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
     private fun getInboxIcon(): Int {
@@ -895,9 +892,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
-                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                    RollenceKey.NAVIGATION_VARIANT_REVAMP
                 } else {
-                    AbTestPlatform.NAVIGATION_VARIANT_OLD
+                    RollenceKey.NAVIGATION_VARIANT_OLD
                 }
         )
 
@@ -1121,7 +1118,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 bannerCarouselCallback?.resetImpression()
             }
         })
-        getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+        getHomeViewModel().setRollanceNavigationType(RollenceKey.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {

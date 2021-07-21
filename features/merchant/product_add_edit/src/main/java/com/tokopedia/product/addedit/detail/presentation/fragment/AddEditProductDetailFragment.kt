@@ -1436,11 +1436,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
                     productSpecificationTextView?.show()
+                    addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     viewModel.updateSpecificationByAnnotationCategory(result.data)
                 }
                 is Fail -> {
+                    productSpecificationLayout?.show()
                     productSpecificationTextView?.hide()
+                    addProductSpecificationButton?.hide()
                     productSpecificationReloadLayout?.show()
                 }
             }
@@ -1623,14 +1626,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun getAnnotationCategory() {
-        val productId = viewModel.productInputModel.productId
-
-        productSpecificationLayout?.gone()
-        viewModel.getAnnotationCategory(productCategoryId, if (productId > 0) {
-            productId.toString()
+        val productId = if (viewModel.productInputModel.productId > 0) {
+            viewModel.productInputModel.productId.toString()
         } else {
             ""
-        })
+        }
+
+        productSpecificationLayout?.gone()
+        if (productCategoryId.isNotEmpty()) {
+            viewModel.getAnnotationCategory(productCategoryId, productId)
+        }
     }
 
     private fun showSpecificationPicker(){

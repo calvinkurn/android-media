@@ -40,14 +40,12 @@
         android:id="@+id/reload_product_specification_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:background="@drawable/show_case_retry_bg"
         android:padding="@dimen/dp_12"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_add_product_specification">
+        app:layout_constraintTop_toBottomOf="@+id/tv_product_specification_header">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_refresh_message_specification"
