@@ -140,9 +140,6 @@ data class SomDetailOrder(
 
             data class BundleDetailModel(
                     @Expose
-                    @SerializedName("total_product")
-                    val totalProduct: Int = 0,
-                    @Expose
                     @SerializedName("bundle")
                     val bundle: List<BundleProduct> = emptyList(),
                     @Expose
@@ -177,25 +174,16 @@ data class SomDetailOrder(
                         val orderDetailId: String = "0",
                         @Expose
                         @SerializedName("product_id")
-                        val productId: String = "0",
+                        val id: String = "0",
                         @Expose
                         @SerializedName("product_name")
-                        val productName: String = "",
+                        val name: String = "",
                         @Expose
                         @SerializedName("quantity")
                         val quantity: Int = 0,
                         @Expose
                         @SerializedName("product_price")
-                        val productPrice: String = "",
-                        @Expose
-                        @SerializedName("subtotal_price")
-                        val subTotal: String = "",
-                        @Expose
-                        @SerializedName("product_weight")
-                        val productWeight: String = "",
-                        @Expose
-                        @SerializedName("total_weight")
-                        val totalWeight: String = "",
+                        val priceText: String,
                         @Expose
                         @SerializedName("notes")
                         val note: String = "",

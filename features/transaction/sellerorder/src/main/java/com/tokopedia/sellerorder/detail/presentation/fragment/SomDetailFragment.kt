@@ -566,7 +566,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
             nonBundle.map {
                 NonProductBundleUiModel(
                         product = SomDetailOrder.Data.GetSomDetail.Products(
-
+                                id = it.id,
+                                orderDetailId = it.orderDetailId,
+                                name = it.name,
+                                thumbnail = it.thumbnail,
+                                priceText = it.priceText,
+                                quantity = it.quantity,
+                                note = it.note
                         )
                 )
             }
@@ -589,11 +595,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     bundleSubTotal = bundle.bundleSubTotal,
                     orderDetail = bundle.orderDetail.map {
                         SomDetailOrder.Data.GetSomDetail.Products(
-                                id = it.productId,
+                                id = it.id,
                                 orderDetailId = it.orderDetailId,
-                                name = it.productName,
+                                name = it.name,
                                 thumbnail = it.thumbnail,
-                                priceText = it.productPrice,
+                                priceText = it.priceText,
                                 quantity = bundle.bundleQuantity * it.quantity,
                                 note = it.note
                         )

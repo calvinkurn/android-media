@@ -30,7 +30,7 @@ class SomDetailProductBundleCardViewHolder(
     override fun bind(element: ProductBundleUiModel) {
         with(itemView) {
             tvSomBundleName.text = element.bundleName
-            tvSomTotalPrice.text = element.bundlePrice
+            tvSomTotalPrice.text = element.bundleSubTotal
 
             setupProductList(element.orderDetail)
         }

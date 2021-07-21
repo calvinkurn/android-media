@@ -249,6 +249,34 @@ class SomGetOrderDetailUseCase @Inject constructor(
                   action_key
                   action_url
                 }
+                have_product_bundle
+                bundle_detail {
+                  bundle {
+                    bundle_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      order_dtl_id
+                      product_id
+                      product_name
+                      quantity
+                      product_price
+                      notes
+                      thumbnail
+                    }
+                  }
+                  non_bundle {
+                    order_dtl_id
+                    product_id
+                    product_name
+                    quantity
+                    product_price
+                    notes
+                    thumbnail
+                  }
+                }
               }
             }
         """.trimIndent()
