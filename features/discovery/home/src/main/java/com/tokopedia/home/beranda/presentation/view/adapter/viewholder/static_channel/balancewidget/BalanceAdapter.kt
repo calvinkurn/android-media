@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
@@ -43,14 +45,22 @@ import kotlinx.android.synthetic.main.item_balance_widget.view.*
  * Created by yfsx on 3/1/21.
  */
 
-class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
+class BalanceAdapter(
+    val listener: HomeCategoryListener?,
+    diffUtil: DiffUtil.ItemCallback<BalanceDrawerItemModel>
+): ListAdapter<BalanceDrawerItemModel, BalanceAdapter.Holder>(diffUtil) {
 
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = HomeBalanceModel()
         this.itemMap = itemMap
-        notifyDataSetChanged()
+
+        val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
+        itemMap.balanceDrawerItemModels.mapValues {
+            balanceModelList.add(it.key, it.value)
+        }
+        submitList(balanceModelList.toMutableList())
     }
 
     fun getItemMap():  HomeBalanceModel {

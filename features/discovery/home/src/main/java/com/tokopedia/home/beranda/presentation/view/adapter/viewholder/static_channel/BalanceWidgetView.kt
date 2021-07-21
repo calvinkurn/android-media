@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
@@ -58,9 +60,26 @@ class BalanceWidgetView: FrameLayout {
     private fun renderWidget(element: HomeBalanceModel) {
         containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
-        balanceAdapter = BalanceAdapter(listener)
-        rvBalance?.layoutManager = layoutManager
-        rvBalance?.adapter = balanceAdapter
+        if (balanceAdapter == null || rvBalance?.adapter == null) {
+            balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
+                override fun areItemsTheSame(
+                    oldItem: BalanceDrawerItemModel,
+                    newItem: BalanceDrawerItemModel
+                ): Boolean {
+                    return oldItem.state == newItem.state
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: BalanceDrawerItemModel,
+                    newItem: BalanceDrawerItemModel
+                ): Boolean {
+                    return oldItem == newItem
+                }
+
+            })
+            rvBalance?.layoutManager = layoutManager
+            rvBalance?.adapter = balanceAdapter
+        }
         balanceAdapter?.setItemMap(element)
     }
 
