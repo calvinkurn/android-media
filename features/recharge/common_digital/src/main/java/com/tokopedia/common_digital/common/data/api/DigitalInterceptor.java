@@ -3,15 +3,18 @@ package com.tokopedia.common_digital.common.data.api;
 import android.content.Context;
 import android.util.Log;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.authentication.AuthKeyExt;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -25,13 +28,23 @@ import okhttp3.Response;
 public class DigitalInterceptor extends TkpdAuthInterceptor {
 
     private static final String TAG = DigitalInterceptor.class.getSimpleName();
+    private static final String DEFAULT_TOKOPEDIA_ORGANIZATION_NAME = "Tokopedia";
     private Context context;
 
     public DigitalInterceptor(@ApplicationContext Context context,
                               NetworkRouter networkRouter,
                               UserSessionInterface userSessionInterface) {
-        super(context, networkRouter, userSessionInterface, AuthUtil.KEY.KEY_WSV4);
+        super(context, networkRouter, userSessionInterface);
+        this.authKey = getDigitalAuthKey();
         this.context = context;
+    }
+
+    public String getDigitalAuthKey() {
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return AuthKeyExt.RECHARGE_HMAC_API_KEY_STAGING;
+        } else {
+            return AuthKeyExt.RECHARGE_HMAC_API_KEY_PROD;
+        }
     }
 
     @Override
@@ -80,9 +93,20 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
-        return AuthUtil.generateHeadersWithXUserId(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
-        );
+        Map<String, String> header = AuthUtil.generateHeadersWithXUserId(
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession);
+
+        //replace with Digital's auth organization key
+        header.put(AuthUtil.HEADER_AUTHORIZATION, header.get(AuthUtil.HEADER_AUTHORIZATION)
+                .replace(DEFAULT_TOKOPEDIA_ORGANIZATION_NAME, getDigitalAuthOrganization()));
+        return header;
     }
 
+    private String getDigitalAuthOrganization() {
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return AuthKeyExt.RECHARGE_HMAC_API_ORGANIZATION_STAGING;
+        } else {
+            return AuthKeyExt.RECHARGE_HMAC_API_ORGANIZATION_PROD;
+        }
+    }
 }

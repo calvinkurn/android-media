@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+
+project.ext {
+    artifactId = 'authentication'
+    groupId = 'com.tokopedia.authentication.ext'
+    versionName = "1.0.1"
+    artifactName = "authentication_ext-release"
+}
+
+dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+}
+
+apply from: '../publish_local.gradle'
