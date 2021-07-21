@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product_bundle.R
-import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterViewHolder
 import com.tokopedia.product_bundle.multiple.presentation.viewholder.ProductBundleMasterViewHolder.ProductBundleChipState
@@ -36,7 +35,10 @@ class ProductBundleMasterAdapter(private val clickListener: ProductBundleMasterI
 
     fun setProductBundleMasterList(productBundleMasterList: List<ProductBundleMaster>) {
         this.productBundleMasterList = productBundleMasterList
-        this.productBundleChipsStates = ArrayList(productBundleMasterList.map { NORMAL })
+        this.productBundleChipsStates = ArrayList(productBundleMasterList.mapIndexed { index, _ ->
+            if (index == 0) SELECTED
+            else NORMAL
+        })
         notifyDataSetChanged()
     }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,6 +18,7 @@ import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.di.ProductBundleModule
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
+import com.tokopedia.product_bundle.common.util.Utility
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
@@ -25,8 +27,10 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.totalamount.TotalAmount
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),
         ProductBundleMasterItemClickListener,
@@ -64,6 +68,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
     private var productBundleOverView: TotalAmount? = null
+    private var errorToaster: Snackbar? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -84,8 +89,16 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         val productBundleMasters = viewModel.getProductBundleMasters()
         // render product bundle master chips
         productBundleMasterAdapter?.setProductBundleMasterList(productBundleMasters)
+        // simulate get the first bundle information
+        val recommendedBundleId = viewModel.getRecommendedProductBundleId(viewModel.getProductBundleMasters())
+        // get recommended product bundle info
+        viewModel.getBundleInfo(recommendedBundleId)
+
+        errorToaster = Toaster.build(view, "Error Message", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+
         // observe data from view model
         subscribeToProductBundleInfo()
+        subscribeToErrorState()
     }
 
     override fun getScreenName(): String {
@@ -124,17 +137,20 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun updateProductBundleOverView(productBundleOverView: TotalAmount?,
-                                            totalDiscount: Int,
-                                            totalBundlePrice: Int,
-                                            totalPrice: Int,
-                                            totalSaving: Int) {
-        val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount)
-        val totalBundlePriceText = String.format(getString(R.string.text_price_in_rupiah), totalBundlePrice)
-        val totalPriceText = String.format(getString(R.string.text_price_in_rupiah), totalPrice)
-        val totalSavingText = String.format(getString(R.string.text_price_in_rupiah), totalSaving)
+                                            totalDiscount: Double,
+                                            totalBundlePrice: Double,
+                                            totalPrice: Double,
+                                            totalSaving: Double) {
+        val totalDiscountText = String.format(getString(R.string.text_discount_in_percentage), totalDiscount.roundToInt())
+        val totalBundlePriceText = Utility.formatToRupiahFormat(totalBundlePrice.roundToInt())
+        val totalPriceText = Utility.formatToRupiahFormat(totalPrice.roundToInt())
+        val totalSavingText = Utility.formatToRupiahFormat(totalSaving.roundToInt())
         productBundleOverView?.setTitleText(totalDiscountText, totalBundlePriceText)
         productBundleOverView?.amountView?.text = totalPriceText
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
+        productBundleOverView?.amountCtaView?.setOnClickListener {
+            viewModel.addProductBundleToCart()
+        }
     }
 
     private fun subscribeToProductBundleInfo() {
@@ -158,6 +174,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     totalPrice = totalPrice,
                     totalSaving = totalSaving
             )
+        })
+    }
+
+    private fun subscribeToErrorState() {
+        viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
+            if (isError) errorToaster?.show()
         })
     }
 

@@ -13,9 +13,6 @@
     <string name="text_saving">Hemat</string>
     <string name="text_discount_in_percentage">%d%%</string>
 
-    <!-- common -->
-    <string name="text_price_in_rupiah">Rp%d</string>
-
     <!-- id -->
     <item name="product_bundle_master_tag" type="id" />
     <item name="product_variant_tag" type="id" />
