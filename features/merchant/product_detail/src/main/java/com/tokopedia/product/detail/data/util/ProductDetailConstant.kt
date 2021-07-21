@@ -110,6 +110,7 @@ object ProductDetailConstant {
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
 
     const val BEST_SELLER = "best_seller"
+    const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
 
     //Arguments

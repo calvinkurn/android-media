@@ -116,8 +116,8 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductRecomWidgetViewHolder.LAYOUT
     }
 
-    override fun type(data: BestSellerInfoDataModel): Int {
-        return BestSellerInfoViewHolder.LAYOUT
+    override fun type(data: OneLinersDataModel): Int {
+        return OneLinersViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -147,7 +147,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view)
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
             ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(view, variantListener, listener)
-            BestSellerInfoViewHolder.LAYOUT -> BestSellerInfoViewHolder(view, listener)
+            OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }

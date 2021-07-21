@@ -2,13 +2,13 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.common.data.model.pdplayout.BestSellerInfoContent
+import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class BestSellerInfoDataModel(
+data class OneLinersDataModel(
         var name: String = "",
         var type: String = "",
-        var bestSellerInfoContent: BestSellerInfoContent? = null
+        var oneLinersContent: OneLinersContent? = null
 ) : DynamicPdpDataModel {
 
     companion object {
@@ -28,7 +28,7 @@ data class BestSellerInfoDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is BestSellerInfoDataModel) {
+        return if (newData is OneLinersDataModel) {
             this == newData
         } else {
             false
