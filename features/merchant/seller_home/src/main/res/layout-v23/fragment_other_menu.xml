@@ -48,49 +48,9 @@
                 android:background="@color/Unify_N0"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier_sah_other_loading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="shopInfoLoading, shopInfoLayout, shopInfoError"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/group_sah_other_loading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:constraint_referenced_ids="shopInfoLoading"/>
-
-            <include
-                android:id="@+id/shopInfoLoading"
-                layout="@layout/setting_partial_shop_info_loading"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/group_sah_other_success"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="shopInfoLayout"/>
-
             <include
                 android:id="@+id/shopInfoLayout"
                 layout="@layout/view_sah_other_header"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/group_sah_other_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:constraint_referenced_ids="shopInfoError"/>
-
-            <include
-                android:id="@+id/shopInfoError"
-                android:visibility="gone"
-                layout="@layout/setting_partial_shop_info_error"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -98,8 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@id/barrier_sah_other_loading"
-                tools:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
+                app:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
 
             <View
                 android:layout_width="match_parent"

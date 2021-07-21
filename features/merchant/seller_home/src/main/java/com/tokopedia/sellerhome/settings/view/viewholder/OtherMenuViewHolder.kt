@@ -64,11 +64,6 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopStatusHeader: AppCompatImageView? = null
     private var shopStatusHeaderIcon: AppCompatImageView? = null
 
-    private var successLayout: Group? = null
-    private var loadingLayout: Group? = null
-    private var errorLayoutGroup: Group? = null
-    private var errorLayout: ConstraintLayout? = null
-
     private var successHeaderGroup: Group? = null
 
     private var shopAvatarImage: ImageUnify? = null
@@ -111,13 +106,11 @@ class OtherMenuViewHolder(private val itemView: View,
     private var topAdsTooltipImage: AppCompatImageView? = null
     private var topAdsErrorLayout: ConstraintLayout? = null
 
-    fun setupInitialLayout(shouldSetInitially: Boolean) {
+    fun setupInitialLayout() {
         initLayoutComponents()
 
-        if (shouldSetInitially) {
-            shopNameText?.setShopName(userSession.shopName)
-            shopAvatarImage?.setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
-        }
+        shopNameText?.setShopName(userSession.shopName)
+        shopAvatarImage?.setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
         setupShopNextButton()
     }
 
@@ -125,11 +118,6 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.run {
             shopStatusHeader = findViewById(R.id.iv_sah_other_status_header)
             shopStatusHeaderIcon = findViewById(R.id.iv_sah_other_status_icon)
-
-            successLayout = findViewById(R.id.group_sah_other_success)
-            loadingLayout = findViewById(R.id.group_sah_other_loading)
-            errorLayout = findViewById(R.id.shopInfoError)
-            errorLayoutGroup = findViewById(R.id.group_sah_other_error)
 
             successHeaderGroup = findViewById(R.id.group_sah_other_header_success)
 
@@ -172,89 +160,6 @@ class OtherMenuViewHolder(private val itemView: View,
             topAdsBalanceText = findViewById(R.id.tv_sah_other_topads_balance)
             topAdsTooltipImage = findViewById(R.id.iv_sah_other_topads_tooltip)
             topAdsErrorLayout = findViewById(R.id.layout_sah_other_topads_failed)
-        }
-    }
-    
-    fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
-        with(uiModel) {
-            when {
-                partialResponseStatus.first && partialResponseStatus.second -> {
-                    setupSuccessLayout()
-                    shopStatusUiModel?.let { setShopStatusType(it) }
-                    saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                    topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-                    shopBadgeUiModel?.let { setShopBadge(it) }
-                    shopFollowersUiModel?.let {
-                        setShopTotalFollowers(it)
-                        setDotVisibility(it.shopFollowers)
-                    }
-
-                    allErrorLocalLoad?.gone()
-                    balanceErrorLocalLoad?.gone()
-                    shopStatusContainer?.visible()
-                    saldoLayout?.visible()
-                    topAdsLayout?.visible()
-                }
-                partialResponseStatus.first -> {
-                    setupSuccessLayout()
-                    shopStatusUiModel?.let { setShopStatusType(it) }
-                    shopBadgeUiModel?.let { setShopBadge(it) }
-                    shopFollowersUiModel?.let {
-                        setShopTotalFollowers(it)
-                        setDotVisibility(it.shopFollowers)
-                    }
-
-                    shopStatusContainer?.visible()
-                    allErrorLocalLoad?.gone()
-                    balanceErrorLocalLoad?.run {
-                        setup()
-                        visible()
-                    }
-                    saldoLayout?.gone()
-                    topAdsLayout?.gone()
-                }
-                partialResponseStatus.second -> {
-                    setupSuccessLayout()
-                    saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                    topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-
-                    shopBadgeFollowersDot?.gone()
-                    shopStatusContainer?.gone()
-                    allErrorLocalLoad?.run {
-                        setup()
-                        visible()
-                    }
-                    balanceErrorLocalLoad?.gone()
-                    saldoLayout?.visible()
-                    topAdsLayout?.visible()
-                }
-                else -> {
-                    onErrorGetSettingShopInfoData()
-                }
-            }
-        }
-    }
-
-    fun onLoadingGetSettingShopInfoData() {
-        itemView.run {
-            loadingLayout?.visible()
-            successLayout?.gone()
-            errorLayoutGroup?.gone()
-        }
-    }
-
-    fun onErrorGetSettingShopInfoData() {
-        itemView.run {
-            loadingLayout?.gone()
-            successLayout?.gone()
-            errorLayoutGroup?.visible()
-            errorLayout?.run {
-                findViewById<Typography>(R.id.dot)?.gone()
-                findViewById<LocalLoad>(R.id.settingLocalLoad)?.setup()
-                findViewById<Typography>(R.id.shopName)?.setShopName(userSession.shopName)
-                findViewById<ImageUnify>(R.id.shopImage)?.setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
-                setOnClickAction()
-            }
         }
     }
 
@@ -446,20 +351,6 @@ class OtherMenuViewHolder(private val itemView: View,
         operationalHourText?.gone()
         operationalHourImage?.gone()
         operationalHourLabel?.gone()
-    }
-
-    private fun setDotVisibility(shopFollowers: Long) {
-        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
-        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        shopBadgeFollowersDot?.visibility = dotVisibility
-    }
-
-    private fun setupSuccessLayout() {
-        loadingLayout?.gone()
-        errorLayoutGroup?.gone()
-        successLayout?.visible()
-        shopNameText?.setShopName(userSession.shopName)
-        shopAvatarImage?.setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
     }
 
     private fun Typography.setShopName(shopName: String) {
@@ -827,13 +718,6 @@ class OtherMenuViewHolder(private val itemView: View,
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
-    }
-
-    private fun View.setOnClickAction() {
-        findViewById<AppCompatImageView>(R.id.settingShopNext)?.setOnClickListener {
-            listener.onShopInfoClicked()
-            sendShopInfoClickNextButtonTracking()
-        }
     }
 
     private fun LocalLoad.setup() {

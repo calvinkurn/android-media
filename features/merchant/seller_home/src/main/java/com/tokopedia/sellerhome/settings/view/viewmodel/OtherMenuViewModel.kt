@@ -19,7 +19,6 @@ import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
-import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
@@ -38,7 +37,6 @@ import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
         private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
         private val getShopOperationalUseCase: GetShopOperationalUseCase,
         private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
@@ -55,23 +53,13 @@ class OtherMenuViewModel @Inject constructor(
     companion object {
         private const val DELAY_TIME = 5000L
 
-        private const val CUSTOM_ERROR_EXCEPTION_MESSAGE = "both shop info and topads response are failed"
         private const val INVALID_FOLLOWERS_ERROR_MESSAGE =  "Shop followers value is invalid"
-
-        private const val ERROR_BADGE = 1
-        private const val ERROR_FOLLOWERS = 2
-        private const val ERROR_STATUS = 3
-        private const val ERROR_OPERATIONAL = 4
-        private const val ERROR_SALDO = 5
-        private const val ERROR_TOPADS = 6
     }
 
-    private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
     private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
-    private val _oldShopOperationalLiveData = MutableLiveData<Result<ShopOperationalUiModel>>()
 
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<ShopBadgeUiModel>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<ShopFollowersUiModel>>()
@@ -164,25 +152,12 @@ class OtherMenuViewModel @Inject constructor(
 
     val shopPeriodType: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopPeriodType
-    val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
-        get() = _settingShopInfoLiveData
-    val oldShopOperationalLiveData: LiveData<Result<ShopOperationalUiModel>>
-        get() = _oldShopOperationalLiveData
     val isStatusBarInitialState: LiveData<Boolean>
         get() = _isStatusBarInitialState
     val isToasterAlreadyShown: LiveData<Boolean>
         get() = _isToasterAlreadyShown
     val isFreeShippingActive: LiveData<Boolean>
         get() = _isFreeShippingActive
-
-    fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
-        if (isToasterRetry) {
-            launch(coroutineContext) {
-                checkDelayErrorResponseTrigger()
-            }
-        }
-        getAllShopInfoData()
-    }
 
     fun getAllOtherMenuData() {
         setErrorStateMapDefaultValue()
@@ -338,20 +313,6 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    fun getOldShopOperational() {
-        launchCatchError(
-                block = {
-                    val shopOperational = withContext(dispatcher.io) {
-                        getShopOperationalUseCase.executeOnBackground()
-                    }
-                    _oldShopOperationalLiveData.value = Success(shopOperational)
-                },
-                onError = {
-                    _oldShopOperationalLiveData.value = Fail(it)
-                }
-        )
-    }
-
     fun getBalanceInfo() {
         _balanceInfoLiveData.value = SettingResponseState.SettingLoading
         launchCatchError(
@@ -401,24 +362,6 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    private fun getAllShopInfoData() {
-        launchCatchError(block = {
-            _settingShopInfoLiveData.value = Success(
-                    withContext(dispatcher.io) {
-                        with(getAllShopInfoUseCase.executeOnBackground()) {
-                            if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
-                                SettingShopInfoUiModel(first, second, userSession)
-                            } else {
-                                throw MessageErrorException(CUSTOM_ERROR_EXCEPTION_MESSAGE)
-                            }
-                        }
-                    }
-            )
-        }, onError = {
-            _settingShopInfoLiveData.value = Fail(it)
-        })
-    }
-
     fun setErrorStateMapDefaultValue() {
         if (_errorStateMap.value == null) {
             _errorStateMap.value = mutableMapOf(
@@ -429,16 +372,6 @@ class OtherMenuViewModel @Inject constructor(
                     OtherMenuErrorType.Saldo to false,
                     OtherMenuErrorType.Topads to false,
             )
-        }
-    }
-
-    private suspend fun checkDelayErrorResponseTrigger() {
-        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-            if (!isToasterAlreadyShown){
-                _isToasterAlreadyShown.value = true
-                delay(DELAY_TIME)
-                _isToasterAlreadyShown.value = false
-            }
         }
     }
 

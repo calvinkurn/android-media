@@ -6,7 +6,6 @@ import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
@@ -14,7 +13,6 @@ import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
-import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
@@ -46,9 +44,6 @@ import org.mockito.ArgumentMatchers.*
 
 @ExperimentalCoroutinesApi
 class OtherMenuViewModelTest {
-
-    @RelaxedMockK
-    lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
 
     @RelaxedMockK
     lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
@@ -107,7 +102,6 @@ class OtherMenuViewModelTest {
         mViewModel =
                 OtherMenuViewModel(
                         coroutineTestRule.dispatchers,
-                        getAllShopInfoUseCase,
                         getShopFreeShippingInfoUseCase,
                         getShopOperationalUseCase,
                         getShopInfoPeriodUseCase,
@@ -133,50 +127,6 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `success get all setting shop info data`() = runBlocking {
-        val userShopInfoWrapper = UserShopInfoWrapper(shopType = ShopType.OfficialStore)
-        val partialShopInfoSuccess = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                userShopInfoWrapper,
-                anyLong(),
-                anyString()
-        )
-        val partialTopAdsSuccess = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
-                OthersBalance(),
-                anyFloat()
-        )
-        val successPair = Pair(partialShopInfoSuccess, partialTopAdsSuccess)
-
-        coEvery {
-            getAllShopInfoUseCase.executeOnBackground()
-        } returns successPair
-
-        mViewModel.getAllSettingShopInfo()
-
-        coVerify {
-            getAllShopInfoUseCase.executeOnBackground()
-        }
-
-        assertEquals((mViewModel.settingShopInfoLiveData.value as? Success)?.data?.shopBadgeUiModel, ShopBadgeUiModel(partialShopInfoSuccess.shopBadgeUrl))
-    }
-
-    @Test
-    fun `error get setting shop info data`() = runBlocking {
-        val throwable = ResponseErrorException()
-
-        coEvery {
-            getAllShopInfoUseCase.executeOnBackground()
-        } throws throwable
-
-        mViewModel.getAllSettingShopInfo()
-
-        coVerify {
-            getAllShopInfoUseCase.executeOnBackground()
-        }
-
-        assert(mViewModel.settingShopInfoLiveData.value == Fail(throwable))
-    }
-
-    @Test
     fun `when onCheckDelayErrorResponseTrigger should alter toaster flag between true and false`() = coroutineTestRule.runBlockingTest {
         mViewModel.onCheckDelayErrorResponseTrigger()
 
@@ -188,45 +138,6 @@ class OtherMenuViewModelTest {
 
         mViewModel.isToasterAlreadyShown.observeOnce {
             assertFalse(it)
-        }
-    }
-
-    @Test
-    fun `Check delay will alter isToasterAlreadyShown between true and false`() = runBlocking {
-        coroutineTestRule.runBlockingTest {
-            mViewModel.getAllSettingShopInfo(true)
-
-            mViewModel.isToasterAlreadyShown.observeOnce {
-                assertTrue(it)
-            }
-
-            advanceTimeBy(5000L)
-
-            mViewModel.isToasterAlreadyShown.observeOnce {
-                assertFalse(it)
-            }
-        }
-    }
-
-    @Test
-    fun `Toaster already shown will not alter values`() {
-        val isToasterAlreadyShown = mViewModel.isToasterAlreadyShown.value
-        mViewModel.getAllSettingShopInfo(false)
-        assertEquals(isToasterAlreadyShown, mViewModel.isToasterAlreadyShown.value)
-    }
-
-    @Test
-    fun `will not change live data value if toaster is already shown`() {
-        coroutineTestRule.runBlockingTest {
-            mViewModel.getAllSettingShopInfo(true)
-            mViewModel.isToasterAlreadyShown.observeOnce {
-                assertTrue(it)
-            }
-            advanceTimeBy(10L)
-            mViewModel.getAllSettingShopInfo(true)
-            mViewModel.isToasterAlreadyShown.observeOnce {
-                assertTrue(it)
-            }
         }
     }
 
@@ -609,30 +520,6 @@ class OtherMenuViewModelTest {
         verifyGetUserShopInfoCalled()
         val expectedResult = SettingResponseState.SettingError(error)
         mViewModel.userShopInfoLiveData.verifyStateErrorEquals(expectedResult)
-    }
-
-    @Test
-    fun `when getOldShopOperational success should set live data success`() = runBlocking {
-        val uiModel = ShopOperationalUiModel(anyString(), anyInt(), anyInt(), anyInt(), anyInt(), anyBoolean())
-        onGetShopOperational_thenReturn(uiModel)
-
-        mViewModel.getOldShopOperational()
-
-        verifyGetShopOperationalCalled()
-        val expectedResult = Success(uiModel)
-        mViewModel.oldShopOperationalLiveData.verifySuccessEquals(expectedResult)
-    }
-
-    @Test
-    fun `when getOldShopOperational error should set live data error`() = runBlocking {
-        val error = IllegalStateException()
-        onGetShopOperational_thenThrow(error)
-
-        mViewModel.getOldShopOperational()
-
-        verifyGetShopOperationalCalled()
-        val expectedResult = Fail(error)
-        mViewModel.oldShopOperationalLiveData.verifyErrorEquals(expectedResult)
     }
 
     @Test

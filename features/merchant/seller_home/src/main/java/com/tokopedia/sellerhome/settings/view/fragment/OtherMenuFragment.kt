@@ -37,12 +37,10 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
@@ -80,9 +78,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
-        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
-
         private const val SHOP_BADGE = "shop badge"
         private const val SHOP_FOLLOWERS = "shop followers"
         private const val SHOP_INFO = "shop info"
@@ -102,8 +97,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
     @Inject
-    lateinit var sellerHomeConfig: SellerHomeRemoteConfig
-    @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
     @Inject
     lateinit var shopOperationalTracker: SettingShopOperationalTracker
@@ -121,10 +114,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var isDefaultDarkStatusBar = true
 
     private var canShowErrorToaster = true
-
-    private val isOtherMenuErrorNewFlow by lazy {
-        sellerHomeConfig.isOtherMenuNewErrorFlow()
-    }
 
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
@@ -153,19 +142,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onResume() {
         super.onResume()
-        if (isOtherMenuErrorNewFlow) {
-            otherMenuViewModel.getAllOtherMenuData()
-        } else {
-            getAllShopInfoData()
-        }
+        otherMenuViewModel.getAllOtherMenuData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
-        if (isOtherMenuErrorNewFlow) {
-            otherMenuViewModel.setErrorStateMapDefaultValue()
-        }
+        otherMenuViewModel.setErrorStateMapDefaultValue()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -228,12 +211,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onRefreshShopInfo() {
-        if (isOtherMenuErrorNewFlow) {
-            otherMenuViewModel.getAllOtherMenuData()
-        } else {
-            showAllLoadingShimmering()
-            otherMenuViewModel.getAllSettingShopInfo()
-        }
+        otherMenuViewModel.getAllOtherMenuData()
         otherMenuViewModel.getShopPeriodType()
     }
 
@@ -350,55 +328,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        if (isOtherMenuErrorNewFlow) {
-            observeIsAllError()
-            observeMultipleErrorToaster()
-            observeShopBadge()
-            observeShopTotalFollowers()
-            observeShopBadgeFollowersLoading()
-            observeShopBadgeFollowersError()
-            observeShopStatus()
-            observeShopOperationalHour()
-            observeSaldoBalance()
-            observeKreditTopAds()
-        } else {
-            observeOldShopInfo()
-            observeOldShopOperationalHour()
-        }
+        observeIsAllError()
+        observeMultipleErrorToaster()
+        observeShopBadge()
+        observeShopTotalFollowers()
+        observeShopBadgeFollowersLoading()
+        observeShopBadgeFollowersError()
+        observeShopStatus()
+        observeShopOperationalHour()
+        observeSaldoBalance()
+        observeKreditTopAds()
         observeFreeShippingStatus()
         observeIsTopAdsAutoTopup()
         observeToasterAlreadyShown()
-    }
-
-    private fun observeOldShopInfo() {
-        otherMenuViewModel.settingShopInfoLiveData.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    showSettingShopInfoState(SettingResponseState.SettingSuccess(result.data))
-                    otherMenuViewModel.getFreeShippingStatus()
-                    otherMenuViewModel.getOldShopOperational()
-                }
-                is Fail -> {
-                    SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
-                    showSettingShopInfoState(SettingResponseState.SettingError(result.throwable))
-                }
-            }
-        }
-    }
-
-    private fun observeOldShopOperationalHour() {
-        otherMenuViewModel.oldShopOperationalLiveData.observe(viewLifecycleOwner) {
-            when(it) {
-                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
-                is Fail -> {
-                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-                    SellerHomeErrorHandler.logException(
-                            it.throwable,
-                            ERROR_GET_SHOP_OPERATIONAL_HOUR
-                    )
-                }
-            }
-        }
     }
 
     private fun observeFreeShippingStatus() {
@@ -707,38 +649,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         renderList(settingList)
     }
 
-    private fun getAllShopInfoData() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo()
-    }
-
-    private fun showAllLoadingShimmering() {
-        showSettingShopInfoState(SettingResponseState.SettingLoading)
-    }
-
-    private fun showSettingShopInfoState(settingResponseState: SettingResponseState<SettingShopInfoUiModel>) {
-        when(settingResponseState) {
-            is SettingResponseState.SettingSuccess<SettingShopInfoUiModel> -> {
-                otherMenuViewHolder?.onSuccessGetSettingShopInfoData(settingResponseState.data)
-            }
-            is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
-            is SettingResponseState.SettingError -> {
-                val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
-                if (canShowToaster) {
-                    showErrorToaster(settingResponseState.throwable) {
-                        retryFetchAfterError()
-                    }
-                }
-                otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-            }
-        }
-    }
-
-    private fun retryFetchAfterError() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
-    }
-
     private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
         otherMenuViewModel.onCheckDelayErrorResponseTrigger()
         val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
@@ -795,7 +705,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 userSession = userSession
             )
         }
-        otherMenuViewHolder?.setupInitialLayout(isOtherMenuErrorNewFlow)
+        otherMenuViewHolder?.setupInitialLayout()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
