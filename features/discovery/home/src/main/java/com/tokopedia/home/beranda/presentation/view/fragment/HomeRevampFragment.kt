@@ -2255,7 +2255,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             e.printStackTrace()
             trackingAttribution.replace(" ".toRegex(), SPACE_CHAR)
         }
-        return if (applink.contains(QUERY_CHAR_1) || applink.contains() || applink.contains(QUERY_CHAR_2)) {
+        return if (applink.contains(QUERY_CHAR_1) || applink.contains(QUERY_CHAR_2) || applink.contains(QUERY_CHAR_2)) {
             "$applink&tracker_attribution=$newTrackingAttribution"
         } else {
             "$applink?tracker_attribution=$newTrackingAttribution"
