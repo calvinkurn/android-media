@@ -50,9 +50,9 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
 
     private fun mapLeaderboardConfig(response: GetInteractiveLeaderboardResponse): PlayLeaderboardConfigUiModel {
         val configResponse = response.data.config
-        val currentInteractive = response.data.data.first()
-        val currentInteractiveWinner = currentInteractive.winner.first()
-        val winnerName = currentInteractiveWinner.userName
+        val currentInteractive = response.data.data.firstOrNull()
+        val currentInteractiveWinner = currentInteractive?.winner?.firstOrNull()
+        val winnerName = currentInteractiveWinner?.userName.orEmpty()
 
         return PlayLeaderboardConfigUiModel(
                 sellerMessage = configResponse.sellerMessage

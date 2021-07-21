@@ -1,6 +1,6 @@
 package com.tokopedia.play_common.ui.leaderboard.adapter
 
-import com.tokopedia.adapterdelegate.BaseAdapter
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.ui.leaderboard.delegate.PlayInteractiveLeaderboardAdapterDelegate
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
@@ -11,11 +11,25 @@ import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeader
  */
 class PlayInteractiveLeaderboardAdapter(
     leaderboardWinnerListener: PlayInteractiveLeaderboardViewHolder.Listener
-) : BaseAdapter<PlayLeaderboardUiModel>() {
+) : BaseDiffUtilAdapter<PlayLeaderboardUiModel>() {
 
     init {
         delegatesManager
             .addDelegate(PlayInteractiveLeaderboardAdapterDelegate(leaderboardWinnerListener))
+    }
+
+    override fun areItemsTheSame(
+        oldItem: PlayLeaderboardUiModel,
+        newItem: PlayLeaderboardUiModel
+    ): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(
+        oldItem: PlayLeaderboardUiModel,
+        newItem: PlayLeaderboardUiModel
+    ): Boolean {
+        return oldItem == newItem
     }
 
 }

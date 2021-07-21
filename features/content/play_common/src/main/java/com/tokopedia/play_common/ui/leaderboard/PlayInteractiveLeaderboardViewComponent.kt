@@ -54,7 +54,7 @@ class PlayInteractiveLeaderboardViewComponent(
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
-        leaderboardAdapter.setItems(leaderboards)
+        leaderboardAdapter.setItemsAndAnimateChanges(leaderboards)
     }
 
     fun showWithHeight(height: Int) {

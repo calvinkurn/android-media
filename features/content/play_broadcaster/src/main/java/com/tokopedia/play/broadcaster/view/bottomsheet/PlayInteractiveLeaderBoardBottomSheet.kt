@@ -135,7 +135,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                is NetworkResult.Success -> {
                    showError(false)
                    btnRefresh.isLoading = false
-                   leaderboardAdapter.setItems(it.data.leaderboardWinners)
+                   leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
                }
            }
         })
