@@ -139,7 +139,7 @@ data class HomeBalanceModel(
     private fun getDefaultGopayErrorState(): BalanceDrawerItemModel {
         return BalanceDrawerItemModel(
             drawerItemType = TYPE_WALLET_APP_LINKED,
-            defaultIconRes = R.drawable.ic_gopay,
+            defaultIconRes = R.drawable.ic_gopay_default,
             balanceTitleTextAttribute = getDefaultErrorTitleTextAttribute(),
             balanceSubTitleTextAttribute = getDefaultErrorSubTItleTextAttribute()
         )
