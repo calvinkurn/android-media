@@ -53,8 +53,8 @@ data class CampaignModular(
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDate = dateFormat.parse(endDate)
+            val endDateMillis = endDateUnix * 1000
+            val endDate = Date(endDateMillis)
             val now = System.currentTimeMillis()
             val diff = (endDate?.time ?: 0 - now).toFloat()
             if (diff < 0) {
