@@ -9,7 +9,7 @@ class ChooseAccountViewModel {
                 get() = field?.replace("-", "")
         var accessToken: String? = ""
         var loginType: String? = ""
-        var accountList: AccountList? = AccountList()
+        var accountListDataModel: AccountListDataModel? = AccountListDataModel()
         var isFromRegister: Boolean = false
         var isFacebook: Boolean = false
 }

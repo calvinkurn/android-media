@@ -79,6 +79,7 @@ object AccountConstants {
             const val ACTION_CLICK_REWARD_SECTION = "click reward section"
             const val ACTION_CLICK_ACCOUNT_SETTING_SECTION = "click account settings section"
             const val ACTION_CLICK_APP_SETTING_SECTION = "click on application setting section"
+            const val ACTION_CLICK_SCREEN_RECORDER = "click on screen recorder"
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
             const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
@@ -116,6 +117,7 @@ object AccountConstants {
 
         object BusinessUnit {
             const val USER_PLATFORM_UNIT = "user platform"
+            const val HOME_AND_BROWSE = "home & browse"
         }
 
         object CurrentSite {
@@ -169,6 +171,7 @@ object AccountConstants {
         const val SETTING_DEV_OPTIONS = -1
         const val SETTING_APP_REVIEW_ID = 10
         const val SETTING_APP_ADVANCED_CLEAR_CACHE = 20
+        const val SETTING_APP_ADVANCED_SCREEN_RECORD = 21
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39

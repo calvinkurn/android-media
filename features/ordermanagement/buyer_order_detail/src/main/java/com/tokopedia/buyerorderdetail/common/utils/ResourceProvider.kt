@@ -7,9 +7,9 @@ import com.tokopedia.buyerorderdetail.R
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(@ApplicationContext private val context: Context?) {
-    private fun getString(resId: Int): String? {
+    private fun getString(resId: Int, vararg args: Any): String? {
         return try {
-            context?.getString(resId)
+            context?.getString(resId, *args)
         } catch (e: Resources.NotFoundException) {
             null
         }
@@ -29,5 +29,33 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
 
     fun getErrorMessageNoProduct(): String {
         return getString(R.string.buyer_order_detail_error_message_no_product).orEmpty()
+    }
+
+    fun getCopyMessageReceiverAddress(): String {
+        return getString(R.string.message_receiver_address_copied).orEmpty()
+    }
+
+    fun getCopyMessageAwb(): String {
+        return getString(R.string.message_awb_copied).orEmpty()
+    }
+
+    fun getReceiverAddressLabel(): String {
+        return getString(R.string.label_address).orEmpty()
+    }
+
+    fun getAwbLabel(): String {
+        return getString(R.string.label_awb_number).orEmpty()
+    }
+
+    fun getDropshipLabel(): String {
+        return getString(R.string.label_dropshipper).orEmpty()
+    }
+
+    fun getCopyLabelReceiverAddress(): String {
+        return getString(R.string.copy_label_receiver_address).orEmpty()
+    }
+
+    fun getCopyLabelAwb(): String {
+        return getString(R.string.copy_label_awb_number).orEmpty()
     }
 }

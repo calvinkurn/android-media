@@ -239,17 +239,21 @@
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.webview.TkpdWebView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tnc_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:scrollbars="none"
+                android:layout_marginStart="@dimen/dp_16"
+                app:typographyType="body_2"
+                android:clickable="true"
+                android:autoLink="all"
+                android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="@+id/tnc"
                 app:layout_constraintRight_toRightOf="@+id/tnc"
-                app:layout_constraintTop_toBottomOf="@+id/tnc" />
+                app:layout_constraintTop_toBottomOf="@+id/tnc"
+                android:focusable="true" />
 
             <View
                 android:id="@+id/tp_mid_separator"
@@ -276,14 +280,20 @@
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 
-            <com.tokopedia.webview.TkpdWebView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/how_to_use_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:scrollbars="none"
-                app:layout_constraintLeft_toLeftOf="@+id/how_to_use"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:textColor="@color/Unify_N700"
+                app:typographyType="body_2"
+                android:clickable="true"
+                android:focusable="true"
+                android:autoLink="all"
+                app:layout_constraintStart_toStartOf="@id/how_to_use"
                 app:layout_constraintRight_toRightOf="@+id/how_to_use"
                 app:layout_constraintTop_toBottomOf="@+id/how_to_use" />
 

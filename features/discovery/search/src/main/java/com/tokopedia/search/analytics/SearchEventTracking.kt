@@ -21,7 +21,6 @@ interface SearchEventTracking {
     interface Category {
         companion object {
             const val EVENT_TOP_NAV = "top nav"
-            const val EVENT_TOP_NAV_SEARCH_SRP = "top nav - search result page"
             const val SEARCH = "Search"
             const val FILTER_PRODUCT = "filter product"
             const val SEARCH_RESULT = "search result"

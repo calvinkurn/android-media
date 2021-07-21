@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokoNowSearchCategoryAisleContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tokopedianow_ic_aisle_background"
+    android:paddingBottom="@dimen/dp_16">
+
+    <View
+        android:id="@+id/tokoNowSearchCategoryAisleDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokoNowSearchCategoryAisleHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/tokopedianow_category_aisle_header"
+        app:layout_constraintTop_toBottomOf="@id/tokoNowSearchCategoryAisleDivider"
+        app:typographyType="heading_4" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tokoNowSearchCategoryAisleGroupLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tokoNowSearchCategoryAisleImageLeft, tokoNowSearchCategoryAisleNameLeft"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tokoNowSearchCategoryAisleGroupRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tokoNowSearchCategoryAisleImageRight, tokoNowSearchCategoryAisleNameRight"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokoNowSearchCategoryAisleImageLeft"
+        android:layout_width="160dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintEnd_toStartOf="@id/tokoNowSearchCategoryAisleImageRight"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokoNowSearchCategoryAisleHeader"
+        app:unify_image_corner_radius="8"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokoNowSearchCategoryAisleImageRight"
+        android:layout_width="160dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tokoNowSearchCategoryAisleImageLeft"
+        app:layout_constraintTop_toBottomOf="@id/tokoNowSearchCategoryAisleHeader"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokoNowSearchCategoryAisleNameLeft"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/tokoNowSearchCategoryAisleImageLeft"
+        app:layout_constraintStart_toStartOf="@id/tokoNowSearchCategoryAisleImageLeft"
+        app:layout_constraintTop_toBottomOf="@id/tokoNowSearchCategoryAisleImageLeft"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kategori" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokoNowSearchCategoryAisleNameRight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/tokoNowSearchCategoryAisleImageRight"
+        app:layout_constraintStart_toStartOf="@id/tokoNowSearchCategoryAisleImageRight"
+        app:layout_constraintTop_toBottomOf="@id/tokoNowSearchCategoryAisleImageRight"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kategori" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

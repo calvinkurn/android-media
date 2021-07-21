@@ -20,7 +20,7 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
-import com.tokopedia.tradein.model.DeviceDataResponse
+import com.tokopedia.common_tradein.model.DeviceDataResponse
 import com.tokopedia.tradein.view.viewcontrollers.bottomsheet.TradeInFinalPriceDetailsBottomSheet
 import com.tokopedia.tradein.viewmodel.FinalPriceViewModel
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel

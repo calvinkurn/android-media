@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:padding="@dimen/spacing_lvl3"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/imageCategoryShimmering"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            app:loader_corner_radius="@dimen/layout_lvl1"
+            app:loader_type="rect"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderTextView"
+            android:layout_width="@dimen/tokopedianow_shimmering_category_line_width"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:loader_corner_radius="@dimen/tokopedianow_shimmering_radius_line"
+            app:loader_type="line"
+            app:layout_constraintBottom_toTopOf="@+id/loaderTextView2"
+            app:layout_constraintStart_toEndOf="@+id/imageCategoryShimmering"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loaderTextView2"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            app:loader_corner_radius="@dimen/tokopedianow_shimmering_radius_line"
+            app:loader_type="line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageCategoryShimmering"
+            app:layout_constraintTop_toBottomOf="@+id/loaderTextView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
