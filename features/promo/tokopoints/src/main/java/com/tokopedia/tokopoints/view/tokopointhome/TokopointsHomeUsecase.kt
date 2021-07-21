@@ -37,6 +37,9 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
     @Inject
     lateinit var mGetUserSavingUsecase: MultiRequestGraphqlUseCase
 
+    @Inject
+    lateinit var mGetStatusMatchingUsecase: MultiRequestGraphqlUseCase
+
     suspend fun getTokoPointDetailData() = withContext(Dispatchers.IO) {
         mGetTokoPointDetailUseCase.clearRequest()
         //Main details
@@ -73,9 +76,9 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
     suspend fun getUserStatusMatchingData() = withContext(Dispatchers.IO){
         val variables: MutableMap<String, Any> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "1.0.0"
-        mGetUserSavingUsecase.clearRequest()
+        mGetStatusMatchingUsecase.clearRequest()
         val requestSaving = GraphqlRequest(TpStatusMatching.GQL_QUERY,RewardTickerResponse::class.java,variables,false)
-        mGetUserSavingUsecase.addRequest(requestSaving)
-        mGetUserSavingUsecase.executeOnBackground()
+        mGetStatusMatchingUsecase.addRequest(requestSaving)
+        mGetStatusMatchingUsecase.executeOnBackground()
     }
 }
