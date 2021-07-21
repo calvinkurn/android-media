@@ -1,5 +1,5 @@
 {
-  tokopointsHomepage(apiVersion:"2.0.0") {
+  tokopointsHomepage(apiVersion:"3.0.0") {
     sectionContent {
       layoutType
       sectionTitle
