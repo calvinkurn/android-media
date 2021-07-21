@@ -48,6 +48,24 @@ object ProductRecomMapper {
                 )
             )
         }
+        recommendationItems.add(
+            RecommendationItem(
+                productId = 1920777141,
+                name = "PDP D4G1NG 1G4 N0NV4R SL4SH PR1C3",
+                price = "Rp 500",
+                rating = 0,
+                ratingAverage = "0",
+                slashedPrice = "Rp 1.000",
+                imageUrl = "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/6/14/0f76bf9a-bfa2-4b97-94f8-3226d671c2a8.jpg",
+                minOrder = 1,
+                stock = 500,
+                discountPercentage = "50%",
+                shopId = 11515028,
+                appUrl = "tokopedia://product/1920777141",
+                parentID = 0,
+                isRecomProductShowVariantAndCart = true
+            )
+        )
         return recommendationItems
     }
 }

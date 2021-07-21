@@ -6,23 +6,23 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.isNotStati
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateStateToLoading
@@ -58,8 +59,9 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
     private val getTickerUseCase: GetTickerUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
-    private val addToCartUseCase: com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
+    private val deleteCartUseCase: DeleteCartUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -79,6 +81,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartAdd
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
         get() = _miniCartUpdate
+    val miniCartRemove: LiveData<Result<String>>
+        get() = _miniCartRemove
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -87,12 +91,11 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartWidgetDataUpdated = MutableLiveData<MiniCartSimplifiedData>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
+    private val _miniCartRemove = MutableLiveData<Result<String>>()
 
     private var hasTickerBeenRemoved = false
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
-    private var cartItemsNonVariant: List<MiniCartItem>? = null
-    private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
-
+    private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
 
     fun getLoadingState() {
         homeLayoutItemList.clear()
@@ -220,6 +223,7 @@ class TokoNowHomeViewModel @Inject constructor(
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
+                    miniCartSimplifiedData = it
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -257,23 +261,25 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun addProductToCart(recomItem: RecommendationItem, quantity: Int, shopId: String) {
+    fun addProductToCart(recomItem: RecommendationItem, quantity: Int) {
         if (recomItem.quantity == quantity) return
         if (recomItem.quantity.isZero()) {
-            addToCart(recomItem, quantity, shopId)
+            addItemToCart(recomItem, quantity)
         } else {
-            updateToCart(recomItem, quantity)
+            if (quantity.isZero()) {
+                removeItemCart(recomItem)
+            } else {
+                updateItemCart(recomItem, quantity)
+            }
         }
     }
 
-
-    private fun addToCart(recomItem: RecommendationItem, quantity: Int, shopId: String) {
-        val addToCartRequestParams = com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase.getMinimumParams(
+    private fun addItemToCart(recomItem: RecommendationItem, quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = recomItem.productId.toString(),
-            shopId = shopId,
+            shopId = recomItem.shopId.toString(),
             quantity = quantity,
         )
-
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             _miniCartAdd.value = Success(it)
@@ -282,102 +288,52 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    private fun updateToCart(recomItem: RecommendationItem, quantity: Int) {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == recomItem.productId.toString() } ?: return
+    private fun updateItemCart(recomItem: RecommendationItem, quantity: Int) {
+        val miniCartItem = miniCartSimplifiedData?.miniCartItems?.find { it.productId == recomItem.productId.toString() } ?: return
         miniCartItem.quantity = quantity
         updateCartUseCase.setParams(
             miniCartItemList = listOf(miniCartItem),
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
+            _miniCartWidgetDataUpdated.value = miniCartSimplifiedData
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.value = Fail(it)
         })
     }
 
-//    fun updateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData, item: HomeProductRecomUiModel) {
-//        updateMiniCartWidgetData(miniCartSimplifiedData)
-//
-//        viewModelScope.launch {
-//            updateMiniCartInBackground(miniCartSimplifiedData, item)
-//        }
-//    }
-
-    private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        _miniCartWidgetDataUpdated.value = miniCartSimplifiedData
+    private fun removeItemCart(recomItem: RecommendationItem) {
+        val miniCartItem = miniCartSimplifiedData?.miniCartItems?.find { it.productId == recomItem.productId.toString() } ?: return
+        deleteCartUseCase.setParams(
+            miniCartItems = listOf(miniCartItem)
+        )
+        deleteCartUseCase.execute({
+            _miniCartRemove.value = Success(miniCartItem.productId)
+        }, {
+            _miniCartRemove.value = Fail(it)
+        })
     }
 
-//    private suspend fun updateMiniCartInBackground(miniCartSimplifiedData: MiniCartSimplifiedData, item: HomeProductRecomUiModel) {
-//        withContext(dispatchers.io) {
-//            updateMiniCartProperties(miniCartSimplifiedData)
-//
-//            if (item.productCards.isNullOrEmpty()) return@withContext
-//
-//            val updatedProductIndices = mutableListOf<Int>()
-//
-//            item.productCards.forEachIndexed { position, product ->
-//                updateProductItemQuantity(position, product, updatedProductIndices)
-//            }
-////            withContext(dispatchers.main) {
-////                updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
-////            }
-//        }
-//    }
-
-    private fun updateMiniCartProperties(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val cartItemsPartition = splitCartItemsVariantAndNonVariant(miniCartSimplifiedData.miniCartItems)
-        cartItemsNonVariant = cartItemsPartition.first
-        cartItemsVariantGrouped = cartItemsPartition.second.groupBy { it.productParentId }
-    }
-
-    private fun splitCartItemsVariantAndNonVariant(miniCartItems: List<MiniCartItem>) = miniCartItems.partition {
-        it.productParentId == ConstantKey.NO_VARIANT_PARENT_PRODUCT_ID
-    }
-
-    private fun updateProductItemQuantity(
-        position: Int,
-        productItem: HomeProductCardUiModel,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        val productId = productItem.id
-        val parentProductId = productItem.parentProductId
-        val nonVariantATC = productItem.productCardModel.nonVariant
-        val variantATC = productItem.productCardModel.variant
-
-        if (nonVariantATC != null) {
-            val quantity = getProductNonVariantQuantity(productId)
-            if (nonVariantATC.quantity != quantity) {
-                productItem.productCardModel = productItem.productCardModel.copy(
-                    nonVariant = productItem.productCardModel.nonVariant?.copy(
-                        quantity = quantity
-                    )
-                )
-                updatedProductIndices.add(position)
-            }
-        } else if (variantATC != null) {
-            val totalQuantity = getProductVariantTotalQuantity(parentProductId)
-            if (variantATC.quantity != totalQuantity) {
-                productItem.productCardModel = productItem.productCardModel.copy(
-                    variant = productItem.productCardModel.variant?.copy(
-                        quantity = totalQuantity
-                    )
-                )
-                updatedProductIndices.add(position)
+    fun updateProductCard(items: List<MiniCartItem>, needToObserve: Boolean) {
+        val productRecomUiModel = homeLayoutItemList.find { it.layout is HomeProductRecomUiModel }?.layout as HomeProductRecomUiModel
+        val recom = productRecomUiModel.recomWidget.copy()
+        items.map { miniCartItem ->
+            recom.recommendationItemList.forEach { recommendationItem ->
+                if (recommendationItem.productId.toString() == miniCartItem.productId) {
+                    recommendationItem.quantity = miniCartItem.quantity
+                }
             }
         }
-    }
+        homeLayoutItemList.mapProductRecomData(productRecomUiModel, recom)
 
-    private fun getProductNonVariantQuantity(productId: String): Int {
-        val cartItem = cartItemsNonVariant?.find { it.productId == productId }
-        return cartItem?.quantity.orZero()
-    }
-
-    private fun getProductVariantTotalQuantity(parentProductId: String): Int {
-        val cartItemsVariantGrouped = cartItemsVariantGrouped
-        val miniCartItemsWithSameParentId = cartItemsVariantGrouped?.get(parentProductId)
-        val totalQuantity = miniCartItemsWithSameParentId?.sumBy { it.quantity }
-        return totalQuantity.orZero()
+        if (needToObserve) {
+            val data = HomeLayoutListUiModel(
+                result = homeLayoutItemList,
+                state = TokoNowLayoutState.SHOW
+            )
+            _homeLayoutList.postValue(Success(data))
+        }
     }
 
     fun removeTickerWidget(id: String) {
@@ -402,7 +358,6 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getLayoutComponentData(item: Visitable<*>, warehouseId: String) {
         when (item) {
-            is HomeProductRecomUiModel -> getGlobalHomeComponent(item)
             is HomeComponentVisitable -> getGlobalHomeComponent(item) // Tokopedia Home Common Component
             is HomeLayoutUiModel -> getTokoNowHomeComponent(item) // TokoNow Home Component
             is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
@@ -419,6 +374,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel) {
         when (item) {
             is HomeTickerUiModel -> getTickerData(item)
+            is HomeProductRecomUiModel -> getHomeLayoutData(item)
         }
     }
 
@@ -454,13 +410,16 @@ class TokoNowHomeViewModel @Inject constructor(
         }.await()
     }
 
-    private suspend fun getGlobalHomeComponent(item: HomeLayoutUiModel) {
+    private suspend fun getHomeLayoutData(item: HomeLayoutUiModel) {
         asyncCatchError(block = {
             val channelId = item.visitableId
             val response = getHomeLayoutDataUseCase.execute(channelId)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
+            miniCartSimplifiedData?.miniCartItems?.let {
+                updateProductCard(it, false)
+            }
         }) {
-            val id = item.visitableId.orEmpty()
+            val id = item.visitableId
             homeLayoutItemList.removeItem(id)
         }.await()
     }

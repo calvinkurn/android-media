@@ -206,11 +206,12 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
         } else {
             setupPadding(miniCartSimplifiedData)
-//            val item = adapter.getItem(HomeProductRecomUiModel::class.java)
-//            if (item is HomeProductRecomUiModel) {
-//                viewModelTokoNow.updateCartItems(miniCartSimplifiedData, item)
-//            }
+            updateProductRecom(miniCartSimplifiedData)
         }
+    }
+
+    private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModelTokoNow.updateProductCard(miniCartSimplifiedData.miniCartItems, true)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -243,7 +244,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int) {
         if (userSession.isLoggedIn) {
-            viewModelTokoNow.addProductToCart(recomItem, quantity, localCacheModel?.shop_id.orEmpty())
+            viewModelTokoNow.addProductToCart(recomItem, quantity)
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
@@ -519,6 +520,7 @@ class TokoNowHomeFragment: Fragment(),
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         type = TYPE_NORMAL
                     )
+                    adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
                     getMiniCart()
                 }
                 is Fail -> {
@@ -533,6 +535,22 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCartUpdate) {
             when(it) {
                 is Success -> {
+                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+                    miniCartWidget?.updateData(shopIds)
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = TYPE_ERROR
+                    )
+                }
+            }
+        }
+
+        observe(viewModelTokoNow.miniCartRemove) {
+            when(it) {
+                is Success -> {
+                    adapter.updateProductRecom(it.data.toLong(), 0)
                     getMiniCart()
                 }
                 is Fail -> {
