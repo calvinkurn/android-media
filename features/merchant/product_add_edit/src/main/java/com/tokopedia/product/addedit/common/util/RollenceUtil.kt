@@ -1,13 +1,13 @@
 package com.tokopedia.product.addedit.common.util
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.HAMPERS_AB_TEST_KEY
+import com.tokopedia.remoteconfig.RollenceKey.PRODUCT_LIMITATION_AB_TEST_KEY
+import com.tokopedia.remoteconfig.RollenceKey.PRODUCT_TITLE_AB_TEST_KEY
 
 object RollenceUtil {
 
-    private const val HAMPERS_AB_TEST_KEY = "hampers_android"
     private const val HAMPERS_AB_TEST_VALUE_ENABLED = "hampers_android"
-    private const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
-    private const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
     fun getHampersRollence(): Boolean{
         return RemoteConfigInstance.getInstance().abTestPlatform
