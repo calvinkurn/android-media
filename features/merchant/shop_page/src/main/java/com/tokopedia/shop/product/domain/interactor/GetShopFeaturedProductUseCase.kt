@@ -51,6 +51,7 @@ class GetShopFeaturedProductUseCase @Inject constructor(
                   }
                   total_review
                   rating
+                  rating_average
                 }
               }
             }

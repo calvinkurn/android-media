@@ -106,6 +106,7 @@ object AccountConstants {
         const val EVENT_ACTION_SEMUA_TRANSAKSI = "click on button semua transaksi"
         const val EVENT_ACTION_DALAM_PROSES = "click on button dalam proses"
         const val EVENT_ACTION_ETICKET_EVOUCHER = "click on e-tiket & e-voucher aktif"
+        const val EVENT_ACTION_CLICK_SCREEN_RECORDER = "click on screen recorder"
         const val OVO_PAY_LATER_CATEGORY = "fin - android main screen"
         const val OVO_PAY_LATER_CLICK = "ovo - pay later click"
         const val OVO_PAY_LATER_LABEL = "success - %s"
@@ -187,6 +188,7 @@ object AccountConstants {
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"
+        const val HOME_AND_BROWSE = "home & browse"
         const val CATEGORY_SETTING_PAGE = "setting page"
         const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
     }
