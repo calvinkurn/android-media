@@ -177,4 +177,6 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToEmptyStateError()
         }
     }
+
+    fun isStickyActionButtonsShowed() = currentState == R.id.show_content_with_sticky_button
 }

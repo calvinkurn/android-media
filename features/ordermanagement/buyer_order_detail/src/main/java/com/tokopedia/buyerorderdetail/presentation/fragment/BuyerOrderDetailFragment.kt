@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -42,7 +41,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -74,9 +72,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var containerBuyerOrderDetail: BuyerOrderDetailMotionLayout? = null
+    private var stickyActionButton: BuyerOrderDetailStickyActionButton? = null
     private var swipeRefreshBuyerOrderDetail: SwipeRefreshLayout? = null
     private var rvBuyerOrderDetail: RecyclerView? = null
-    private var actionButtonWrapper: ConstraintLayout? = null
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
@@ -113,9 +111,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
     private val stickyActionButtonHandler: BuyerOrderDetailStickyActionButtonHandler by lazy {
         BuyerOrderDetailStickyActionButtonHandler(bottomSheetManager, cacheManager, getCartId(), navigator, viewModel)
-    }
-    private val stickyActionButton: BuyerOrderDetailStickyActionButton by lazy {
-        BuyerOrderDetailStickyActionButton(bottomSheetManager, stickyActionButtonHandler, viewModel, view)
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
@@ -219,13 +214,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         setupGlobalError()
         setupSwipeRefreshLayout()
         setupRecyclerView()
+        setupStickyActionButtons()
     }
 
     private fun bindViews() {
         containerBuyerOrderDetail = view?.findViewById(R.id.containerBuyerOrderDetail)
+        stickyActionButton = view?.findViewById(R.id.containerActionButtons)
         swipeRefreshBuyerOrderDetail = view?.findViewById(R.id.swipeRefreshBuyerOrderDetail)
         rvBuyerOrderDetail = view?.findViewById(R.id.rvBuyerOrderDetail)
-        actionButtonWrapper = view?.findViewById(R.id.actionButtonWrapper)
         toolbarBuyerOrderDetail = view?.findViewById(R.id.toolbarBuyerOrderDetail)
         globalErrorBuyerOrderDetail = view?.findViewById(R.id.globalErrorBuyerOrderDetail)
         emptyStateBuyerOrderDetail = view?.findViewById(R.id.emptyStateBuyerOrderDetail)
@@ -266,6 +262,14 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun setupRecyclerView() {
         rvBuyerOrderDetail?.adapter = adapter
+    }
+
+    private fun setupStickyActionButtons() {
+        stickyActionButton?.run {
+            setViewModel(viewModel)
+            setStickyActionButtonClickHandler(stickyActionButtonHandler)
+            setBottomSheetManager(bottomSheetManager)
+        }
     }
 
     private fun loadBuyerOrderDetail() {
@@ -312,13 +316,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 is Success -> onSuccessAddToCart(result.data)
                 is Fail -> onFailedAddToCart(result.throwable)
             }
-            stickyActionButton.finishPrimaryActionButtonLoading()
+            stickyActionButton?.finishPrimaryActionButtonLoading()
         }
     }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
         val orderId = viewModel.getOrderId()
-        stickyActionButton.setupActionButtons(data.actionButtonsUiModel)
+        stickyActionButton?.setupActionButtons(
+            data.actionButtonsUiModel,
+            containerBuyerOrderDetail?.isStickyActionButtonsShowed() ?: false
+        )
         setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
         adapter.updateItems(data)
         contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel))
