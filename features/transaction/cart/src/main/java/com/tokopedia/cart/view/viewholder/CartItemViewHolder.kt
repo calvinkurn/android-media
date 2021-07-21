@@ -360,7 +360,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderActionNotes(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
-        binding.etRemark.setOnEditorActionListener { v, actionId, event ->
+        binding.etRemark.textFieldInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 data.isStateNotesOnFocuss = false
                 actionListener?.onEditNoteDone(parentPosition)
@@ -391,8 +391,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
         renderNotesViews(data)
 
-        binding.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData.maxCharRemark))
-        binding.etRemark.addTextChangedListener(object : TextWatcher {
+        binding.etRemark.textFieldInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData.maxCharRemark))
+        binding.etRemark.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 editable?.let {
                     itemNoteTextWatcherAction(it)
@@ -421,17 +421,15 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 if (data.isStateNotesOnFocuss && (data.cartItemData.originData.originalRemark.isBlank() || data.cartItemData.updatedData.remark != data.cartItemData.originData.originalRemark)) {
                     // Notes is empty after click add notes button or has value after use click change notes button
                     tvRemark.visibility = View.GONE
-                    etRemark.setText(Utils.getHtmlFormat(data.cartItemData.updatedData.remark))
+                    etRemark.textFieldInput.setText(Utils.getHtmlFormat(data.cartItemData.updatedData.remark))
                     etRemark.visibility = View.VISIBLE
-                    tvLabelRemarkTitle.visibility = View.VISIBLE
-                    etRemark.setSelection(etRemark.length())
+                    etRemark.textFieldInput.setSelection(etRemark.textFieldInput.length())
                     tvLabelRemarkOption.visibility = View.GONE
                     tvNoteCharCounter.visibility = View.VISIBLE
                     tvLabelRemarkOption.setPadding(0, 0, 0, 0)
                 } else {
                     // Has notes from pdp
                     etRemark.visibility = View.GONE
-                    tvLabelRemarkTitle.visibility = View.GONE
                     tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData.remark)
                     tvRemark.visibility = View.VISIBLE
                     tvLabelRemarkOption.visibility = View.VISIBLE
@@ -445,12 +443,11 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             } else {
                 // No notes at all
                 etRemark.visibility = View.GONE
-                tvLabelRemarkTitle.visibility = View.GONE
                 tvRemark.visibility = View.GONE
                 tvNoteCharCounter.visibility = View.GONE
                 tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_add_note)
                 tvLabelRemarkOption.visibility = View.VISIBLE
-                etRemark.setText("")
+                etRemark.textFieldInput.setText("")
                 tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 tvLabelRemarkOption.setPadding(0, 0, 0, 0)
             }
