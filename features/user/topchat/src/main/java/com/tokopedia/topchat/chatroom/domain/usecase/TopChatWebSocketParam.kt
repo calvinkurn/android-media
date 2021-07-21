@@ -33,7 +33,7 @@ object TopChatWebSocketParam {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
-            addProperty("message_id", thisMessageId.toIntOrZero())
+            addProperty("message_id", thisMessageId.toLong())
             addProperty("message", messageText)
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
