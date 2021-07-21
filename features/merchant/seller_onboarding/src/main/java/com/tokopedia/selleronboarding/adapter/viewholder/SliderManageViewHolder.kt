@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderManageUiModel
+import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_manage_view_holder.view.*
 
 /**
@@ -19,8 +20,27 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
 
     override fun bind(element: SobSliderManageUiModel) {
         with(itemView) {
-            imgSobManage1.loadImage(R.drawable.onboarding_03_1)
-            imgSobManage2.loadImage(R.drawable.onboarding_03_2)
+            tvSobSliderManageTitle.viewTreeObserver
+                    .addOnDrawListener {
+                        tvSobSliderManageTitle.alpha = itemView.viewObserver.alpha
+                        tvSobSliderManageTitle.translationY = itemView.viewObserver.translationY
+                    }
+            imgSobManage1.run {
+                loadImage(R.drawable.onboarding_03_1)
+                viewTreeObserver.addOnDrawListener {
+                    scaleX = itemView.viewObserver.scaleX
+                    scaleY = itemView.viewObserver.scaleY
+                    alpha = itemView.viewObserver.alpha
+                }
+            }
+            imgSobManage2.run {
+                loadImage(R.drawable.onboarding_03_2)
+                viewTreeObserver.addOnDrawListener {
+                    scaleX = itemView.viewObserver.scaleX
+                    scaleY = itemView.viewObserver.scaleY
+                    alpha = itemView.viewObserver.alpha
+                }
+            }
         }
     }
 }

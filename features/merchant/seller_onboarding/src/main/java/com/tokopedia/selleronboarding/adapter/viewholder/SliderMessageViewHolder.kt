@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.model.SobSliderMessageUiModel
+import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
 import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
 
 /**
@@ -19,9 +20,35 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
 
     override fun bind(element: SobSliderMessageUiModel) {
         with(itemView) {
-            imgSobMessage1.loadImage(R.drawable.onboarding_02_1)
-            imgSobMessage2.loadImage(R.drawable.onboarding_02_2)
-            imgSobMessage3.loadImage(R.drawable.onboarding_02_3)
+            val observer = itemView.findViewById<View>(R.id.viewObserver)
+            tvSobSliderMessageTitle.viewTreeObserver.addOnDrawListener {
+                tvSobSliderMessageTitle.alpha = observer.alpha
+                tvSobSliderMessageTitle.translationY = itemView.viewObserver.translationY
+            }
+            imgSobMessage1.run {
+                loadImage(R.drawable.onboarding_02_1)
+                viewTreeObserver.addOnDrawListener {
+                    scaleX = observer.scaleX
+                    scaleY = observer.scaleY
+                    alpha = observer.alpha
+                }
+            }
+            imgSobMessage2.run {
+                loadImage(R.drawable.onboarding_02_2)
+                viewTreeObserver.addOnDrawListener {
+                    scaleX = observer.scaleX
+                    scaleY = observer.scaleY
+                    alpha = observer.alpha
+                }
+            }
+            imgSobMessage3.run {
+                loadImage(R.drawable.onboarding_02_3)
+                viewTreeObserver.addOnDrawListener {
+                    scaleX = observer.scaleX
+                    scaleY = observer.scaleY
+                    alpha = observer.alpha
+                }
+            }
         }
     }
 }

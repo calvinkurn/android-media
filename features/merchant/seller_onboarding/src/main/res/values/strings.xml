@@ -6,4 +6,8 @@
     <string name="sob_header_text_page_3">Pasang promosi dan iklan \nuntuk memajukan bisnismu \n</string>
 
     <string name="sob_illustration_content_desc">Sellerapp Onboarding Illustration</string>
+    <string name="sob_next">Lanjut</string>
+    <string name="sob_previous">Sebelumnya</string>
+    <string name="sob_skip">Lewati</string>
+    <string name="sob_login">Masuk</string>
 </resources>
