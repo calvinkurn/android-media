@@ -1391,7 +1391,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeATCTokonowData() {
         viewLifecycleOwner.observe(viewModel.atcRecomTokonow) { data ->
-            data.doSuccessOrFail({},{
+            data.doSuccessOrFail({
+                if (it.data.isNotEmpty()) {
+                    view?.showToasterSuccess(it.data)
+                }
+            },{
                 view?.showToasterError(it.message?: "", ctaText = getString(R.string.label_oke_pdp))
                 logException(it)
             })

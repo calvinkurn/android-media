@@ -7,7 +7,9 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -1462,6 +1464,170 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
+
+    /**
+     * tokonow recom section
+     */
+    @Test
+    fun `test add to cart non variant then return success cart data`() = runBlockingTest {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.atcNonVariant(recomItem, quantity)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+        coVerify {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+    }
+
+    @Test
+    fun `test add to cart non variant then return failed with message`() = runBlockingTest {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal maning euy"))
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseError
+
+        viewModel.atcNonVariant(recomItem, quantity)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+    @Test
+    fun `test add to cart non variant then return failed with throwable`() = runBlockingTest {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } throws Throwable()
+
+        viewModel.atcNonVariant(recomItem, quantity)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+    @Test
+    fun `test update cart non variant then return success cart data`() = runBlockingTest {
+        val miniCart =  MiniCartItem(productId = "518076293", quantity = 10)
+        val quantity = 11
+        val response = UpdateCartV2Data(data = Data(message = "sukses update cart"))
+        coEvery {
+            updateCartUseCase.executeOnBackground()
+        } returns response
+
+        viewModel.updateCartNonVariant(quantity, miniCart)
+        coVerify {
+            updateCartUseCase.executeOnBackground()
+        }
+        coVerify {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+    }
+
+    @Test
+    fun `test update cart non variant then return failed with message`() = runBlockingTest {
+        val miniCart =  MiniCartItem(productId = "518076293", quantity = 10)
+        val quantity = 11
+        val response = UpdateCartV2Data(error = listOf("error nih gan"))
+        coEvery {
+            updateCartUseCase.executeOnBackground()
+        } returns response
+
+        viewModel.updateCartNonVariant(quantity, miniCart)
+        coVerify {
+            updateCartUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+    @Test
+    fun `test update cart non variant then return error throwable`() = runBlockingTest {
+        val miniCart =  MiniCartItem(productId = "518076293", quantity = 10)
+        val quantity = 11
+        coEvery {
+            updateCartUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.updateCartNonVariant(quantity, miniCart)
+        coVerify {
+            updateCartUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+    @Test
+    fun `test delete cart non variant then return success cart data`() = runBlockingTest {
+        val miniCart =  MiniCartItem(productId = "518076293", quantity = 10)
+        val quantity = 0
+        val response = RemoveFromCartData(status = "OK", data = com.tokopedia.minicart.common.data.response.deletecart.Data(message = listOf("sukses delete cart"), success = 1))
+        coEvery {
+            deleteCartUseCase.executeOnBackground()
+        } returns response
+
+        viewModel.deleteItemFromCart(quantity, miniCart)
+        coVerify {
+            deleteCartUseCase.executeOnBackground()
+        }
+        coVerify {
+            miniCartListSimplifiedUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+    }
+
+    @Test
+    fun `test delete cart non variant then return failed with message`() = runBlockingTest {
+        val miniCart =  MiniCartItem(productId = "518076293", quantity = 10)
+        val quantity = 0
+        val response = RemoveFromCartData(status = "ERROR", data = com.tokopedia.minicart.common.data.response.deletecart.Data(success = 0))
+        coEvery {
+            deleteCartUseCase.executeOnBackground()
+        } returns response
+
+        viewModel.deleteItemFromCart(quantity, miniCart)
+        coVerify {
+            deleteCartUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+    @Test
+    fun `test delete cart non variant then return error throwable`() = runBlockingTest {
+        val miniCart =  MiniCartItem(productId = "518076293", quantity = 10)
+        val quantity = 0
+        coEvery {
+            deleteCartUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.deleteItemFromCart(quantity, miniCart)
+        coVerify {
+            deleteCartUseCase.executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
 
