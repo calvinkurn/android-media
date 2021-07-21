@@ -165,7 +165,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
-        data.addProperty("message_id", thisMessageId.toIntOrZero())
+        data.addProperty("message_id", thisMessageId.toLong())
         data.addProperty("message", UPLOADING)
         data.addProperty("start_time", startTime)
         data.addProperty("file_path", path)
