@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -62,6 +63,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.coroutines.Fail
@@ -239,12 +241,9 @@ class TopupBillsFavoriteNumberFragment :
     private fun onFailedUndoDeleteFavoriteNumber() {
         numberListAdapter.setNumbers(
             CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
-        view?.let {
-            Toaster.build(
-                it, getString(R.string.common_topup_fav_number_failed_undo_delete),
-                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.common_topup_fav_number_refresh)
-            ) { getSeamlessFavoriteNumber() }.show()
-        }
+        val throwable = MessageErrorException(getString(R.string.common_topup_fav_number_failed_undo_delete))
+        showErrorToaster(throwable, Toaster.LENGTH_SHORT,
+            getString(R.string.common_topup_fav_number_refresh)) { getSeamlessFavoriteNumber() }
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
@@ -274,29 +273,43 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onFailedGetFavoriteNumber(err: Throwable) {
+        when (err.message) {
+            ERROR_FETCH_AFTER_UPDATE -> {
+                val throwable = MessageErrorException(
+                    getString(R.string.common_topup_fav_number_failed_fetch_after_update))
+                showErrorToaster(throwable, Toaster.LENGTH_SHORT,
+                    getString(R.string.common_topup_fav_number_refresh)) { getSeamlessFavoriteNumber() } }
+            ERROR_FETCH_AFTER_DELETE -> {
+                val throwable = MessageErrorException(
+                    getString(R.string.common_topup_fav_number_failed_fetch_after_delete))
+                showErrorToaster(throwable, Toaster.LENGTH_SHORT,
+                    getString(R.string.common_topup_fav_number_refresh)) { getSeamlessFavoriteNumber() } }
+            ERROR_FETCH_AFTER_UNDO_DELETE -> {
+                val throwable = MessageErrorException(
+                    getString(R.string.common_topup_fav_number_failed_fetch_after_undo_delete))
+                showErrorToaster(throwable, Toaster.LENGTH_SHORT,
+                    getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
+            else -> {
+                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
+            }
+        }
+    }
+
+    private fun showErrorToaster(
+        throwable: Throwable,
+        length: Int,
+        actionText: String? = null,
+        clickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
         view?.let {
-            when (err.message) {
-                ERROR_FETCH_AFTER_UPDATE -> {
-                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch_after_update)
-                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.common_topup_fav_number_refresh)
-                    ) { getSeamlessFavoriteNumber() }.show()
-                }
-                ERROR_FETCH_AFTER_DELETE -> {
-                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch_after_delete)
-                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.common_topup_fav_number_refresh)
-                    ) { getSeamlessFavoriteNumber() }.show()
-                }
-                ERROR_FETCH_AFTER_UNDO_DELETE -> {
-                    val errMsg = getString(R.string.common_topup_fav_number_failed_fetch_after_undo_delete)
-                    Toaster.build(it, errMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.common_topup_fav_number_retry)
-                    ) { undoDelete() }.show()
-                }
-                else -> {
-                    numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
-                }
+            if (actionText.isNullOrEmpty()) {
+                Toaster.build(it, ErrorHandler.getErrorMessage(requireContext(), throwable),
+                    length, Toaster.TYPE_ERROR).show()
+            } else {
+                Toaster.build(
+                    it, ErrorHandler.getErrorMessage(requireContext(), throwable),
+                    length, Toaster.TYPE_ERROR, actionText, clickListener
+                ).show()
             }
         }
     }
@@ -446,14 +459,16 @@ class TopupBillsFavoriteNumberFragment :
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
             view?.let {
-                Toaster.build(it, getString(R.string.common_topup_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                Toaster.build(it, getString(R.string.common_topup_contact_not_found),
+                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             }
         }
     }
 
     private fun onSuccessUpdateClientName() {
         view?.let {
-            Toaster.build(it, getString(R.string.common_topup_fav_number_success_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+            Toaster.build(it, getString(R.string.common_topup_fav_number_success_update_name),
+                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
         getSeamlessFavoriteNumber()
     }
@@ -461,9 +476,10 @@ class TopupBillsFavoriteNumberFragment :
     private fun onFailedUpdateClientName() {
         numberListAdapter.setNumbers(
             CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
-        view?.let {
-            Toaster.build(it, getString(R.string.common_topup_fav_number_failed_update_name), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-        }
+        val throwable = MessageErrorException(
+            getString(R.string.common_topup_fav_number_failed_update_name))
+
+        showErrorToaster(throwable, Toaster.LENGTH_SHORT)
     }
 
     private fun onSuccessDeleteClientName(deletedFavoriteNumber: UpdateFavoriteDetail) {
@@ -483,9 +499,8 @@ class TopupBillsFavoriteNumberFragment :
     private fun onFailedDeleteClientName() {
         numberListAdapter.setNumbers(
             CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
-        view?.let {
-            Toaster.build(it, getString(R.string.common_topup_fav_number_failed_delete_name), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-        }
+        val throwable = MessageErrorException(getString(R.string.common_topup_fav_number_failed_delete_name))
+        showErrorToaster(throwable, Toaster.LENGTH_SHORT)
     }
 
     private fun undoDelete(deletedFavoriteNumber: UpdateFavoriteDetail? = null) {
