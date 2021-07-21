@@ -220,8 +220,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _atcRecomTokonow = MutableLiveData<Result<String>>()
     val atcRecomTokonow: LiveData<Result<String>> get() = _atcRecomTokonow
 
-    private val _recomTokonowIndicies = SingleLiveEvent<Map<Int, Int>>()
-    val recomTokonowIndicies: LiveData<Map<Int, Int>> get() = _recomTokonowIndicies
+    private val _atcRecomTokonowResetCard = SingleLiveEvent<RecommendationItem>()
+    val atcRecomTokonowResetCard: LiveData<RecommendationItem> get() = _atcRecomTokonowResetCard
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -966,20 +966,20 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ?: false
     }
 
-    fun onAtcNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+    fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
         if (recomItem.quantity == quantity) return
         val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
         if (quantity == 0) {
-            deleteItemFromCart(quantity, miniCartItem)
+            deleteRecomItemFromCart(recomItem, quantity, miniCartItem)
         }
         else if (recomItem.quantity == 0) {
-            atcNonVariant(recomItem, quantity)
+            atcRecomNonVariant(recomItem, quantity)
         } else {
-            updateCartNonVariant(quantity, miniCartItem)
+            updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
         }
     }
 
-    fun deleteItemFromCart(quantity: Int, miniCartItem: MiniCartItem?) {
+    fun deleteRecomItemFromCart(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = it.copy(quantity = quantity)
@@ -990,18 +990,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 val isFailed = result.data.success == 0 || result.status.equals("ERROR", true)
                 if (isFailed) {
                     val error = result.errorMessage.firstOrNull() ?: result.data.message.firstOrNull()
-                    onFailedATC(Throwable(error ?: ""))
+                    onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATC(result.data.message.first())
+                    updateMiniCartAfterATCRecomTokonow(result.data.message.first())
                 }
             }
         }) {
-            onFailedATC(it)
+            onFailedATCRecomTokonow(it, recomItem)
         }
     }
 
 
-    fun atcNonVariant(recomItem: RecommendationItem, quantity: Int) {
+    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
         launchCatchError(block = {
             val param = AddToCartUseCase.getMinimumParams(
                     recomItem.productId.toString(),
@@ -1012,16 +1012,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 addToCartUseCase.get().createObservable(param).toBlocking().single()
             }
             if (result.isStatusError()) {
-                onFailedATC(Throwable(result.errorMessage.firstOrNull() ?: result.status))
+                onFailedATCRecomTokonow(Throwable(result.errorMessage.firstOrNull() ?: result.status), recomItem)
             } else {
-                updateMiniCartAfterATC("")
+                updateMiniCartAfterATCRecomTokonow("")
             }
         }) {
-            onFailedATC(it)
+            onFailedATCRecomTokonow(it, recomItem)
         }
     }
 
-    fun updateCartNonVariant(quantity: Int, miniCartItem: MiniCartItem?) {
+    fun updateRecomCartNonVariant(recomItem: RecommendationItem, quantity: Int, miniCartItem: MiniCartItem?) {
         launchCatchError(block = {
             miniCartItem?.let {
                 val copyOfMiniCartItem = it.copy(quantity = quantity)
@@ -1032,25 +1032,26 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 val result = updateCartUseCase.get().executeOnBackground()
 
                 if (result.error.isNotEmpty()) {
-                    onFailedATC(Throwable(result.error.firstOrNull() ?: ""))
+                    onFailedATCRecomTokonow(Throwable(result.error.firstOrNull() ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATC("")
+                    updateMiniCartAfterATCRecomTokonow("")
                 }
             }
             }) {
-            onFailedATC(it)
+            onFailedATCRecomTokonow(it, recomItem)
         }
 
     }
 
-    private fun updateMiniCartAfterATC(message: String) {
+    private fun updateMiniCartAfterATCRecomTokonow(message: String) {
         _atcRecomTokonow.value = message.asSuccess()
         getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
     }
 
-    private fun onFailedATC(throwable: Throwable) {
+    private fun onFailedATCRecomTokonow(throwable: Throwable, recomItem: RecommendationItem) {
+        recomItem.onFailedUpdateCart()
         _atcRecomTokonow.value = throwable.asFail()
-        getMiniCart(getDynamicProductInfoP1?.basic?.shopID ?: "")
+        _atcRecomTokonowResetCard.value = recomItem
     }
 
     private fun assignTradeinParams() {

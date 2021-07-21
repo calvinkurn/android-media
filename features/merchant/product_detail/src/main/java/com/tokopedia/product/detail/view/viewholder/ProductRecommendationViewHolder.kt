@@ -164,6 +164,7 @@ class ProductRecommendationViewHolder(
                         listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
 
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        productRecommendation.onCardQuantityChanged(quantity)
                         listener.onAddToCartNonVariantQuantityChangedClick(
                                 recomItem = productRecommendation,
                                 quantity = quantity,

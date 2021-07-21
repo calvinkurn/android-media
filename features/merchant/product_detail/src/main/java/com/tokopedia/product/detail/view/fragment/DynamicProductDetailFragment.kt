@@ -360,6 +360,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeSingleVariantData()
         observeonVariantClickedData()
         observeATCTokonowData()
+        observeATCTokonowResetCard()
         observeDiscussionData()
         observeP2Other()
         observeTopAdsImageData()
@@ -894,7 +895,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
-        viewModel.onAtcNonVariantQuantityChanged(recomItem, quantity)
+        viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
     }
 
     override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int, itemPosition: Int) {
@@ -1399,6 +1400,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 view?.showToasterError(it.message?: "", ctaText = getString(R.string.label_oke_pdp))
                 logException(it)
             })
+        }
+    }
+
+    private fun observeATCTokonowResetCard() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonowResetCard) {
+            pdpUiUpdater?.resetFailedRecomTokonowCard(it)
+            updateUi()
         }
     }
 

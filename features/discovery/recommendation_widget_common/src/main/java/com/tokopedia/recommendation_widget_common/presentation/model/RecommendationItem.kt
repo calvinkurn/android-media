@@ -46,8 +46,10 @@ data class RecommendationItem(
         // for tracker field
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),
+        //for tokonow
         val parentID: Int = 0,
         val isRecomProductShowVariantAndCart:Boolean = false,
+        var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
 ): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {
@@ -96,7 +98,8 @@ data class RecommendationItem(
         if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
         if (parentID != other.parentID) return false
-        if (isRecomProductShowVariantAndCart != isRecomProductShowVariantAndCart) return false
+        if (isRecomProductShowVariantAndCart != other.isRecomProductShowVariantAndCart) return false
+        if (currentQuantity != other.currentQuantity) return false
 
         return true
     }
@@ -145,6 +148,7 @@ data class RecommendationItem(
         result = HASH_CODE * result + dimension61.hashCode()
         result = HASH_CODE * result + parentID.hashCode()
         result = HASH_CODE * result + isRecomProductShowVariantAndCart.hashCode()
+        result = HASH_CODE * result + currentQuantity.hashCode()
         return result
     }
 
@@ -156,8 +160,20 @@ data class RecommendationItem(
         return parentID != 0
     }
 
+    //func to update quantity from minicart
     fun updateItemCurrentStock(quantity: Int) {
         this.quantity = quantity
+        this.currentQuantity = quantity
+    }
+
+    //call this when product card update values
+    fun onCardQuantityChanged(updatedQuantity : Int) {
+        currentQuantity = updatedQuantity
+    }
+
+    //call this when failed atc / update / delete
+    fun onFailedUpdateCart() {
+        currentQuantity = quantity
     }
 }
 

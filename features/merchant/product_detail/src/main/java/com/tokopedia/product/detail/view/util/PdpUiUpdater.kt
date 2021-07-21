@@ -29,6 +29,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import kotlin.math.roundToLong
@@ -710,17 +711,41 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                         }
                         if (successChangeData) {
                             updateData(key) {
-                                val newData = copyPDPRecomByKey(key)
-                                newData.cardModel = dataList.toProductCardModels(false)
-                                newData.recomWidgetData?.recommendationItemList = dataList
-                                mapOfData.remove(key)
-                                mapOfData[key] = newData
+                                updateRecomDataByKey(key, dataList)
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    fun resetFailedRecomTokonowCard(recommendationItem: RecommendationItem) {
+        val key = recommendationItem.pageName
+        val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
+        productRecom.recomWidgetData?.let { recomData ->
+            val recomWidget = recomData.copy()
+            val dataList = recomWidget.copyRecomItemList()
+            var dataUpdated = false
+            dataList.forEach loop@{ recomItem ->
+                if (recomItem.productId == recommendationItem.productId) {
+                    recomItem.onFailedUpdateCart()
+                    dataUpdated = true
+                    return@loop
+                }
+            }
+            if (dataUpdated) {
+                updateRecomDataByKey(key, dataList)
+            }
+        }
+    }
+
+    private fun updateRecomDataByKey(key: String, dataList: List<RecommendationItem>) {
+        val newData = copyPDPRecomByKey(key)
+        newData.cardModel = dataList.toProductCardModels(false)
+        newData.recomWidgetData?.recommendationItemList = dataList
+        mapOfData.remove(key)
+        mapOfData[key] = newData
     }
 
     fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {
