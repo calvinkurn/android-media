@@ -106,6 +106,7 @@ class TopupBillsFavoriteNumberActivityTest {
             isMockFilledFavoriteNumber = true,
             isMockUpdateFavoriteDetail = true
         ))
+        isCoachmarkDisabled(targetContext, false)
         mActivityRule.launchActivity(intent)
 
         Thread.sleep(3000)
@@ -127,7 +128,7 @@ class TopupBillsFavoriteNumberActivityTest {
             isMockFilledFavoriteNumber = false,
             isMockUpdateFavoriteDetail = false
         ))
-        disableCoachMark(targetContext)
+        isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
         Thread.sleep(3000)
@@ -144,7 +145,7 @@ class TopupBillsFavoriteNumberActivityTest {
             isMockFilledFavoriteNumber = true,
             isMockUpdateFavoriteDetail = false
         ))
-        disableCoachMark(targetContext)
+        isCoachmarkDisabled(targetContext, true)
         mActivityRule.launchActivity(intent)
 
         Thread.sleep(3000)
@@ -257,9 +258,9 @@ class TopupBillsFavoriteNumberActivityTest {
                 ViewActions.closeSoftKeyboard())
     }
 
-    private fun disableCoachMark(context: Context) {
+    private fun isCoachmarkDisabled(context: Context, isDisabled: Boolean) {
         LocalCacheHandler(context, CACHE_PREFERENCES_NAME).also {
-            it.putBoolean(CACHE_SHOW_COACH_MARK_KEY, true)
+            it.putBoolean(CACHE_SHOW_COACH_MARK_KEY, isDisabled)
             it.applyEditor()
         }
     }
