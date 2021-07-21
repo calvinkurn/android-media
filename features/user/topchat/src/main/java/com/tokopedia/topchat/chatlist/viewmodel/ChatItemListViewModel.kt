@@ -51,7 +51,7 @@ import javax.inject.Inject
 
 interface ChatItemListContract {
     fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
-    fun chatMoveToTrash(messageId: Int)
+    fun chatMoveToTrash(messageId: String)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun loadChatBannedSellerStatus()
@@ -201,9 +201,9 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
-    override fun chatMoveToTrash(messageId: Int) {
+    override fun chatMoveToTrash(messageId: String) {
         queries[QUERY_DELETE_CHAT_MESSAGE]?.let { query ->
-            val params = mapOf(PARAM_MESSAGE_ID to messageId)
+            val params = mapOf(PARAM_MESSAGE_ID to messageId.toLong())
 
             launchCatchError(block = {
                 val data = withContext(dispatcher) {

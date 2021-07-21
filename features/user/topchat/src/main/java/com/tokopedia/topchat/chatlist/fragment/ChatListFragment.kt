@@ -519,7 +519,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     }
 
     override fun deleteChat(element: ItemChatListPojo, itemPosition: Int) {
-        chatItemListViewModel.chatMoveToTrash(element.msgId.toInt())
+        chatItemListViewModel.chatMoveToTrash(element.msgId)
         itemPositionLongClicked = itemPosition
     }
 
