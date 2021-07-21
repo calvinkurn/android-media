@@ -56,7 +56,6 @@ class CartViewHolderDataMapper @Inject constructor() {
             this.shopGroupAvailableData = shopGroupAvailableData
             this.isCollapsible = isCollapsible
             this.isCollapsed = isCollapsed
-            this.isShowPin = isShowPin
             if (isCollapsible) {
                 var showMoreWording = ""
                 val showLessWording = "Tampilkan Lebih Sedikit"

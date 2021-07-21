@@ -57,21 +57,25 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.isShowPin) {
+        if (cartShopHolderData.shopGroupAvailableData?.isShowPin == true) {
             binding.iconPin.show()
-            showIconPinOnboarding()
+            cartShopHolderData.shopGroupAvailableData?.pinCoachmarkMessage?.let {
+                if (it.isNotBlank()) {
+                    showIconPinOnboarding(it)
+                }
+            }
         } else {
             binding.iconPin.gone()
         }
     }
 
-    private fun showIconPinOnboarding() {
+    private fun showIconPinOnboarding(coachmarkMessage: String) {
         val hasShownOnboarding = localCacheHandler.getBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, false)
         if (hasShownOnboarding) return
 
         itemView.context.let {
             val onboardingItems = ArrayList<CoachMark2Item>().apply {
-                add(CoachMark2Item(binding.iconPin, it.getString(R.string.message_icon_pin_onboarding), ""))
+                add(CoachMark2Item(binding.iconPin, coachmarkMessage, ""))
             }
 
             CoachMark2(it).apply {

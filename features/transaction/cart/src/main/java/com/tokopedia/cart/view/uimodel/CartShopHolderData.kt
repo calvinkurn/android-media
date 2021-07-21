@@ -13,7 +13,6 @@ class CartShopHolderData : Parcelable {
     var isPartialSelected: Boolean = false
     var isCollapsible: Boolean = false
     var isCollapsed: Boolean = false
-    var isShowPin: Boolean = false
     var showMoreWording: String = ""
     var showLessWording: String = ""
     var clickedCollapsedProductIndex: Int = RecyclerView.NO_POSITION

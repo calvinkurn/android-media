@@ -189,34 +189,35 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapShopGroupAvailableData(availableGroup: AvailableGroup,
                                           cartDataListResponse: CartDataListResponse,
                                           actionsData: List<ActionData>): ShopGroupAvailableData {
-        return ShopGroupAvailableData().let {
-            it.isChecked = availableGroup.checkboxState
-            it.errorTitle = ""
-            it.shopName = availableGroup.shop.shopName
-            it.shopId = availableGroup.shop.shopId
-            it.shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
-            it.isFulfillment = availableGroup.isFulFillment
-            it.fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
-            it.fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
-            it.isHasPromoList = availableGroup.hasPromoList
-            it.cartString = availableGroup.cartString
-            it.promoCodes = availableGroup.promoCodes
-            it.maximumWeightWording = availableGroup.shop.maximumWeightWording
-            it.maximumShippingWeight = availableGroup.shop.maximumShippingWeight
-            it.cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, it, cartDataListResponse, false, actionsData, 0, "")
+        return ShopGroupAvailableData().apply {
+            isChecked = availableGroup.checkboxState
+            errorTitle = ""
+            shopName = availableGroup.shop.shopName
+            shopId = availableGroup.shop.shopId
+            shopTypeInfo = mapShopTypeInfo(availableGroup.shop)
+            isFulfillment = availableGroup.isFulFillment
+            fulfillmentName = if (availableGroup.isFulFillment) cartDataListResponse.tokoCabangInfo.message else availableGroup.shipmentInformation.shopLocation
+            fulfillmentBadgeUrl = cartDataListResponse.tokoCabangInfo.badgeUrl
+            isHasPromoList = availableGroup.hasPromoList
+            cartString = availableGroup.cartString
+            promoCodes = availableGroup.promoCodes
+            maximumWeightWording = availableGroup.shop.maximumWeightWording
+            maximumShippingWeight = availableGroup.shop.maximumShippingWeight
+            cartItemHolderDataList = mapCartItemHolderDataList(availableGroup.cartDetails, availableGroup, this, cartDataListResponse, false, actionsData, 0, "")
 
-            it.preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
-            it.isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
-            it.freeShippingBadgeUrl = when {
+            preOrderInfo = if (availableGroup.shipmentInformation.preorder.isPreorder) availableGroup.shipmentInformation.preorder.duration else ""
+            isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
+            freeShippingBadgeUrl = when {
                 availableGroup.shipmentInformation.freeShippingExtra.eligible -> availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
                 availableGroup.shipmentInformation.freeShipping.eligible -> availableGroup.shipmentInformation.freeShipping.badgeUrl
                 else -> ""
             }
-            it.incidentInfo = availableGroup.shop.shopAlertMessage
-            it.estimatedTimeArrival = availableGroup.shipmentInformation.estimation
-            it.shopTicker = availableGroup.shop.shopTicker
-            it.isTokoNow = availableGroup.shop.isTokoNow
-            it
+            incidentInfo = availableGroup.shop.shopAlertMessage
+            estimatedTimeArrival = availableGroup.shipmentInformation.estimation
+            shopTicker = availableGroup.shop.shopTicker
+            isTokoNow = availableGroup.shop.isTokoNow
+            isShowPin = availableGroup.pinned.isPinned
+            pinCoachmarkMessage = availableGroup.pinned.coachmarkMessage
         }
     }
 
