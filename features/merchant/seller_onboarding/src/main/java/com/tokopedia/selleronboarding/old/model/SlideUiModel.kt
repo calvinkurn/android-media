@@ -1,4 +1,4 @@
-package com.tokopedia.selleronboarding.model
+package com.tokopedia.selleronboarding.old.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
 

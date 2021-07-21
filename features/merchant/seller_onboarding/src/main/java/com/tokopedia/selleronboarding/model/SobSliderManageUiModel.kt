@@ -1,0 +1,11 @@
+package com.tokopedia.selleronboarding.model
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.selleronboarding.adapter.SobAdapterFactory
+
+object SobSliderManageUiModel : Visitable<SobAdapterFactory> {
+
+    override fun type(typeFactory: SobAdapterFactory): Int {
+        return typeFactory.type(this)
+    }
+}

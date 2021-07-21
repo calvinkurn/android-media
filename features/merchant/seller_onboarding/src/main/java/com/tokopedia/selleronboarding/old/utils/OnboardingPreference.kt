@@ -1,4 +1,4 @@
-package com.tokopedia.selleronboarding.utils
+package com.tokopedia.selleronboarding.old.utils
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:gravity="center"
+        android:text="Banyak pilihan promosi dan iklan \nuntuk memajukan bisnismu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobStatistic"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/layout_lvl6"
+        android:layout_marginTop="@dimen/layout_lvl6"
+        android:layout_marginEnd="@dimen/layout_lvl6"
+        android:layout_marginBottom="@dimen/layout_lvl6"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography"
+        tools:src="@drawable/onboarding_05" />
+</androidx.constraintlayout.widget.ConstraintLayout>

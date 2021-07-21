@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:gravity="center"
+        android:text="Sigap balas pembeli supaya \nnggak ada pesanan terlewat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobMessage1"
+        android:layout_width="190dp"
+        android:layout_height="140dp"
+        android:layout_marginStart="@dimen/layout_lvl4"
+        app:layout_constraintBottom_toTopOf="@+id/imgSobMessage2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:src="@drawable/onboarding_02_1" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobMessage2"
+        android:layout_width="240dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        app:layout_constraintBottom_toTopOf="@+id/imgSobMessage3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgSobMessage1"
+        tools:src="@drawable/onboarding_02_2" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobMessage3"
+        android:layout_width="280dp"
+        android:layout_height="142dp"
+        android:layout_marginStart="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgSobMessage2"
+        tools:src="@drawable/onboarding_02_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

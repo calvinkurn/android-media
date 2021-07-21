@@ -1,4 +1,4 @@
-package com.tokopedia.selleronboarding.adapter
+package com.tokopedia.selleronboarding.old.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,11 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.selleronboarding.R
-import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
-import com.tokopedia.selleronboarding.model.SlideUiModel
+import com.tokopedia.selleronboarding.old.analytic.SellerOnboardingAnalytic
+import com.tokopedia.selleronboarding.old.model.SlideUiModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.viewholder_sob_onboarding.view.*
+import kotlinx.android.synthetic.main.viewholder_sob_old_onboarding.view.*
 import timber.log.Timber
 
 /**
@@ -25,7 +25,7 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SlideViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.viewholder_sob_onboarding, parent, false)
+        val view = inflater.inflate(R.layout.viewholder_sob_old_onboarding, parent, false)
         return SlideViewHolder(view)
     }
 

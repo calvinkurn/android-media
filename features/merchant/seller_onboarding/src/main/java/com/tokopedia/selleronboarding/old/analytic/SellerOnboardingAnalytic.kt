@@ -1,4 +1,4 @@
-package com.tokopedia.selleronboarding.analytic
+package com.tokopedia.selleronboarding.old.analytic
 
 import com.tokopedia.track.TrackApp
 

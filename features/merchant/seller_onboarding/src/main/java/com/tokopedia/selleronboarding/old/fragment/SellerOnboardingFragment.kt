@@ -1,25 +1,23 @@
-package com.tokopedia.selleronboarding.fragment
+package com.tokopedia.selleronboarding.old.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.selleronboarding.R
-import com.tokopedia.selleronboarding.adapter.SlideAdapter
-import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
-import com.tokopedia.selleronboarding.model.SlideUiModel
-import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
+import com.tokopedia.selleronboarding.old.adapter.SlideAdapter
+import com.tokopedia.selleronboarding.old.analytic.SellerOnboardingAnalytic
+import com.tokopedia.selleronboarding.old.model.SlideUiModel
+import com.tokopedia.selleronboarding.old.utils.OnboardingLayoutManager
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
+import kotlinx.android.synthetic.main.fragment_sob_old_onboarding.view.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 
 /**
@@ -39,7 +37,7 @@ class SellerOnboardingFragment : Fragment() {
     private val sliderAdapter by lazy { SlideAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_sob_onboarding, container, false)
+        return inflater.inflate(R.layout.fragment_sob_old_onboarding, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

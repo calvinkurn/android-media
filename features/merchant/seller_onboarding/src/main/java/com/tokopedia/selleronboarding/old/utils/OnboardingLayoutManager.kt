@@ -1,10 +1,10 @@
-package com.tokopedia.selleronboarding.utils
+package com.tokopedia.selleronboarding.old.utils
 
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.viewholder_sob_onboarding.view.*
+import kotlinx.android.synthetic.main.viewholder_sob_old_onboarding.view.*
 import kotlin.math.abs
 
 /**
