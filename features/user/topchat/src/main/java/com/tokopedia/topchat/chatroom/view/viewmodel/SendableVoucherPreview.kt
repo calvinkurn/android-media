@@ -62,7 +62,7 @@ class SendableVoucherPreview(
                 voucherPreview.isPublic
         )
         val data = WebsocketAttachmentData(
-                messageId.toInt(),
+                messageId.toLong(),
                 getMessageFormat(),
                 "inbox",
                 TYPE_VOUCHER_ATTACHMENT,
