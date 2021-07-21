@@ -17,8 +17,7 @@ data class ProductRecommendationDataModel(
         //UI Data
         var filterData: List<AnnotationChip>? = null,
         var cardModel: List<ProductCardModel>? = null,
-        var position: Int = -1,
-        var updatedPosList: List<Int> = listOf()
+        var position: Int = -1
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -61,9 +60,7 @@ data class ProductRecommendationDataModel(
                 return bundle
             }
             if (!areRecomQtyItemTheSame(newData.recomWidgetData)) {
-                val posList = getRecomPosListNeedToBeUpdated(newData.recomWidgetData)
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW)
-                newData.updatedPosList = posList
                 return bundle
             }
             null
@@ -94,21 +91,6 @@ data class ProductRecommendationDataModel(
             }
         }
         return true
-    }
-
-    private fun getRecomPosListNeedToBeUpdated(newRecomWidgetData: RecommendationWidget?): MutableList<Int> {
-        val dataList = mutableListOf<Int>()
-        if (recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
-                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
-                && recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size) {
-            val itemSize =recomWidgetData?.recommendationItemList?.size ?: 0
-            for (i in 0 until itemSize) {
-                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList[i].quantity) {
-                    dataList.add(i)
-                }
-            }
-        }
-        return dataList
     }
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
