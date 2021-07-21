@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -50,6 +51,23 @@ class RecomCarouselProductCardViewHolder (view: View,
 //                            element.componentName)
 //                }
                 element.listener?.onProductCardClicked(position = adapterPosition,data = data, recomItem = element.recomItem, applink = element.recomItem.appUrl)
+            }
+            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    element.listener?.onRecomProductCardAddToCartNonVariant(
+                            data = data,
+                            recomItem = element.recomItem,
+                            adapterPosition = adapterPosition,
+                            quantity = quantity,
+                    )
+                }
+            })
+            setAddVariantClickListener {
+                element.listener?.onRecomProductCardAddVariantClick(
+                        data = data,
+                        recomItem = element.recomItem,
+                        adapterPosition = adapterPosition,
+                )
             }
         }
     }

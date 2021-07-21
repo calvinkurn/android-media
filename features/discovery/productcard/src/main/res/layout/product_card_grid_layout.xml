@@ -238,7 +238,7 @@
             android:id="@+id/quantityEditorNonVariant"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_quantity_editor_height"
-            android:layout_marginStart="@dimen/dp_28"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/product_card_quantity_editor_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:foreground="?selectableItemBackground"

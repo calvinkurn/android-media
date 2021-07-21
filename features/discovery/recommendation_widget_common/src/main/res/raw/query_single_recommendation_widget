@@ -83,6 +83,7 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $ref: String
                                 key
                                 value
               }
+              parentID
            }
        }
      }

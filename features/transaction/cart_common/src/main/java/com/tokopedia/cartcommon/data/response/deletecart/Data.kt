@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.data.response.deletecart
+package com.tokopedia.cartcommon.data.response.deletecart
 
 import com.google.gson.annotations.SerializedName
 

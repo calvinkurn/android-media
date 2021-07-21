@@ -1,13 +1,11 @@
-package com.tokopedia.minicart.common.domain.usecase
+package com.tokopedia.cartcommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.data.response.deletecart.Data
-import com.tokopedia.minicart.common.data.response.deletecart.DeleteCartGqlResponse
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.deletecart.DeleteCartGqlResponse
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -16,15 +14,11 @@ class DeleteCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(miniCartItemList: List<MiniCartProductUiModel>) {
-        val cartIds = mutableListOf<String>()
-        miniCartItemList.forEach {
-            cartIds.add(it.cartId)
-        }
+    fun setParams(cartIdList: List<String>) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADD_TO_WISHLIST to 0,
-                PARAM_KEY_CART_IDS to cartIds
+                PARAM_KEY_CART_IDS to cartIdList
         )
     }
 
