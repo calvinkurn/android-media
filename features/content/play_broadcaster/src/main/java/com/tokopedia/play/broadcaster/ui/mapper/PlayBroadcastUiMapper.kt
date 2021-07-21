@@ -263,19 +263,29 @@ class PlayBroadcastUiMapper(
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
+        val interactiveDuration = response.interactiveConfig.config.interactiveDuration
+
+        return InteractiveConfigUiModel(
             isActive = response.interactiveConfig.config.isActive,
             nameGuidelineHeader = response.interactiveConfig.config.interactiveNamingGuidelineHeader,
             nameGuidelineDetail = response.interactiveConfig.config.interactiveNamingGuidelineDetail,
             timeGuidelineHeader = response.interactiveConfig.config.interactiveTimeGuidelineHeader,
-            timeGuidelineDetail = response.interactiveConfig.config.interactiveTimeGuidelineDetail,
-            durationInMs = TimeUnit.SECONDS.toMillis(response.interactiveConfig.config.interactiveDuration.toLong()),
+            timeGuidelineDetail = response.interactiveConfig.config.interactiveTimeGuidelineDetail
+                .replace(FORMAT_INTERACTIVE_DURATION, interactiveDuration.toString()),
+            durationInMs = TimeUnit.SECONDS.toMillis(interactiveDuration.toLong()),
             availableStartTimeInMs = response.interactiveConfig.config.countdownPickerTime.map {
                 TimeUnit.SECONDS.toMillis(it.toLong())
             },
-    )
+        )
+    }
 
     override fun mapCreateInteractiveSession(response: PostInteractiveCreateSessionResponse): Boolean {
-        return response.interactiveSellerCreateSession.header.status == 200
+        return response.interactiveSellerCreateSession.header.status == DEFAULT_SUCCESS_CODE
+    }
+
+    companion object {
+        private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
+        private const val DEFAULT_SUCCESS_CODE = 200
     }
 }

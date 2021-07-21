@@ -22,7 +22,6 @@
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
         android:textSize="@dimen/fontSize_lvl2"
-        android:text="@string/play_interactive_title_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

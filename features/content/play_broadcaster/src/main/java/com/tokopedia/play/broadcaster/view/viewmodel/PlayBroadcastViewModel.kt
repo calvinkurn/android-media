@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.data.model.ProductData
@@ -132,8 +133,12 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableCreateInteractiveSession
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
-    val suitableInteractiveStartTimes: List<Long>
-        get() = findSuitableInteractiveStartTimeList()
+    val interactiveTitle: String
+        get() = getCurrentSetupDataStore().getInteractiveTitle()
+    val selectedInteractiveDuration: Long
+        get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
+    val interactiveDurations: List<Long>
+        get() = findSuitableInteractiveDurations()
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -433,6 +438,14 @@ class PlayBroadcastViewModel @Inject constructor(
         liveStateProcessor.onPause()
     }
 
+    fun setInteractiveTitle(title: String) {
+        getCurrentSetupDataStore().setInteractiveTitle(title)
+    }
+
+    fun setSelectedInteractiveDuration(durationInMs: Long) {
+        getCurrentSetupDataStore().setSelectedInteractiveDuration(durationInMs)
+    }
+
     fun onInteractiveLiveEnded() {
         sharedPref.setNotFirstInteractive()
         viewModelScope.launch { onInteractiveFinished() }
@@ -450,6 +463,7 @@ class PlayBroadcastViewModel @Inject constructor(
             val result = playBroadcastMapper.mapCreateInteractiveSession(response)
             if (result) {
                 handleActiveInteractive()
+                resetSetupInteractive()
                 _observableCreateInteractiveSession.value = NetworkResult.Success(result)
             } else {
                 _observableCreateInteractiveSession.value = NetworkResult.Fail(Throwable("fail create interactive session"))
@@ -463,12 +477,6 @@ class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launch { getLeaderboardInfo() }
     }
 
-    private fun findSuitableInteractiveStartTimeList(): List<Long> {
-        val availableDurations = _observableInteractiveConfig.value?.availableStartTimeInMs.orEmpty()
-        val remainingLiveDuration = countDownTimer.remainingDurationInMs
-        return availableDurations.filter { it < remainingLiveDuration }
-    }
-
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveResponse = getInteractiveConfigUseCase.apply {
@@ -476,6 +484,8 @@ class PlayBroadcastViewModel @Inject constructor(
             }.executeOnBackground()
             val interactiveConfig = playBroadcastMapper.mapInteractiveConfig(interactiveResponse)
             _observableInteractiveConfig.value = interactiveConfig
+
+            setInteractiveDurations(interactiveConfig.availableStartTimeInMs)
 
             if (interactiveConfig.isActive) {
                 handleActiveInteractive()
@@ -549,6 +559,11 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
         return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(sharedPref.isFirstInteractive()))
+    }
+
+    private fun findSuitableInteractiveDurations(): List<Long> {
+        updateRemainingLiveDuration()
+        return getCurrentSetupDataStore().getInteractiveDurations()
     }
 
     private fun sendLivePusherState(state: PlayLivePusherState) {
@@ -669,6 +684,19 @@ class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             countDownTimer.resume()
         }) { }
+    }
+
+    private fun setInteractiveDurations(durations: List<Long>) {
+        getCurrentSetupDataStore().setInteractiveDurations(durations)
+    }
+
+    private fun updateRemainingLiveDuration() {
+        getCurrentSetupDataStore().setRemainingLiveDuration(countDownTimer.remainingDurationInMs)
+    }
+
+    private fun resetSetupInteractive() {
+        setInteractiveTitle(InteractiveDataStoreImpl.DEFAULT_INTERACTIVE_TITLE)
+        setSelectedInteractiveDuration(InteractiveDataStoreImpl.DEFAULT_INTERACTIVE_DURATION)
     }
 
     /**

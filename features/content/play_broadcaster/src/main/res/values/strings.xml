@@ -180,7 +180,6 @@
     <string name="album">Album</string>
 
     <string name="play_interactive_create_game">Buat Game Hadiah</string>
-    <string name="play_interactive_title_default">Giveaway </string>
     <string name="play_interactive_time_picker_title">Atur waktu mulai</string>
     <string name="play_interactive_time_picker_apply"><![CDATA[Terapkan & Mulai]]></string>
     <string name="play_interactive_setup_start_in">Dimulai dalam:</string>
@@ -193,7 +192,7 @@
     <string name="play_interactive_broadcast_onboarding_title">Baru! Main game di live streaming</string>
     <string name="play_interactive_broadcast_onboarding_subtitle">Bikin penontonmu betah nonton lama dengan buat Game Hadiah.</string>
 
-    <string name="play_interactive_broadcast_create_fail">Oops, gagal membuat game. Silahkan coba lagi</string>
+    <string name="play_interactive_broadcast_create_fail">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya</string>
 
     <string name="play_interactive_leaderboard_default">0</string>
 </resources>

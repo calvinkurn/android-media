@@ -46,6 +46,10 @@ abstract class PlayBroadcastBindModule {
     @PlayBroadcastScope
     abstract fun bindBroadcastScheduleDataSource(dataStore: BroadcastScheduleDataStoreImpl): BroadcastScheduleDataStore
 
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindInteractiveDataSource(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
+
     /**
      * Config
      */
