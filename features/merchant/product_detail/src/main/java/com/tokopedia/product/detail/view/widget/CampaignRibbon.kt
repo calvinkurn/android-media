@@ -367,25 +367,28 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
         try {
-            val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             val now = System.currentTimeMillis()
-            val endDate = dateFormat.parse(campaign.endDate)
-            val calendar = Calendar.getInstance()
-            calendar.time = endDate
-            timerView?.targetDate = calendar
-            timerView?.isShowClockIcon = false
+            val endDateLong = campaign.endDateUnix.toLongOrNull()
+            endDateLong?.run {
+                val endDateMillis = this * 1000L
+                val endDate = Date(endDateMillis)
+                val calendar = Calendar.getInstance()
+                calendar.time = endDate
+                timerView?.targetDate = calendar
+                timerView?.isShowClockIcon = false
 
-            // less then 24 hours campaign period
-            if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                timerView?.onFinish = {
-                    callback?.onOnGoingCampaignEnded(campaign)
-                    listener?.showAlertCampaignEnded()
+                // less then 24 hours campaign period
+                if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
+                    timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                    timerView?.onFinish = {
+                        callback?.onOnGoingCampaignEnded(campaign)
+                        listener?.showAlertCampaignEnded()
+                    }
+                } else {
+                    timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
                 }
-            } else {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerView?.show()
             }
-            timerView?.show()
         } catch (ex: Exception) {
             this.hide()
         }
