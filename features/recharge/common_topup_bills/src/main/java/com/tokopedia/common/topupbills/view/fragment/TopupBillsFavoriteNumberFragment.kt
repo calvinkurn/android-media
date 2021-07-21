@@ -103,7 +103,6 @@ class TopupBillsFavoriteNumberFragment :
     private var currentCategoryName = ""
     private var number: String = ""
     private var isNeedShowCoachmark = true
-    private var isLastFetchSuccess = true
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentFavoriteNumberBinding? = null
@@ -249,7 +248,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
-        isLastFetchSuccess = true
         clientNumbers = newClientNumbers
         if (clientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(
@@ -260,7 +258,12 @@ class TopupBillsFavoriteNumberFragment :
                     currentCategoryName, userSession.userId)
         }
         binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (clientNumbers.isNullOrEmpty()) hide() else show()
+            if (numberListAdapter.visitables.isNotEmpty() &&
+                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
+                show()
+            } else {
+                hide()
+            }
         }
 
         if (isNeedShowCoachmark && numberListAdapter.visitables.isNotEmpty()) {
@@ -271,7 +274,6 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun onFailedGetFavoriteNumber(err: Throwable) {
-        isLastFetchSuccess = false
         view?.let {
             when (err.message) {
                 ERROR_FETCH_AFTER_UPDATE -> {
@@ -353,8 +355,9 @@ class TopupBillsFavoriteNumberFragment :
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
+            binding?.commonTopupbillsFavoriteNumberClue?.show()
         } else {
-            if (isLastFetchSuccess) {
+            if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
                     numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
                 } else {
@@ -363,6 +366,7 @@ class TopupBillsFavoriteNumberFragment :
             } else {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
             }
+            binding?.commonTopupbillsFavoriteNumberClue?.hide()
         }
     }
 
@@ -376,7 +380,8 @@ class TopupBillsFavoriteNumberFragment :
 
     fun onSearchReset() {
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.setText("")
-        numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+        if (clientNumbers.isEmpty())
+            numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
