@@ -440,7 +440,7 @@ object SearchTracking {
     ) {
         sendGeneralEvent(
             DataLayer.mapOf(
-                EVENT, CLICK_TOKO_NOW,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_DELETE_ITEM_FROM_CART,
                 EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                 EVENT_LABEL, productId,

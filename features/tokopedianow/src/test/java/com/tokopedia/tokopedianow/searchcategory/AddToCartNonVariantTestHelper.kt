@@ -65,7 +65,7 @@ class AddToCartNonVariantTestHelper(
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productItemDataViewToATC = productItemList[0]
 
-        `When add to cart a product`(productItemDataViewToATC, addToCartQty)
+        `When handle cart event product non variant`(productItemDataViewToATC, addToCartQty)
 
         `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
         `Then assert cart message event`(
@@ -91,7 +91,7 @@ class AddToCartNonVariantTestHelper(
 
     private fun List<Visitable<*>>.getProductItemList() = filterIsInstance<ProductItemDataView>()
 
-    private fun `When add to cart a product`(productItemToATC: ProductItemDataView, addToCartQty: Int) {
+    private fun `When handle cart event product non variant`(productItemToATC: ProductItemDataView, addToCartQty: Int) {
         baseViewModel.onViewATCProductNonVariant(productItemToATC, addToCartQty)
     }
 
@@ -160,7 +160,7 @@ class AddToCartNonVariantTestHelper(
         val productItemDataViewToATC = productItemList[0]
         val addToCartQty = 15
 
-        `When add to cart a product`(productItemDataViewToATC, addToCartQty)
+        `When handle cart event product non variant`(productItemDataViewToATC, addToCartQty)
 
         `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
@@ -184,7 +184,7 @@ class AddToCartNonVariantTestHelper(
         `Given view resumed to update mini cart`()
 
         val (currentQty, productInVisitable) = getAvailableProductAndQuantity()
-        `When add to cart a product`(productInVisitable, currentQty)
+        `When handle cart event product non variant`(productInVisitable, currentQty)
 
         `Then assert add to cart use case is not called`()
         `Then assert route to login page event is null`()
@@ -232,7 +232,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = productInMiniCart.quantity - 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update quantity`(
                 productUpdatedQuantity,
@@ -314,7 +314,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = productInMiniCart.quantity + 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update quantity`(
                 productUpdatedQuantity,
@@ -347,7 +347,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = productInMiniCart.quantity - 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
@@ -373,7 +373,7 @@ class AddToCartNonVariantTestHelper(
         val visitableList = baseViewModel.visitableListLiveData.value!!
         val productItemList = visitableList.getProductItemList()
         val productItemDataViewToATC = productItemList[0]
-        `When add to cart a product`(productItemDataViewToATC, 3)
+        `When handle cart event product non variant`(productItemDataViewToATC, 3)
 
         `Then assert route to login page event`()
         `Then assert add to cart and update cart not called`()
@@ -417,7 +417,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = 0
         val productInVisitable = productItemList.find { it.id == productId }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert delete cart`(
             productUpdatedQuantity,
@@ -509,7 +509,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = 0
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert delete cart params`(productUpdatedQuantity, productInMiniCart)
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)

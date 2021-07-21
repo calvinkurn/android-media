@@ -8,7 +8,6 @@ object SearchCategoryTrackingConst {
         const val ADD_TO_CART = "addToCart"
         const val PROMO_VIEW = "promoView"
         const val PROMO_CLICK = "promoClick"
-        const val CLICK_TOKO_NOW = "clickTokoNow"
     }
 
     object ECommerce {
