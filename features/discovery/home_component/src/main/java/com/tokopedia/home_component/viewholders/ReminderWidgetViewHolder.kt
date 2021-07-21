@@ -11,6 +11,7 @@ import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.model.ReminderState
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.home_component_reminder_widget.view.*
 import com.tokopedia.kotlin.extensions.view.*
 
@@ -36,7 +37,10 @@ class ReminderWidgetViewHolder(
     }
 
     override fun bind(element: ReminderWidgetModel) {
-        if (!disableNetwork) performanceMonitoring?.startTrace(performanceTraceName)
+        if (!disableNetwork) {
+            performanceMonitoring?.startTrace(performanceTraceName)
+            Embrace.getInstance().startEvent(performanceTraceName, null, false)
+        }
         initView(element, itemView)
     }
 
@@ -51,6 +55,7 @@ class ReminderWidgetViewHolder(
                 if (!disableNetwork){
                     reminderWidgetListener?.getReminderWidgetData(element)
                     performanceMonitoring?.stopTrace()
+                    Embrace.getInstance().endEvent(performanceTraceName)
                 }
                 performanceMonitoring = null
             } else {
@@ -94,7 +99,10 @@ class ReminderWidgetViewHolder(
                 ic_close_reminder_recommendation.setOnClickListener {
                     reminderWidgetListener?.onReminderWidgetDeclineClickListener(element, true)
                 }
-                if (!disableNetwork) performanceMonitoring?.stopTrace()
+                if (!disableNetwork) {
+                    performanceMonitoring?.stopTrace()
+                    Embrace.getInstance().endEvent(performanceTraceName)
+                }
                 performanceMonitoring = null
             }
         }
