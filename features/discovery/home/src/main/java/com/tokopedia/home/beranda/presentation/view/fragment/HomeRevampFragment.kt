@@ -264,10 +264,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private var tokopointsCoachmarkPosition: Int? = null
-    private var gopayCoachmarkPosition: Int? = null
-    private var gopayAccountCoachmarkPosition: Int? = null
-
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
@@ -351,56 +347,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var chooseAddressWidgetInitialized: Boolean = false
 
     private val coachmarkHandler = Handler()
-    private var coachmarkRunnable = Runnable {
-        if (!bottomSheetIsShowing) {
-            if (!coachMarkIsShowing) {
-                showCoachMark()
-            } else {
-                //update coachmark if it is already showing
-                val currentIndex = coachmark?.currentIndex?:-1
-                val coachMarkItem = coachmark?.coachMarkItem
-                coachMarkItem?.let {
-                    when (currentIndex) {
-                        tokopointsCoachmarkPosition -> {
-                            val item = coachMarkItem[currentIndex]
-                            val tokopointsView = getTokopointsBalanceWidgetView()
-                            tokopointsView?.let {
-                                item.anchorView = tokopointsView
-                                coachmark?.update(
-                                    tokopointsView, coachmark?.width?:0, coachmark?.height?:0
-                                )
-                            }
-                        }
-                        gopayCoachmarkPosition -> {
-                            val item = coachMarkItem[currentIndex]
-                            val gopayView = getGopayBalanceWidgetView()
-                            gopayView?.let {
-                                item.anchorView = gopayView
-                                coachmark?.update(
-                                    gopayView, coachmark?.width?:0, coachmark?.height?:0
-                                )
-                            }
-                        }
-                        gopayAccountCoachmarkPosition -> {
-                            val item = coachMarkItem[currentIndex]
-                            val balanceWidgetView = getBalanceWidgetView()
-                            balanceWidgetView?.let {
-                                item.anchorView = balanceWidgetView
-                                coachmark?.update(
-                                    balanceWidgetView, coachmark?.width?:0, coachmark?.height?:0
-                                )
-                            }
-                        }
-                        else -> {}
-                    }
-                }
-            }
-        }
-    }
-
-    private fun startCoachmarkHandler() {
-        coachmarkHandler.postDelayed(coachmarkRunnable, TIME_TO_WAIT);
-    }
 
     @Suppress("TooGenericExceptionCaught")
     private fun isNavRevamp(): Boolean {
@@ -770,7 +716,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //add balance widget
         //uncomment this to activate balance widget coachmark
 
-        if (!skipBalanceWidget && !isBalanceWidgetCoachmarkShown(requireContext())) {
+        if (!skipBalanceWidget && true) {
             val balanceWidget = getTokopointsBalanceWidgetView()
             balanceWidget?.let {
                 this.add(
@@ -780,7 +726,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 getString(R.string.onboarding_coachmark_wallet_description)
                         )
                 )
-                tokopointsCoachmarkPosition = (this.size-1)
             }
         }
 
@@ -795,7 +740,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             getString(R.string.home_gopay_coachmark_description)
                         )
                     )
-                    gopayCoachmarkPosition = (this.size-1)
                 }
             }
 
@@ -809,7 +753,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             getString(R.string.home_gopay2_coachmark_description)
                         )
                     )
-                    gopayAccountCoachmarkPosition = (this.size-1)
                 }
             }
         }
@@ -831,61 +774,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(skipBalanceWidget: Boolean = false) {
-        context?.let {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            coachmark = CoachMark2(it)
-            coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
-            coachmark?.let {
-                it.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
-                        when (currentIndex) {
-                            tokopointsCoachmarkPosition -> {
-                                val item = coachMarkItem[currentIndex]
-                                coachmark?.isDismissed = true
-
-                                val tokopointsView = getTokopointsBalanceWidgetView()
-                                tokopointsView?.let {
-                                    item.anchorView = tokopointsView
-                                    coachmark?.isDismissed = false
-                                    coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
-                                }
-                            }
-                            gopayCoachmarkPosition -> {
-                                val item = coachMarkItem[currentIndex]
-                                coachmark?.isDismissed = true
-
-                                val gopayView = getGopayBalanceWidgetView()
-                                gopayView?.let {
-                                    item.anchorView = gopayView
-                                    coachmark?.isDismissed = false
-                                    coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
-                                }
-                            }
-                            gopayAccountCoachmarkPosition -> {
-                                val item = coachMarkItem[currentIndex]
-                                coachmark?.isDismissed = true
-
-                                val balanceWidgetView = getBalanceWidgetView()
-                                balanceWidgetView?.let {
-                                    item.anchorView = balanceWidgetView
-                                    coachmark?.isDismissed = false
-                                    coachmark?.showCoachMark(coachMarkItem, null, currentIndex)
-                                }
-                            }
+        if (checkNavigationOnboardingFinished() && !bottomSheetIsShowing) {
+            context?.let {
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                coachmark = CoachMark2(it)
+                coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
+                coachmark?.let {
+                    it.setStepListener(object : CoachMark2.OnStepListener {
+                        override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
+                            coachMark2Item.setCoachmarkShownPref()
                         }
-                        coachMark2Item.setCoachmarkShownPref()
+                    })
+                    //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                    //will be removed along the coachmark removal in the future
+                    try {
+                        if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !coachMarkIsShowing) {
+                            coachMarkIsShowing = true
+                            it.showCoachMark(step = coachMarkItem, index = 0)
+                            coachMarkItem[0].setCoachmarkShownPref()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        coachMarkIsShowing = false
                     }
-                })
-                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-                //will be removed along the coachmark removal in the future
-                try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                        it.showCoachMark(step = coachMarkItem, index = 0)
-                        coachMarkIsShowing = true
-                        coachMarkItem[0].setCoachmarkShownPref()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
             }
         }
@@ -1562,18 +1473,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val isTokopointsOrOvoFailed =
                     it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                 if (!isTokopointsOrOvoFailed) {
-                    startCoachmarkHandler()
+                    showCoachMark()
                 }
             } else {
-                if (isNewNavigationAndAlreadyShowOnboarding() && !coachMarkIsShowing && !bottomSheetIsShowing)
-                    showCoachMark(skipBalanceWidget = true)
+                showCoachMark(skipBalanceWidget = true)
             }
         }
     }
 
-    private fun isNewNavigationAndAlreadyShowOnboarding() =
-        (isNewNavigation() && (!isFirstViewNavigation() || !remoteConfigIsShowOnboarding()))
-
+    private fun checkNavigationOnboardingFinished(): Boolean {
+        return if (isNewNavigation() && remoteConfigIsShowOnboarding()) {
+            !isFirstViewNavigation()
+        } else {
+            true
+        }
+    }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
