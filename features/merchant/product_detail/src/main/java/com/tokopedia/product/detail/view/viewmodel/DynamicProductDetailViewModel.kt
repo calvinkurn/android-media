@@ -507,9 +507,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _p2Other.postValue(p2OtherDeffered.await())
 
             getTopAdsImageViewData(it.basic.productID)
-            async {
-                getProductTopadsStatus(it.basic.productID, queryParams)
-            }
+            getProductTopadsStatus(it.basic.productID, queryParams)
         }
     }
 
@@ -743,7 +741,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 var adsStatus = TopadsIsAdsQuery()
                 val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
                     getTopadsIsAdsUseCase.get().setParams(
-                            productId = productId
+                            productId = productId,
+                            urlParam = queryParams
                     )
                     adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                     val errorCode = adsStatus.data.status.error_code
