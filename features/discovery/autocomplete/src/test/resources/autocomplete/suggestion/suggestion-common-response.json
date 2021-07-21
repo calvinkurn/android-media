@@ -4,6 +4,24 @@
     "name": "SUGGESTION",
     "items": [
       {
+        "template": "list_double_line",
+        "type": "light",
+        "applink": "tokopedia://search?q=asus&source=universe&st=product&navsource=campaign&srp_page_id=160&srp_page_title=Waktu%20Indonesia%20Belanja",
+        "url": "/search?q=asus&source=universe&st=product&navsource=campaign&srp_page_id=160&srp_page_title=Waktu%20Indonesia%20Belanja",
+        "title": "Cari \"asus\"",
+        "subtitle": "di Waktu Indonesia Belanja",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "https://ecs7.tokopedia.net/img/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        }
+      },
+      {
         "template": "list_single_line",
         "type": "curated",
         "applink": "tokopedia://shop/2400899",

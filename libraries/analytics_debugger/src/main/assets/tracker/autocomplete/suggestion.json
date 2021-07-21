@@ -48,7 +48,7 @@
     },
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - /",
+      "eventCategory": "top nav",
       "eventAction": "click - digital product suggestion",
       "eventLabel": "keyword: .+ - product: .+ - po: .+ - page: .+",
       "campaignCode": ".*",

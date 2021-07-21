@@ -20,8 +20,8 @@ import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
 
 class SuggestionAdapterTypeFactory(
-        private val suggestionClickListener: SuggestionClickListener,
-        private val suggestionTopShopListener: SuggestionTopShopListener
+    private val suggestionListener: SuggestionListener,
+    private val suggestionTopShopListener: SuggestionTopShopListener
 ) : BaseAdapterTypeFactory(), SuggestionTypeFactory {
 
     override fun type(suggestionTitleDataView: SuggestionTitleDataView): Int {
@@ -59,13 +59,13 @@ class SuggestionAdapterTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SuggestionTitleViewHolder.LAYOUT -> SuggestionTitleViewHolder(parent)
-            SuggestionSingleLineViewHolder.LAYOUT -> SuggestionSingleLineViewHolder(parent, suggestionClickListener)
-            SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionClickListener)
+            SuggestionSingleLineViewHolder.LAYOUT -> SuggestionSingleLineViewHolder(parent, suggestionListener)
+            SuggestionDoubleLineViewHolder.LAYOUT -> SuggestionDoubleLineViewHolder(parent, suggestionListener)
             SuggestionTopShopWidgetViewHolder.LAYOUT -> SuggestionTopShopWidgetViewHolder(parent, suggestionTopShopListener)
-            SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionClickListener)
+            SuggestionDoubleLineWithoutImageViewHolder.LAYOUT -> SuggestionDoubleLineWithoutImageViewHolder(parent, suggestionListener)
             SuggestionSeparatorViewHolder.LAYOUT -> SuggestionSeparatorViewHolder(parent)
-            SuggestionProductLineViewHolder.LAYOUT -> SuggestionProductLineViewHolder(parent, suggestionClickListener)
-            SuggestionChipWidgetViewHolder.LAYOUT -> SuggestionChipWidgetViewHolder(parent, suggestionClickListener)
+            SuggestionProductLineViewHolder.LAYOUT -> SuggestionProductLineViewHolder(parent, suggestionListener)
+            SuggestionChipWidgetViewHolder.LAYOUT -> SuggestionChipWidgetViewHolder(parent, suggestionListener)
             else -> super.createViewHolder(parent, type)
         }
     }

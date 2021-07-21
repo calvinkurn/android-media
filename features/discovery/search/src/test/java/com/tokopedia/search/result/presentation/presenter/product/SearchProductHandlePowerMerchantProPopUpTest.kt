@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.POWER_MERCHANT_PRO_POP_UP
+import com.tokopedia.remoteconfig.RollenceKey.POWER_MERCHANT_PRO_POP_UP
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel

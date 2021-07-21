@@ -59,6 +59,7 @@ public interface AutocompleteEventTracking {
         String CLICK_TOKONOW_CURATED_SUGGESTION = "click - campaign autocomplete - autocomplete";
         String CLICK_SEARCH_SEARCH_BAR = "click - search - search bar";
         String CLICK_CHIP_SUGGESTION = "click - related autocomplete";
+        String IMPRESSION_DIGITAL_CURATED_SUGGESTION = "impression - digital product suggestion";
     }
 
     interface Label {

@@ -62,8 +62,13 @@ internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(template: Strin
     this.dimension90 shouldBe dimension90
 }
 
+internal fun SuggestionDoubleLineDataDataView.assertBoldText(expectedValue: Boolean) {
+    isBoldText() shouldBe expectedValue
+}
+
 internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView() {
     shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
+    (this as SuggestionDoubleLineDataDataView).assertBoldText(isBold)
 }
 
 internal fun Visitable<*>.shouldBeSuggestionSingleLineDataDataView() {
