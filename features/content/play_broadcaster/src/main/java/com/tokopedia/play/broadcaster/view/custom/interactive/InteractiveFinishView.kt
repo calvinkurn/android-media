@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveFinishBinding
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 
@@ -25,6 +26,14 @@ class InteractiveFinishView : RoundedConstraintLayout {
     private var mListener: Listener? = null
 
     init {
+        setCornerRadius(
+                resources.getDimension(R.dimen.play_interactive_loading_radius)
+        )
+
+        binding.viewPlayInteractiveInit.root.setCornerRadius(
+                resources.getDimension(R.dimen.play_interactive_create_radius)
+        )
+
         binding.viewPlayInteractiveInit.root.setOnClickListener {
             mListener?.onCreateNewGameClicked(this)
         }
