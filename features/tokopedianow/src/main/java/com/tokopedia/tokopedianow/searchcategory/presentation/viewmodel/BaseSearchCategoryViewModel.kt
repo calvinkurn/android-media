@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
@@ -973,7 +974,7 @@ abstract class BaseSearchCategoryViewModel(
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id } ?: return
         setMiniCartItemQuantity(miniCartItem, quantity)
 
-        deleteCartUseCase.setParams(listOf(miniCartItem))
+        deleteCartUseCase.setParams(listOf(miniCartItem.cartId))
         deleteCartUseCase.execute({
             sendDeleteCartTracking(productItem)
             onAddToCartSuccess(productItem, quantity)
