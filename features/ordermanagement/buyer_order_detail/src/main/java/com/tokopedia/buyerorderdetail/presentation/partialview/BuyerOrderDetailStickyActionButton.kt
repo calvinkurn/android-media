@@ -107,14 +107,14 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
                     resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width),
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color
+                        com.tokopedia.unifycomponents.R.color.Unify_NN300
                     )
                 )
             }
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color
+                    com.tokopedia.unifycomponents.R.color.Unify_NN300
                 )
             )
             setOnClickListener(secondaryActionButtonClickListener)
