@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -49,6 +48,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -64,11 +64,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
-    private val viewContainer: ConstraintLayout by detachableView(R.id.cl_broadcast_interaction)
     private val viewTimer: PlayTimerView by detachableView(R.id.view_timer)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
-    private val ivProductTag: AppCompatImageView by detachableView(R.id.iv_product_tag)
+    private val flProductTag: FrameLayout by detachableView(R.id.fl_product_tag)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val countdownTimer: PlayTimerCountDown by detachableView(R.id.countdown_timer)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
@@ -145,7 +144,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        viewContainer.requestApplyInsetsWhenAttached()
+        actionBarView.rootView.requestApplyInsetsWhenAttached()
+        ivShareLink.requestApplyInsetsWhenAttached()
+        viewTimer.requestApplyInsetsWhenAttached()
     }
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
@@ -156,7 +157,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.title)
         }
-        ivProductTag.setOnClickListener {
+        flProductTag.setOnClickListener {
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.title)
         }
@@ -179,8 +180,26 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets() {
-        viewContainer.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
+        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+            v.updatePadding(top = insets.systemWindowInsetTop)
+        }
+
+        viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
+            }
+        }
+
+        ivShareLink.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
         }
     }
 

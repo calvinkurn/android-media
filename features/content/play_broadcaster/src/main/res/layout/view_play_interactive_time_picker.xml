@@ -36,7 +36,6 @@
             android:id="@+id/btn_apply"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/play_button_medium_height"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/play_interactive_time_picker_apply"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/pu_timer"

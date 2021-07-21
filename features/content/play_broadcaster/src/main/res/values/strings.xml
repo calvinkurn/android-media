@@ -194,4 +194,6 @@
     <string name="play_interactive_broadcast_onboarding_subtitle">Bikin penontonmu betah nonton lama dengan buat Game Hadiah.</string>
 
     <string name="play_interactive_broadcast_create_fail">Oops, gagal membuat game. Silahkan coba lagi</string>
+
+    <string name="play_interactive_leaderboard_default">0</string>
 </resources>

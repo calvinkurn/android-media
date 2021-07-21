@@ -126,7 +126,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableInteractiveConfig
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
-    val observableLeaderboardInfo: LiveData<PlayLeaderboardInfoUiModel>
+    val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<Boolean>>
         get() = _observableCreateInteractiveSession
@@ -153,7 +153,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
-    private val _observableLeaderboardInfo = MutableLiveData<PlayLeaderboardInfoUiModel>()
+    private val _observableLeaderboardInfo = MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<Boolean>>()
 
     private val livePusher = livePusherBuilder.build()
@@ -459,6 +459,10 @@ class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun getLeaderboardData() {
+        viewModelScope.launch { getLeaderboardInfo() }
+    }
+
     private fun findSuitableInteractiveStartTimeList(): List<Long> {
         val availableDurations = _observableInteractiveConfig.value?.availableStartTimeInMs.orEmpty()
         val remainingLiveDuration = countDownTimer.remainingDurationInMs
@@ -518,16 +522,28 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun onInteractiveFinished() {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
-        try {
+        val err = getLeaderboardInfo()
+        if (err != null && _observableLeaderboardInfo.value is NetworkResult.Success) {
+            val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
+            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
+                leaderboard.config.loserMessage,
+                leaderboard.config.sellerMessage
+            ))
+        } else {
+            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+        }
+    }
+
+    private suspend fun getLeaderboardInfo(): Throwable? {
+        _observableLeaderboardInfo.value = NetworkResult.Loading
+        return try {
             val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
             val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusher.pusherState == ApsaraLivePusherState.Stop }
-            _observableLeaderboardInfo.value = leaderboard
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.HasPrevious(
-                    leaderboard.config.loserMessage,
-                    leaderboard.config.sellerMessage
-            ))
-        } catch (e: Throwable) {
-            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+            _observableLeaderboardInfo.value = NetworkResult.Success(leaderboard)
+            null
+        } catch (err: Throwable) {
+            _observableLeaderboardInfo.value = NetworkResult.Fail(err)
+            err
         }
     }
 

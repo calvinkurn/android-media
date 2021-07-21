@@ -252,7 +252,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             summaryInfoView.addTrafficMetric(
                 TrafficMetricUiModel(
                     type = TrafficMetricType.GameParticipants,
-                    count = it.totalParticipant
+                    count = if (it is NetworkResult.Success) it.data.totalParticipant else getString(R.string.play_interactive_leaderboard_default)
                 ),
                 FIRST_PLACE
             )
