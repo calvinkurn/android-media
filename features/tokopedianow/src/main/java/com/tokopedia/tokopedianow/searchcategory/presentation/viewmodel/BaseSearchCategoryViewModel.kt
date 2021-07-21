@@ -887,8 +887,8 @@ abstract class BaseSearchCategoryViewModel(
 
         when {
             nonVariantATC.quantity == 0 -> addToCart(productItem, quantity)
-            quantity == 0 -> updateCart(productItem, quantity)
-            else -> deleteCart(productItem, quantity)
+            quantity == 0 -> deleteCart(productItem, quantity)
+            else -> updateCart(productItem, quantity)
         }
     }
 
