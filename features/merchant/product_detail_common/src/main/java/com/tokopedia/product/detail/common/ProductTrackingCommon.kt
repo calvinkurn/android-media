@@ -142,7 +142,7 @@ object ProductTrackingCommon {
     fun eventEcommerceAddToCart(
             userId: String, cartId: String, buttonAction: Int,
             buttonText: String, productId: String, shopId: String,
-            productName: String, productPrice: String, quantity: Int,
+            productName: String, productPrice: Double, quantity: Int,
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
             categoryName: String = "", categoryId: String = "", isFreeOngkir: Boolean = false, pageSource: String = "",

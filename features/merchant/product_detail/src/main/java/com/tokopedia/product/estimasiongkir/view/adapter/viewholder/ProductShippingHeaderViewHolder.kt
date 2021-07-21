@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.util.boldOrLinkText
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingHeaderDataModel
@@ -48,11 +49,11 @@ class ProductShippingHeaderViewHolder(view: View,
     }
 
     private fun renderTokoCabang(element: ProductShippingHeaderDataModel) = with(itemView) {
-        if (element.boType == ProductDetailConstant.BO_TOKONOW) {
+        if (element.boType == ProductDetailCommonConstant.BO_TOKONOW) {
             icShippingLine?.setMargin(0, 0, 0, 0)
             txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.tokoCabangTitle).boldOrLinkText(false, context, element.tokoCabangTitle to {})
             renderGeneralContentTokoCabang(element.tokoCabangContent)
-        } else if (element.isFulfillment && element.boType == ProductDetailConstant.BEBAS_ONGKIR_EXTRA) {
+        } else if (element.isFulfillment && element.boType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
             renderGeneralContentTokoCabang(element.tokoCabangContent, element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
             txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString

@@ -89,7 +89,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                     ?: VoucherGameExtraParam()
             rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA,"")
         }
-    }
+     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -140,6 +140,12 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (voucherGameExtraParam.operatorId.isNotEmpty()) {
+            navigateToProductList(CatalogOperatorAttributes())
+            activity?.finish()
+            return
+        }
 
         if(rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
@@ -400,7 +406,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
+        val layoutManager = GridLayoutManager(context, VG_LIST_SPAN_COUNT, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(p0: Int): Int {
                 return when (adapter.getItemViewType(p0)) {
@@ -445,6 +451,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3
+        const val VG_LIST_SPAN_COUNT = 3
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 

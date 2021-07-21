@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
-import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -112,8 +112,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
         get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
 
-    val bestSellerData: BestSellerInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? BestSellerInfoDataModel
+    val bestSellerData: OneLinersDataModel?
+        get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? OneLinersDataModel
+
+    val stockAssuranceData: OneLinersDataModel?
+        get() = mapOfData[ProductDetailConstant.STOCK_ASSURANCE] as? OneLinersDataModel
 
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
@@ -219,6 +222,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     updateBestSellerData()
                 }
             }
+
+            updateData(ProductDetailConstant.STOCK_ASSURANCE) {
+                dataP1.stockAssuranceContent?.get(productId)?.let { content ->
+                    stockAssuranceData?.oneLinersContent = content
+                }
+            }
         }
     }
 
@@ -229,10 +238,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.BEST_SELLER) {
             bestSellerData?.run {
                 if (dataP1 == null) {
-                    this.bestSellerInfoContent = null
+                    this.oneLinersContent = null
                 } else {
                     dataP1.bestSellerContent?.let {
-                        this.bestSellerInfoContent = it[productId]
+                        this.oneLinersContent = it[productId]
                     }
                 }
             }

@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.layout_business_unit_widget.view.*
 import java.util.*
 
@@ -84,6 +85,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         setChannelDivider(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
+        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         showLoading()
         errorBuWidget.hide()
         tabLayout.show()
@@ -98,6 +100,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             initContainerColor(element.backColor)
             performanceMonitoring?.stopTrace()
             performanceMonitoring = null
+            Embrace.getInstance().endEvent(performanceTraceName)
         }
         if(element?.contentsList != null){
             initViewPager(element.contentsList)
@@ -132,6 +135,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     }
                     performanceMonitoring?.stopTrace()
                     performanceMonitoring = null
+                    Embrace.getInstance().endEvent(performanceTraceName)
                 } else if(bundle.containsKey(UPDATE_BUNDLE_CONTENT_LAYOUT)){
                     if(element?.contentsList != null){
                         initViewPager(element.contentsList)
