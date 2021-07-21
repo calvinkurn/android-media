@@ -80,8 +80,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
-            finishCalculate: (() -> Unit)? = null
+            finishCalculate: (() -> Unit)? = null,
     ) {
         if (productCardModelList.isEmpty()) return
 
@@ -92,6 +94,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
                 carouselProductCardOnItemThreeDotsClickListener,
+                carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener,
                 carouselSeeMoreClickListener
         )
 
@@ -117,7 +121,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
-            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null)
+            carouselProductCardATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
+    )
     : CarouselProductCardListenerInfo {
 
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
@@ -127,6 +134,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
         carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
         carouselProductCardListenerInfo.onSeeMoreClickListener = carouselSeeMoreClickListener
+        carouselProductCardListenerInfo.onATCNonVariantClickListener = carouselProductCardATCNonVariantClickListener
+        carouselProductCardListenerInfo.onAddVariantClickListener = carouselProductCardAddVariantClickListener
 
         return carouselProductCardListenerInfo
     }
@@ -201,19 +210,21 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun submitList(productCardModelList: List<ProductCardModel>,
-                           showSeeMoreCard: Boolean = false,
-                           carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
-        val carouselList: MutableList<BaseCarouselCardModel> = productCardModelList.map {
+    private fun submitList(
+            productCardModelList: List<ProductCardModel>,
+            showSeeMoreCard: Boolean = false,
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
+    ) {
+        val carouselList = productCardModelList.map {
             CarouselProductCardModel(
                     productCardModel = it,
-                    carouselProductCardListenerInfo = carouselProductCardListenerInfo
+                    carouselProductCardListenerInfo = carouselProductCardListenerInfo,
             )
-        }.toMutableList()
-        if(showSeeMoreCard){
-            carouselList.add(CarouselSeeMoreCardModel(carouselProductCardListenerInfo
-            ))
-        }
+        }.toMutableList<BaseCarouselCardModel>()
+
+        if (showSeeMoreCard)
+            carouselList.add(CarouselSeeMoreCardModel(carouselProductCardListenerInfo))
+
         carouselProductCardAdapter?.submitCarouselProductCardModelList(carouselList)
     }
 
@@ -235,6 +246,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             showSeeMoreCard: Boolean = false,
@@ -249,7 +262,9 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
                 carouselProductCardOnItemThreeDotsClickListener,
-                carouselSeeMoreClickListener
+                carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener,
+                carouselSeeMoreClickListener,
         )
 
         launch {

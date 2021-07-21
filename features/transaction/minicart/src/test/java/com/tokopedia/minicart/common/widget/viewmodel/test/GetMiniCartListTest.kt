@@ -4,6 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.usecase.*

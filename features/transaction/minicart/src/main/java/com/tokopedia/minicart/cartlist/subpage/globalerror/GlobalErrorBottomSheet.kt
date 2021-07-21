@@ -3,9 +3,9 @@ package com.tokopedia.minicart.cartlist.subpage.globalerror
 import android.content.Context
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.cartcommon.data.response.common.Button
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.minicart.common.data.response.minicartlist.Button
-import com.tokopedia.minicart.common.data.response.minicartlist.OutOfService
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage

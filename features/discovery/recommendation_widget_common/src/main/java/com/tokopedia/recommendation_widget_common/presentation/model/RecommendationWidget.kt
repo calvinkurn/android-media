@@ -3,7 +3,7 @@ package com.tokopedia.recommendation_widget_common.presentation.model
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 
 data class RecommendationWidget(
-        val recommendationItemList: List<RecommendationItem> = listOf(),
+        var recommendationItemList: List<RecommendationItem> = listOf(),
         val title: String = "",
         val subtitle: String = "",
         val foreignTitle: String = "",
@@ -26,4 +26,10 @@ data class RecommendationWidget(
         val headerBackColor: String = "",
         val recommendationConfig: RecommendationConfig = RecommendationConfig(),
         var recommendationBanner: RecommendationBanner? = null
-)
+) {
+    fun copyRecomItemList(): List<RecommendationItem> {
+        val newList = mutableListOf<RecommendationItem>()
+        recommendationItemList.forEach { newList.add(it.copy()) }
+        return newList
+    }
+}

@@ -9,16 +9,22 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
+import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
-import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import java.text.NumberFormat
@@ -187,7 +193,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun deleteSingleCartItem(product: MiniCartProductUiModel) {
-        deleteCartUseCase.setParamsFromUiModel(listOf(product))
+        deleteCartUseCase.setParams(listOf(product.cartId))
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessDeleteSingleCartItem(product, it)
@@ -235,11 +241,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun bulkDeleteUnavailableCartItems() {
-        val unavailableCartItems = mutableListOf<MiniCartProductUiModel>()
+        val unavailableItemsCartId = mutableListOf<String>()
         val visitables = getVisitables()
         visitables.forEach {
             if (it is MiniCartProductUiModel && it.isProductDisabled) {
-                unavailableCartItems.add(it)
+                unavailableItemsCartId.add(it.cartId)
             }
         }
 
@@ -252,7 +258,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
         }
 
-        deleteCartUseCase.setParamsFromUiModel(unavailableCartItems)
+        deleteCartUseCase.setParams(unavailableItemsCartId)
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessBulkDeleteUnavailableCartItems(it, isLastItem)

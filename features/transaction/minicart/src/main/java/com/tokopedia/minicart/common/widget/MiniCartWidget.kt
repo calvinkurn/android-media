@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -28,7 +30,6 @@ import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomShee
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
