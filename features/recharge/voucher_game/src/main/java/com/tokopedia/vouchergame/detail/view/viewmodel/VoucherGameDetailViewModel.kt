@@ -58,7 +58,7 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, VoucherGameDetailData.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * VG_CACHE_DURATION_IN_MINS).build())
             }.getSuccessData<VoucherGameDetailData.Response>().response
 
             // Add product initial position for tracking
@@ -94,6 +94,7 @@ class VoucherGameDetailViewModel @Inject constructor(private val voucherGameUseC
     companion object {
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_OPERATOR = "operator"
+        const val VG_CACHE_DURATION_IN_MINS = 5
 
         const val VOUCHER_NOT_FOUND_ERROR = "VOUCHER_NOT_FOUND_ERROR"
     }
