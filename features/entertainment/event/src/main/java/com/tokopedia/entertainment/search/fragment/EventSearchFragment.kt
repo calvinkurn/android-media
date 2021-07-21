@@ -123,7 +123,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
         viewModel.errorReport.observe(viewLifecycleOwner,
                 Observer {
                     lifecycleScope.launch {
-                        delay(200)
+                        delay(DELAY_TIME)
                         NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                             getData(CacheType.ALWAYS_CLOUD)
                         }.showRetrySnackbar()

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -73,6 +74,8 @@ import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.swipe_refresh_
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.*
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -359,12 +362,13 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private fun showErrorState(throwable: Throwable, isVerify: Boolean){
         swipe_refresh_layout.isRefreshing = false
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        Handler().postDelayed({
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
-            showViewBottom(false)
-            loadData()
-        }.showRetrySnackbar()
-        },DELAY_TIME)
+        lifecycleScope.launch {
+            delay(DELAY_TIME)
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
+                showViewBottom(false)
+                loadData()
+            }.showRetrySnackbar()
+        }
         if(!isVerify) {
             renderList(listOf())
             activity?.txtUbah?.visibility = View.GONE

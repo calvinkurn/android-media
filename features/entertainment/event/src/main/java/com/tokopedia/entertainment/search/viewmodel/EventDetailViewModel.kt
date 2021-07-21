@@ -94,7 +94,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                 },
                 onError = {
                     Timber.tag(TAG + "Error").w(it)
-                    errorReport.postValue(it)
+                    errorReport.value = it
                     isItRefreshing.value = false
                     isItShimmering.value = false
                     showParentView.value = false

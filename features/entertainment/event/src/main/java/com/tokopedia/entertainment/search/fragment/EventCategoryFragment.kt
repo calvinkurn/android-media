@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -167,13 +168,14 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
 
     private fun observeErrorReport(){
         viewModel.errorReport.observe(viewLifecycleOwner, Observer {
-            Handler().postDelayed({
+            lifecycleScope.launch {
+                delay(DELAY_TIME)
                 NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
-                recycler_viewParent.addOnScrollListener(endlessScroll)
-                viewModel.page = "1"
-                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
-            }.showRetrySnackbar()
-            },DELAY_TIME)
+                    recycler_viewParent.addOnScrollListener(endlessScroll)
+                    viewModel.page = "1"
+                    viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
+                }.showRetrySnackbar()
+            }
         })
     }
 
