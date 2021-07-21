@@ -12,6 +12,7 @@
         android:id="@+id/feed_background_frame"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
+        android:focusableInTouchMode="true"
         app:layout_scrollFlags="scroll|snap">
 
         <ImageView
@@ -35,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
+        android:focusableInTouchMode="true"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:elevation="0dp">
 
@@ -87,6 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/transparent"
+        android:focusableInTouchMode="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <include layout="@layout/partial_feed_loading"
@@ -99,6 +102,7 @@
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
+            android:focusableInTouchMode="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
