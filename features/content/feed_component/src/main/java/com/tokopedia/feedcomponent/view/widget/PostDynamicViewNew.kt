@@ -1,7 +1,6 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import android.os.CountDownTimer
 import android.text.Spannable
 import android.text.SpannableString
@@ -69,6 +68,11 @@ private val scopeDef = CoroutineScope(Dispatchers.Default)
 private var productVideoJob: Job? = null
 private const val TIMER_TO_BE_SHOWN = 3000L
 private const val TIME_SECOND = 1000L
+private const val FOLLOW_SIZE = 7
+private const val MINUTE_IN_HOUR = 60
+private const val SPACE = 3
+private const val DOT_SPACE = 2
+private const val SHOW_MORE = "Lihat Lainnya"
 
 class PostDynamicViewNew @JvmOverloads constructor(
     context: Context,
@@ -107,6 +111,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
     var startTime = System.currentTimeMillis()
+
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
         val view =
@@ -250,11 +255,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val followCta =
             FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
         val authorName = MethodChecker.fromHtml(author.name)
-        val startIndex = authorName.length + 2
-        var endIndex = startIndex + 7
+        val startIndex = authorName.length + DOT_SPACE
+        var endIndex = startIndex + FOLLOW_SIZE
 
         val text = if (followers.transitionFollow) {
-            endIndex += 3
+            endIndex += SPACE
             context.getString(R.string.kol_Action_following_color)
         } else {
             context.getString(
@@ -309,7 +314,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    if (endIndex == startIndex + 7) {
+                    if (endIndex == startIndex + FOLLOW_SIZE) {
                         ds.color = MethodChecker.getColor(
                             context,
                             com.tokopedia.unifyprinciples.R.color.Unify_G500
@@ -664,7 +669,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedXCard.author.id,
                     positionInFeed
                 )
-                media.forEachIndexed { index, feedMedia ->
+                media.forEach { feedMedia ->
 
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
@@ -878,9 +883,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             volumeIcon.setOnClickListener {
-                if(isMute)
-                listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
                 isMute = !isMute
+                if (isMute)
+                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
@@ -898,15 +903,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ) {
         val videoItem = feedMedia.videoView
         videoItem?.run {
-            if (feedMedia.videoTime == 0L) {
-                scopeDef.launch {
-                    try {
-                        feedMedia.videoTime = getVideoDuration(feedMedia) / TIME_SECOND
-                    } catch (e: Exception) {
 
-                    }
-                }
-            }
             video_tag_text.postDelayed({
                 video_tag_text.visible()
                 video_tag_text.animate().alpha(1F).start()
@@ -931,6 +928,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                     }
                 }
+
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
                 volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
@@ -939,15 +937,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoReadyToPlay() {
-                        startTime = System.currentTimeMillis()
                         hideVideoLoading()
                         timer_view.visible()
-                        var time = if (feedMedia.videoTime == 0L) 10L else feedMedia.videoTime
+                        var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
                         object : CountDownTimer(TIMER_TO_BE_SHOWN, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
                                 timer_view.text =
-                                    String.format("%02d:%02d", (time / 60) % 60, time % 60)
+                                    String.format(
+                                        "%02d:%02d",
+                                        (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                        time % MINUTE_IN_HOUR
+                                    )
                             }
 
                             override fun onFinish() {
@@ -957,13 +958,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
-                        val endTime = System.currentTimeMillis()
-                        videoListener?.onVideoStopTrack(feedXCard, (endTime - startTime) / 1000)
+                            videoListener?.onVideoStopTrack(
+                                feedXCard,
+                                (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
+                            )
                     }
                 })
             }
         }
     }
+
 
     private fun hideVideoLoading() {
         loader?.gone()
@@ -976,13 +980,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         loader?.animate()
         loader?.visible()
         ic_play?.visible()
-    }
-
-    private fun getVideoDuration(feedMedia: FeedXMedia): Long {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(feedMedia.mediaUrl, HashMap())
-        val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        return time.toLong()
     }
 
     private fun toggleVolume(isMute: Boolean) {
@@ -1032,7 +1029,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         } else if (totalProducts in (MAX_FEED_SIZE_SMALL + 1) until MAX_FEED_SIZE) {
             totalProductsImpressed = LAST_FEED_POSITION_SMALL
         }
-        var listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
+        val listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
 
         imagePostListener.userProductImpression(
             positionInFeed,
@@ -1062,7 +1059,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     ): GridPostViewModel {
         return GridPostViewModel(
             getGridItemViewModel(products),
-            "Lihat Lainnya",
+            SHOW_MORE,
             feedXCard.appLink,
             products.size,
             true,
@@ -1126,11 +1123,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     internal fun onDestroy() {
         detach()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStop() {
-        videoPlayer?.pause()
     }
 
     fun detach(fromSlide: Boolean = false) {

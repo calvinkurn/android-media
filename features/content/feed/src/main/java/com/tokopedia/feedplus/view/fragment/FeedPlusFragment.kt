@@ -225,11 +225,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     internal lateinit var userSession: UserSessionInterface
-
-    private val productTagBS by lazy {
-        ProductItemInfoBottomSheet()
-    }
-
+    private lateinit var productTagBS: ProductItemInfoBottomSheet
     private val userIdInt: Int
         get() {
             return userSession.userId.toIntOrZero()
@@ -304,8 +300,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             fragment.arguments = bundle
             return fragment
         }
-
-        private const val PERFORMANCE_FEED_PAGE_NAME = "feed"
     }
 
     object MoEngage {
@@ -1806,7 +1800,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
-            productTagBS.dismiss()
+            if (::productTagBS.isInitialized)
+                productTagBS.dismiss()
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId.toString())
         } else {
             onGoToLogin()
@@ -1905,6 +1900,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isVideo: Boolean,
         positionInFeed: Int
     ) {
+        productTagBS = ProductItemInfoBottomSheet()
         feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id, isVideo)
         productTagBS.show(
             childFragmentManager,
@@ -1924,7 +1920,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun addToWishList(
+    private fun addToWishList(
         postId: Int,
         productId: String,
         type: String,
@@ -1939,8 +1935,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed,
             shopId
         )
-
-        productTagBS.dismiss()
+        if (::productTagBS.isInitialized)
+            productTagBS.dismiss()
         feedViewModel.addWishlist(
             postId.toString(),
             productId,
@@ -1992,7 +1988,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type,
             isFollowed, shopId
         )
-        productTagBS.dismiss()
+        if (::productTagBS.isInitialized)
+            productTagBS.dismiss()
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
