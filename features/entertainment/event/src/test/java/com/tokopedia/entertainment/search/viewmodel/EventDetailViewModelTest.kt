@@ -1,31 +1,22 @@
 package com.tokopedia.entertainment.search.viewmodel
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
-import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.entertainment.search.data.CategoryModel
 import com.tokopedia.entertainment.search.data.EventDetailResponse
-import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper
-import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
-import com.tokopedia.entertainment.search.viewmodel.EventLocationViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +24,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.File
-import java.lang.Exception
 import java.lang.reflect.Type
 
 
