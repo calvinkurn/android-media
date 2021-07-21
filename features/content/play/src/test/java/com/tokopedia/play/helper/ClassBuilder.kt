@@ -21,7 +21,6 @@ class ClassBuilder {
             channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
             interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper()
     ) = PlayUiModelMapper(
-            userSession = userSession,
             productTagMapper = productTagMapper,
             merchantVoucherMapper = merchantVoucherMapper,
             chatMapper = chatMapper,

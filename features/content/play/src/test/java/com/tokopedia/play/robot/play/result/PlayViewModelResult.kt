@@ -1,8 +1,17 @@
 package com.tokopedia.play.robot.play.result
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.robot.RobotResult
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 
 /**
  * Created by jegul on 10/02/21
@@ -76,4 +85,16 @@ class PlayViewModelRobotResult(
 
     val pipStateFieldResult: PlayPiPStateResult
         get() = PlayPiPStateResult(viewModel.pipState)
+
+    /**
+     * State
+     */
+    fun withState(
+            dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
+            fn: suspend PlayViewerNewUiState.() -> Unit
+    ) = runBlockingTest(dispatcher.coroutineDispatcher) {
+        state().fn()
+    }
+
+    suspend fun state() = viewModel.uiState.first()
 }

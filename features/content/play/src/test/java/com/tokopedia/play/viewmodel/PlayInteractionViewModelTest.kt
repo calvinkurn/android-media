@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.PostFollowPartnerUseCase
 import com.tokopedia.play.domain.PostLikeUseCase
@@ -204,7 +205,7 @@ class PlayInteractionViewModelTest {
 
         coVerifySequence {
             mockPostLikeUseCase.params = PostLikeUseCase.createParam(
-                    likeParamUiModel.contentId.toIntOrZero(),
+                    likeParamUiModel.contentId.toLongOrZero(),
                     likeParamUiModel.contentType,
                     likeParamUiModel.likeType,
                     shouldLike

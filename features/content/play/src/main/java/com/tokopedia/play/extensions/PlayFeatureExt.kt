@@ -24,6 +24,9 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
 val Map<BottomInsetsType, BottomInsetsState>.isProductSheetsShown: Boolean
     get() = this[BottomInsetsType.ProductSheet]?.isShown == true
 
+val Map<BottomInsetsType, BottomInsetsState>.isLeaderboardSheetShown: Boolean
+    get() = this[BottomInsetsType.LeaderboardSheet]?.isShown == true
+
 val View.isFullAlpha: Boolean
     get() = alpha == 0.0f
 

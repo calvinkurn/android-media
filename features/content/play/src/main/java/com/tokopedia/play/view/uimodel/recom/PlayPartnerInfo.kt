@@ -18,5 +18,3 @@ sealed class PlayPartnerFollowStatus {
     object NotFollowable : PlayPartnerFollowStatus()
     object Unknown : PlayPartnerFollowStatus()
 }
-
-data class PlayPartnerFollowInfo(val isOwnShop: Boolean, val isFollowing: Boolean)

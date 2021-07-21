@@ -846,12 +846,13 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is ShowWinningDialogEvent -> {
+                        if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
                             setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
                         }.show(childFragmentManager)
                     }
                     is ShowCoachMarkWinnerEvent -> {
-                        if (interactiveWinnerBadgeView?.isHidden() == true) return@collect
+                        if (interactiveWinnerBadgeView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
                         interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
                     }
                     HideCoachMarkWinnerEvent -> {
