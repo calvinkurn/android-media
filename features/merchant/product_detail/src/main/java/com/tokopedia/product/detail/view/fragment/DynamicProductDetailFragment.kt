@@ -658,6 +658,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             R.id.action_cart -> {
                 gotoCart(); true
             }
+            R.id.action_report -> {
+                reportProductFromToolbar(); true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -912,6 +915,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         DynamicProductDetailTracking.Click.onSeeAllLastItemImageReview(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                 ?: ComponentTrackDataModel())
         goToReviewImagePreview()
+    }
+
+    private fun reportProductFromToolbar() {
+        reportProduct({
+            DynamicProductDetailTracking.Click.eventReportLogin()
+        }, {
+            DynamicProductDetailTracking.Click.eventReportNoLogin()
+        })
     }
 
     override fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?) {
@@ -2251,12 +2262,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         val menuShare = menu.findItem(R.id.action_share)
         val menuCart = menu.findItem(R.id.action_cart)
+        val menuReport = menu.findItem(R.id.action_report)
 
         if (viewModel.getDynamicProductInfoP1 == null) {
             menuShare.isVisible = false
             menuShare.isEnabled = false
             menuCart.isVisible = true
             menuCart.isEnabled = true
+            menuReport.isVisible = false
+            menuReport.isEnabled = false
         } else {
             menuShare.isVisible = true
             menuShare.isEnabled = true
@@ -2270,6 +2284,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 menuCart.isEnabled = isValidCustomer
 
                 if (isValidCustomer) setBadgeMenuCart(menuCart)
+
+                menuReport.isVisible = !isOwned && (basic.status != ProductStatusTypeDef.WAREHOUSE && !viewModel.isShopOwner())
+                menuReport.isEnabled = !isOwned && (basic.status != ProductStatusTypeDef.WAREHOUSE && !viewModel.isShopOwner())
             }
         }
     }

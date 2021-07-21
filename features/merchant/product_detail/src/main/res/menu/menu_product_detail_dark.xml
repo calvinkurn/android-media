@@ -15,4 +15,10 @@
         android:orderInCategory="200"
         android:title="@string/label_cart"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_report"
+        android:orderInCategory="300"
+        android:title="@string/action_report"
+        app:showAsAction="never" />
 </menu>

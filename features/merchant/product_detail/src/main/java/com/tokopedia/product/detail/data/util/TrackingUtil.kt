@@ -3,10 +3,8 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -57,43 +55,11 @@ object TrackingUtil {
         return "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
     }
 
-    fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: Int, startIndex: Int): List<Any> {
-        val list = mutableListOf<Any>()
-        for (i in viewModelList.indices) {
-            val viewModel = viewModelList[i]
-            val position = startIndex.plus(i).plus(1)
-            if (viewModel.isAvailable()) {
-                list.add(
-                        DataLayer.mapOf(
-                                ProductTrackingConstant.Tracking.ID, shopId.toString(),
-                                ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductTrackingConstant.Label.PDP, position.toString(), viewModel.voucherName).joinToString(" - "),
-                                ProductTrackingConstant.Tracking.PROMO_POSITION, position,
-                                ProductTrackingConstant.Tracking.PROMO_ID, viewModel.voucherId,
-                                ProductTrackingConstant.Tracking.PROMO_CODE, viewModel.voucherCode
-                        )
-                )
-            }
-        }
-        return list
-    }
-
     fun getTickerTypeInfoString(tickerType:Int) : String {
         return when(tickerType){
             Ticker.TYPE_INFORMATION -> "info"
             Ticker.TYPE_WARNING -> "warning"
             else -> "other"
-        }
-    }
-
-    fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, shopId: String, position: Int): List<Any> {
-        return vouchers.withIndex().filter { it.value.isAvailable() }.map {
-            DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.ID, shopId,
-                    ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductTrackingConstant.Label.PDP, (position + it.index + 1).toString(), it.value.voucherName).joinToString(" - "),
-                    ProductTrackingConstant.Tracking.PROMO_POSITION, (position + it.index + 1).toString(),
-                    ProductTrackingConstant.Tracking.PROMO_ID, it.value.voucherId,
-                    ProductTrackingConstant.Tracking.PROMO_CODE, it.value.voucherCode
-            )
         }
     }
 

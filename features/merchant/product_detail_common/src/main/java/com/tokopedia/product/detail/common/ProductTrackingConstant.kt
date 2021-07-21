@@ -227,6 +227,7 @@ object ProductTrackingConstant {
     object Report {
         const val EVENT = "clickReport"
         const val EVENT_LABEL = "Report"
+        const val NOT_LOGIN_EVENT_LABEL = "Report - Not Login"
     }
 
     object PDP {

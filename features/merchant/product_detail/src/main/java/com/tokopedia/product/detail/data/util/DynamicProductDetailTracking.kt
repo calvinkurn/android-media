@@ -202,6 +202,20 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_REPORT_FROM_COMPONENT)
         }
 
+        fun eventReportNoLogin() {
+            TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK,
+                    ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
+        }
+
+        fun eventReportLogin() {
+            TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK,
+                    ProductTrackingConstant.Report.EVENT_LABEL)
+        }
+
         fun eventClickFollowNpl(productInfo: DynamicProductInfoP1?, userId: String) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
