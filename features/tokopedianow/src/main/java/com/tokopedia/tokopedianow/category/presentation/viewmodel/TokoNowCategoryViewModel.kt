@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -81,12 +82,20 @@ class TokoNowCategoryViewModel @Inject constructor (
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
     init {
+        updateQueryParamWithCategoryIds()
+
+        categoryIdTracking = getCategoryIdForTracking()
+    }
+
+    private fun updateQueryParamWithCategoryIds() {
+        if (categoryL1.isNotEmpty()) {
+            queryParamMutable[SearchApiConst.SRP_PAGE_ID] = categoryL1
+        }
+
         if (categoryL2.isNotEmpty()) {
             val categoryFilterKeyWithExclude = "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"
             queryParamMutable[categoryFilterKeyWithExclude] = categoryL2
         }
-
-        categoryIdTracking = getCategoryIdForTracking()
     }
 
     override val tokonowSource: String
@@ -112,12 +121,6 @@ class TokoNowCategoryViewModel @Inject constructor (
         requestParams.putString(WAREHOUSE_ID, chooseAddressData?.warehouse_id ?: "")
 
         return requestParams
-    }
-
-    override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
-        super.appendMandatoryParams(tokonowQueryParam)
-
-        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryL1
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
@@ -191,8 +194,12 @@ class TokoNowCategoryViewModel @Inject constructor (
     ) {
         if (element.carouselData.state == STATE_READY) return
 
+        val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
+        val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
+        val recomCategoryId = if (categoryFilterId.isNotEmpty()) categoryFilterId else (tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
         val getRecommendationRequestParam = GetRecommendationRequestParam(
-                pageName = TOKONOW_CLP
+                pageName = TOKONOW_CLP,
+                categoryIds = listOf(recomCategoryId),
         )
         val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
 

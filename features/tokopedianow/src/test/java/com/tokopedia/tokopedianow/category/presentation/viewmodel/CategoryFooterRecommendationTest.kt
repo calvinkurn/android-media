@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
@@ -37,7 +38,7 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
 
         `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
 
-        `Then assert get recommendation request`()
+        `Then assert get recommendation request`(defaultCategoryL1)
         `Then assert recommendation data view is updated to ready with recom widget`(recomWidget)
         `Then assert updated visitable list`(recomWidgetPosition)
     }
@@ -64,10 +65,13 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
         tokoNowCategoryViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)
     }
 
-    private fun `Then assert get recommendation request`() {
+    private fun `Then assert get recommendation request`(
+            expectedCategoryId: String,
+    ) {
         val getRecommendationParams = getRecommendationParamsSlot.captured
 
         assertThat(getRecommendationParams.pageName, shouldBe(TOKONOW_CLP))
+        assertThat(getRecommendationParams.categoryIds, shouldBe(listOf(expectedCategoryId)))
     }
 
     private fun `Then assert recommendation data view is updated to ready with recom widget`(
@@ -141,5 +145,46 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
         coVerify(exactly = 1) {
             getRecommendationUseCase.getData(any())
         }
+    }
+
+    @Test
+    fun `load category recommendation for category L2`() {
+        val categoryL2Id = "456"
+        `Given category view model`(defaultCategoryL1, categoryL2Id)
+
+        `Given get category first page use case will be successful`(categoryModel)
+        `Given view already created`()
+        `Given get recommendation will be successful`()
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val recomWidget = visitableList.findRecomWidget()
+        val recomWidgetPosition = visitableList.lastIndex
+
+        `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
+
+        `Then assert get recommendation request`(categoryL2Id)
+    }
+
+    @Test
+    fun `load category recommendation for category L3`() {
+        val categoryL2Id = "456"
+        val categoryL3Id = "789"
+        `Given category view model`(
+                defaultCategoryL1,
+                categoryL2Id,
+                mapOf(SearchApiConst.SC to categoryL3Id)
+        )
+
+        `Given get category first page use case will be successful`(categoryModel)
+        `Given view already created`()
+        `Given get recommendation will be successful`()
+
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
+        val recomWidget = visitableList.findRecomWidget()
+        val recomWidgetPosition = visitableList.lastIndex
+
+        `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
+
+        `Then assert get recommendation request`(categoryL3Id)
     }
 }
