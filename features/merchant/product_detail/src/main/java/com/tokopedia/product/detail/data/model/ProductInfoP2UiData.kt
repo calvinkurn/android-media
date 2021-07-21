@@ -50,7 +50,8 @@ data class ProductInfoP2UiData(
         var miniCart: MutableMap<String, MiniCartItem>? = null,
         var alternateCopy: List<AlternateCopy> = listOf()
 ) {
-    fun getTotalStockMiniCartByParentId(parentId:String) : Int {
+    fun getTotalStockMiniCartByParentId(parentId: String): Int {
+        if (parentId == "0" || parentId.isEmpty()) return 0
         return miniCart?.values?.toList()?.filter {
             it.productParentId == parentId
         }?.sumBy {
