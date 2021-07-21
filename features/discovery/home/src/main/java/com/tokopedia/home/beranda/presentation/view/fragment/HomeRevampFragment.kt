@@ -341,7 +341,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
-    private val TIME_TO_WAIT = 3000L
+    private val TIME_TO_WAIT = 2000L
     private val coachmarkHandler = Handler()
     private var coachmarkRunnable = Runnable {
         if (!coachMarkIsShowing && !bottomSheetIsShowing)
@@ -660,6 +660,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
 
                 bottomSheet.setOnDismissListener {
+                    bottomSheetIsShowing = false
                     adapter?.currentList?.let {
                         showCoachmarkWithDataValidation(it)
                     }
@@ -709,7 +710,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //add balance widget
         //uncomment this to activate balance widget coachmark
 
-        if (!skipBalanceWidget && true) {
+        if (!skipBalanceWidget && !isBalanceWidgetCoachmarkShown(requireContext())) {
             val balanceWidget = getTokopointsBalanceWidgetView()
             balanceWidget?.let {
                 this.add(
@@ -724,7 +725,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         if (isUsingWalletApp()) {
-            if (true) {
+            if (!skipBalanceWidget && !isWalletAppCoachmarkShown(requireContext())) {
                 val gopayWidget = getGopayBalanceWidgetView()
                 gopayWidget?.let {
                     this.add(
@@ -738,7 +739,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 }
             }
 
-            if (true) {
+            if (!skipBalanceWidget && !isWalletApp2CoachmarkShown(requireContext())) {
                 val balanceWidget = getBalanceWidgetView()
                 balanceWidget?.let {
                     this.add(
@@ -1501,9 +1502,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (!isTokopointsOrOvoFailed) {
                     restartCoachmarkHandler()
                 }
+            } else {
+                if (isNewNavigationAndAlreadyShowOnboarding() && !coachMarkIsShowing && !bottomSheetIsShowing)
+                    showCoachMark(skipBalanceWidget = true)
             }
         }
     }
+
+    private fun isNewNavigationAndAlreadyShowOnboarding() =
+        (isNewNavigation() && (!isFirstViewNavigation() || !remoteConfigIsShowOnboarding()))
 
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
