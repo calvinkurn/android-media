@@ -22,6 +22,10 @@ class InteractiveFinishedView : RoundedFrameLayout {
         val view = View.inflate(context, R.layout.view_interactive_finish, this)
 
         tvInteractiveFinishInfo = view.findViewById(R.id.tv_interactive_finish_info)
+
+        setCornerRadius(
+                resources.getDimension(com.tokopedia.play_common.R.dimen.play_interactive_common_radius)
+        )
     }
 
     fun setInfo(info: String) {
