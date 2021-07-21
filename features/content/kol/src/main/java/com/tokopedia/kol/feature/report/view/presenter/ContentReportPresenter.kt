@@ -17,10 +17,10 @@ class ContentReportPresenter @Inject constructor(private val sendReportUseCase: 
         sendReportUseCase.unsubscribe()
     }
 
-    override fun sendReport(contentId: Int, reasonType: String, reasonMessage: String) {
+    override fun sendReport(contentId: Int, reasonType: String, reasonMessage: String, contentType: String) {
         view.showLoading()
         sendReportUseCase.execute(
-                SendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage),
+                SendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType),
                 ContentReportSubscriber(view)
         )
     }
