@@ -341,19 +341,56 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
-    private val TIME_TO_WAIT = 2000L
+    private val TIME_TO_WAIT = 500L
     private val coachmarkHandler = Handler()
     private var coachmarkRunnable = Runnable {
-        if (!coachMarkIsShowing && !bottomSheetIsShowing)
-            showCoachMark()
+        if (!bottomSheetIsShowing) {
+            if (!coachMarkIsShowing) {
+                showCoachMark()
+            } else {
+                //update coachmark if it is already showing
+                val currentIndex = coachmark?.currentIndex?:-1
+                val coachMarkItem = coachmark?.coachMarkItem
+                coachMarkItem?.let {
+                    when (currentIndex) {
+                        tokopointsCoachmarkPosition -> {
+                            val item = coachMarkItem[currentIndex]
+                            val tokopointsView = getTokopointsBalanceWidgetView()
+                            tokopointsView?.let {
+                                item.anchorView = tokopointsView
+                                coachmark?.update(
+                                    tokopointsView, coachmark?.width?:0, coachmark?.height?:0
+                                )
+                            }
+                        }
+                        gopayCoachmarkPosition -> {
+                            val item = coachMarkItem[currentIndex]
+                            val gopayView = getGopayBalanceWidgetView()
+                            gopayView?.let {
+                                item.anchorView = gopayView
+                                coachmark?.update(
+                                    gopayView, coachmark?.width?:0, coachmark?.height?:0
+                                )
+                            }
+                        }
+                        gopayAccountCoachmarkPosition -> {
+                            val item = coachMarkItem[currentIndex]
+                            val balanceWidgetView = getBalanceWidgetView()
+                            balanceWidgetView?.let {
+                                item.anchorView = balanceWidgetView
+                                coachmark?.update(
+                                    balanceWidgetView, coachmark?.width?:0, coachmark?.height?:0
+                                )
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
     }
 
-    private fun stopCoachmarkHandler() {
-        coachmarkHandler.removeCallbacks(coachmarkRunnable)
-    }
-
-    private fun restartCoachmarkHandler() {
-        stopCoachmarkHandler()
+    private fun startCoachmarkHandler() {
         coachmarkHandler.postDelayed(coachmarkRunnable, TIME_TO_WAIT);
     }
 
@@ -882,8 +919,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getTokopointsBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            if (it.itemView.view_balance_widget.isVisible)
-                return getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
+            val balanceWidgetTokopointsView = getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
+            if (it.itemView.view_balance_widget.isShown && balanceWidgetTokopointsView?.y?:0f > 0f)
+                return balanceWidgetTokopointsView
         }
         return null
     }
@@ -891,8 +929,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            if (it.itemView.view_balance_widget.isVisible)
-                return getBalanceWidgetViewGopayOnly(it.itemView.view_balance_widget)
+            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.view_balance_widget)
+            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:0f > 0f)
+                return gopayView
         }
         return null
     }
@@ -901,7 +940,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
         (view as? HomeHeaderOvoViewHolder)?.let {
             val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-            if (balanceWidgetView.isShown) {
+            if (balanceWidgetView.isShown && balanceWidgetView?.y?:0f > 0f) {
                 return balanceWidgetView
             }
         }
@@ -1515,7 +1554,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val isTokopointsOrOvoFailed =
                     it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                 if (!isTokopointsOrOvoFailed) {
-                    restartCoachmarkHandler()
+                    startCoachmarkHandler()
                 }
             } else {
                 if (isNewNavigationAndAlreadyShowOnboarding() && !coachMarkIsShowing && !bottomSheetIsShowing)
