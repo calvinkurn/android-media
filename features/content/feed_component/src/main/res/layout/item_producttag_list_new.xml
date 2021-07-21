@@ -140,6 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_20"
                 android:adjustViewBounds="false"
+                android:contentDescription="@string/content_desc_free_shipping"
                 android:scaleType="fitStart" />
         </LinearLayout>
 
