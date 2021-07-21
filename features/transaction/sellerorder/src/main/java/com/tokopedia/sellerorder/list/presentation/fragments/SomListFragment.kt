@@ -1300,7 +1300,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     totalNotEligible.toString()
                 )
             )
-            setPrimaryButton(getString(R.string.som_buyer_cancellation_cancel_button)) {
+            setPrimaryButton(getString(R.string.understand)) {
                 dismissAndRunAction()
             }
             hideSecondaryButton()
@@ -1399,7 +1399,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         bulkRequestPickupDialog?.run {
             setTitle(getString(R.string.som_list_bulk_request_pickup_title_fail))
             setDescription(getString(R.string.som_list_bulk_request_pickup_desc_fail_all_validation))
-            setPrimaryButton(getString(R.string.som_buyer_cancellation_cancel_button)) {
+            setPrimaryButton(getString(R.string.understand)) {
                 dismiss()
             }
             hideSecondaryButton()
@@ -1463,6 +1463,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     orderCount.toString()
                 )
             )
+            setDescription(getString(R.string.som_list_bulk_request_pickup_desc_success))
             showSuccess()
         }
     }

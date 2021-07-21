@@ -63,6 +63,7 @@ class SomListViewModel @Inject constructor(
 
         private const val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
         private const val DELAY_GET_MULTI_SHIPPING_STATUS = 1000L
+        private const val DELAY_BULK_REQUEST_PICK_UP = 500L
     }
 
     private var retryCount = 0
@@ -413,6 +414,7 @@ class SomListViewModel @Inject constructor(
 
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
+            delay(DELAY_BULK_REQUEST_PICK_UP)
             retryRequestPickup = 0
             bulkRequestPickupUseCase.setParams(orderIds)
             _bulkRequestPickupResult.postValue(Success(bulkRequestPickupUseCase.executeOnBackground()))

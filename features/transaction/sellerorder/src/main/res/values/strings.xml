@@ -277,7 +277,7 @@
     <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
 
     <!-- Bulk Request Pickup -->
-    <string name="som_list_bulk_request_pickup_loading">Sedang request pick-up untuk %s pesanan</string>
+    <string name="som_list_bulk_request_pickup_loading">Sedang request pick-up %s pesanan</string>
     <string name="som_list_bulk_request_pickup_desc_loading">Nggak pakai lama, Toped sedang request pick-up pesanan kamu sekaligus.</string>
 
     <string name="som_list_bulk_request_pickup_title_success">Berhasil request pick-up %s pesanan</string>
@@ -285,12 +285,12 @@
     <string name="som_list_bulk_request_pickup_partial_all_fail_success">Ada %1s pesanan yang tidak bisa dipick-up dan %2s pesanan yang belum terproses, nih.</string>
     <string name="som_list_bulk_request_pickup_partial_partial_fail_success">Ada %s pesanan yang belum terproses, nih.</string>
 
-    <string name="som_list_bulk_request_pickup_title_not_eligible_fail">%s pesanan tidak siap untuk dipick-up</string>
+    <string name="som_list_bulk_request_pickup_title_not_eligible_fail">Yaah, gagal request pick-up %s pesanan</string>
 
     <string name="som_list_bulk_request_pickup_title_fail">Yaah, gagal request pick-up</string>
 
     <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
-    <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Belum ada pesanan yang siap untuk dipick-up.</string>
+    <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Tidak ada pesanan yang siap di pickup.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
     
     <string name="som_list_bulk_request_pickup_desc_partial_success_not_eligible">Ada %s pesanan yang tidak bisa dipick-up, nih.</string>
