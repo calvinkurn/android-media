@@ -1,13 +1,11 @@
-package com.tokopedia.minicart.common.domain.usecase
+package com.tokopedia.cartcommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.data.response.undodeletecart.Data
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartGqlResponse
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

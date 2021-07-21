@@ -1,16 +1,16 @@
 package com.tokopedia.minicart.common.widget.viewmodel.utils
 
 import com.google.gson.Gson
+import com.tokopedia.cartcommon.data.response.deletecart.DeleteCartGqlResponse
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartGqlResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
-import com.tokopedia.minicart.common.data.response.deletecart.DeleteCartGqlResponse
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartGqlResponse
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartGqlResponse
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 
