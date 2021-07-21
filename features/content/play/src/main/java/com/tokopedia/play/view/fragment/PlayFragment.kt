@@ -115,26 +115,6 @@ class PlayFragment @Inject constructor(
 
     override fun getScreenName(): String = "Play"
 
-    /**
-     * Cast
-     */
-    private val castStateListener = CastStateListener {
-        when(it) {
-            CastState.CONNECTING -> {
-                playViewModel.setCastState(PlayCastState.CONNECTING)
-            }
-            CastState.CONNECTED -> {
-                playViewModel.setCastState(PlayCastState.CONNECTED)
-            }
-            CastState.NOT_CONNECTED -> {
-                playViewModel.setCastState(PlayCastState.NOT_CONNECTED)
-            }
-            CastState.NO_DEVICES_AVAILABLE -> {
-                playViewModel.setCastState(PlayCastState.NO_DEVICE_AVAILABLE)
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
@@ -170,7 +150,7 @@ class PlayFragment @Inject constructor(
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
-        castContext.addCastStateListener(castStateListener)
+        playViewModel.addCastStateListener(castContext)
     }
 
     override fun onPause() {
@@ -180,7 +160,7 @@ class PlayFragment @Inject constructor(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
-        castContext.removeCastStateListener(castStateListener)
+        playViewModel.removeCastStateListener(castContext)
         playViewModel.removeCastSessionListener()
         super.onPause()
     }

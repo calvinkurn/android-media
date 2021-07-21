@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
+import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.CastStateListener
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -1147,7 +1149,32 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    fun setCastState(castState: PlayCastState) {
+    private val castStateListener = CastStateListener {
+        when(it) {
+            CastState.CONNECTING -> {
+                setCastState(PlayCastState.CONNECTING)
+            }
+            CastState.CONNECTED -> {
+                setCastState(PlayCastState.CONNECTED)
+            }
+            CastState.NOT_CONNECTED -> {
+                setCastState(PlayCastState.NOT_CONNECTED)
+            }
+            CastState.NO_DEVICES_AVAILABLE -> {
+                setCastState(PlayCastState.NO_DEVICE_AVAILABLE)
+            }
+        }
+    }
+
+    fun addCastStateListener(castContext: CastContext) {
+        castContext.addCastStateListener(castStateListener)
+    }
+
+    fun removeCastStateListener(castContext: CastContext) {
+        castContext.removeCastStateListener(castStateListener)
+    }
+
+    private fun setCastState(castState: PlayCastState) {
         var model = _observableCastState.value
         if(model == null) {
             model = PlayCastUiModel(currentState = castState)
