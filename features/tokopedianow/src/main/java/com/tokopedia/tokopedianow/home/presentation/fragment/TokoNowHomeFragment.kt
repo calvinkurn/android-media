@@ -30,6 +30,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -66,8 +67,6 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCardUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -207,10 +206,10 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
         } else {
             setupPadding(miniCartSimplifiedData)
-            val item = adapter.getItem(HomeProductRecomUiModel::class.java)
-            if (item is HomeProductRecomUiModel) {
-                viewModelTokoNow.updateCartItems(miniCartSimplifiedData, item)
-            }
+//            val item = adapter.getItem(HomeProductRecomUiModel::class.java)
+//            if (item is HomeProductRecomUiModel) {
+//                viewModelTokoNow.updateCartItems(miniCartSimplifiedData, item)
+//            }
         }
     }
 
@@ -242,28 +241,12 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickCategory(position, userSession.userId, categoryId)
     }
 
-    override fun getCarouselRecycledViewPool(): RecyclerView.RecycledViewPool = RecyclerView.RecycledViewPool()
-
-    override fun onProductRecomNonVariantClick(productCard: HomeProductCardUiModel, quantity: Int) {
-        if (userSession.isLoggedIn)
-            handleAddToCartEventLogin(productCard, quantity)
-        else
-            handleAddToCartEventNonLogin(productCard)
-    }
-
-    private fun handleAddToCartEventLogin(productCard: HomeProductCardUiModel, quantity: Int) {
-        val nonVariantATC = productCard.productCardModel.nonVariant
-        if (nonVariantATC?.quantity == quantity) return
-
-        if (nonVariantATC?.quantity == 0)
-            viewModelTokoNow.addToCart(productCard, quantity, localCacheModel?.shop_id.orEmpty())
-        else
-            viewModelTokoNow.updateCart(productCard, quantity)
-    }
-
-    fun handleAddToCartEventNonLogin(productCard: HomeProductCardUiModel) {
-        RouteManager.route(context, ApplinkConst.LOGIN)
-//        updatedVisitableIndicesMutableLiveData.value = listOf(visitableList.indexOf(productItem))
+    override fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int) {
+        if (userSession.isLoggedIn) {
+            viewModelTokoNow.addProductToCart(recomItem, quantity, localCacheModel?.shop_id.orEmpty())
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
     }
 
     override fun isMainViewVisible(): Boolean = true
