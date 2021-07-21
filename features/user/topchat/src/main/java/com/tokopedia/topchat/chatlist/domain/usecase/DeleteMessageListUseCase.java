@@ -45,7 +45,7 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListUiModel> {
         RequestParams requestParams = RequestParams.create();
         JsonObject object = new JsonObject();
         JsonArray array = new JsonArray();
-        array.add(Integer.valueOf(messageId));
+        array.add(Long.valueOf(messageId));
         object.add("list_msg_id", array);
         requestParams.putObject("json", object);
         return requestParams;
