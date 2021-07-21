@@ -1,6 +1,7 @@
 package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData

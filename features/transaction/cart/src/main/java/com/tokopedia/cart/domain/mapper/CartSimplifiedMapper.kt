@@ -65,7 +65,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         cartListData.isShowOnboarding = false
         cartListData.shoppingSummaryData = mapShoppingSummaryData(cartDataListResponse.shoppingSummary)
         cartListData.promoSummaryData = mapPromoSummaryData(cartDataListResponse.promoSummary)
-        cartListData.outOfServiceData = mapOutOfServiceData(cartDataListResponse.outOfService)
+        cartListData.outOfServiceData = cartDataListResponse.outOfService
         cartListData.localizationChooseAddressData = mapLocalizationChooseAddressData(cartDataListResponse.localizationChooseAddress)
         cartListData.popUpMessage = cartDataListResponse.popUpMessage
         cartListData.popupErrorMessage = cartDataListResponse.popupErrorMessage
@@ -118,32 +118,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             )
         }
         return actionDatas
-    }
-
-    private fun mapOutOfServiceData(outOfService: OutOfService): OutOfServiceData {
-        return OutOfServiceData().apply {
-            id = outOfService.id
-            image = outOfService.image
-            title = outOfService.title
-            description = outOfService.description
-            buttons = mapButtonListData(outOfService.buttons)
-        }
-    }
-
-    private fun mapButtonListData(buttons: List<Button>): List<ButtonData> {
-        val buttonListData = ArrayList<ButtonData>()
-        buttons.forEach {
-            buttonListData.add(
-                    ButtonData().apply {
-                        id = it.id
-                        code = it.code
-                        message = it.message
-                        color = it.color
-                    }
-            )
-        }
-
-        return buttonListData
     }
 
     private fun mapShoppingSummaryData(shoppingSummary: ShoppingSummary): ShoppingSummaryData {

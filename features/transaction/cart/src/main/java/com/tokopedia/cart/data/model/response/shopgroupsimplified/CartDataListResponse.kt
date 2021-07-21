@@ -3,6 +3,7 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
+import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import java.util.*
 
@@ -32,7 +33,7 @@ data class CartDataListResponse(
         @SerializedName("empty_cart")
         val emptyCart: EmptyCart = EmptyCart(),
         @SerializedName("out_of_service")
-        val outOfService: OutOfService = OutOfService(),
+        val outOfService: OutOfServiceData = OutOfServiceData(),
         @SerializedName("shopping_summary")
         val shoppingSummary: ShoppingSummary = ShoppingSummary(),
         @SerializedName("promo_summary")
