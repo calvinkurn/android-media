@@ -9,9 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
-import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -112,7 +112,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         val rates = element.rates
         adjustUiSuccess(rates.title, rates.instanLabel, element.isCod)
         if (rates.instanLabel.isEmpty() && !element.isCod) {
-            renderSubtitleGreen()
+            renderSubtitleGreen(element.isTokoNow)
             hideLabelAndBo()
             shipmentArrow?.hide()
             return@with
@@ -125,8 +125,12 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         }
     }
 
-    private fun renderSubtitleGreen() = with(itemView) {
-        otherCourierTxt?.text = context.getString(R.string.pdp_shipping_choose_courier_label)
+    private fun renderSubtitleGreen(isTokoNow: Boolean) = with(itemView) {
+        otherCourierTxt?.text = if (isTokoNow) {
+            context.getString(R.string.merchant_product_detail_label_selengkapnya)
+        } else {
+            context.getString(R.string.pdp_shipping_choose_courier_label)
+        }
         otherCourierTxt?.setWeight(Typography.BOLD)
         otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         otherCourierTxt?.show()

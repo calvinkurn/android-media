@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantA
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.aggregator.SimpleBasicInfo
-import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -55,7 +55,7 @@ object AtcVariantHelper {
                         cartRedirection: Map<String, CartTypeData>,
                         miniCart: Map<String, MiniCartItem>?,
                         alternateCopy: List<AlternateCopy>?,
-                        boData: List<BebasOngkirProduct>?,
+                        boData: BebasOngkir?,
                         rates: List<P2RatesEstimate>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
@@ -80,7 +80,7 @@ object AtcVariantHelper {
                                 category = productInfoP1.basic.category
                         ),
                         shopType = productInfoP1.shopTypeString,
-                        boData = boData ?: listOf()
+                        boData = boData ?: BebasOngkir()
                 ),
                 shopId = productInfoP1.basic.shopID,
                 miniCartData = miniCart,

@@ -88,6 +88,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APP
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -754,7 +755,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun onCategoryCarouselImageClicked(url: String, categoryTitle:String, componentTrackDataModel: ComponentTrackDataModel?) {
         DynamicProductDetailTracking.Click.onImageCategoryCarouselClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel, categoryTitle)
-        goToApplink(url)
+        val localizationWarehouseId = viewModel.getUserLocationCache().warehouse_id
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localizationWarehouseId)
     }
 
     override fun onCategoryCarouselSeeAllClicked(url: String, componentTrackDataModel: ComponentTrackDataModel?) {
@@ -1400,7 +1402,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         pdpUiUpdater?.updateTickerData(viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
-                isUpcomingType)
+                isUpcomingType, viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
 
         pdpUiUpdater?.updateShipmentData(
                 viewModel.getP2RatesEstimateByProductId(),
@@ -1844,7 +1846,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
             renderVariant(viewModel.variantData, pdpUiUpdater?.productSingleVariant != null)
-            val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
+            val hint = if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
+                String.format(getString(R.string.pdp_search_hint_tokonow), productInfo.basic.category.name)
+            } else {
+                String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
+            }
             navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
             pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
             actionButtonView.setButtonP1(productInfo.data.preOrder)
@@ -1978,7 +1984,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive
                         ?: false,
                 isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
-                boeImageUrl = boeData.imageURL)
+                boeImageUrl = boeData.imageURL,
+                isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
 
         updateUi()
     }
@@ -2096,7 +2103,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf(),
                         miniCart = viewModel.p2Data.value?.miniCart,
                         alternateCopy = viewModel.p2Data.value?.alternateCopy,
-                        boData = viewModel.p2Data.value?.bebasOngkir?.boProduct ?: listOf(),
+                        boData = viewModel.p2Data.value?.bebasOngkir ?: BebasOngkir(),
                         rates = viewModel.p2Data.value?.ratesEstimate ?: listOf()
                 ) { data, code ->
                     startActivityForResult(data, code)

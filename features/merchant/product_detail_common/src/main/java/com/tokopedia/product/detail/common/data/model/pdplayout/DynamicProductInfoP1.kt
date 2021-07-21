@@ -26,6 +26,13 @@ data class DynamicProductInfoP1(
                 "reguler"
         }
 
+    val isProductParent: Boolean
+        get() = if (data.variant.isVariant) {
+            basic.productID == data.variant.parentID
+        } else {
+            false
+        }
+
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toLongOrNull() ?: 0L > 0L) {

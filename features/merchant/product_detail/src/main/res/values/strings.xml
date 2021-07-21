@@ -61,6 +61,7 @@
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
     <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
+    <string name="pdp_search_hint_tokonow">Cari %s di Tokopedia NOW!</string>
 
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>

@@ -162,13 +162,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 aggregatorData?.simpleBasicInfo?.shopID ?: "")
 
         val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
-        val boData = aggregatorData?.getIsFreeOngkirByBoType(productId) ?: false
-        //todo bo image url
+        val boImageUrl = aggregatorData?.getIsFreeOngkirImageUrl(productId) ?: ""
+
         AtcCommonMapper.putChatProductInfoTo(intent,
                 productId,
                 aggregatorData?.variantData?.getChildByProductId(productId),
                 aggregatorData?.variantData,
-                "bo image url")
+                boImageUrl)
         startActivity(intent)
     }
 

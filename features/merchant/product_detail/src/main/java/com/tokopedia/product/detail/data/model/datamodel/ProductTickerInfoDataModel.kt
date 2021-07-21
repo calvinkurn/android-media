@@ -19,8 +19,8 @@ data class ProductTickerInfoDataModel(
         var isProductWarehouse: Boolean = false,
         var isProductInCampaign: Boolean = false,
         var isOutOfStock: Boolean = false,
-        var isUpcomingType:Boolean = false
-
+        var isUpcomingType: Boolean = false,
+        var isProductParent: Boolean = false
 ) : DynamicPdpDataModel {
 
     override fun type(): String = type
@@ -38,7 +38,7 @@ data class ProductTickerInfoDataModel(
     }
 
     fun isOos(): Boolean {
-        return isOutOfStock && !isProductInCampaign
+        return isOutOfStock && !isProductInCampaign && !isProductParent
     }
 
     fun isProductInactive(): Boolean {
@@ -56,6 +56,7 @@ data class ProductTickerInfoDataModel(
                     && isClosedInfoTheSame(newData.closedInfo)
                     && generalTickerInfoDataModel?.size == newData.generalTickerInfoDataModel?.size
                     && isUpcomingType == newData.isUpcomingType
+                    && isProductParent == newData.isProductParent
         } else {
             false
         }

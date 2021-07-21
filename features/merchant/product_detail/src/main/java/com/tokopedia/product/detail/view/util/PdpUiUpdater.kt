@@ -7,8 +7,10 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -16,8 +18,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
-import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
-import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -291,7 +291,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                      isProductWarehouse: Boolean,
                      isProductInCampaign: Boolean,
                      isOutOfStock: Boolean,
-                     boeImageUrl: String) {
+                     boeImageUrl: String,
+                     isProductParent: Boolean) {
         p2Data.let {
 
             updateData(ProductDetailConstant.TICKER_INFO) {
@@ -302,6 +303,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     this.isProductWarehouse = isProductWarehouse
                     this.isProductInCampaign = isProductInCampaign
                     this.isOutOfStock = isOutOfStock
+                    this.isProductParent = isProductParent
                 }
             }
 
@@ -653,13 +655,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean) {
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean, isProductParent: Boolean) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 this.isProductWarehouse = isProductWarehouse
                 this.isProductInCampaign = isProductInCampaign
                 this.isOutOfStock = isOutOfStock
                 this.isUpcomingType = isUpcomingType
+                this.isProductParent = isProductParent
             }
         }
     }

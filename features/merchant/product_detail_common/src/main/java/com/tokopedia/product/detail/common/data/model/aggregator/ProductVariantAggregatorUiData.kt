@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.aggregator
 
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
@@ -29,7 +29,7 @@ data class ProductVariantAggregatorUiData(
 
         var shopType: String = "",
 
-        var boData: List<BebasOngkirProduct> = listOf()
+        var boData: BebasOngkir = BebasOngkir()
         //endregion
 ) {
 
@@ -51,11 +51,21 @@ data class ProductVariantAggregatorUiData(
 
 
     fun getIsFreeOngkirByBoType(productId: String): Boolean {
-        val boType = boData.firstOrNull {
+        val boType = boData.boProduct.firstOrNull {
             it.productId == productId
         }?.boType ?: ProductDetailCommonConstant.NO_BEBAS_ONGKIR
 
         return boType != ProductDetailCommonConstant.NO_BEBAS_ONGKIR
+    }
+
+    fun getIsFreeOngkirImageUrl(productId: String): String {
+        val boType = boData.boProduct.firstOrNull {
+            it.productId == productId
+        }?.boType ?: ProductDetailCommonConstant.NO_BEBAS_ONGKIR
+
+        return boData.boImages.firstOrNull {
+            it.boType == boType
+        }?.imageURL ?: ""
     }
 
     fun isAggregatorEmpty(): Boolean {
