@@ -67,9 +67,6 @@ object DynamicProductDetailMapper {
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
                 }
-                ProductDetailConstant.SHOP_VOUCHER -> {
-                    listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
                         listOfComponent.add(ProductSingleVariantDataModel(type = component.type, name = component.componentName))

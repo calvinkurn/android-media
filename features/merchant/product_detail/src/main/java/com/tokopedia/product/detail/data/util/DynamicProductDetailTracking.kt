@@ -523,47 +523,6 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_ETALASE)
         }
 
-        fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, shopId: String, position: Int,
-                                         productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_CLICK,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_USE_MERCHANT_VOUCHER,
-                    ""
-            )
-
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = mapOf(ProductTrackingConstant.Tracking.KEY_PROMO_ID to merchantVoucherViewModel.voucherId.toString())
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_CLICK, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, TrackingUtil.createMVCMap(listOf(merchantVoucherViewModel), shopId, position)))
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_USE_MERCHANT_VOUCHER)
-        }
-
-        fun eventClickMerchantVoucherSeeDetail(voucherId: Int, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_DETAIL_MERCHANT_VOUCHER,
-                    productInfo?.basic?.productID ?: ""
-            )
-
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = voucherId.toString()
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DETAIL_MERCHANT_VOUCHER)
-        }
-
-
-        fun eventClickMerchantVoucherSeeAll(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER,
-                    productInfo?.basic?.productID ?: ""
-            )
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER)
-        }
-
         fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, trackingQueue: TrackingQueue?, type: String, imageUrl: String, position: Int) {
             val productId = productInfo?.basic?.productID ?: ""
             val mapEvent = DataLayer.mapOf(
@@ -1646,28 +1605,6 @@ object DynamicProductDetailTracking {
             ))
             )
             trackingQueue?.putEETracking(enhanceEcommerceData as HashMap<String, Any>?)
-        }
-
-
-        fun eventImpressionMerchantVoucherUse(shopId: Int, merchantVoucherViewModelList: List<MerchantVoucherViewModel>,
-                                              productInfo: DynamicProductInfoP1?) {
-            if (merchantVoucherViewModelList.isNullOrEmpty()) return
-
-            val promoId = merchantVoucherViewModelList[0].voucherId
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.IMPRESSION_USE_MERCHANT_VOUCHER,
-                    productInfo?.basic?.productID ?: ""
-            )
-
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PROMO_ID] = promoId.toString()
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = DataLayer.mapOf(
-                    ProductTrackingConstant.MerchantVoucher.PROMO_VIEW, DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, TrackingUtil.createMvcListMap(merchantVoucherViewModelList, shopId, 0))
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_USE_MERCHANT_VOUCHER)
-
         }
 
         fun eventTopAdsImageViewImpression(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName: String) {

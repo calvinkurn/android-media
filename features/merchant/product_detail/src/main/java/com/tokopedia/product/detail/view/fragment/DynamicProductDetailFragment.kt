@@ -997,41 +997,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         goToRecommendation()
     }
 
-    /**
-     * ProductMerchantVoucherViewHolder
-     */
     override fun isOwner(): Boolean = viewModel.isShopOwner()
-
-    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int, dataTrackDataModel: ComponentTrackDataModel) {
-        activity?.let {
-            //TOGGLE_MVC_OFF
-            val shopId = viewModel.getDynamicProductInfoP1?.basic?.getShopId().orZero().toString()
-            DynamicProductDetailTracking.Click.eventClickMerchantVoucherUse(merchantVoucherViewModel, shopId, position, viewModel.getDynamicProductInfoP1, dataTrackDataModel)
-            showSnackbarClose(getString(R.string.title_voucher_code_copied))
-        }
-    }
-
-    override fun onItemMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, componentTrackDataModel: ComponentTrackDataModel) {
-        activity?.let {
-            viewModel.getDynamicProductInfoP1?.run {
-                val voucherId = merchantVoucherViewModel.voucherId
-                DynamicProductDetailTracking.Click.eventClickMerchantVoucherSeeDetail(voucherId, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
-                        merchantVoucherViewModel, basic.shopID)
-                startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER_DETAIL)
-            }
-        }
-    }
-
-    override fun onSeeAllMerchantVoucherClick(componentTrackDataModel: ComponentTrackDataModel) {
-        activity?.let {
-            viewModel.getDynamicProductInfoP1?.run {
-                DynamicProductDetailTracking.Click.eventClickMerchantVoucherSeeAll(this, componentTrackDataModel)
-                val intent = MerchantVoucherListActivity.createIntent(it, basic.shopID, basic.shopName)
-                startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_MERCHANT_VOUCHER)
-            }
-        }
-    }
 
     override fun onVideoFullScreenClicked() {
         activity?.let { activity ->
@@ -1868,16 +1834,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
-        }
-
-        if (it.vouchers.isNullOrEmpty()) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.SHOP_VOUCHER)
-        } else {
-            if (!viewModel.isUserSessionActive || !isOwner()) {
-                DynamicProductDetailTracking.Impression.eventImpressionMerchantVoucherUse(
-                        viewModel.getDynamicProductInfoP1?.basic?.shopID.toIntOrZero(),
-                        it.vouchers, viewModel.getDynamicProductInfoP1)
-            }
         }
 
         pdpUiUpdater?.updateShipmentData(

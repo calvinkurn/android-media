@@ -56,8 +56,6 @@ object ProductDetailConstant {
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
     const val REQUEST_CODE_LOGIN = 561
-    const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563
-    const val REQUEST_CODE_MERCHANT_VOUCHER = 564
     const val REQUEST_CODE_ETALASE = 565
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_TOP_CHAT = 997
@@ -76,7 +74,6 @@ object ProductDetailConstant {
     const val REVIEW = "review"
     const val TRADE_IN = "tradein"
     const val INFO = "info"
-    const val SHOP_VOUCHER = "shop_voucher"
     const val SHIPMENT = "shipment"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
