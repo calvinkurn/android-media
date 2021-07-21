@@ -240,7 +240,6 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     product.isEditingNotes = false
                     renderNotes()
-                    v.clearFocus()
                     KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
                     listener.forceUpdateCart()
                     true
