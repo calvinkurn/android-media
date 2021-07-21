@@ -49,6 +49,7 @@ class BuyerOrderDetailNavigator(
 
     private fun createProductPayload(it: ProductListUiModel.ProductUiModel): JsonObject {
         return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_ID, it.productId)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_TITLE, it.productName)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_PRICE, it.priceText)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_IMAGE_URL, it.productThumbnailUrl)
@@ -84,6 +85,7 @@ class BuyerOrderDetailNavigator(
 
     private fun createProductBundleItemPayload(model: ProductListUiModel.ProductBundlingItemUiModel): JsonObject {
         return JsonObject().apply {
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_ID, model.productId)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_NAME, model.productName)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_THUMBNAIL, model.productThumbnailUrl)
             addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_BUNDLE_ITEM_PRICE, model.productPrice)

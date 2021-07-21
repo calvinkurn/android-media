@@ -22,6 +22,7 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
                   bundle {
                     bundle_name
                     order_detail {
+                      product_id
                       product_name
                       product_price
                       thumbnail
@@ -57,11 +58,13 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(
+                                        productId = 100,
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
                                         productPrice = 100000.00
                                 ),
                                 ProductBundleItem(
+                                        productId = 100,
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
                                         productPrice = 100000.00
@@ -72,11 +75,13 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(
+                                        productId = 120,
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
                                         productPrice = 100000.00
                                 ),
                                 ProductBundleItem(
+                                        productId = 121,
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
                                         productPrice = 100000.00
@@ -87,11 +92,13 @@ class BuyerProductBundlingUseCase @Inject constructor(private val useCase: Graph
                         bundleName = "Tes Bundle",
                         productList = listOf(
                                 ProductBundleItem(
+                                        productId = 150,
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
                                         productPrice = 100000.00
                                 ),
                                 ProductBundleItem(
+                                        productId = 151,
                                         productThumbnailUrl = "",
                                         productName = "Product coba2",
                                         productPrice = 100000.00

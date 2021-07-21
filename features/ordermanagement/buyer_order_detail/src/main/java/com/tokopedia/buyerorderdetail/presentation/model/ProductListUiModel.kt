@@ -71,7 +71,7 @@ data class ProductListUiModel(
             val orderId: String,
             val orderDetailId: String,
             val orderStatusId: String,
-            val productId: String,
+            val productId: Long,
             val productName: String,
             val productNote: String,
             val productThumbnailUrl: String,

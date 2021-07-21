@@ -68,6 +68,38 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                                                 thumbnail = "https://i.pinimg.com/originals/84/d8/38/84d838c22a08bb9356d49a028a275ba0.jpg"
                                         )
                                 )
+                        ),
+                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail.Bundle(
+                                bundleName = "Paket Tahun Baru",
+                                bundlePrice = 150000.0,
+                                bundleQty = 1,
+                                bundleSubtotalPrice = 150000.0,
+                                orderDetailList = listOf(
+                                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail.Bundle.OrderDetail(
+                                                productName = "iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black",
+                                                quantity = 2,
+                                                productPrice = 839900.0,
+                                                subtotalPrice = 0.0,
+                                                notes = "43 Size. Packing rapi plis.",
+                                                thumbnail = "https://i.pinimg.com/originals/84/d8/38/84d838c22a08bb9356d49a028a275ba0.jpg"
+                                        ),
+                                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail.Bundle.OrderDetail(
+                                                productName = "Case iPhone Xr - Original Ring Fusion Kit - Clear",
+                                                quantity = 2,
+                                                productPrice = 95000.0,
+                                                subtotalPrice = 0.0,
+                                                notes = "43 Size. Packing rapi plis.",
+                                                thumbnail = "https://i.pinimg.com/originals/84/d8/38/84d838c22a08bb9356d49a028a275ba0.jpg"
+                                        ),
+                                        GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail.Bundle.OrderDetail(
+                                                productName = "Xiaomi Powerbank 10000mAh Type-C (Garansi Resmi) Indonesia",
+                                                quantity = 1,
+                                                productPrice = 15000.0,
+                                                subtotalPrice = 0.0,
+                                                notes = "43 Size. Packing rapi plis.",
+                                                thumbnail = "https://i.pinimg.com/originals/84/d8/38/84d838c22a08bb9356d49a028a275ba0.jpg"
+                                        )
+                                )
                         )
                 )
         )

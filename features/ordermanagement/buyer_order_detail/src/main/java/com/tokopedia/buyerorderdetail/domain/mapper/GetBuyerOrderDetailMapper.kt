@@ -268,7 +268,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                                 orderId = bundleDetail.orderId.toString(),
                                 orderDetailId = bundleDetail.orderDetailId.toString(),
                                 orderStatusId = orderStatusId,
-                                productId = bundleDetail.productId.toString(),
+                                productId = bundleDetail.productId,
                                 productName = bundleDetail.productName,
                                 productNote = bundleDetail.notes,
                                 productThumbnailUrl = bundleDetail.thumbnail,

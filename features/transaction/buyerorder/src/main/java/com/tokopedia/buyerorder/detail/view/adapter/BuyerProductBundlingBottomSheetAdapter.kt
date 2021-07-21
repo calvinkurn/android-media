@@ -5,7 +5,6 @@ import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBund
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 
-class BuyerProductBundlingBottomSheetAdapter(bundleProductBundlingItems: List<BuyerProductBundlingUiModel>,
-                                             normalProductItems: List<BuyerNormalProductUiModel>,
+class BuyerProductBundlingBottomSheetAdapter(normalProductItems: List<BuyerNormalProductUiModel>,
                                              adapterTypeFactory: BuyerProductBundlingAdapterFactory)
-    : BaseAdapter<BuyerProductBundlingAdapterFactory>(adapterTypeFactory, bundleProductBundlingItems + normalProductItems)
+    : BaseAdapter<BuyerProductBundlingAdapterFactory>(adapterTypeFactory, normalProductItems)

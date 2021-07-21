@@ -37,6 +37,7 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.BuyerUtils
+import com.tokopedia.buyerorder.common.util.BuyerUtils.toCurrencyFormatted
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
@@ -49,7 +50,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomShe
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
-import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductDivider
+import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductItemDivider
 import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
@@ -100,6 +101,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listProductBundlesJsonString : String? = null
     private var listProduct = emptyList<Items>()
     private var listBuyerProductBundlingUiModel: List<BuyerProductBundlingUiModel>? = null
+    private var listNormalProductBundlingUiModel: List<BuyerNormalProductUiModel>? = null
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -245,8 +247,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             observeBuyerProductBundling()
             getProductBundling()
         } else {
+            setNormalProductList()
             label_see_all_products?.run {
-                val totalItems = listProduct.size + listBuyerProductBundlingUiModel?.getTotalItems().orZero()
+                val totalItems = listNormalProductBundlingUiModel?.count().orZero()
                 if (totalItems > 1) {
                     text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
                     setOnClickListener { showProductBundleBottomSheet() }
@@ -420,8 +423,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun showProductBundleBottomSheet() {
         val buyerProductBundlingAdapter = BuyerProductBundlingBottomSheetAdapter(
-                bundleProductBundlingItems = listBuyerProductBundlingUiModel.orEmpty(),
-                normalProductItems = listProduct.mapToNormalProductItems(),
+                normalProductItems = listNormalProductBundlingUiModel.orEmpty(),
                 adapterTypeFactory = buyerProductBundlingAdapterFactory
         )
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null).apply {
@@ -429,7 +431,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 context?.let {
                     layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
                     adapter = buyerProductBundlingAdapter
-                    addItemDecoration(BuyerBundlingProductDivider(it))
+                    addItemDecoration(BuyerBundlingProductItemDivider(it))
                 }
             }
         }
@@ -680,8 +682,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         buyerCancellationViewModel.buyerProductBundlingUiModelListLiveData.observe(viewLifecycleOwner) { bundleProductList ->
             listBuyerProductBundlingUiModel = bundleProductList
             bundleProductList?.let {
+                setNormalProductList()
                 label_see_all_products?.run {
-                    val totalItems = listProduct.size + it.getTotalItems()
+                    val totalItems = listNormalProductBundlingUiModel?.count().orZero()
                     if (totalItems > 1) {
                         text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
                         setOnClickListener { showProductBundleBottomSheet() }
@@ -843,14 +846,48 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
+    private fun setNormalProductList() {
+        val productItems = listProduct.mapToNormalProductItems() +
+                listBuyerProductBundlingUiModel?.mapBundlingToNormalProductItems().orEmpty()
+        val filteredProductItems = productItems.filterSameIdAndPrice()
+        listNormalProductBundlingUiModel = filteredProductItems
+    }
+
     private fun List<Items>.mapToNormalProductItems(): List<BuyerNormalProductUiModel> {
         return map {
             BuyerNormalProductUiModel(
-                    productName = it.title,
-                    productPrice = it.price,
-                    productThumbnailUrl = it.imageUrl
+                    productId = it.id.orEmpty(),
+                    productName = it.title.orEmpty(),
+                    productPrice = it.price.orEmpty(),
+                    productThumbnailUrl = it.imageUrl.orEmpty()
             )
         }
+    }
+
+    private fun List<BuyerProductBundlingUiModel>.mapBundlingToNormalProductItems(): List<BuyerNormalProductUiModel> {
+        val listResult = mutableListOf<BuyerNormalProductUiModel>()
+        forEach { bundle ->
+            val bundleProducts = bundle.productList.map {
+                BuyerNormalProductUiModel(
+                        productId = it.productId.toString(),
+                        productName = it.productName,
+                        productPrice = it.productPrice.toCurrencyFormatted(),
+                        productThumbnailUrl = it.productThumbnailUrl
+                )
+            }
+            listResult.addAll(bundleProducts)
+        }
+        return listResult
+    }
+
+    /**
+     * Filter product ui model to have unique id + price combination.
+     * This means we can show the same product, only if the price are different
+     *
+     * @return  filtered list
+     */
+    private fun List<BuyerNormalProductUiModel>.filterSameIdAndPrice(): List<BuyerNormalProductUiModel> {
+        return distinctBy { it.productId to it.productPrice }
     }
 
     private fun List<BuyerProductBundlingUiModel>.getTotalItems(): Int {
