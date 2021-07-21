@@ -385,6 +385,7 @@ class SearchProductFirstPageGqlUseCase(
                             banner_link_url
                             banner_applink_url
                             identifier
+                            meta
                             product {
                                 id
                                 name
@@ -405,6 +406,14 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 original_price
                                 discount_percentage
+                              	badges {
+                                    title
+                                    image_url
+                                    show
+                                }
+                              	shop {
+                                    city
+                                }
                             }
                         }
                     }

@@ -654,9 +654,13 @@ data class SearchProductModel(
             @Expose
             val identifier: String = "",
 
+            @SerializedName("meta")
+            @Expose
+            val meta: String = "",
+
             @SerializedName("product")
             @Expose
-            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf()
+            val inspirationCarouselProducts: List<InspirationCarouselProduct> = listOf(),
     )
 
     data class InspirationCarouselProduct (
@@ -719,7 +723,35 @@ data class SearchProductModel(
 
             @SerializedName("discount_percentage")
             @Expose
-            val discountPercentage: Int = 0
+            val discountPercentage: Int = 0,
+
+            @SerializedName("badges")
+            @Expose
+            val badgeList: List<InspirationCarouselProductBadge> = listOf(),
+
+            @SerializedName("shop")
+            @Expose
+            val shop: InspirationCarouselProductShop = InspirationCarouselProductShop(),
+    )
+
+    data class InspirationCarouselProductBadge(
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("image_url")
+            @Expose
+            val imageUrl: String = "",
+
+            @SerializedName("show")
+            @Expose
+            val isShown: Boolean = false
+    )
+
+    data class InspirationCarouselProductShop(
+            @SerializedName("city")
+            @Expose
+            val city: String = ""
     )
 
     data class SearchInspirationWidget(

@@ -4,7 +4,7 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/discovery2_dark_gray"/>
+        android:color="@color/Unify_N400"/>
 
     <size
         android:width="@dimen/dp_45"

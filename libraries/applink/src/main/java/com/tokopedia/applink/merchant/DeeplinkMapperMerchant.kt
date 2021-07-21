@@ -10,7 +10,7 @@ import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 
 
 /**
@@ -19,11 +19,13 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperMerchant {
 
+    const val PARAM_CREATE_SHOWCASE = "is_create_showcase"
     private const val PARAM_RATING = "rating"
     private const val PARAM_SOURCE = "source"
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
+    private const val CREATE_SHOWCASE_SEGMENT = "showcase-create"
     private const val FOLLOWER_LIST_SEGMENT = "follower"
     private const val SHOP_PAGE_SETTING_SEGMENT = "settings"
     private const val SHOP_PAGE_SEGMENT_SIZE = 1
@@ -344,15 +346,30 @@ object DeeplinkMapperMerchant {
         return deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_SETTINGS_SELLER_APP) && uri.lastPathSegment == SHOP_PAGE_SETTING_SEGMENT
     }
 
+    fun isCreateShowcaseApplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT)
+    }
+
+    fun getRegisteredNavigationForCreateShowcase(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        if (deeplink.startsWithPattern(ApplinkConst.SellerApp.SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE) && uri.lastPathSegment == CREATE_SHOWCASE_SEGMENT) {
+            return Uri.parse(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT).buildUpon().apply {
+                appendQueryParameter(PARAM_CREATE_SHOWCASE, "true")
+            }.build().toString()
+        }
+        return deeplink
+    }
+
     fun goToInboxUnified(): Boolean {
         if (GlobalConfig.isSellerApp()) return false
         return try {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-            ) == AbTestPlatform.VARIANT_NEW_INBOX
+                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+            ) == RollenceKey.VARIANT_NEW_INBOX
             val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-            ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
             useNewInbox && useNewNav
         } catch (e: Exception) {
             false

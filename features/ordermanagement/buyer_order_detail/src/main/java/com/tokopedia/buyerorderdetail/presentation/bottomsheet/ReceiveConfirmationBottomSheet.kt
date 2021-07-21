@@ -7,9 +7,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonType
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
-import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -24,6 +22,12 @@ class ReceiveConfirmationBottomSheet(
         private val viewModel: BuyerOrderDetailViewModel,
         private val navigator: BuyerOrderDetailNavigator
 ) : View.OnClickListener {
+    companion object {
+        private const val BUTTON_TYPE_BUY = "buy"
+        private const val BUTTON_TYPE_PRIMARY = "primary"
+        private const val BUTTON_TYPE_SECONDARY = "secondary"
+    }
+
     private val bottomSheet: BottomSheetUnify by lazy {
         setupBottomSheet(context)
     }
@@ -31,9 +35,9 @@ class ReceiveConfirmationBottomSheet(
         createChildView(context)
     }
 
-    private fun View.getDescriptionView() = findViewById<Typography>(R.id.tvBottomSheetFinishOrderDescription)
-    private fun View.getPrimaryButtonView() = findViewById<UnifyButton>(R.id.btnFinishOrderPrimary)
-    private fun View.getSecondaryButtonView() = findViewById<UnifyButton>(R.id.btnFinishOrderSecondary)
+    private var tvDescription: Typography? = null
+    private var btnRight: UnifyButton? = null
+    private var btnLeft: UnifyButton? = null
 
     private fun setupBottomSheet(context: Context): BottomSheetUnify {
         return BottomSheetUnify().apply {
@@ -46,34 +50,35 @@ class ReceiveConfirmationBottomSheet(
 
     private fun createChildView(context: Context): View {
         return View.inflate(context, R.layout.bottomsheet_finish_order, null).apply {
-            getDescriptionView().setupDescription()
-            getPrimaryButtonView().setupButton(actionButton.popUp.actionButton.getPrimaryActionButton())
-            getSecondaryButtonView().setupButton(actionButton.popUp.actionButton.getSecondaryActionButton())
+            bindViews(this)
+            setupDescription()
+            btnRight?.setupButton(actionButton.popUp.actionButton.lastOrNull())
+            btnLeft?.setupButton(actionButton.popUp.actionButton.firstOrNull())
         }
     }
 
-    private fun Typography.setupDescription() {
-        text = actionButton.popUp.body
+    private fun bindViews(view: View) {
+        with(view) {
+            tvDescription = findViewById(R.id.tvBottomSheetFinishOrderDescription)
+            btnRight = findViewById(R.id.btnFinishOrderRight)
+            btnLeft = findViewById(R.id.btnFinishOrderLeft)
+        }
+    }
+
+    private fun setupDescription() {
+        tvDescription?.text = actionButton.popUp.body
     }
 
     private fun UnifyButton.setupButton(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton?) {
         button?.let {
             text = button.displayName
-            buttonType = Utils.mapButtonVariant(button.type)
+            mapButtonStyle(button.type)
             setOnClickListener(this@ReceiveConfirmationBottomSheet)
         }
     }
 
-    private fun List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton>.getPrimaryActionButton(): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton? {
-        return find { it.type == BuyerOrderDetailActionButtonType.PRIMARY }
-    }
-
-    private fun List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton>.getSecondaryActionButton(): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton? {
-        return find { it.type == BuyerOrderDetailActionButtonType.SECONDARY }
-    }
-
     private fun onPrimaryButtonClicked() {
-        actionButton.popUp.actionButton.getPrimaryActionButton()?.let {
+        actionButton.popUp.actionButton.lastOrNull()?.let {
             if (it.key == BuyerOrderDetailActionButtonKey.BACK || it.key.isBlank()) {
                 dismiss()
             } else {
@@ -84,7 +89,7 @@ class ReceiveConfirmationBottomSheet(
     }
 
     private fun onSecondaryButtonClicked() {
-        actionButton.popUp.actionButton.getSecondaryActionButton()?.let {
+        actionButton.popUp.actionButton.firstOrNull()?.let {
             if (it.key == BuyerOrderDetailActionButtonKey.BACK || it.key.isBlank()) {
                 dismiss()
             } else {
@@ -143,26 +148,43 @@ class ReceiveConfirmationBottomSheet(
         }
     }
 
+    private fun UnifyButton.mapButtonStyle(typeString: String) {
+        when (typeString) {
+            BUTTON_TYPE_BUY,BUTTON_TYPE_PRIMARY -> {
+                buttonType = UnifyButton.Type.MAIN
+                buttonVariant = UnifyButton.Variant.FILLED
+            }
+            BUTTON_TYPE_SECONDARY -> {
+                buttonType = UnifyButton.Type.ALTERNATE
+                buttonVariant = UnifyButton.Variant.GHOST
+            }
+            else -> {
+                buttonType = UnifyButton.Type.MAIN
+                buttonVariant = UnifyButton.Variant.FILLED
+            }
+        }
+    }
+
     override fun onClick(v: View?) {
         if (v is UnifyButton) {
             v.isLoading = true
         }
         when (v?.id) {
-            R.id.btnFinishOrderSecondary -> onSecondaryButtonClicked()
-            R.id.btnFinishOrderPrimary -> onPrimaryButtonClicked()
+            R.id.btnFinishOrderLeft -> onSecondaryButtonClicked()
+            R.id.btnFinishOrderRight -> onPrimaryButtonClicked()
         }
     }
 
     fun reInit(actionButton: ActionButtonsUiModel.ActionButton) {
         this.actionButton = actionButton
-        childView.getDescriptionView().setupDescription()
-        childView.getPrimaryButtonView().apply {
+        setupDescription()
+        btnRight?.apply {
             isLoading = false
-            setupButton(actionButton.popUp.actionButton.getPrimaryActionButton())
+            setupButton(actionButton.popUp.actionButton.lastOrNull())
         }
-        childView.getSecondaryButtonView().apply {
+        btnLeft?.apply {
             isLoading = false
-            setupButton(actionButton.popUp.actionButton.getSecondaryActionButton())
+            setupButton(actionButton.popUp.actionButton.firstOrNull())
         }
         enableDismiss()
     }
@@ -178,8 +200,8 @@ class ReceiveConfirmationBottomSheet(
     }
 
     fun finishLoading() {
-        childView.getPrimaryButtonView().isLoading = false
-        childView.getSecondaryButtonView().isLoading = false
+        btnRight?.isLoading = false
+        btnLeft?.isLoading = false
         enableDismiss()
     }
 }

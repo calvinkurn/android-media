@@ -99,8 +99,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONBOARDING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_EDIT
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PREFERENCE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_BASE
@@ -203,6 +201,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
     const val DF_CONTENT_PROFILE = "df_content_profile"
+    const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -491,11 +490,7 @@ object DeeplinkDFMapper : CoroutineScope {
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
-            add(DFP({
-                it.startsWith(ONE_CLICK_CHECKOUT) ||
-                        it.startsWith(PREFERENCE_LIST) ||
-                        it.startsWith(PREFERENCE_EDIT)
-            }, DF_BASE, R.string.title_one_click_checkout))
+            add(DFP({ it.startsWith(ONE_CLICK_CHECKOUT) }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
 
             // buyerorder
@@ -526,6 +521,16 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
             add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
+
+            // Tokopedia NOW!
+            add(DFP({
+                it.startsWith(TokopediaNow.HOME) ||
+                    it.startsWith(TokopediaNow.CATEGORY) ||
+                    it.startsWith(TokopediaNow.SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH)
+            }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
         }
     }
 

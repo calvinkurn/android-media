@@ -9,7 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListItemViewHolder
+import com.tokopedia.oneclickcheckout.address.AddressListItemViewHolder
 import org.hamcrest.Matcher
 
 class AddressBottomSheetRobot {

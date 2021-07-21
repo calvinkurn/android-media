@@ -90,9 +90,9 @@ class BuyerOrderDetailStickyActionButton(
                     shape = GradientDrawable.RECTANGLE
                     setColor(ContextCompat.getColor(context, android.R.color.transparent))
                     cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                    setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+                    setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
                 }
-                setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
+                setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_NN300))
                 setOnClickListener(secondaryActionButtonClickListener)
                 show()
             }
