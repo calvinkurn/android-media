@@ -744,7 +744,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         val newData = copyPDPRecomByKey(key)
         newData.cardModel = dataList.toProductCardModels(false)
         newData.recomWidgetData?.recommendationItemList = dataList
-        mapOfData.remove(key)
         mapOfData[key] = newData
     }
 
