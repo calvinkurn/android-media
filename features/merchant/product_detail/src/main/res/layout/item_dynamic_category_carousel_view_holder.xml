@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:paddingBottom="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_category_title"
@@ -14,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
+        android:layout_marginStart="16dp"
         tools:text="Kategori lain di Tokopedia NOW!" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -35,6 +38,7 @@
         android:layout_marginTop="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
+        android:clipToPadding="true"
         tools:listitem="@layout/item_category_image_view_holder"
         app:layout_constraintTop_toBottomOf="@+id/product_category_title"
         app:layout_constraintStart_toStartOf="parent"
