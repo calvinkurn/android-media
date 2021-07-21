@@ -716,7 +716,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //add balance widget
         //uncomment this to activate balance widget coachmark
 
-        if (!skipBalanceWidget && true) {
+        if (!skipBalanceWidget && !isBalanceWidgetCoachmarkShown(requireContext())) {
             val balanceWidget = getTokopointsBalanceWidgetView()
             balanceWidget?.let {
                 this.add(
