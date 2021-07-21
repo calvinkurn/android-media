@@ -12,10 +12,10 @@ import com.tokopedia.play.view.activity.PlayActivity
 import java.lang.Exception
 
 class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
-    override fun onReceiveOtherAction(p0: Context?, p1: String?, p2: Intent?) {
-        super.onReceiveOtherAction(p0, p1, p2)
-        p0?.let {
-            if(p1 == PlayCastNotificationAction.ACTION_OPEN_PLAY) {
+    override fun onReceiveOtherAction(context: Context?, actionName: String?, data: Intent?) {
+        super.onReceiveOtherAction(context, actionName, data)
+        context?.let {
+            if(actionName == PlayCastNotificationAction.ACTION_OPEN_PLAY) {
                 val castContext = CastContext.getSharedInstance(it)
                 val channelId = castContext.sessionManager
                     .currentCastSession
