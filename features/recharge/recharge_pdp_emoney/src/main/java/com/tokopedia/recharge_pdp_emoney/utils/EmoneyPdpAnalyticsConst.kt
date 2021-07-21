@@ -15,6 +15,7 @@ object EmoneyPdpAnalyticsConst {
         const val DIGITAL_NATIVE = "digital - native"
         const val DIGITAL_HOMEPAGE = "digital - homepage"
         const val DIGITAL_UANG_ELEKTRONIK = "digital - Uang Elektronik"
+        const val EMONEY_PDP_SCREEN_NAME = "/digital/Uang Elektronik"
     }
 
     object Action {

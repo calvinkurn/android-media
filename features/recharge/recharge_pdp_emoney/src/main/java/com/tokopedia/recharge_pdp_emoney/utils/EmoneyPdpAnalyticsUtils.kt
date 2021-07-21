@@ -1,18 +1,31 @@
 package com.tokopedia.recharge_pdp_emoney.utils
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Event.OPEN_SCREEN
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.BUSINESS_UNIT
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.CURRENTSITE
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.IS_LOGGEDIN_STATUS
+import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.SCREEN_NAME
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.USER_ID
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.RECHARGE_BU
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.RECHARGE_SITE
+import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpAnalyticsConst.Category.EMONEY_PDP_SCREEN_NAME
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import java.util.HashMap
 
 /**
  * @author by jessica on 06/05/21
  */
 object EmoneyPdpAnalyticsUtils {
+
+    fun openEmoneyPdpScreen() {
+        val customDimension: MutableMap<String, String> = HashMap()
+        customDimension[BUSINESS_UNIT] = RECHARGE_BU
+        customDimension[CURRENTSITE] = RECHARGE_SITE
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(EMONEY_PDP_SCREEN_NAME, customDimension)
+    }
 
     fun clickCheckSaldoButton(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(

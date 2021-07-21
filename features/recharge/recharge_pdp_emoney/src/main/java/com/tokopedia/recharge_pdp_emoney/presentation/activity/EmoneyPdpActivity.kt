@@ -23,6 +23,7 @@ import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
+import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpAnalyticsUtils
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -142,6 +143,10 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
 
     override fun getToolbarResourceID(): Int {
         return R.id.emoney_toolbar
+    }
+
+    override fun sendScreenAnalytics() {
+        EmoneyPdpAnalyticsUtils.openEmoneyPdpScreen()
     }
 
     companion object {
