@@ -11,11 +11,11 @@ android {
 }
 
 dependencies {
-    androidTestImplementation (project(rootProject.ext.libraries.core_legacy)){
+    androidTestImplementation (projectOrAar(rootProject.ext.libraries.core_legacy)){
         exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'
     }
-    androidTestImplementation (project(rootProject.ext.libraries.instrumentation_test)){
+    androidTestImplementation (projectOrAar(rootProject.ext.libraries.instrumentation_test)){
         exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'
     }

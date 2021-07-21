@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
+    private val cartExtension = ProductCardCartExtension(this)
+
     constructor(context: Context): super(context) {
         init()
     }
@@ -63,16 +65,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
+        cartExtension.setProductModel(productCardModel)
+
         buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
 
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-        buttonAddToCart?.buttonType = productCardModel.addToCartButtonType
-
         buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
-
-        setAddToCartButtonText(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -101,16 +100,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
-        buttonAddToCart?.setOnClickListener(addToCartClickListener)
+        cartExtension.addToCartClickListener = addToCartClickListener
+    }
+
+    fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
+        cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
+        buttonAddVariant?.setOnClickListener(addVariantClickListener)
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
-    }
-
-    private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
-        if (productCardModel.addToCardText.isNotEmpty())
-            buttonAddToCart?.text = productCardModel.addToCardText
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -159,12 +161,12 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     fun wishlistPage_enableButtonAddToCart(){
         buttonAddToCart?.isEnabled = true
         buttonAddToCart?.buttonVariant = UnifyButton.Variant.GHOST
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_disableButtonAddToCart(){
         buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_list)
+        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_setOutOfStock(){

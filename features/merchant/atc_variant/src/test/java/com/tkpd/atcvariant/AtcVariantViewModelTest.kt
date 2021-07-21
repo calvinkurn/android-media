@@ -7,9 +7,9 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.minicart.common.data.response.updatecart.Data
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.usecase.RequestParams
@@ -75,13 +75,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
         }
 
         Assert.assertEquals("Merah, M", viewModel.titleVariantName.value)
@@ -109,13 +109,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), false)
         }
     }
 
@@ -124,13 +124,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(),any(), true)
         }
 
         Assert.assertEquals(viewModel.variantActivityResult.value?.shouldRefreshPreviousPage, true)
@@ -241,7 +241,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIdsLevelTwo = "0",
                 expectedQuantity = 2,
                 expectedMinOrder = 3,
-                isEmptyStock = true
+                isEmptyStock = false
         )
 
         assertButton(expectedIsBuyable = false,
@@ -392,7 +392,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.addWishlist(productId, "")
 
         val updateResultData = viewModel.variantActivityResult.value
-        Assert.assertTrue(updateResultData == null)
+        Assert.assertEquals(updateResultData?.shouldRefreshPreviousPage ?: false, false)
 
         assertButton(false,
                 "remind_me",
@@ -467,7 +467,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     fun `on success update atc tokonow`() = runBlocking {
         decideSuccessValueHitGqlAggregator("2147818576", true)
         val actionButtonAtc = 2
-        val miniCartItem = slot<List<MiniCartItem>>()
+        val updateCartRequest = slot<List<UpdateCartRequest>>()
         val updateAtcResponse = UpdateCartV2Data(status = "OK", data = Data(message = "sukses gan"))
 
         coEvery {
@@ -478,11 +478,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
-            updateCartUseCase.setParams(capture(miniCartItem), any(), any())
+            updateCartUseCase.setParams(capture(updateCartRequest), any())
         }
 
-        Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })
-        Assert.assertEquals(miniCartItem.captured.firstOrNull { it.productId == "2147818576" }!!.quantity, 50)
         Assert.assertTrue(viewModel.updateCartLiveData.value is Success)
         Assert.assertEquals((viewModel.updateCartLiveData.value as Success).data, "sukses gan")
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
@@ -492,7 +490,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     fun `on fail update atc`() = runBlocking {
         decideSuccessValueHitGqlAggregator("2147818576", true)
         val actionButtonAtc = 2
-        val miniCartItem = slot<List<MiniCartItem>>()
+        val updateCartRequest = slot<List<UpdateCartRequest>>()
         val failUpdataAtcResponse = UpdateCartV2Data(status = "", error = listOf("asd"))
 
         coEvery {
@@ -502,11 +500,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
-            updateCartUseCase.setParams(capture(miniCartItem), any(), any())
+            updateCartUseCase.setParams(capture(updateCartRequest), any())
         }
 
-        Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })
-        Assert.assertEquals(miniCartItem.captured.firstOrNull { it.productId == "2147818576" }!!.quantity, 23)
         Assert.assertTrue(viewModel.updateCartLiveData.value is Fail)
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
     }

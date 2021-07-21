@@ -848,11 +848,16 @@ class DiscoveryFragment :
 
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
-            Color.parseColor(textColor)
+            if(textColor.isNullOrEmpty()){
+                ContextCompat.getColor(context, R.color.Unify_G500)
+            }else{
+                Color.parseColor(textColor)
+            }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, R.color.Green_G500)
+            ContextCompat.getColor(context, R.color.Unify_G500)
         }
     }
+
 
     override fun onLocalizingAddressUpdatedFromWidget() {
         updateChooseAddressWidget()

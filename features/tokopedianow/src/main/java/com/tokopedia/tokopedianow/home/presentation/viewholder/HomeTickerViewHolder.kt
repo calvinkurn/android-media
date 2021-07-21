@@ -6,6 +6,8 @@ import androidx.appcompat.widget.AppCompatImageButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -24,15 +26,18 @@ class HomeTickerViewHolder(
     }
 
     override fun bind(data: HomeTickerUiModel) {
-        val closeBtn = itemView.findViewById<AppCompatImageButton>(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
-        val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
-        closeBtn.setOnClickListener {
-            listener?.onTickerDismissed()
-        }
-        ticker.post {
+        if(data.tickers.isNotEmpty()) {
+            val closeBtn = itemView.findViewById<AppCompatImageButton>(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
+            val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
+            closeBtn.setOnClickListener {
+                listener?.onTickerDismissed(data.id)
+            }
             val adapter = TickerPagerAdapter(itemView.context, data.tickers)
             adapter.setPagerDescriptionClickEvent(this)
             ticker.addPagerView(adapter, data.tickers)
+            itemView.show()
+        } else {
+            itemView.hide()
         }
     }
 
@@ -47,6 +52,6 @@ class HomeTickerViewHolder(
     }
 
     interface HomeTickerListener {
-        fun onTickerDismissed()
+        fun onTickerDismissed(id: String)
     }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
@@ -187,6 +188,10 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
         CategoryTracking.sendChooseVariantClickEvent(getViewModel().categoryL1)
 
         super.onProductChooseVariantClicked(productItemDataView)
+    }
+
+    override fun getCDListName(): String {
+        return String.format(TOKONOW_CATEGORY_ORGANIC, tokoNowCategoryViewModel.categoryIdTracking)
     }
 
     override fun sendIncreaseQtyTrackingEvent(productId: String) {

@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
@@ -25,6 +27,7 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.isNotFilterAndSortKey
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -36,7 +39,6 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
@@ -391,11 +393,14 @@ abstract class BaseSearchCategoryViewModel(
             categoryFilterDataValue: DataValue,
     ) {
         val categoryFilter = categoryFilterDataValue.filter.getOrNull(0)
+        categoryFilter ?: return
 
-        if (categoryFilter != null) {
+        if (isShowCategoryFilter(categoryFilter))
             headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
-        }
     }
+
+    protected open fun isShowCategoryFilter(categoryFilter: Filter) =
+            categoryFilter.options.size > 1
 
     protected fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
         val channel = headerDataView.bannerChannel
@@ -419,14 +424,14 @@ abstract class BaseSearchCategoryViewModel(
             }
 
     private fun createSortFilterItem(filter: Filter): SortFilterItem {
-        val option = filter.options.firstOrNull() ?: Option()
-        val isSelected = filterController.getFilterViewState(option)
+        val isSelected = getQuickFilterIsSelected(filter)
         val chipType = getSortFilterItemType(isSelected)
 
         val sortFilterItem = SortFilterItem(filter.title, chipType)
         sortFilterItem.typeUpdated = false
 
         if (filter.options.size == 1) {
+            val option = filter.options.firstOrNull() ?: Option()
             sortFilterItem.listener = {
                 sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
@@ -442,6 +447,12 @@ abstract class BaseSearchCategoryViewModel(
 
         return sortFilterItem
     }
+
+    private fun getQuickFilterIsSelected(filter: Filter) =
+            filter.options.any {
+                if (it.key.contains(OptionHelper.EXCLUDE_PREFIX)) false
+                else filterController.getFilterViewState(it)
+            }
 
     private fun getSortFilterItemType(isSelected: Boolean) =
             if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
@@ -658,13 +669,18 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
-        removeFilterWithExclude(option)
+        resetSortFilterIfExclude(option)
         filter(option, isSelected)
     }
 
-    private fun removeFilterWithExclude(option: Option) {
-        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
+    private fun resetSortFilterIfExclude(option: Option) {
+        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
+
+        if (!isOptionKeyHasExclude) return
+
         queryParamMutable.remove(option.key)
+        queryParamMutable.entries.retainAll { it.isNotFilterAndSortKey() }
+        queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
         filterController.refreshMapParameter(queryParam)
     }
 
@@ -706,9 +722,22 @@ abstract class BaseSearchCategoryViewModel(
         onGetProductCountSuccess("0")
     }
 
+    open fun onViewGetProductCount(option: Option) {
+        val mapParameter = queryParam + mapOf(option.key to option.value)
+        onViewGetProductCount(mapParameter)
+    }
+
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
         onViewDismissL3FilterPage()
-        onViewClickCategoryFilterChip(chosenCategoryFilter, true)
+        removeAllCategoryFilter(chosenCategoryFilter)
+        filter(chosenCategoryFilter, true)
+    }
+
+    private fun removeAllCategoryFilter(chosenCategoryFilter: Option) {
+        queryParamMutable.remove(chosenCategoryFilter.key)
+        queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(chosenCategoryFilter))
+
+        filterController.refreshMapParameter(queryParam)
     }
 
     open fun onViewDismissL3FilterPage() {
@@ -904,8 +933,13 @@ abstract class BaseSearchCategoryViewModel(
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
                 ?: return
         miniCartItem.quantity = quantity
+        val updateCartRequest = UpdateCartRequest(
+                cartId = miniCartItem.cartId,
+                quantity = miniCartItem.quantity,
+                notes = miniCartItem.notes
+        )
         updateCartUseCase.setParams(
-                miniCartItemList = listOf(miniCartItem),
+                updateCartRequestList = listOf(updateCartRequest),
                 source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
@@ -935,10 +969,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onViewRemoveFilter(option: Option) {
-        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
-        if (isOptionKeyHasExclude)
-            removeFilterWithExclude(option)
-
+        resetSortFilterIfExclude(option)
         filter(option, false)
     }
 

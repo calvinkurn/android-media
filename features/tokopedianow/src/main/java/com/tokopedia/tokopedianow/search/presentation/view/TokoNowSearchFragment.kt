@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -201,6 +202,10 @@ class TokoNowSearchFragment:
         SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.id)
 
         super.onProductChooseVariantClicked(productItemDataView)
+    }
+
+    override fun getCDListName(): String {
+        return TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
     }
 
     override fun onBannerClick(channelModel: ChannelModel, applink: String) {

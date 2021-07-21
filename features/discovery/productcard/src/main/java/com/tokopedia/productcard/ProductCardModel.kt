@@ -44,12 +44,14 @@ data class ProductCardModel (
         val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
+        @Deprecated("determined from product card")
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
         val countSoldRating: String = "",
         val hasNotifyMeButton: Boolean = false,
         val labelGroupVariantList: List<LabelGroupVariant> = listOf(),
+        @Deprecated("determined from product card")
         val addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
         val isWideContent: Boolean = false,
         val variant: Variant? = null,
@@ -125,7 +127,7 @@ data class ProductCardModel (
         return nonVariant?.quantity == 0
     }
 
-    fun shouldShowQuantityEditor(): Boolean {
+    fun shouldCartEditorComponent(): Boolean {
         return nonVariant?.quantity ?: 0 > 0
     }
 

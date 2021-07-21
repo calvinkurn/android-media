@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.R
@@ -59,7 +60,7 @@ class ProductItemViewHolder(
             productItemListener.onProductChooseVariantClicked(element)
         }
 
-        productCard?.setAddToCartNonVariantClickListener(object: ProductCardGridView.ATCNonVariantListener {
+        productCard?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
             override fun onQuantityChanged(quantity: Int) {
                 productItemListener.onProductNonVariantQuantityChanged(element, quantity)
             }

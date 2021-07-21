@@ -214,6 +214,7 @@ ext {
             transactionanalytics            : ":features:transaction:transactionanalytics",
             purchase_platform_common        : ":features:transaction:purchase_platform_common",
             cart                            : ":features:transaction:cart",
+            cart_common                     : ":features:transaction:cart_common",
             checkout                        : ":features:transaction:checkout",
             promoCheckoutMarketplace        : ":features:transaction:promo_checkout_marketplace",
             minicart                        : ":features:transaction:minicart",
