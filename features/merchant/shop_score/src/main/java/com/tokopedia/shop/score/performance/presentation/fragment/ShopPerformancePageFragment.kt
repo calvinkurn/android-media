@@ -52,7 +52,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemRegularMerchantListener, ItemRMPotentialPMProListener, ItemStatusPowerMerchantProListener {
+        GlobalErrorListener, ItemRegularMerchantListener, ItemRMPotentialPMProListener, ItemStatusPowerMerchantProListener, ItemPMPotentialPMProListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -300,7 +300,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * SectionFaqListener
      */
     override fun onHelpCenterClicked() {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                ShopScoreConstant.HELP_URL
+            )
+        }
         shopScorePenaltyTracking.clickHelpCenterFaqNewSeller()
     }
 
@@ -310,6 +316,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     override fun onImpressHelpCenter() {
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
     }
+
+    /**
+     * ItemPMPotentialPMProListener
+     */
+    override fun onGotoBenefitPMPro() {
+        val PM_EDU_URL = ""
+        context?.let {
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, PM_EDU_URL)
+        }
+    }
+
 
     private fun setPageBackground() {
         try {
@@ -383,7 +400,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     val itemPeriodDetailPerformanceIndex = shopPerformanceAdapter.list.indexOfFirst { it is PeriodDetailPerformanceUiModel }
                     val itemPMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
                     val itemRMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
-                    val itemRMNonEligibleIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
+                    val itemRMNonEligibleIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
                     val itemPotentialPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
                     val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
 
@@ -461,7 +478,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val positionPotentialPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
         val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
-        val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
+        val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMBenefitUiModel }
         val positionRMEligible = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
 
         var position = RecyclerView.NO_POSITION

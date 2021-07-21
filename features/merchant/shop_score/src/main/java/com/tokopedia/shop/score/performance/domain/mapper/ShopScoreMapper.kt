@@ -2,7 +2,6 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -11,17 +10,11 @@ import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
-import com.tokopedia.shop.score.common.ShopScoreConstant.IC_INCOME_PM_URL
-import com.tokopedia.shop.score.common.ShopScoreConstant.IC_ORDER_PM_URL
-import com.tokopedia.shop.score.common.ShopScoreConstant.IC_PM_VISITED_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.ONE_HUNDRED_PERCENT
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PERIOD_DATE
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
-import com.tokopedia.shop.score.common.ShopScoreConstant.PM_PRO_BENEFIT_URL_3
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SET_OPERATIONAL_HOUR_SHOP_URL
@@ -53,7 +46,6 @@ import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -185,9 +177,9 @@ class ShopScoreMapper @Inject constructor(
                                     return@apply
                                 } else {
                                     if (isEligiblePMPro == true) {
+                                        add(mapToSectionRMEligibleToPMPro())
                                         return@apply
                                     }
-                                    //checked
                                     else if (isEligiblePM == true) {
                                         add(
                                             mapToItemCurrentStatusRMUiModel(
@@ -197,9 +189,7 @@ class ShopScoreMapper @Inject constructor(
                                         return@apply
                                     } else {
                                         add(
-                                            mapToCardPotentialBenefitNonEligible(
-                                                shopInfoPeriodUiModel
-                                            )
+                                            mapToCardPotentialBenefitNonEligible()
                                         )
                                         return@apply
                                     }
@@ -211,7 +201,7 @@ class ShopScoreMapper @Inject constructor(
                             if (shopAge >= SHOP_AGE_SIXTY) {
                                 when (isEligiblePMPro) {
                                     true -> {
-                                        add(mapToSectionPMPro(shopInfoPeriodUiModel))
+                                        add(mapToSectionPMEligibleToPMPro())
                                         return@apply
                                     }
                                     else -> {
@@ -626,14 +616,9 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToCardPotentialBenefitNonEligible(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionPotentialPMBenefitUiModel {
-        return SectionPotentialPMBenefitUiModel(
-            potentialPMBenefitList = mapToItemPotentialBenefit(),
-            transitionEndDate = DateFormatUtils.formatDate(
-                PATTERN_PERIOD_DATE,
-                PATTERN_DATE_TEXT,
-                shopInfoPeriodUiModel.periodEndDate
-            )
+    private fun mapToCardPotentialBenefitNonEligible(): SectionRMPotentialPMBenefitUiModel {
+        return SectionRMPotentialPMBenefitUiModel(
+            potentialPMBenefitList = mapToItemPotentialBenefit()
         )
     }
 
@@ -665,67 +650,71 @@ class ShopScoreMapper @Inject constructor(
             })
     }
 
-    private fun mapToSectionPMPro(shopInfoPeriodUiModel: ShopInfoPeriodUiModel): SectionRMPotentialPMProUiModel {
+    private fun mapToSectionRMEligibleToPMPro(): SectionRMPotentialPMProUiModel {
+        val potentialPMProPMBenefitList = mapToItemPMProBenefit() as? List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>
         return SectionRMPotentialPMProUiModel(
-            potentialPMProPMBenefitList = mapToItemPMProBenefit(),
-            transitionEndDate = DateFormatUtils.formatDate(
-                PATTERN_PERIOD_DATE,
-                PATTERN_DATE_TEXT,
-                shopInfoPeriodUiModel.periodEndDate
-            )
+            potentialPMProPMBenefitList = potentialPMProPMBenefitList
         )
     }
 
-    private fun mapToItemPMProBenefit(): List<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel> {
+    private fun mapToSectionPMEligibleToPMPro(): SectionPMPotentialPMProUiModel {
+        val potentialPMProPMBenefitList = mapToItemPMProBenefit() as? List<SectionPMPotentialPMProUiModel.ItemPMProBenefitUIModel>
+
+        return SectionPMPotentialPMProUiModel(
+            potentialPMProPMBenefitList = potentialPMProPMBenefitList
+        )
+    }
+
+    private fun mapToItemPMProBenefit(): List<ItemParentBenefitUiModel> {
         val itemPotentialPMBenefitList =
-            mutableListOf<SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel>()
+            mutableListOf<ItemParentBenefitUiModel>()
         itemPotentialPMBenefitList.apply {
             add(
-                SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel(
-                    iconPotentialPMProUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
-                    titlePotentialPMPro = R.string.title_item_rm_section_pm_benefit_1
+                ItemParentBenefitUiModel(
+                    iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_1,
+                    titleResources = R.string.title_item_benefit_1_pm_pro
                 )
             )
 
             add(
-                SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel(
-                    iconPotentialPMProUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
-                    titlePotentialPMPro = R.string.title_item_rm_section_pm_benefit_2
+                ItemParentBenefitUiModel(
+                    iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_2,
+                    titleResources = R.string.title_item_benefit_2_pm_pro
                 )
             )
 
             add(
-                SectionRMPotentialPMProUiModel.ItemPMProBenefitUIModel(
-                    iconPotentialPMProUrl = PM_PRO_BENEFIT_URL_3,
-                    titlePotentialPMPro = R.string.title_item_rm_section_pm_benefit_3
+                ItemParentBenefitUiModel(
+                    iconUrl = ShopScoreConstant.PM_PRO_BENEFIT_URL_3,
+                    titleResources = R.string.title_item_benefit_3_pm_pro
                 )
             )
         }
         return itemPotentialPMBenefitList
     }
 
-    private fun mapToItemPotentialBenefit(): List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
+    private fun mapToItemPotentialBenefit(): List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> {
         val itemPotentialPMBenefitList =
-            mutableListOf<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>()
+            mutableListOf<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>()
         itemPotentialPMBenefitList.apply {
             add(
-                SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = IC_ORDER_PM_URL,
-                    titlePotentialPM = R.string.text_item_potential_pm_benefit_1
+                SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                    iconPotentialPMUrl = ShopScoreConstant.IC_PM_PRO_BADGE_BENEFIT_URL,
+                    titlePotentialPM = R.string.title_item_rm_section_pm_benefit_1
                 )
             )
 
             add(
-                SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = IC_INCOME_PM_URL,
-                    titlePotentialPM = R.string.text_item_potential_pm_benefit_2
+                SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                    iconPotentialPMUrl = ShopScoreConstant.IC_FREE_SHIPPING_BENEFIT_URL,
+                    titlePotentialPM = R.string.title_item_rm_section_pm_benefit_2
                 )
             )
 
             add(
-                SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
-                    iconPotentialPMUrl = IC_PM_VISITED_URL,
-                    titlePotentialPM = R.string.text_item_potential_pm_benefit_3
+                SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel(
+                    iconPotentialPMUrl = ShopScoreConstant.IC_PROMOTION_BENEFIT_URL,
+                    titlePotentialPM = R.string.title_item_rm_section_pm_benefit_3
                 )
             )
         }

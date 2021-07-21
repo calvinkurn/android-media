@@ -7,17 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMBenefitUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
 import kotlinx.android.synthetic.main.item_potential_pm_benefit.view.*
 
 class ItemPotentialPMBenefitAdapter(private val itemRegularMerchantListener: ItemRegularMerchantListener) : RecyclerView.Adapter<ItemPotentialPMBenefitAdapter.ItemPotentialPMBenefitViewHolder>() {
 
-    private val potentialPMBenefitList: MutableList<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> = mutableListOf()
+    private val itemRMPotentialPMBenefitList: MutableList<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> = mutableListOf()
 
-    fun setPotentialPowerMerchantBenefit(potentialPMBenefitList: List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>) {
-        if (potentialPMBenefitList.isNullOrEmpty()) return
-        this.potentialPMBenefitList.clear()
-        this.potentialPMBenefitList.addAll(potentialPMBenefitList)
+    fun setPotentialPowerMerchantBenefit(itemRMPotentialPMBenefitList: List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>) {
+        if (itemRMPotentialPMBenefitList.isNullOrEmpty()) return
+        this.itemRMPotentialPMBenefitList.clear()
+        this.itemRMPotentialPMBenefitList.addAll(itemRMPotentialPMBenefitList)
         notifyDataSetChanged()
     }
 
@@ -27,15 +27,15 @@ class ItemPotentialPMBenefitAdapter(private val itemRegularMerchantListener: Ite
     }
 
     override fun onBindViewHolder(holder: ItemPotentialPMBenefitViewHolder, position: Int) {
-        val data = potentialPMBenefitList[position]
+        val data = itemRMPotentialPMBenefitList[position]
         holder.bind(data)
     }
 
-    override fun getItemCount(): Int = potentialPMBenefitList.size
+    override fun getItemCount(): Int = itemRMPotentialPMBenefitList.size
 
     inner class ItemPotentialPMBenefitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(data: SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
+        fun bind(data: SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
             with(itemView) {
                 iv_potential_pm_benefit?.loadImage(data.iconPotentialPMUrl)
                 tv_potential_pm_benefit?.text = MethodChecker.fromHtml(data.titlePotentialPM?.let { context.getString(it) })

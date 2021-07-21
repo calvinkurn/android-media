@@ -4,14 +4,15 @@ import androidx.annotation.StringRes
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
 
 class SectionPMPotentialPMProUiModel(
-    val potentialPMProPMBenefitList: List<ItemPMProBenefitUIModel> = listOf()
+    val potentialPMProPMBenefitList: List<ItemPMProBenefitUIModel>? = listOf()
 ) : BaseShopPerformance {
+
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 
     data class ItemPMProBenefitUIModel(
-        val iconPotentialPMProUrl: String = "",
-        @StringRes val titlePotentialPMPro: Int? = null
-    )
+        override val iconUrl: String = "",
+        @StringRes override val titleResources: Int? = null
+    ): ItemParentBenefitUiModel()
 }

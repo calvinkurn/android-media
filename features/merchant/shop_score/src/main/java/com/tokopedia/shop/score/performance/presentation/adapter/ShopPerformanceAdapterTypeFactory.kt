@@ -36,7 +36,7 @@ class ShopPerformanceAdapterTypeFactory(private val shopPerformanceListener: Sho
         return ItemStatusRMViewHolder.LAYOUT
     }
 
-    override fun type(itemPotentialPMBenefitUIModel: SectionPotentialPMBenefitUiModel): Int {
+    override fun type(itemRMPotentialPMBenefitUIModel: SectionRMPotentialPMBenefitUiModel): Int {
         return CardPotentialPMBenefitViewHolder.LAYOUT
     }
 

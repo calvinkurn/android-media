@@ -6,11 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMPotentialPMProListener
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
-import kotlinx.android.synthetic.main.item_potential_rm_to_pm_pro.view.*
+import com.tokopedia.shop.score.performance.presentation.model.SectionPMPotentialPMProUiModel
+import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.*
 
 class ItemPMPotentialPMProViewHolder(view: View, private val itemStatusPMProListener: ItemPMPotentialPMProListener):
-    AbstractViewHolder<SectionRMPotentialPMProUiModel>(view) {
+    AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_potential_pm_to_pm_pro
@@ -18,22 +18,22 @@ class ItemPMPotentialPMProViewHolder(view: View, private val itemStatusPMProList
 
     private var itemPMProBenefitAdapter: ItemPMProBenefitAdapter? = null
 
-    override fun bind(element: SectionRMPotentialPMProUiModel?) {
+    override fun bind(element: SectionPMPotentialPMProUiModel?) {
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
         with(itemView) {
-            tv_see_all_benefit_pm_pro?.setOnClickListener {
+            tv_see_all_benefit_pm_to_pm_pro?.setOnClickListener {
                 itemStatusPMProListener.onGotoBenefitPMPro()
             }
-            ic_chevron_right_benefit_pm_pro?.setOnClickListener {
+            ic_chevron_right_benefit_pm_to_pm_pro?.setOnClickListener {
                 itemStatusPMProListener.onGotoBenefitPMPro()
             }
         }
         setPotentialPMProBenefitAdapter(element)
     }
 
-    private fun setPotentialPMProBenefitAdapter(element: SectionRMPotentialPMProUiModel?) {
+    private fun setPotentialPMProBenefitAdapter(element: SectionPMPotentialPMProUiModel?) {
         with(itemView) {
-            rv_shop_pm_pro_potential_benefit?.apply {
+            rv_pm_to_pm_pro_potential_benefit?.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPMProBenefitAdapter
             }

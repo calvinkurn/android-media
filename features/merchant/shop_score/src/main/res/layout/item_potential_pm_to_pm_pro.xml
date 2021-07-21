@@ -136,7 +136,7 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                app:layout_constraintBottom_toTopOf="@id/tv_see_all_benefit_pm_pro"
+                app:layout_constraintBottom_toTopOf="@id/tv_see_all_benefit_pm_to_pm_pro"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/tv_desc_content_pm_section"
                 app:layout_constraintTop_toBottomOf="@id/tv_desc_content_pm_section"
@@ -144,7 +144,7 @@
                 tools:itemCount="3" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_see_all_benefit_pm_pro"
+                android:id="@+id/tv_see_all_benefit_pm_to_pm_pro"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl4"
@@ -158,15 +158,15 @@
                 app:typographyWeight="bold" />
 
             <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_chevron_right_benefit_pm_pro"
+                android:id="@+id/ic_chevron_right_benefit_pm_to_pm_pro"
                 android:layout_width="@dimen/spacing_lvl5"
                 android:layout_height="@dimen/spacing_lvl5"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 app:icon_color_light_enable="@color/Unify_G500"
                 app:icon_name="CHEVRON_RIGHT"
-                app:layout_constraintBottom_toBottomOf="@id/tv_see_all_benefit_pm_pro"
-                app:layout_constraintStart_toEndOf="@id/tv_see_all_benefit_pm_pro"
-                app:layout_constraintTop_toTopOf="@id/tv_see_all_benefit_pm_pro" />
+                app:layout_constraintBottom_toBottomOf="@id/tv_see_all_benefit_pm_to_pm_pro"
+                app:layout_constraintStart_toEndOf="@id/tv_see_all_benefit_pm_to_pm_pro"
+                app:layout_constraintTop_toTopOf="@id/tv_see_all_benefit_pm_to_pm_pro" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

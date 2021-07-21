@@ -6,11 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialPMBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemRegularMerchantListener
-import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMBenefitUiModel
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
 import kotlinx.android.synthetic.main.item_non_eligible_status_power_merchant.view.*
 
 class CardPotentialPMBenefitViewHolder(view: View, private val itemRegularMerchantListener: ItemRegularMerchantListener):
-        AbstractViewHolder<SectionPotentialPMBenefitUiModel>(view) {
+        AbstractViewHolder<SectionRMPotentialPMBenefitUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_non_eligible_status_power_merchant
@@ -18,7 +18,7 @@ class CardPotentialPMBenefitViewHolder(view: View, private val itemRegularMercha
 
     private var itemPotentialPMBenefitAdapter: ItemPotentialPMBenefitAdapter? = null
 
-    override fun bind(element: SectionPotentialPMBenefitUiModel?) {
+    override fun bind(element: SectionRMPotentialPMBenefitUiModel?) {
         itemPotentialPMBenefitAdapter = ItemPotentialPMBenefitAdapter(itemRegularMerchantListener)
         with(itemView) {
             setPotentialPMBenefitAdapter(element)
@@ -28,7 +28,7 @@ class CardPotentialPMBenefitViewHolder(view: View, private val itemRegularMercha
         }
     }
 
-    private fun setPotentialPMBenefitAdapter(element: SectionPotentialPMBenefitUiModel?) {
+    private fun setPotentialPMBenefitAdapter(element: SectionRMPotentialPMBenefitUiModel?) {
         with(itemView) {
             rv_shop_pm_potential_benefit?.apply {
                 layoutManager = LinearLayoutManager(context)
