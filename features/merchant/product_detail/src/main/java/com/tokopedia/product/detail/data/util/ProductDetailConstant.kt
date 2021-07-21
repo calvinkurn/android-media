@@ -55,7 +55,6 @@ object ProductDetailConstant {
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
     const val PAYLOAD_UPDATE_QTY_RECOM_TOKONOW = 1234
     const val DIFFUTIL_PAYLOAD = "payload"
-    const val DIFFUTIL_PAYLOAD_EXTRAS = "payload_extras"
 
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
