@@ -196,7 +196,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toIntOrZero())
+        data.addProperty("msg_id", thisMessageId.toLong())
         json.add("data", data)
         return json.toString()
     }
