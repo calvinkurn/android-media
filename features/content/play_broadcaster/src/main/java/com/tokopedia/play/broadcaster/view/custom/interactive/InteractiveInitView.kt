@@ -25,7 +25,7 @@ class InteractiveInitView : RoundedConstraintLayout {
     private var mListener: Listener? = null
 
     init {
-        binding.root.setCornerRadius(
+        setCornerRadius(
                 resources.getDimension(R.dimen.play_interactive_create_radius)
         )
 

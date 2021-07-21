@@ -28,7 +28,7 @@ class InteractiveLiveView : RoundedConstraintLayout {
     )
 
     init {
-        binding.root.setCornerRadius(
+        setCornerRadius(
                 resources.getDimension(R.dimen.play_interactive_live_radius)
         )
     }
