@@ -399,7 +399,8 @@ abstract class BaseSearchCategoryViewModel(
             headerList.add(CategoryFilterDataView(createCategoryFilterItemList(categoryFilter)))
     }
 
-    protected open fun isShowCategoryFilter(categoryFilter: Filter) = true
+    protected open fun isShowCategoryFilter(categoryFilter: Filter) =
+            categoryFilter.options.size > 1
 
     protected fun createBannerDataView(headerDataView: HeaderDataView): BannerDataView {
         val channel = headerDataView.bannerChannel
