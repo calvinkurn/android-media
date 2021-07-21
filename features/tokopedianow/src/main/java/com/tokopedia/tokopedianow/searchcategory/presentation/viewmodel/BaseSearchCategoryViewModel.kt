@@ -933,14 +933,14 @@ abstract class BaseSearchCategoryViewModel(
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
-    private fun getMiniCartItem(productItem: ProductItemDataView, quantity: Int): MiniCartItem? {
-        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
-        miniCartItem?.quantity = quantity
+    private fun setMiniCartItemQuantity(miniCartItem: MiniCartItem, quantity: Int): MiniCartItem {
+        miniCartItem.quantity = quantity
         return miniCartItem
     }
 
     private fun updateCart(productItem: ProductItemDataView, quantity: Int) {
-        val miniCartItem = getMiniCartItem(productItem, quantity) ?: return
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id } ?: return
+        setMiniCartItemQuantity(miniCartItem, quantity)
 
         updateCartUseCase.setParams(
                 miniCartItemList = listOf(miniCartItem),
@@ -964,7 +964,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun deleteCart(productItem: ProductItemDataView, quantity: Int) {
-        val miniCartItem = getMiniCartItem(productItem, quantity) ?: return
+        val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id } ?: return
+        setMiniCartItemQuantity(miniCartItem, quantity)
 
         deleteCartUseCase.setParams(listOf(miniCartItem))
         deleteCartUseCase.execute({
