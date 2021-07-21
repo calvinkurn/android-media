@@ -235,7 +235,7 @@ public class AccountAnalytics {
         Map<String, Object> data = TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_ACCOUNT_SETTING,
                 String.format("%s %s", ACCOUNT, SETTING),
-                String.format("%s %s", ACCOUNT, SETTING),
+                AccountConstants.Analytics.CLICK_BIOMETRIC_BUTTON,
                 String.format("%s - %s", CLICK, FINGERPRINT)
         );
 

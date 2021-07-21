@@ -105,6 +105,7 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                 is Fail -> {
                     enableSwitch = false
                     fragment_fingerprint_setting_switch?.isChecked = true
+                    tracker.trackRemoveFingerprintFailed(it.throwable.message ?: "")
                     NetworkErrorHelper.showSnackbar(activity, it.throwable.message)
                 }
             }
@@ -157,12 +158,14 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                 Toaster.build(it, getString(R.string.fingerprint_success_login_toaster), Toaster.LENGTH_LONG).show()
             }
         } else {
+            tracker.trackRegisterFpFailed(data.errorMessage)
             onErrorRegisterFingerprint(Throwable(message = getString(R.string.error_failed_register_fingerprint)))
         }
         enableSwitch = true
     }
 
     fun onErrorRegisterFingerprint(throwable: Throwable) {
+        tracker.trackRegisterFpFailed(throwable.message ?: "")
         NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
     }
 

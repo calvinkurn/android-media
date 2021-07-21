@@ -99,6 +99,7 @@ object AccountConstants {
         const val CLICK_KYC_REJECTED = "click on verifikasi ulang"
         const val CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang"
         const val CLICK_KYC_PENDING = "click on lihat status"
+        const val CLICK_BIOMETRIC_BUTTON = "click on button biometric"
         const val EVENT_SALDO_OVO = "clickSaldo"
         const val EVENT_CLICK_SAMPAI = "clickRegister"
         const val EVENT_CATEGORY_SAMPAI = "register tokopedia corner"

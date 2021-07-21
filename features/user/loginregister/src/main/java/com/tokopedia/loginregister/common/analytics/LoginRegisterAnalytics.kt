@@ -967,8 +967,8 @@ class LoginRegisterAnalytics @Inject constructor(
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_LOGIN,
             CATEGORY_LOGIN_PAGE,
-            ACTION_CLICK_BIOMETRIC_LOGIN,
-            "click - fingerprint")
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            "click")
 
         data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         data[KEY_CURRENT_SITE] = CURRENT_SITE
@@ -1036,7 +1036,6 @@ class LoginRegisterAnalytics @Inject constructor(
         private val CATEGORY_LOGIN_PAGE = "login page"
         private val CATEGORY_LOGIN_PAGE_SMART_LOCK = "login page smart lock"
 
-        const val ACTION_CLICK_BIOMETRIC_LOGIN = "click on metode biometric"
         const val ACTION_CLICK_LOGIN_FINGERPRINT = "click on masuk dengan fingerprint"
 
         private val ACTION_REGISTER = "Register"
