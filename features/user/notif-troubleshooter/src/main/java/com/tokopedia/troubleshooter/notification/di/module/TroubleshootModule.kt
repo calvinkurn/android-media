@@ -23,6 +23,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Named
 
 @Module class TroubleshootModule(private val context: Context) {
@@ -99,13 +100,14 @@ import javax.inject.Named
     @TroubleshootScope
     fun provideTroubleshootUseCase(
             repository: GraphqlRepository,
-            @TroubleshootContext context: Context
+            @TroubleshootContext context: Context,
+            dispatcher: CoroutineDispatcher
     ): TroubleshootStatusUseCase {
         val query = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_send_notif_troubleshooter
         )
-        return TroubleshootStatusUseCase(repository, query)
+        return TroubleshootStatusUseCase(repository, query, dispatcher)
     }
 
     private fun getUseSettingUseCase(
