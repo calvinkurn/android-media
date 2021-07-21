@@ -101,8 +101,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addWishListUseCase: Lazy<AddWishListUseCase>,
                                                              private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
                                                              private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-                                                             private val moveProductToWarehouseUseCase: Lazy<MoveProductToWarehouseUseCase>,
-                                                             private val moveProductToEtalaseUseCase: Lazy<MoveProductToEtalaseUseCase>,
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
                                                              private val submitHelpTicketUseCase: Lazy<SubmitHelpTicketUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
@@ -167,14 +165,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _statusFilterTopAdsProduct = MutableLiveData<Result<Boolean>>()
     val statusFilterTopAdsProduct: LiveData<Result<Boolean>>
         get() = _statusFilterTopAdsProduct
-
-    private val _moveToWarehouseResult = MutableLiveData<Result<Boolean>>()
-    val moveToWarehouseResult: LiveData<Result<Boolean>>
-        get() = _moveToWarehouseResult
-
-    private val _moveToEtalaseResult = MutableLiveData<Result<Boolean>>()
-    val moveToEtalaseResult: LiveData<Result<Boolean>>
-        get() = _moveToEtalaseResult
 
     private val _toggleFavoriteResult = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
@@ -324,8 +314,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getProductInfoP3UseCase.get().cancelJobs()
         toggleFavoriteUseCase.get().cancelJobs()
         trackAffiliateUseCase.get().cancelJobs()
-        moveProductToWarehouseUseCase.get().cancelJobs()
-        moveProductToEtalaseUseCase.get().cancelJobs()
         getRecommendationUseCase.get().unsubscribe()
         removeWishlistUseCase.get().unsubscribe()
         submitTicketSubscription?.unsubscribe()
@@ -830,24 +818,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun moveProductToWareHouse(productId: String) {
-        launchCatchError(block = {
-            moveProductToWarehouseUseCase.get().createParams(productId, userId, deviceId)
-            _moveToWarehouseResult.value = moveProductToWarehouseUseCase.get().executeOnBackground().getIsSuccess().asSuccess()
-        }) {
-            _moveToWarehouseResult.value = it.asFail()
-        }
-    }
-
-    fun moveProductToEtalase(productId: String, selectedEtalaseId: String, selectedEtalaseName: String) {
-        launchCatchError(block = {
-            moveProductToEtalaseUseCase.get().createParams(productId, selectedEtalaseId, selectedEtalaseName, userId, deviceId)
-            _moveToEtalaseResult.value = moveProductToEtalaseUseCase.get().executeOnBackground().getIsSuccess().asSuccess()
-        }) {
-            _moveToEtalaseResult.value = it.asFail()
-        }
-    }
-
     fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
         trackAffiliateUseCase.get().params = TrackAffiliateUseCase.createParams(affiliateUniqueString, deviceId)
         trackAffiliateUseCase.get().execute({
@@ -915,14 +885,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _toggleTeaserNotifyMe.value = it.asFail()
         }
-    }
-
-    fun cancelWarehouseUseCase() {
-        moveProductToWarehouseUseCase.get().cancelJobs()
-    }
-
-    fun cancelEtalaseUseCase() {
-        moveProductToEtalaseUseCase.get().cancelJobs()
     }
 
     fun getDiscussionMostHelpful(productId: String, shopId: String) {

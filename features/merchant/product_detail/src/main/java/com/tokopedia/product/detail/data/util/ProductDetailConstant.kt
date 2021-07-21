@@ -1,28 +1,11 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.url.TokopediaUrl
-
 object ProductDetailConstant {
-    @JvmField
-    var BASE_REST_URL = TokopediaUrl.getInstance().WS
-
     const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
-
-    //report product
-    const val PATH_PRODUCT_ACTION = "v4/action/product/"
 
     const val PARAM_PRODUCT_ID = "product_id"
 
-    const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
-    const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
-
-    const val VALUE_NEW_ETALASE = "new"
-
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
-
-    //waarehouse product
-    const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
-    const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
 
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
@@ -56,7 +39,6 @@ object ProductDetailConstant {
     //Request Code
     const val REQUEST_CODE_EDIT_PRODUCT = 2
     const val REQUEST_CODE_LOGIN = 561
-    const val REQUEST_CODE_ETALASE = 565
     const val REQUEST_CODE_REPORT = 570
     const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998

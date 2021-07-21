@@ -351,8 +351,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeP3()
         observeToggleFavourite()
         observeToggleNotifyMe()
-        observeMoveToWarehouse()
-        observeMoveToEtalase()
         observeRecommendationProduct()
         observeImageVariantPartialyChanged()
         observeAddToCart()
@@ -440,8 +438,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.p2Login.removeObservers(this)
         viewModel.productInfoP3.removeObservers(this)
         viewModel.loadTopAdsProduct.removeObservers(this)
-        viewModel.moveToWarehouseResult.removeObservers(this)
-        viewModel.moveToEtalaseResult.removeObservers(this)
         viewModel.updatedImageVariant.removeObservers(this)
         viewModel.initialVariantData.removeObservers(this)
         viewModel.onVariantClickedData.removeObservers(this)
@@ -508,18 +504,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT -> {
                 updateCartNotification()
-            }
-            ProductDetailConstant.REQUEST_CODE_ETALASE -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    val selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
-                    val selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
-                    val dynamicProductInfoData = viewModel.getDynamicProductInfoP1
-                            ?: DynamicProductInfoP1()
-                    if (dynamicProductInfoData.basic.productID.isNotEmpty() && !selectedEtalaseName.isNullOrEmpty()) {
-                        showProgressDialog(onCancelClicked = { viewModel.cancelEtalaseUseCase() })
-                        viewModel.moveProductToEtalase(dynamicProductInfoData.basic.productID, selectedEtalaseId, selectedEtalaseName)
-                    }
-                }
             }
             ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT -> {
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
@@ -673,15 +657,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             R.id.action_cart -> {
                 gotoCart(); true
-            }
-            R.id.action_report -> {
-                reportProductFromToolbar(); true
-            }
-            R.id.action_warehouse -> {
-                warehouseProduct(); true
-            }
-            R.id.action_etalase -> {
-                moveProductToEtalase(); true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -1569,28 +1544,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         view?.showToasterSuccess(if (isNplFollowerType) getString(R.string.merchant_product_detail_success_follow_shop_npl) else message)
     }
 
-    private fun observeMoveToWarehouse() {
-        viewLifecycleOwner.observe(viewModel.moveToWarehouseResult) { data ->
-            data.doSuccessOrFail({
-                onSuccessWarehouseProduct()
-            }, {
-                onErrorWarehouseProduct(it)
-                logException(it)
-            })
-        }
-    }
-
-    private fun observeMoveToEtalase() {
-        viewLifecycleOwner.observe(viewModel.moveToEtalaseResult) { data ->
-            data.doSuccessOrFail({
-                onSuccessMoveToEtalase()
-            }, {
-                onErrorMoveToEtalase(it)
-                logException(it)
-            })
-        }
-    }
-
     private fun observeRecommendationProduct() {
         viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
             data.doSuccessOrFail({
@@ -2264,31 +2217,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    /**
-     * Event than happen after owner successfully move the warehoused product back to etalase
-     */
-    private fun onSuccessMoveToEtalase() {
-        hideProgressDialog()
-        view?.showToasterSuccess(getString(R.string.success_move_etalase))
-        onSwipeRefresh()
-    }
-
-    private fun onErrorMoveToEtalase(throwable: Throwable) {
-        hideProgressDialog()
-        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(com.tokopedia.design.R.string.oke))
-    }
-
-    private fun onErrorWarehouseProduct(throwable: Throwable) {
-        hideProgressDialog()
-        view?.showToasterError(getErrorMessage(throwable), ctaText = getString(com.tokopedia.design.R.string.oke))
-    }
-
-    private fun onSuccessWarehouseProduct() {
-        hideProgressDialog()
-        view?.showToasterSuccess(getString(R.string.success_warehousing_product))
-        onSwipeRefresh()
-    }
-
     override fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?) {
         reportProduct({
             DynamicProductDetailTracking.Click.eventClickReportFromComponent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
@@ -2299,14 +2227,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         DynamicProductDetailTracking.Click.eventClickBuyerPhotosClicked(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel
                 ?: ComponentTrackDataModel())
         goToReviewImagePreview()
-    }
-
-    private fun reportProductFromToolbar() {
-        reportProduct({
-            DynamicProductDetailTracking.Click.eventReportLogin()
-        }, {
-            DynamicProductDetailTracking.Click.eventReportNoLogin()
-        })
     }
 
     private fun reportProduct(trackerLogin: (() -> Unit)? = null, trackerNonLogin: (() -> Unit)? = null) {
@@ -2326,52 +2246,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun warehouseProduct() {
-        viewModel.getDynamicProductInfoP1?.basic?.productID?.let {
-            showProgressDialog(onCancelClicked = { viewModel.cancelWarehouseUseCase() })
-            viewModel.moveProductToWareHouse(it)
-        }
-    }
-
-    private fun moveProductToEtalase() {
-        context?.run {
-            val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
-            if (shopId.isNotEmpty()) {
-                val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
-                val bundle = Bundle()
-                bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
-                bundle.putString(ShopShowcaseParamConstant.EXTRA_ETALASE_ID, etalaseId)
-                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_DEFAULT, false)
-                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
-                bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, true)
-
-                val shopEtalasePickerIntent: Intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-                shopEtalasePickerIntent.putExtra(EXTRA_BUNDLE, bundle)
-                startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
-            }
-        }
-    }
-
     private fun handlingMenuPreparation(menu: Menu?) {
         if (menu == null) return
 
         val menuShare = menu.findItem(R.id.action_share)
         val menuCart = menu.findItem(R.id.action_cart)
-        val menuReport = menu.findItem(R.id.action_report)
-        val menuWarehouse = menu.findItem(R.id.action_warehouse)
-        val menuEtalase = menu.findItem(R.id.action_etalase)
 
         if (viewModel.getDynamicProductInfoP1 == null) {
             menuShare.isVisible = false
             menuShare.isEnabled = false
             menuCart.isVisible = true
             menuCart.isEnabled = true
-            menuReport.isVisible = false
-            menuReport.isEnabled = false
-            menuWarehouse.isVisible = false
-            menuWarehouse.isEnabled = false
-            menuEtalase.isEnabled = false
-            menuEtalase.isVisible = false
         } else {
             menuShare.isVisible = true
             menuShare.isEnabled = true
@@ -2385,13 +2270,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 menuCart.isEnabled = isValidCustomer
 
                 if (isValidCustomer) setBadgeMenuCart(menuCart)
-
-                menuReport.isVisible = !isOwned && (basic.status != ProductStatusTypeDef.WAREHOUSE)
-                menuReport.isEnabled = !isOwned && (basic.status != ProductStatusTypeDef.WAREHOUSE)
-                menuWarehouse.isVisible = isOwned && (basic.status !in arrayOf(ProductStatusTypeDef.WAREHOUSE, ProductStatusTypeDef.PENDING))
-                menuWarehouse.isEnabled = isOwned && (basic.status !in arrayOf(ProductStatusTypeDef.WAREHOUSE, ProductStatusTypeDef.PENDING))
-                menuEtalase.isVisible = isOwned && (basic.status !in arrayOf(ProductStatusTypeDef.ACTIVE, ProductStatusTypeDef.PENDING))
-                menuEtalase.isEnabled = isOwned && (basic.status !in arrayOf(ProductStatusTypeDef.ACTIVE, ProductStatusTypeDef.PENDING))
             }
         }
     }

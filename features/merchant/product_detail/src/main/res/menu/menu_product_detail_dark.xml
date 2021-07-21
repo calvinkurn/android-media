@@ -15,24 +15,4 @@
         android:orderInCategory="200"
         android:title="@string/label_cart"
         app:showAsAction="always" />
-
-
-    <item
-        android:id="@+id/action_report"
-        android:icon="@drawable/ic_product_report"
-        android:orderInCategory="300"
-        android:title="@string/action_report"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_warehouse"
-        android:orderInCategory="400"
-        android:title="@string/label_move_to_warehouse"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_etalase"
-        android:orderInCategory="500"
-        android:title="@string/label_move_to_etalase"
-        app:showAsAction="never" />
 </menu>
