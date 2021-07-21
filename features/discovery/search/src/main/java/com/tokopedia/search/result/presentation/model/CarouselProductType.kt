@@ -4,7 +4,10 @@ sealed class CarouselProductType(val hasThreeDots: Boolean) {
     abstract val dataLayerList: String
 }
 
-class BroadMatchProduct(val isOrganicAds: Boolean): CarouselProductType(true) {
+class BroadMatchProduct(
+        val isOrganicAds: Boolean,
+        hasThreeDots: Boolean = true,
+): CarouselProductType(hasThreeDots) {
     override val dataLayerList = "/search - broad match - ${if (isOrganicAds) "organic ads" else "organic"}"
 }
 
