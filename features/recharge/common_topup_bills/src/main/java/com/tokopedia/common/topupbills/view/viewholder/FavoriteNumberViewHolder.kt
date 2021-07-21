@@ -3,14 +3,14 @@ package com.tokopedia.common.topupbills.view.viewholder
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
+import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberBinding
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class FavoriteNumberViewHolder(
-        private val binding: ItemTopupBillsFavoritNumberBinding,
+        private val binding: ItemTopupBillsFavoriteNumberBinding,
         private val favoriteNumberListener: OnFavoriteNumberClickListener
 ): AbstractViewHolder<TopupBillsFavNumberDataView>(binding.root) {
 
@@ -42,6 +42,6 @@ class FavoriteNumberViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_topup_bills_favorit_number
+        val LAYOUT = R.layout.item_topup_bills_favorite_number
     }
 }

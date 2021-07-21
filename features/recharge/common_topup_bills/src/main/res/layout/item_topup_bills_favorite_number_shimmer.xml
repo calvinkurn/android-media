@@ -14,16 +14,18 @@
         android:layout_height="@dimen/layout_lvl6"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:corners="8"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/common_topupbills_favorite_number_shimmer_client_name"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="@dimen/layout_lvl9"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        app:corners="8"
         app:layout_goneMarginBottom="@dimen/unify_space_12"
         app:layout_constraintStart_toEndOf="@id/common_topupbills_favorite_number_shimmer_icon"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,14 +37,16 @@
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:corners="8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/common_topupbills_favorite_number_shimmer_icon"
         app:layout_constraintTop_toBottomOf="@id/common_topupbills_favorite_number_shimmer_client_name" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/common_topupbills_favorite_number_menu"
-        android:layout_width="@dimen/layout_lvl1"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl1"
+        app:corners="8"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

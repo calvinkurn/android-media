@@ -44,11 +44,13 @@ import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberList
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
@@ -77,7 +79,8 @@ class TopupBillsFavoriteNumberFragment :
         OnFavoriteNumberClickListener,
         FavoriteNumberMenuListener,
         FavoriteNumberEmptyStateListener,
-        FavoriteNumberModifyListener
+        FavoriteNumberModifyListener,
+        FavoriteNumberErrorStateListener
 {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -120,8 +123,8 @@ class TopupBillsFavoriteNumberFragment :
     @Suppress("UNCHECKED_CAST")
     private fun setupArguments(arguments: Bundle?) {
         arguments?.run {
-            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
-            number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
+            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
+            number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
             operatorData = arguments.getParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT)
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
@@ -180,7 +183,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun initRecyclerView() {
-        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
+        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this, this)
         numberListAdapter = TopupBillsFavoriteNumberListAdapter(
                 getListOfShimmeringDataView(), typeFactory
         )
@@ -254,7 +257,12 @@ class TopupBillsFavoriteNumberFragment :
                     currentCategoryName, userSession.userId)
         }
         binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (clientNumbers.isNullOrEmpty()) hide() else show()
+            if (numberListAdapter.visitables.isNotEmpty() &&
+                numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
+                show()
+            } else {
+                hide()
+            }
         }
 
         if (isNeedShowCoachmark && numberListAdapter.visitables.isNotEmpty()) {
@@ -264,7 +272,6 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    // TODO: [Misael] ini message yg undo delete n default belom bener
     private fun onFailedGetFavoriteNumber(err: Throwable) {
         when (err.message) {
             ERROR_FETCH_AFTER_UPDATE -> {
@@ -283,10 +290,8 @@ class TopupBillsFavoriteNumberFragment :
                 showErrorToaster(throwable, Toaster.LENGTH_SHORT,
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
-                val throwable = MessageErrorException(
-                    getString(R.string.common_topup_fav_number_failed_fetch))
-                showErrorToaster(throwable, Toaster.LENGTH_SHORT,
-                    getString(R.string.common_topup_fav_number_refresh)) { getSeamlessFavoriteNumber() } }
+                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
+            }
         }
     }
 
@@ -301,8 +306,10 @@ class TopupBillsFavoriteNumberFragment :
                 Toaster.build(it, ErrorHandler.getErrorMessage(requireContext(), throwable),
                     length, Toaster.TYPE_ERROR).show()
             } else {
-                Toaster.build(it, ErrorHandler.getErrorMessage(requireContext(), throwable),
-                    length, Toaster.TYPE_ERROR, actionText, clickListener).show()
+                Toaster.build(
+                    it, ErrorHandler.getErrorMessage(requireContext(), throwable),
+                    length, Toaster.TYPE_ERROR, actionText, clickListener
+                ).show()
             }
         }
     }
@@ -361,8 +368,18 @@ class TopupBillsFavoriteNumberFragment :
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
+            binding?.commonTopupbillsFavoriteNumberClue?.show()
         } else {
-            numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+            if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
+                if (clientNumbers.isNotEmpty()) {
+                    numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
+                } else {
+                    numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
+                }
+            } else {
+                numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
+            }
+            binding?.commonTopupbillsFavoriteNumberClue?.hide()
         }
     }
 
@@ -376,6 +393,8 @@ class TopupBillsFavoriteNumberFragment :
 
     fun onSearchReset() {
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.setText("")
+        if (clientNumbers.isEmpty())
+            numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -677,6 +696,10 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
+    override fun refreshFavoriteNumberPage() {
+        getSeamlessFavoriteNumber()
+    }
+
     enum class InputNumberActionType {
         MANUAL, CONTACT, FAVORITE
     }
@@ -721,7 +744,7 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun getOperatorNameByPrefix(clientNumber: String): String {
-        return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.single {
+        return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.singleOrNull() {
             clientNumber.startsWith(it.value)
         }?.operator?.attributes?.name ?: ""
     }
@@ -729,8 +752,8 @@ class TopupBillsFavoriteNumberFragment :
     companion object {
         const val REQUEST_CODE_CONTACT_PICKER = 75
 
-        const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
-        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
         const val ARG_PARAM_CATALOG_PREFIX_SELECT = "ARG_PARAM_CATALOG_PREFIX_SELECT"
         const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
@@ -746,8 +769,8 @@ class TopupBillsFavoriteNumberFragment :
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
-            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
-            bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, number)
             bundle.putString(ARG_PARAM_CATEGORY_NAME, categoryName.toLowerCase(Locale.getDefault()))
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelable(ARG_PARAM_CATALOG_PREFIX_SELECT, operatorData)

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/common_topup_bills_error_state_img"
+        android:layout_width="@dimen/layout_lvl9"
+        android:layout_height="@dimen/layout_lvl9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topup_bills_error_state_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textAlignment="center"
+        android:text="@string/common_topup_fav_number_error_state_title"
+        app:typographyType="heading_4"
+        tools:text="Maaf, Nomor Favorit gagal ditampilkan"
+        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_error_state_img"
+        app:layout_constraintStart_toStartOf="@id/common_topup_bills_error_state_desc"
+        app:layout_constraintEnd_toEndOf="@id/common_topup_bills_error_state_desc" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topup_bills_error_state_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:text="@string/common_topup_fav_number_error_state_desc"
+        tools:text="Coba refresh atau lanjut transaksi dulu, ya."
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_error_state_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/common_topup_bills_error_state_button"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="wrap_content"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="small"
+        android:text="@string/common_topup_fav_number_error_state_button"
+        android:layout_marginTop="@dimen/unify_font_12"
+        app:layout_constraintTop_toBottomOf="@id/common_topup_bills_error_state_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

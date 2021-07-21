@@ -47,6 +47,7 @@
         android:id="@+id/common_topupbills_favorite_number_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:icon_name="MENU_KEBAB_VERTICAL"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
