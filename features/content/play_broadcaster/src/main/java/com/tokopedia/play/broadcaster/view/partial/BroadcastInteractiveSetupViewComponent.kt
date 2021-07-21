@@ -241,13 +241,18 @@ class BroadcastInteractiveSetupViewComponent(
         bottomSheetBehavior.state = if (shouldShow) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
     }
 
+    fun hideAll() {
+        showPickerSheet(false)
+        hide()
+    }
+
     interface Listener {
         fun onApplyButtonClicked(view: BroadcastInteractiveSetupViewComponent, title: String, durationInMs: Long)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, null)
+        ViewCompat.setOnApplyWindowInsetsListener(containerSetup, null)
         ViewCompat.setOnApplyWindowInsetsListener(btnApply, null)
     }
 

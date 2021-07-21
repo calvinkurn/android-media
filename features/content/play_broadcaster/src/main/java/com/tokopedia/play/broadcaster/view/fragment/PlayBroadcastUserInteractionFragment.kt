@@ -542,7 +542,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
                     interactiveSetupView.setLoading(false)
-                    interactiveSetupView.hide()
+                    interactiveSetupView.hideAll()
                 }
                 is NetworkResult.Fail -> {
                     interactiveSetupView.setLoading(false)
