@@ -112,7 +112,7 @@ class TopupBillsFavoriteNumberActivityTest {
         Thread.sleep(3000)
         validate_show_contents_favorite_number_page()
         validate_coachmark_favorite_number()
-        validate_pick_number_from_contact_book()
+//        validate_pick_number_from_contact_book()
         validate_menu_bottom_sheet_favorite_number()
         validate_modify_bottom_sheet_favorite_number()
         validate_delete_favorite_number()
@@ -243,6 +243,7 @@ class TopupBillsFavoriteNumberActivityTest {
         Thread.sleep(3000)
     }
 
+    /* Local test only, cannot be validated using FTL */
     fun validate_pick_number_from_contact_book() {
         onView(withId(R.id.common_topupbills_search_number_contact_picker)).perform(click())
         intended(toPackage("com.android.contacts"))
