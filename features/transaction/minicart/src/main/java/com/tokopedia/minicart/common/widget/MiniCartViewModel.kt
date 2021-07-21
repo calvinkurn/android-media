@@ -183,7 +183,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun deleteSingleCartItem(product: MiniCartProductUiModel) {
-        deleteCartUseCase.setParamsFromUiModel(listOf(product))
+        deleteCartUseCase.setParams(listOf(product))
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessDeleteSingleCartItem(product, it)
@@ -248,7 +248,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
         }
 
-        deleteCartUseCase.setParamsFromUiModel(unavailableCartItems)
+        deleteCartUseCase.setParams(unavailableCartItems)
         deleteCartUseCase.execute(
                 onSuccess = {
                     onSuccessBulkDeleteUnavailableCartItems(it, isLastItem)
