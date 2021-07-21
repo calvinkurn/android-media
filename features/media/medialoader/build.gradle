@@ -20,14 +20,14 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.mediaCommon)
+    implementation projectOrAar(rootProject.ext.features.mediaCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
 
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
 
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
@@ -39,7 +39,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.preferenceV7
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

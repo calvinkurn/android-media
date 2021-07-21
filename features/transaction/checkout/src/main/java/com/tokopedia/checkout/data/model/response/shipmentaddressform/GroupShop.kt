@@ -2,11 +2,14 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 
 data class GroupShop(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
+        @SerializedName("errors_unblocking")
+        val unblockingErrors: List<String> = emptyList(),
         @SerializedName("shop")
         val shop: Shop = Shop(),
         @SerializedName("shop_shipments")
@@ -40,5 +43,13 @@ data class GroupShop(
         @SerializedName("promo_codes")
         val listPromoCodes: List<String> = emptyList(),
         @SerializedName("shipment_information")
-        val shipmentInformation: ShipmentInformation = ShipmentInformation()
+        val shipmentInformation: ShipmentInformation = ShipmentInformation(),
+        @SerializedName("is_disable_change_courier")
+        val isDisableChangeCourier: Boolean = false,
+        @SerializedName("auto_courier_selection")
+        val autoCourierSelection: Boolean = false,
+        @SerializedName("bo_metadata")
+        val boMetadata: BoMetadata = BoMetadata(),
+        @SerializedName("courier_selection_error")
+        val courierSelectionError: CourierSelectionError = CourierSelectionError()
 )

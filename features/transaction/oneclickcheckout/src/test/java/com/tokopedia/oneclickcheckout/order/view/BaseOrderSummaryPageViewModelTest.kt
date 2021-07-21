@@ -2,6 +2,8 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
+import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -42,6 +44,12 @@ open class BaseOrderSummaryPageViewModelTest {
     private val ratesResponseStateConverter: RatesResponseStateConverter = RatesResponseStateConverter()
 
     @MockK
+    lateinit var chooseAddressRepository: Lazy<ChooseAddressRepository>
+
+    @MockK
+    lateinit var chooseAddressMapper: Lazy<ChooseAddressMapper>
+
+    @MockK
     lateinit var editAddressUseCase: Lazy<EditAddressUseCase>
 
     @MockK(relaxed = true)
@@ -71,7 +79,7 @@ open class BaseOrderSummaryPageViewModelTest {
         helper = OrderSummaryPageViewModelTestHelper()
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
                 OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
-                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
+                OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),

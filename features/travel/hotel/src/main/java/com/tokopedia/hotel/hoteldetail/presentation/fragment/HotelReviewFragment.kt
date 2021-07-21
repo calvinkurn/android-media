@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.HotelGqlQuery

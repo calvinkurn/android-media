@@ -177,7 +177,8 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         presenter.sendReport(
                 contentId,
                 adapter.getSelectedItem().type,
-                reasonMessage
+                reasonMessage,
+                "content"
         )
     }
 }

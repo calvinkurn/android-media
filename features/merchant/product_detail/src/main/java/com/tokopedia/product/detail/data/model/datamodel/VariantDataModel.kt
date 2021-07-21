@@ -1,10 +1,11 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.variant_common.model.VariantCategory
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -14,13 +15,13 @@ data class VariantDataModel(
         val type: String = "",
         val name: String = "",
         var listOfVariantCategory: List<VariantCategory>? = null,
-        var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf(),
+        var mapOfSelectedVariant: MutableMap<String, String> = mutableMapOf(),
         var isVariantError: Boolean = false,
         var isRefreshing: Boolean = false
 ) : DynamicPdpDataModel {
 
     fun isPartialySelected(): Boolean = mapOfSelectedVariant.any {
-        it.value == 0
+        it.value.toLongOrZero() == 0L
     } || mapOfSelectedVariant.isEmpty()
 
     override fun type(): String = type
