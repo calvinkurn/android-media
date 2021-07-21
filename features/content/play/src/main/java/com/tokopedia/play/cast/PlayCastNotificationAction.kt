@@ -33,8 +33,8 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
     }
 
     override fun getCompactViewActionIndices(): IntArray {
-        if(isShow) return intArrayOf(0,1,2)
-        return intArrayOf(0,1)
+        return if(isShow) intArrayOf(0,1,2)
+                else intArrayOf(0,1)
     }
 
     companion object {
