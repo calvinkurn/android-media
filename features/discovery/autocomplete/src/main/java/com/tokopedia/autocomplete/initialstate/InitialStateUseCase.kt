@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.autocomplete.initialstate.data.InitialStateGqlResponse
 import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -57,7 +58,7 @@ class InitialStateUseCase(
         private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
 
-        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
+        fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String, warehouseId: String): RequestParams {
             val params = RequestParams.create()
 
             params.putAll(searchParameter)
@@ -72,6 +73,8 @@ class InitialStateUseCase(
             }
             params.putString(KEY_UNIQUE_ID, uniqueId)
             params.putString(DEVICE_ID, registrationId)
+
+            if (warehouseId.isNotEmpty()) params.putString(SearchApiConst.USER_WAREHOUSE_ID, warehouseId)
 
             return params
         }
