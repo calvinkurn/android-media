@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.image_gallery.ImagePreview
 import com.tokopedia.kotlin.extensions.view.hide
@@ -24,7 +25,15 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
     fun bind(imageUrl: String, imageListener: ReviewGalleryImageListener) {
         image?.apply {
             mLoaderView.hide()
-            mImageView.loadImage(imageUrl)
+            mImageView.loadImage(imageUrl) {
+                listener(
+                    onSuccess = { _, _ -> image?.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent)) },
+                    onError = {
+                        imageListener.onImageLoadFailed(adapterPosition)
+                        image?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N75))
+                    }
+                )
+            }
             onImageClickListener = {
                 imageListener.onImageClicked()
             }
@@ -49,7 +58,6 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
                     }
                 }
             }
-            this.mImageView.onUrlLoaded = { imageListener.onImageLoadFailed(it, adapterPosition) }
         }
     }
 }

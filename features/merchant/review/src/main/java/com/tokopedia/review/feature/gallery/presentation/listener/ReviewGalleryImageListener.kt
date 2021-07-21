@@ -4,5 +4,5 @@ interface ReviewGalleryImageListener {
     fun onImageClicked()
     fun disableScroll()
     fun enableScroll()
-    fun onImageLoadFailed(isSuccess: Boolean, index: Int)
+    fun onImageLoadFailed(index: Int)
 }

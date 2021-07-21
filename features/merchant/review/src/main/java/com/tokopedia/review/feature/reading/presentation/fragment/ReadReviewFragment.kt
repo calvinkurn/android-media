@@ -627,13 +627,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun showToasterError(message: String, action: () -> Unit) {
         reviewReadingCoordinatorLayout?.let {
-            Toaster.build(
-                it,
-                message,
-                Toaster.toasterLength,
-                Toaster.TYPE_ERROR,
-                getString(R.string.review_refresh)
-            ) { action.invoke() }.show()
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_refresh)) { action.invoke() }.show()
         }
     }
 
@@ -719,8 +713,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toLongOrZero())
         startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)

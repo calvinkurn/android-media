@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,6 +28,7 @@ import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
+import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryLayoutManager
 import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageListener
@@ -133,24 +132,16 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun disableScroll() {
-        imagesRecyclerView?.apply {
-            isNestedScrollingEnabled = false
-            requestLayout()
-        }
+        (imagesRecyclerView?.layoutManager as? ReviewGalleryLayoutManager)?.setScrollEnabled(false)
     }
 
     override fun enableScroll() {
-        imagesRecyclerView?.apply {
-            isNestedScrollingEnabled = true
-            requestLayout()
-        }
+        (imagesRecyclerView?.layoutManager as? ReviewGalleryLayoutManager)?.setScrollEnabled(true)
     }
 
-    override fun onImageLoadFailed(isSuccess: Boolean, index: Int) {
-        if(!isSuccess) {
-            showToaster(getString(R.string.review_reading_connection_error), getString(R.string.review_refresh), View.OnClickListener {
-                adapter.reloadImageAtIndex(index)
-            })
+    override fun onImageLoadFailed(index: Int) {
+        showErrorToaster(getString(R.string.review_reading_connection_error), getString(R.string.review_refresh)) {
+            adapter.reloadImageAtIndex(index)
         }
     }
 
@@ -200,7 +191,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private fun setupRecyclerView() {
         imagesRecyclerView?.apply {
             adapter = this@ReviewGalleryFragment.adapter
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            layoutManager = ReviewGalleryLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
@@ -233,7 +224,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun observeToggleLikeReviewResult() {
-        viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
+        viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessLikeReview(it.data)
                 is Fail -> onFailLikeReview()
@@ -321,9 +312,15 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
-    private fun showToaster(message: String, actionText: String = "", onClickListener: View.OnClickListener = View.OnClickListener {  }) {
+    private fun showErrorToaster(message: String, actionText: String = "", onClickListener: View.OnClickListener = View.OnClickListener {  }) {
         coordinatorLayout?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL, actionText, onClickListener).show()
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, actionText, onClickListener).show()
+        }
+    }
+
+    private fun showToaster(message: String) {
+        coordinatorLayout?.let {
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL).show()
         }
     }
 
