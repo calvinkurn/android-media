@@ -4,14 +4,11 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.util.Log
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.ComponentNameMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -20,8 +17,6 @@ import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -33,13 +28,14 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
-import com.tokopedia.topupbills.telco.postpaid.fragment.DigitalTelcoPostpaidFragment
-import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
-import com.tokopedia.topupbills.utils.CommonTelcoActions
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClearBtn
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClientNumberWidget
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
 import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
-import com.tokopedia.topupbills.utils.CommonTelcoActions.validateTextClientNumberWidget
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
+import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_clickBuyWidget
+import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetDisplayed
+import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetNotDisplayed
+import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithText
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -112,27 +108,27 @@ class TelcoPostpaidLoginInstrumentTest {
             VALID_PHONE_NUMBER,
             TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE)
         Thread.sleep(2000)
-        clickClientNumberWidget()
-        validateTextClientNumberWidget(VALID_PHONE_NUMBER)
+        clientNumberWidget_clickTextField()
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 
     fun click_on_tab_menu_login() {
-        clickClearBtn()
-        validateTextClientNumberWidget(EMPTY_TEXT)
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_validateText(EMPTY_TEXT)
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        tabLayout_clickTabWithText("Transaksi Terakhir")
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
+        tabLayout_clickTabWithText("Promo")
     }
 
     fun enquiry_phone_number() {
         Thread.sleep(2000)
-        onView(withId(R.id.telco_enquiry_btn)).perform(click())
+        clientNumberWidget_clickEnquiryButton()
         Thread.sleep(1000)
         onView(withId(R.id.telco_enquiry_btn)).check(matches(IsNot.not(isDisplayed())))
         onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_buy_widget)).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_buy_widget)).perform(click())
+        pdp_validateBuyWidgetDisplayed()
+        pdp_clickBuyWidget()
     }
 
     fun enquiry_new_input_phone_number() {
@@ -140,20 +136,18 @@ class TelcoPostpaidLoginInstrumentTest {
             VALID_PHONE_NUMBER_2,
             TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
         Thread.sleep(2000)
-        clickClientNumberWidget()
-        validateTextClientNumberWidget(VALID_PHONE_NUMBER_2)
+        clientNumberWidget_clickTextField()
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER_2)
 
         Thread.sleep(2000)
-        onView(withId(R.id.telco_buy_widget)).check(matches(IsNot.not(isDisplayed())))
-        onView(withId(R.id.telco_enquiry_btn))
-                .check(matches(isDisplayed()))
-                .perform(click())
+        pdp_validateBuyWidgetNotDisplayed()
+        clientNumberWidget_clickEnquiryButton()
 
         Thread.sleep(2000)
-        onView(withId(R.id.telco_enquiry_btn)).check(matches(IsNot.not(isDisplayed())))
-        onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_buy_widget)).check(matches(isDisplayed()))
-        onView(withId(R.id.telco_buy_widget)).perform(click())
+        clientNumberWidget_validateEnquiryButtonNotDisplayed()
+        clientNumberWidget_validateEnquiryResultDisplayed()
+        pdp_validateBuyWidgetDisplayed()
+        pdp_clickBuyWidget()
 
     }
 
@@ -161,13 +155,27 @@ class TelcoPostpaidLoginInstrumentTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         Thread.sleep(3000)
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        tabLayout_clickTabWithText("Transaksi Terakhir")
         val viewInteraction = onView(AllOf.allOf(isDescendantOfA(withId(R.id.layout_widget)),
                 withId(R.id.recycler_view_menu_component), isDisplayed())).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions
                 .actionOnItemAtPosition<TopupBillsRecentNumbersAdapter.RecentNumbersItemViewHolder>(0, click()))
         Thread.sleep(3000)
         enquiry_phone_number()
+    }
+
+    private fun clientNumberWidget_clickEnquiryButton() {
+        onView(withId(R.id.telco_enquiry_btn))
+            .check(matches(isDisplayed()))
+            .perform(click())
+    }
+
+    private fun clientNumberWidget_validateEnquiryButtonNotDisplayed() {
+        onView(withId(R.id.telco_enquiry_btn)).check(matches(IsNot.not(isDisplayed())))
+    }
+
+    private fun clientNumberWidget_validateEnquiryResultDisplayed() {
+        onView(withId(R.id.telco_title_enquiry_result)).check(matches(isDisplayed()))
     }
 
     @After

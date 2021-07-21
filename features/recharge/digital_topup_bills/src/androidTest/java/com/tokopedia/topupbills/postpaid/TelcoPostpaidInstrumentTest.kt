@@ -30,14 +30,15 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity
-import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
-import com.tokopedia.topupbills.utils.CommonTelcoActions.click3DotsMenu
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClearBtn
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clickClientNumberWidget
-import com.tokopedia.topupbills.utils.CommonTelcoActions.clickCopyPromoBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.bottomSheet_close
+import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_click
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
+import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_clickCopyButton
 import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
-import com.tokopedia.topupbills.utils.CommonTelcoActions.validate3MenuContents
-import com.tokopedia.topupbills.utils.CommonTelcoActions.validateTextClientNumberWidget
+import com.tokopedia.topupbills.utils.CommonTelcoActions.kebabMenu_validateContents
+import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
+import com.tokopedia.topupbills.utils.CommonTelcoActions.promoItem_click
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AnyOf
@@ -115,8 +116,8 @@ class TelcoPostpaidInstrumentTest {
             VALID_PHONE_NUMBER,
             TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL)
         Thread.sleep(2000)
-        clickClientNumberWidget()
-        validateTextClientNumberWidget(VALID_PHONE_NUMBER)
+        clientNumberWidget_clickTextField()
+        clientNumberWidget_validateText(VALID_PHONE_NUMBER)
     }
 
     fun validate_show_contents_pdp_telco_not_login() {
@@ -127,30 +128,28 @@ class TelcoPostpaidInstrumentTest {
     }
 
     fun validate_interaction_promo() {
-        clickClearBtn()
-        validateTextClientNumberWidget(EMPTY_TEXT)
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_validateText(EMPTY_TEXT)
 
         val viewInteraction = onView(AllOf.allOf(
             AllOf.allOf(withId(R.id.recycler_view_menu_component),
                 withParent(withId(R.id.layout_widget)),
                 isDisplayed()))).check(matches(isDisplayed()))
 
-        clickCopyPromoBtn(viewInteraction)
+        promoItem_clickCopyButton(viewInteraction)
         Thread.sleep(2000)
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        viewInteraction.perform(RecyclerViewActions
-                .actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(3,
-                        CommonActions.clickChildViewWithId(R.id.promo_container)))
+        promoItem_click(viewInteraction)
         Thread.sleep(3000)
     }
 
     fun validate_interaction_menu() {
-        click3DotsMenu()
+        kebabMenu_click()
         Thread.sleep(1000)
-        validate3MenuContents()
+        kebabMenu_validateContents()
         Thread.sleep(1000)
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        bottomSheet_close()
     }
 
     private fun pick_phone_number_from_phonebook() {
@@ -168,8 +167,8 @@ class TelcoPostpaidInstrumentTest {
 
         Thread.sleep(2000)
         pick_phone_number_from_phonebook()
-        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).check(matches(withText("")))
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_validateText(EMPTY_TEXT)
     }
 
     @After
