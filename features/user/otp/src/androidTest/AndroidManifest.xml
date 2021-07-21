@@ -15,7 +15,7 @@
             android:value="true" />
 
         <activity
-            android:name="com.tokopedia.otp.verification.email.stub.VerificationActivityStub"
+            android:name=".stub.verification.view.activity.VerificationActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
     </application>

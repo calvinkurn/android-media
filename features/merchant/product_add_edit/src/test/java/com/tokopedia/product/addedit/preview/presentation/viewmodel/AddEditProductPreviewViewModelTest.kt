@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -295,7 +296,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        var imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        var imagePickerResult = arrayListOf("pict1.0","pict2","pict3")
         var originalImageUrl = arrayListOf("www.blank.com","num2","www.blank.com")
         var editted = arrayListOf(false,false,true)
 
@@ -351,6 +352,27 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.productInputModel.getOrAwaitValue()
 
         assertEquals(null, viewModel.productInputModel.value)
+    }
+
+    @Test
+    fun `When update product photos Expect updated url path list`() {
+        val successImageUrlOrPathList: List<String> = listOf(AddEditProductConstants.HTTP_PREFIX, "/path", AddEditProductConstants.HTTP_PREFIX + "/")
+        val successPictureList1: List<PictureInputModel> = listOf(PictureInputModel(
+            urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
+            urlOriginal = AddEditProductConstants.HTTP_PREFIX + "/"
+        ))
+        val successPictureList2: List<PictureInputModel> = listOf(PictureInputModel(
+            urlThumbnail = AddEditProductConstants.HTTP_PREFIX,
+        ))
+        val errorImageUrlOrPathList: List<String> = listOf(AddEditProductConstants.HTTP_PREFIX, "/path")
+        val errorPictureList: List<PictureInputModel> = listOf()
+
+        viewModel.updateProductPhotos(successImageUrlOrPathList, successPictureList1)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        viewModel.updateProductPhotos(successImageUrlOrPathList, successPictureList2)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isEmpty())
+        viewModel.updateProductPhotos(errorImageUrlOrPathList, errorPictureList)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isEmpty())
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.search.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.entertainment.search.fragment.EventCategoryFragment
-import com.tokopedia.entertainment.search.fragment.EventLocationFragment
 import com.tokopedia.entertainment.search.fragment.EventSearchFragment
 import dagger.Component
 
@@ -15,5 +14,4 @@ import dagger.Component
 interface EventSearchComponent {
     fun inject(eventSearchFragment: EventSearchFragment)
     fun inject(eventCategoryFragment: EventCategoryFragment)
-    fun inject(eventLocationFragment: EventLocationFragment)
 }

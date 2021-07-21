@@ -53,6 +53,7 @@ class SomBottomSheetBuyerOtherReason(
                     showToasterError(context.getString(R.string.cancel_order_notes_empty_warning))
                 }
             }
+            btn_primary?.setOnTouchListener(hideKeyboardTouchListener)
         }
     }
 

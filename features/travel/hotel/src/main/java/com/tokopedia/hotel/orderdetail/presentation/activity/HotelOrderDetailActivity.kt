@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.orderdetail.di.DaggerHotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
