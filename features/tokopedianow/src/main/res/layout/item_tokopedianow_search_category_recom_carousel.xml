@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RecommendationCarouselWidgetView
+<com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tokoNowSearchCategoryRecomCarousel"
     android:layout_width="match_parent"
