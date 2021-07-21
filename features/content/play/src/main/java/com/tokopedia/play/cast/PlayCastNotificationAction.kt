@@ -24,7 +24,7 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
             actions.add(
                 NotificationAction.Builder()
                     .setAction(ACTION_OPEN_PLAY)
-                    .setIconResId(R.drawable.ic_play_arrow_up)
+                    .setIconResId(R.drawable.ic_play_open_page)
                     .setContentDescription(ACTION_OPEN_PLAY)
                     .build()
             )
