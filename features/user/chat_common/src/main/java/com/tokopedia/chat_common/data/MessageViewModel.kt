@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
+import kotlin.random.Random
 
 /**
  * @author by nisie on 5/16/18.
@@ -13,6 +14,12 @@ open class MessageViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> 
     var blastId: Long = 0
     var fraudStatus = 0
     var label: String = ""
+
+    // TODO: remove later
+    val dummyReplyBubbleMsg: String
+    init {
+        dummyReplyBubbleMsg = "Lorem ips  ".repeat(Random.nextInt(1, 10))
+    }
 
     /**
      * constructor for GQL response

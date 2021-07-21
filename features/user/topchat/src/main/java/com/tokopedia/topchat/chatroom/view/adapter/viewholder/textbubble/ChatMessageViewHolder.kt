@@ -15,6 +15,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
 
 abstract class ChatMessageViewHolder(
         itemView: View?,
@@ -22,8 +23,15 @@ abstract class ChatMessageViewHolder(
         private val adapterListener: AdapterListener
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
-    protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
-    protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(R.id.cl_msg_container)
+    protected val messageBubble: MessageBubbleLayout? = itemView?.findViewById(
+        R.id.mb_bubble_msg
+    )
+    protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(
+        R.id.fxChat
+    )
+    protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(
+        R.id.cl_msg_container
+    )
     protected val topMarginOpposite: Float = getOppositeMargin(itemView?.context)
     private val onTouchListener = MessageOnTouchListener(listener)
 
@@ -32,6 +40,7 @@ abstract class ChatMessageViewHolder(
         ChatMessageViewHolderBinder.bindChatMessage(message, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(message, fxChat)
+        messageBubble?.setReplyMsg(message.dummyReplyBubbleMsg)
         bindMargin(message)
         bindClick()
     }

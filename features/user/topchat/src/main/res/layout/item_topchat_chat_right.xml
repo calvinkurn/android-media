@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/llRoleUser"
         tools:ignore="RtlHardcoded">
 
-        <com.tokopedia.topchat.chatroom.view.custom.MessageBubbleConstraintLayout
+        <com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
             android:id="@+id/mb_bubble_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
