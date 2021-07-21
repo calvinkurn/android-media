@@ -1,7 +1,10 @@
 package com.tokopedia.cartcommon.data.response.common
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Button(
         @SerializedName("code")
         val code: String = "",
@@ -11,7 +14,7 @@ data class Button(
         val id: String = "",
         @SerializedName("message")
         val message: String = ""
-) {
+): Parcelable {
     companion object {
         const val ID_START_SHOPPING = "1"
         const val ID_RETRY = "2"

@@ -18,8 +18,8 @@ buildscript {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
-    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
 
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

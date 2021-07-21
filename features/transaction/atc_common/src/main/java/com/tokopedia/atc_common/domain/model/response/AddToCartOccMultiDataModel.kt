@@ -1,8 +1,8 @@
 package com.tokopedia.atc_common.domain.model.response
 
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
-import com.tokopedia.purchase_platform.common.feature.toasteraction.ToasterActionData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 
 data class AddToCartOccMultiDataModel(
         val errorMessage: List<String> = emptyList(),
@@ -46,8 +46,8 @@ data class AddToCartOccMultiData(
         val success: Int = 0,
         val message: List<String> = emptyList(),
         val cart: List<AddToCartOccMultiCartData> = emptyList(),
-        val outOfService: OutOfServiceData = OutOfServiceData(),
-        val toasterAction: ToasterActionData = ToasterActionData()
+        val outOfService: OutOfService = OutOfService(),
+        val toasterAction: ToasterAction = ToasterAction()
 )
 
 data class AddToCartOccMultiCartData(

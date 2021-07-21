@@ -1,8 +1,8 @@
 package com.tokopedia.atc_common.data.model.response.occ
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
-import com.tokopedia.purchase_platform.common.feature.toasteraction.ToasterActionData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 
 class AddToCartOccMultiGqlResponse(
         @SerializedName("add_to_cart_occ_multi")
@@ -26,9 +26,9 @@ class DataOccMultiResponse(
         @SerializedName("carts")
         val detail: List<DetailOccMultiResponse> = emptyList(),
         @SerializedName("toaster_action")
-        val toasterAction: ToasterActionData = ToasterActionData(),
+        val toasterAction: ToasterAction = ToasterAction(),
         @SerializedName("out_of_service")
-        val outOfService: OutOfServiceData = OutOfServiceData()
+        val outOfService: OutOfService = OutOfService()
 )
 
 class DetailOccMultiResponse(

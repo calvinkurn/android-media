@@ -1,7 +1,7 @@
 package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
@@ -25,7 +25,7 @@ data class CartListData(
         var lastApplyShopGroupSimplifiedData: LastApplyUiModel = LastApplyUiModel(),
         var shoppingSummaryData: ShoppingSummaryData = ShoppingSummaryData(),
         var promoSummaryData: PromoSummaryData = PromoSummaryData(),
-        var outOfServiceData: OutOfServiceData = OutOfServiceData(),
+        var outOfServiceData: OutOfService = OutOfService(),
         var showLessUnavailableDataWording: String = "",
         var showMoreUnavailableDataWording: String = "",
         var localizationChooseAddressData: LocalizationChooseAddressData = LocalizationChooseAddressData(),

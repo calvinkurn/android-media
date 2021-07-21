@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.data.update
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 import com.tokopedia.oneclickcheckout.order.data.get.OccPromptResponse
-import com.tokopedia.purchase_platform.common.feature.toasteraction.ToasterActionData
 
 data class UpdateCartOccGqlResponse(
         @SerializedName("update_cart_occ")
@@ -28,7 +28,7 @@ data class UpdateCartDataOcc(
         @SerializedName("success")
         val success: Int = 0,
         @SerializedName("toaster_action")
-        val toasterAction: ToasterActionData = ToasterActionData(),
+        val toasterAction: ToasterAction = ToasterAction(),
         @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse()
 )

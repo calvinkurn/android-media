@@ -68,6 +68,13 @@ import com.tokopedia.cart.view.mapper.ViewHolderDataMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
+import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
+import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_MAINTENANCE
+import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_OVERLOAD
+import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_TIMEOUT
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -93,13 +100,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceButtonData.Companion.ID_HOMEPAGE
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceButtonData.Companion.ID_RETRY
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceButtonData.Companion.ID_START_SHOPPING
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData.Companion.ID_MAINTENANCE
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData.Companion.ID_OVERLOAD
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -1767,7 +1767,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
-            if (it.outOfServiceData.isOutOfService) {
+            if (it.outOfServiceData.isOutOfService()) {
                 renderCartOutOfService(it.outOfServiceData)
                 return@let
             }
@@ -1927,7 +1927,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
+    private fun renderCartOutOfService(outOfServiceData: OutOfService) {
         binding?.apply {
             when (outOfServiceData.id) {
                 ID_MAINTENANCE, ID_TIMEOUT, ID_OVERLOAD -> {
@@ -2726,7 +2726,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData) {
+    override fun renderErrorToShipmentForm(outOfServiceData: OutOfService) {
         renderCartOutOfService(outOfServiceData)
     }
 

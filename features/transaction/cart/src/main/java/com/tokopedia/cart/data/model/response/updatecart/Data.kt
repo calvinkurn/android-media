@@ -1,8 +1,8 @@
 package com.tokopedia.cart.data.model.response.updatecart
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.outofservice.OutOfServiceData
-import com.tokopedia.purchase_platform.common.feature.toasteraction.ToasterActionData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 
 /**
  * Created by Irfan Khoirul on 2019-12-26.
@@ -14,7 +14,7 @@ data class Data(
         @SerializedName("status")
         val status: Boolean = false,
         @SerializedName("out_of_service")
-        val outOfService: OutOfServiceData = OutOfServiceData(),
+        val outOfService: OutOfService = OutOfService(),
         @SerializedName("toaster_action")
-        val toasterAction: ToasterActionData = ToasterActionData()
+        val toasterAction: ToasterAction = ToasterAction()
 )
