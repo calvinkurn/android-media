@@ -18,6 +18,7 @@ import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.constant.PMTier
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
 import com.tokopedia.gm.common.view.bottomsheet.SimpleInterruptBottomSheet
@@ -46,6 +47,7 @@ class PMShopScoreInterruptHelper @Inject constructor(
         private const val PARAM_HAS_CLICKED = "has_clicked"
 
         private const val REQUEST_CODE = 403
+        private const val SHOP_SCORE_THRESHOLD = 60
     }
 
     private var data: PowerMerchantInterruptUiModel? = null
@@ -178,6 +180,7 @@ class PMShopScoreInterruptHelper @Inject constructor(
         when (data.periodType) {
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data)
             PeriodType.COMMUNICATION_PERIOD -> setupInterruptCommunicationPeriod(context, data, fm)
+            PeriodType.END_GAME_PERIOD -> {}
         }
     }
 
@@ -186,6 +189,14 @@ class PMShopScoreInterruptHelper @Inject constructor(
             showInterruptNewSellerPmIdle(context, fm)
         } else {
             showInterruptPage(context, data)
+        }
+    }
+
+    private fun setupInterruptEndGamePeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+        if ((data.pmTier == PMTier.REGULAR || data.pmTier == PMTier.PRO) && !data.isOfficialStore) {
+            if (data.pmStatus == PMStatusConst.IDLE && data.shopScore < SHOP_SCORE_THRESHOLD) {
+                showInterruptExistingSellerPMIdle(context, fm)
+            }
         }
     }
 
@@ -214,6 +225,10 @@ class PMShopScoreInterruptHelper @Inject constructor(
                     pmCommonPreferenceManager.apply()
                 }
         bottomSheet.show(fm)
+    }
+
+    private fun showInterruptExistingSellerPMIdle(context: Context, fm: FragmentManager) {
+
     }
 
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel) {

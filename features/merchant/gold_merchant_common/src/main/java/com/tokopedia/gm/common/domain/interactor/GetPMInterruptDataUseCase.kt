@@ -45,6 +45,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
                 data {
                   power_merchant {
                     status
+                    pm_tier
                   }
                   official_store {
                     status
@@ -53,6 +54,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source:${'$'}source) {
                 period_type
+                period_start_date_time
               }
             }
         """.trimIndent()

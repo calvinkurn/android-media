@@ -8,4 +8,5 @@ object PeriodType {
     const val EXISTING_PERIOD = ""
     const val COMMUNICATION_PERIOD = "communication_period"
     const val TRANSITION_PERIOD = "transition_period"
+    const val END_GAME_PERIOD = "final_period"
 }

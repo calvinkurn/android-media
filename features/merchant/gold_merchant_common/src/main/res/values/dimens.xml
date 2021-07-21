@@ -22,4 +22,8 @@
     <dimen name="gmc_dimen_162dp">162dp</dimen>
     <dimen name="gmc_dimen_176dp">176dp</dimen>
     <dimen name="gmc_dimen_200dp">200dp</dimen>
+
+    <dimen name="gmc_dimen_49dp">49dp</dimen>
+    <dimen name="gmc_dimen_328dp">328dp</dimen>
+
 </resources>
