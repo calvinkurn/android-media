@@ -7,12 +7,12 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.chipwidget.AutocompleteChipDataView
 import com.tokopedia.autocomplete.chipwidget.AutocompleteChipWidgetViewListener
 import com.tokopedia.autocomplete.suggestion.BaseSuggestionDataView
-import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.suggestion.SuggestionListener
 import kotlinx.android.synthetic.main.layout_autocomplete_chip_widget.view.*
 
 class SuggestionChipWidgetViewHolder(
         itemView: View,
-        private val clickListener: SuggestionClickListener
+        private val clickListener: SuggestionListener
 ): AbstractViewHolder<SuggestionChipWidgetDataView>(itemView) {
 
     companion object {

@@ -66,7 +66,7 @@ internal fun SuggestionDoubleLineDataDataView.assertBoldText(expectedValue: Bool
     isBoldText() shouldBe expectedValue
 }
 
-internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView() {
+internal fun Visitable<*>.shouldBeSuggestionDoubleLineDataView(isBold: Boolean) {
     shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
     (this as SuggestionDoubleLineDataDataView).assertBoldText(isBold)
 }
