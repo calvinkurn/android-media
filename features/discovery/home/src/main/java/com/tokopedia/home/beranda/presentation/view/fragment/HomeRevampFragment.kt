@@ -244,6 +244,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
+        private const val TIME_TO_WAIT = 500L
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -341,7 +342,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
-    private val TIME_TO_WAIT = 500L
     private val coachmarkHandler = Handler()
     private var coachmarkRunnable = Runnable {
         if (!bottomSheetIsShowing) {

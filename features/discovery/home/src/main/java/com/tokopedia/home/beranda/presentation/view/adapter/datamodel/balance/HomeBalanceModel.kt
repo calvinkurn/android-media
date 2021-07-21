@@ -51,6 +51,11 @@ data class HomeBalanceModel(
 
         const val error_no_supported_wallet =
             "Unable to find wallet balance, possibly empty wallet app balance list or no supported wallet partner found in response"
+
+        const val BALANCE_POSITION_FIRST = 0
+        const val BALANCE_POSITION_SECOND = 1
+        const val BALANCE_POSITION_THIRD = 2
+        const val BALANCE_POSITION_FOURTH = 3
     }
 
     override fun equals(other: Any?): Boolean {
@@ -348,29 +353,29 @@ data class HomeBalanceModel(
             TYPE_STATE_1 -> {
                 itemTypeCondition(
                     itemType,
-                    typeWalletCondition = { action.invoke(0) },
-                    typeCouponCondition = { action.invoke(1) },
-                    typeRewardsCondition = { action.invoke(1) },
-                    typeFreeOngkirCondition = { action.invoke(2) }
+                    typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                    typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                    typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                    typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
                 )
             }
             TYPE_STATE_2 -> {
                 itemTypeCondition(
                     itemType,
-                    typeWalletCondition = { action.invoke(0) },
-                    typeFreeOngkirCondition = { action.invoke(1) },
-                    typeTokopointCondition = { action.invoke(2) },
-                    typeCouponCondition = { action.invoke(3) },
-                    typeRewardsCondition = { action.invoke(3) }
+                    typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                    typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                    typeTokopointCondition = { action.invoke(BALANCE_POSITION_THIRD) },
+                    typeCouponCondition = { action.invoke(BALANCE_POSITION_FOURTH) },
+                    typeRewardsCondition = { action.invoke(BALANCE_POSITION_FOURTH) }
                 )
             }
             TYPE_STATE_3 -> {
                 itemTypeCondition(
                     itemType,
-                    typeTokopointCondition = { action.invoke(0) },
-                    typeCouponCondition = { action.invoke(1) },
-                    typeRewardsCondition = { action.invoke(1) },
-                    typeFreeOngkirCondition = { action.invoke(2) }
+                    typeTokopointCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                    typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                    typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                    typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
                 )
             }
         }
