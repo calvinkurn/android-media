@@ -29,6 +29,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.minicart)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.features.stickyLogin)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -51,6 +53,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.empty_state
+
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
