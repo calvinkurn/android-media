@@ -7,7 +7,6 @@
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_broadcast_interaction"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -71,30 +70,36 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/play_seller_chat_max_height"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toTopOf="@id/iv_product_tag"
+            app:layout_constraintBottom_toTopOf="@id/fl_product_tag"
             app:layout_constraintEnd_toStartOf="@id/iv_share_link"
-            app:layout_constraintStart_toStartOf="@id/iv_product_tag"
+            app:layout_constraintStart_toStartOf="@id/fl_product_tag"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_product_tag"
+        <FrameLayout
+            android:id="@+id/fl_product_tag"
             android:layout_width="@dimen/layout_lvl5"
             android:layout_height="@dimen/layout_lvl5"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:background="@drawable/bg_play_light_gray_circle"
             app:layout_constraintBottom_toBottomOf="@id/iv_share_link"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_play_inventory_disabled"
-            />
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_play_inventory_disabled" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:id="@+id/view_play_interactive"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             app:layout_constraintWidth_default="wrap"
-            app:layout_constraintBottom_toBottomOf="@id/iv_product_tag"
+            app:layout_constraintBottom_toBottomOf="@id/fl_product_tag"
             app:layout_constraintEnd_toStartOf="@id/iv_share_link"
-            app:layout_constraintStart_toEndOf="@id/iv_product_tag"
+            app:layout_constraintStart_toEndOf="@id/fl_product_tag"
             />
 
         <androidx.appcompat.widget.AppCompatImageView
