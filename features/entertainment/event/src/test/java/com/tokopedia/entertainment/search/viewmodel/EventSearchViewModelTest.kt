@@ -18,6 +18,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -41,6 +42,7 @@ class EventSearchViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+    private val dispatcher = CoroutineTestDispatchersProvider
 
     lateinit var eventSearchViewModel: EventSearchViewModel
 
@@ -52,7 +54,7 @@ class EventSearchViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        eventSearchViewModel = EventSearchViewModel(Dispatchers.Unconfined, graphqlRepository)
+        eventSearchViewModel = EventSearchViewModel(dispatcher, graphqlRepository)
         eventSearchViewModel.resources = context.resources
     }
 

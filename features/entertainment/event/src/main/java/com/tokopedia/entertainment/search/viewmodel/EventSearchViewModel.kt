@@ -55,10 +55,8 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                    withContext(dispatcher.io) {
                         errorReport.postValue(it)
                         isItRefreshing.postValue(false)
-                    }
                 }
         )
     }
@@ -73,10 +71,8 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                    withContext(dispatcher.io) {
                         errorReport.postValue(it)
                         isItRefreshing.postValue(false)
-                    }
                 }
         )
     }
