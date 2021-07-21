@@ -381,7 +381,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         binding?.tvHotelAddress?.text = data.property.address
 
         binding?.ivHotelDetailLocation?.loadImage(data.property.locationImageStatic)
-
         setupSafetyBadgeLayout(data.safetyBadge)
         setupPolicySwitcher(data)
         setupImportantInfo(data)

@@ -306,6 +306,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             TYPE_PRODUCT -> {
                 view?.trackEventClickProductLine(item, getGlobalEventLabelForTracking(item), getUserId())
             }
+            TYPE_LIGHT -> {
+                view?.trackEventClickCurated(getCuratedLightEventLabelForTracking(item), item.trackingCode, item.dimension90)
+            }
         }
     }
 
@@ -358,6 +361,16 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
+    private fun getCuratedLightEventLabelForTracking(item: BaseSuggestionDataView): String {
+        return String.format(
+            "keyword: %s - product: %s - po: %s - page: %s",
+            item.searchTerm,
+            item.subtitle,
+            item.position,
+            item.applink
+        )
+    }
+
     private fun getCampaignFromLocal(): String {
         return searchParameter[SearchApiConst.SRP_PAGE_TITLE] ?: ""
     }
@@ -369,6 +382,17 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 item.searchTerm,
                 item.applink
         )
+    }
+
+    override fun onSuggestionItemImpressed(item: BaseSuggestionDataView) {
+        when (item.type) {
+            TYPE_LIGHT -> impressCurated(item, getCuratedLightEventLabelForTracking(item))
+            TYPE_CURATED -> impressCurated(item, getCuratedEventLabelForTracking(item))
+        }
+    }
+
+    private fun impressCurated(item: BaseSuggestionDataView, label: String) {
+        view?.trackEventImpressCurated(label, item.trackingCode, item.dimension90)
     }
 
     override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {
