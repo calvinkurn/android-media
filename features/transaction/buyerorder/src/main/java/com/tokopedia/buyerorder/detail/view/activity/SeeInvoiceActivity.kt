@@ -21,6 +21,7 @@ import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.detail.data.OrderCategory
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
@@ -59,14 +60,10 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
     }
 
     private fun doWebPrint() {
-        val webView = WebView(this)
-        webView.settings.javaScriptEnabled
-        webView.settings.domStorageEnabled
-        webView.settings.builtInZoomControls
-        webView.settings.displayZoomControls
-        val data = intent?.extras?.getString(KEY_URL, "defaultKey")
-        webView.loadUrl(data)
-        onPrintClicked(webView)
+        val fragment = fragment
+        if (fragment is BaseWebViewFragment) {
+            onPrintClicked(fragment.webView)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

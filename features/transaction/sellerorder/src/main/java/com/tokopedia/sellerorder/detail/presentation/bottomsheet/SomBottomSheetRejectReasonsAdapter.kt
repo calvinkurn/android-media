@@ -12,6 +12,15 @@ import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
  * Created by fwidjaja on 2019-11-05.
  */
 class SomBottomSheetRejectReasonsAdapter(private var listener: ActionListener): RecyclerView.Adapter<SomBottomSheetRejectReasonsAdapter.ViewHolder>()  {
+
+    companion object {
+        const val REJECT_REASON_PRODUCT_EMPTY = 1
+        const val REJECT_REASON_SHOP_CLOSED = 4
+        const val REJECT_REASON_COURIER_PROBLEMS = 7
+        const val REJECT_REASON_OTHER_REASON = 14
+        const val REJECT_REASON_BUYER_NO_RESPONSE = 15
+    }
+
     var listRejectReasons = mutableListOf<SomReasonRejectData.Data.SomRejectReason>()
 
     interface ActionListener {

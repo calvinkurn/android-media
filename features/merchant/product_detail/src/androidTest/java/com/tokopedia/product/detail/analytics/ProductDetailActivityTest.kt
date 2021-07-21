@@ -24,6 +24,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringLis
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
@@ -66,6 +67,13 @@ class ProductDetailActivityTest {
             activity.productDetailLoadTimeMonitoringListener = productDetailLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
         }
+    }
+
+    private fun getPositionViewHolderByName(name: String): Int {
+        val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+        return fragment.productAdapter?.currentList?.indexOfFirst {
+            it.name() == name
+        } ?: 0
     }
 
     val productDetailLoadTimeMonitoringListener = object : ProductDetailLoadTimeMonitoringListener {
@@ -202,9 +210,10 @@ class ProductDetailActivityTest {
     }
 
     private fun clickSeeAllDiscussion() {
+        val discussionPosition = getPositionViewHolderByName("discussion_faq")
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
         val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(13, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(discussionPosition, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
     }
 
     private fun clickThreadDetailDiscussion() {
@@ -241,14 +250,14 @@ class ProductDetailActivityTest {
     private fun clickVariantTest() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variant_img_container)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
     }
 
     private fun clickSeeGuideSizeChart() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.rvContainerVariant))), scrollTo()))
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txt_variant_guideline)))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
     }
 
     private fun waitForTrackerSent() {
@@ -275,7 +284,7 @@ class ProductDetailActivityTest {
     }
 
     companion object {
-        const val PRODUCT_ID = "1267836204"
+        const val PRODUCT_ID = "1994427767"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
         const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
         const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
