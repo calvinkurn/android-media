@@ -185,7 +185,8 @@ class GetOccCartMapper @Inject constructor() {
             productImageUrl = product.productImage.imageSrc200Square
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
-            originalPrice = product.productPriceOriginalFmt
+            originalPrice = product.productOriginalPrice
+            initialPrice = product.initialPrice
             weight = product.productWeight
             weightActual = product.productWeightActual
             isFreeOngkirExtra = product.freeShippingExtra.eligible

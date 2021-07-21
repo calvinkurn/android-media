@@ -102,18 +102,31 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         binding.apply {
             tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
 
-            if (!product.isError && product.originalPrice.isNotBlank()) {
-                tvProductSlashPrice.text = product.originalPrice
-                tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                tvProductSlashPrice.visible()
-            } else {
-                tvProductSlashPrice.gone()
-            }
-
             if (!product.isError && product.slashPriceLabel.isNotBlank()) {
                 lblProductSlashPricePercentage.setLabel(product.slashPriceLabel)
                 lblProductSlashPricePercentage.visible()
+                if (product.originalPrice > 0) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.originalPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else {
+                    tvProductSlashPrice.gone()
+                }
+            } else if (!product.isError) {
+                lblProductSlashPricePercentage.gone()
+                if (product.getPrice() < product.productPrice) {
+                    var originalPrice = product.productPrice
+                    if (product.initialPrice > 0 && product.initialPrice < product.productPrice) {
+                        originalPrice = product.initialPrice
+                    }
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else {
+                    tvProductSlashPrice.gone()
+                }
             } else {
+                tvProductSlashPrice.gone()
                 lblProductSlashPricePercentage.gone()
             }
 

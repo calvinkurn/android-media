@@ -203,6 +203,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             campaign_id
             product_original_price
             product_price_original_fmt
+            initial_price
+            initial_price_fmt
             slash_price_label
             product_finsurance
             warehouse_id

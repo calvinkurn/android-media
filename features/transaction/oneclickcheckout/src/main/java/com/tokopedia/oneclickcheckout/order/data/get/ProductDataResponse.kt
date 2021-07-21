@@ -51,6 +51,8 @@ class ProductDataResponse(
         val productOriginalPrice: Long = 0,
         @SerializedName("product_price_original_fmt")
         val productPriceOriginalFmt: String = "",
+        @SerializedName("initial_price")
+        val initialPrice: Long = 0,
         @SerializedName("slash_price_label")
         val slashPriceLabel: String = "",
         @SerializedName("product_finsurance")

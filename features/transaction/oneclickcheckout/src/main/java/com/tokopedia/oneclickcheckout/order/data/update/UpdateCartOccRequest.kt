@@ -23,7 +23,7 @@ data class UpdateCartOccRequest(
 
 data class UpdateCartOccCartRequest(
         @SerializedName("cart_id")
-        val cartId: String = "",
+        val cartId: String? = null,
         @SerializedName("quantity")
         val quantity: Int = 1,
         @SerializedName("notes")

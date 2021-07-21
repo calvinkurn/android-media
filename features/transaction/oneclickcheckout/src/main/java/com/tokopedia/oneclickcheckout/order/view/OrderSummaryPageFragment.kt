@@ -64,7 +64,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -556,27 +555,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             }
                         }
                         Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
-                    }
-                }
-                is OccGlobalEvent.CheckoutError -> {
-                    progressDialog?.dismiss()
-                    view?.let { _ ->
-                        ErrorCheckoutBottomSheet().show(this, it.error, object : ErrorCheckoutBottomSheet.Listener {
-                            override fun onClickSimilarProduct(errorCode: String) {
-                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                                    orderSummaryAnalytics.eventClickSimilarProductShopClosed()
-                                } else {
-                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
-                                }
-                                RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProducts.value.first().productId.toString())
-                                activity?.finish()
-                            }
-                        })
-                        if (it.error.code == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_SHOP_CLOSED)
-                        } else {
-                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_STOCK)
-                        }
                     }
                 }
                 is OccGlobalEvent.PriceChangeError -> {

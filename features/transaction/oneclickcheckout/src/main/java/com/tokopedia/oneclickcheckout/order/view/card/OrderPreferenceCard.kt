@@ -586,7 +586,9 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         }
                         tvPaymentErrorMessage.text = span
                         tvPaymentErrorMessage.visible()
-                        tvPaymentDetail.gone()
+                        if (tvPaymentDetail.text.toString().isEmpty()) {
+                            tvPaymentDetail.gone()
+                        }
                         tvPaymentOvoErrorAction.gone()
                     }
                     btnChangePayment.visible()
