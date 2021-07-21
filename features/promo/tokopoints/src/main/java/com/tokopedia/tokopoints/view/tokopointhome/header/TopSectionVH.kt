@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -23,16 +24,20 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.TickerListItem
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
 import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.isDarkMode
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.Typography
 
 
 class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
@@ -51,6 +56,10 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var savingDesc: TextView? = null
     private var cardContainer: ConstraintLayout? = null
     private var containerUserSaving: ConstraintLayout? = null
+    private var containerStatusMatching: ConstraintLayout? = null
+    private var tvStatusMatching: Typography? = null
+    private var backGroundImage: AppCompatImageView? = null
+    private var cardStatusMatching: CardUnify? = null
     private val MEMBER_STATUS_BG_RADII = 16F
 
     fun bind(model: TopSectionResponse) {
@@ -67,6 +76,10 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         savingDesc = itemView.findViewById(R.id.tv_saving_desc)
         cardContainer = itemView.findViewById(R.id.container_saving)
         containerUserSaving = itemView.findViewById(R.id.container_layout_saving)
+        containerStatusMatching = itemView.findViewById(R.id.container_statusmatching)
+        tvStatusMatching = itemView.findViewById(R.id.tv_statusmatching)
+        backGroundImage = itemView.findViewById(R.id.iv_background)
+        cardStatusMatching = itemView.findViewById(R.id.cv_statusmatching)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         if (model.userSavingResponse?.userSaving!=null){
@@ -74,6 +87,12 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             containerUserSaving?.show()
             renderUserSaving(it)
         }}
+        model.rewardTickerResponse?.let {
+            if (!it.rewardsTicker?.ticker?.tickerList.isNullOrEmpty()) {
+                containerStatusMatching?.show()
+                renderStatusMatchingView(it.rewardsTicker?.ticker?.tickerList)
+            }
+        }
     }
 
     private fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
@@ -266,6 +285,15 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                     AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
             )
         }
+    }
+
+    private fun renderStatusMatchingView(rewardTickerResponse: List<TickerListItem?>?) {
+        cardStatusMatching?.setOnClickListener {
+            RouteManager.route(itemView.context, rewardTickerResponse?.get(0)?.metadata?.get(0)?.link?.url)
+        }
+        backGroundImage?.loadImage(rewardTickerResponse?.get(0)?.metadata?.get(0)?.image?.url)
+        tvStatusMatching?.text = rewardTickerResponse?.get(0)?.metadata?.get(0)?.text?.content
+
     }
 
     interface CardRuntimeHeightListener {

@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerResponse
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
@@ -31,6 +32,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
     val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
     var deferredSavingData: UserSavingResponse? = null
     var recomData: RewardsRecommendation? = null
+    var rewardTickerResponse : RewardTickerResponse? = null
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
@@ -44,10 +46,11 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
             if (data.tokopediaRewardTopSection?.isShowSavingPage == true) {
                 deferredSavingData = getUserSavingData().await()
             }
+            rewardTickerResponse = getStatusMatchingData().await()
             recomData = getRecommendationData().await()
             if (data != null && dataSection != null && dataSection.sectionContent != null && data.tokopediaRewardTopSection != null) {
                 tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection,
-                    deferredSavingData?.tokopointsUserSaving), dataSection.sectionContent.sectionContent,recomData))
+                    deferredSavingData?.tokopointsUserSaving, rewardTickerResponse), dataSection.sectionContent.sectionContent,recomData))
             } else {
                 throw NullPointerException("error in data")
             }
@@ -92,9 +95,21 @@ class TokoPointsHomeViewModel @Inject constructor(private val tokopointsHomeUsec
             userSavingResponse
         }
     }
+
+    private suspend fun getStatusMatchingData(): Deferred<RewardTickerResponse> {
+        return async(Dispatchers.IO) {
+            var rewardTickerResponse = RewardTickerResponse()
+            try {
+                val response = tokopointsHomeUsecase.getUserStatusMatchingData()
+                rewardTickerResponse = response.getData(RewardTickerResponse::class.java)
+            } catch (e: Exception) {
+            }
+            rewardTickerResponse
+        }
+    }
 }
 
 data class TokopointSuccess(val topSectionResponse: TopSectionResponse, val sectionList: MutableList<SectionContent>, val recomData: RewardsRecommendation?)
-data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: TokopointsUserSaving?)
+data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: TokopointsUserSaving?, val rewardTickerResponse: RewardTickerResponse?)
 data class RewardsRecommendation(val recommendationWrapper: List<RecommendationWrapper> , val title:String , val appLink:String)
 data class RecommendationWrapper( val recomendationItem : RecommendationItem,val recomData: ProductCardModel)

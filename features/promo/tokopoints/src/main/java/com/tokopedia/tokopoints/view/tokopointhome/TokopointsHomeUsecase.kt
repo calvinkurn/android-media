@@ -1,15 +1,19 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionRepository
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerResponse
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.*
+import com.tokopedia.tokopoints.view.util.TP_CATALOG_MVC_LIST_QUERY
+import com.tokopedia.tokopoints.view.util.TP_STATUS_MATCHING_QUERY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -21,7 +25,8 @@ import kotlin.collections.HashMap
 class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_TOP_SECTION_NEW) private val tp_gql_topsection_new: String,
                                                    @Named(CommonConstant.GQLQuery.TP_GQL_HOME_PAGE_SECTION) val tp_gql_homepage_section: String,
                                                    @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_INTRO) val tp_gql_reward_intro: String,
-                                                   @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_USESAVING) val tp_gql_usersaving: String) {
+                                                   @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_USESAVING) val tp_gql_usersaving: String,
+) {
 
 
     @Inject
@@ -64,6 +69,16 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
         variables[CommonConstant.GraphqlVariableKeys.SAVING_TYPE] = 1
         mGetUserSavingUsecase.clearRequest()
         val requestSaving = GraphqlRequest(tp_gql_usersaving,UserSavingResponse::class.java,variables,false)
+        mGetUserSavingUsecase.addRequest(requestSaving)
+        mGetUserSavingUsecase.executeOnBackground()
+    }
+
+    @GqlQuery("TpStatusMatching", TP_STATUS_MATCHING_QUERY)
+    suspend fun getUserStatusMatchingData() = withContext(Dispatchers.IO){
+        val variables: MutableMap<String, Any> = HashMap()
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "1.0.0"
+        mGetUserSavingUsecase.clearRequest()
+        val requestSaving = GraphqlRequest(TpStatusMatching.GQL_QUERY,RewardTickerResponse::class.java,variables,false)
         mGetUserSavingUsecase.addRequest(requestSaving)
         mGetUserSavingUsecase.executeOnBackground()
     }

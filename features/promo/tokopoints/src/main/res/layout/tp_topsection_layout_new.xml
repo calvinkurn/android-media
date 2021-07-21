@@ -124,10 +124,19 @@
     </com.tokopedia.unifycomponents.CardUnify>
 
     <include
-        layout="@layout/tp_layout_usersaving"
+        android:id="@+id/status_matching_container"
+        layout="@layout/tp_layout_stausmatching"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/card_point"
+        android:layout_marginTop="@dimen/dp_8"
+        android:visibility="visible"/>
+
+    <include
+        layout="@layout/tp_layout_usersaving"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/status_matching_container"
         android:layout_marginTop="@dimen/dp_8"
         android:visibility="gone" />
 
