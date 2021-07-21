@@ -10,6 +10,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import java.lang.Exception
 
 /**
  * Created by meta on 23/11/18.
@@ -101,7 +104,13 @@ class TrackingMapper {
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
                 item.put("event", keyEvent)
-                item.put("hits_time", Calendar.getInstance().timeInMillis)
+                val hits_time = Calendar.getInstance().timeInMillis
+                item.put("hits_time",hits_time)
+                try{
+                    val _ignore = hits_time.toString().toLong()
+                }catch (e: Exception){
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "hitsTimeInvalid", "value" to hits_time.toString(), "exception" to e.toString()))
+                }
                 item
             } catch (e: JSONException) {
                 JSONObject()
