@@ -38,7 +38,6 @@ class OneLinersViewHolder(
     private val separatorBottom: View? = view.findViewById(R.id.one_liners_bottom_separator)
 
     override fun bind(element: OneLinersDataModel) {
-
         val content = element.oneLinersContent
         if (content == null || !content.isVisible){
             itemView.layoutParams.height = 0
@@ -52,6 +51,7 @@ class OneLinersViewHolder(
             val applink = content.applink
             if (applink.isNotBlank()) {
                 setOnClickListener { listener.goToApplink(applink) }
+                iconRightArrow?.visible()
             }
         }
 
@@ -84,9 +84,7 @@ class OneLinersViewHolder(
                 setPadding(paddingLeft, 0, paddingRight, dp12)
             }
             title?.setWeight(Typography.BOLD)
-            iconRightArrow?.visible()
         }
-
     }
 
     private fun getComponentTrackData(element: OneLinersDataModel?) = ComponentTrackDataModel(
