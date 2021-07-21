@@ -897,22 +897,23 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun showBulkAcceptOrderDialog(orderCount: Int) {
+        if (bulkAcceptOrderDialog?.getDialogUnify()?.isShowing == true) {
+            bulkAcceptOrderDialog?.dismiss()
+        }
         context?.let { context ->
-            if (bulkAcceptOrderDialog == null) {
-                bulkAcceptOrderDialog = SomListBulkAcceptOrderDialog(context).apply {
-                    init()
-                    setOnDismiss {
-                        resetOrderSelectedStatus()
-                        toggleBulkAction()
-                        toggleBulkActionButtonVisibility()
-                        toggleBulkActionCheckboxVisibility()
-                        toggleTvSomListBulkText()
-                        loadFilters(loadOrders = true)
-                        if (shouldReloadOrderListImmediately()) {
-                            loadOrderList()
-                        } else {
-                            getSwipeRefreshLayout(view)?.isRefreshing = true
-                        }
+            bulkAcceptOrderDialog = SomListBulkAcceptOrderDialog(context).apply {
+                init()
+                setOnDismiss {
+                    resetOrderSelectedStatus()
+                    toggleBulkAction()
+                    toggleBulkActionButtonVisibility()
+                    toggleBulkActionCheckboxVisibility()
+                    toggleTvSomListBulkText()
+                    loadFilters(loadOrders = true)
+                    if (shouldReloadOrderListImmediately()) {
+                        loadOrderList()
+                    } else {
+                        getSwipeRefreshLayout(view)?.isRefreshing = true
                     }
                 }
             }

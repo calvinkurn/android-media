@@ -32,6 +32,8 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
         }
     }
 
+    fun getDialogUnify() = dialogUnify
+
     fun setTitle(title: String) {
         childViews?.findViewById<Typography>(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogTitle)?.text = title
     }
