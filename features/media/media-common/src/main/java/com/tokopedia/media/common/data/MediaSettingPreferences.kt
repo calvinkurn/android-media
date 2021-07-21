@@ -3,18 +3,24 @@ package com.tokopedia.media.common.data
 import android.content.Context
 import android.content.SharedPreferences
 
-class MediaSettingPreferences constructor(val context: Context?) {
+class MediaSettingPreferences constructor(
+    private val context: Context?
+) {
 
     private fun pref(): SharedPreferences? {
         return context?.getSharedPreferences(MEDIA_QUALITY_PREF, Context.MODE_PRIVATE)
     }
 
     fun qualitySettings(): Int {
-        return if (isExist(KEY_QUALITY_SETTING)) pref()?.getInt(KEY_QUALITY_SETTING, 0)?: 0 else 0
+        return pref()?.getInt(KEY_QUALITY_SETTING, 0)?: 0
     }
 
     fun toasterVisibility(): Boolean {
-        return if (isExist(KEY_MEDIA_TOASTER)) pref()?.getBoolean(KEY_MEDIA_TOASTER, false)?: false else false
+        return pref()?.getBoolean(KEY_MEDIA_TOASTER, false)?: false
+    }
+
+    fun glideMigration(): Boolean {
+        return pref()?.getBoolean(KEY_GLIDE_CLEAR_CACHE, false)?: false
     }
 
     fun setQualitySettings(value: Int) {
@@ -25,8 +31,8 @@ class MediaSettingPreferences constructor(val context: Context?) {
         pref()?.edit()?.putBoolean(KEY_MEDIA_TOASTER, value)?.apply()
     }
 
-    private fun isExist(key: String): Boolean {
-        return pref()?.contains(key)?: false
+    fun setGlideMigration(value: Boolean) {
+        pref()?.edit()?.putBoolean(KEY_GLIDE_CLEAR_CACHE, value)?.apply()
     }
 
     fun getQualitySetting(index: Int): String {
@@ -42,6 +48,7 @@ class MediaSettingPreferences constructor(val context: Context?) {
         private const val MEDIA_QUALITY_PREF = "media_image_quality"
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
         private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
+        private const val KEY_GLIDE_CLEAR_CACHE = "medialoader_clear_disk_cache"
     }
 
 }
