@@ -19,6 +19,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -471,6 +472,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun bulkRequestPickup_shouldSuccess() = runBlocking {
         val orderIds = listOf("0234", "1456", "2678")
+        val DELAY_REQUEST_PICK_UP = 500L
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
@@ -478,7 +480,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
-        coVerify(ordering = Ordering.SEQUENCE) {
+        delay(DELAY_REQUEST_PICK_UP)
+
+        coVerify {
             bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
         }
@@ -743,7 +747,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
-        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel)
+        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, errors = emptyList(), status = null)
 
         coEvery {
             multiShippingStatusUseCase.executeOnBackground()
