@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import android.content.Context
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
@@ -63,7 +64,7 @@ data class BasicInfo(
         const val KILO = 1000
     }
 
-    fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull() ?: 30000.0
+    fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull() ?: DEFAULT_PRICE_MINIMUM_SHIPPING
     fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
     fun getProductId(): Int = productID.toIntOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0

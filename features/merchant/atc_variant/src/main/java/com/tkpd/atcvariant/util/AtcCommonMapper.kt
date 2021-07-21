@@ -296,7 +296,7 @@ object AtcCommonMapper {
                         ?: "",
                 productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
                 productName = selectedChild?.name ?: "",
-                finalPriceDouble = selectedChild?.finalPrice?.toDouble() ?: 0.0
+                finalPriceDouble = selectedChild?.finalPrice ?: 0.0
         )
         return productImage to headerData
     }

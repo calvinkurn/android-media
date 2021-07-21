@@ -608,14 +608,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    /**
-     * No Usage function
-     */
-    private fun updateShippingValue(shippingPriceValue: Double?) {
-        shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0.0) getDynamicProductInfoP1?.basic?.getDefaultOngkirDouble()
-                ?: DEFAULT_PRICE_MINIMUM_SHIPPING else shippingPriceValue
-    }
-
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
