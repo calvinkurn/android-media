@@ -87,7 +87,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                 if (!it.isError) {
                     cart.add(
                             UpdateCartOccCartRequest(
-                                    if (it.cartId.isEmpty() || it.cartId == "0") null else it.cartId,
+                                    it.cartId,
                                     it.quantity.orderQuantity,
                                     it.notes,
                                     it.productId.toString()
