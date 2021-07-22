@@ -7,7 +7,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
-import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
+import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
@@ -37,7 +37,7 @@ class TroubleshootViewModelTest {
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val troubleshootUseCase: TroubleshootStatusUseCase = mockk(relaxed = true)
+    private val troubleshootUseCase: GetTroubleshootStatusUseCase = mockk(relaxed = true)
     private val notificationChannel: NotificationChannelManager = mockk(relaxed = true)
     private val notificationCompat: NotificationCompatManager = mockk(relaxed = true)
     private val messagingManager: FirebaseMessagingManager = mockk(relaxed = true)
@@ -50,7 +50,8 @@ class TroubleshootViewModelTest {
     private val notificationSetting: Observer<Result<UserSettingUIView>> = mockk(relaxed = true)
     private val deviceSetting: Observer<Result<DeviceSettingState>> = mockk(relaxed = true)
     private val notificationRingtoneUri: Observer<Pair<Uri?, RingtoneState>> = mockk(relaxed = true)
-    private val troubleshoot: Observer<Result<NotificationSendTroubleshoot>> = mockk(relaxed = true)
+    private val troubleshootSuccess: Observer<NotificationSendTroubleshoot> = mockk(relaxed = true)
+    private val troubleshootError: Observer<Throwable> = mockk(relaxed = true)
     private val tokenObserver: Observer<Result<String>> = mockk(relaxed = true)
     private val dndMode: Observer<Boolean> = mockk(relaxed = true)
 
@@ -76,7 +77,8 @@ class TroubleshootViewModelTest {
         viewModel.notificationSetting.observeForever(notificationSetting)
         viewModel.deviceSetting.observeForever(deviceSetting)
         viewModel.notificationRingtoneUri.observeForever(notificationRingtoneUri)
-        viewModel.troubleshoot.observeForever(troubleshoot)
+        viewModel.troubleshootSuccess.observeForever(troubleshootSuccess)
+        viewModel.troubleshootError.observeForever(troubleshootError)
         viewModel.token.observeForever(tokenObserver)
         viewModel.dndMode.observeForever(dndMode)
     }
@@ -100,8 +102,8 @@ class TroubleshootViewModelTest {
     }
 
     @Test fun `it should troubleshoot push notification properly`() = runBlockingTest {
-        val expectedReturn = NotificationTroubleshoot()
-        val expectedValue = Success(expectedReturn.notificationSendTroubleshoot)
+        val expectedReturn = Success(NotificationTroubleshoot())
+        val expectedValue = expectedReturn.data.notificationSendTroubleshoot
 
         coEvery {
             troubleshootUseCase(any())
@@ -109,19 +111,19 @@ class TroubleshootViewModelTest {
 
         viewModel.troubleshoot()
 
-        verify { troubleshoot.onChanged(expectedValue) }
-        viewModel.troubleshoot isEqualsTo expectedValue
+        verify { troubleshootSuccess.onChanged(expectedValue) }
+        viewModel.troubleshootSuccess isEqualsTo expectedValue
     }
 
     @Test fun `it should cannot troubleshoot`() = runBlockingTest {
         val expectedValue = Throwable()
-        coEvery {
-            troubleshootUseCase(any())
-        } throws expectedValue
+        val expectedReturn = Fail(expectedValue)
+
+        coEvery { troubleshootUseCase(mapOf()) } returns expectedReturn
 
         viewModel.troubleshoot()
 
-        verify { troubleshoot.onChanged(Fail(expectedValue)) }
+        verify { troubleshootError.onChanged(expectedValue) }
     }
 
     @Test fun `it should return new token`() {
