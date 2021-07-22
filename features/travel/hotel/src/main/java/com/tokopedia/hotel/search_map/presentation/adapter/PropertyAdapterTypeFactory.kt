@@ -44,7 +44,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
             }
             HotelLoadingViewHolder.LAYOUT -> {
                 val binding = ItemPropertyHorizontalSearchShimmeringBinding.bind(parent)
-                HotelLoadingViewHolder(binding)
+                return HotelLoadingViewHolder(binding)
             }
             else -> super.createViewHolder(parent, type)
         }

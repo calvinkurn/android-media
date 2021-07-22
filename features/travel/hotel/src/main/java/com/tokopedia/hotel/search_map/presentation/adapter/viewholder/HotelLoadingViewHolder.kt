@@ -9,7 +9,7 @@ import com.tokopedia.hotel.search_map.data.model.HotelLoadingModel
 
 class HotelLoadingViewHolder(val binding: ItemPropertyHorizontalSearchShimmeringBinding): AbstractViewHolder<HotelLoadingModel>(binding.root) {
     override fun bind(element: HotelLoadingModel) {
-        itemView.layoutParams = AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+        binding.root.layoutParams = AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
