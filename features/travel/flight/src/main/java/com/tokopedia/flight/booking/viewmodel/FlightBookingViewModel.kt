@@ -270,12 +270,12 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher.Response>()
             if(data.response.attributes.success){
-                _errorCancelVoucher.postValue(0)
+                _errorCancelVoucher.value = 0
             }else{
-                _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
+                _errorCancelVoucher.value = R.string.flight_error_cancel_voucher
             }
         }) {
-            _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
+            _errorCancelVoucher.value = R.string.flight_error_cancel_voucher
         }
     }
 
