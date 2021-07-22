@@ -186,15 +186,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
 
-    private val REQUEST_GO_TO_SHOP = 111
-    private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
-    private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
-    private val REQUEST_ATTACH_INVOICE = 116
-    private val REQUEST_ATTACH_VOUCHER = 117
-    private val REQUEST_REPORT_USER = 118
-    private val REQUEST_REVIEW = 119
-    private val REQUEST_UPDATE_STOCK = 120
-
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
@@ -1216,7 +1207,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         } else {
             ProductStatus.ACTIVE.name
         }
-        val name = productName?.ellipsize(20) ?: return
+        val name = productName?.ellipsize(ELLIPSIZE_MAX_CHAR) ?: return
         var msg = ""
         when {
             // update active product stock
@@ -1373,7 +1364,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return ImageUploadViewModel(
             messageId,
             opponentId,
-            (System.currentTimeMillis() / 1000).toString(),
+            (System.currentTimeMillis() / SECOND_DIVIDER).toString(),
             imageUrl,
             SendableViewModel.generateStartTime()
         )
@@ -2209,6 +2200,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         private const val EXTRA_SOURCE_STOCK = "chat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
+
+        private const val REQUEST_GO_TO_SHOP = 111
+        private const val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
+        private const val REQUEST_GO_TO_SETTING_TEMPLATE = 113
+        private const val REQUEST_ATTACH_INVOICE = 116
+        private const val REQUEST_ATTACH_VOUCHER = 117
+        private const val REQUEST_REPORT_USER = 118
+        private const val REQUEST_REVIEW = 119
+        private const val REQUEST_UPDATE_STOCK = 120
+
+        private const val ELLIPSIZE_MAX_CHAR = 20
+        private const val SECOND_DIVIDER = 1000
+
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle
