@@ -28,7 +28,6 @@ class ProductRecomWidgetViewHolder (
     }
     private var productRecom: ProductRecomWidgetDataModel? = null
 
-    private var componentTrackDataModel: ComponentTrackDataModel? = null
     private val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
 
     override fun bind(element: ProductRecomWidgetDataModel) {
@@ -38,7 +37,6 @@ class ProductRecomWidgetViewHolder (
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
         } else {
             element.recomWidgetData?.let {
-                componentTrackDataModel = getComponentTrackData(element = element)
                 recomWidget.bind(
                         carouselData = RecommendationCarouselData(it, RecommendationCarouselData.STATE_READY),
                         adapterPosition = adapterPosition,
@@ -51,6 +49,7 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
+        listener.onSeeAllRecomClicked(data.recommendationData.pageName, applink, getComponentTrackData(productRecom))
         listener.goToApplink(applink)
     }
 
@@ -69,7 +68,7 @@ class ProductRecomWidgetViewHolder (
                 itemPosition,
                 data.recommendationData.pageName,
                 data.recommendationData.title,
-                componentTrackDataModel?: ComponentTrackDataModel())
+                getComponentTrackData(productRecom))
     }
 
     override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
@@ -84,7 +83,7 @@ class ProductRecomWidgetViewHolder (
                 itemPosition,
                 data.recommendationData.pageName,
                 data.recommendationData.title,
-                componentTrackDataModel ?: ComponentTrackDataModel())
+                getComponentTrackData(productRecom))
 
         view.context?.run {
             RouteManager.route(this,
