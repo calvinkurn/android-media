@@ -10,8 +10,10 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING
+import com.tokopedia.dev_monitoring_tools.session.SessionDataUsageLogger
 import com.tokopedia.media.common.R
 import com.tokopedia.media.common.data.HIGH_QUALITY
+import com.tokopedia.media.common.data.MediaBitmapSize
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
@@ -27,6 +29,16 @@ class MediaLoaderActivityLifecycle(
         get() = SupervisorJob() + Dispatchers.IO
 
     private val preferences by lazy { MediaSettingPreferences(context) }
+    private val bitmapSize by lazy { MediaBitmapSize(context) }
+
+    private val logger = SessionDataUsageLogger(
+        sessionName = "MEDIA_ACTIVE_SESSION",
+        dataUsageName = "MEDIA_DATA_USAGE",
+        intervalSession = INTERVAL_SESSION,
+        additionalData = mapOf(
+            "accumulative_size" to bitmapSize.size().toString()
+        )
+    )
 
     override fun onActivityStarted(activity: Activity) {
         if (!WHITELIST.singleOrNull {
@@ -40,7 +52,9 @@ class MediaLoaderActivityLifecycle(
         }
     }
 
-    override fun onActivityPaused(activity: Activity) {}
+    override fun onActivityPaused(activity: Activity) {
+        logger.returnFromOtherActivity = true
+    }
 
     override fun onActivityDestroyed(activity: Activity) {}
 
@@ -49,6 +63,10 @@ class MediaLoaderActivityLifecycle(
     override fun onActivityStopped(activity: Activity) {}
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+        logger.openedPageCount++
+        logger.openedPageCountTotal++
+        logger.addJourney(activity)
+
         if (!preferences.glideMigration()) {
             launch {
                 Glide.get(context).clearDiskCache()
@@ -60,7 +78,19 @@ class MediaLoaderActivityLifecycle(
         }
     }
 
-    override fun onActivityResumed(activity: Activity) {}
+    override fun onActivityResumed(activity: Activity) {
+        if (logger.returnFromOtherActivity) logger.addJourney(activity)
+        if (logger.running) return
+
+        logger.running = true
+
+        Thread {
+            logger.checkSession(
+                activityName = activity.javaClass.simpleName,
+                connectionType = "" //getConnectionType(activity)
+            )
+        }.start()
+    }
 
     private fun showToaster(activity: Activity) {
         Handler().postDelayed({
@@ -88,10 +118,7 @@ class MediaLoaderActivityLifecycle(
     companion object {
         private const val DELAY_PRE_SHOW_TOAST = 2500L
 
-        private const val TIME_FORMAT = "%.2f"
         private val INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1)
-        private const val SIZE_FORMAT = "%.2f"
-        private const val MB_SIZE: Long = 1000000
 
         private val WHITELIST = arrayOf(
                 "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
