@@ -113,24 +113,26 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_cancellation_confirmation, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelCancellationConfirmationBinding.inflate(inflater,container,false)
+        return binding?.root
+    }
 
 
     private fun initView(cancellationSubmitModel: HotelCancellationSubmitModel) {
-        hotel_cancellation_confirmation_title.text = cancellationSubmitModel.title
-        hotel_cancellation_confirmation_subtitle.text = cancellationSubmitModel.desc
+        binding?.hotelCancellationConfirmationTitle?.text = cancellationSubmitModel.title
+        binding?.hotelCancellationConfirmationSubtitle?.text = cancellationSubmitModel.desc
 
-        hotel_cancellation_confirmation_button_layout.removeAllViews()
+        binding?.hotelCancellationConfirmationButtonLayout?.removeAllViews()
         for (button in cancellationSubmitModel.actionButton) {
-            hotel_cancellation_confirmation_button_layout.addView(getButtonFromType(button))
+            binding?.hotelCancellationConfirmationButtonLayout?.addView(getButtonFromType(button))
         }
 
         if (cancellationSubmitModel.success) {
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_success))
         } else {
-            if (isOrderNotFound) hotel_cancellation_confirmation_iv.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
-            else hotel_cancellation_confirmation_iv.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+            if (isOrderNotFound) binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
+            else binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_failed))
         }
 
