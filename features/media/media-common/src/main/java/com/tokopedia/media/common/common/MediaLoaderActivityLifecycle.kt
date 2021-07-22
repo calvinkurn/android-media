@@ -32,8 +32,8 @@ class MediaLoaderActivityLifecycle(
     private val bitmapSize by lazy { MediaBitmapSize(context) }
 
     private val logger = SessionDataUsageLogger(
-        sessionName = "MEDIA_ACTIVE_SESSION",
-        dataUsageName = "MEDIA_DATA_USAGE",
+        sessionName = "MEDIALOADER_ACTIVE_SESSION",
+        dataUsageName = "MEDIALOADER_DATA_USAGE",
         intervalSession = INTERVAL_SESSION,
         additionalData = mapOf(
             "accumulative_size" to bitmapSize.size().toString()
