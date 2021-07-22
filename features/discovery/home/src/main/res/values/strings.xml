@@ -123,6 +123,12 @@
     <string name="home_pmpro_coachmark_title">Yuk, kenalan sama Power Merchant PRO!</string>
     <string name="home_pmpro_coachmark_description">Belanja dengan layanan memuaskan dari penjual terbaik di Tokopedia.</string>
 
+    <string name="home_gopay_coachmark_title">Kamu bisa cek saldo GoPay, lho!</string>
+    <string name="home_gopay_coachmark_description">Sambungkan GoPay biar transaksimu makin gampang, nanti saldonya muncul di sini.</string>
+
+    <string name="home_gopay2_coachmark_title">Info lainnya ada di halaman Akun Saya</string>
+    <string name="home_gopay2_coachmark_description">Mau cek Saldo Tokopedia, OVO Cash, atau info lainnya? Buka halaman Akun Saya aja!</string>
+
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>
 
