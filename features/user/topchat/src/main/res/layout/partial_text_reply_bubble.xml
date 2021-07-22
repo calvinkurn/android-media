@@ -15,13 +15,14 @@
         android:layout_marginEnd="@dimen/dp_topchat_15"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Official Store"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6" />
+        app:typographyType="heading_6"
+        tools:text="@tools:sample/lorem/random" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_reply_msg"
@@ -31,13 +32,13 @@
         android:layout_marginEnd="@dimen/dp_topchat_15"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Tampilan sisi penerima Tampilan sisi penerima Tampilan sisi penerima Tampilan sisi penerima Tampilan sisi penerima Tampilan sisi penerima"
         android:textColor="@color/Unify_N700_68"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tp_reply_from"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        tools:text="@tools:sample/lorem/random" />
 
 </merge>
