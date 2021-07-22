@@ -62,14 +62,23 @@ public interface KolComment {
 
         void replyToUser(MentionableUserViewModel user);
 
+        void onHashTagClicked(String hashTag, String id);
+
+        void onSuccessSendReport();
+
+        void onErrorSendReport(String message);
+
+
         interface ViewHolder {
-            void onGoToProfile(String url);
+            void onGoToProfile(String url, String userId);
 
             void onClickMentionedProfile(String id);
 
             void replyToUser(MentionableUserViewModel user);
 
             boolean onDeleteCommentKol(String id, boolean canDeleteComment, int adapterPosition);
+
+            void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition);
         }
 
         interface SeeAll {
@@ -89,5 +98,8 @@ public interface KolComment {
         void sendComment(int id, String comment);
 
         void getMentionableUserByKeyword(String keyword);
+
+        void sendReport(int contentId, String reasonType, String reasonMessage, String contentType);
+
     }
 }
