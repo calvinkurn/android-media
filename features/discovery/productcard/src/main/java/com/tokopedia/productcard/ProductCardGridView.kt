@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 import rx.Observable
 import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -40,6 +41,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private var addToCartClickListener: ((View) -> Unit)? = null
     private var addToCartNonVariantClickListener: ATCNonVariantListener? = null
     private var quantityEditorDebounce: QuantityEditorDebounce? = null
+    private var quantityEditorDebounceSubscription: Subscription? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -143,6 +145,15 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
+        clearQuantityEditorSubscription()
+    }
+
+    private fun clearQuantityEditorSubscription() {
+        if (quantityEditorDebounceSubscription?.isUnsubscribed == false)
+            quantityEditorDebounceSubscription?.unsubscribe()
+
+        quantityEditorDebounceSubscription = null
+        quantityEditorDebounce = null
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
@@ -187,11 +198,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
-        val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
+        if (!productCardModel.canShowQuantityEditor()) return
 
         configureQuantityEditorDebounce()
 
-        quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
+        quantityEditorNonVariant?.showWithCondition(productCardModel.shouldShowQuantityEditor())
         quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
     }
 
@@ -216,12 +227,13 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             }
         }
 
-        Observable.unsafeCreate(onSubscribe)
-                .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(quantityEditorSubscriber)
+        quantityEditorDebounceSubscription =
+                Observable.unsafeCreate(onSubscribe)
+                        .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(quantityEditorSubscriber)
     }
 
     private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {

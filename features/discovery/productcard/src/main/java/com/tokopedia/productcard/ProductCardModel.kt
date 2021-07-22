@@ -125,6 +125,8 @@ data class ProductCardModel (
         return nonVariant?.quantity == 0
     }
 
+    fun canShowQuantityEditor() = nonVariant != null
+
     fun shouldShowQuantityEditor(): Boolean {
         return nonVariant?.quantity ?: 0 > 0
     }

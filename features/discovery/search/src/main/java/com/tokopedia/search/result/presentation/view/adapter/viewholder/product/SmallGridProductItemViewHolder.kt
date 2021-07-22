@@ -46,4 +46,8 @@ class SmallGridProductItemViewHolder(
             productListener.onThreeDotsClick(productItemData, adapterPosition)
         }
     }
+
+    override fun onViewRecycled() {
+        itemView.productCardView?.recycle()
+    }
 }
