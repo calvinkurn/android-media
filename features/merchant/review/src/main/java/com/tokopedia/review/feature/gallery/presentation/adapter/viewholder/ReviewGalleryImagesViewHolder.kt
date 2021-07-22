@@ -25,14 +25,20 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
     fun bind(imageUrl: String, imageListener: ReviewGalleryImageListener) {
         image?.apply {
             mLoaderView.hide()
-            mImageView.loadImage(imageUrl) {
-                listener(
-                    onSuccess = { _, _ -> image?.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent)) },
-                    onError = {
-                        imageListener.onImageLoadFailed(adapterPosition)
-                        image?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N75))
-                    }
-                )
+            mImageView.apply {
+                image?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_N75))
+                loadImage(imageUrl) {
+                    listener(
+                        onSuccess = { _, _ ->
+                            mLoaderView.hide()
+                            image?.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+                        },
+                        onError = {
+                            mLoaderView.hide()
+                            imageListener.onImageLoadFailed(adapterPosition)
+                        }
+                    )
+                }
             }
             onImageClickListener = {
                 imageListener.onImageClicked()
