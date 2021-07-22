@@ -128,7 +128,7 @@
         android:visibility="gone"
         app:text_field_label="@string/mini_cart_label_product_notes_editable"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
+        app:layout_constraintTop_toBottomOf="@+id/image_product"
         tools:layout_height="32dp"
         tools:visibility="visible" />
 
@@ -161,7 +161,7 @@
         android:paddingBottom="@dimen/dp_8"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_product_info"
+        app:layout_constraintTop_toBottomOf="@+id/image_product"
         app:typographyType="body_3"
         tools:text="Jangan Jangan Jangan Jangan Jangan Jangan Jangan "
         tools:visibility="visible" />
