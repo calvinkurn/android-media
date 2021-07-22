@@ -162,7 +162,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         val list: MutableList<FragmentTabItem> = mutableListOf()
         tab_layout?.getUnifyTabLayout()?.removeAllTabs()
         tab_layout?.addNewTab(PRODUK)
-        if(autoBidStatus.isEmpty() || placementType != 3) {
+        if(autoBidStatus.isEmpty() && placementType != 3) {
             tab_layout?.addNewTab(KATA_KUNCI)
             tab_layout?.addNewTab(NEG_KATA_KUNCI)
             tab_layout?.customTabMode = TabLayout.MODE_FIXED
@@ -173,6 +173,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         bundle.putInt(GROUP_ID, groupId ?: 0)
         bundle.putString(GROUP_NAME, groupName)
         bundle.putInt(GROUP_TOTAL, groupTotal)
+        bundle.putInt("placementType", placementType)
         bundle.putString(TopAdsDashboardConstant.GROUP_STRATEGY, autoBidStatus)
         list.add(FragmentTabItem(PRODUK, ProductTabFragment.createInstance(bundle)))
         list.add(FragmentTabItem(KATA_KUNCI, KeywordTabFragment.createInstance(bundle)))
@@ -334,6 +335,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         if(data.strategies.isNotEmpty()) {
             autoBidStatus = data.strategies[0]
             per_click.visibility = View.GONE
+            per_click_rekomendasi.visibility = View.GONE
             editpancarianBudget.visibility = View.GONE
             editRekomendasiBudget.visibility = View.GONE
             budgetPerClick.text = getString(com.tokopedia.topads.common.R.string.autobid_otomatis)
@@ -343,6 +345,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             editRekomendasiBudget.visibility = View.VISIBLE
             autoBidStatus = ""
             per_click.visibility = View.VISIBLE
+            per_click_rekomendasi.visibility = View.VISIBLE
             data.bidSettings?.forEach {
                 if(it.bidType.equals("product_search")) {
                     budgetPerClick.text = "Rp " + it.priceBid

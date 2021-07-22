@@ -46,8 +46,8 @@ constructor() : RestRequestUseCase() {
     fun createRequestParams(startDate: Date, endDate: Date,
                             @TopAdsStatisticsType type: Int, shopId: String, groupId: String?, goalId: Int = 0): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("shopID", "480282")
-        requestParams.putString(GROUP, "896345")
+        requestParams.putString("shopID", shopId)
+        requestParams.putString(GROUP, groupId)
         requestParams.putInt("goal_id", goalId)
         requestParams.putInt(TopAdsDashboardConstant.PARAM_TYPE, type)
         requestParams.putObject(TopAdsDashboardConstant.PARAM_START_DATE,

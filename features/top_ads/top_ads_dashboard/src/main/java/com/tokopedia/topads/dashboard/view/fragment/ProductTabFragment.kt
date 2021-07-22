@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
     private lateinit var loader: LoaderUnify
+    private var placementType: Int = 0
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -163,6 +165,8 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
+        this.placementType = arguments?.getInt("placementType", 0)!!
+        setPlacementTicker()
         btnFilter.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
@@ -172,6 +176,7 @@ class ProductTabFragment : BaseDaggerFragment() {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
                     CLICK_FILTER_TERAPKAN, "${groupFilterSheet.getSelectedAdPlacementType()} - ${groupFilterSheet.getSelectedStatusId()} - ${groupFilterSheet.getSelectedSortId()}")
                 fetchData()
+                setPlacementTicker()
             }
         }
 
@@ -323,9 +328,14 @@ class ProductTabFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
+        viewModel.getGroupProductData(1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
+                ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
+                groupFilterSheet.getSelectedStatusId(), startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(), onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
+    }
 
-        placement_tiker.visibility = View.VISIBLE
-        when(groupFilterSheet.getSelectedAdPlacementType()) {
+    private fun setPlacementTicker() {
+        Log.d("Naveen", "Placement type is$placementType")
+        when(placementType) {
             0 -> {
                 placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
                 placement_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
@@ -339,10 +349,6 @@ class ProductTabFragment : BaseDaggerFragment() {
                 placement_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_rekoemendasi))
             }
         }
-
-        viewModel.getGroupProductData(1, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId(), startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(), onSuccess = ::onProductFetch, onEmpty = ::onEmptyProduct)
     }
 
     private fun onProductFetch(response: NonGroupResponse.TopadsDashboardGroupProducts) {
