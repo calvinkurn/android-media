@@ -3,37 +3,19 @@ package com.tokopedia.media.common.data
 import android.content.Context
 import android.content.SharedPreferences
 
-class MediaSettingPreferences constructor(
-    private val context: Context?
-) {
+class MediaSettingPreferences(context: Context?) : MediaPreferences(context) {
 
-    private fun pref(): SharedPreferences? {
-        return context?.getSharedPreferences(MEDIA_QUALITY_PREF, Context.MODE_PRIVATE)
-    }
+    fun qualitySettings() = getInt(KEY_QUALITY_SETTING)
 
-    fun qualitySettings(): Int {
-        return pref()?.getInt(KEY_QUALITY_SETTING, 0)?: 0
-    }
+    fun toasterVisibility() = getBoolean(KEY_MEDIA_TOASTER)
 
-    fun toasterVisibility(): Boolean {
-        return pref()?.getBoolean(KEY_MEDIA_TOASTER, false)?: false
-    }
+    fun glideMigration() = getBoolean(KEY_GLIDE_CLEAR_CACHE)
 
-    fun glideMigration(): Boolean {
-        return pref()?.getBoolean(KEY_GLIDE_CLEAR_CACHE, false)?: false
-    }
+    fun setQualitySettings(value: Int) = insert(KEY_QUALITY_SETTING, value)
 
-    fun setQualitySettings(value: Int) {
-        pref()?.edit()?.putInt(KEY_QUALITY_SETTING, value)?.apply()
-    }
+    fun setToasterVisibilityFlag(value: Boolean) = insert(KEY_MEDIA_TOASTER, value)
 
-    fun setToasterVisibilityFlag(value: Boolean) {
-        pref()?.edit()?.putBoolean(KEY_MEDIA_TOASTER, value)?.apply()
-    }
-
-    fun setGlideMigration(value: Boolean) {
-        pref()?.edit()?.putBoolean(KEY_GLIDE_CLEAR_CACHE, value)?.apply()
-    }
+    fun setGlideMigration(value: Boolean) = insert(KEY_GLIDE_CLEAR_CACHE, value)
 
     fun getQualitySetting(index: Int): String {
         return when(index) {
@@ -45,7 +27,6 @@ class MediaSettingPreferences constructor(
     }
 
     companion object {
-        private const val MEDIA_QUALITY_PREF = "media_image_quality"
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
         private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
         private const val KEY_GLIDE_CLEAR_CACHE = "medialoader_clear_disk_cache"
