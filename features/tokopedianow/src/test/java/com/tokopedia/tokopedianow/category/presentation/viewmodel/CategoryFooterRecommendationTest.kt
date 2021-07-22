@@ -8,9 +8,11 @@ import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.category.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.slot
@@ -70,8 +72,11 @@ class CategoryFooterRecommendationTest: CategoryTestFixtures() {
     ) {
         val getRecommendationParams = getRecommendationParamsSlot.captured
 
+        assertThat(getRecommendationParams.xSource, shouldBe(RECOM_WIDGET))
         assertThat(getRecommendationParams.pageName, shouldBe(TOKONOW_CLP))
         assertThat(getRecommendationParams.categoryIds, shouldBe(listOf(expectedCategoryId)))
+        assertThat(getRecommendationParams.isTokonow, shouldBe(true))
+        assertThat(getRecommendationParams.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
     }
 
     private fun `Then assert recommendation data view is updated to ready with recom widget`(

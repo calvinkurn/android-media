@@ -14,3 +14,7 @@ internal const val CATEGORY_TOKONOW = "category_tokonow"
 internal const val CATEGORY_TOKONOW_DIRECTORY = "category_tokonow_directory"
 internal const val TOKONOW_SEARCH = "tokonow_search"
 internal const val TOKONOW_CATEGORY = "tokonow_category"
+
+internal const val TOKONOW_CLP = "tokonow_clp"
+internal const val RECOM_WIDGET = "recom_widget"
+internal const val PAGE_NUMBER_RECOM_WIDGET = 1

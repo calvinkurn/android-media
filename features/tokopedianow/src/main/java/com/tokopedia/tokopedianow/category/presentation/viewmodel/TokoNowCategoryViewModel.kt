@@ -27,12 +27,14 @@ import com.tokopedia.tokopedianow.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CAS
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
-import com.tokopedia.tokopedianow.category.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
@@ -202,6 +204,9 @@ class TokoNowCategoryViewModel @Inject constructor (
         val getRecommendationRequestParam = GetRecommendationRequestParam(
                 pageName = TOKONOW_CLP,
                 categoryIds = listOf(recomCategoryId),
+                xSource = RECOM_WIDGET,
+                isTokonow = true,
+                pageNumber = PAGE_NUMBER_RECOM_WIDGET,
         )
         val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
 
