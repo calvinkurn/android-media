@@ -42,6 +42,8 @@ internal const val CLOSE_BOLD_TAG = "</b>"
 internal const val TYPE_VARIANT_COLOR = "colour"
 internal const val TYPE_VARIANT_SIZE = "size"
 internal const val TYPE_VARIANT_CUSTOM = "custom"
+internal const val MIN_LABEL_VARIANT_COUNT = 2
+internal const val MAX_LABEL_VARIANT_COUNT = 5
 
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
 
@@ -54,3 +56,5 @@ internal val FIRE_WIDTH = R.dimen.dp_12
 internal val FIRE_HEIGHT = R.dimen.dp_13
 
 internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 1000
+
+internal const val MAX_VARIANT_QUANTITY = 99

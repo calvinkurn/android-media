@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.MAX_VARIANT_QUANTITY
 import com.tokopedia.productcard.utils.QUANTITY_EDITOR_DEBOUNCE_IN_MS
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -297,7 +298,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderTextVariantQuantity(quantity: Int) {
-        if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
+        if (quantity > MAX_VARIANT_QUANTITY) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
         else textVariantQuantity?.text = "$quantity pcs"
     }
 
