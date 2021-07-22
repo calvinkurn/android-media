@@ -55,6 +55,7 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
+import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.viewcomponent.*
@@ -531,6 +532,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeProductContent()
 
         observeLoggedInInteractionEvent()
+        observeCastState()
     }
 
     private fun invalidateSystemUiVisibility() {
@@ -703,6 +705,7 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
             pipViewOnStateChanged(bottomInsets = map)
+            castViewOnStateChanged(bottomInsets = map)
         })
     }
 
@@ -772,6 +775,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun observeCastState() {
+        playViewModel.observableCastState.observe(viewLifecycleOwner) {
+            pipViewOnStateChanged()
+            castViewOnStateChanged()
+        }
     }
     //endregion
 
@@ -1305,13 +1315,20 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned) {
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed) {
             pipView?.hide()
             return
         }
 
         if (!bottomInsets.isAnyShown) pipView?.show()
         else pipView?.hide()
+    }
+
+    private fun castViewOnStateChanged(
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) castView?.show()
+        else castView?.hide()
     }
     //endregion
 

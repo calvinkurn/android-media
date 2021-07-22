@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
@@ -212,6 +213,12 @@ class PlayViewModel @Inject constructor(
 
     val userId: String
         get() = userSession.userId
+
+    val isCastAllowed: Boolean
+        get() {
+            val castState = observableCastState.value ?: return false
+            return castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE
+        }
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
@@ -1155,15 +1162,19 @@ class PlayViewModel @Inject constructor(
     private val castStateListener = CastStateListener {
         when(it) {
             CastState.CONNECTING -> {
+                Log.d("<CAST>", "CONNECTING")
                 setCastState(PlayCastState.CONNECTING)
             }
             CastState.CONNECTED -> {
+                Log.d("<CAST>", "CONNECTED")
                 setCastState(PlayCastState.CONNECTED)
             }
             CastState.NOT_CONNECTED -> {
+                Log.d("<CAST>", "NOT_CONNECTED")
                 setCastState(PlayCastState.NOT_CONNECTED)
             }
             CastState.NO_DEVICES_AVAILABLE -> {
+                Log.d("<CAST>", "NO_DEVICES_AVAILABLE")
                 setCastState(PlayCastState.NO_DEVICE_AVAILABLE)
             }
         }
