@@ -190,7 +190,7 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun checkOtpPushNotif(applink: String?): Boolean {
-        return if (Build.VERSION.SDK_INT < 31) {
+        return if (Build.VERSION.SDK_INT < ANDROID_12_SDK_VERSION) {
             applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
         } else {
             false
@@ -202,5 +202,9 @@ class PushController(val context: Context) : CoroutineScope {
         val intent = RouteManager.getIntent(context, applink)
         intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivities(arrayOf(intentHome, intent))
+    }
+
+    companion object {
+        const val ANDROID_12_SDK_VERSION = 31
     }
 }
