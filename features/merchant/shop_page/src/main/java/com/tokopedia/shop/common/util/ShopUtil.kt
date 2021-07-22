@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.util
 
 import android.content.Context
+import android.text.TextUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -94,5 +95,12 @@ object ShopUtil {
         return shopPageHeaderDataModel?.let { shop ->
             shop.isGoldMerchant || shop.isOfficial
         } ?: false
+    }
+
+    fun joinStringWithDelimiter(vararg listString: String, delimiter: String): String {
+        val filteredListString = listString.filter {
+            it.isNotEmpty()
+        }
+        return TextUtils.join(delimiter, filteredListString)
     }
 }

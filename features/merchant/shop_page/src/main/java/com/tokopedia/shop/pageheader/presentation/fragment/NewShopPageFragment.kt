@@ -105,8 +105,10 @@ import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
+import com.tokopedia.shop.common.constant.ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -543,12 +545,12 @@ class NewShopPageFragment :
         shopViewModel?.shopImagePath?.observe(owner, Observer {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
-                if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+                if(UniversalShareBottomSheet.isCustomSharingEnabled(context, ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET)){
                     showUniversalShareBottomSheet()
-                }else{
-                  shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
-                    init(this@NewShopPageFragment)
-                }
+                } else {
+                    shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
+                        init(this@NewShopPageFragment)
+                    }
                     shopShareBottomSheet?.show(fragmentManager)
                 }
             }
@@ -612,6 +614,10 @@ class NewShopPageFragment :
                 shopPageHeaderDataModel?.let {
                     it.shopSnippetUrl = result.data.shopSnippetUrl
                     it.shopCoreUrl = result.data.shopCore.url
+                    it.shopBranchLinkDomain = result.data.branchLinkDomain
+                    it.location = result.data.location
+                    it.description = result.data.shopCore.description
+                    it.tagline = result.data.shopCore.tagLine
                 }
             }
         })
@@ -1732,6 +1738,7 @@ class NewShopPageFragment :
                             shopShare.appIntent?.clipData = ClipData.newRawUri("", shopImageFileUri)
                             shopShare.appIntent?.removeExtra(Intent.EXTRA_STREAM)
                             shopShare.appIntent?.removeExtra(Intent.EXTRA_TEXT)
+                            checkUsingCustomBranchLinkDomain(linkerShareData)
                             when (shopShare) {
                                 is ShopShareModel.CopyLink -> {
                                     linkerShareData?.url?.let { ClipboardHandler().copyToClipboard((activity as Activity), it) }
@@ -1804,6 +1811,26 @@ class NewShopPageFragment :
                     override fun onError(linkerError: LinkerError?) {}
                 })
         )
+    }
+
+    private fun checkUsingCustomBranchLinkDomain(linkerShareData: LinkerShareResult?) {
+        val shopBranchLinkDomain = shopPageHeaderDataModel?.shopBranchLinkDomain.orEmpty()
+        if(shopBranchLinkDomain.isNotEmpty())
+            changeLinkerShareDataContent(linkerShareData, shopBranchLinkDomain)
+    }
+
+    private fun changeLinkerShareDataContent(linkerShareData: LinkerShareResult?, shopBranchLinkDomain: String) {
+        linkerShareData?.apply {
+            shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
+            url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
+            shareUri = replaceLastUrlSegment(shareUri, shopBranchLinkDomain)
+        }
+    }
+
+    private fun replaceLastUrlSegment(urlString: String, replacementValue: String): String{
+        return urlString.split("/").toMutableList().also { list ->
+            list[list.lastIndex] = replacementValue
+        }.joinToString("/").orEmpty()
     }
 
     private fun saveShopImage() {
@@ -2267,15 +2294,16 @@ class NewShopPageFragment :
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            ogTitle = shopPageHeaderDataModel?.shopName
-            ogDescription = shopPageHeaderDataModel?.shopSnippetUrl
-            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+            ogTitle = getShareBottomSheetOgTitle()
+            ogDescription = getShareBottomSheetOgDescription()
+            if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
         })
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    checkUsingCustomBranchLinkDomain(linkerShareData)
                     var shareString = getString(
                         R.string.shop_page_share_text_with_link,
                         shopPageHeaderDataModel?.shopName,
@@ -2311,6 +2339,18 @@ class NewShopPageFragment :
         )
     }
 
+    private fun getShareBottomSheetOgTitle(): String {
+        return shopPageHeaderDataModel?.let{
+            "${joinStringWithDelimiter(it.shopName, it.location, delimiter = " - ")} | Tokopedia"
+        } ?: ""
+    }
+
+    private fun getShareBottomSheetOgDescription(): String {
+        return shopPageHeaderDataModel?.let{
+            joinStringWithDelimiter(it.description, it.tagline, delimiter = " - ")
+        } ?: ""
+    }
+
     override fun onCloseOptionClicked() {
         shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
     }
@@ -2320,8 +2360,9 @@ class NewShopPageFragment :
             init(this@NewShopPageFragment)
             setUtmCampaignData("Shop", userId, shopId, "Share")
             setMetaData(
-                shopPageHeaderDataModel?.shopName
-                    ?: "", shopPageHeaderDataModel?.avatar ?: shopImageFilePath, shopImageFilePath
+                    shopPageHeaderDataModel?.shopName.orEmpty(),
+                    shopPageHeaderDataModel?.avatar.orEmpty(),
+                    ""
             )
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
