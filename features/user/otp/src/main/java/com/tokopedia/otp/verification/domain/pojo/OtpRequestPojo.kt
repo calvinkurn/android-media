@@ -26,5 +26,6 @@ data class OtpRequestData(
         var errorMessage: String = "",
         @SerializedName("prefixMisscall")
         @Expose
-        var prefixMisscall: String = ""
+        var prefixMisscall: String = "",
+        var isWaNotRegistered: Boolean = true
 )

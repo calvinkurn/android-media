@@ -220,25 +220,29 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     open fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
         when {
             otpRequestData.success -> {
-                if (!isFirstSendOtp) {
-                    when (otpData.otpType) {
-                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackSuccessClickResendRegisterPhoneOtpButton()
-                        }
-                        OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackSuccessClickResendRegisterEmailOtpButton()
+                if (modeListData.modeText == OtpConstant.OtpMode.WA && otpRequestData.isWaNotRegistered) {
+                    (activity as VerificationActivity).goToWhatsappNotRegistered()
+                } else {
+                    if (!isFirstSendOtp) {
+                        when (otpData.otpType) {
+                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                                analytics.trackSuccessClickResendRegisterPhoneOtpButton()
+                            }
+                            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                                analytics.trackSuccessClickResendRegisterEmailOtpButton()
+                            }
                         }
                     }
-                }
-                startCountDown()
-                viewBound.containerView?.let {
-                    Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                }
+                    startCountDown()
+                    viewBound.containerView?.let {
+                        Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
 
-                if (!isFirstSendOtp) {
-                    analytics.trackResendOtp(otpData, modeListData, true)
-                } else {
-                    analytics.trackGenerateOtp(otpData, modeListData, true)
+                    if (!isFirstSendOtp) {
+                        analytics.trackResendOtp(otpData, modeListData, true)
+                    } else {
+                        analytics.trackGenerateOtp(otpData, modeListData, true)
+                    }
                 }
             }
             otpRequestData.errorMessage.isNotEmpty() -> {
