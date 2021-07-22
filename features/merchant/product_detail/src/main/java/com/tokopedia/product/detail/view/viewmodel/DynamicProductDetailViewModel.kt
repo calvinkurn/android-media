@@ -115,7 +115,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
                                                              private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
                                                              private val updateCartUseCase: Lazy<UpdateCartUseCase>,
-                                                             private val deleteCartUseCase: DeleteCartUseCase,
+                                                             private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -291,8 +291,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             val selectedMiniCart =  p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "") ?: return@launchCatchError
 
-            deleteCartUseCase.setParams(listOf(selectedMiniCart))
-            val data = deleteCartUseCase.executeOnBackground()
+            deleteCartUseCase.get().setParams(listOf(selectedMiniCart))
+            val data = deleteCartUseCase.get().executeOnBackground()
 
             _p2Data.value?.miniCart?.remove(productId)
             _deleteCartLiveData.postValue((data.data.message.firstOrNull() ?: "").asSuccess())
@@ -624,11 +624,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _topAdsImageView.postValue(it.asFail())
         }
-    }
-
-    private fun updateShippingValue(shippingPriceValue: Int?) {
-        shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt()
-                ?: 30000 else shippingPriceValue
     }
 
     private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
