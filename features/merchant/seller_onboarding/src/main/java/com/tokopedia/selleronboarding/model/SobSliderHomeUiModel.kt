@@ -1,6 +1,6 @@
 package com.tokopedia.selleronboarding.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import androidx.annotation.DrawableRes
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.selleronboarding.adapter.SobAdapterFactory
 
@@ -9,8 +9,9 @@ import com.tokopedia.selleronboarding.adapter.SobAdapterFactory
  */
 
 data class SobSliderHomeUiModel(
+        @DrawableRes override val headerResBg: Int,
         val impressionHolder: ImpressHolder = ImpressHolder()
-) : Visitable<SobAdapterFactory> {
+) : BaseSliderUiModel {
 
     override fun type(typeFactory: SobAdapterFactory): Int {
         return typeFactory.type(this)

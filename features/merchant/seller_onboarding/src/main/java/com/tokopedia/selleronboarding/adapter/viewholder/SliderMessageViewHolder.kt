@@ -49,6 +49,12 @@ class SliderMessageViewHolder(itemView: View) : AbstractViewHolder<SobSliderMess
                     alpha = observer.alpha
                 }
             }
+            imgSobMessageBg.run {
+                loadImage(R.drawable.bg_sob_circle)
+                viewTreeObserver.addOnDrawListener {
+                    alpha = observer.alpha
+                }
+            }
         }
     }
 }

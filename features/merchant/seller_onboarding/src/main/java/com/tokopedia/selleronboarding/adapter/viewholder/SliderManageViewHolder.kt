@@ -41,6 +41,12 @@ class SliderManageViewHolder(itemView: View) : AbstractViewHolder<SobSliderManag
                     alpha = itemView.viewObserver.alpha
                 }
             }
+            imgSobManageBg.run {
+                loadImage(R.drawable.bg_sob_circle)
+                viewTreeObserver.addOnDrawListener {
+                    alpha = itemView.viewObserver.alpha
+                }
+            }
         }
     }
 }

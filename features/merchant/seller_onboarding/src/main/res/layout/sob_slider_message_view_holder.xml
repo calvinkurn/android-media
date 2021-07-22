@@ -20,6 +20,19 @@
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSobMessageBg"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/layout_lvl4"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvSobSliderMessageTitle"
+        tools:src="@drawable/bg_sob_circle" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage1"
         android:layout_width="160dp"
         android:layout_height="120dp"
