@@ -110,4 +110,8 @@ data class FingerPrint(
 
     @SerializedName("uuid")
     @Expose
-    private val uuid: String)
+    private val uuid: String,
+
+    @SerializedName("installer")
+    @Expose
+    private val installer: String)

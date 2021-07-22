@@ -1,7 +1,7 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.*
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
@@ -14,10 +14,13 @@ import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineData
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.usecase.RequestParams
 import io.mockk.confirmVerified
 import io.mockk.every
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
@@ -40,6 +43,44 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
             "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
                     "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
 
+    private val requestParamsSlot = slot<RequestParams>()
+
+    @Test
+    fun `Test suggestion presenter has set parameter`() {
+        val warehouseId = "2216"
+        val dummyChooseAddressData = LocalCacheModel(
+                address_id = "123",
+                city_id = "45",
+                district_id = "123",
+                lat = "10.2131",
+                long = "12.01324",
+                postal_code = "12345",
+                warehouse_id = warehouseId
+        )
+        `Given chosen address data`(dummyChooseAddressData)
+        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+
+        `when presenter get suggestion data (search)`()
+
+        `Then verify search parameter has warehouseId`(warehouseId)
+    }
+
+    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
+        every { suggestionView.chooseAddressData } returns chooseAddressModel
+    }
+
+    private fun `Given getSuggestionUseCase will be successful`(suggestionUniverse: SuggestionUniverse) {
+        every { getSuggestionUseCase.execute(capture(requestParamsSlot), any()) }.answers {
+            secondArg<Subscriber<SuggestionUniverse>>().complete(suggestionUniverse)
+        }
+    }
+
+    private fun `Then verify search parameter has warehouseId`(warehouseId: String) {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
+    }
+
     @Test
     fun `test get suggestion data`() {
         val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
@@ -48,7 +89,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list`(suggestionUniverse)
     }
 
@@ -67,7 +108,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         verify { getSuggestionUseCase.execute(any(), any()) }
     }
 
-    private fun `then verify suggestion view will call showInitialStateResult behavior`() {
+    private fun `then verify suggestion view will call showSuggestionResult behavior`() {
         verify {
             suggestionView.showSuggestionResult(capture(slotVisitableList))
         }
@@ -76,16 +117,13 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     private fun `then verify visitable list`(suggestionUniverse: SuggestionUniverse) {
         val visitableList = slotVisitableList.captured
 
-        visitableList[0].shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-        visitableList[1].shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-        visitableList[2].shouldBeInstanceOf<SuggestionSingleLineDataDataView>()
-        visitableList[3].shouldBeInstanceOf<SuggestionTitleDataView>()
-        visitableList[4].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList[5].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList[6].shouldBeInstanceOf<SuggestionTitleDataView>()
-        visitableList[7].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
-        visitableList.size shouldBe suggestionUniverse.data.items.size
+        visitableList[0].shouldBeSuggestionDoubleLineDataView(false)
+        visitableList[1].shouldBeSuggestionSingleLineDataDataView()
+        visitableList[2].shouldBeSuggestionSingleLineDataDataView()
+        visitableList[3].shouldBeSuggestionSingleLineDataDataView()
+        visitableList[4].shouldBeSuggestionTitleDataView()
+        visitableList[5].shouldBeSuggestionDoubleLineDataView(true)
+        visitableList[6].shouldBeSuggestionDoubleLineDataView(true)
 
         assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
@@ -103,69 +141,24 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     visitable.assertTopShopWidgetDataView(expectedItem, suggestionUniverse.topShop)
                     expectedPosition++
                 }
-                is BaseSuggestionDataView -> {
-                    (visitable as BaseSuggestionDataView).assertBaseSuggestionDataView(expectedItem, dimension90)
+                is SuggestionSingleLineDataDataView -> {
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_SINGLE_LINE, expectedItem, dimension90)
+                    expectedPosition++
+                }
+                is SuggestionDoubleLineDataDataView -> {
+                    visitable.assertBaseSuggestionDataView(SUGGESTION_DOUBLE_LINE, expectedItem, dimension90)
                     expectedPosition++
                 }
             }
         }
     }
 
-    private fun SuggestionTitleDataView.assertSuggestionTitleDataView(item: SuggestionItem) {
-        title shouldBe item.title
-    }
-
-    private fun SuggestionTopShopWidgetDataView.assertTopShopWidgetDataView(item: SuggestionItem, listExpectedData: List<SuggestionTopShop>) {
-        template shouldBe item.template
-        title shouldBe item.title
-
-        listSuggestionTopShopCardData.forEachIndexed { index, suggestionTopShopCardDataView ->
-            suggestionTopShopCardDataView.assertSuggestionTopShopCardDataView(listExpectedData[index])
-        }
-    }
-
-    private fun SuggestionTopShopCardDataView.assertSuggestionTopShopCardDataView(suggestionTopShop: SuggestionTopShop) {
-        type shouldBe suggestionTopShop.type
-        id shouldBe suggestionTopShop.id
-        applink shouldBe suggestionTopShop.applink
-        url shouldBe suggestionTopShop.url
-        title shouldBe suggestionTopShop.title
-        subtitle shouldBe suggestionTopShop.subtitle
-        iconTitle shouldBe suggestionTopShop.iconTitle
-        iconSubtitle shouldBe suggestionTopShop.iconSubtitle
-        urlTracker shouldBe suggestionTopShop.urlTracker
-        imageUrl shouldBe suggestionTopShop.imageUrl
-
-        productData.forEachIndexed { index, suggestionTopShopProductDataView ->
-            suggestionTopShopProductDataView.imageUrl shouldBe suggestionTopShop.topShopProducts[index].imageUrl
-        }
-    }
-
-    private fun BaseSuggestionDataView.assertBaseSuggestionDataView(item: SuggestionItem, dimension90: String = "") {
-        template shouldBe item.template
-        type shouldBe item.type
-        applink shouldBe item.applink
-        url shouldBe item.url
-        title shouldBe item.title
-        subtitle shouldBe item.subtitle
-        iconTitle shouldBe item.iconTitle
-        iconSubtitle shouldBe item.iconSubtitle
-        shortcutUrl shouldBe item.shortcutUrl
-        shortcutImage shouldBe item.shortcutImage
-        imageUrl shouldBe item.imageUrl
-        label shouldBe item.label
-        labelType shouldBe item.labelType
-        urlTracker shouldBe item.urlTracker
-        trackingCode shouldBe item.tracking.code
-        this.dimension90 shouldBe dimension90
-    }
-
     @Test
-    fun `test fail to get initial state data`() {
+    fun `test fail to get suggestion data`() {
         `given suggestion API will return error`()
         `when presenter get suggestion data (search)`()
         `then verify suggestion API is called`()
-        `then verify initial state view do nothing behavior`()
+        `then verify view interaction for load data failed with exception`()
     }
 
     private fun `given suggestion API will return error`() {
@@ -175,7 +168,10 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         }
     }
 
-    private fun `then verify initial state view do nothing behavior`() {
+    private fun `then verify view interaction for load data failed with exception`() {
+        verify {
+            suggestionView.chooseAddressData
+        }
         confirmVerified(suggestionView)
     }
 
@@ -187,7 +183,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list with top shop`(suggestionUniverse)
     }
 
@@ -225,7 +221,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list should have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 
@@ -257,7 +253,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         `when presenter get suggestion data (search)`()
 
         `then verify suggestion API is called`()
-        `then verify suggestion view will call showInitialStateResult behavior`()
+        `then verify suggestion view will call showSuggestionResult behavior`()
         `then verify visitable list should only have SuggestionDoubleLineWithoutImageDataView`(suggestionUniverse)
     }
 
@@ -269,5 +265,21 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse, expectedLocalDimension90)
+    }
+
+    @Test
+    fun `Test suggestion presenter has set parameter and no warehouseId`() {
+        `Given chosen address data`(LocalCacheModel())
+        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+
+        `when presenter get suggestion data (search)`()
+
+        `Then verify search parameter has no warehouseId`()
+    }
+
+    private fun `Then verify search parameter has no warehouseId`() {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }

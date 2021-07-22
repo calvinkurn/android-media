@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
-import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.suggestion.SuggestionListener
 import com.tokopedia.autocomplete.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -21,7 +21,7 @@ import java.util.*
 
 class SuggestionProductLineViewHolder(
         itemView: View,
-        private val clickListener: SuggestionClickListener
+        private val listener: SuggestionListener
 ) : AbstractViewHolder<SuggestionProductLineDataDataView>(itemView) {
 
     companion object {
@@ -139,7 +139,7 @@ class SuggestionProductLineViewHolder(
 
     private fun setListener(item: SuggestionProductLineDataDataView) {
         itemView.autocompleteProductItem?.setOnClickListener {
-            clickListener.onItemClicked(item)
+            listener.onItemClicked(item)
         }
     }
 }

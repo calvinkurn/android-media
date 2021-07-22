@@ -19,6 +19,7 @@ import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.autocomplete.util.getValueString
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -68,18 +69,24 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         return Dimension90Utils.getDimension90(searchParameter)
     }
 
+    private fun isTokoNow(): Boolean {
+        return UrlParamUtils.isTokoNow(searchParameter)
+    }
+
     override fun search() {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
         getSuggestionUseCase.execute(
-                createGetSuggestionParams(searchParameter, isTyping),
+                createGetSuggestionParams(searchParameter, isTyping, warehouseId),
                 createGetSuggestionSubscriber()
         )
     }
 
-    private fun createGetSuggestionParams(searchParameter: HashMap<String, String>, isTyping: Boolean) = SuggestionUseCase.getParams(
+    private fun createGetSuggestionParams(searchParameter: HashMap<String, String>, isTyping: Boolean, warehouseId: String) = SuggestionUseCase.getParams(
         searchParameter,
         userSession.deviceId,
         userSession.userId,
-        isTyping
+        isTyping,
+        warehouseId
     )
 
     private fun createGetSuggestionSubscriber(): Subscriber<SuggestionUniverse> = object : Subscriber<SuggestionUniverse>() {
@@ -216,7 +223,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
         trackSuggestionItemWithUrl(item.urlTracker)
-        trackEventItemClicked(item)
+        if (isTokoNow()) trackTokoNowEventItemClicked(item)
+        else trackEventItemClicked(item)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
@@ -251,6 +259,27 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         }
     }
 
+    private fun trackTokoNowEventItemClicked(item: BaseSuggestionDataView) {
+        when(item.type) {
+            TYPE_KEYWORD -> {
+                view?.trackTokoNowEventClickKeyword(getTokoNowKeywordEventLabelForTracking(item))
+            }
+            TYPE_CURATED -> {
+                view?.trackTokoNowEventClickCurated(getCuratedEventLabelForTracking(item))
+            }
+        }
+    }
+
+    private fun getTokoNowKeywordEventLabelForTracking(item: BaseSuggestionDataView): String {
+        return String.format(
+                "keyword: %s - value: %s - po: %s - page: %s",
+                item.title,
+                item.searchTerm,
+                item.position,
+                item.applink
+        )
+    }
+
     private fun trackEventItemClicked(item: BaseSuggestionDataView) {
         when (item.type) {
             TYPE_KEYWORD -> {
@@ -276,6 +305,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             }
             TYPE_PRODUCT -> {
                 view?.trackEventClickProductLine(item, getGlobalEventLabelForTracking(item), getUserId())
+            }
+            TYPE_LIGHT -> {
+                view?.trackEventClickCurated(getCuratedLightEventLabelForTracking(item), item.trackingCode, item.dimension90)
             }
         }
     }
@@ -329,6 +361,16 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
+    private fun getCuratedLightEventLabelForTracking(item: BaseSuggestionDataView): String {
+        return String.format(
+            "keyword: %s - product: %s - po: %s - page: %s",
+            item.searchTerm,
+            item.subtitle,
+            item.position,
+            item.applink
+        )
+    }
+
     private fun getCampaignFromLocal(): String {
         return searchParameter[SearchApiConst.SRP_PAGE_TITLE] ?: ""
     }
@@ -340,6 +382,17 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 item.searchTerm,
                 item.applink
         )
+    }
+
+    override fun onSuggestionItemImpressed(item: BaseSuggestionDataView) {
+        when (item.type) {
+            TYPE_LIGHT -> impressCurated(item, getCuratedLightEventLabelForTracking(item))
+            TYPE_CURATED -> impressCurated(item, getCuratedEventLabelForTracking(item))
+        }
+    }
+
+    private fun impressCurated(item: BaseSuggestionDataView, label: String) {
+        view?.trackEventImpressCurated(label, item.trackingCode, item.dimension90)
     }
 
     override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {
