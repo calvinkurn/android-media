@@ -16,15 +16,15 @@ class ReportBottomSheet : BottomSheetUnify() {
     private var reasonType: String = ""
     private var reasonDesc: String = ""
     private var contentId: Int = 0
-    private val TYPE_1: Int = 1
-    private val TYPE_2: Int = 2
-    private val TYPE_3: Int = 3
 
 
     companion object {
         private const val SPAM = 1
         private const val ABUSE = 2
         private const val INAPPROPRIATE = 3
+        private const val TYPE1 = 1
+        private const val TYPE2 = 2
+        private const val TYPE3 = 3
         fun newInstance(postId: Int, context: OnReportOptionsClick): ReportBottomSheet {
             return ReportBottomSheet().apply {
                 this.onReportOptionsClick = context
@@ -51,15 +51,15 @@ class ReportBottomSheet : BottomSheetUnify() {
 
     private fun getReason() {
         when (isClicked) {
-            TYPE_1 -> {
+            TYPE1 -> {
                 reasonType = getString(R.string.feed_common_reason_type_spam)
                 reasonDesc = getString(R.string.feed_common_reason_desc_spam)
             }
-            TYPE_2 -> {
+            TYPE2 -> {
                 reasonType = getString(R.string.feed_common_reason_type_abuse)
                 reasonDesc = getString(R.string.feed_common_reason_desc_abuse)
             }
-            TYPE_3 -> {
+            TYPE3 -> {
                 reasonType = getString(R.string.feed_common_reason_type_inappropriate)
                 reasonDesc = getString(R.string.feed_common_reason_desc_inappropriate)
             }
