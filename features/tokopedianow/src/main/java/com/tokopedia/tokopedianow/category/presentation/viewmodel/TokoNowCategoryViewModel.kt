@@ -198,8 +198,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         if (element.carouselData.state == STATE_READY) return
 
         val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
-        val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
-        val recomCategoryId = if (categoryFilterId.isNotEmpty()) categoryFilterId else (tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
+        val recomCategoryId = getRecomCategoryId(tokonowParam)
         val getRecommendationRequestParam = GetRecommendationRequestParam(
                 pageName = TOKONOW_CLP,
                 categoryIds = listOf(recomCategoryId),
@@ -212,6 +211,13 @@ class TokoNowCategoryViewModel @Inject constructor (
         )
 
         updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+    }
+
+    private fun getRecomCategoryId(tokonowParam: Map<String, String>): String {
+        val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
+
+        return if (categoryFilterId.isNotEmpty()) categoryFilterId
+        else (tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
     }
 
     private fun getRecommendationCarouselError(
