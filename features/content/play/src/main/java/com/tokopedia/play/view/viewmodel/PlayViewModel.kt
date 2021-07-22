@@ -551,18 +551,21 @@ class PlayViewModel @Inject constructor(
         handleQuickReplyInfo(channelData.quickReplyInfo)
     }
 
-    fun focusPage(channelData: PlayChannelData) {
+    fun focusPage(channelData: PlayChannelData, castContext: CastContext) {
         focusVideoPlayer(channelData)
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
         trackVisitChannel(channelData.id)
+        addCastStateListener(castContext)
     }
 
-    fun defocusPage(shouldPauseVideo: Boolean) {
+    fun defocusPage(shouldPauseVideo: Boolean, castContext: CastContext) {
         stopJob()
         defocusVideoPlayer(shouldPauseVideo)
         returnToNonCastPlayer()
         stopWebSocket()
+        removeCastSessionListener()
+        removeCastStateListener(castContext)
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {

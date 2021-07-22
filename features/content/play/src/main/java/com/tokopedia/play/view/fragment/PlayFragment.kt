@@ -150,7 +150,6 @@ class PlayFragment @Inject constructor(
         view?.postDelayed({
             view?.let { registerKeyboardListener(it) }
         }, 200)
-        playViewModel.addCastStateListener(castContext)
     }
 
     override fun onPause() {
@@ -160,8 +159,6 @@ class PlayFragment @Inject constructor(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
-        playViewModel.removeCastStateListener(castContext)
-        playViewModel.removeCastSessionListener()
         super.onPause()
     }
 
@@ -280,14 +277,14 @@ class PlayFragment @Inject constructor(
     //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
     private fun onPageFocused() {
         try {
-            playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+            playViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId), castContext)
             analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
 
     private fun onPageDefocused() {
-        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP)
+        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP, castContext)
     }
 
     private fun invalidateVideoTopBounds(
