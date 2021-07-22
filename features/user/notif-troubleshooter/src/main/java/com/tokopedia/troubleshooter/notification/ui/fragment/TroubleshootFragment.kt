@@ -21,7 +21,6 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
-import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
 import com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
@@ -117,33 +116,39 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun initObservable() {
-        viewModel.notificationStatus.observe(viewLifecycleOwner, Observer { isNotificationEnabled ->
+        viewModel.notificationStatus.observe(viewLifecycleOwner, { isNotificationEnabled ->
             if (!GlobalConfig.isSellerApp()) {
                 if (!isNotificationEnabled) activity?.finish()
             }
         })
 
-        viewModel.token.observe(viewLifecycleOwner, Observer {
+        viewModel.token.observe(viewLifecycleOwner, {
             getNewToken(it)
         })
 
-        viewModel.notificationSetting.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationSetting.observe(viewLifecycleOwner, {
             notificationSetting(it)
         })
 
-        viewModel.deviceSetting.observe(viewLifecycleOwner, Observer {
+        viewModel.deviceSetting.observe(viewLifecycleOwner, {
             deviceSetting(it)
         })
 
-        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, Observer {
+        viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, {
             ringtoneSetting(it)
         })
 
-        viewModel.troubleshoot.observe(viewLifecycleOwner, Observer {
-            troubleshooterPushNotification(it)
+        viewModel.troubleshootSuccess.observe(viewLifecycleOwner, {
+            val isSuccess = StatusState(it.isTroubleshootSuccess())
+            adapter.updateStatus(PushNotification, isSuccess)
         })
 
-        viewModel.dndMode.observe(viewLifecycleOwner, Observer {
+        viewModel.troubleshootError.observe(viewLifecycleOwner, {
+            adapter.updateStatus(PushNotification, StatusState.Error)
+            showToastError()
+        })
+
+        viewModel.dndMode.observe(viewLifecycleOwner, {
             adapter.footerMessage(it)
         })
     }
@@ -265,19 +270,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                     message = getString(R.string.notif_rn_ticker_warning),
                     buttonText = R.string.btn_notif_play
             )
-        }
-    }
-
-    private fun troubleshooterPushNotification(result: Result<NotificationSendTroubleshoot>) {
-        when (result) {
-            is Success -> {
-                val isSuccess = StatusState(result.data.isTroubleshootSuccess())
-                adapter.updateStatus(PushNotification, isSuccess)
-            }
-            is Fail -> {
-                adapter.updateStatus(PushNotification, StatusState.Error)
-                showToastError()
-            }
         }
     }
 
