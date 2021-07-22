@@ -38,7 +38,8 @@ class EmptyProductTestHelper(
         val visitableList = baseViewModel.visitableListLiveData.value!!
 
         visitableList.first().assertChooseAddressDataView()
-        visitableList.last().assertEmptyProductDataView()
+        visitableList[1].assertEmptyProductDataView()
+        visitableList.last().assertRecommendationCarouselDataViewLoadingState()
     }
 
     private fun Visitable<*>.assertEmptyProductDataView() {

@@ -186,51 +186,11 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     }
 
-    fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int) {
-        launchCatchError(
-                block = { getRecommendationCarousel(element, adapterPosition) },
-                onError = { getRecommendationCarouselError(element, adapterPosition) },
-        )
-    }
-
-    private suspend fun getRecommendationCarousel(
-            element: RecommendationCarouselDataView,
-            adapterPosition: Int,
-    ) {
-        if (element.carouselData.state == STATE_READY) return
-
+    override fun getRecomCategoryId(): List<String> {
         val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
-        val recomCategoryId = getRecomCategoryId(tokonowParam)
-        val getRecommendationRequestParam = GetRecommendationRequestParam(
-                pageName = TOKONOW_CLP,
-                categoryIds = listOf(recomCategoryId),
-                xSource = RECOM_WIDGET,
-                isTokonow = true,
-                pageNumber = PAGE_NUMBER_RECOM_WIDGET,
-        )
-        val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
-
-        element.carouselData = RecommendationCarouselData(
-                state = STATE_READY,
-                recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
-        )
-
-        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
-    }
-
-    private fun getRecomCategoryId(tokonowParam: Map<String, String>): String {
         val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""
 
-        return if (categoryFilterId.isNotEmpty()) categoryFilterId
-        else (tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
-    }
-
-    private fun getRecommendationCarouselError(
-            element: RecommendationCarouselDataView,
-            adapterPosition: Int,
-    ) {
-        element.carouselData = RecommendationCarouselData(state = STATE_FAILED)
-
-        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+        return if (categoryFilterId.isNotEmpty()) listOf(categoryFilterId)
+        else listOf(tokonowParam[SearchApiConst.SRP_PAGE_ID] ?: "")
     }
 }

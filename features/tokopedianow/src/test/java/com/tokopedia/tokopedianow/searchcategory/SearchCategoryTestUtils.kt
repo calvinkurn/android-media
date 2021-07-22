@@ -4,6 +4,8 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -17,9 +19,14 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.core.Is
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -192,4 +199,20 @@ private fun assertATCConfiguration(
         assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
         assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.stock))
     }
+}
+
+fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState() {
+    assertThat(this, instanceOf(RecommendationCarouselDataView::class.java))
+
+    val recomWidget = this as RecommendationCarouselDataView
+    assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
+}
+
+fun assertTokonowRecommendationCarouselRequestParams(
+        getRecommendationRequestParam: GetRecommendationRequestParam
+) {
+    assertThat(getRecommendationRequestParam.xSource, Is.`is`(RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.pageName, Is.`is`(TOKONOW_CLP))
+//        assertThat(getRecommendationParams.isTokonow, shouldBe(true))
+    assertThat(getRecommendationRequestParam.pageNumber, Is.`is`(PAGE_NUMBER_RECOM_WIDGET))
 }

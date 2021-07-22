@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.Na
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
@@ -82,7 +83,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         val lastVisitableList = visitableList.subList(lastVisitableListIndex, visitableList.size)
 
         lastVisitableList[0].assertCategoryAisleDataView(categoryNavigation)
-        lastVisitableList[1].assertRecommendationCarouselDataView()
+        lastVisitableList[1].assertRecommendationCarouselDataViewLoadingState()
     }
 
     private fun Visitable<*>.assertCategoryAisleDataView(categoryNavigation: Navigation) {
@@ -94,13 +95,6 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         assertThat(categoryAisleItemList.size, shouldBe(2))
         categoryAisleItemList[0].assertAisle(categoryNavigation.prev)
         categoryAisleItemList[1].assertAisle(categoryNavigation.next)
-    }
-
-    private fun <T> Visitable<T>.assertRecommendationCarouselDataView() {
-        assertThat(this, instanceOf(RecommendationCarouselDataView::class.java))
-
-        val recomWidget = this as RecommendationCarouselDataView
-        assertThat(recomWidget.carouselData.state, shouldBe(STATE_LOADING))
     }
 
     private fun CategoryAisleItemDataView.assertAisle(navigationItem: NavigationItem) {

@@ -34,6 +34,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -41,6 +42,9 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
@@ -63,8 +67,12 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
+import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
+import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
@@ -367,6 +375,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListWithEmptyProduct() {
         visitableList.add(chooseAddressDataView)
         visitableList.add(EmptyProductDataView(filterController.getActiveFilterOptionList()))
+        visitableList.add(RecommendationCarouselDataView())
     }
 
     private fun createVisitableListWithProduct(
@@ -1002,6 +1011,50 @@ abstract class BaseSearchCategoryViewModel(
     fun onViewRemoveFilter(option: Option) {
         resetSortFilterIfExclude(option)
         filter(option, false)
+    }
+
+    open fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int) {
+        launchCatchError(
+                block = { getRecommendationCarousel(element, adapterPosition) },
+                onError = { getRecommendationCarouselError(element, adapterPosition) },
+        )
+    }
+
+    protected open suspend fun getRecommendationCarousel(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
+        if (element.carouselData.state == RecommendationCarouselData.STATE_READY) return
+
+        val getRecommendationRequestParam = GetRecommendationRequestParam(
+                pageName = TOKONOW_CLP,
+                categoryIds = getRecomCategoryId(),
+                xSource = RECOM_WIDGET,
+//                isTokonow = true,
+                pageNumber = PAGE_NUMBER_RECOM_WIDGET,
+//                keywords = getRecomKeywords(),
+        )
+        val recommendationList = getRecommendationUseCase.getData(getRecommendationRequestParam)
+
+        element.carouselData = RecommendationCarouselData(
+                state = RecommendationCarouselData.STATE_READY,
+                recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
+        )
+
+        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
+    }
+
+    protected open fun getRecomCategoryId() = listOf<String>()
+
+    protected open fun getRecomKeywords() = listOf<String>()
+
+    protected open fun getRecommendationCarouselError(
+            element: RecommendationCarouselDataView,
+            adapterPosition: Int,
+    ) {
+        element.carouselData = RecommendationCarouselData(state = RecommendationCarouselData.STATE_FAILED)
+
+        updatedVisitableIndicesMutableLiveData.value = listOf(adapterPosition)
     }
 
     protected class HeaderDataView(
