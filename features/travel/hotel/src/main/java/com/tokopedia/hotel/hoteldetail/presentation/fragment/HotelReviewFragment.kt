@@ -10,10 +10,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.databinding.FragmentHotelReviewBinding
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFactory
@@ -22,7 +22,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_review.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -35,6 +35,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var param: HotelReviewParam = HotelReviewParam()
     lateinit var reviewViewModel: HotelReviewViewModel
+    private var binding by autoClearedNullable<FragmentHotelReviewBinding>()
 
     var isFirstTime = true
 
@@ -67,8 +68,8 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hotel_review, container, false)
-        return view
+        binding = FragmentHotelReviewBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun getSwipeRefreshLayoutResourceId() = 0
@@ -77,9 +78,12 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     fun onSuccessGetResult(reviews: HotelReview.ReviewData) {
         showHotelMetaReview(true)
         super.renderList(reviews.reviewList, reviews.hasNext)
-        review_point_text_view.text = reviews.averageScoreReview.toString()
-        review_headline_text.text = reviews.headline
-        review_total_count_text.text = getString(R.string.hotel_review_total_review, reviews.totalReview.toString())
+
+        binding?.let {
+            it.reviewPointTextView.text = reviews.averageScoreReview.toString()
+            it.reviewHeadlineText.text = reviews.headline
+            it.reviewTotalCountText.text = getString(R.string.hotel_review_total_review, reviews.totalReview.toString())
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,24 +94,27 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     fun initSwitch() {
-        indonesia_review_switch.isChecked = true
-        indonesia_review_switch.setOnCheckedChangeListener { buttonView, isChecked ->
-            param.filterByCountry = if (isChecked) COUNTRY_ID else COUNTRY_ALL
-            //add param to get Indo
-            loadInitialData()
+        binding?.let {
+            it.indonesiaReviewSwitch.isChecked = true
+            it.indonesiaReviewSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+                param.filterByCountry = if (isChecked) COUNTRY_ID else COUNTRY_ALL
+                //add param to get Indo
+                loadInitialData()
+            }
         }
     }
 
     fun initFilterView() {
-        filter_recycler_view.listener = this
-        filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
-                getString(R.string.hotel_review_filter_second_rank),
-                getString(R.string.hotel_review_filter_third_rank)),
-                com.tokopedia.unifyprinciples.R.color.Unify_G300)
-        filter_recycler_view.selectOnlyOneChip(true)
-
-        //initially select recent search chip
-        filter_recycler_view.selectChipByPosition(0)
+        binding?.let {
+            it.filterRecyclerView.listener = this
+            it.filterRecyclerView.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
+                    getString(R.string.hotel_review_filter_second_rank),
+                    getString(R.string.hotel_review_filter_third_rank)),
+                    com.tokopedia.unifyprinciples.R.color.Unify_G300)
+            it.filterRecyclerView.selectOnlyOneChip(true)
+            //initially select recent search chip
+            it.filterRecyclerView.selectChipByPosition(0)
+        }
     }
 
     private fun onErrorGetResult(throwable: Throwable) {
@@ -126,7 +133,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     }
 
     fun showHotelMetaReview(visible: Boolean) {
-        app_bar_layout.visibility = if (visible) View.VISIBLE else View.GONE
+        binding?.appBarLayout?.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     override fun loadData(page: Int) {
@@ -159,17 +166,18 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        
-        if (indonesia_review_switch.isChecked) {
-            emptyModel.urlRes = getString(R.string.hotel_url_no_indonesian_review)
-            emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
-            emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
-        } else {
-            emptyModel.urlRes = getString(R.string.hotel_url_no_review)
-            emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
-            emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
-        }
 
+        binding?.let {
+            if (it.indonesiaReviewSwitch.isChecked) {
+                emptyModel.urlRes = getString(R.string.hotel_url_no_indonesian_review)
+                emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
+                emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
+            } else {
+                emptyModel.urlRes = getString(R.string.hotel_url_no_review)
+                emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
+                emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
+            }
+        }
         return emptyModel
     }
 

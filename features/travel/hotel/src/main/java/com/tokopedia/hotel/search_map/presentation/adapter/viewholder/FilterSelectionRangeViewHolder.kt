@@ -11,7 +11,6 @@ import com.tokopedia.hotel.search_map.data.model.FilterRatingEnum
 import com.tokopedia.hotel.search_map.data.model.FilterV2
 import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultFilterV2Adapter
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.*
-import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.base_rating_step
 
 /**
  * @author by jessica on 12/08/20

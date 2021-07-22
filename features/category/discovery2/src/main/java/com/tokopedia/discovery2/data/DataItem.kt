@@ -138,7 +138,7 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
-        val  fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
+        val  fontColor: String? = "",
 
         @SerializedName("button_text")
         var buttonText: String? = "",
