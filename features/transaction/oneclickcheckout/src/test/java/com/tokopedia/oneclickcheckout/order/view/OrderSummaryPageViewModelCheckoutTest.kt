@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
@@ -8,7 +9,6 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECo
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.ERROR_CODE_PRICE_CHANGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.PRICE_CHANGE_ACTION_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.PRICE_CHANGE_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccData
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccErrorData
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccPaymentParameter
@@ -41,6 +41,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
+import java.io.IOException
 
 @ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest() {
@@ -422,8 +423,8 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
-        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData(ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY)))
-
+        val errorMessage = "checkout error"
+        coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 0, error = CheckoutOccErrorData(message = errorMessage)))
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -431,7 +432,45 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         }, false)
 
         // Then
-        assertEquals(OccGlobalEvent.CheckoutError(CheckoutOccErrorData(ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY)), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Error Update Cart`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val exception = IOException()
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws exception
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(throwable = exception), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Checkout Failed Update Cart`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val errorMessage = "cart error"
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } throws MessageErrorException(errorMessage)
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = errorMessage), orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test

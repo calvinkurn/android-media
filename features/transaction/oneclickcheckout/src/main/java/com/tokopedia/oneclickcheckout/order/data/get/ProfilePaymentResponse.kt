@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class Payment(
+class Payment(
         @SerializedName("enable")
         val enable: Int = 0,
         @SerializedName("active")
@@ -19,10 +19,10 @@ data class Payment(
         val minimumAmount: Long = 0,
         @SerializedName("maximum_amount")
         val maximumAmount: Long = 0,
-        @SerializedName("fee")
-        val fee: Double = 0.0,
         @SerializedName("wallet_amount")
         val walletAmount: Long = 0,
+        @SerializedName("fee")
+        val fee: Double = 0.0,
         @SerializedName("metadata")
         val metadata: String = "",
         @SerializedName("mdr")
@@ -35,8 +35,6 @@ data class Payment(
         val occRevampErrorMessage: PaymentRevampErrorMessage = PaymentRevampErrorMessage(),
         @SerializedName("ticker_message")
         val tickerMessage: String = "",
-        @SerializedName("is_enable_next_button")
-        val isEnableNextButton: Boolean = false,
         @SerializedName("is_disable_pay_button")
         val isDisablePayButton: Boolean = false,
         @SerializedName("is_ovo_only_campaign")
@@ -51,35 +49,35 @@ data class Payment(
         val walletAdditionalData: WalletAdditionalData = WalletAdditionalData()
 )
 
-data class PaymentErrorMessage(
+class PaymentErrorMessage(
         @SerializedName("message")
         val message: String = "",
         @SerializedName("button")
         val button: PaymentErrorMessageButton = PaymentErrorMessageButton()
 )
 
-data class PaymentErrorMessageButton(
+class PaymentErrorMessageButton(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("link")
         val link: String = ""
 )
 
-data class PaymentRevampErrorMessage(
+class PaymentRevampErrorMessage(
         @SerializedName("message")
         val message: String = "",
         @SerializedName("button")
         val button: PaymentRevampErrorMessageButton = PaymentRevampErrorMessageButton()
 )
 
-data class PaymentRevampErrorMessageButton(
+class PaymentRevampErrorMessageButton(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("action")
         val action: String = ""
 )
 
-data class PaymentCreditCard(
+class PaymentCreditCard(
         @SerializedName("number_of_cards")
         val numberOfCards: PaymentCreditCardsNumber = PaymentCreditCardsNumber(),
         @SerializedName("available_terms")
@@ -94,7 +92,7 @@ data class PaymentCreditCard(
         val tncInfo: String = ""
 )
 
-data class PaymentCreditCardsNumber(
+class PaymentCreditCardsNumber(
         @SerializedName("available")
         val availableCards: Int = 0,
         @SerializedName("unavailable")
@@ -103,7 +101,7 @@ data class PaymentCreditCardsNumber(
         val totalCards: Int = 0
 )
 
-data class InstallmentTerm(
+class InstallmentTerm(
         @SerializedName("term")
         val term: Int = 0,
         @SerializedName("mdr")
@@ -116,7 +114,7 @@ data class InstallmentTerm(
         val isSelected: Boolean = false
 )
 
-data class OvoAdditionalData(
+class OvoAdditionalData(
         @SerializedName("ovo_activation")
         val ovoActivationData: OvoActionData = OvoActionData(),
         @SerializedName("ovo_top_up")
@@ -125,7 +123,7 @@ data class OvoAdditionalData(
         val phoneNumberRegistered: OvoActionData = OvoActionData()
 )
 
-data class WalletAdditionalData(
+class WalletAdditionalData(
         @SerializedName("wallet_type")
         val walletType: Int = 0, // 1 for ovo, 2 for gopay, 3 for gopaylater
         @SerializedName("enable_wallet_amount_validation")
@@ -138,7 +136,7 @@ data class WalletAdditionalData(
         val phoneNumberRegistered: WalletData = WalletData()
 )
 
-data class OvoActionData(
+class OvoActionData(
         @SerializedName("is_required")
         val isRequired: Boolean = false,
         @SerializedName("button_title")
@@ -151,7 +149,7 @@ data class OvoActionData(
         val isHideDigital: Int = 0
 )
 
-data class WalletData(
+class WalletData(
         @SerializedName("is_required")
         val isRequired: Boolean = false, // flag to client to show activation button title or activation?
         @SerializedName("button_title")

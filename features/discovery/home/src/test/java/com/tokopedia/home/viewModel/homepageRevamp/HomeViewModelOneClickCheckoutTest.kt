@@ -1,9 +1,9 @@
 package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelGrid
@@ -20,12 +20,12 @@ class HomeViewModelOneClickCheckoutTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getHomeUseCase = mockk<HomeRevampUseCase> (relaxed = true)
-    private val addToCartOccUseCase = mockk<AddToCartOccUseCase> (relaxed = true)
+    private val addToCartOccUseCase = mockk<AddToCartOccMultiUseCase> (relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
     fun `one click checkout success`(){
-        val atc = AddToCartDataModel(status = AddToCartDataModel.STATUS_OK, data = DataModel(
+        val atc = AddToCartOccMultiDataModel(status = AddToCartOccMultiDataModel.STATUS_OK, data = AddToCartOccMultiData(
                 success = 1
         ))
         coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns atc
@@ -37,7 +37,7 @@ class HomeViewModelOneClickCheckoutTest {
 
     @Test
     fun `one click checkout error response`(){
-        val atc = AddToCartDataModel(status = AddToCartDataModel.STATUS_ERROR)
+        val atc = AddToCartOccMultiDataModel(status = AddToCartOccMultiDataModel.STATUS_ERROR)
         coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns atc
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)

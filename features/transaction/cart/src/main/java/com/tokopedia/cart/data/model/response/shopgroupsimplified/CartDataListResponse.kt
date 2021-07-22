@@ -2,6 +2,7 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import java.util.*

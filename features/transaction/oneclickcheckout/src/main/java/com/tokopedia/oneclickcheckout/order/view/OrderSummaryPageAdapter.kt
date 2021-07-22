@@ -12,7 +12,6 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderTickerBinding
 import com.tokopedia.oneclickcheckout.databinding.LayoutOccOnboardingNewBinding
 import com.tokopedia.oneclickcheckout.databinding.LayoutPaymentBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderOnboardingCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
@@ -21,6 +20,7 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTickerCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
@@ -39,7 +39,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var ticker: TickerData? = null
-    var onboarding: OccMainOnboarding = OccMainOnboarding()
+    var onboarding: OccOnboarding = OccOnboarding()
     var shop: OrderShop = OrderShop()
     var product: OrderProduct? = null
     var products: List<OrderProduct> = emptyList()
@@ -53,12 +53,20 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     val onboardingIndex = 1
     val shopIndex = 2
     val productStartIndex = 3
+
+    private val preferenceIndexAddition = 3
     val preferenceIndex: Int
-        get() = products.size + 3
+        get() = products.size + preferenceIndexAddition
+
+    private val insuranceIndexAddition = 4
     val insuranceIndex: Int
-        get() = products.size + 4
+        get() = products.size + insuranceIndexAddition
+
+    private val promoIndexAddition = 5
     val promoIndex: Int
-        get() = products.size + 5
+        get() = products.size + promoIndexAddition
+
+    private val totalPaymentIndexAddition = 6
     val totalPaymentIndex: Int
         get() = products.size + 6
 
@@ -127,21 +135,20 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     }
 
     override fun getItemCount(): Int {
-        return products.size + 7
+        return totalPaymentIndex + 1
     }
 
     override fun getItemViewType(position: Int): Int {
-        val productsCount = products.size
-        val bottomPosition = position - productsCount
+        val bottomPosition = position - products.size
         return when {
-            position == 0 -> OrderTickerCard.VIEW_TYPE
-            position == 1 -> OrderOnboardingCard.VIEW_TYPE
-            position == 2 -> OrderShopCard.VIEW_TYPE
-            bottomPosition < 3 -> OrderProductCard.VIEW_TYPE
-            bottomPosition == 3 -> OrderPreferenceCard.VIEW_TYPE
-            bottomPosition == 4 -> OrderInsuranceCard.VIEW_TYPE
-            bottomPosition == 5 -> OrderPromoCard.VIEW_TYPE
-            bottomPosition == 6 -> OrderTotalPaymentCard.VIEW_TYPE
+            position == tickerIndex -> OrderTickerCard.VIEW_TYPE
+            position == onboardingIndex -> OrderOnboardingCard.VIEW_TYPE
+            position == shopIndex -> OrderShopCard.VIEW_TYPE
+            bottomPosition < preferenceIndexAddition -> OrderProductCard.VIEW_TYPE
+            bottomPosition == preferenceIndexAddition -> OrderPreferenceCard.VIEW_TYPE
+            bottomPosition == insuranceIndexAddition -> OrderInsuranceCard.VIEW_TYPE
+            bottomPosition == promoIndexAddition -> OrderPromoCard.VIEW_TYPE
+            bottomPosition == totalPaymentIndexAddition -> OrderTotalPaymentCard.VIEW_TYPE
             else -> -1
         }
     }

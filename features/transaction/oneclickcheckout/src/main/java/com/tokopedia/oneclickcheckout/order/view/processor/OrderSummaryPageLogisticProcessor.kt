@@ -23,6 +23,7 @@ import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel
+import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageViewModel.Companion.SAVE_PINPOINT_SUCCESS_MESSAGE
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
@@ -107,6 +108,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             orderValue = totalValue
             isFulfillment = orderShop.isFulfillment
             preOrderDuration = productPreOrderDuration
+            boMetadata = orderShop.boMetadata
         } to 0.0
     }
 
@@ -118,11 +120,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
     }
 
-    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>): ShippingRecommendationData {
+    private fun mapShippingRecommendationData(shippingRecommendationData: ShippingRecommendationData, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>, shipmentProfile: OrderProfileShipment): ShippingRecommendationData {
         val data = ratesResponseStateConverter.fillState(shippingRecommendationData, listShopShipment, orderShipment.shipperProductId.toZeroIfNull(), orderShipment.serviceId.toZeroIfNull())
         if (data.shippingDurationViewModels != null) {
             val logisticPromo = data.logisticPromo
-            if (logisticPromo != null) {
+            if (logisticPromo != null && !shipmentProfile.isDisableChangeCourier) {
                 // validate army courier
                 // TODO: 07/07/21 check tokonow bbo
                 val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
@@ -155,7 +157,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     )
                 }
                 val shippingRecommendationData = ratesUseCase.execute(param)
-                        .map { mapShippingRecommendationData(it, orderShipment, listShopShipment) }
+                        .map { mapShippingRecommendationData(it, orderShipment, listShopShipment, orderProfile.shipment) }
                         .toBlocking().single()
                 val profileShipment = orderProfile.shipment
                 var shipping = orderShipment
@@ -455,9 +457,24 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return ResultRates(
                 orderShipment = OrderShipment(
                         isLoading = false,
+                        isDisabled = true,
                         serviceName = orderProfile.shipment.serviceName,
                         serviceDuration = orderProfile.shipment.serviceDuration,
                         serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                        shippingRecommendationData = null
+                )
+        )
+    }
+
+    fun generateNeedPinpointResultRates(orderProfile: OrderProfile): ResultRates {
+        return ResultRates(
+                orderShipment = OrderShipment(
+                        isLoading = false,
+                        isDisabled = false,
+                        serviceName = orderProfile.shipment.serviceName,
+                        serviceDuration = orderProfile.shipment.serviceDuration,
+                        serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                        needPinpoint = true,
                         shippingRecommendationData = null
                 )
         )
@@ -498,7 +515,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
 
                 if (statusSuccess) {
-                    return@withContext OccGlobalEvent.TriggerRefresh()
+                    return@withContext OccGlobalEvent.TriggerRefresh(successMessage = SAVE_PINPOINT_SUCCESS_MESSAGE)
                 }
 
                 if (messageError.isNullOrBlank()) {
@@ -633,19 +650,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
         }
         return Pair(null, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))
-    }
-
-    fun getRecommendedShipmentFromServiceId(orderShipment: OrderShipment, serviceId: Int): Pair<Int, Int>? {
-        val shippingRecommendationData = orderShipment.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            val newDuration = shippingRecommendationData.shippingDurationViewModels.firstOrNull { it.serviceData.serviceId == serviceId }
-            if (newDuration != null && newDuration.shippingCourierViewModelList.isNotEmpty()) {
-                val newCourier = newDuration.shippingCourierViewModelList.firstOrNull { it.isSelected || it.productData.isRecommend }
-                        ?: newDuration.shippingCourierViewModelList.first()
-                return newCourier.productData.shipperId to newCourier.productData.shipperProductId
-            }
-        }
-        return null
     }
 
     internal fun resetBbo(orderShipment: OrderShipment): OrderShipment {

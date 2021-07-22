@@ -62,13 +62,21 @@ class OrderSummaryPageActivityOvoRevampTest {
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
-                    isFreeShipping = true
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
             )
             assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")
@@ -105,13 +113,21 @@ class OrderSummaryPageActivityOvoRevampTest {
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
-                    isFreeShipping = true
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
             )
             assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")
@@ -139,13 +155,21 @@ class OrderSummaryPageActivityOvoRevampTest {
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
-                    isFreeShipping = true
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
             )
             assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")
@@ -181,13 +205,21 @@ class OrderSummaryPageActivityOvoRevampTest {
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
-                    isFreeShipping = true
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
             )
             assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = null,
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp115.000", "Ganti Metode Bayar")

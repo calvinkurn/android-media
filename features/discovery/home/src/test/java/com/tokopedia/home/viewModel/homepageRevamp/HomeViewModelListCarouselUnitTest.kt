@@ -2,7 +2,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.gql.CloseChannel
 import com.tokopedia.home.beranda.domain.interactor.CloseChannelUseCase
@@ -17,7 +17,6 @@ import com.tokopedia.home_component.visitable.RecommendationListCarouselDataMode
 import io.mockk.*
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
 
 class HomeViewModelListCarouselUnitTest{
     @get:Rule
@@ -25,7 +24,7 @@ class HomeViewModelListCarouselUnitTest{
 
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase>(relaxed = true)
     private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
-    private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getAtcUseCase = mockk<AddToCartOccMultiUseCase>(relaxed = true)
     private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private lateinit var homeViewModel: HomeRevampViewModel
 
@@ -44,7 +43,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = true)
 
         // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+        coEvery{ getAtcUseCase.executeOnBackground() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
@@ -70,7 +69,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = true)
 
         // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+        coEvery{ getAtcUseCase.executeOnBackground() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)
@@ -97,7 +96,7 @@ class HomeViewModelListCarouselUnitTest{
         coEvery { closeChannelUseCase.executeOnBackground() } returns CloseChannel(success = false)
 
         // Success Express Checkout
-        every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+        coEvery{ getAtcUseCase.executeOnBackground() } returns mockk()
 
         homeViewModel = createHomeViewModel(closeChannelUseCase = closeChannelUseCase, getHomeUseCase = getHomeUseCase, getAtcUseCase = getAtcUseCase)
         homeViewModel.homeLiveData.observeForever(observerHome)

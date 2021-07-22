@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -46,7 +44,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 @Module(
         includes = arrayOf(
@@ -239,12 +236,5 @@ class ChatModuleStub {
     fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
-    }
-
-    @ChatScope
-    @Provides
-    @Named(AtcConstant.MUTATION_ATC_OCC)
-    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
 }

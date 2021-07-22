@@ -47,57 +47,101 @@
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iu_image_fulfill"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/dp_12"
-        android:scaleType="fitCenter" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_shop_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:lines="1"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="small"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/separator_free_shipping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:text="@string/label_separator_line"
-        android:textColor="@color/Unify_N700_68"
-        app:typographyType="small"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iu_free_shipping"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_8"
-        android:scaleType="fitStart"
-        tools:ignore="ContentDescription" />
-
-    <androidx.constraintlayout.helper.widget.Flow
-        android:id="@+id/flow_shop_location_and_free_shipping"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexbox_order_shop_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:constraint_referenced_ids="iu_image_fulfill,tv_shop_location,separator_free_shipping,iu_free_shipping"
-        app:flow_horizontalBias="0"
-        app:flow_horizontalGap="@dimen/spacing_lvl2"
-        app:flow_horizontalStyle="packed"
-        app:flow_verticalAlign="center"
-        app:flow_verticalGap="@dimen/spacing_lvl2"
-        app:flow_wrapMode="chain"
+        app:flexDirection="row"
+        app:flexWrap="wrap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shop_name" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop_name">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_image_fulfill"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:scaleType="fitCenter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shop_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="kota" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/separator_pre_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            android:text="@string/label_separator_line"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_pre_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            app:labelType="general_light_grey"
+            tools:labelTitle="Pre Order 8 Hari" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/separator_alert_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            android:text="@string/label_separator_line"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_alert_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            app:labelType="general_light_grey"
+            tools:labelTitle="This Is Incident Label" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/separator_free_shipping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:gravity="center_vertical"
+            android:text="@string/label_separator_line"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="small"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iu_free_shipping"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:scaleType="fitStart"
+            tools:ignore="ContentDescription" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_order_shop"
@@ -110,7 +154,7 @@
         app:closeButtonVisibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flow_shop_location_and_free_shipping"
+        app:layout_constraintTop_toBottomOf="@+id/flexbox_order_shop_info"
         app:tickerShapeType="loose"
         app:tickerType="warning" />
 

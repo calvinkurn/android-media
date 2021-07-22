@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -25,6 +26,7 @@ import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -397,10 +399,12 @@ class OrderSummaryPageRobot {
     }
 
     fun assertShopCard(shopName: String,
+                       hasShopBadge: Boolean,
                        shopLocation: String,
                        hasShopLocationImg: Boolean,
-                       hasShopBadge: Boolean,
-                       isFreeShipping: Boolean) {
+                       isFreeShipping: Boolean,
+                       preOrderText: String,
+                       alertMessage: String) {
         onView(withId(R.id.rv_order_summary_page)).perform(actionOnHolderItem(object : BaseMatcher<RecyclerView.ViewHolder?>() {
             override fun describeTo(description: Description?) {
 
@@ -420,30 +424,23 @@ class OrderSummaryPageRobot {
                 assertEquals(if (hasShopLocationImg) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.iu_image_fulfill).visibility)
                 assertEquals(if (hasShopBadge) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.iv_shop_badge).visibility)
                 assertEquals(if (isFreeShipping) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.iu_free_shipping).visibility)
-            }
-        }))
-    }
-
-    fun assertProductCard(index: Int = 0,
-                          productName: String,
-                          productPrice: String,
-                          productSlashPrice: String?,
-                          productQty: Int) {
-        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
-            override fun getConstraints(): Matcher<View>? = null
-
-            override fun getDescription(): String = "assert product $index card"
-
-            override fun perform(uiController: UiController?, view: View) {
-                assertEquals(productName, view.findViewById<Typography>(R.id.tv_product_name).text.toString())
-                assertEquals(productPrice, view.findViewById<Typography>(R.id.tv_product_price).text.toString())
-                if (productSlashPrice == null) {
-                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                assertEquals(if (isFreeShipping) View.VISIBLE else View.GONE, view.findViewById<View>(R.id.separator_free_shipping).visibility)
+                if (preOrderText.isNotEmpty()) {
+                    assertEquals(preOrderText, view.findViewById<Label>(R.id.lbl_pre_order).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.lbl_pre_order).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.separator_pre_order).visibility)
                 } else {
-                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
-                    assertEquals(productSlashPrice, view.findViewById<Typography>(R.id.tv_product_slash_price).text)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.lbl_pre_order).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.separator_pre_order).visibility)
                 }
-                assertEquals(productQty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
+                if (alertMessage.isNotEmpty()) {
+                    assertEquals(alertMessage, view.findViewById<Label>(R.id.lbl_alert_message).text.toString())
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.lbl_alert_message).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<View>(R.id.separator_alert_message).visibility)
+                } else {
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.lbl_alert_message).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.separator_alert_message).visibility)
+                }
             }
         }))
     }
@@ -468,6 +465,81 @@ class OrderSummaryPageRobot {
                     assertEquals("image shop badge $shopTypeName", view.findViewById<View>(R.id.iv_shop_badge).contentDescription)
                 } else {
                     assertEquals(View.GONE, view.findViewById<View>(R.id.iv_shop_badge).visibility)
+                }
+            }
+        }))
+    }
+
+    fun assertProductCard(index: Int = 0,
+                          productName: String,
+                          productPrice: String,
+                          productSlashPrice: String?,
+                          productSlashPriceLabel: String?,
+                          productVariant: String?,
+                          productWarningMessage: String?,
+                          productAlertMessage: String?,
+                          productInfo: List<String>?,
+                          productQty: Int,
+                          productNotes: String?) {
+        onView(withId(R.id.rv_order_summary_page)).perform(actionOnItemAtPosition<OrderProductCard>(index + 3, object : ViewAction {
+            override fun getConstraints(): Matcher<View>? = null
+
+            override fun getDescription(): String = "assert product $index card"
+
+            override fun perform(uiController: UiController?, view: View) {
+                assertEquals(productName, view.findViewById<Typography>(R.id.tv_product_name).text.toString())
+                assertEquals(productPrice, view.findViewById<Typography>(R.id.tv_product_price).text.toString())
+                if (productSlashPrice == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_slash_price).visibility)
+                    assertEquals(productSlashPrice, view.findViewById<Typography>(R.id.tv_product_slash_price).text.toString())
+                }
+                if (productSlashPriceLabel == null) {
+                    assertEquals(View.GONE, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).visibility)
+                    assertEquals(productSlashPriceLabel, view.findViewById<Label>(R.id.lbl_product_slash_price_percentage).text.toString())
+                }
+                if (productVariant == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_variant).visibility)
+                    assertEquals(productVariant, view.findViewById<Typography>(R.id.tv_product_variant).text.toString())
+                }
+                if (productWarningMessage == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_qty_left).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_qty_left).visibility)
+                    assertEquals(productWarningMessage, view.findViewById<Typography>(R.id.tv_qty_left).text.toString())
+                }
+                if (productAlertMessage == null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_alert_message).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_alert_message).visibility)
+                    assertEquals(productAlertMessage, view.findViewById<Typography>(R.id.tv_product_alert_message).text.toString())
+                }
+                val productInfoGroup = view.findViewById<ViewGroup>(R.id.flexbox_order_product_info)
+                if (productInfo != null) {
+                    for (i in productInfo.indices) {
+                        assertEquals(productInfo[i], (productInfoGroup.getChildAt(i) as Typography).text.toString())
+                    }
+                    assertEquals(productInfo.size, productInfoGroup.childCount)
+                } else {
+                    assertEquals(0, productInfoGroup.childCount)
+                }
+                assertEquals(productQty.toString(), view.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.quantity_editor_qty).text.toString())
+                if (productNotes != null) {
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_preview).visibility)
+                    assertEquals(productNotes, view.findViewById<Typography>(R.id.tv_product_notes_preview).text.toString())
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tf_note).visibility)
+                } else {
+                    assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.tv_product_notes_placeholder).visibility)
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_edit).visibility)
+                    assertEquals(View.GONE, view.findViewById<Typography>(R.id.tv_product_notes_preview).visibility)
+                    assertEquals(View.GONE, view.findViewById<View>(R.id.tf_note).visibility)
                 }
             }
         }))

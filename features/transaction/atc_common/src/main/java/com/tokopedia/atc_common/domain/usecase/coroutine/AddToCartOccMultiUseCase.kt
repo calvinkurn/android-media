@@ -8,7 +8,7 @@ import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
-import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART_OCC
+import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART_OCC_MULTI
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -39,7 +39,7 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
     override suspend fun executeOnBackground(): AddToCartOccMultiDataModel {
         val sentParams = requestParams?.copy() ?: throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
 
-        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC, AddToCartOccMultiGqlResponse::class.java, getParams(sentParams))
+        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC_MULTI, AddToCartOccMultiGqlResponse::class.java, getParams(sentParams))
         val addToCartOccGqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiGqlResponse>()
 
         val result = addToCartDataMapper.mapAddToCartOccMultiResponse(addToCartOccGqlResponse)
@@ -50,7 +50,7 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
                 AddToCartBaseAnalytics.sendBranchIoTracking(it.productId, it.productName, it.price,
                         it.quantity, it.category, it.categoryLevel1Id,
                         it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
-                        it.categoryLevel3Id, it.categoryLevel3Name, it.userId)
+                        it.categoryLevel3Id, it.categoryLevel3Name, sentParams.userId)
             }
         }
         return result
@@ -73,7 +73,8 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
                 },
                 PARAM_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress(),
                 PARAM_LANG to addToCartRequest.lang,
-                PARAM_SOURCE to addToCartRequest.source
+                PARAM_SOURCE to addToCartRequest.source,
+                PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequest.atcFromExternalSource
         ))
     }
 
@@ -92,5 +93,6 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
         private const val PARAM_CHOSEN_ADDRESS = "chosen_address"
         private const val PARAM_LANG = "lang"
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atc_from_external_source"
     }
 }

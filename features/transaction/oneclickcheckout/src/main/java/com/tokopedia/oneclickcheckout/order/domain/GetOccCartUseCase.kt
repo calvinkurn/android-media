@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -13,7 +14,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOccCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                             private val mapper: GetOccCartMapper,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
@@ -32,7 +33,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
-            val cart = response.response.data.cartList.firstOrNull()
+            val cart = response.response.data.groupShop.firstOrNull()
             if (!errorMessage.isNullOrEmpty() || cart == null) {
                 throw MessageErrorException(errorMessage ?: DEFAULT_ERROR_MESSAGE)
             }
@@ -46,36 +47,24 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         private const val PARAM_SOURCE = "source"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_cart_page(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
-  get_occ_cart_page(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
+        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_multi(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
+  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
     error_message
     status
     data {
+      errors
       error_code
       pop_up_message
-      max_quantity
       max_char_note
-      messages {
-        ErrorFieldBetween
-        ErrorFieldMaxChar
-        ErrorFieldRequired
-        ErrorProductAvailableStock
-        ErrorProductAvailableStockDetail
-        ErrorProductMaxQuantity
-        ErrorProductMinQuantity
-      }
+      kero_token
+      kero_unix_time
+      kero_discom_token
+      error_ticker
       tickers {
         id
         message
         page
         title
-      }
-      ticker_message {
-        message
-        replacement {
-            identifier
-            value
-        }
       }
       occ_main_onboarding {
         force_show_coachmark
@@ -97,50 +86,15 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
         }
       }
-      kero_token
-      kero_unix_time
-      kero_discom_token
-      errors
-      cart_list {
+      group_shop_occ {
         errors
-        cart_id
-        product {
-          product_tracker_data {
-            attribution
-            tracker_list_name
-          }
-          product_id
-          product_name
-          product_price
-          category_id
-          category
-          wholesale_price {
-            qty_min_fmt
-            qty_max_fmt
-            qty_min
-            qty_max
-            prd_prc
-            prd_prc_fmt
-          }
-          product_weight
-          product_weight_actual
-          is_preorder
-          product_cashback
-          product_min_order
-          product_max_order
-          product_invenage_value
-          product_switch_invenage
-          product_image {
-            image_src_200_square
-          }
-          product_notes
-          product_quantity
-          campaign_id
-          product_original_price
-          product_price_original_fmt
-          is_slash_price
-          product_finsurance
-          warehouse_id
+        errors_unblocking
+        cart_string
+        #payment_profile
+        is_disable_change_courier
+        auto_courier_selection
+        shipment_information {
+          shop_location
           free_shipping {
             eligible
             badge_url
@@ -149,37 +103,37 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             eligible
             badge_url
           }
-          product_preorder {
-            duration_day
+          preorder {
+            is_preorder
+            duration
           }
         }
-        cart_string
-        payment_profile
-        purchase_protection_plan_data {
-          protection_available
-          protection_type_id
-          protection_price_per_product
-          protection_price
-          protection_title
-          protection_subtitle
-          protection_link_text
-          protection_link_url
-          protection_opt_in
-          protection_checkbox_disabled
-          unit
-          source
+        courier_selection_error {
+          title
+          description
         }
-        toko_cabang {
-          message
-          badge_url
+        bo_metadata {
+          bo_type
+          bo_eligibilities {
+            key
+            value
+          }
+          additional_attributes {
+            key
+            value
+          }
         }
         shop {
           shop_id
-          user_id
           shop_name
+          shop_alert_message
+          shop_ticker
+          maximum_weight_wording
+          maximum_shipping_weight
           is_gold
           is_gold_badge
           is_official
+          is_tokonow
           gold_merchant {
             is_gold
             is_gold_badge
@@ -201,7 +155,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           latitude
           longitude
           district_id
-          city_name
           shop_shipments {
             ship_id
             ship_name
@@ -218,30 +171,88 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
           }
         }
+        cart_details {
+          products {
+            cart_id
+            product_id
+            product_name
+            product_price
+            category_id
+            category
+            wholesale_price {
+              qty_min_fmt
+              qty_max_fmt
+              qty_min
+              qty_max
+              prd_prc
+              prd_prc_fmt
+            }
+            product_weight
+            product_weight_actual
+            is_preorder
+            product_cashback
+            product_min_order
+            product_max_order
+            product_invenage_value
+            product_switch_invenage
+            product_image {
+              image_src_200_square
+            }
+            product_notes
+            product_quantity
+            campaign_id
+            product_original_price
+            product_price_original_fmt
+            initial_price
+            initial_price_fmt
+            slash_price_label
+            product_finsurance
+            warehouse_id
+            free_shipping {
+              eligible
+            }
+            free_shipping_extra {
+              eligible
+            }
+            product_preorder {
+              duration_day
+            }
+            product_tracker_data {
+              attribution
+              tracker_list_name
+            }
+            variant_description_detail {
+              variant_name
+              variant_description
+            }
+            product_warning_message
+            product_alert_message
+            product_information
+            #purchase_protection_plan_data {
+            #  protection_available
+            #  protection_type_id
+            #  protection_price_per_product
+            #  protection_price
+            #  protection_title
+            #  protection_subtitle
+            #  protection_link_text
+            #  protection_link_url
+            #  protection_opt_in
+            #  protection_checkbox_disabled
+            #  unit
+            #  source
+            #}
+          }
+        }
+        toko_cabang {
+          message
+          badge_url
+        }
         warehouse {
           is_fulfillment
         }
       }
-      profile_index_wording
-      profile_recommendation_wording
       profile {
-        has_preference
-        is_changed_profile
-        message
-        onboarding_header_message
-        onboarding_component {
-          header_title
-          body_image
-          body_message
-          info_component {
-            text
-            link
-          }
-        }
-        profile_revamp_wording
-        is_recom
-        profile_id
-        status
         address {
           address_id
           receiver_name
@@ -257,7 +268,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           longitude
           latitude
           postal_code
-          geolocation
           state
           state_detail
           status
@@ -273,13 +283,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           gateway_name
           image
           description
-          fee
           minimum_amount
           maximum_amount
-          flags {
-            pin
-          }
           wallet_amount
+          fee
           metadata
           mdr
           credit_card {
@@ -315,7 +322,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             }
           }
           ticker_message
-          is_enable_next_button
           is_disable_pay_button
           is_ovo_only_campaign
           ovo_additional_data {
@@ -554,7 +560,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
         change_cc_link
         callback_url
       }
-      error_ticker
       prompt {
         type
         title
@@ -565,19 +570,6 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           link
           action
           color
-        }
-      }
-      occ_revamp {
-        enable
-        total_profile
-        change_template_text
-      }
-      occ_remove_profile {
-        enable
-        ui_type
-        message {
-          title
-          description
         }
       }
     }

@@ -13,16 +13,17 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_DIALOG
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -31,6 +32,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletActionData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentWalletAdditionalData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
@@ -295,7 +298,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             orderSummaryAnalytics.eventViewOrderSummaryPage(any(), any(), any())
         }
         assertEquals(cart, orderSummaryPageViewModel.orderCart)
-        assertEquals(1, orderSummaryPageViewModel.getCurrentShipperId())
+        assertEquals(1, orderSummaryPageViewModel.orderShipment.value.getRealShipperId())
         verify(exactly = 1) { ratesUseCase.execute(any()) }
         verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
     }
@@ -303,7 +306,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Update Product Debounce Success`() {
         // Given
-        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product.copy(quantity = helper.product.quantity.copy(isStateError = false))))
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
@@ -341,23 +344,6 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Update Product Debounce With Error Quantity Should Not Reload Rates`() {
-        // Given
-        orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderCart = helper.orderData.cart
-
-        // When
-        orderSummaryPageViewModel.updateProduct(OrderProduct(quantity = QuantityUiModel(orderQuantity = 10, isStateError = true)), 0)
-        testDispatchers.main.advanceUntilIdle()
-
-        // Then
-        verify(inverse = true) { ratesUseCase.execute(any()) }
-        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
-    }
-
-    @Test
     fun `Update Product Debounce Within Delay Time`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -379,20 +365,20 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Consume Force Show Onboarding`() {
         // Given
-        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = true))
+        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccOnboarding(isForceShowCoachMark = true))
 
         // When
         orderSummaryPageViewModel.consumeForceShowOnboarding()
 
         // Then
-        assertEquals(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel.orderPreferenceData)
+        assertEquals(OrderPreference(onboarding = OccOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel.orderPreferenceData)
         assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Consume Force Show Onboarding On Invalid State`() {
         // Given
-        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false))
+        orderSummaryPageViewModel.orderPreferenceData = OrderPreference(onboarding = OccOnboarding(isForceShowCoachMark = false))
 
         // When
         orderSummaryPageViewModel.consumeForceShowOnboarding()
@@ -413,7 +399,14 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateCart()
 
         // Then
-        coVerify { updateCartOccUseCase.executeSuspend(withArg { assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = "1", spId = 1, shippingId = 1)), UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1", gatewayCode = "payment")), it) }) }
+        coVerify {
+            updateCartOccUseCase.executeSuspend(withArg {
+                assertEquals(UpdateCartOccRequest(arrayListOf(
+                        UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString())),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 1, addressId = "1", gatewayCode = "payment", spId = 1, shippingId = 1), source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES),
+                        it)
+            })
+        }
     }
 
     @Test
@@ -456,8 +449,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         coVerify {
             updateCartOccUseCase.executeSuspend(withArg {
-                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = "1", spId = 0, shippingId = 0)),
-                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1", gatewayCode = "payment"), skipShippingValidation = true), it)
+                assertEquals(UpdateCartOccRequest(arrayListOf(UpdateCartOccCartRequest(cartId = "", quantity = 1, productId = helper.product.productId.toString())),
+                        UpdateCartOccProfileRequest(profileId = "0", serviceId = 0, addressId = "1", gatewayCode = "payment", spId = 0, shippingId = 0), skipShippingValidation = true, source = UpdateCartOccRequest.SOURCE_UPDATE_QTY_NOTES),
+                        it)
             })
         }
     }
@@ -567,6 +561,27 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             {
                 "express_checkout_param" : {}
             }
+        """.trimIndent()))
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = preference
+        val term1 = OrderPaymentInstallmentTerm(term = 1, isEnable = true, isSelected = true)
+        val term2 = OrderPaymentInstallmentTerm(term = 2, isEnable = true, isSelected = false)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
+
+        // When
+        orderSummaryPageViewModel.chooseInstallment(term2)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Installment Using Invalid Metadata Json`() {
+        // Given
+        var preference = helper.preference
+        preference = preference.copy(payment = preference.payment.copy(metadata = """
+            {
+                "express_checkout_param" : {}
         """.trimIndent()))
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = preference
@@ -736,6 +751,30 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Address LCA Error`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        val addressModel = RecipientAddressModel().apply {
+            id = "address1"
+            destinationDistrictId = "districtId1"
+            postalCode = "postalcode1"
+            latitude = "lat1"
+            longitude = "lon1"
+        }
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        val response = Exception()
+        coEvery { chooseAddressRepository.get().setStateChosenAddressFromAddress(any()) } throws response
+        coEvery { chooseAddressMapper.get().mapSetStateChosenAddress(any()) } returns ChosenAddressModel()
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressModel.id }) } throws response
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressModel)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Update Address On Invalid Preference State`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(address = OrderProfileAddress())
@@ -796,7 +835,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Force Show Onboarding Revamp With Profile And Failed Get Rates`() {
         // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val onboarding = OccOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
         val profile = OrderProfile(shipment = shipment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = 1))), preference = profile, onboarding = onboarding)
@@ -815,7 +854,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Force Show Onboarding Revamp With Profile`() {
         // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val onboarding = OccOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
         val address = OrderProfileAddress(addressId = 1)
         val payment = OrderProfilePayment(gatewayCode = "payment")
@@ -858,7 +897,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Force Show Onboarding Revamp With Profile And Prompt`() {
         // Given
-        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val onboarding = OccOnboarding(isForceShowCoachMark = true)
         val shipment = OrderProfileShipment(serviceId = 1)
         val address = OrderProfileAddress(addressId = 1)
         val profile = OrderProfile(shipment = shipment, address = address)
@@ -912,5 +951,22 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
 
         // Then
         assertEquals(paymentProfile, orderSummaryPageViewModel.getPaymentProfile())
+    }
+
+    @Test
+    fun `Get Wallet Activation Data`() {
+        // Given
+        val activationData = OrderPaymentWalletActionData(isRequired = true)
+        val response = helper.orderData.copy(payment = OrderPayment(walletData = OrderPaymentWalletAdditionalData(
+                activation = activationData
+        )))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(activationData, orderSummaryPageViewModel.getActivationData())
     }
 }

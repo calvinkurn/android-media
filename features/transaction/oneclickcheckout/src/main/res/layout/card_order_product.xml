@@ -102,7 +102,7 @@
         app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_names">
 
         <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_product_slash_price_percentage"
+            android:id="@+id/lbl_product_slash_price_percentage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
@@ -143,12 +143,27 @@
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
         app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_prices" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_alert_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image"
+        app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_info"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_product_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="iv_product_image, flexbox_order_product_info"/>
+        app:constraint_referenced_ids="iv_product_image, tv_product_alert_message" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_note"
@@ -163,7 +178,7 @@
         app:layout_constraintTop_toBottomOf="@+id/barrier_product_info"
         app:text_field_counter="144"
         app:text_field_input_type="text"
-        app:text_field_label="@string/label_note_for_seller" />
+        app:text_field_label="@string/occ_lbl_notes_label" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qty_editor_product"
@@ -180,7 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="Tulis catatan untuk barang ini"
+        android:text="@string/occ_lbl_notes_placeholder"
         android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
@@ -213,7 +228,7 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl4"
-        android:text="Ubah"
+        android:text="@string/occ_lbl_notes_edit"
         android:textColor="@color/Unify_G500"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"

@@ -30,7 +30,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
         view?.let {
             it.hideProgressLoading()
             if (!data.isSuccess) {
-                if (data.outOfServiceData.id != 0) {
+                if (data.outOfServiceData.isOutOfService()) {
                     it.renderErrorToShipmentForm(data.outOfServiceData)
                 } else {
                     it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")

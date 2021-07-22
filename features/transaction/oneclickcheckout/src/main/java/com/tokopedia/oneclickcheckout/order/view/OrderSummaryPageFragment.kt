@@ -16,7 +16,11 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
@@ -52,19 +56,41 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
+import com.tokopedia.oneclickcheckout.common.OCC_OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
-import com.tokopedia.oneclickcheckout.order.view.card.*
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
+import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
+import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCardAdditionalData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.payment.activation.OvoActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
@@ -72,9 +98,19 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.Installment
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewActivity
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES
+import com.tokopedia.purchase_platform.common.constant.ARGS_CLEAR_PROMO_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_FINISH_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_LAST_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_ERROR
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_DATA_RESULT
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
+import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -106,7 +142,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     lateinit var userSession: Lazy<UserSessionInterface>
 
     @Inject
-    @field:Named(OVO_ACTIVATION_URL)
+    @field:Named(OCC_OVO_ACTIVATION_URL)
     lateinit var ovoActivationUrl: Lazy<String>
 
     @Inject
@@ -368,27 +404,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun observeOrderPreference() {
         viewModel.orderPreference.observe(viewLifecycleOwner) {
             when (it) {
-                is OccState.FirstLoad -> {
-                    binding.loaderContent.animateGone()
-                    binding.globalError.animateGone()
-                    view?.also { _ ->
-                        adapter.onboarding = it.data.onboarding
-                        adapter.ticker = it.data.ticker
-                        if (binding.rvOrderSummaryPage.isComputingLayout) {
-                            binding.rvOrderSummaryPage.post {
-                                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
-                            }
-                        } else {
-                            adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
-                        }
-                        if (it.data.hasValidProfile) {
-                            binding.rvOrderSummaryPage.show()
-                            binding.layoutNoAddress.root.animateGone()
-                        } else {
-                            binding.rvOrderSummaryPage.gone()
-                        }
-                    }
-                }
                 is OccState.Loading -> {
                     binding.rvOrderSummaryPage.gone()
                     binding.globalError.animateGone()
@@ -401,6 +416,31 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         handleError(failure.throwable)
                     }
                 }
+                is OccState.FirstLoad -> showMainContent(it.data)
+                is OccState.Success -> showMainContent(it.data)
+            }
+        }
+    }
+
+    private fun showMainContent(data: OrderPreference) {
+        view?.also { _ ->
+            binding.loaderContent.animateGone()
+            binding.globalError.animateGone()
+            adapter.onboarding = data.onboarding
+            adapter.ticker = data.ticker
+            binding.rvOrderSummaryPage.scrollToPosition(0)
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+                }
+            } else {
+                adapter.notifyItemRangeChanged(adapter.tickerIndex, 2)
+            }
+            if (data.hasValidProfile) {
+                binding.rvOrderSummaryPage.show()
+                binding.layoutNoAddress.root.animateGone()
+            } else {
+                binding.rvOrderSummaryPage.gone()
             }
         }
     }
@@ -485,20 +525,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.TriggerRefresh -> {
                     progressDialog?.dismiss()
                     view?.let { v ->
-                        var message = it.errorMessage
-                        if (message.isBlank() && it.throwable != null) {
-                            message = if (it.throwable is AkamaiErrorException) {
+                        var errorMessage = it.errorMessage
+                        if (errorMessage.isBlank() && it.throwable != null) {
+                            errorMessage = if (it.throwable is AkamaiErrorException) {
                                 it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
                             } else {
                                 ErrorHandler.getErrorMessage(context, it.throwable)
                             }
                         }
-                        if (message.isNotBlank()) {
-                            Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
+                        if (errorMessage.isNotBlank()) {
+                            Toaster.build(v, errorMessage, type = Toaster.TYPE_ERROR).show()
+                        } else if (it.successMessage.isNotBlank()) {
+                            Toaster.build(v, it.successMessage, actionText = getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)).show()
                         }
                         source = SOURCE_OTHERS
                         shouldShowToaster = false
-                        refresh(isFullRefresh = it.isFullRefresh)
+                        refresh(isFullRefresh = it.isFullRefresh, uiMessage = it.uiMessage)
                     }
                 }
                 is OccGlobalEvent.Error -> {
@@ -515,32 +557,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                     }
                 }
-                is OccGlobalEvent.CheckoutError -> {
-                    progressDialog?.dismiss()
-                    view?.let { _ ->
-                        ErrorCheckoutBottomSheet().show(this, it.error, object : ErrorCheckoutBottomSheet.Listener {
-                            override fun onClickSimilarProduct(errorCode: String) {
-                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                                    orderSummaryAnalytics.eventClickSimilarProductShopClosed()
-                                } else {
-                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
-                                }
-                                RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProducts.value.first().productId.toString())
-                                activity?.finish()
-                            }
-                        })
-                        if (it.error.code == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_SHOP_CLOSED)
-                        } else {
-                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_STOCK)
-                        }
-                    }
-                }
                 is OccGlobalEvent.PriceChangeError -> {
                     progressDialog?.dismiss()
                     if (activity != null) {
                         val messageData = it.message
                         val priceValidationDialog = DialogUnify(requireActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                        priceValidationDialog.setOverlayClose(false)
+                        priceValidationDialog.setCancelable(false)
                         priceValidationDialog.setTitle(messageData.title)
                         priceValidationDialog.setDescription(messageData.desc)
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
@@ -602,6 +625,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.Prompt -> {
                     progressDialog?.dismiss()
                     showPrompt(it.prompt)
+                }
+                is OccGlobalEvent.ToasterAction -> {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        Toaster.build(v, it.toast.message, type = Toaster.TYPE_ERROR, actionText = it.toast.ctaText, clickListener = {
+                            binding.rvOrderSummaryPage.smoothScrollToPosition(0)
+                        }).show()
+                    }
                 }
                 is OccGlobalEvent.ForceOnboarding -> {
                     forceShowOnboarding(it.onboarding)
@@ -680,7 +711,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNewOnboarding(onboarding: OccMainOnboarding) {
+    private fun showNewOnboarding(onboarding: OccOnboarding) {
         view?.let {
             it.post {
                 try {
@@ -718,7 +749,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun triggerCoachMarkAnalytics(onboarding: OccMainOnboarding, currentIndex: Int) {
+    private fun triggerCoachMarkAnalytics(onboarding: OccOnboarding, currentIndex: Int) {
         when (onboarding.coachmarkType) {
             COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
@@ -735,7 +766,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
+    private fun forceShowOnboarding(onboarding: OccOnboarding?) {
         if (onboarding?.isForceShowCoachMark == true) {
             if (onboarding.coachmarkType == COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE) {
                 showNewOnboarding(onboarding)
@@ -847,7 +878,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 showLayoutNoAddress()
             }
             else -> {
-                updateLocalCacheAddressData(addressState.address)
+                if (addressState.address.addressId > 0) {
+                    updateLocalCacheAddressData(addressState.address)
+                }
             }
         }
     }
@@ -934,9 +967,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun chooseCourier(list: ArrayList<RatesViewModelType>) {
+        override fun chooseCourier(shipment: OrderShipment, list: ArrayList<RatesViewModelType>) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
+                orderSummaryAnalytics.eventChangeCourierOSP(shipment.getRealShipperId().toString())
                 ShippingCourierOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingCourierOccBottomSheetListener {
                     override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
                         orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
@@ -974,7 +1007,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             goToPinpoint(address, false)
         }
 
-        override fun choosePayment(profile: OrderProfile) {
+        override fun choosePayment(profile: OrderProfile, payment: OrderPayment) {
             val currentGatewayCode = profile.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
@@ -983,7 +1016,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
-                putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, viewModel.getPaymentBid())
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, payment.bid)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1029,9 +1062,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }).show(this@OrderSummaryPageFragment, userSession.get())
         }
 
-        override fun onWalletActivateClicked(activationUrl: String, callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl,
-                    viewModel.getActivationData().headerTitle,
+        override fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String) {
+            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle,
                     object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
                         override fun onActivationResult(isSuccess: Boolean) {
                             view?.let {
@@ -1169,14 +1201,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         binding.globalError.animateShow()
     }
 
-    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
+    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true, uiMessage: OccUIMessage? = null) {
         if (shouldHideAll) {
             binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateGone()
             binding.loaderContent.animateShow()
         }
-        viewModel.getOccCart(isFullRefresh, source)
+        viewModel.getOccCart(isFullRefresh, source, uiMessage)
     }
 
     private fun atcOcc(productId: String) {

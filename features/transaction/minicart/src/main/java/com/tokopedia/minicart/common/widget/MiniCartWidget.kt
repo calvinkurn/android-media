@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.globalerror.GlobalError
@@ -180,9 +181,8 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun handleFailedAddToCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
-        // Todo : adjust AddToCartOccMultiDataModel model, add out of service & toaster action
-/*        if (data is AddToCartOccMultiDataModel) {
-            if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
+        if (data is AddToCartOccMultiDataModel) {
+            if (data.data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
                 globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
                     override fun onGoToHome() {
@@ -220,7 +220,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 analytics.eventClickBuyThenGetToasterError(data.error)
             }
-        }*/
+        }
     }
 
     private fun handleFailedAddToCartWithThrowable(view: View?, globalEvent: GlobalEvent, fragmentManager: FragmentManager, context: Context) {

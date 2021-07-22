@@ -2,7 +2,9 @@ package com.tkpd.atcvariant.util
 
 import com.tkpd.atcvariant.data.uidata.*
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -58,19 +60,24 @@ object AtcCommonMapper {
                 }
             }
             ProductDetailCommonConstant.OCC_BUTTON -> {
-                AddToCartOccRequestParams(
-                        productId = selectedChild?.productId ?: "",
-                        shopId = shopIdInt.toString(),
-                        quantity = selectedChild?.getFinalMinOrder().toString()
-                ).apply {
-                    warehouseId = selectedWarehouse?.id ?: ""
-                    attribution = trackerAttributionPdp
-                    listTracker = trackerListNamePdp
-                    productName = selectedChild?.name ?: ""
-                    category = categoryName
-                    price = selectedChild?.finalPrice?.toString() ?: ""
-                    this.userId = userId
-                }
+                AddToCartOccMultiRequestParams(
+                        carts = listOf(
+                                AddToCartOccMultiCartParam(
+                                        productId = selectedChild?.productId ?: "",
+                                        shopId = shopIdInt.toString(),
+                                        quantity = selectedChild?.getFinalMinOrder().toString()
+                                ).apply {
+                                    warehouseId = selectedWarehouse?.id ?: ""
+                                    attribution = trackerAttributionPdp
+                                    listTracker = trackerListNamePdp
+                                    productName = selectedChild?.name ?: ""
+                                    category = categoryName
+                                    price = selectedChild?.finalPrice?.toString() ?: ""
+                                }
+                        ),
+                        userId = userId,
+                        atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+                )
             }
             else -> {
                 AddToCartRequestParams().apply {
@@ -82,7 +89,7 @@ object AtcCommonMapper {
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
                     warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
-                    atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                    atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""

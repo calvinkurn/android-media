@@ -48,7 +48,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -132,7 +134,6 @@ import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
-import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
@@ -173,8 +174,8 @@ import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import java.util.*
 import rx.subscriptions.CompositeSubscription
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -707,39 +708,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int) {
-        context?.let {
-            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                    == YouTubeInitializationResult.SUCCESS) {
-                startActivity(ProductYoutubePlayerActivity.createIntent(it, youtubeVideos.map { it.url }, index))
-            } else {
-                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse(ProductDetailConstant.URL_YOUTUBE + youtubeVideos[index].url)))
-                } catch (e: Throwable) {
-                }
-            }
-        }
-    }
-
     override fun getApplicationContext(): Application? {
         return activity?.application
     }
 
     override fun getLifecycleFragment(): Lifecycle {
         return lifecycle
-    }
-
-    override fun gotoDescriptionTab(textDescription: String, componentTrackDataModel: ComponentTrackDataModel) {
-        viewModel.getDynamicProductInfoP1?.let {
-            val data = ProductDetailUtil.generateDescriptionData(it, textDescription)
-            context?.let { ctx ->
-                startActivity(ProductFullDescriptionActivity.createIntent(ctx, data))
-                activity?.overridePendingTransition(R.anim.pull_up, 0)
-                DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            }
-        }
     }
 
     /**
@@ -2596,9 +2570,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
-        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
-            content.row == "bottom"
-        }?.listOfContent?.firstOrNull()?.subtitle ?: "")
+        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, viewModel.userId, pdpUiUpdater?.productDetailInfoData?.getDescription()
+                ?: "")
         sendIntentResultWishlistChange(productId ?: "", true)
         if (isProductOos()) {
             refreshPage()
@@ -3000,7 +2973,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
                         warehouseId = selectedWarehouseId
-                        atcFromExternalSource = AddToCartRequestParams.ATC_FROM_PDP
+                        atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
@@ -3013,15 +2986,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun addToCartOcc(data: DynamicProductInfoP1, selectedWarehouseId: Int) {
-        val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
-            warehouseId = selectedWarehouseId.toString()
-            attribution = trackerAttributionPdp ?: ""
-            listTracker = trackerListNamePdp ?: ""
-            productName = data.getProductName
-            category = data.basic.category.name
-            price = data.finalPrice.toString()
-            userId = viewModel.userId
-        }
+        val addToCartOccRequestParams = AddToCartOccMultiRequestParams(
+                carts = listOf(
+                        AddToCartOccMultiCartParam(
+                                productId = data.basic.productID,
+                                shopId = data.basic.shopID,
+                                quantity = data.basic.minOrder.toString()
+                        ).apply {
+                            warehouseId = selectedWarehouseId.toString()
+                            attribution = trackerAttributionPdp ?: ""
+                            listTracker = trackerListNamePdp ?: ""
+                            productName = data.getProductName
+                            category = data.basic.category.name
+                            price = data.finalPrice.toString()
+                        }
+                ),
+                userId = viewModel.userId,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
+        )
         viewModel.addToCart(addToCartOccRequestParams)
     }
 

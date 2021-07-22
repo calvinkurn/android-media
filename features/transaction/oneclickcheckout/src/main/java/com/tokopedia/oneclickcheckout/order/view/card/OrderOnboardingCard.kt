@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.databinding.LayoutOccOnboardingNewBinding
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 
 class OrderOnboardingCard(private val binding: LayoutOccOnboardingNewBinding): RecyclerView.ViewHolder(binding.root) {
 
@@ -12,7 +12,7 @@ class OrderOnboardingCard(private val binding: LayoutOccOnboardingNewBinding): R
         const val VIEW_TYPE = 1
     }
 
-    fun bind(onboarding: OccMainOnboarding) {
+    fun bind(onboarding: OccOnboarding) {
         if (onboarding.isShowOnboardingTicker) {
             binding.ivNewOccOnboarding.setImageUrl(onboarding.onboardingTicker.image)
             binding.tvNewOccOnboardingMessage.text = onboarding.onboardingTicker.message

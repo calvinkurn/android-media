@@ -61,6 +61,9 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                 } else {
                     tvInsurancePrice.gone()
                 }
+            } else if (insuranceData == null) {
+                // TODO: 12/07/21 check UI if shipment/order error
+                setVisibility(View.GONE)
             } else {
                 setVisibility(View.INVISIBLE)
             }
@@ -101,7 +104,7 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
 
     private fun setVisibility(visibility: Int) {
         binding.apply {
-            if (visibility == View.INVISIBLE && cbInsurance.visibility == View.GONE) {
+            if (visibility != View.VISIBLE && cbInsurance.visibility == View.GONE) {
                 return
             }
             cbInsurance.visibility = visibility

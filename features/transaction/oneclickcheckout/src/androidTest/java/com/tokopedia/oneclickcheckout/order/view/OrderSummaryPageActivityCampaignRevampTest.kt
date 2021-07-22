@@ -68,13 +68,21 @@ class OrderSummaryPageActivityCampaignRevampTest {
                     shopLocation = "Kota Yogyakarta",
                     hasShopLocationImg = false,
                     hasShopBadge = true,
-                    isFreeShipping = true
+                    isFreeShipping = true,
+                    preOrderText = "",
+                    alertMessage = ""
             )
             assertProductCard(
                     productName = "Product1",
                     productPrice = "Rp100.000",
                     productSlashPrice = "Rp200.000",
-                    productQty = 1
+                    productSlashPriceLabel = null,
+                    productVariant = null,
+                    productWarningMessage = null,
+                    productAlertMessage = null,
+                    productInfo = null,
+                    productQty = 1,
+                    productNotes = null
             )
 
             assertPayment("Rp116.000", "Bayar")

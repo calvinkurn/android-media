@@ -1,7 +1,8 @@
 package com.tokopedia.cart.data.model.response.updatecart
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.OutOfService
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 
 /**
  * Created by Irfan Khoirul on 2019-12-26.

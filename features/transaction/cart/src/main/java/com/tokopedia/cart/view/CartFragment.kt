@@ -47,12 +47,6 @@ import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
-import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_HOMEPAGE
-import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_RETRY
-import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_START_SHOPPING
-import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MAINTENANCE
-import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
-import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
@@ -71,6 +65,13 @@ import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
+import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
+import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_MAINTENANCE
+import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_OVERLOAD
+import com.tokopedia.cartcommon.data.response.common.OutOfService.Companion.ID_TIMEOUT
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -1771,7 +1772,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderInitialGetCartListDataSuccess(cartListData: CartListData?) {
         recommendationPage = 1
         cartListData?.let {
-            if (it.outOfServiceData.id != 0) {
+            if (it.outOfServiceData.isOutOfService()) {
                 renderCartOutOfService(it.outOfServiceData)
                 return@let
             }
@@ -1947,7 +1948,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderCartOutOfService(outOfServiceData: OutOfServiceData) {
+    private fun renderCartOutOfService(outOfServiceData: OutOfService) {
         binding?.apply {
             when (outOfServiceData.id) {
                 ID_MAINTENANCE, ID_TIMEOUT, ID_OVERLOAD -> {
@@ -2747,7 +2748,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData) {
+    override fun renderErrorToShipmentForm(outOfServiceData: OutOfService) {
         renderCartOutOfService(outOfServiceData)
     }
 

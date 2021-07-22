@@ -9,33 +9,40 @@ data class OrderProduct(
         var productName: String = "",
         var productPrice: Long = 0,
         var wholesalePrice: List<WholesalePrice> = arrayListOf(),
+        var originalPrice: Long = 0,
+        var initialPrice: Long = 0,
+        var isSlashPrice: Boolean = false,
         var productImageUrl: String = "",
-        var maxOrderQuantity: Int = 0,
         var minOrderQuantity: Int = 0,
-        var originalPrice: String = "",
-        var discountedPercentage: Float = 0f,
+        var maxOrderQuantity: Int = 0,
+        var maxOrderStock: Int = 0,
+        var orderQuantity: Int = 0,
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
-        var freeOngkirImg: String = "",
         var weight: Int = 0,
         var weightActual: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),
         var notes: String = "",
+        var maxCharNote: Int = 0,
         var isEditingNotes: Boolean = false,
         var cashback: String = "",
         var warehouseId: Long = 0,
         var isPreOrder: Int = 0,
+        var preOrderDuration: Int = 0,
         var categoryId: String = "",
         var category: String = "",
         var productFinsurance: Int = 0,
-        var isSlashPrice: Boolean = false,
         var campaignId: String = "",
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
-        var preOrderDuration: Int = 0,
-        //temp
-        var errorMessage: String = ""
+        var variant: String = "",
+        var productWarningMessage: String = "",
+        var productAlertMessage: String = "",
+        var slashPriceLabel: String = "",
+        var productInformation: List<String> = emptyList(),
+        var errorMessage: String = "",
+        var isError: Boolean = false
 ): OrderItem {
 
     fun getPrice(): Long {
@@ -49,9 +56,6 @@ data class OrderProduct(
         }
         return finalPrice
     }
-
-    val isError: Boolean
-        get() = errorMessage.isNotBlank()
 }
 
 data class WholesalePrice(
@@ -69,14 +73,10 @@ data class ProductTrackerData(
 )
 
 data class QuantityUiModel(
-        var maxOrderQuantity: Int = 0,
         var minOrderQuantity: Int = 0,
-        var orderQuantity: Int = 0,
-        var errorProductAvailableStock: String = "",
-        var errorProductMaxQuantity: String = "",
-        var errorProductMinQuantity: String = "",
-        var isStateError: Boolean = false,
-        var maxOrderStock: Int = 0
+        var maxOrderQuantity: Int = 0,
+        var maxOrderStock: Int = 0,
+        var orderQuantity: Int = 0
 )
 
 data class ProductTickerMessage(

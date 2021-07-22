@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -12,12 +13,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -47,6 +50,8 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderProductTicker()
         renderProductNames()
         renderPrice()
+        renderProductInfo()
+        renderProductAlert()
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
@@ -61,7 +66,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     }
 
     private fun renderProductTicker() {
-        if (product.isError) {
+        if (product.errorMessage.isNotEmpty()) {
             binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
             binding.tickerOrderProduct.visible()
         } else {
@@ -73,12 +78,14 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         binding.apply {
             ivProductImage.setImageUrl(product.productImageUrl)
             tvProductName.text = product.productName
-            if (product.tickerMessage.message.isNotEmpty()) {
-                var completeText = product.tickerMessage.message
-                for (replacement in product.tickerMessage.replacement) {
-                    completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
-                }
-                tvQtyLeft.text = MethodChecker.fromHtml(completeText)
+            if (product.variant.isNotBlank()) {
+                tvProductVariant.text = product.variant
+                tvProductVariant.visible()
+            } else {
+                tvProductVariant.gone()
+            }
+            if (!product.isError && product.productWarningMessage.isNotBlank()) {
+                tvQtyLeft.text = MethodChecker.fromHtml(product.productWarningMessage)
                 tvQtyLeft.visible()
             } else {
                 tvQtyLeft.gone()
@@ -95,22 +102,70 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         binding.apply {
             tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
 
-            if (product.originalPrice.isNotBlank()) {
-                tvProductSlashPrice.text = product.originalPrice
-                tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                tvProductSlashPrice.visible()
+            if (!product.isError && product.slashPriceLabel.isNotBlank()) {
+                lblProductSlashPricePercentage.setLabel(product.slashPriceLabel)
+                lblProductSlashPricePercentage.visible()
+                if (product.originalPrice > 0) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.originalPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else {
+                    tvProductSlashPrice.gone()
+                }
+            } else if (!product.isError) {
+                lblProductSlashPricePercentage.gone()
+                if (product.getPrice() < product.productPrice) {
+                    var originalPrice = product.productPrice
+                    if (product.initialPrice > 0 && product.initialPrice < product.productPrice) {
+                        originalPrice = product.initialPrice
+                    }
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
+                } else {
+                    tvProductSlashPrice.gone()
+                }
             } else {
                 tvProductSlashPrice.gone()
-            }
-
-            if (product.cashback.isNotEmpty()) {
-                labelProductSlashPricePercentage.setLabel(product.cashback)
-                labelProductSlashPricePercentage.visible()
-            } else {
-                labelProductSlashPricePercentage.gone()
+                lblProductSlashPricePercentage.gone()
             }
 
             flexboxOrderProductPrices.alpha = if (product.isError) 0.5f else 1.0f
+        }
+    }
+
+    private fun renderProductInfo() {
+        binding.apply {
+            flexboxOrderProductInfo.removeAllViews()
+            if (!product.isError && product.getPrice() < product.productPrice) {
+                val textView = Typography(flexboxOrderProductInfo.context).apply {
+                    setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    setType(Typography.BODY_3)
+                    text = root.context.getString(R.string.lbl_wholesale_product)
+                }
+                flexboxOrderProductInfo.addView(textView, 0)
+            }
+            if (!product.isError && product.productInformation.isNotEmpty()) {
+                for (information in product.productInformation) {
+                    val textView = Typography(flexboxOrderProductInfo.context).apply {
+                        setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        setType(Typography.BODY_3)
+                        text = if (flexboxOrderProductInfo.childCount > 0) "$information, " else information
+                    }
+                    flexboxOrderProductInfo.addView(textView, 0)
+                }
+            }
+        }
+    }
+
+    private fun renderProductAlert() {
+        binding.apply {
+            if (!product.isError && product.productAlertMessage.isNotBlank()) {
+                tvProductAlertMessage.text = product.productAlertMessage
+                tvProductAlertMessage.visible()
+            } else {
+                tvProductAlertMessage.gone()
+            }
         }
     }
 
@@ -160,13 +215,8 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.requestFocus()
             tfNote.textFieldInput.textSize = 16f
             tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            tfNote.setCounter(MAX_NOTES_LENGTH)
+            tfNote.setCounter(product.maxCharNote)
             tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-//            tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-//                if (hasFocus) {
-//                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
-//                }
-//            }
             if (noteTextWatcher != null) {
                 tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
             }
@@ -222,6 +272,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     product.quantity.orderQuantity = newValue
                     listener.onProductChange(product, productIndex)
                     renderPrice()
+                    renderProductInfo()
                 }
             }
             qtyEditorProduct.setAddClickListener {

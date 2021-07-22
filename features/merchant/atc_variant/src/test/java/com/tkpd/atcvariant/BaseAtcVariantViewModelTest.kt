@@ -11,6 +11,8 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -40,7 +42,7 @@ abstract class BaseAtcVariantViewModelTest {
     lateinit var addToCartOcsUseCase: AddToCartOcsUseCase
 
     @RelaxedMockK
-    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
 
     @RelaxedMockK
     lateinit var addWishListUseCase: AddWishListUseCase

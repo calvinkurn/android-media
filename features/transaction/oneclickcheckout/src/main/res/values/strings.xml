@@ -6,18 +6,17 @@
 
     <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
 
-    <string name="atur_pilihan">Atur Pilihan</string>
     <string name="label_pilih">Pilih</string>
 
     <string name="label_pay_total">Total Bayar</string>
 
     <string name="lbl_osp_header">Barang yang dibeli</string>
     <string name="lbl_osp_secondary_header">Pengiriman dan pembayaran</string>
-    <string name="lbl_osp_secondary_header_info">Info</string>
+
+    <string name="lbl_wholesale_product">Harga Grosir</string>
 
     <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
 
-    <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="occ_lbl_main_address">Utama</string>
 
     <!--Choose Address-->
@@ -65,6 +64,14 @@
 
     <string name="occ_lbl_title_no_address">Tambahkan Alamat dulu, ya!</string>
     <string name="occ_lbl_desc_no_address">Cuma satu langkah lagi sebelum\nmelanjutkan proses Beli Langsung :)</string>
-    
+
     <string name="occ_custom_ticker_action">Lihat</string>
+
+    <string name="occ_pinpoint_error_title">Atur pinpoint alamatmu dulu, ya.</string>
+    <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
+    <string name="occ_pinpoint_error_action">Atur</string>
+
+    <string name="occ_lbl_notes_placeholder">Tulis catatan</string>
+    <string name="occ_lbl_notes_label">Catatan untuk barang ini</string>
+    <string name="occ_lbl_notes_edit">Ubah</string>
 </resources>

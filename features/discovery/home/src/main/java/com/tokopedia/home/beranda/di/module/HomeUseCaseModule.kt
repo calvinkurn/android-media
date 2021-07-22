@@ -5,8 +5,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -24,7 +22,6 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessWidgetQuery
-import com.tokopedia.home.beranda.di.module.query.QueryCartHome.addToCartOneClickCheckout
 import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
 import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
@@ -48,7 +45,6 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
@@ -252,12 +248,6 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
         useCase.setGraphqlQuery(atfQuery)
         return GetHomeAtfUseCase(useCase)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideAddToCartOccUseCase(graphqlUseCase: GraphqlUseCase, chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper): AddToCartOccUseCase{
-        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper(), chosenAddressAddToCartRequestHelper)
     }
 
     @Provides
