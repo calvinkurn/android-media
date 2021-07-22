@@ -223,6 +223,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _atcRecomTokonowResetCard = SingleLiveEvent<RecommendationItem>()
     val atcRecomTokonowResetCard: LiveData<RecommendationItem> get() = _atcRecomTokonowResetCard
 
+    private val _atcRecomTokonowNonLogin = SingleLiveEvent<RecommendationItem>()
+    val atcRecomTokonowNonLogin: LiveData<RecommendationItem> get() = _atcRecomTokonowNonLogin
+
     var videoTrackerData: Pair<Long, Long>? = null
 
     var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
@@ -967,15 +970,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun onAtcRecomNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
-        if (recomItem.quantity == quantity) return
-        val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
-        if (quantity == 0) {
-            deleteRecomItemFromCart(recomItem, quantity, miniCartItem)
-        }
-        else if (recomItem.quantity == 0) {
-            atcRecomNonVariant(recomItem, quantity)
+        if (!userSessionInterface.isLoggedIn) {
+            _atcRecomTokonowNonLogin.value = recomItem
         } else {
-            updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+            if (recomItem.quantity == quantity) return
+            val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
+            if (quantity == 0) {
+                deleteRecomItemFromCart(recomItem, quantity, miniCartItem)
+            } else if (recomItem.quantity == 0) {
+                atcRecomNonVariant(recomItem, quantity)
+            } else {
+                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+            }
         }
     }
 
@@ -1014,7 +1020,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             if (result.isStatusError()) {
                 onFailedATCRecomTokonow(Throwable(result.errorMessage.firstOrNull() ?: result.status), recomItem)
             } else {
-                updateMiniCartAfterATCRecomTokonow("")
+                updateMiniCartAfterATCRecomTokonow(result.data.message.first())
             }
         }) {
             onFailedATCRecomTokonow(it, recomItem)

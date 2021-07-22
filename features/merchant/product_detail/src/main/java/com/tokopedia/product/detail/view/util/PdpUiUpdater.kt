@@ -720,6 +720,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateCurrentQuantityRecomItem(recommendationItem: RecommendationItem) {
+        val key = recommendationItem.pageName
+        (mapOfData[key] as ProductRecommendationDataModel).recomWidgetData?.let { recomData ->
+            recomData.recommendationItemList.forEach loop@{ recomItem ->
+                if (recomItem.productId == recommendationItem.productId) {
+                    recomItem.currentQuantity = recommendationItem.currentQuantity
+                    return@loop
+                }
+            }
+        }
+    }
+
     fun resetFailedRecomTokonowCard(recommendationItem: RecommendationItem) {
         val key = recommendationItem.pageName
         val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
@@ -745,6 +757,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         newData.cardModel = dataList.toProductCardModels(false)
         newData.recomWidgetData?.recommendationItemList = dataList
         mapOfData[key] = newData
+    }
+
+    private fun copyPDPRecomByKey(key: String): ProductRecommendationDataModel {
+        val data = mapOfData[key] as ProductRecommendationDataModel
+        return ProductRecommendationDataModel().cloneData(data)
     }
 
     fun updateShipmentData(data: P2RatesEstimateData?, isFullfillment: Boolean, isCod: Boolean, freeOngkirData: BebasOngkirImage, userLocationLocalData: LocalCacheModel) {
@@ -785,17 +802,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
         updateAction.invoke()
-    }
-
-    private fun copyPDPRecomByKey(key: String): ProductRecommendationDataModel {
-        val data = mapOfData[key] as ProductRecommendationDataModel
-        return ProductRecommendationDataModel(
-                type = data.type,
-                name = data.name,
-                recomWidgetData = data.recomWidgetData?.copy(),
-                filterData = data.filterData,
-                cardModel = data.cardModel,
-                position = data.position)
     }
 
 }

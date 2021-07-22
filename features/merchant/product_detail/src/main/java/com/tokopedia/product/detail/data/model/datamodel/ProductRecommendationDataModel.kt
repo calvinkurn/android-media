@@ -85,7 +85,8 @@ data class ProductRecommendationDataModel(
                 && recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size) {
             val itemSize =recomWidgetData?.recommendationItemList?.size ?: 0
             for (i in 0 until itemSize) {
-                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList[i].quantity) {
+                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList[i].quantity
+                        || recomWidgetData?.recommendationItemList?.get(i)?.currentQuantity != newRecomWidgetData?.recommendationItemList[i].currentQuantity) {
                     return false
                 }
             }
@@ -111,5 +112,15 @@ data class ProductRecommendationDataModel(
             }
         }
         return areSame
+    }
+
+    fun cloneData(data : ProductRecommendationDataModel) : ProductRecommendationDataModel {
+        return ProductRecommendationDataModel(
+                type = data.type,
+                name = data.name,
+                recomWidgetData = data.recomWidgetData?.copy(),
+                filterData = data.filterData,
+                cardModel = data.cardModel,
+                position = data.position)
     }
 }

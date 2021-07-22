@@ -361,6 +361,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeonVariantClickedData()
         observeATCTokonowData()
         observeATCTokonowResetCard()
+        observeATCRecomTokonowNonLogin()
         observeDiscussionData()
         observeP2Other()
         observeTopAdsImageData()
@@ -895,6 +896,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int, itemPosition: Int) {
+        pdpUiUpdater?.updateCurrentQuantityRecomItem(recomItem)
         viewModel.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
     }
 
@@ -1405,6 +1407,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeATCTokonowResetCard() {
         viewLifecycleOwner.observe(viewModel.atcRecomTokonowResetCard) {
+            pdpUiUpdater?.resetFailedRecomTokonowCard(it)
+            updateUi()
+        }
+    }
+
+    private fun observeATCRecomTokonowNonLogin() {
+        viewLifecycleOwner.observe(viewModel.atcRecomTokonowNonLogin) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
             pdpUiUpdater?.resetFailedRecomTokonowCard(it)
             updateUi()
         }
