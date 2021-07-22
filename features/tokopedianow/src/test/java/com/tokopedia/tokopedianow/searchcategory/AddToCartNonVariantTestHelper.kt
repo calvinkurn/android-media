@@ -7,12 +7,13 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -433,7 +434,7 @@ class AddToCartNonVariantTestHelper(
         val deleteCartResponse = RemoveFromCartData(
             status = "OK",
             errorMessage = listOf(deleteCartMessage),
-            data = com.tokopedia.minicart.common.data.response.deletecart.Data(success = 1, message = listOf(deleteCartMessage))
+            data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 1, message = listOf(deleteCartMessage))
         )
 
         callback.`Given first page API will be successful`()
@@ -471,17 +472,16 @@ class AddToCartNonVariantTestHelper(
             productUpdatedQuantity: Int,
             productInMiniCart: MiniCartItem,
     ) {
-        val updateCartParamSlot = slot<List<MiniCartItem>>()
-        val updateCartParam by lazy { updateCartParamSlot.captured }
+        val deleteCartIdParamSlot = slot<List<String>>()
+        val listDeleteCartId by lazy { deleteCartIdParamSlot.captured }
 
         verify {
             deleteCartUseCase.setParams(
-                    miniCartItems = capture(updateCartParamSlot),
+                    cartIdList = capture(deleteCartIdParamSlot)
             )
         }
-        val deleteCartItem = updateCartParam[0]
-        assertThat(deleteCartItem.quantity, shouldBe(productUpdatedQuantity))
-        assertThat(deleteCartItem.cartId, shouldBe(productInMiniCart.cartId))
+        val deleteCartId = listDeleteCartId[0]
+        assertThat(deleteCartId, shouldBe(productInMiniCart.cartId))
     }
 
     private fun `Then assert update cart use case is not called`() {
