@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.custom.message
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.topchat.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -31,16 +32,25 @@ class TextReplyBubbleAreaMessage : ReplyBubbleAreaMessage {
         initViewBinding()
     }
 
+    private fun initLayout() {
+        View.inflate(context, LAYOUT, this)
+    }
+
     private fun initViewBinding() {
         title = findViewById(R.id.tp_reply_from)
         desc = findViewById(R.id.tp_reply_msg)
     }
 
-    fun initLayout() {
-        View.inflate(context, LAYOUT, this)
+    override fun bindMessageReplyData(messageUiModel: MessageViewModel) {
+        setTitle(messageUiModel.from)
+        setReplyMsg(messageUiModel.message)
     }
 
-    fun setReplyMsg(msg: String) {
+    private fun setTitle(title: String) {
+        this.title?.text = title
+    }
+
+    private fun setReplyMsg(msg: String) {
         desc?.text = msg
     }
 

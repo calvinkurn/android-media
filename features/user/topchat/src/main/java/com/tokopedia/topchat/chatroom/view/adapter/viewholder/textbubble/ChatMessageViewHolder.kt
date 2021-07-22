@@ -40,7 +40,7 @@ abstract class ChatMessageViewHolder(
         ChatMessageViewHolderBinder.bindChatMessage(message, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(message, fxChat)
-        messageBubble?.setReplyMsg(message.dummyReplyBubbleMsg)
+        messageBubble?.bindReplyData(message)
         bindMargin(message)
         bindClick()
     }
