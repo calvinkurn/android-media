@@ -7,13 +7,13 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/common_topup_bills_error_state_img"
-        android:layout_width="@dimen/layout_lvl9"
-        android:layout_height="@dimen/layout_lvl9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.25" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/common_topup_bills_error_state_title"
