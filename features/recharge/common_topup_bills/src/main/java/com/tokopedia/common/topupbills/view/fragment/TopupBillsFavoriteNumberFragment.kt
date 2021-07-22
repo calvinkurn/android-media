@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.view.fragment
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
@@ -429,24 +430,22 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     private fun navigateContact() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.checkPermission(it,
-                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.checkPermission(this,
+                    PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            context?.let { permissionCheckerHelper.onPermissionDenied(it, permissionText) }
+                        }
 
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                            }
+                        override fun onNeverAskAgain(permissionText: String) {
+                            context?.let { permissionCheckerHelper.onNeverAskAgain(it, permissionText) }
+                        }
 
-                            override fun onPermissionGranted() {
-                                openContactPicker()
-                            }
-                        })
-            }
+                        override fun onPermissionGranted() {
+                            openContactPicker()
+                        }
+                    })
         } else {
             openContactPicker()
         }
@@ -748,6 +747,22 @@ class TopupBillsFavoriteNumberFragment :
         return this.operatorData?.rechargeCatalogPrefixSelect?.prefixes?.singleOrNull() {
             clientNumber.startsWith(it.value)
         }?.operator?.attributes?.name ?: ""
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                    requestCode, permissions,
+                    grantResults)
+            }
+        }
     }
 
     companion object {
