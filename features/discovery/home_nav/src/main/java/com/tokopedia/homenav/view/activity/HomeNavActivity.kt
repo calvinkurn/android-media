@@ -2,9 +2,7 @@ package com.tokopedia.homenav.view.activity
 
 import android.content.res.TypedArray
 import android.os.Bundle
-import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -14,8 +12,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import kotlinx.android.synthetic.main.activity_main_nav.*
 
@@ -48,8 +44,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         navPerformanceCallback.startPreparePagePerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
-        overridePendingTransition(R.anim.nav_slide_in_right, R.anim.nav_fade_out)
-
+        overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         setContentView(R.layout.activity_main_nav)
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         findViewById<NavToolbar>(R.id.toolbar)?.let {
@@ -57,7 +52,6 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT, true)
             it.setShowShadowEnabled(true)
         }
-
         setupNavigation()
         setupView()
 
@@ -65,16 +59,9 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         navPerformanceCallback.stopPreparePagePerformanceMonitoring()
     }
 
-    override fun onEnterAnimationComplete() {
-        super.onEnterAnimationComplete()
-        findViewById<View>(R.id.view_overlay)?.visible()
-    }
-
     override fun finish() {
-        findViewById<LinearLayout>(R.id.container_animation).layoutTransition = null
-        findViewById<View>(R.id.view_overlay)?.invisible()
         super.finish()
-        overridePendingTransition(R.anim.nav_fade_in, R.anim.nav_slide_out_right)
+        overridePendingTransition(R.anim.nav_fade_in, R.anim.slide_bottom)
     }
 
     private fun setupNavigation() {
@@ -87,8 +74,6 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
     }
 
     private fun setupView() {
-        val viewOverlay = findViewById<View>(R.id.view_overlay)
-        viewOverlay.setOnClickListener { finish() }
         try {
             val styledAttributes: TypedArray = getTheme().obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
             val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
