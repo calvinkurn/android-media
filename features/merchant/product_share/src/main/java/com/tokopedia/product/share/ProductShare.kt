@@ -289,7 +289,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     override fun onCloseOptionClicked() {
-        TODO("Not yet implemented")
+        universalShareBottomSheet?.dismiss()
     }
 
 
