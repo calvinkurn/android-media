@@ -182,19 +182,19 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun handleFailedAddToCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
         if (data is AddToCartOccMultiDataModel) {
-            if (data.data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
+            if (data.data.outOfService.id.isNotBlank() && data.data.outOfService.id != "0") {
                 // Prioritize to show out of service data
-                globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
+                globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.data.outOfService, object : GlobalErrorBottomSheetActionListener {
                     override fun onGoToHome() {
                         RouteManager.route(context, ApplinkConst.HOME)
                     }
 
                     override fun onRefreshErrorPage() {
                         showProgressLoading()
-                        viewModel?.addToCartOcc(globalEvent.observer)
+                        viewModel?.addToCart(globalEvent.observer)
                     }
                 })
-                analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
+                analytics.eventClickBuyThenGetBottomSheetError(data.data.outOfService.description)
             } else {
                 // Reload data
                 if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
@@ -206,19 +206,20 @@ class MiniCartWidget @JvmOverloads constructor(
                 // Show toaster error if have no out of service data
                 var ctaText = context.getString(R.string.mini_cart_cta_ok)
                 if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
-                    ctaText = data.toasterAction.text
+                    ctaText = data.data.toasterAction.text
                 }
-                if (data.toasterAction.showCta) {
-                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText) {
+                val errorMessage = data.getAtcErrorMessage() ?: ""
+                if (data.data.toasterAction.showCta) {
+                    showToaster(view, errorMessage, Toaster.TYPE_ERROR, ctaText) {
                         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                             miniCartListBottomSheet.scrollToUnavailableSection()
                         }
-                        analytics.eventClickAtcToasterErrorCta(data.error, ctaText)
+                        analytics.eventClickAtcToasterErrorCta(errorMessage, ctaText)
                     }
                 } else {
-                    showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
+                    showToaster(view, errorMessage, Toaster.TYPE_ERROR, isShowCta = false)
                 }
-                analytics.eventClickBuyThenGetToasterError(data.error)
+                analytics.eventClickBuyThenGetToasterError(errorMessage)
             }
         }
     }
