@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
+@Suppress("MagicNumber")
 internal fun CardView.getVerticalShadowOffset(): Int {
     val maxElevation = this.maxCardElevation
     val radius = this.radius
@@ -12,6 +13,7 @@ internal fun CardView.getVerticalShadowOffset(): Int {
     return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt()
 }
 
+@Suppress("MagicNumber")
 internal fun CardView.getHorizontalShadowOffset(): Int {
     val maxElevation = this.maxCardElevation
     val radius = this.radius
