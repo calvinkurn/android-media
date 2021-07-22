@@ -5,12 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
@@ -930,9 +929,12 @@ class DiscoveryFragment :
         hideSystemUi()
         coordinatorLayout.hide()
         view.rotation = 90f
-        val height = Resources.getSystem().displayMetrics.heightPixels
         val width = Resources.getSystem().displayMetrics.widthPixels
-
+        val height = activity?.let {
+            val metrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getRealMetrics(metrics)
+            metrics.heightPixels
+        }?:Resources.getSystem().displayMetrics.heightPixels
         val offset = width-height
         view.translationX = offset.toFloat() / 2
         view.translationY = -offset.toFloat() / 2
@@ -962,6 +964,11 @@ class DiscoveryFragment :
                     or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                val params: WindowManager.LayoutParams = attributes
+                params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                attributes = params
+            }
         }
 
     }
