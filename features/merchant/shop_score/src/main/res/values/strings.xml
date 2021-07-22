@@ -108,7 +108,9 @@
     <string name="desc_calculation_shop_performance">Skor melambangkan kualitas layanan dan produkmu. Target disesuaikan dengan levelmu.</string>
     <string name="update_calculation_shop_performance">Skor dihitung dari median Performa skor dalam 90 hari terakhir dan akan diperbarui setiap minggunya (Senin).</string>
     <string name="desc_calculation_success_order">Persentase jumlah pesanan berhasil dibanding total pesanan masuk.</string>
-    <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.</string>
+    <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.
+            &lt;br /&gt;&lt;br /&gt;Setting awal jam operasional Tokopedia adalah 09.00 - 18.00, namun jka toko sudah memiliki jam operasional, maka perhitungan chat dan diskusi akan mengikuti jam operasional toko. Untuk chat tetap memperhitungkan weekend, sementara diskusi akan exclude diskusi yang masuk di weekend.
+    </string>
     <string name="desc_calculation_level_reply_chat">Persentase jumlah chat dan diskusi yang dibalas oleh Seller dibandingkan total chat (50%) dan diskusi (50%) yang masuk.</string>
     <string name="desc_calculation_speed_process_order">Waktu yang diperlukan Seller untuk memproses pesanan, dari waktu pesanan masuk hingga resi terkonfirmasi.</string>
     <string name="desc_calculation_review_product">Persentase ulasan dengan bintang 4+ dalam waktu 90 hari dibandingkan dengan total ulasan yang masuk.</string>
@@ -122,15 +124,15 @@
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
     <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (40%) dan diskusi (60%).
         &lt;br /&gt;&lt;br /&gt;Untuk perhitungan chat, setting awal jam operasional Tokopedia adalah 09.00 - 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan chat akan mengikuti jam operasional toko.</string>
-    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas.</string>
+    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas. Pastikan diskusi dibalas selambat-lambatnya dalam waktu 3 hari semenjak diskusi diterima. Diskusi yang dibalas melebihi 3 hari akan dihitung sebagi diskusi yang tidak dibalas.</string>
     <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
         &lt;br /&gt;Konvensional: 09.00 - 18.00 (tidak termasuk weekend)
         &lt;br /&gt;Instan: 09.00 - 17.00
         &lt;br /&gt;
         &lt;br /&gt;Tidak termasuk untuk produk pre-order, ya.</string>
-    <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya.</string>
+    <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya. Batas waktu perubahan ulasan yang diterima 3 hari sejak ulasan diberikan. Apabila pembeli merubah ulasan dalam waktu 3 hari maka ulasan terakhir yang akan diambil. Jika pembeli merubah ulasan diatas 3 hari, ulasan awal yang akan diambil.</string>
     <string name="desc_tips_total_buyer">Gunakan fitur TopAds dan Broadcast Chat untuk menarik pembeli berbelanja.</string>
-    <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android), Tokopedia App (iOS dan Android) atau website Tokopedia Seller. </string>
+    <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android) atau website Tokopedia Seller.</string>
 
     <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
     <string name="set_hour_operational_shop_performance_detail">Atur jam operasional tokomu &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>

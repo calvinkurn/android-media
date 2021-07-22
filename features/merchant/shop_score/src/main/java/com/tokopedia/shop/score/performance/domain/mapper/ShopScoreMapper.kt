@@ -70,7 +70,6 @@ class ShopScoreMapper @Inject constructor(
             CHAT_DISCUSSION_REPLY_SPEED_KEY -> {
                 with(shopPerformanceDetailUiModel) {
                     descCalculation = R.string.desc_calculation_speed_reply_chat
-                    descTips = R.string.desc_tips_speed_reply_chat
                     moreInformation = R.string.set_hour_operational_shop_performance_detail
                     urlLink = SET_OPERATIONAL_HOUR_SHOP_URL
                 }
