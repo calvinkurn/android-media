@@ -56,19 +56,6 @@ class CartViewHolderDataMapper @Inject constructor() {
             this.shopGroupAvailableData = shopGroupAvailableData
             this.isCollapsible = isCollapsible
             this.isCollapsed = isCollapsed
-            if (isCollapsible) {
-                var showMoreWording = ""
-                val showLessWording = "Tampilkan Lebih Sedikit"
-                val itemCount = shopGroupAvailableData.cartItemDataList.size
-                showMoreWording = if (itemCount > 10) {
-                    val exceedItemCount = itemCount - 10
-                    "+$exceedItemCount lainnya"
-                } else {
-                    "Lihat selengkapnya"
-                }
-                this.showMoreWording = showMoreWording
-                this.showLessWording = showLessWording
-            }
         }
     }
 

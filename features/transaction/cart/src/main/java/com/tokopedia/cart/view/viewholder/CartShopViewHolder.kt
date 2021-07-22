@@ -165,12 +165,22 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.isCollapsible) {
+            var showMoreWording = ""
+            val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
+            val itemCount = cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.size ?: 0
+            showMoreWording = if (itemCount > 10) {
+                val exceedItemCount = itemCount - 10
+                itemView.context.getString(R.string.label_tokonow_show_other, exceedItemCount)
+            } else {
+                itemView.context.getString(R.string.label_tokonow_show_more)
+            }
+
             if (cartShopHolderData.isCollapsed) {
                 binding.imageChevron.rotation = 0f
-                binding.textAccordion.text = cartShopHolderData.showMoreWording
+                binding.textAccordion.text = showMoreWording
             } else {
                 binding.imageChevron.rotation = 180f
-                binding.textAccordion.text = cartShopHolderData.showLessWording
+                binding.textAccordion.text = showLessWording
             }
 
             binding.layoutAccordion.setOnClickListener {
