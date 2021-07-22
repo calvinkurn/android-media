@@ -105,7 +105,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private fun initView() {
         if(fromDetail) {
             dailybudget_description.show()
-            budget.setMessage("Rekomendasi Rp200")
+            budget.setMessage("Rekomendasi Rp$suggestedBid")
         } else {
             budget.textFiedlLabelText.text = "Biaya Kata kunci"
             dailybudget_description.hide()

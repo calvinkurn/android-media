@@ -12,10 +12,12 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.KeySharedModel
+import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.data.SharedViewModel
+import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
 import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
@@ -170,6 +172,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var addedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         var editedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         val strategies: ArrayList<String> = arrayListOf()
+        var bidSettings: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
         var bidGroup = 0
 
         if (bidStrategy.isEmpty()) {
@@ -180,6 +183,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
                 positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
                 bidGroup = bundle.getInt(Constants.PRICE_BID)
+                bidSettings = bundle.getParcelableArrayList(BID_TYPE)
 
             }
             if (fragments?.get(1) is EditNegativeKeywordsFragment) {
@@ -201,6 +205,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         dataMap[NEGATIVE_KEYWORDS_DELETED] = dataNegativeDeleted
         dataMap[STRATEGIES] = strategies
         dataMap[Constants.PRICE_BID] = bidGroup
+        dataMap[BID_TYPE] = bidSettings
 
         return dataMap
     }

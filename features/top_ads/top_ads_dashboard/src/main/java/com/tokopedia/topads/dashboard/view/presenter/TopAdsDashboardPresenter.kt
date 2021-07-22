@@ -257,8 +257,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
 
     fun getGroupProductData(page: Int, groupId: Int?, search: String,
-                            sort: String, status: Int?, startDate: String, endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
+                            sort: String, status: Int?, startDate: String, endDate: String, goalId: Int, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
+        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
         topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
 
@@ -469,10 +469,10 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun getGroupInfo(resources: Resources, groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
+    fun getGroupInfo(resources: Resources, groupId: String, source: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
         groupInfoUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.query_get_group_info))
-        groupInfoUseCase.setParams(groupId)
+        groupInfoUseCase.setParams(groupId, source)
         groupInfoUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topAdsGetPromoGroup?.data!!)

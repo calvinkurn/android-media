@@ -93,7 +93,7 @@ class GroupDetailViewModelTest {
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        viewModel.getGroupInfo(res, "", onSuccess)
+        viewModel.getGroupInfo(res, "", "", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 

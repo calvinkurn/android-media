@@ -1,5 +1,5 @@
-query GetDashboardProductStatistics($queryInput: GetDashboardProductStatisticsInputType!) {
-  GetDashboardProductStatistics(queryInput: $queryInput) {
+query GetDashboardProductStatisticsV2($queryInput: GetDashboardProductStatisticsInputTypeV2!) {
+  GetDashboardProductStatisticsV2(queryInput: $queryInput) {
     data {
       ad_id
       stat_avg_click

@@ -66,10 +66,12 @@ import kotlin.math.abs
  */
 
 private const val CLICK_COBA_SEKARANG = "click - coba sekarang"
-
+private const val CLICK_COBA_AUO_ADS = "click - coba auto ads"
+private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produk"
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
+    private var currentDateText: String = ""
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
     }
@@ -89,7 +91,12 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     override fun renderGraph() {
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_DATE_PICKER, currentDateText)
         currentStatisticsFragment?.showLineGraph(dataStatistic)
+    }
+
+    override fun getCustomDateText(customDateText: String) {
+        currentDateText = customDateText
     }
 
     private var groupPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
@@ -148,10 +155,13 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         onBoarding.setOnClickListener {
             RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                CLICK_COBA_AUO_ADS, "")
         }
         loadData()
         btnFilter.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
+            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         swipe_refresh_layout.setOnRefreshListener {
@@ -236,7 +246,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun fetchNextPage(page: Int) {
         topAdsDashboardPresenter.getGroupProductData(page, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
                 null, format.format(startDate ?: Date()), format.format(endDate
-                ?: Date()), this::onSuccessResult, this::onEmptyResult)
+                ?: Date()), 0, this::onSuccessResult, this::onEmptyResult)
     }
 
     override fun onDestroy() {
@@ -377,7 +387,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsAdapter.items.clear()
         autoAdsAdapter.notifyDataSetChanged()
         topAdsDashboardPresenter.getGroupProductData(1, null, searchBar?.searchBarTextField?.text.toString(), groupFilterSheet.getSelectedSortId(),
-                null, format.format(startDate), format.format(endDate), this::onSuccessResult, this::onEmptyResult)
+                null, format.format(startDate), format.format(endDate), 0, this::onSuccessResult, this::onEmptyResult)
     }
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {

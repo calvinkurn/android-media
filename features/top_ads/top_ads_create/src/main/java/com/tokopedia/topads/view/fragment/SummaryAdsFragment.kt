@@ -23,12 +23,18 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
-import com.tokopedia.topads.common.data.model.AdsItem
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
+import com.tokopedia.topads.common.data.internal.ParamObject.ADDED_PRODUCTS
+import com.tokopedia.topads.common.data.internal.ParamObject.BID_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
+import com.tokopedia.topads.common.data.internal.ParamObject.NAME_EDIT
+import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_CREATE
+import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.model.Group
 import com.tokopedia.topads.common.data.model.InputCreateGroup
 import com.tokopedia.topads.common.data.model.KeywordsItem
-import com.tokopedia.topads.common.data.response.DepositAmount
-import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.view.sheet.TopAdsOutofCreditSheet
@@ -39,7 +45,6 @@ import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
 import kotlinx.coroutines.*
@@ -67,11 +72,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     var keyword = KeywordsItem()
     var group = Group()
     private var strategies: MutableList<String> = mutableListOf()
-    private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
-    private var adsItemsList: MutableList<AdsItem> = mutableListOf()
+    private var keywordsList: MutableList<KeySharedModel> = mutableListOf()
+    private var adsItemsList: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = arrayListOf()
     private var selectedProductIds: MutableList<String> = mutableListOf()
     private var selectedkeywordIds: MutableList<String> = mutableListOf()
     private var selectedkeywordTags: MutableList<String> = mutableListOf()
+    private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     var isEnoughDeposit = false
     private var dailyBudget = 0
     private var suggestion = 0
@@ -162,8 +168,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
                 loading?.visibility = View.VISIBLE
                 btn_submit?.isEnabled = false
-                val map = convertToParam(view)
-                viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
+//                val map = convertToParam(view)
+                viewModel.topAdsCreated(getProductData(), getKeywordData(), getGroupData(), this::onSuccessActivation, this::onErrorActivation)
                 sendAnalyticEvent()
             } else {
                 onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
@@ -279,15 +285,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun sendAnalyticEvent() {
         adsItemsList.forEachIndexed { index, _ ->
-            selectedProductIds.add(adsItemsList[index].productID)
+            selectedProductIds.add(adsItemsList[index].itemID)
         }
 
         keywordsList.forEachIndexed { index, _ ->
-            selectedkeywordIds.add(keywordsList[index].keywordTypeID)
+            selectedkeywordIds.add(keywordsList[index].id)
         }
 
         keywordsList.forEachIndexed { index, _ ->
-            selectedkeywordTags.add(keywordsList[index].keywordTag)
+            keywordsList[index].name?.let { selectedkeywordTags.add(it) }
         }
 
         val eventLabel = PRODUCT_INFO.format(
@@ -428,72 +434,115 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
     }
 
-    private fun convertToParam(view: View): HashMap<String, Any> {
-        val userSession = UserSession(view.context)
-        if (!toggle.isChecked) {
-            input.group.groupBudget = UNLIMITED_BUDGET
-        } else {
-            input.group.groupBudget = DEFINED_BUDGET
-            input.group.priceDaily = stepperModel?.dailyBudget?.toDouble() ?: 0.0
-        }
-        input.shopID = userSession.shopId
-        input.group.groupName = stepperModel?.groupName ?: ""
-        if (stepperModel?.autoBidState?.isEmpty() == true) {
-            input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
-        } else {
-            input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
-        }
-        input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick?.toDouble() ?: 0.0
-        keywordsList.clear()
-        adsItemsList.clear()
-        if (stepperModel?.autoBidState?.isEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
-            stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
-                addKeywords(index)
-            }
-            input.keywords = keywordsList
-        } else {
-            input.keywords = null
-        }
-        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
-            stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
-                addProducts(index)
-            }
-            input.group.ads = adsItemsList
-        }
+    private fun getGroupData() : HashMap<String, Any?> {
+        var dataMap = HashMap<String, Any?>()
 
+        bidTypeData?.add(TopAdsBidSettingsModel("product_search", stepperModel?.finalBidPerClick?.toFloat()))
+        bidTypeData?.add(TopAdsBidSettingsModel("product_browse", stepperModel?.finalBidPerClick?.toFloat()))
+        dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: ""
+        dataMap[BID_TYPE] =  bidTypeData
+        dataMap[GROUPID] = ""
+        dataMap[NAME_EDIT] = true
+        dataMap[ParamObject.ACTION_TYPE] = ACTION_CREATE
         if (stepperModel?.autoBidState?.isNotEmpty() == true) {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
         }
-        input.group.strategies = strategies
+
+        dataMap[STRATEGIES] = strategies
+        return dataMap
+
+    }
+
+    private fun getKeywordData() : HashMap<String, Any?> {
+
+        val dataKeyword = HashMap<String, Any?>()
+        keywordsList.clear()
+
+        if (stepperModel?.autoBidState?.isEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
+            stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
+                addKeywords(index)
+            }
+        }
+        dataKeyword[POSITIVE_CREATE] = keywordsList
+        return dataKeyword
+    }
+
+    private fun getProductData() : Bundle {
+        val datProduct = Bundle()
+        adsItemsList.clear()
+        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
+            stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
+                addProducts(index)
+            }
+        }
+        datProduct.putParcelableArrayList(ADDED_PRODUCTS, adsItemsList)
+        return datProduct
+    }
+
+    private fun convertToParam(view: View): HashMap<String, Any> {
+//        val userSession = UserSession(view.context)
+//        if (!toggle.isChecked) {
+//            input.group.groupBudget = UNLIMITED_BUDGET
+//        } else {
+//            input.group.groupBudget = DEFINED_BUDGET
+//            input.group.priceDaily = stepperModel?.dailyBudget?.toDouble() ?: 0.0
+//        }
+//        input.shopID = userSession.shopId
+//        input.group.groupName = stepperModel?.groupName ?: ""
+//        if (stepperModel?.autoBidState?.isEmpty() == true) {
+//            input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
+//        } else {
+//            input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
+//        }
+//        input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick?.toDouble() ?: 0.0
+//        keywordsList.clear()
+//        adsItemsList.clear()
+//        if (stepperModel?.autoBidState?.isEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
+//            stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
+//                addKeywords(index)
+//            }
+//            input.keywords = keywordsList
+//        } else {
+//            input.keywords = null
+//        }
+//        if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
+//            stepperModel?.selectedProductIds?.forEachIndexed { index, _ ->
+//                addProducts(index)
+//            }
+//            input.group.ads = adsItemsList
+//        }
+
+//        if (stepperModel?.autoBidState?.isNotEmpty() == true) {
+//            strategies.clear()
+//            strategies.add(stepperModel?.autoBidState!!)
+//        }
+//        input.group.strategies = strategies
 
         map[INPUT] = input
         return map
     }
 
     private fun addProducts(index: Int) {
-        val add = AdsItem()
-        add.productID = stepperModel?.selectedProductIds?.get(index).toString()
-        add.ad.adID = stepperModel?.adIds?.get(index).toString()
-        add.ad.adType = "1"
-        adsItemsList.add(add)
+        var id = stepperModel?.selectedProductIds?.get(index).toString()
+        adsItemsList.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(id))
     }
 
     private fun addKeywords(index: Int) {
-        val key = KeywordsItem()
+        val key = KeySharedModel()
         val type = stepperModel?.selectedKeywordStage?.get(index)?.keywordType
         val typeInt = if (type == BROAD_TYPE)
             BROAD_POSITIVE
         else
             EXACT_POSITIVE
 
-        key.keywordTypeID = typeInt.toString()
-        key.keywordTag = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
+        key.id = typeInt.toString()
+        key.name = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
         if (stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: 0.0 != 0.0)
-            key.priceBid = stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble()
-                ?: 0.0
+            key.priceBid = stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest
+                ?: "0"
         else
-            key.priceBid = stepperModel?.minSuggestBidKeyword?.toDouble() ?: 0.0
+            key.priceBid = stepperModel?.minSuggestBidKeyword ?: "0"
         keywordsList.add(key)
     }
 
@@ -527,8 +576,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
     }
 
-    private fun onErrorActivation(throwable: Throwable) {
-        val message = Utils.getErrorMessage(context, throwable.message ?: "")
+    private fun onErrorActivation(error: String?) {
+        val message = Utils.getErrorMessage(context, error ?: "")
         view?.let {
             Toaster.build(
                 it, message,

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GroupInfoResponse(
 
-        @field:SerializedName("topAdsGetPromoGroup")
+        @field:SerializedName("topAdsGetPromoGroupProduct")
         val topAdsGetPromoGroup: TopAdsGetPromoGroup? = TopAdsGetPromoGroup()
 ) {
     data class TopAdsGetPromoGroup(
@@ -14,30 +14,40 @@ data class GroupInfoResponse(
     ) {
         data class Data(
 
-                @field:SerializedName("group_name")
+                @field:SerializedName("name")
                 val groupName: String = "",
 
-                @field:SerializedName("price_daily")
-                val priceDaily: Int = 0,
+                @field:SerializedName("daily_budget")
+                val daiyBudget: Int = 0,
 
                 @field:SerializedName("shop_id")
                 val shopId: String = "",
 
-                @field:SerializedName("group_id")
+                @field:SerializedName("id")
                 val groupId: String = "",
-
-                @field:SerializedName("price_bid")
-                val priceBid: Int = 0,
 
                 @field:SerializedName("status")
                 val status: String = "",
 
-                @field:SerializedName("group_total")
+                @field:SerializedName("ad_total")
                 val groupTotal: String = "",
+
+                @field:SerializedName("bid_settings")
+                val bidSettings: List<TopadsGroupBidSetting>? = listOf(),
 
                 @field:SerializedName("strategies")
                 val strategies: List<String> = listOf()
 
         )
+
+        data class TopadsGroupBidSetting(
+            @field:SerializedName("bid_type")
+            var bidType: String? = null,
+
+            @field:SerializedName("price_bid")
+            var priceBid: Float? = 0.0f
+
+        )
+
     }
 }

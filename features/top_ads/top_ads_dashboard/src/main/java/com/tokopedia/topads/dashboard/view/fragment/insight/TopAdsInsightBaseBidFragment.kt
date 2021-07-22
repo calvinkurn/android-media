@@ -38,6 +38,7 @@ import javax.inject.Inject
  */
 
 const val CLICK_TERAPKAN = "click - terapkan"
+private const val INSIGHT_BID_PAGE = "topads.insightBid"
 class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
@@ -151,14 +152,14 @@ class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
-        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, ::onSuccessGroupInfo)
+        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, INSIGHT_BID_PAGE, ::onSuccessGroupInfo)
         val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].setCurrentBid}"
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         val map = HashMap<String, Any?>()
-        map[PARAM_PRICE_BID] = data.priceBid
+        map[PARAM_PRICE_BID] = data?.bidSettings?.get(0)?.priceBid
         map[PARAM_DAILY_BUDGET] = adapter.items[currentPosition].setCurrentBid
         map[PARAM_GROUP_Id] = adapter.items[currentPosition].groupId
         topAdsDashboardPresenter.editBudgetThroughInsight(null, map, ::onResultEdit, ::onError)

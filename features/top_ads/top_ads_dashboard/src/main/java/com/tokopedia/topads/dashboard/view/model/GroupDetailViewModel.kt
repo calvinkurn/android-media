@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.model
 
 import android.content.res.Resources
+import android.os.Bundle
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -8,14 +9,20 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
+import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -39,22 +46,24 @@ import javax.inject.Named
  */
 
 class GroupDetailViewModel @Inject constructor(
-        private val dispatcher: CoroutineDispatchers,
-        private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
-        private val topAdsGetAdKeywordUseCase: TopAdsGetAdKeywordUseCase,
-        private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
-        private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
-        private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
-        private val topAdsKeywordsActionUseCase: TopAdsKeywordsActionUseCase,
-        private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
-        private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
-        private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
-        private val groupInfoUseCase: GroupInfoUseCase,
-        private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
+    private val dispatcher: CoroutineDispatchers,
+    private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
+    private val topAdsGetAdKeywordUseCase: TopAdsGetAdKeywordUseCase,
+    private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
+    private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
+    private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
+    private val topAdsKeywordsActionUseCase: TopAdsKeywordsActionUseCase,
+    private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
+    private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
+    private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+    private val groupInfoUseCase: GroupInfoUseCase,
+    private val bidInfoUseCase: BidInfoUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
+    private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     fun getGroupProductData(page: Int, groupId: Int, search: String, sort: String, status: Int?, startDate: String,
-                            endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
+                            endDate: String, goalId: Int, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
+        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
         topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
 
@@ -76,10 +85,10 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun getGroupInfo(resources: Resources, groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
+    fun getGroupInfo(resources: Resources, groupId: String, source: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
         groupInfoUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.query_get_group_info))
-        groupInfoUseCase.setParams(groupId)
+        groupInfoUseCase.setParams(groupId, source)
         groupInfoUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topAdsGetPromoGroup?.data!!)
@@ -89,11 +98,11 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: (GetDashboardProductStatistics) -> Unit, selectedSortId: String, selectedStatusId: Int?) {
+    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: (GetDashboardProductStatistics) -> Unit, selectedSortId: String, selectedStatusId: Int?, goalId: Int) {
         topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
         topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds, selectedSortId, selectedStatusId
-                ?: 0)
+                ?: 0, goalId)
         topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.getDashboardProductStatistics)
@@ -101,6 +110,46 @@ class GroupDetailViewModel @Inject constructor(
                 {
                     it.printStackTrace()
                 })
+    }
+
+    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+        bidInfoUseCase.setParams(suggestions, ParamObject.GROUP)
+        bidInfoUseCase.executeQuerySafeMode(
+            {
+                onSuccess(it.topadsBidInfo.data)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
+    }
+
+    fun topAdsCreated(dataGrp: HashMap<String, Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
+        val productBundle = Bundle()
+        val dataMap = HashMap<String, Any?>()
+        val param = topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataMap, dataGrp)
+        topAdsCreateUseCase.execute(param, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<FinalAdResponse>
+                val dataGroup = response.data?.topadsManageGroupAds?.groupResponse
+                if (dataGroup?.errors.isNullOrEmpty())
+                    onSuccess()
+                else {
+                    var error = ""
+                    if (!dataGroup?.errors.isNullOrEmpty())
+                        error = dataGroup?.errors?.firstOrNull()?.detail ?: ""
+                    onError(error)
+                }
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {
+                onError(e?.message)
+                e?.printStackTrace()
+            }
+        })
     }
 
     fun getGroupKeywordData(resources: Resources, isPositive: Int, group: Int, search: String, sort: String?, status: Int?, page: Int, onSuccess: ((KeywordsResponse.GetTopadsDashboardKeywords) -> Unit), onEmpty: (() -> Unit)) {
@@ -227,6 +276,7 @@ class GroupDetailViewModel @Inject constructor(
         topAdsGroupActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
+        bidInfoUseCase.cancelJobs()
     }
 }
 

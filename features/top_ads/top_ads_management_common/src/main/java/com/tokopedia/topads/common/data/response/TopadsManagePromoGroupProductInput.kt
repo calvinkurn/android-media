@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Pika on 14/4/20.
  */
-class TopadsManageGroupAdsInput(
+class TopadsManagePromoGroupProductInput(
 
         @field:SerializedName("groupOperation")
         var groupInput: GroupEditInput = GroupEditInput(),

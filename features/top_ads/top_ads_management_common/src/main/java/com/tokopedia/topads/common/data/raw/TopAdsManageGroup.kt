@@ -1,9 +1,12 @@
-package com.tokopedia.topads.edit.data.raw
+package com.tokopedia.topads.common.data.raw
 
 const val MANAGE_GROUP = """
-mutation topadsManageGroupAds(${'$'}input: TopadsManageGroupAdsInput!){
-    topadsManageGroupAds(input: ${'$'}input){
+mutation topadsManagePromoGroupProduct(${'$'}input: TopadsManagePromoGroupProductInput!){
+    topadsManagePromoGroupProduct(input: ${'$'}input){
         groupResponse {
+            data{
+              id
+            }
             errors {
                 code
                 detail
@@ -11,6 +14,9 @@ mutation topadsManageGroupAds(${'$'}input: TopadsManageGroupAdsInput!){
             }
         }
         keywordResponse {
+            data {
+                id
+            }
             errors {
                 code
                 detail

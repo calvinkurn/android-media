@@ -27,6 +27,7 @@ object ParamObject {
     const val STATUS = "status"
     const val TYPE = "type"
     const val PAGE = "page"
+    const val GOAL_ID = "goal_id"
     const val PER_PAGE = "perPage"
     const val GROUPID = "groupID"
     const val FILTER = "filter"
@@ -71,4 +72,44 @@ object ParamObject {
     const val PARAM_DASH_SELECTION_ITEM = "selectionId"
     const val PARAM_TOGGLE_ON = "toggle_on"
     const val PARAM_TOGGLE_OFF = "toggle_off"
+
+
+    //for edit operation
+
+    const val ACTION_TYPE = "action"
+    const val ACTION_EDIT = "edit"
+    const val ACTION_ADD = "add"
+    const val ACTION_REMOVE = "remove"
+    const val ACTION_CREATE = "create"
+    const val ACTION_DELETE = "delete"
+
+    const val EDIT_SOURCE = "dashboard_edit_group_app"
+    const val EDIT_PAGE = "android.edit_group"
+    const val CREATE_PAGE = "android.create_group"
+
+    const val POSITIVE_PHRASE = "positive_phrase"
+    const val POSITIVE_SPECIFIC = "positive_exact"
+    const val NEGATIVE_PHRASE = "negative_phrase"
+    const val NEGATIVE_SPECIFIC = "negative_exact"
+    const val ADDED_PRODUCTS = "addedProducts"
+    const val DELETED_PRODUCTS = "deletedProducts"
+
+    const val ACTIVE = "active"
+    const val KEYWORD_TYPE_PHRASE = 11
+    const val KEYWORD_TYPE_EXACT = 21
+    const val KEYWORD_TYPE_NEGATIVE_PHRASE = 12
+    const val KEYWORD_TYPE_NEGATIVE_EXACT = 22
+    const val POSITIVE_CREATE = "createdPositiveKeyword"
+    const val POSITIVE_DELETE = "deletedPositiveKeyword"
+    const val POSITIVE_EDIT = "editedPositiveKeyword"
+    const val POSITIVE_KEYWORD_ALL = "editedAllPositiveKeyword"
+    const val NEGATIVE_KEYWORD_ALL = "editedAllNegativeKeyword"
+    const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
+    const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
+    const val STRATEGIES = "strategies"
+    const val DAILY_BUDGET = "daily_budget"
+    const val BID_TYPE = "bidSettings"
+    const val NAME_EDIT = "isNameEdit"
+    const val BUDGET_LIMITED = "isBudgetLimited"
+    const val PUBLISHED = "published"
 }

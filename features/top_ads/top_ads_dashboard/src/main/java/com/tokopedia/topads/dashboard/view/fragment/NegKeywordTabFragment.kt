@@ -46,7 +46,7 @@ import javax.inject.Inject
  */
 
 private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci negatif"
-
+private const val CLICK_TAB_NEG_KATA_KUNCI = "click - tab kata kunci negatif"
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
@@ -84,6 +84,8 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+            CLICK_TAB_NEG_KATA_KUNCI, "")
         adapter = NegKeywordAdapter(NegKeywordAdapterTypeFactoryImpl(::setSelectMode, ::startEditActivity))
     }
 

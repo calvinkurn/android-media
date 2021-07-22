@@ -12,6 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.data.util.Utils
@@ -36,7 +39,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val AUTOBID_DEFUALT_BUDGET = 16000
-
+private const val EDIT_GROUP = "android.edit_group"
 class EditGroupAdFragment : BaseDaggerFragment() {
 
     private var btnState: Boolean = true
@@ -98,8 +101,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
         group_name?.textFieldInput?.setText(data.groupName)
-        sharedViewModel.setBudget(data.priceBid)
-        priceDaily = data.priceDaily
+        data?.bidSettings?.get(0)?.priceBid?.toInt()?.let { sharedViewModel.setBudget(it) }
+        priceDaily = data.daiyBudget
         if (priceDaily != 0) {
             toggle?.isChecked = true
             daily_budget?.visible()
@@ -294,10 +297,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
         try {
+            dataMap[ACTION_TYPE] = ParamObject.ACTION_EDIT
             dataMap[IS_DATA_CHANGE] = checkDataChanged()
             dataMap[GROUP_NAME] = getCurrentTitle()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
-            dataMap[GROUP_ID] = groupId
+            dataMap[GROUPID] = groupId
             dataMap[BUDGET_LIMITED] = toggle?.isChecked
             dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {

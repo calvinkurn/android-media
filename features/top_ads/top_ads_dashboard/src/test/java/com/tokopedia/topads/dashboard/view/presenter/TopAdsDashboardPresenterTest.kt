@@ -198,7 +198,7 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get product data `() {
-        presenter.getGroupProductData(1, 1, "", "", 1, "", "", {}) {}
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) {}
         verify {
             topAdsGetGroupProductDataUseCase.execute(any(), any())
         }
@@ -373,7 +373,7 @@ class TopAdsDashboardPresenterTest {
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getGroupInfo(res, "", onSuccess)
+        presenter.getGroupInfo(res, "", "", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 

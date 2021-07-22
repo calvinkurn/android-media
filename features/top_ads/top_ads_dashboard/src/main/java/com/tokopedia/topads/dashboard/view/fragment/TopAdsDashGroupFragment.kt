@@ -42,6 +42,7 @@ import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupIte
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_list.*
 import kotlinx.android.synthetic.main.topads_dash_layout_common_action_bar.*
@@ -57,7 +58,8 @@ import javax.inject.Inject
  */
 
 private const val CLICK_GROUP_TITLE = "click - group title"
-
+private const val CLICK_FILTER = "click - filter iklan group"
+private const val CLICK_SEARCH_FIELD = "click - cari group in tab group"
 class TopAdsDashGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: GroupItemsListAdapter
@@ -197,7 +199,9 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         fetchData()
         btnFilter.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
+            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
@@ -216,7 +220,18 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
         btnAddItem.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         }
-        Utils.setSearchListener(context, view, ::fetchData)
+        setSearchAction()
+    }
+
+
+    private fun setSearchAction() {
+        view?.let {
+            val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
+            searchBar?.searchBarTextField?.setOnClickListener {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_SEARCH_FIELD, "")
+            }
+            com.tokopedia.topads.common.data.util.Utils.setSearchListener(searchBar, context, it, ::fetchData)
+        }
     }
 
     private fun showConfirmationDialog() {
@@ -239,6 +254,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
+
         adapter.items.add(GroupItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!EMPTY_SEARCH_VIEW)

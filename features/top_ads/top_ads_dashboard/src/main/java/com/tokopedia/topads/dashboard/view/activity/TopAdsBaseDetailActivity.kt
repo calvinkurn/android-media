@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX
@@ -66,7 +67,9 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
 
     abstract fun loadChildStatisticsData()
 
-    abstract fun renderGraph()
+    abstract fun renderGraph(position: Int)
+
+    abstract fun handleDateClick(customDateText: String)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,7 +153,7 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
                 smoothScroller.targetPosition = position
                 tabLayoutManager.startSmoothScroll(smoothScroller)
                 topAdsTabAdapter?.selected(position)
-                renderGraph()
+                renderGraph(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
@@ -169,6 +172,7 @@ abstract class TopAdsBaseDetailActivity : BaseActivity(), CustomDatePicker.Actio
                 currentDate.text = text
             }
         }
+        handleDateClick(currentDate.text.toString())
     }
 
     private fun startCustomDatePicker() {

@@ -10,6 +10,7 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.END_DATE
+import com.tokopedia.topads.common.data.internal.ParamObject.GOAL_ID
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_iDS
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
 import com.tokopedia.topads.common.data.internal.ParamObject.PAGE
@@ -28,8 +29,8 @@ import kotlin.collections.set
  * Created by Pika on 29/5/20.
  */
 
-const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String = """query GetTopadsDashboardGroupStatistics(${'$'}queryInput: GetTopadsDashboardGroupStatisticsInputType!) {
-  GetTopadsDashboardGroupStatistics(queryInput: ${'$'}queryInput) {
+const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String = """query GetTopadsDashboardGroupStatisticsV2(${'$'}queryInput: GetTopadsDashboardGroupStatisticsInputTypeV2!) {
+  GetTopadsDashboardGroupStatisticsV2(queryInput: ${'$'}queryInput) {
     separate_statistic
     meta {
       page {
@@ -68,15 +69,16 @@ class TopAdsGetGroupStatisticsUseCase @Inject constructor(val userSession: UserS
         return tempRequest
     }
 
-    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupids: List<String>): RequestParams{
+    fun setParams(search: String, page: Int, sort: String, status: Int?, startDate: String, endDate: String, groupids: List<String>, goalId: Int = 0): RequestParams{
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_id] = userSession.shopId.toInt()
+        queryMap[ParamObject.SHOP_id] = userSession.shopId
         queryMap[SORT] = sort
         queryMap[KEYWORD] = search
         queryMap[PAGE] = page
         queryMap[START_DATE] = startDate
         queryMap[END_DATE] = endDate
+        queryMap[GOAL_ID] = goalId
         queryMap[GROUP_iDS] = groupids.joinToString(",")
         requestParams.putAll(mapOf(QUERY_INPUT to queryMap))
         return requestParams

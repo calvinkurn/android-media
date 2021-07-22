@@ -45,6 +45,8 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
     private var dataStatistic: DataStatistic? = null
     private var insightCallBack: GoToInsight? = null
 
+    private var currentDateText: String = ""
+
     @TopAdsStatisticsType
     internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
 
@@ -82,6 +84,10 @@ open class BerandaTabFragment : TopAdsBaseTabFragment() {
 
     override fun renderGraph() {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
+    }
+
+    override fun getCustomDateText(customDateText: String) {
+        currentDateText = customDateText
     }
 
     override fun initInjector() {

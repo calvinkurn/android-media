@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -22,13 +24,18 @@ private const val SELECTED_STATUS_0 = 0;
 private const val SELECTED_STATUS_1 = 1;
 private const val SELECTED_STATUS_2 = 2;
 private const val SELECTED_STATUS_3 = 3;
+private const val SELECTED_placement_type_0 = 0;
+private const val SELECTED_placement_type_2 = 2;
+private const val SELECTED_placement_type_3 = 3;
 private const val CLICK_TERAPKAN = "click - terapkan"
 
 class TopadsGroupFilterSheet : BottomSheetUnify() {
     var onSubmitClick: (() -> Unit)? = null
     private var filterCount = 0
     private var selectedStatus = SELECTED_STATUS_0
+    private var selectedAdPlacement = SELECTED_placement_type_0
     private var contentView: View? = null
+    private var showPlacementFilter : Boolean = false
 
     private lateinit var userSession: UserSessionInterface
 
@@ -44,6 +51,50 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         userSession = UserSession(context)
         view.status?.visibility = View.VISIBLE
         view.status_title?.visibility = View.VISIBLE
+
+
+        if(showPlacementFilter) {
+            view.adPlacement_title?.show()
+            view.adPlacement?.show()
+        } else {
+            view.adPlacement_title?.hide()
+            view.adPlacement?.hide()
+        }
+
+        // for ad placement filter
+        view.semua?.setOnClickListener { v ->
+            if (v.semua.chipType == ChipsUnify.TYPE_NORMAL) {
+                v.semua.chipType = ChipsUnify.TYPE_SELECTED
+                selectedAdPlacement = SELECTED_placement_type_0
+            } else {
+                v.semua.chipType = ChipsUnify.TYPE_NORMAL
+                selectedAdPlacement = SELECTED_placement_type_0
+            }
+            view.search?.chipType = ChipsUnify.TYPE_NORMAL
+            view.rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
+        }
+        view.search?.setOnClickListener { v ->
+            if (v.search.chipType == ChipsUnify.TYPE_NORMAL) {
+                v.search.chipType = ChipsUnify.TYPE_SELECTED
+                selectedAdPlacement = SELECTED_placement_type_2
+            } else {
+                v.search.chipType = ChipsUnify.TYPE_NORMAL
+                selectedAdPlacement = SELECTED_placement_type_0
+            }
+            view.semua?.chipType = ChipsUnify.TYPE_NORMAL
+            view.rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
+        }
+        view.rekomendation?.setOnClickListener { v ->
+            if (v.rekomendation.chipType == ChipsUnify.TYPE_NORMAL) {
+                v.rekomendation.chipType = ChipsUnify.TYPE_SELECTED
+                selectedAdPlacement = SELECTED_placement_type_3
+            } else {
+                v.rekomendation.chipType = ChipsUnify.TYPE_NORMAL
+                selectedAdPlacement = SELECTED_placement_type_0
+            }
+            view.semua?.chipType = ChipsUnify.TYPE_NORMAL
+            view.search?.chipType = ChipsUnify.TYPE_NORMAL
+        }
 
         view.active?.setOnClickListener { v ->
             if (v.active.chipType == ChipsUnify.TYPE_NORMAL) {
@@ -94,6 +145,11 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
 
     }
 
+
+    fun showAdplacementFilter(show: Boolean) {
+        this.showPlacementFilter = show
+    }
+
     fun getFilterCount(): Int {
         return filterCount
     }
@@ -112,6 +168,10 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             R.id.filter5 -> list[4]
             else -> ""
         }
+    }
+
+    fun getSelectedAdPlacementType() : Int {
+        return selectedAdPlacement
     }
 
     fun getSelectedStatusId(): Int? {

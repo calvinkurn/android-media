@@ -41,6 +41,8 @@ object TopAdsDashboardConstant {
     const val ACTION_MOVE = "move_group"
     const val TIDAK_DIBATASI = "Tidak Dibatasi"
     const val GROUP_ID = "group_id"
+    const val BID_TYPE = "bidSettings"
+    const val NAME_EDIT = "isNameEdit"
     const val PRICE_SPEND = "price_spent"
     const val NOT_VALID = "Rp 0"
     const val GROUP_NAME = "group_name"
@@ -101,5 +103,11 @@ object TopAdsDashboardConstant {
     const val CONST_5 = 5
     const val CONST_6 = 6
     const val CONST_7 = 7
-
+    const val groupName = "groupName"
+    const val MAX_BID = "max"
+    const val MIN_BID = "min"
+    const val SUGGESTION_BID = "suggest"
+    const val KEYWORD_NAME = "keywordName"
+    const val FROM_EDIT = "fromEdit"
+    const val FROM_DETAIL = "fromDetail"
 }

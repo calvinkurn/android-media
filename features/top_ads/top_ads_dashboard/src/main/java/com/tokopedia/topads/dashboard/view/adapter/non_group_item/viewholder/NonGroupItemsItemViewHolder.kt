@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
@@ -23,6 +24,10 @@ import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
  * Created by Pika on 2/6/20.
  */
 
+private const val CLICK_IMG_MENU = "click - edit ads tanpa group"
+private const val CLICK_NON_AKTIFKAN = "click - nonaktifkan single ads"
+private const val CLICK_UHBAH = "click - ubah iklan single ads"
+private const val CLICK_HAPUS = "click - hapus iklan single ads"
 class NonGroupItemsItemViewHolder(val view: View,
                                   var selectMode: ((select: Boolean) -> Unit),
                                   var actionDelete: ((pos: Int) -> Unit),
@@ -97,15 +102,20 @@ class NonGroupItemsItemViewHolder(val view: View,
         }
 
         view.img_menu.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_IMG_MENU, "")
             sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName, item.data.groupId)
             sheet?.onEditAction = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_UHBAH, "")
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
             sheet?.onDeleteClick = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_HAPUS, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
             sheet?.changeStatus = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                    CLICK_NON_AKTIFKAN, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

@@ -1,18 +1,16 @@
-query topAdsGetPromoGroup($group_id : String!){
-   topAdsGetPromoGroup(group_id: $group_id){
+query topAdsGetPromoGroupProduct($group_id : String!, $source: String!){
+   topAdsGetPromoGroupProduct(group_id: $group_id, source: $source){
     data {
-      group_id
-      group_name
+      id
+      name
       shop_id
       status
-      group_total
-      price_bid
-      price_daily
-      group_start_date
-      group_start_time
-      group_end_date
-      group_end_time
-      keyword_total
+      ad_total
+      daily_budget
+      bid_settings{
+        bid_type
+        price_bid
+      }
       strategies
     }
   }

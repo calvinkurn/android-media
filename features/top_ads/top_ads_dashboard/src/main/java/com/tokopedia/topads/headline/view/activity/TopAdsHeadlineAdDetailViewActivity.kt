@@ -57,6 +57,7 @@ import kotlin.math.abs
 private const val click_edit_icon = "click - edit on detail iklan toko"
 private const val click_toggle_icon = "click - toggle on detail iklan toko"
 private const val view_detail_iklan = "view - detail iklan toko"
+private const val HEADLINE_DETAIL_PAGE = "topads.headlineDetail"
 class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<TopAdsDashboardComponent>, CompoundButton.OnCheckedChangeListener {
 
     private var dataStatistic: DataStatistic? = null
@@ -118,8 +119,12 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         loadStatisticsData()
     }
 
-    override fun renderGraph() {
+    override fun renderGraph(position: Int) {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
+    }
+
+    override fun handleDateClick(customDateText: String) {
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,14 +189,14 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     private fun loadData() {
-        viewModel.getGroupInfo(resources, groupId.toString(), ::onSuccessGroupInfo)
+        viewModel.getGroupInfo(resources, groupId.toString(), HEADLINE_DETAIL_PAGE, ::onSuccessGroupInfo)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupStatus = data.status
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
-        priceDaily = data.priceDaily
+        priceDaily = data.daiyBudget
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)
         btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL

@@ -44,6 +44,8 @@ private const val KEY_ECOMMERCE_EVENT = "ecommerce"
 private const val KEY_PROMO_CLICK = "promoClick"
 private const val KEY_PROMO_VIEW = "promoView"
 private const val KEY_PROMOTIONS = "promotions"
+private const val KEY_EVENT_GROUP_DETAIL = "topAdsSellerApp"
+private const val KEY_EVENT_CATEGORY_GROUP_DETAIL = "topads detail group iklan"
 private const val KEY_CREATIVE_RECOMMENDATION_PRODUK = "jumlah pencarian - potensi tampil - rekomendasi biaya"
 private const val KEY_CREATIVE_DAILY_RECOMMENDATION_PRODUK = "rekomendasi anggaran - potensi klik"
 
@@ -376,5 +378,17 @@ class TopAdsCreateAnalytics {
                     "position" to position+1))
         }
         return list
+    }
+
+    fun sendTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+            KEY_EVENT to KEY_EVENT_GROUP_DETAIL,
+            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT_EVENT to "",
+            KEY_CURRENT_SITE_EVENT to "")
+
+        getTracker().sendGeneralEvent(map)
     }
 }

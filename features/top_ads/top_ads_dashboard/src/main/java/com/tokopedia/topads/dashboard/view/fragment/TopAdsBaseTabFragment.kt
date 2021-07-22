@@ -77,6 +77,8 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     abstract fun renderGraph()
 
+    abstract fun getCustomDateText(customDateText: String)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
         currentDate = view.findViewById(R.id.current_date)
@@ -111,6 +113,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
                 currentDate.text = text
             }
         }
+        getCustomDateText(currentDate.text.toString())
     }
 
     private fun getCurrentSelected(): Int {

@@ -40,14 +40,6 @@
             app:layout_constraintTop_toBottomOf="@id/group_name" />
 
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/biaya_img"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
-            android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/biaya_pencarian"
             android:layout_width="wrap_content"
@@ -56,9 +48,8 @@
             android:layout_marginStart="@dimen/dp_16"
             android:text="@string/topads_dash_biaya_pencarian"
             android:layout_marginEnd="@dimen/dp_24"
-            app:layout_constraintEnd_toStartOf="@+id/divider2"
             android:textColor="@color/topads_clr_7031353b"
-            app:layout_constraintStart_toEndOf="@+id/biaya_img"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:typographyType="small" />
 
@@ -98,15 +89,6 @@
             app:layout_constraintStart_toEndOf="@id/per_click"
             app:layout_constraintTop_toBottomOf="@id/biaya_pencarian" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/divider2"
-            android:layout_width="1dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/unify_N75"
-            app:layout_constraintStart_toEndOf="@+id/editpancarianBudget"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/biaya_rekommendasi"
@@ -114,9 +96,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_50"
             android:text="@string/topads_dash_biaya_rekomendasi"
             android:textColor="@color/topads_clr_7031353b"
-            app:layout_constraintStart_toEndOf="@+id/divider2"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:typographyType="small" />
 
@@ -158,14 +141,6 @@
             app:layout_constraintTop_toBottomOf="@id/biaya_rekommendasi" />
 
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/angarran_img"
-            android:layout_width="33dp"
-            android:layout_height="33dp"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/biaya_img" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/anggaran_harian"
             android:layout_width="wrap_content"
@@ -174,7 +149,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/topads_clr_7031353b"
-            app:layout_constraintStart_toEndOf="@+id/angarran_img"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/budgetPerClick"
             app:typographyType="small" />
 
@@ -185,7 +160,7 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:includeFontPadding="false"
-            app:layout_constraintStart_toEndOf="@+id/angarran_img"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/anggaran_harian"
             app:typographyType="heading_5"
             tools:text="Rp 400" />

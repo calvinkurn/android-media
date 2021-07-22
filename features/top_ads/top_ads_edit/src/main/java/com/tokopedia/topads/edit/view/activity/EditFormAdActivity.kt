@@ -16,7 +16,7 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.response.GetAdProductResponse
+import com.tokopedia.topads.common.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.di.DaggerTopAdsEditComponent
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.di.module.TopAdEditModule

@@ -88,6 +88,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private val groupIds: MutableList<String> = mutableListOf()
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: AppBarActionHeadline? = null
+    private var currentDateText: String = ""
 
 
     companion object {
@@ -123,6 +124,10 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
     }
 
+    override fun getCustomDateText(customDateText: String) {
+        currentDateText = customDateText
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = HeadLineAdItemsListAdapter(HeadLineAdItemsAdapterTypeFactoryImpl(::startSelectMode,
@@ -143,6 +148,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loadStatisticsData()
         btnFilter.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
+            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {

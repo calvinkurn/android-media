@@ -68,6 +68,7 @@ import javax.inject.Inject
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
 private const val VIEW_BUAT_IKLAN = "view - tambah iklan"
 private const val CLICK_IKLAN_TOKO = " click - iklan toko"
+private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 
 class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
@@ -77,6 +78,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 3
     private val HEADLINE_ADS_TAB = 2
+    private val IKLANKAN_PRODUK_TAB = 1
     private var adType = "-1"
     private var isNoProduct = false
     var redirectToTab = 0
@@ -147,6 +149,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                         multiActionBtn.buttonSize = UnifyButton.Size.LARGE
                         multiActionBtn?.text = getString(R.string.topads_dash_button_submit_beranda)
                         setPadding()
+                    }
+                    IKLANKAN_PRODUK_TAB -> {
+                        removeBtn()
+                        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
+                            VIEW_IKLAN_PRODUK, "")
                     }
                     INSIGHT_PAGE -> {
                         bottom?.gone()

@@ -64,15 +64,57 @@
                         app:layout_constraintBottom_toBottomOf="@id/txtInfo"
                         app:layout_constraintTop_toTopOf="@id/txtInfo" />
 
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/biaya_pencarian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:text="@string/topads_group_detail_budget_pancarian"
+                        android:textColor="@color/topads_clr_7031353b"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtInfo"
+                        app:typographyType="body_3" />
+
                     <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/budget"
                         android:layout_width="@dimen/dp_160"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_16"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txtInfo"
+                        app:layout_constraintTop_toBottomOf="@id/biaya_pencarian"
                         app:text_field_append_text="@string/topads_common_per_click"
+                        app:text_field_message="Rekommendasi Rp400"
                         app:text_field_input_type="number"
+                        app:text_field_placeholder="false"
+                        app:text_field_prepend_text="Rp"
+                        tools:layout_height="100dp" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/biaya_rekomendasi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        android:text="@string/topads_group_detail_budget_rekomendasi"
+                        android:visibility="gone"
+                        android:textColor="@color/topads_clr_7031353b"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtInfo"
+                        app:typographyType="body_3" />
+
+
+                    <com.tokopedia.unifycomponents.TextFieldUnify
+                        android:id="@+id/budgetRekomendasi"
+                        android:layout_width="@dimen/dp_160"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_16"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/biaya_rekomendasi"
+                        app:text_field_append_text="@string/topads_common_per_click"
+                        app:text_field_message="Rekommendasi Rp400"
+                        app:text_field_input_type="number"
+                        android:visibility="gone"
                         app:text_field_placeholder="false"
                         app:text_field_prepend_text="Rp"
                         tools:layout_height="100dp" />

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.data.raw
 
-const val STATS_URL = """query topadsDashboardStatistics (${'$'}startDate: String!, ${'$'}endDate: String!,${'$'}shopID: Int!,${'$'}type:Int,${'$'}group:String){
-    topadsDashboardStatistics(startDate:${'$'}startDate,endDate:${'$'}endDate,shopID:${'$'}shopID,type:${'$'}type,group:${'$'}group){
+const val STATS_URL = """query topadsDashboardStatisticsV2 (${'$'}startDate: String!, ${'$'}endDate: String!,${'$'}shopID: String!,${'$'}type:Int,${'$'}group:String, ${'$'}goal_id: Int!){
+    topadsDashboardStatisticsV2(startDate:${'$'}startDate,endDate:${'$'}endDate,shopID:${'$'}shopID,type:${'$'}type,group:${'$'}group,goal_id:${'$'}goal_id){
     data{
       summary {
         ads_impression_sum

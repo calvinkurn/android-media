@@ -23,7 +23,6 @@ import javax.inject.Inject
 class TopAdsGetStatisticsUseCase @Inject
 constructor() : RestRequestUseCase() {
 
-
     var query = ""
 
     fun setQueryString(queryString: String) {
@@ -45,10 +44,11 @@ constructor() : RestRequestUseCase() {
 
 
     fun createRequestParams(startDate: Date, endDate: Date,
-                            @TopAdsStatisticsType type: Int, shopId: String, groupId: String?): RequestParams {
+                            @TopAdsStatisticsType type: Int, shopId: String, groupId: String?, goalId: Int = 0): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putInt("shopID", shopId.toInt())
-        requestParams.putString(GROUP, groupId)
+        requestParams.putString("shopID", "480282")
+        requestParams.putString(GROUP, "896345")
+        requestParams.putInt("goal_id", goalId)
         requestParams.putInt(TopAdsDashboardConstant.PARAM_TYPE, type)
         requestParams.putObject(TopAdsDashboardConstant.PARAM_START_DATE,
                 SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate))
