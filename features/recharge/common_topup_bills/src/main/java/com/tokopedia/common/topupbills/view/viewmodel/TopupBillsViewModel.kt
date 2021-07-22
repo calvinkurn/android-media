@@ -306,7 +306,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
         return mapOf(
             FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
-                FAVORITE_NUMBER_PARAM_SOURCE to "",
+                FAVORITE_NUMBER_PARAM_SOURCE to FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP,
                 FAVORITE_NUMBER_PARAM_CATEGORY_IDS to categoryIds,
                 FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION to "",
                 FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION to "",
@@ -402,7 +402,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
         const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
         const val FAVORITE_NUMBER_PARAM_SOURCE = "source"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP = "PDP"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_VALUE_PDP = "pdp_favorite_list"
         const val FAVORITE_NUMBER_PARAM_CATEGORY_IDS = "category_ids"
         const val FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION = "min_last_transaction"
         const val FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION = "min_total_transaction"

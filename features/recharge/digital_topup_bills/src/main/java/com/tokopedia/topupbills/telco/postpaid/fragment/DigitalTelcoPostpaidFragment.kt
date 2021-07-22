@@ -496,7 +496,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
-        // TODO: [Misael] check di postpaid set nomor n contact name dmn
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
     }
