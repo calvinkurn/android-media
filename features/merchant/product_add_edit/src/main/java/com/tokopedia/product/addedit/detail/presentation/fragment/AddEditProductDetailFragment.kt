@@ -63,7 +63,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -294,7 +293,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, viewModel.productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -319,7 +318,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        setupProductNameValidationBottomsheet()
+        if (RollenceUtil.getProductTitleRollence()) {
+            viewModel.usingNewProductTitleRequest = true
+            setupProductNameValidationBottomsheet()
+        }
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
@@ -831,16 +833,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product photo validation
         productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
-
-        // product name validation
-        val productNameInput = productNameField?.getEditableValue().toString()
-        viewModel.validateProductNameInput(productNameInput)
-        viewModel.isProductNameInputError.value?.run {
-            if (this && !requestedFocus) {
-                productNameField?.requestFocus()
-                requestedFocus = true
-            }
-        }
 
         // product price validation
         val productPriceInput = productPriceField?.getEditableValue().toString().replace(".", "")
@@ -1444,11 +1436,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
                     productSpecificationTextView?.show()
+                    addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     viewModel.updateSpecificationByAnnotationCategory(result.data)
                 }
                 is Fail -> {
+                    productSpecificationLayout?.show()
                     productSpecificationTextView?.hide()
+                    addProductSpecificationButton?.hide()
                     productSpecificationReloadLayout?.show()
                 }
             }
@@ -1558,8 +1553,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val adapter = productPhotoAdapter ?: return@OnClickListener
 
             // show error message when maximum product image is reached
-            val productPhotoSize = adapter.getProductPhotoPaths().size
-            if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+            val productPhotoCount = adapter.getProductPhotoPaths().size
+            if (productPhotoCount == viewModel.getMaxProductPhotos()) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
             else {
                 val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                     val pictureList = viewModel.productInputModel.detailInputModel.pictureList
@@ -1577,6 +1572,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val ctx = context ?: return
         val isEditing = viewModel.isEditing
         val isAdding = viewModel.isAdding || !isEditing
+        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
         // tracking
         if (isEditing) {
@@ -1584,7 +1580,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         } else {
             ProductAddMainTracking.trackAddPhoto(shopId)
         }
-        val intent = ImagePickerAddEditNavigation.getIntent(ctx,ArrayList(imageUrlOrPathList), isAdding)
+        val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), maxProductPhotoCount, isAdding)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
@@ -1630,14 +1626,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun getAnnotationCategory() {
-        val productId = viewModel.productInputModel.productId
-
-        productSpecificationLayout?.gone()
-        viewModel.getAnnotationCategory(productCategoryId, if (productId > 0) {
-            productId.toString()
+        val productId = if (viewModel.productInputModel.productId > 0) {
+            viewModel.productInputModel.productId.toString()
         } else {
             ""
-        })
+        }
+
+        productSpecificationLayout?.gone()
+        if (productCategoryId.isNotEmpty()) {
+            viewModel.getAnnotationCategory(productCategoryId, productId)
+        }
     }
 
     private fun showSpecificationPicker(){

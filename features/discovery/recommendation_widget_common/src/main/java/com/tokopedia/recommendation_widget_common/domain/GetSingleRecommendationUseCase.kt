@@ -18,6 +18,7 @@ import javax.inject.Inject
  * Created by Lukas on 05/09/19
  */
 
+@Deprecated(message = "please use GetSingleRecommendationUseCase from coroutine folder instead")
 open class GetSingleRecommendationUseCase @Inject
 constructor(
         private val context: Context,

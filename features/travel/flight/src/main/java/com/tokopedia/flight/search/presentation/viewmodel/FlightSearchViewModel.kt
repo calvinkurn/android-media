@@ -12,6 +12,7 @@ import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.promo_chips.data.FlightLowestPriceQuery
 import com.tokopedia.flight.promo_chips.data.model.AirlinePrice
@@ -249,11 +250,11 @@ class FlightSearchViewModel @Inject constructor(
         if (selectedId.isEmpty()) {
             if (adapterPosition == -1) {
                 flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
-                        FlightAnalytics.Screen.SEARCH,
+                        FlightAnalyticsScreenName.SEARCH,
                         if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             } else {
                 flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
-                        adapterPosition, FlightAnalytics.Screen.SEARCH,
+                        adapterPosition, FlightAnalyticsScreenName.SEARCH,
                         if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             }
             journeyModel?.let {
@@ -280,8 +281,8 @@ class FlightSearchViewModel @Inject constructor(
             if (it >= MAX_PROGRESS && !isSearchImpressionSent) {
                 journeyList.value?.let { journeyResult ->
                     if (journeyResult is Success) {
-                        flightAnalytics.eventProductViewV2EnchanceEcommerce(flightSearchPassData, journeyResult.data,
-                                FlightAnalytics.Screen.SEARCH,
+                        flightAnalytics.eventProductViewV2EnhanceEcommerce(flightSearchPassData, journeyResult.data,
+                                FlightAnalyticsScreenName.SEARCH,
                                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
                         isSearchImpressionSent = true
                     }
@@ -490,8 +491,8 @@ class FlightSearchViewModel @Inject constructor(
     }
 
     fun onPromotionChipsClicked(position: Int, airlinePrice: AirlinePrice, isReturnTrip: Boolean) {
-        flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice,flightSearchPassData,
-                FlightAnalytics.Screen.SEARCH,
+        flightAnalytics.eventFlightPromotionClick(position + 1, airlinePrice, flightSearchPassData,
+                FlightAnalyticsScreenName.SEARCH,
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "", isReturnTrip)
     }
 

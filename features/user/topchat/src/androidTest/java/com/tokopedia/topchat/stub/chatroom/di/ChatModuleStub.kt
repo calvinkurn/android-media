@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.di.ChatScope
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.common.chat.api.ChatApi
@@ -132,8 +133,11 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideRxWebSocketUtilStub(): RxWebSocketUtilStub {
-        return RxWebSocketUtilStub()
+    fun provideRxWebSocketUtilStub(
+        mapper: TopChatRoomGetExistingChatMapper,
+        session: UserSessionInterface,
+    ): RxWebSocketUtilStub {
+        return RxWebSocketUtilStub(mapper, session)
     }
 
     @ChatScope
@@ -190,13 +194,6 @@ class ChatModuleStub {
     @Provides
     fun provideMessageRepository(messageFactory: MessageFactory): MessageRepository {
         return MessageRepositoryImpl(messageFactory)
-    }
-
-    @ChatScope
-    @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@TopchatContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
     @ChatScope

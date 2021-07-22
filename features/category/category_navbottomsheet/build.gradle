@@ -7,6 +7,7 @@ repositories {
 }
 buildscript {
     repositories {
+        google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
@@ -19,25 +20,25 @@ buildscript {
 
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.filter)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation project(rootProject.ext.features.basemvvm)
+    implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.miscDependencies.loaderviewlibrary

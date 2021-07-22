@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_image"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            app:layout_constraintBottom_toBottomOf="@id/follow_count"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shop_name"
+            app:unify_image_type="circle"
+            tools:srcCompat="@drawable/ic_affiliate_video" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_badge"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/follow_count"
+            app:layout_constraintStart_toEndOf="@id/shop_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/shop_name"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:textColor="@color/Unify_N700"
+            app:layout_constraintBottom_toBottomOf="@id/shop_badge"
+            app:layout_constraintEnd_toStartOf="@id/menu_button"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/shop_badge"
+            app:layout_constraintTop_toTopOf="@id/shop_badge"
+            app:typographyType="heading_6"
+            tools:text="Fellow Official" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/follow_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:text="@string/kol_action_follow"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintStart_toEndOf="@id/shop_image"
+            app:layout_constraintTop_toBottomOf="@id/shop_name"
+            app:typographyType="small" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/menu_button"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:icon_name="MENU_KEBAB_HORIZONTAL"
+            app:layout_constraintBottom_toBottomOf="@id/shop_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shop_image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gridList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_grid"
+        tools:spanCount="@integer/int_3" />
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/feed_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gridList" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/like_button"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:icon_name="THUMB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feed_carousel" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/comment_button"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:icon_name="CHAT"
+        app:layout_constraintBottom_toBottomOf="@id/like_button"
+        app:layout_constraintStart_toEndOf="@id/like_button"
+        app:layout_constraintTop_toTopOf="@id/like_button" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/page_indicator"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:gravity="center"
+        app:indicator_type="CIRCLE"
+        app:layout_constraintBottom_toBottomOf="@id/comment_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/comment_button" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/share_button"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/dp_16"
+        app:icon_name="SHARE_MOBILE"
+        app:layout_constraintBottom_toBottomOf="@id/like_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/like_button" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/liked_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/like_button"
+        app:typographyType="body_3"
+        tools:text="Disukai oleh iggregory, baseus, dan 1.710 lainnya" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/caption_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/liked_text"
+        app:typographyType="body_3"
+        tools:text="      Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/timestamp_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_32"
+        android:textSize="@dimen/unify_font_10"
+        app:layout_constraintStart_toStartOf="@id/caption_text"
+        app:layout_constraintTop_toBottomOf="@id/caption_text"
+        tools:text="17 Oktober 2020" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/see_all_comment_text"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/timestamp_text"
+        app:layout_constraintTop_toBottomOf="@id/timestamp_text"
+        app:typographyType="body_3"
+        tools:text="Lihat semua 4 komentar"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/comment_user_image1"
+        android:layout_width="@dimen/feed_component_dp_14"
+        android:layout_height="@dimen/feed_component_dp_14"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/comment_text1"
+        app:layout_constraintEnd_toStartOf="@id/comment_text1"
+        app:layout_constraintStart_toStartOf="@id/user_image"
+        app:layout_constraintTop_toTopOf="@id/comment_text1"
+        app:unify_image_type="circle"
+        tools:srcCompat="@drawable/ic_affiliate_video"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/comment_text1"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:maxLines="@integer/feed_component_int_3"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/like_button1"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/comment_user_image1"
+        app:layout_constraintTop_toBottomOf="@id/timestamp_text"
+        app:typographyType="body_3"
+        tools:text="Lisabel New stuff for my car... super like!!"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/like_button1"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:icon_name="THUMB"
+        app:layout_constraintBottom_toBottomOf="@id/comment_text1"
+        app:layout_constraintEnd_toEndOf="@id/menu_button"
+        app:layout_constraintStart_toEndOf="@id/comment_text1"
+        app:layout_constraintTop_toTopOf="@id/comment_text1"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/comment_user_image2"
+        android:layout_width="@dimen/feed_component_dp_14"
+        android:layout_height="@dimen/feed_component_dp_14"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/comment_text2"
+        app:layout_constraintEnd_toStartOf="@id/comment_text2"
+        app:layout_constraintStart_toStartOf="@id/user_image"
+        app:layout_constraintTop_toTopOf="@id/comment_text2"
+        app:unify_image_type="circle"
+        tools:srcCompat="@drawable/ic_affiliate_video"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/comment_text2"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:maxLines="@integer/feed_component_int_3"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/like_button2"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/comment_user_image2"
+        app:layout_constraintTop_toBottomOf="@id/comment_text1"
+        app:typographyType="body_3"
+        tools:text="Samsung Official Store Very cool item! I really like if you lauch a thoughtful product"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/like_button2"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:icon_name="THUMB"
+        app:layout_constraintBottom_toBottomOf="@id/comment_text2"
+        app:layout_constraintEnd_toEndOf="@id/like_button1"
+        app:layout_constraintStart_toEndOf="@id/comment_text2"
+        app:layout_constraintTop_toTopOf="@id/comment_text2"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/user_image"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/see_all_comment_text"
+        app:unify_image_type="circle"
+        tools:srcCompat="@drawable/ic_affiliate_video"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/comment_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:hint="@string/feed_component_add_comment"
+        android:textColor="@color/Unify_N200"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/user_image"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/user_image"
+        app:layout_constraintTop_toTopOf="@id/user_image"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+</merge>

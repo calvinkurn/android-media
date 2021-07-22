@@ -110,7 +110,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
             val secondCartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
-                originData?.cartId = 1
+                originData.cartId = 1
             }
 
             Given("success delete") {
@@ -137,7 +137,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
             val secondCartItemData = CartItemData().apply {
                 originData = CartItemData.OriginData()
-                originData?.cartId = 1
+                originData.cartId = 1
             }
 
             Given("success delete") {

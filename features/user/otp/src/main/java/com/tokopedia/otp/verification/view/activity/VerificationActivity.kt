@@ -13,6 +13,8 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -40,12 +42,20 @@ open class VerificationActivity : BaseOtpActivity() {
     var otpData = OtpData()
     private var isLoginRegisterFlow = false
 
-    override fun getNewFragment(): Fragment? = null
+    override fun getTagFragment(): String = TAG
+
+    override fun getNewFragment(): Fragment {
+        setupParams()
+        return createVerificationMethodFragment(createBundle())
+    }
+
+    protected open fun createVerificationMethodFragment(bundle: Bundle): Fragment {
+        return VerificationMethodFragment.createInstance(bundle)
+    }
 
     override fun setupFragment(savedInstance: Bundle?) {
         component.inject(this)
-        setupParams()
-        goToVerificationMethodPage()
+        super.setupFragment(savedInstance)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +77,7 @@ open class VerificationActivity : BaseOtpActivity() {
         }
     }
 
-    private fun setupParams() {
+    open fun setupParams() {
         if (isResetPin2FA || intent?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN) == true) {
             otpData.userId = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_USER_ID, "").toEmptyStringIfNull()
         } else {
@@ -86,7 +96,7 @@ open class VerificationActivity : BaseOtpActivity() {
                 ?: false
     }
 
-    private fun createBundle(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true): Bundle {
+    protected fun createBundle(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true): Bundle {
         val bundle = Bundle()
         bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
@@ -120,7 +130,7 @@ open class VerificationActivity : BaseOtpActivity() {
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }
 
-    private fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
+    open fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
         return when (modeListData.modeText) {
             OtpConstant.OtpMode.EMAIL -> {
                 EmailVerificationFragment.createInstance(bundle)
@@ -146,12 +156,12 @@ open class VerificationActivity : BaseOtpActivity() {
         }
     }
 
-    fun goToOnboardingMiscallPage(modeListData: ModeListData) {
+    open fun goToOnboardingMiscallPage(modeListData: ModeListData) {
         val fragment = OnboardingMiscallFragment.createInstance(createBundle(modeListData))
         doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
     }
 
-    fun goToMethodPageResetPin(otpData: OtpData) {
+    open fun goToMethodPageResetPin(otpData: OtpData) {
         isResetPin2FA = true
         val bundle = Bundle().apply {
             putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
@@ -161,10 +171,12 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     companion object {
+        val TAG = VerificationActivity::class.java.name
+
         private const val BACK_STACK_ROOT_TAG = "root_fragment"
 
         const val TAG_OTP_MODE = "otpMode"
-        private const val TAG_OTP_VALIDATOR = "otpValidator"
-        private const val TAG_OTP_MISCALL = "otpMiscall"
+        const val TAG_OTP_VALIDATOR = "otpValidator"
+        const val TAG_OTP_MISCALL = "otpMiscall"
     }
 }

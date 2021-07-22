@@ -172,13 +172,6 @@ class FeedPlusModule {
         return retrofit.create(TopAdsApi::class.java)
     }
 
-    @Provides
-    @FeedPlusScope
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-    }
-
     @FeedPlusScope
     @Provides
     fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {

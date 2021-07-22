@@ -23,12 +23,14 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
 
             val dateFilter = Pair("2021-01-04", "2021-04-15")
 
+            penaltyViewModel.shopPenaltyDetailMediator.observe( {lifecycle}) {}
+
             penaltyViewModel.setDateFilterData(dateFilter)
-            penaltyViewModel.getPenaltyDetailListNext()
 
             verifyGetShopPenaltyDetailUseCaseCaseCalled()
-            assertTrue(penaltyViewModel.shopPenaltyDetailData.value is Success)
-            assertNotNull(penaltyViewModel.shopPenaltyDetailData.value)
+            val actualResult = (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() as Success).data
+            assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() is Success)
+            assertNotNull(actualResult)
             assertEquals(dateFilter.first, penaltyViewModel.getStartDate())
             assertEquals(dateFilter.second, penaltyViewModel.getEndDate())
         }

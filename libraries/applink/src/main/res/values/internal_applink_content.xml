@@ -13,6 +13,8 @@
     <string name="path_video_detail" translatable="false">/video-detail/.*\</string>
     <string name="path_media_preview" translatable="false">/media-preview/.*\</string>
     <string name="path_comment" translatable="false">/comment/.*\</string>
+    <string name="path_comment_new" translatable="false">/comment-new/.*\</string>
+
 
     <string name="host_profile" translatable="false">people</string>
     <string name="path_profile_detail" translatable="false">/.*\</string>

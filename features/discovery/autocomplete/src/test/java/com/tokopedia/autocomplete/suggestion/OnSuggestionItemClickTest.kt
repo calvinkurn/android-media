@@ -96,11 +96,9 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickKeyword(expectedEventLabel)
+            suggestionView.trackEventClickKeyword(expectedEventLabel, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 
     @Test
@@ -123,11 +121,9 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode)
+            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 
     @Test
@@ -149,11 +145,9 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickShop(expectedEventLabel)
+            suggestionView.trackEventClickShop(expectedEventLabel, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
-
-        confirmVerified(suggestionView)
     }
 
     @Test
@@ -211,14 +205,94 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     }
 
     private fun `then verify view tracking click item recent keyword is correct`(item: BaseSuggestionDataView) {
-        val expectedEventLabel = item.title
+        verify {
+            suggestionView.showSuggestionResult(any())
+            suggestionView.trackEventClickRecentKeyword(item.title, item.dimension90)
+            suggestionView.onClickSuggestion(item.applink)
+        }
+    }
+
+    @Test
+    fun `test tracking click suggestion item tokonow keyword`() {
+        val searchParameter : Map<String, String> = mutableMapOf<String, String>().also {
+            it[SearchApiConst.Q] = keywordTypedByUser
+            it[SearchApiConst.NAVSOURCE] = "tokonow"
+        }
+        `Given presenter will return searchParameter`(searchParameter)
+        `given suggestion tracker use case capture request params`()
+        `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
+
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_KEYWORD)
+
+        `when suggestion item clicked`(item)
+        `then verify view tracking click item tokonow keyword is correct`(item)
+    }
+
+    private fun `then verify view tracking click item tokonow keyword is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+                "keyword: ${item.title} " + // in item type keyword, event label `keyword` is the item title
+                        "- value: $keywordTypedByUser " + // and event label `value` is the keyword typed by user
+                        "- po: ${item.position} " +
+                        "- page: ${item.applink}"
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickRecentKeyword(expectedEventLabel)
+            suggestionView.trackTokoNowEventClickKeyword(expectedEventLabel)
             suggestionView.onClickSuggestion(item.applink)
         }
+    }
 
-        confirmVerified(suggestionView)
+    @Test
+    fun `test tracking click suggestion item tokonow curated`() {
+        val searchParameter : Map<String, String> = mutableMapOf<String, String>().also {
+            it[SearchApiConst.Q] = keywordTypedByUser
+            it[SearchApiConst.NAVSOURCE] = "tokonow"
+        }
+        `given suggestion tracker use case capture request params`()
+        `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
+
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_CURATED)
+
+        `when suggestion item clicked`(item)
+        `then verify view tracking click item tokonow curated is correct`(item)
+    }
+
+    private fun `then verify view tracking click item tokonow curated is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+                "keyword: $keywordTypedByUser " +
+                        "- product: ${item.title} " +
+                        "- po: ${item.position} " +
+                        "- page: ${item.applink}"
+
+        verify {
+            suggestionView.showSuggestionResult(any())
+            suggestionView.trackTokoNowEventClickCurated(expectedEventLabel)
+            suggestionView.onClickSuggestion(item.applink)
+        }
+    }
+
+    @Test
+    fun `test tracking click suggestion item light`() {
+        `given suggestion tracker use case capture request params`()
+        `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
+
+        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_LIGHT)
+
+        `when suggestion item clicked`(item)
+        `then verify view tracking click item light is correct`(item)
+    }
+
+    private fun `then verify view tracking click item light is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+            "keyword: $keywordTypedByUser " +
+                    "- product: ${item.subtitle} " +
+                    "- po: ${item.position} " +
+                    "- page: ${item.applink}"
+
+        verify {
+            suggestionView.showSuggestionResult(any())
+            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+            suggestionView.onClickSuggestion(item.applink)
+        }
     }
 }

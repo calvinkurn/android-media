@@ -59,6 +59,7 @@ public class FeedAnalytics {
     private static final String CONTENT_FEED = "content feed";
     private static final String CONTENT_FEED_TIMELINE = "content feed timeline";
     private static final String CONTENT_FEED_TIMELINE_DETAIL = "content feed timeline - product detail";
+    private static final String CONTENT_FEED_TIMELINE_BOTTOM_SHEET = "content feed timeline - bottom sheet";
     //endregion
 
     private UserSessionInterface userSession;
@@ -560,18 +561,19 @@ public class FeedAnalytics {
         );
     }
 
-    public void eventDetailProductClick(ProductEcommerce product, int userId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
+    public void eventDetailProductClick(ProductEcommerce product, int userId, String shopId, String activityId) {
+        trackEnhancedEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, PRODUCT_CLICK,
-                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE_DETAIL,
-                        EVENT_ACTION, "click product",
-                        EVENT_LABEL, product.getProductId(),
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
+                        EVENT_ACTION, "click - product - asgc",
+                        EVENT_LABEL, activityId+" - "+shopId+" - "+product.getProductId(),
                         KEY_USER_ID, userId,
-                        KEY_USER_ID_MOD, userId % 50,
+                        KEY_BUSINESS_UNIT_EVENT, KEY_BUSINESS_UNIT,
+                        KEY_CURRENT_SITE_EVENT, KEY_CURRENT_SITE,
                         EVENT_ECOMMERCE, getProductEcommerceClick(
                                 product,
-                                "/feed detail - product list"
+                                "/feed - asgc detail"
                         )
                 )
         );
@@ -617,7 +619,7 @@ public class FeedAnalytics {
         productItem.put("id", product.getProductId());
         productItem.put("price", formatStringToInt(product.getProductPrice()));
         productItem.put("list", list);
-        productItem.put("position", product.getPosition());
+        productItem.put("position", product.getPosition() + 1);
 
         ArrayList<Object> products = new ArrayList<>();
         products.add(productItem);

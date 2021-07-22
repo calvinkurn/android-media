@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
@@ -45,6 +46,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
@@ -91,6 +94,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     private var textAreaFeedbackDetail: TextAreaUnify? = null
     private var buttonSend: UnifyButton? = null
     private var rvImageFeedback: RecyclerView? = null
+    private var tickerSellerFeedback: Ticker? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     private var isValidFeedbackPage = false
@@ -120,6 +124,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         textAreaFeedbackDetail = view.findViewById(R.id.textfield_feedback_detail)
         buttonSend = view.findViewById(R.id.button_send)
         rvImageFeedback = view.findViewById(R.id.rv_image_feedback)
+        tickerSellerFeedback = view.findViewById(R.id.ticker_seller_feedback)
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
             val showBottomUp = AnimationUtils.loadAnimation(activity, R.anim.show_bottom_up)
@@ -127,6 +132,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         }
 
         setupViewInteraction()
+        setupTicker()
         observeViewModel()
         checkPermission()
     }
@@ -190,7 +196,18 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
                 )
                 viewModel?.submitFeedback(sellerFeedback)
             }
+        }
+    }
 
+    private fun setupTicker() {
+        tickerSellerFeedback?.apply {
+            setHtmlDescription(getString(R.string.feedback_form_ticker_description))
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE)
+                }
+                override fun onDismiss() {}
+            })
         }
     }
 

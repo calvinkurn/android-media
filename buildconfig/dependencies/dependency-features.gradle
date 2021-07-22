@@ -20,6 +20,7 @@ ext {
             agerestriction                  : ":features:category:age_restriction",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
+            moneyIn                         : ":features:category:moneyin",
             basemvvm                        : ":features:category:basemvvm",
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
@@ -119,6 +120,7 @@ ext {
             editshipping                    : ":features:logistic:editshipping",
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
+            localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
             
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",
@@ -130,6 +132,7 @@ ext {
             productDetailCommon             : ":features:merchant:product_detail_common",
             variantCommon                   : ":features:merchant:variant_common",
             productDetail                   : ":features:merchant:product_detail",
+            atcVariant                      : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
@@ -143,6 +146,7 @@ ext {
             install_referral                : ":features:im:install_referral",
             moengageWrapper                 : ":features:im:moengage_wrapper",
 
+            tokopediaNow                    : ":features:tokopedianow",
 
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
@@ -213,6 +217,7 @@ ext {
             cart                            : ":features:transaction:cart",
             checkout                        : ":features:transaction:checkout",
             promoCheckoutMarketplace        : ":features:transaction:promo_checkout_marketplace",
+            minicart                        : ":features:transaction:minicart",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
@@ -220,6 +225,7 @@ ext {
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
+            buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
 
             pushNotificationCommon          : ":features:communication:push-notification-common",
 

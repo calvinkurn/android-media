@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.discovery.common.State
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -21,7 +20,6 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.TextHtmlUtils
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.note.NoteUtil
 import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent
 import com.tokopedia.shop.note.di.module.ShopNoteModule

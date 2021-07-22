@@ -31,6 +31,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
@@ -149,6 +150,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
+            } else {
+                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
@@ -288,7 +291,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                             _selectedAddressItem = newRecipientAddressModel
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
@@ -315,7 +319,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     context?.let {
                         context ->
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
-                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data), data.postalCode)
+                                data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
+                                data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString())
                     }
                     if (isFromCheckoutChangeAddress == true) {
                         val resultIntent = Intent().apply {
@@ -464,10 +469,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
         if (data == null) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+                intent.putExtra(KERO_TOKEN, token)
+                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            } else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                intent.putExtra(KERO_TOKEN, token)
+                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+            }
         } else {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
             val mapper = AddressModelMapper()
@@ -625,7 +637,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         context?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
                     addressDataModel.id.toString(), addressDataModel.cityId.toString(), addressDataModel.districtId.toString(),
-                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}", addressDataModel.postalCode)
+                    addressDataModel.latitude, addressDataModel.longitude, "${addressDataModel.addressName} ${addressDataModel.receiverName}",
+                    addressDataModel.postalCode, addressDataModel.shopId.toString(), addressDataModel.warehouseId.toString())
         }
 
         if (isLocalization == true) {

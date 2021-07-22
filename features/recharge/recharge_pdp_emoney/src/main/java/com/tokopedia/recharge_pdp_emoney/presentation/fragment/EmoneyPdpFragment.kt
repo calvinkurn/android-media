@@ -251,11 +251,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             var lastOffset = -1
             var lastIsCollapsed = false
 
-            override fun onOffsetChanged(p0: AppBarLayout?, verticalOffSet: Int) {
-                if (lastOffset == verticalOffSet) return
+            override fun onOffsetChanged(layoutAppBar: AppBarLayout?, verticalOffSet: Int) {
+                if (lastOffset == verticalOffSet || layoutAppBar == null) return
 
                 lastOffset = verticalOffSet
-                if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
+                if (abs(verticalOffSet) >= layoutAppBar.totalScrollRange && !lastIsCollapsed) {
                     //Collapsed
                     lastIsCollapsed = true
                     (activity as EmoneyPdpActivity).emoney_toolbar.isShowShadow = true
@@ -631,10 +631,16 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun showCoachMark(show: Boolean) {
-        if (show) {
-            coachMark.showCoachMark(coachMarks)
-        } else {
-            coachMark.hideCoachMark()
+        try {
+            if (coachMarks.isNotEmpty()) {
+                if (show) {
+                    coachMark.showCoachMark(coachMarks)
+                } else {
+                    coachMark.hideCoachMark()
+                }
+            }
+        } catch (e: Throwable) {
+            //do nothing. don't show coachmark.
         }
     }
 
