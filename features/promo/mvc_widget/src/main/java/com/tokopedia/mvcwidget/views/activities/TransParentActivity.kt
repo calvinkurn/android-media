@@ -9,11 +9,9 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.mvcwidget.MvcSource
-import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.Tracker
-import com.tokopedia.mvcwidget.setMargin
+import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.views.MvcDetailView
+import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -109,6 +107,9 @@ class TransParentActivity : BaseActivity() {
 
         bottomSheet.setOnDismissListener {
             if (isOnResume) {
+                if(childView?.isUserRegisteredAsMember == true){
+                    setResult(MvcView.RESULT_CODE_OK,BroadcastIntents.getJadiMemberIntent())
+                }
                 finish()
                 Tracker.closeMainBottomSheet(shopId, userSession.userId, mvcSource)
             }

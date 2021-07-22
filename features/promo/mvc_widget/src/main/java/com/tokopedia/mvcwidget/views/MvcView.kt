@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
@@ -17,6 +18,11 @@ import java.util.*
 * 2. isMainContainerSetFitsSystemWindows must be true if activity/fragment layout is setFitsSystemWindows(false) or setFitsSystemWindows = false
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
+    companion object{
+        const val REQUEST_CODE = 121
+        const val RESULT_CODE_OK = 1
+    }
+
     lateinit var imageChevron: AppCompatImageView
     lateinit var imageCouponBg: AppCompatImageView
     lateinit var mvcTextContainerFirst: MvcTextContainer
@@ -48,7 +54,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            context.startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+            if (context is AppCompatActivity){
+                (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+            }else{
+                (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+            }
             Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source)
         }
     }

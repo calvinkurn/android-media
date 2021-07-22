@@ -45,7 +45,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     fun checkToCancelTimer(){
         firstContainer.get()?.addOnAttachStateChangeListener(object :View.OnAttachStateChangeListener{
             override fun onViewAttachedToWindow(v: View?) {
-                //Do nothing
+                startTimer()
             }
 
             override fun onViewDetachedFromWindow(v: View?) {
@@ -75,6 +75,9 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     }
 
     fun startTimer(){
+        val START_DELAY = 3000L
+        val INTERVAL = START_DELAY
+
         if(timer == null){
             setDataIntoViews()
         }
@@ -86,7 +89,7 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
                     animateView()
                 }
             }
-        },3000L,3000L)
+        },START_DELAY,INTERVAL)
     }
 
     fun afterAnimationComplete(){
@@ -148,34 +151,5 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
                 animatorSet?.start()
             }
         }
-    }
-
-    fun slideUpFromMiddle(view: View, duration: Long = 600, completion: (() -> Unit)? = null) {
-        view.postDelayed({
-            view.animate()
-                .alpha(1f)
-                .setDuration(duration)
-                .translationY(-dpToPx(48))
-                .withEndAction {
-                    view.translationY = -view.translationY
-                    completion?.invoke()
-                }
-        }, 3000L)
-
-
-
-    }
-
-    fun slideUpFromBottom(view: View, duration: Long = 600, completion: (() -> Unit)? = null) {
-        view.postDelayed({
-            view.animate()
-                .alpha(1f)
-                .setDuration(duration)
-                .translationY(0f)
-                .withEndAction {
-                    completion?.invoke()
-                }
-        }, 3000L)
-
     }
 }

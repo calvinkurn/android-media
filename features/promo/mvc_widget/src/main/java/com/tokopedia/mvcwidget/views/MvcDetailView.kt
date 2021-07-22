@@ -1,6 +1,7 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
+import android.content.Intent
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -15,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
@@ -34,6 +36,8 @@ class MvcDetailView @JvmOverloads constructor(
     var globalError: GlobalError
     var addBottomMarginOnToast = false
     var userSession: UserSession? = null
+
+    var isUserRegisteredAsMember:Boolean?=null
 
     private val widgetImpression = WidgetImpression()
 
@@ -104,6 +108,7 @@ class MvcDetailView @JvmOverloads constructor(
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
                     handleMembershipRegistrationSuccess(it.data)
+                    performActionAfterUserIsRegisteredAsMember()
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     handleMembershipRegistrationError(it.error)
@@ -129,6 +134,11 @@ class MvcDetailView @JvmOverloads constructor(
         globalError.setActionClickListener {
             viewModel.getListData(shopId)
         }
+    }
+
+    private fun performActionAfterUserIsRegisteredAsMember(){
+        isUserRegisteredAsMember = true
+//        BroadcastIntents.broadcastJadiMember(context)
     }
 
     private fun toggleLoading(showLoading: Boolean) {
