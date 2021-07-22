@@ -8,37 +8,37 @@ import java.util.concurrent.TimeUnit
 
 class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
 
-    private val dataUsageLogging by lazy { SessionDataUsageLogger(
+    private val logger by lazy { SessionDataUsageLogger(
         sessionName = "ACTIVE_SESSION",
         dataUsageName = "DATA_USAGE",
         intervalSession = INTERVAL_SESSION
     ) }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        dataUsageLogging.openedPageCount++
-        dataUsageLogging.openedPageCountTotal++
-        dataUsageLogging.addJourney(activity)
+        logger.openedPageCount++
+        logger.openedPageCountTotal++
+        logger.addJourney(activity)
     }
 
     override fun onActivityStarted(activity: Activity) { // No-op
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (dataUsageLogging.returnFromOtherActivity) {
-            dataUsageLogging.addJourney(activity)
+        if (logger.returnFromOtherActivity) {
+            logger.addJourney(activity)
         }
-        if (dataUsageLogging.running) {
+        if (logger.running) {
             return
         }
-        dataUsageLogging.running = true
+        logger.running = true
         val connectionType = getConnectionType(activity)
         Thread {
-            dataUsageLogging.checkSession(activity.javaClass.simpleName, connectionType)
+            logger.checkSession(activity.javaClass.simpleName, connectionType)
         }.start()
     }
 
     override fun onActivityPaused(activity: Activity) { // No-op
-        dataUsageLogging.returnFromOtherActivity = true
+        logger.returnFromOtherActivity = true
     }
 
     override fun onActivityStopped(activity: Activity) { // No-op
