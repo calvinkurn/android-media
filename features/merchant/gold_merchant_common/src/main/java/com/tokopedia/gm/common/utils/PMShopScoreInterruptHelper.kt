@@ -21,6 +21,8 @@ import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.constant.PMTier
 import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager
+import com.tokopedia.gm.common.data.source.local.PMCommonPreferenceManager.Companion.KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE
+import com.tokopedia.gm.common.view.bottomsheet.EndGameInterruptBottomSheet
 import com.tokopedia.gm.common.view.bottomsheet.SimpleInterruptBottomSheet
 import com.tokopedia.gm.common.view.model.PowerMerchantInterruptUiModel
 import com.tokopedia.gm.common.view.worker.GetPMInterruptDataWorker
@@ -28,8 +30,10 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.Toaster
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created By @ilhamsuaib on 08/04/21
@@ -45,6 +49,9 @@ class PMShopScoreInterruptHelper @Inject constructor(
 
         private const val PARAM_OPEN = "open"
         private const val PARAM_HAS_CLICKED = "has_clicked"
+        private const val PATTERN_DATE_PERIOD = "yyyy-MM-dd"
+        private const val PATTERN_DATE_PERIOD_TEXT = "dd MMMM"
+
 
         private const val REQUEST_CODE = 403
         private const val SHOP_SCORE_THRESHOLD = 60
@@ -180,7 +187,7 @@ class PMShopScoreInterruptHelper @Inject constructor(
         when (data.periodType) {
             PeriodType.TRANSITION_PERIOD -> setupInterruptTransitionPeriod(context, data)
             PeriodType.COMMUNICATION_PERIOD -> setupInterruptCommunicationPeriod(context, data, fm)
-            PeriodType.END_GAME_PERIOD -> {}
+            PeriodType.END_GAME_PERIOD -> setupInterruptEndGamePeriod(context, data, fm)
         }
     }
 
@@ -193,9 +200,9 @@ class PMShopScoreInterruptHelper @Inject constructor(
     }
 
     private fun setupInterruptEndGamePeriod(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
-        if ((data.pmTier == PMTier.REGULAR || data.pmTier == PMTier.PRO) && !data.isOfficialStore) {
+        if ((data.pmTier == PMTier.REGULAR || data.pmTier == PMTier.PRO)) {
             if (data.pmStatus == PMStatusConst.IDLE && data.shopScore < SHOP_SCORE_THRESHOLD) {
-                showInterruptExistingSellerPMIdle(context, fm)
+                showInterruptExistingSellerPMIdle(context, data, fm)
             }
         }
     }
@@ -227,8 +234,33 @@ class PMShopScoreInterruptHelper @Inject constructor(
         bottomSheet.show(fm)
     }
 
-    private fun showInterruptExistingSellerPMIdle(context: Context, fm: FragmentManager) {
+    private fun showInterruptExistingSellerPMIdle(context: Context, data: PowerMerchantInterruptUiModel, fm: FragmentManager) {
+        val isPMPro = data.pmTier == PMTier.PRO
+        val endPeriodStartDate = DateFormatUtils.formatDate(PATTERN_DATE_PERIOD, PATTERN_DATE_PERIOD_TEXT, data.periodStartDate)
 
+        val titleEndGameInterrupt = context.getString(R.string.title_end_game_period_information_interrupt, endPeriodStartDate)
+        val titleCardEndGameInterrupt = if (isPMPro) {
+            context.getString(R.string.title_card_pm_end_game_bottom_sheet)
+        } else {
+            context.getString(R.string.title_card_pm_pro_end_game_bottom_sheet)
+        }
+        val descCardEndGameInterrupt = if (isPMPro) {
+            context.getString(R.string.desc_card_pm_end_game_bottom_sheet)
+        } else {
+            context.getString(R.string.desc_card_pm_pro_end_game_bottom_sheet)
+        }
+        val bottomSheet = EndGameInterruptBottomSheet.createInstance(titleEndGameInterrupt, titleCardEndGameInterrupt, descCardEndGameInterrupt)
+        val isHasOpenedInterruptEndGame = pmCommonPreferenceManager.getBoolean(KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE, false)
+
+        bottomSheet.setOnDismissListener {
+            if (!isHasOpenedInterruptEndGame) {
+                pmCommonPreferenceManager.putBoolean(KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE, true)
+            }
+        }
+
+        if (!isHasOpenedInterruptEndGame) {
+            bottomSheet.show(fm)
+        }
     }
 
     private fun setupInterruptTransitionPeriod(context: Context, data: PowerMerchantInterruptUiModel) {
