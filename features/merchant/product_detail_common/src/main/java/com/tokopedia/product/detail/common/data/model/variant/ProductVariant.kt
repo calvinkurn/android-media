@@ -1,106 +1,141 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
 import androidx.collection.ArrayMap
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ProductDetailVariantResponse(
-        @SerializedName("getProductVariant")
-        @Expose
-        val data: ProductVariant = ProductVariant()
-)
+/**
+ * Created by Yehezkiel on 04/05/21
+ */
 
 data class ProductVariant(
-
         @SerializedName("parentID")
-        @Expose
-        var parentId: Int = 0,
-
-        @SerializedName("defaultChild")
-        @Expose
-        var defaultChild: Int = 0,
-
+        val parentId: String = "",
+        @SerializedName("errorCode")
+        val errorCode: Int = 0,
         @SerializedName("sizeChart")
-        @Expose
-        var sizeChart: String = "",
-
-        @SerializedName("alwaysAvailable")
-        @Expose
-        var alwaysAvailable: Boolean? = null,
-
-        @SerializedName("stock")
-        @Expose
-        var stock: Int? = null,
-
-        @SerializedName("variant")
-        @Expose
-        var variant: List<Variant> = listOf(),
-
+        val sizeChart: String = "",
+        @SerializedName("defaultChild")
+        val defaultChild: String = "",
+        @SerializedName(value = "variants", alternate = ["variant"])
+        val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        @Expose
-        var children: List<Child> = listOf()
-) {
-    val hasChildren: Boolean
-        get() = with(children) { this.isNotEmpty() }
-
-    val hasVariant: Boolean
-        get() = with(variant) { this.isNotEmpty() }
-
-    val defaultChildString: String?
-        get() = if (defaultChild != null && defaultChild != 0) {
-            defaultChild.toString()
-        } else {
-            null
-        }
-
-    fun getVariant(selectedVariantId: String?): Child? {
-        if (selectedVariantId.isNullOrEmpty()) {
-            return null
-        }
-        if (hasChildren) {
-            for (child: Child in children) {
-                if (child.productId.toString().equals(selectedVariantId, false)) {
-                    return child
+        val children: List<VariantChild> = listOf()
+){
+        //Hitam,M
+        fun getVariantCombineIdentifier(): String {
+                val list = variants.mapIndexed { index, variant ->
+                        "${variants.getOrNull(index)?.options?.size ?: ""} ${variant.name}"
                 }
-            }
+                return list.joinToString()
         }
-        return null
-    }
 
-    fun getOptionListString(selectedVariantId: String?): List<String>? {
-        return getVariant(selectedVariantId)?.getOptionStringList(variant)
-    }
-
-    fun mapSelectedProductVariants(selectedVariantId: String?): ArrayMap<String, ArrayMap<String, String>>? {
-        val child = getChildProductVariant(selectedVariantId)
-        return child?.mapVariant(variant)
-    }
-
-    private fun getChildProductVariant(selectedVariantId: String?): Child? {
-        val variantId = selectedVariantId ?: defaultChildString
-        if (hasChildren) {
-            for (child: Child in children) {
-                if (child.productId.toString().equals(variantId, false)) {
-                    return child
+        fun getChildByOptionId(selectedIds: List<String>): VariantChild? {
+                var childResult: VariantChild? = null
+                for (it: VariantChild in children) {
+                        if (it.optionIds == selectedIds) {
+                                childResult = it
+                                break
+                        }
                 }
-            }
+                return childResult
         }
-        return null
-    }
 
+        /**
+         *  Pair(isParent, VariantChild)
+         *  if child is null means the product is parent, so we need to auto select
+         *  get first child buyable if parent, if all child not buyable, get te first child
+         */
+        fun autoSelectChildIfGivenIdIsParent(selectedVariantId: String?): Pair<Boolean, VariantChild?> {
+                val child = getChildByProductId(selectedVariantId)
+                val isParent = child == null
 
+                return isParent to (child ?: children.firstOrNull{ it.isBuyable } ?: children.firstOrNull())
+        }
+
+        fun getChildByProductId(selectedVariantId: String?): VariantChild? {
+                if (selectedVariantId.isNullOrEmpty()) {
+                        return null
+                }
+                if (hasChildren) {
+                        for (child: VariantChild in children) {
+                                if (child.productId.equals(selectedVariantId, false)) {
+                                        return child
+                                }
+                        }
+                }
+                return null
+        }
+
+        fun getVariantsIdentifier(): String {
+                return if (variants.any { it.name == null }) "" else variants.joinToString(" & ") { it.name.toString() }
+        }
+
+        fun isSelectedChildHasFlashSale(optionId: String): Boolean {
+                var isFlashSale = false
+                for (child: VariantChild in children) {
+                        if (optionId == child.optionIds.firstOrNull()) {
+                                if (child.isFlashSale && child.isBuyable) {
+                                        isFlashSale = true
+                                        break
+                                }
+                        }
+                }
+                return isFlashSale
+        }
+
+        fun getBuyableVariantCount(): Int {
+                return children.filter{ it.isBuyable }.count()
+        }
+
+        val totalStockChilds : Int
+                get() = children.sumOf {
+                        it.getVariantFinalStock()
+                }
+
+        val hasChildren: Boolean
+                get() = with(children) { this.isNotEmpty() }
+
+        val hasVariant: Boolean
+                get() = with(variants) { this.isNotEmpty() }
+
+        val defaultChildString: String?
+                get() = if (defaultChild.toLongOrNull() ?: 0L != 0L) {
+                        defaultChild
+                } else {
+                        null
+                }
+
+        fun autoSelectedOptionIds(): List<String> {
+                val listOfOptionAutoSelectedId = children.filter {
+                        it.isBuyable
+                }
+
+                //If there is only 1 child is available , then auto selected
+                return if (listOfOptionAutoSelectedId.size == 1) {
+                        listOfOptionAutoSelectedId.firstOrNull()?.optionIds ?: listOf()
+                } else {
+                        listOf()
+                }
+        }
+
+        fun getOptionListString(selectedVariantId: String?): List<String>? {
+                return getChildByProductId(selectedVariantId)?.getOptionStringList(variants)
+        }
+
+        fun mapSelectedProductVariants(selectedVariantId: String?): ArrayMap<String, ArrayMap<String, String>>? {
+                val child = getChildProductVariant(selectedVariantId)
+                return child?.mapVariant(variants)
+        }
+
+        private fun getChildProductVariant(selectedVariantId: String?): VariantChild? {
+                val variantId = selectedVariantId ?: defaultChildString
+                if (hasChildren) {
+                        for (child: VariantChild in children) {
+                                if (child.productId.equals(variantId, false)) {
+                                        return child
+                                }
+                        }
+                }
+                return null
+        }
 }
-
-data class Picture(
-
-        @SerializedName("url")
-        @Expose
-        var original: String? = null,
-        @SerializedName("url200")
-        @Expose
-        var thumbnail: String? = null,
-        @SerializedName("url100")
-        @Expose
-        var url100: String? = null
-
-)

@@ -268,7 +268,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private fun setViewListener() {
         binding.etSearchDistrictRecommendation.apply {
             isFocusableInTouchMode = true
-            requestFocus()
             setOnClickListener {
                 if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
             }
@@ -292,7 +291,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         binding.rvListDistrict.addOnScrollListener(mEndlessListener)
 
         binding.btnChooseZipcode.setOnClickListener {
-            if (binding.etKodepos.textFieldInput.text.toString().length < 4) {
+            if (binding.etKodepos.textFieldInput.text.toString().length < MIN_LENGTH_POSTAL_CODE) {
                 AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                 Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
@@ -340,7 +339,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
                     })
                 }, Emitter.BackpressureMode.NONE)
                 .filter { t -> t.isEmpty() || t.length > 2 }
-                .debounce(700, TimeUnit.MILLISECONDS)
+                .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
@@ -420,6 +419,9 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
         private const val SUCCESS = "success"
         private const val NOT_SUCCESS = "not success"
+
+        private const val MIN_LENGTH_POSTAL_CODE = 4
+        private const val DEBOUNCE: Long = 700
 
         @JvmStatic
         fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {

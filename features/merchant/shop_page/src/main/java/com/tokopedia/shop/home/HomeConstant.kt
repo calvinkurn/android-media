@@ -5,7 +5,6 @@ object HomeConstant {
 }
 
 object GqlQueryConstant {
-    const val GQL_ATC_MUTATION = "atcMutation"
     const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }
 

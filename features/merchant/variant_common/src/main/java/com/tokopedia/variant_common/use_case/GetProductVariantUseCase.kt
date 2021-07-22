@@ -8,8 +8,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.variant_common.model.GetProductVariantResponse
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -21,17 +21,17 @@ class GetProductVariantUseCase @Inject constructor(
         @Named(VariantConstant.QUERY_VARIANT) val rawQuery: String,
         private val userSessionInterface: UserSessionInterface,
         private val graphqlRepository: GraphqlRepository):
-        UseCase<ProductDetailVariantCommonResponse>() {
+        UseCase<GetProductVariantResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): ProductDetailVariantCommonResponse {
-        val gqlRequest = GraphqlRequest(rawQuery, ProductDetailVariantCommonResponse::class.java, params.parameters)
+    override suspend fun executeOnBackground(): GetProductVariantResponse {
+        val gqlRequest = GraphqlRequest(rawQuery, GetProductVariantResponse::class.java, params.parameters)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val error = gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)
+        val error = gqlResponse.getError(GetProductVariantResponse::class.java)
         if (error == null || error.isEmpty()) {
-            return (gqlResponse.getData(ProductDetailVariantCommonResponse::class.java) as ProductDetailVariantCommonResponse)
+            return (gqlResponse.getData(GetProductVariantResponse::class.java) as GetProductVariantResponse)
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
