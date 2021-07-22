@@ -22,8 +22,8 @@ class StatsInfoViewComponent(
     private val tvTotalView = findViewById<Typography>(com.tokopedia.play_common.R.id.tv_total_views)
     private val liveBadge = findViewById<View>(R.id.live_badge)
 
-    fun setTotalViews(totalView: PlayTotalViewUiModel) {
-        tvTotalView.text = totalView.totalViewFmt
+    fun setTotalViews(totalView: String) {
+        tvTotalView.text = totalView
     }
 
     fun setLiveBadgeVisibility(isLive: Boolean) {

@@ -62,6 +62,7 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
+import com.tokopedia.play.view.uimodel.state.PlayLikeUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.uimodel.state.ViewVisibility
 import com.tokopedia.play.view.viewcomponent.*
@@ -326,7 +327,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * Like View Component Listener
      */
     override fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean) {
-        doClickLike(shouldLike)
+//        doClickLike(shouldLike)
+        playViewModel.submitAction(ClickLikeAction)
     }
 
     /**
@@ -501,7 +503,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         handleVideoHorizontalTopBounds()
 
-        likeView.setEnabled(false)
+//        likeView.setEnabled(false)
         videoSettingsView.setFullscreen(orientation.isLandscape)
 
         if (orientation.isLandscape) setupLandscapeView()
@@ -575,8 +577,6 @@ class PlayUserInteractionFragment @Inject constructor(
         observeVideoProperty()
         observeChannelInfo()
         observeQuickReply()
-        observeLikeStatus()
-        observeTotalViews()
         observeNewChat()
         observeChatList()
         observePinnedMessage()
@@ -674,27 +674,6 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observeLikeStatus() {
-        playViewModel.observableLikeStatusInfo.observe(viewLifecycleOwner, object : Observer<PlayLikeStatusInfoUiModel> {
-            private var isFirstTime = true
-
-            override fun onChanged(it: PlayLikeStatusInfoUiModel) {
-                if (isFirstTime) likeView.setEnabled(true)
-
-                likeView.playLikeAnimation(it.isLiked, it.source == LikeSource.UserAction && !isFirstTime)
-                isFirstTime = false
-
-                likeView.setTotalLikes(it)
-            }
-        })
-    }
-
-    private fun observeTotalViews() {
-        playViewModel.observableTotalViews.observe(viewLifecycleOwner, DistinctObserver {
-            statsInfoView.setTotalViews(it)
-        })
-    }
-
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             chatListView?.showNewChat(it)
@@ -750,7 +729,6 @@ class PlayUserInteractionFragment @Inject constructor(
             toolbarViewOnStateChanged(bottomInsets = map)
             statsInfoViewOnStateChanged(bottomInsets = map)
             videoControlViewOnStateChanged(bottomInsets = map)
-            likeViewOnStateChanged(bottomInsets = map)
             sendChatViewOnStateChanged(bottomInsets = map)
             quickReplyViewOnStateChanged(bottomInsets = map)
             chatListViewOnStateChanged(bottomInsets = map)
@@ -834,9 +812,13 @@ class PlayUserInteractionFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
+                val prevState = cachedState.prevValue
+
                 renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
                 renderWinnerBadgeView(state.showWinnerBadge)
                 renderToolbarView(state.followStatus, state.partnerName)
+                renderLikeView(prevState?.like, state.like)
+                renderStatsInfoView(state.totalView)
             }
         }
     }
@@ -1008,12 +990,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doLikeUnlike(shouldLike: Boolean) {
         //Used to show mock like when user click like
-        playViewModel.changeLikeCount(shouldLike)
-
-        viewModel.doLikeUnlike(
-                likeParamInfo = playViewModel.likeParamInfo,
-                shouldLike = shouldLike
-        )
+//        playViewModel.changeLikeCount(shouldLike)
+//
+//        viewModel.doLikeUnlike(
+//                likeParamInfo = playViewModel.likeParamInfo,
+//                shouldLike = shouldLike
+//        )
 
         analytic.clickLike(shouldLike)
     }
@@ -1303,12 +1285,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else statsInfoView.hide()
     }
 
-    private fun likeViewOnStateChanged(
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
-    ) {
-        if (bottomInsets.isAnyShown) likeView.hide() else likeView.show()
-    }
-
     private fun sendChatViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
@@ -1406,7 +1382,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderWinnerBadgeView(
-            shouldShow: Boolean
+            shouldShow: Boolean,
     ) {
         if (shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
@@ -1414,10 +1390,32 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderToolbarView(
             followStatus: PlayPartnerFollowStatus,
-            partnerName: String
+            partnerName: String,
     ) {
         toolbarView.setFollowStatus(followStatus)
         toolbarView.setPartnerName(partnerName)
+    }
+
+    private fun renderLikeView(
+            prevState: PlayLikeUiState?,
+            likeState: PlayLikeUiState,
+    ) {
+        if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
+
+        if (prevState?.isLiked != likeState.isLiked) {
+            likeView.playLikeAnimation(likeState.isLiked, likeState.animate)
+        }
+
+        likeView.setTotalLikes(likeState.totalLike)
+
+        if (likeState.shouldShow) likeView.show()
+        else likeView.hide()
+    }
+
+    private fun renderStatsInfoView(
+            totalView: String,
+    ) {
+        statsInfoView.setTotalViews(totalView)
     }
     //endregion
 

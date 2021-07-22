@@ -22,6 +22,10 @@ data class PlayViewerNewUiState(
 
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         val status: PlayStatusType,
+
+        val like: PlayLikeUiState,
+
+        val totalView: String,
 )
 
 sealed class PlayInteractiveUiState {
@@ -45,6 +49,14 @@ sealed class PlayInteractiveUiState {
             @StringRes val info: Int,
     ) : PlayInteractiveUiState()
 }
+
+data class PlayLikeUiState(
+        val isLiked: Boolean,
+        val shouldShow: Boolean,
+        val canLike: Boolean,
+        val animate: Boolean,
+        val totalLike: String,
+)
 
 enum class ViewVisibility {
 

@@ -5,6 +5,9 @@ package com.tokopedia.play.view.uimodel.action
  */
 sealed class PlayViewerNewAction
 
+/**
+ * Interactive
+ */
 object InteractivePreStartFinishedAction : PlayViewerNewAction()
 object InteractiveOngoingFinishedAction : PlayViewerNewAction()
 
@@ -12,12 +15,20 @@ data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewA
 
 object InteractiveTapTapAction : PlayViewerNewAction()
 
+object ClickFollowInteractiveAction : PlayViewerNewAction()
+object ClickRetryInteractiveAction : PlayViewerNewAction()
+
 object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()
 
+/**
+ * Partner
+ */
 object ClickFollowAction : PlayViewerNewAction()
 object ClickPartnerNameAction : PlayViewerNewAction()
 
-object ClickFollowInteractiveAction : PlayViewerNewAction()
-object ClickRetryInteractiveAction : PlayViewerNewAction()
+/**
+ * Like
+ */
+object ClickLikeAction : PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

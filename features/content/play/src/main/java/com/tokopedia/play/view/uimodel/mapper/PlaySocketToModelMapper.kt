@@ -25,13 +25,8 @@ class PlaySocketToModelMapper @Inject constructor(
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
 ) {
 
-    fun mapTotalLike(input: TotalLike): PlayLikeStatusInfoUiModel {
-        return PlayLikeStatusInfoUiModel(
-                totalLike = input.totalLike,
-                totalLikeFormatted = input.totalLikeFormatted,
-                isLiked = false, /**Skip**/
-                source = LikeSource.Network
-        )
+    fun mapTotalLike(input: TotalLike): Pair<Long, String> {
+        return input.totalLike to input.totalLikeFormatted
     }
 
     fun mapTotalView(input: TotalView): String {

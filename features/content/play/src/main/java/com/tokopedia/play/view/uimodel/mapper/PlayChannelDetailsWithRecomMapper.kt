@@ -29,7 +29,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     channelInfo = mapChannelInfo(it.isLive, it.config),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam),
-                    totalViewInfo = mapTotalViewInfo(),
+                    channelReportInfo = mapChannelReportInfo(),
                     shareInfo = mapShareInfo(it.share, it.config.active, it.config.freezed),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
@@ -56,15 +56,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             status = PlayPartnerFollowStatus.Unknown,
     )
 
-    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel.Incomplete(
-            param = PlayLikeParamInfoUiModel(
-                    contentId = feedLikeParamResponse.contentId,
-                    contentType = feedLikeParamResponse.contentType,
-                    likeType = feedLikeParamResponse.likeType
-            )
+    private fun mapLikeInfo(feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam) = PlayLikeInfoUiModel(
+            contentId = feedLikeParamResponse.contentId,
+            contentType = feedLikeParamResponse.contentType,
+            likeType = feedLikeParamResponse.likeType,
+            status = PlayLikeStatus.Unknown,
+            source = LikeSource.Network,
     )
 
-    private fun mapTotalViewInfo() = PlayTotalViewUiModel.Incomplete
+    private fun mapChannelReportInfo() = PlayChannelReportUiModel()
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share, isActive: Boolean, isFreezed: Boolean): PlayShareInfoUiModel {
         val fullShareContent = try {
