@@ -322,30 +322,31 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun updateProductCard(item: MiniCartSimplifiedData, needToObserve: Boolean) {
-        val homeLayoutItemUiModel = homeLayoutItemList.first { it.layout is HomeProductRecomUiModel }
-        val productRecomUiModel = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
-        val recom = productRecomUiModel.recomWidget.copy()
-
-        // reset all product recom quantity to zero
-        recom.recommendationItemList.forEach { recommendationItem ->
-            recommendationItem.quantity = DEFAULT_QUANTITY
-        }
-        // replace product recom quantity with minicart quantity
-        item.miniCartItems.map { miniCartItem ->
+        val homeLayoutItemUiModel = homeLayoutItemList.firstOrNull { it.layout is HomeProductRecomUiModel }
+        val productRecomUiModel = homeLayoutItemUiModel?.layout as? HomeProductRecomUiModel
+        productRecomUiModel?.let { uiModel ->
+            val recom = uiModel.recomWidget.copy()
+            // reset all product recom quantity to zero
             recom.recommendationItemList.forEach { recommendationItem ->
-                if (recommendationItem.productId.toString() == miniCartItem.productId) {
-                    recommendationItem.quantity = miniCartItem.quantity
+                recommendationItem.quantity = DEFAULT_QUANTITY
+            }
+            // replace product recom quantity with minicart quantity
+            item.miniCartItems.map { miniCartItem ->
+                recom.recommendationItemList.forEach { recommendationItem ->
+                    if (recommendationItem.productId.toString() == miniCartItem.productId) {
+                        recommendationItem.quantity = miniCartItem.quantity
+                    }
                 }
             }
-        }
-        // update data on homeLayoutItemList
-        homeLayoutItemList.mapProductRecomData(productRecomUiModel, recom)
-        if (needToObserve) {
-            val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
-                state = TokoNowLayoutState.SHOW
-            )
-            _homeLayoutList.postValue(Success(data))
+            // update data on homeLayoutItemList
+            homeLayoutItemList.mapProductRecomData(uiModel, recom)
+            if (needToObserve) {
+                val data = HomeLayoutListUiModel(
+                    result = homeLayoutItemList,
+                    state = TokoNowLayoutState.SHOW
+                )
+                _homeLayoutList.postValue(Success(data))
+            }
         }
     }
 
