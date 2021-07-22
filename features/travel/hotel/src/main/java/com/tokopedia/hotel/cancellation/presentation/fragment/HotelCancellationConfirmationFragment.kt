@@ -169,11 +169,11 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
         return button
     }
 
-    fun showErrorView(e: Throwable?){
+    fun showErrorView(error: Throwable?){
         hideLoadingState()
         container_error.visible()
         context?.run {
-            ErrorHandlerHotel.getErrorUnify(this, e,
+            ErrorHandlerHotel.getErrorUnify(this, error,
                 { onErrorRetryClicked() }, global_error)
         }
     }

@@ -138,10 +138,10 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         }
     }
 
-    fun showErrorView(e: Throwable){
+    fun showErrorView(error: Throwable){
         container_error.visible()
         context?.run {
-            ErrorHandlerHotel.getErrorUnify(this, e, { onErrorRetryClicked() },  global_error)
+            ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error)
         }
     }
 

@@ -310,7 +310,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun showErrorView(e: Throwable) {
+    private fun showErrorView(error: Throwable) {
         if (!isHotelDetailSuccess || !isHotelReviewSuccess || !isRoomListSuccess) {
             stopTrace()
 
@@ -318,7 +318,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             container_error.visibility = View.VISIBLE
 
             context?.run {
-                ErrorHandlerHotel.getErrorUnify(this, e, { onErrorRetryClicked() },  global_error)
+                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error)
             }
         }
     }
