@@ -206,6 +206,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun setSearchView() {
         binding.searchPageInput.searchBarTextField.run {
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
+                }
+            }
+
             setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
             }

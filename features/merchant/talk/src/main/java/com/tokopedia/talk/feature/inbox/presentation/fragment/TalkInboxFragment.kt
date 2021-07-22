@@ -29,6 +29,7 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.R
@@ -597,14 +598,14 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun isNewView(): Boolean {
         return getAbTestPlatform()?.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun isNewNav(): Boolean {
         return getAbTestPlatform()?.getString(
-                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
     }
 
     private fun isSellerView(): Boolean {

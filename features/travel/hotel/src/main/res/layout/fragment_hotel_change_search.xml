@@ -15,13 +15,15 @@
         android:paddingRight="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl1">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/hotel_10dp"
             android:layout_marginRight="@dimen/hotel_10dp"
-            app:srcCompat="@drawable/ic_hotel_location" />
+            app:icon_name="LOCATION_FILLED"
+            app:icon_color_light_enable="@color/hotel_dms_icon_color"
+            app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
 
         <LinearLayout
             android:layout_width="match_parent"

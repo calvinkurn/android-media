@@ -9,6 +9,8 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
@@ -69,6 +71,11 @@ public class KolModule {
     @Provides
     public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    public GraphqlRepository provideGraphQlRepository() {
+       return  GraphqlInteractor.getInstance().getGraphqlRepository();
     }
 
     @KolScope
