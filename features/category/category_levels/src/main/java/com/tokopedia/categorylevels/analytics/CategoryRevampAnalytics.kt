@@ -25,6 +25,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     : BaseDiscoveryAnalytics(pageType, pagePath, pageIdentifier, campaignCode, sourceIdentifier, trackingQueue) {
 
     private var categoryPageIdentifier : String = pageIdentifier
+    private var categoryUrl : String? = null
 
     private fun changePageIdentifier(pageIdentifier: String){
         categoryPageIdentifier = pageIdentifier
@@ -280,6 +281,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
     override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {
         additionalInfo?.categoryData?.let {
+            categoryUrl = it[KEY_URL] ?: ""
             if(it[KEY_REDIRECTION_URL].isNullOrEmpty())
                 TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME, createOpenScreenEventMap(rootId = it[KEY_ROOT_ID], parent = it[KEY_PARENT], id = it[KEY_CATEGORY_ID_MAP], url = it[KEY_URL]))
             if(!it[KEY_CATEGORY_ID_MAP].isNullOrEmpty()){
@@ -392,7 +394,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             productItem[KEY_NAME] = item.name
             productItem[KEY_ID] = item.id
             productItem[KEY_POSITION] = position.toString()
-            productItem[LIST] = "/category - topads"
+            productItem[LIST] = "$categoryUrl - topads headline"
             productItem[PRICE] = CurrencyFormatHelper.convertRupiahToInt(item.priceFormat ?: "")
             productItem[KEY_VARIANT] = ""
             productItem[KEY_BRAND] = ""
@@ -404,7 +406,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         val eCommerce = mapOf(
                 CLICK to mapOf(
                         ACTION_FIELD to mapOf(
-                                LIST to "/category - topads"
+                                LIST to "$categoryUrl - topads headline"
                         ),
                         PRODUCTS to list
                 )
