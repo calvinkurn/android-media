@@ -3,6 +3,8 @@ package com.tokopedia.autocomplete.suggestion
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
+import com.tokopedia.autocomplete.suggestion.chips.SuggestionChipWidgetDataView
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionChildItem
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionTopShop
 import com.tokopedia.autocomplete.suggestion.doubleline.SuggestionDoubleLineDataDataView
@@ -75,4 +77,18 @@ internal fun Visitable<*>.shouldBeSuggestionSingleLineDataDataView() {
 
 internal fun Visitable<*>.shouldBeSuggestionTitleDataView() {
     shouldBeInstanceOf<SuggestionTitleDataView>()
+}
+
+internal fun Visitable<*>.shouldBeSuggestionChipWidgetDataView() {
+    shouldBeInstanceOf<SuggestionChipWidgetDataView>()
+}
+
+internal fun SuggestionChipWidgetDataView.assertSuggestionChipWidgetDataView(expectedList: List<SuggestionChildItem>) {
+    expectedList.forEachIndexed { index, expectedChildItem ->
+        childItems[index].template shouldBe expectedChildItem.template
+        childItems[index].type shouldBe expectedChildItem.type
+        childItems[index].applink shouldBe expectedChildItem.applink
+        childItems[index].url shouldBe expectedChildItem.url
+        childItems[index].title shouldBe expectedChildItem.title
+    }
 }
