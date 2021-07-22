@@ -1,8 +1,6 @@
 package com.tokopedia.play.util
 
 import android.net.Uri
-import android.util.Log
-import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.util.MimeTypes
