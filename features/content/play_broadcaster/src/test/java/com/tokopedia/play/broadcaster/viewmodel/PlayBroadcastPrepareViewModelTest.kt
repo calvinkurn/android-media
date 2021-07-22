@@ -167,6 +167,7 @@ class PlayBroadcastPrepareViewModelTest {
                 croppedCover = CoverSetupState.Cropped.Uploaded(null, mockk(relaxed = true), CoverSource.Camera),
                 state = SetupDataState.Uploaded
         ))
+        titleDataStore.setTitle("any title")
 
         coEvery { createLiveStreamChannelUseCase.executeOnBackground() } returns modelBuilder.buildCreateLiveStreamGetMedia()
 

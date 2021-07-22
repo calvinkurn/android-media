@@ -22,12 +22,16 @@ import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataVi
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopListener
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.iris.Iris
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
 
 class SuggestionFragment :
         BaseDaggerFragment(), SuggestionContract.View,
-        SuggestionClickListener, SuggestionTopShopListener {
+        SuggestionListener, SuggestionTopShopListener {
     private val SEARCH_PARAMETER = "SEARCH_PARAMETER"
     private val MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete"
 
@@ -41,6 +45,9 @@ class SuggestionFragment :
     private lateinit var adapter: SuggestionAdapter
 
     private var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
+
+    @Inject
+    lateinit var iris: Iris
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +73,10 @@ class SuggestionFragment :
             (activity?.application as BaseMainApplication).baseAppComponent
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_suggestion, container, false)
     }
 
@@ -137,6 +146,10 @@ class SuggestionFragment :
         presenter.onSuggestionItemClicked(item)
     }
 
+    override fun onItemImpressed(item: BaseSuggestionDataView) {
+        presenter.onSuggestionItemImpressed(item)
+    }
+
     override fun dropKeyBoard() {
         suggestionViewUpdateListener?.dropKeyboard()
     }
@@ -156,7 +169,7 @@ class SuggestionFragment :
         suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
-    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
         presenter.setSearchParameter(searchParameter)
     }
 
@@ -211,5 +224,26 @@ class SuggestionFragment :
     override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
         val productDataLayer = item.getProductLineAsObjectDataLayer()
         AutocompleteTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
+    }
+
+    override val chooseAddressData: LocalCacheModel
+        get() = context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
+
+    override fun trackTokoNowEventClickCurated(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowCurated(eventLabel)
+    }
+
+    override fun trackTokoNowEventClickKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowKeyword(eventLabel)
+    }
+
+    override fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String) {
+        AutocompleteTracking.eventImpressCurated(iris, label, campaignCode, pageSource)
     }
 }

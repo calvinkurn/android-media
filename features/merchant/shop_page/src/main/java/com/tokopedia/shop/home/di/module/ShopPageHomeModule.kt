@@ -15,7 +15,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.ShopPlayWidgetAnalyticListener
 import com.tokopedia.shop.common.di.ShopPageContext
-import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_OCC_MUTATION
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -34,13 +33,6 @@ import javax.inject.Named
 
 @Module(includes = [ShopPageHomeViewModelModule::class, PlayWidgetModule::class])
 class ShopPageHomeModule {
-
-    @ShopPageHomeScope
-    @Provides
-    @Named(GQL_ATC_MUTATION)
-    fun provideAddToCartMutation(@ShopPageContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
-    }
 
     @ShopPageHomeScope
     @Provides

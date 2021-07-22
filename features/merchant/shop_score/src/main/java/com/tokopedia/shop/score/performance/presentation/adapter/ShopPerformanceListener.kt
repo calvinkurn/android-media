@@ -17,6 +17,10 @@ interface ItemPotentialPMProListener {
     fun onGotoPMProPage()
 }
 
+interface ItemRegularMerchantListener {
+    fun onRMSectionToPMPage()
+}
+
 interface ItemPotentialRegularMerchantListener {
     fun onItemClickedBenefitPotentialRM()
     fun onImpressBenefitSeeAll()

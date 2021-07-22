@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="@+id/hotel_cancellation_policy_item_icon_normal"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/hotel_cancellation_policy_item_icon_normal"
         android:layout_width="@dimen/hotel_20dp"
         android:layout_height="@dimen/hotel_20dp"
@@ -26,10 +26,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_hotel_white_tick"
+        app:icon_name="CHECK_BIG"
         android:padding="@dimen/spacing_lvl2"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/hotel_cancellation_policy_item_icon_deactivate"
         android:layout_width="@dimen/hotel_20dp"
         android:layout_height="@dimen/hotel_20dp"
@@ -38,7 +38,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_hotel_white_tick"
+        app:icon_name="CHECK_BIG"
         android:padding="@dimen/spacing_lvl2"/>
 
     <LinearLayout

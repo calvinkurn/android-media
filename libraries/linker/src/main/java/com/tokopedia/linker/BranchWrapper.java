@@ -52,6 +52,7 @@ public class BranchWrapper implements WrapperInterface {
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
     private final String APP_BRANCH_CALLBACK_TIMEOUT_KEY = "android_branch_callback_timeout_key";
+    private final String APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING = "android_enable_branch_valid_campaign_logging";
     private android.os.Handler handler;
     private String KEY_BRANCH_IO_PREF_FILE_NAME = "branch_io_pref";
     private String KEY_APP_FIRST_OPEN = "app_first_open";
@@ -485,6 +486,7 @@ public class BranchWrapper implements WrapperInterface {
         String utmCampaign;
         String utmMedium;
         String utmTerm = null;
+        String clickTime;
         utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
         if (!TextUtils.isEmpty(utmSource)) {
             utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
@@ -495,10 +497,11 @@ public class BranchWrapper implements WrapperInterface {
             utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
         }
-        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm);
+        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
+        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
     }
 
-    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
+    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
             param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
@@ -510,6 +513,7 @@ public class BranchWrapper implements WrapperInterface {
             }
 
             sendCampaignToTrackApp(context, param);
+            logValidCampaignUtmParams(context, utmSource, utmMedium, utmCampaign, clickTime);
         }
     }
 
@@ -563,6 +567,12 @@ public class BranchWrapper implements WrapperInterface {
 
     }
 
+    private void logValidCampaignUtmParams(Context context, String utmSource, String utmMedium, String utmCampaign, String clickTime) {
+        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING)) {
+            new BranchHelperValidation().logValidCampaignData(utmSource, utmMedium, utmCampaign, clickTime, isFirstOpen(context), APP_OPEN_FROM_BRANCH_LINK);
+        }
+    }
+
     private void updateFirstOpenCache(Context context) {
         if (isFirstOpen(context)) {
             getLocalCacheHandler(context).putBoolean(KEY_APP_FIRST_OPEN, true);
@@ -585,10 +595,14 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private long getRemoteConfigTimeOutValue(Context context, String key){
+        return getRemoteConfig(context).getLong(key);
+    }
+
+    private RemoteConfig getRemoteConfig(Context context){
         if(remoteConfig == null){
             remoteConfig = new FirebaseRemoteConfigImpl(context);
         }
-        return remoteConfig.getLong(key);
+        return remoteConfig;
     }
 
     private void setBranchCallbackTimeOutFunction(ShareCallback shareCallback, LinkerData data, long timeoutDuration){

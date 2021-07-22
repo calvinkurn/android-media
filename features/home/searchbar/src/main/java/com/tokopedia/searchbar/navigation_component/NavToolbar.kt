@@ -243,7 +243,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if(shadowApplied){
             shadowApplied = false
             if (lineShadow) {
-                dividerUnify?.visibility = View.INVISIBLE
+                divider?.visibility = View.INVISIBLE
                 navToolbar?.background = ColorDrawable(getLightIconColor())
                 setBackgroundAlpha(0f)
                 navToolbar?.updatePadding(bottom = 0)
@@ -264,7 +264,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
             if (lineShadow) {
                 setBackgroundAlpha(225f)
-                dividerUnify?.visibility = View.VISIBLE
+                divider?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
@@ -577,7 +577,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun configureInitialFillBasedOnAttribute() {
         if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
             toolbarFillColor = getLightIconColor()
-            dividerUnify?.visibility = View.INVISIBLE
+            divider?.visibility = View.INVISIBLE
             navToolbar?.background = ColorDrawable(toolbarFillColor)
             setBackgroundAlpha(0f)
         } else {
@@ -645,7 +645,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(

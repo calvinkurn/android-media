@@ -12,6 +12,10 @@ class Filter(@SerializedName("title")
              @Expose
              var title: String = "",
 
+             @SerializedName("subTitle")
+             @Expose
+             var subTitle: String = "",
+
              @SerializedName("template_name")
              @Expose
              var templateName: String = "",
@@ -23,6 +27,22 @@ class Filter(@SerializedName("title")
              @SerializedName("options")
              @Expose
              var options: List<Option> = ArrayList()) : Parcelable {
+
+    fun clone(
+            title: String? = null,
+            subTitle: String? = null,
+            templateName: String? = null,
+            search: Search? = null,
+            options: List<Option>? = null,
+    ): Filter {
+        return Filter(
+                title = title ?: this.title,
+                subTitle = subTitle ?: this.subTitle,
+                templateName = templateName ?: this.templateName,
+                search = search ?: this.search,
+                options = options ?: this.options,
+        )
+    }
 
     val isSeparator: Boolean
         get() = TEMPLATE_NAME_SEPARATOR.equals(templateName)

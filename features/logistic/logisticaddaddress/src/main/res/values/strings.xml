@@ -159,8 +159,8 @@
 
     <string-array name="labelAlamatList">
         <item>Rumah</item>
-        <item>Kantor</item>
         <item>Apartemen</item>
+        <item>Kantor</item>
         <item>Kos</item>
     </string-array>
 
@@ -171,4 +171,50 @@
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
     <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
     <string name="contact_desc_coachmark">Jadi lebih mudah menambahkan nomor HP penerima pesanan!</string>
+
+    <!--Search Page-->
+    <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
+    <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
+    <string name="txt_location_not_detected">Lokasi tidak terdeteksi</string>
+    <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
+
+    <!--PinpointNew Page-->
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+    <string name="btn_choose_location">Pilih Lokasi &amp; Lanjut Isi Alamat</string>
+    <string name="btn_not_found_location">Tidak Ketemu? Isi Alamat Manual</string>
+    <string name="btn_ana_negative">Isi Alamat Manual</string>
+    <string name="btn_aktifkan_layanan_lokasi">Aktifkan Layanan Lokasi</string>
+    <string name="tv_location_unmacted">Nama lokasi tidak sesuai alamatmu?</string>
+    <string name="tv_location_unmacted_detail">Tenang, kamu akan isi alamat nanti. Pastikan pinpoint sudah sesuai dulu.</string>
+    <string name="txt_toaster_pinpoint_unmatched">Pastikan pinpoint sesuai kota &amp; kecamatan pilihanmu.</string>
+    <string name="out_of_indonesia_desc_new">Saat ini, Tokopedia belum melayani pengiriman ke luar Indonesia. Pilih ulang lokasimu, ya.</string>
+    <string name="undetected_location_new">Yaah, alamatmu tidak terdeteksi</string>
+    <string name="undetected_location_desc_new">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
+
+    <!--Address Form-->
+    <string name="title_address_form">Detail Alamat</string>
+    <string name="tv_pinpoint_not_defined">Kamu belum pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
+    <string name="tv_pinpoint_defined">Kamu Sudah pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp">%1$s, &lt;b&gt;%2$s,&lt;/b&gt; %3$s</string>
+    <string name="tv_error_field">Wajib diisi</string>
+    <string name="tv_title_nama_penerima_bottomsheet">Informasi nama penerima</string>
+    <string name="tv_desc_nama_penerima_bottomsheet">Nama penerima akan disimpan sebagai nama &lt;b&gt;akunmu.&lt;/b&gt; Kamu bisa ubah nanti melalui halaman &lt;b&gt;Akun Saya -> Pengaturan Akun.&lt;/b&gt;</string>
+    <string name="validate_no_ponsel_new">Min. 9 angka</string>
+    <string name="error_nama_penerima">Nama Penerima terlalu pendek, min. 2 karakter</string>
+    <string name="error_label_address">Label Alamat terlalu pendek, minimum 3 karakter</string>
+    <string name="error_alamat">Alamatmu terlalu pendek, min. 3 karakter</string>
+    <string name="btn_pilih">Pilih</string>
+    <string name="tv_info_lebih_lanjut">Info lebih lanjut</string>
+    <string name="cb_jadikan_alamat_utama">Jadikan alamat utama</string>
+    <string name="btn_simpan">Simpan</string>
+    <string name="helper_nama_penerima">Ini akan jadi nama akunmu, bisa diubah nanti.</string>
+
+    <string name="txt_kota_kecamatan">Kota &amp; Kecamatan</string>
+    <string name="txt_alamat_lengkap">Alamat Lengkap</string>
+
+    <string name="field_label_alamat">label alamat</string>
+    <string name="field_alamat">alamat lengkap</string>
+    <string name="field_nama_penerima">nama penerima</string>
+    <string name="field_nomor_hp">nomor hp</string>
+    <string name="field_catatan_kurir">catatan untuk kurir</string>
 </resources>

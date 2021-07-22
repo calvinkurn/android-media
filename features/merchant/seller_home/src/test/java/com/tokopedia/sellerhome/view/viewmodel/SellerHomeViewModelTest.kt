@@ -47,7 +47,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_BAR_CHART = "BAR_CHART"
         private const val DATA_KEY_MULTI_LINE = "MULTI_LINE"
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
-        private const val DATA_KEY_RECOMMENDATION = "MULTI_LINE"
+        private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
     }
 
     @RelaxedMockK
@@ -1571,7 +1571,7 @@ class SellerHomeViewModelTest {
 
         val announcementData = AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = false)
         val carouselData = CarouselDataUiModel(dataKey = DATA_KEY_CAROUSEL, showWidget = true)
-        val postData = PostListDataUiModel(dataKey = DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)
+        val postData = PostListDataUiModel(dataKey = DATA_KEY_POST_LIST, postPagers = listOf(PostListPagerUiModel()), showWidget = true)
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
@@ -1891,7 +1891,7 @@ class SellerHomeViewModelTest {
                         postFilter = listOf(WidgetFilterUiModel("", "", false)))
         )
 
-        val postData = PostListDataUiModel(DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)
+        val postData = PostListDataUiModel(DATA_KEY_POST_LIST, postPagers = listOf(PostListPagerUiModel()), showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
 

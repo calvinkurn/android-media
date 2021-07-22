@@ -418,7 +418,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun setupToolbarChatIcon(containAskSellerButton: Boolean) {
-        if (containAskSellerButton) {
+        val orderId = viewModel.getOrderId()
+        if (containAskSellerButton || orderId.isBlank() || orderId == "0") {
             toolbarBuyerOrderDetail?.apply {
                 rightContentView.removeAllViews()
                 rightIcons?.clear()
@@ -492,17 +493,19 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
             loadBuyerOrderDetail()
         }
-        bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleComplaintResult() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleResultRefreshOnly() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun stopLoadTimeMonitoring() {

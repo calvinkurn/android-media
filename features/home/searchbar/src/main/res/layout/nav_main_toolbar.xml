@@ -100,8 +100,8 @@
                 <EditText
                     android:enabled="false"
                     android:layout_gravity="center"
+                    app:typographyType="body_2"
                     android:id="@+id/et_search"
-                    android:contentDescription="@string/content_desc_et_search"
                     android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_width="0dp"
@@ -130,11 +130,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/dividerUnify"
+        <View
+            android:id="@+id/divider"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Unify_N200"/>
+            android:background="@color/Unify_NN50"/>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>
