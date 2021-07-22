@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.gm.common.R
@@ -256,6 +257,10 @@ class PMShopScoreInterruptHelper @Inject constructor(
             if (!isHasOpenedInterruptEndGame) {
                 pmCommonPreferenceManager.putBoolean(KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE, true)
             }
+        }
+
+        bottomSheet.clickGotoShopScore {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
         }
 
         if (!isHasOpenedInterruptEndGame) {

@@ -89,6 +89,7 @@ object ShopScoreConstant {
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
     const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
 
+    const val SELLER_EDU_PM_PRO_URL = "https://seller.tokopedia.com/edu/power-merchant-pro"
     const val SHOP_INFO_URL = "https://seller.tokopedia.com/edu/skor-toko"
     const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
 

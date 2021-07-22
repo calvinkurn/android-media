@@ -38,7 +38,7 @@ class EndGameInterruptBottomSheet: BaseBottomSheet() {
         tvStatusEndGameInterrupt?.text = MethodChecker.fromHtml(getString(R.string.status_end_game_period_information_interrupt))
     }
 
-    fun btnClickGotoShopScore(action:() -> Unit) {
+    fun clickGotoShopScore(action:() -> Unit) {
         btnCheckShopPerformance?.setOnClickListener {
             action()
             dismiss()

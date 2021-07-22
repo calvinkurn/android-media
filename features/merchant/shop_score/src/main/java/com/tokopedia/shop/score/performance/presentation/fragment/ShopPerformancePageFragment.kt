@@ -321,12 +321,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemPMPotentialPMProListener
      */
     override fun onGotoBenefitPMPro() {
-        val PM_EDU_URL = ""
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, PM_EDU_URL)
+            RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.SELLER_EDU_PM_PRO_URL)
         }
     }
-
 
     private fun setPageBackground() {
         try {
