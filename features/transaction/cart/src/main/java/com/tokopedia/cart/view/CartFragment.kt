@@ -3093,12 +3093,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allShopGroupDataList = cartAdapter.allShopGroupDataList
         if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
             allShopGroupDataList[0].let {
-                it.isCollapsed = false
                 it.isCollapsible = false
                 val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
                         ?: "")
                 if (index != RecyclerView.NO_POSITION) {
                     onNeedToUpdateViewItem(index)
+                }
+            }
+        }
+
+        if (allShopGroupDataList.size > 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
+            allShopGroupDataList[0].let {
+                if ((it.shopGroupAvailableData?.cartItemHolderDataList?.size ?: 0) == 1) {
+                    it.isCollapsible = false
+                    val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
+                            ?: "")
+                    if (index != RecyclerView.NO_POSITION) {
+                        onNeedToUpdateViewItem(index)
+                    }
                 }
             }
         }
