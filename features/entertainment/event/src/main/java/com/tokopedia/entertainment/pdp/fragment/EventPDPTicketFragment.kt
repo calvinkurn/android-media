@@ -237,7 +237,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
                 calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                     override fun onDateSelected(date: Date) {
                         activity?.txtDate?.text = DateFormatUtils.getFormattedDate(date.time, DateFormatUtils.FORMAT_D_MMMM_YYYY)
-                        selectedDate = (date.time / 1000L).toString()
+                        selectedDate = (date.time / DATE_MULTIPLICATION).toString()
                         bottomSheets.dismiss()
                         PACKAGES_ID = ""
                         AMOUNT_TICKET = EMPTY_QTY
@@ -396,7 +396,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         return DateFormatUtils.getFormattedDate(date, DATE_TICKET)
     }
 
-    private fun getTodayDates(): String = (Date().time / 1000L).toString()
+    private fun getTodayDates(): String = (Date().time / DATE_MULTIPLICATION).toString()
 
     override fun getSelectedDate(): String {
         return selectedDate
@@ -522,7 +522,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
 
         const val EMPTY_QTY = 0
         const val REQUEST_CODE_LOGIN = 100
-        const val DATE_MULTIPLICATION = 1000
+        const val DATE_MULTIPLICATION = 1000L
         const val DELAY_TIME = 200L
         const val IS_HIBURAN = 8192
         const val DATE_TICKET = "EEE, dd MMM yyyy"

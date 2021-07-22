@@ -257,13 +257,13 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
                 view.bottom_sheet_calendar.apply {
                     getActiveDate(productDetailData.dates).firstOrNull()?.let {
-                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData.dates))
+                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * DATE_LONG_VALUE), listHoliday, getActiveDate(productDetailData.dates))
                                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                     }
 
                     calendarPickerView?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
                         override fun onDateSelected(date: Date) {
-                            selectedDate = (date.time / 1000).toString()
+                            selectedDate = (date.time / DATE_LONG_VALUE).toString()
                             eventPDPTracking.onClickPickDate()
                             if (userSession.isLoggedIn) { goToTicketPage(productDetailData, selectedDate) }
                             else {
@@ -558,6 +558,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101
+
+        const val DATE_LONG_VALUE = 1000
 
         fun newInstance(urlPDP: String) = EventPDPFragment().also {
             it.arguments = Bundle().apply {

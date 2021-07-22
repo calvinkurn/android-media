@@ -21,7 +21,7 @@ class EventProductDetailUseCase @Inject constructor(private val useCase: MultiRe
         try {
             useCase.clearRequest()
             useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(if (fromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * TEN_MINUTES).build())
             val pdpRequest = GraphqlRequest(rawQueryPDP, EventProductDetailEntity::class.java, mapOf(URL_PDP to urlPdp))
             useCase.addRequest(pdpRequest)
 
@@ -44,5 +44,7 @@ class EventProductDetailUseCase @Inject constructor(private val useCase: MultiRe
     companion object {
         const val URL_PDP = "urlPDP"
         const val TYPE_VALUE = "typeValue"
+
+        const val TEN_MINUTES = 10
     }
 }

@@ -301,7 +301,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         tg_event_checkout_date.text = getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toInt())
         tg_event_checkout_name.text = pdp.displayName
         tg_event_checkout_packet.text = getPackage(pdp, packageID).name
-        iv_event_checkout_image.loadImageRounded(pdp.imageApp, 25f)
+        iv_event_checkout_image.loadImageRounded(pdp.imageApp, ROUND_VALUE)
     }
 
     private fun renderPassenger(pdp: ProductDetailData) {
@@ -605,6 +605,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
+
+        const val ROUND_VALUE = 25f
 
         const val EXTRA_DATA_PESSANGER = "EXTRA_DATA_PESSANGER"
         const val EXTRA_ADDITIONAL_DATA = "EXTRA_ADDITIONAL_DATA"
