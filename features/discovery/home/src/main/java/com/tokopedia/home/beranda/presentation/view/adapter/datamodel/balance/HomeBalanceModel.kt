@@ -112,18 +112,18 @@ data class HomeBalanceModel(
     fun mapErrorTokopoints() {
         when (balanceType) {
             TYPE_STATE_1 -> {
-                balanceDrawerItemModels[1] = getDefaultTokopointsErrorState()
-                balanceDrawerItemModels[2] = getDefaultCouponsRewardsErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultCouponsRewardsErrorState()
             }
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[1] = getDefaultBBOErrorState()
-                balanceDrawerItemModels[2] = getDefaultTokopointsErrorState()
-                balanceDrawerItemModels[3] = getDefaultCouponsRewardsErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultBBOErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_FOURTH] = getDefaultCouponsRewardsErrorState()
             }
             TYPE_STATE_3 -> {
-                balanceDrawerItemModels[0] = getDefaultTokopointsErrorState()
-                balanceDrawerItemModels[1] = getDefaultCouponsRewardsErrorState()
-                balanceDrawerItemModels[2] = getDefaultBBOErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] = getDefaultTokopointsErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_SECOND] = getDefaultCouponsRewardsErrorState()
+                balanceDrawerItemModels[BALANCE_POSITION_THIRD] = getDefaultBBOErrorState()
             }
         }
     }
@@ -131,11 +131,11 @@ data class HomeBalanceModel(
     fun mapErrorWallet(isWalletApp: Boolean) {
         when (balanceType) {
             TYPE_STATE_1 -> {
-                balanceDrawerItemModels[0] =
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] =
                     if (isWalletApp) getDefaultGopayErrorState() else getDefaultOvoErrorState()
             }
             TYPE_STATE_2 -> {
-                balanceDrawerItemModels[0] =
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST] =
                     if (isWalletApp) getDefaultGopayErrorState() else getDefaultOvoErrorState()
             }
         }

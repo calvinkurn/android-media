@@ -130,6 +130,10 @@ open class HomeRevampViewModel @Inject constructor(
         const val POSITION = "position"
 
         const val error_unable_to_parse_wallet = "Unable to parse wallet, wallet app list is empty"
+
+        private const val TOP_ADS_BANNER_DIMEN_ID = 3
+        private const val TOP_ADS_COUNT = 1
+        private const val TOP_ADS_HOME_SOURCE = "1"
     }
 
     val homeLiveData: LiveData<HomeDataModel>
@@ -1652,10 +1656,10 @@ open class HomeRevampViewModel @Inject constructor(
                 val results = topAdsImageViewUseCase.get().getImageData(
                         topAdsImageViewUseCase.get().getQueryMap(
                                 "",
-                                "1",
+                                TOP_ADS_HOME_SOURCE,
                                 "",
-                                1,
-                                3,
+                                TOP_ADS_COUNT,
+                                TOP_ADS_BANNER_DIMEN_ID,
                                 "")
                 )
                 if (results.isNotEmpty()) {
