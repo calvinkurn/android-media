@@ -1801,7 +1801,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun scrollToLastAddedProductShop() {
         val cartId: String = getCartId()
         if (cartId.isNotBlank()) {
-            val shopIndex = cartAdapter.getCartShopHolderDataAndIndexByCartId(cartId)
+            val shopIndex = cartAdapter.getCartShopHolderIndexByCartId(cartId)
             if (shopIndex != RecyclerView.NO_POSITION) {
                 binding?.rvCart?.smoothScrollToPosition(shopIndex)
             }
@@ -3088,6 +3088,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         } else {
             cartAdapter.removeAccordionDisabledItem()
+        }
+
+        val allShopGroupDataList = cartAdapter.allShopGroupDataList
+        if (allShopGroupDataList.size == 1 && allShopGroupDataList[0].shopGroupAvailableData?.isTokoNow == true) {
+            allShopGroupDataList[0].let {
+                it.isCollapsed = false
+                it.isCollapsible = false
+                val index = cartAdapter.getCartShopHolderIndexByCartString(it.shopGroupAvailableData?.cartString
+                        ?: "")
+                if (index != RecyclerView.NO_POSITION) {
+                    onNeedToUpdateViewItem(index)
+                }
+            }
         }
 
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
