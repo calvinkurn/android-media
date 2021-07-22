@@ -194,4 +194,8 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
 
         assert(viewModel.validateOrderResult.observeAwaitValue() is Fail)
     }
+
+    companion object {
+        const val DELAY_REQUEST_PICK_UP = 500L
+    }
 }

@@ -67,6 +67,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     private lateinit var somRefreshOrderJobField: Field
     private lateinit var somCanShowOrderDataField: Field
     private lateinit var retryRequestPickup: Field
+    private lateinit var retryRequestPickupUser: Field
 
     private val dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -92,6 +93,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             isAccessible = true
         }
         retryRequestPickup = viewModel::class.java.getDeclaredField("retryRequestPickup").apply {
+            isAccessible = true
+        }
+        retryRequestPickupUser = viewModel::class.java.getDeclaredField("retryRequestPickupUser").apply {
             isAccessible = true
         }
     }
@@ -472,7 +476,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Test
     fun bulkRequestPickup_shouldSuccess() = runBlocking {
         val orderIds = listOf("0234", "1456", "2678")
-        val DELAY_REQUEST_PICK_UP = 500L
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
@@ -483,7 +486,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         delay(DELAY_REQUEST_PICK_UP)
 
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
         }
 
@@ -520,8 +522,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -545,8 +548,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -571,8 +575,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -586,7 +591,8 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val batchId = "1234566"
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 5, jobId = batchId)
         val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 2, success = 3)
-        retryRequestPickup.set(viewModel, 10)
+        retryRequestPickup.set(viewModel, 11)
+        retryRequestPickupUser.set(viewModel, 0)
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
@@ -600,8 +606,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -610,7 +617,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun bulkRequestPickup_shouldPartialSuccessThereNotEligiblee() = runBlocking {
+    fun bulkRequestPickup_shouldPartialSuccessThereNotEligible() = runBlocking {
         val orderIds = listOf("0", "1", "2", "4", "5")
         val batchId = "1234566"
         val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
@@ -618,8 +625,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "166760347"))
         }
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 4, jobId = batchId)
-        val multiShippingStatusUiModel = MultiShippingStatusUiModel(success = 4)
-        retryRequestPickup.set(viewModel, 10)
+        val multiShippingStatusUiModel = MultiShippingStatusUiModel(success = 3, fail = 0)
+        retryRequestPickup.set(viewModel, 11)
+        retryRequestPickupUser.set(viewModel, 1)
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
@@ -633,8 +641,11 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
+        viewModel.bulkRequestPickupResult.observeAwaitValue()
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -653,6 +664,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 5, jobId = batchId)
         val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 2, success = 3)
         retryRequestPickup.set(viewModel, 11)
+        retryRequestPickupUser.set(viewModel, 0)
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
@@ -666,8 +678,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -686,6 +699,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 5, jobId = batchId)
         val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 5)
         retryRequestPickup.set(viewModel, 11)
+        retryRequestPickupUser.set(viewModel, 0)
 
         coEvery {
             bulkRequestPickupUseCase.executeOnBackground()
@@ -699,8 +713,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -728,8 +743,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
@@ -738,40 +754,10 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun bulkRequestPickup_shouldAllFailEligible() = runBlocking {
-        val orderIds = listOf("0", "1", "2", "5", "6", "7")
-        val batchId = "1234566"
-        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId, totalOnProcess = 6)
-        val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 6, total_order = 6, success = 0)
-        retryRequestPickup.set(viewModel, 11)
-
-        coEvery {
-            bulkRequestPickupUseCase.executeOnBackground()
-        } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, errors = emptyList(), status = null)
-
-        coEvery {
-            multiShippingStatusUseCase.executeOnBackground()
-        } returns multiShippingStatusUiModel
-
-        viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
-
-        viewModel.bulkRequestPickup(orderIds)
-
-        coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
-            bulkRequestPickupUseCase.executeOnBackground()
-            multiShippingStatusUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllFailEligible)
-    }
-
-    @Test
     fun bulkRequestPickup_shouldAllNotEligible() = runBlocking {
         val orderIds = listOf("0", "1", "2", "5", "6", "7")
         val batchId = "1234566"
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId)
-        val multiShippingStatusUiModel = MultiShippingStatusUiModel(fail = 0, success = 0)
         val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
             add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "0"))
             add(SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(orderId = "1"))
@@ -786,18 +772,14 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkRequestPickupUseCase.executeOnBackground()
         } returns SomListBulkRequestPickupUiModel(data = somListBulkRequestPickupUiModel, errors = failList)
 
-        coEvery {
-            multiShippingStatusUseCase.executeOnBackground()
-        } returns multiShippingStatusUiModel
-
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
-            multiShippingStatusUseCase.executeOnBackground()
         }
 
         assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllNotEligible)
@@ -823,8 +805,9 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickup(orderIds)
 
+        delay(DELAY_REQUEST_PICK_UP)
+
         coVerify {
-            bulkRequestPickupUseCase.setParams(orderIds)
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
