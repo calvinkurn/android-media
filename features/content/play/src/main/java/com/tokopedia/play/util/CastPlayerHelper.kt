@@ -1,6 +1,7 @@
 package com.tokopedia.play.util
 
 import android.net.Uri
+import android.util.Log
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
@@ -9,8 +10,10 @@ import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.cast.framework.CastState
 import com.google.android.gms.common.images.WebImage
 import com.tokopedia.play.di.PlayScope
+import com.tokopedia.play.view.uimodel.PlayCastState
 import javax.inject.Inject
 
 /**
@@ -71,6 +74,16 @@ class CastPlayerHelper @Inject constructor(
                 .setMetadata(movieMetadata).build()
 
         return MediaQueueItem.Builder(mediaInfo).build()
+    }
+
+    fun mapCastState(castState: Int): PlayCastState {
+        return when(castState) {
+            CastState.CONNECTING -> PlayCastState.CONNECTING
+            CastState.CONNECTED -> PlayCastState.CONNECTED
+            CastState.NOT_CONNECTED -> PlayCastState.NOT_CONNECTED
+            CastState.NO_DEVICES_AVAILABLE -> PlayCastState.NO_DEVICE_AVAILABLE
+            else -> PlayCastState.NO_DEVICE_AVAILABLE
+        }
     }
 
     companion object {
