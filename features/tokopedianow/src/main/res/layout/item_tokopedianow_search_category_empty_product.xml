@@ -65,16 +65,16 @@
         android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/tokonowEmptyProductFilterList"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tokonowEmptyProductChangeKeyword"
+        app:layout_constraintEnd_toStartOf="@id/tokonowEmptyProductExploreTokopediaNow"
         app:unifyButtonVariant="ghost"
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/tokonowEmptyProductChangeKeyword"
+        android:id="@+id/tokonowEmptyProductExploreTokopediaNow"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:text="@string/tokopedianow_change_keyword_button"
+        android:text="@string/tokopedianow_explore_tokopedia_now_button"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_4"
         android:foreground="?attr/selectableItemBackground"
