@@ -114,7 +114,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private var lastHorizontalTrackingPositionSent: Int = -1
 
     private var isViewFullMap: Boolean = false
-    private var isSucces: Boolean = false
 
     private lateinit var filterBottomSheet: HotelFilterBottomSheets
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -176,7 +175,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         hotelSearchMapViewModel.liveSearchResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    isSucces = true
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
                     if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
@@ -188,7 +186,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                     }
                 }
                 is Fail -> {
-                    isSucces = false
                     hideLoader()
                     hideCollapsingHeader()
                     hideSearchWithMap()
