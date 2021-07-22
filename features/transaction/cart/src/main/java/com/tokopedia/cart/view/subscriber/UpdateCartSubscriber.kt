@@ -103,14 +103,15 @@ class UpdateCartSubscriber(private val view: ICartListView?,
 
     private fun isCheckoutProductEligibleForCashOnDelivery(cartItemDataList: List<CartItemData>): Boolean {
         var totalAmount = 0.0
-        val maximalTotalAmountEligible = 1000000.0
         for (cartItemData in cartItemDataList) {
-            val itemPriceAmount = cartItemData.originData?.pricePlan?.times(cartItemData.updatedData?.quantity
-                    ?: 0) ?: 0.toDouble()
+            val itemPriceAmount = cartItemData.originData.pricePlan.times(cartItemData.updatedData.quantity)
             totalAmount += itemPriceAmount
-            if (cartItemData.originData?.isCod == false) return false
+            if (!cartItemData.originData.isCod) return false
         }
-        return totalAmount <= maximalTotalAmountEligible
+        return totalAmount <= MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD
     }
 
+    companion object {
+        const val MAX_TOTAL_AMOUNT_ELIGIBLE_FOR_COD = 1000000.0
+    }
 }
