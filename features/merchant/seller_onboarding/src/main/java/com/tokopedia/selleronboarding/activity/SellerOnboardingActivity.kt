@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.CompositePageTransformer
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -84,21 +85,18 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun setPreviousButtonVisibility() {
         val firstSlideIndex = 0
         val shouldShowButton = sobViewPager.currentItem != firstSlideIndex
-        btnSobPrev.isVisible = shouldShowButton
         if (shouldShowButton) {
             if (!btnSobPrev.isVisible) {
-                btnSobPrev.visible()
-                btnSobPrev.alpha = 0.0f
-                btnSobPrev.animate()
-                        .translationY(0f)
-                        .alpha(1.0f)
-                        .setDuration(500L)
-                        .setListener(null)
-                        .start()
+                val animation = AnimationUtils.loadAnimation(this, R.anim.anim_sob_popin)
+                btnSobPrev.startAnimation(animation)
             }
         } else {
-            btnSobPrev.gone()
+            if (btnSobPrev.isVisible) {
+                val animation = AnimationUtils.loadAnimation(this, R.anim.anim_sob_popout)
+                btnSobPrev.startAnimation(animation)
+            }
         }
+        btnSobPrev.isVisible = shouldShowButton
     }
 
     private fun setSlideIndicator(currentItem: Int) {
@@ -137,7 +135,7 @@ class SellerOnboardingActivity : BaseActivity() {
     }
 
     private fun setupSliderItems() {
-        val slides: List<Visitable<SobAdapterFactory>> = listOf(SobSliderHomeUiModel,
+        val slides: List<Visitable<SobAdapterFactory>> = listOf(SobSliderHomeUiModel(),
                 SobSliderMessageUiModel, SobSliderManageUiModel,
                 SobSliderPromoUiModel, SobSliderStatisticsUiModel)
 
