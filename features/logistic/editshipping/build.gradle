@@ -6,6 +6,12 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
+android {
+    viewBinding {
+        enabled true
+    }
+}
+
 buildscript {
     repositories {
         google()
