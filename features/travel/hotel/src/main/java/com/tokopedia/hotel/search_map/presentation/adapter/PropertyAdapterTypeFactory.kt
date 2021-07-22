@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.*
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.databinding.ItemPropertyHorizontalSearchShimmeringBinding
 import com.tokopedia.hotel.databinding.ItemPropertySearchResultBinding
 import com.tokopedia.hotel.databinding.ItemPropertySearchResultHorizontalBinding
+import com.tokopedia.hotel.databinding.PropertyHorizontalSearchShimmeringLoadingBinding
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search_map.data.model.HotelLoadingModel
@@ -43,7 +43,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
                 return HotelSearchMapItemViewHolder(binding)
             }
             HotelLoadingViewHolder.LAYOUT -> {
-                val binding = ItemPropertyHorizontalSearchShimmeringBinding.bind(parent)
+                val binding = PropertyHorizontalSearchShimmeringLoadingBinding.bind(parent)
                 return HotelLoadingViewHolder(binding)
             }
             else -> super.createViewHolder(parent, type)
