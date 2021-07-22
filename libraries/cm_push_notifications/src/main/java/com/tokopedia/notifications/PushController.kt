@@ -3,6 +3,7 @@ package com.tokopedia.notifications
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.GsonBuilder
@@ -189,7 +190,11 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun checkOtpPushNotif(applink: String?): Boolean {
-        return applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
+        return if (Build.VERSION.SDK_INT < 31) {
+            applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
+        } else {
+            false
+        }
     }
 
     private fun goToOtpPushNotifReceiver(applink: String?) {
