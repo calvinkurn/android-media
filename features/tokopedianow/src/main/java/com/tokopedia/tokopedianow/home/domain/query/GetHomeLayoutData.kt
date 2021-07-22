@@ -64,7 +64,9 @@ internal object GetHomeLayoutData {
                productViewCountFormatted
                isOutOfStock
                warehouseID
+               parentProductID
                minOrder
+               stock
                shop {
                  shopID
                }
