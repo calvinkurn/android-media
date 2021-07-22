@@ -421,7 +421,7 @@ private fun ProductCardModel.getButtonAddToCartSectionHeight(context: Context): 
 }
 
 private fun ProductCardModel.getQuantityEditorSectionHeight(context: Context): Int {
-    return if (shouldCartEditorComponent()) {
+    return if (shouldShowCartEditorComponent()) {
         val quantityEditorMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_quantity_editor_margin_top)
         val quantityEditorHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_quantity_editor_height)
 
