@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,11 +19,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
@@ -292,8 +293,13 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun updateItemCart(recomItem: RecommendationItem, quantity: Int) {
         val miniCartItem = miniCartSimplifiedData?.miniCartItems?.find { it.productId == recomItem.productId.toString() } ?: return
         miniCartItem.quantity = quantity
+        val updateCartRequest = UpdateCartRequest(
+            cartId = miniCartItem.cartId,
+            quantity = miniCartItem.quantity,
+            notes = miniCartItem.notes
+        )
         updateCartUseCase.setParams(
-            miniCartItemList = listOf(miniCartItem),
+            updateCartRequestList = listOf(updateCartRequest),
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
@@ -307,7 +313,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun removeItemCart(recomItem: RecommendationItem) {
         val miniCartItem = miniCartSimplifiedData?.miniCartItems?.find { it.productId == recomItem.productId.toString() } ?: return
         deleteCartUseCase.setParams(
-            miniCartItems = listOf(miniCartItem)
+            cartIdList = listOf(miniCartItem.cartId)
         )
         deleteCartUseCase.execute({
             _miniCartRemove.value = Success(miniCartItem.productId)
