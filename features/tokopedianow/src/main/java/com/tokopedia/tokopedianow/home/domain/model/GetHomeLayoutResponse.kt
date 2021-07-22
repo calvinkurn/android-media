@@ -111,8 +111,14 @@ data class Grid(
     @SerializedName("warehouseID")
     val warehouseId: String = "",
     @Expose
+    @SerializedName("parentProductID")
+    val parentProductId: String = "",
+    @Expose
     @SerializedName("minOrder")
     val minOrder: Int = 0,
+    @Expose
+    @SerializedName("stock")
+    val stock: Int = 0,
     @Expose
     @SerializedName("shop")
     val shop: Shop = Shop(),

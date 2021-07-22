@@ -186,6 +186,10 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
         )
     }
 
+    override fun sendDeleteCartTrackingEvent(productId: String) {
+
+    }
+
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
         CategoryTracking.sendChooseVariantClickEvent(getViewModel().categoryL1)
 

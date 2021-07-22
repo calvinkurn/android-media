@@ -428,6 +428,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
         getViewModel().routeApplinkLiveData.observe(this::routeApplink)
+        getViewModel().deleteCartTrackingLiveData.observe(this::sendDeleteCartTrackingEvent)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -708,6 +709,8 @@ abstract class BaseSearchCategoryFragment:
 
         RouteManager.route(context, applink)
     }
+
+    protected abstract fun sendDeleteCartTrackingEvent(productId: String)
 
     override fun onPause() {
         super.onPause()
