@@ -52,5 +52,8 @@ data class SuggestionItem(
         val discountPercentage: String = "",
 
         @SerializedName("original_price")
-        val originalPrice: String = ""
+        val originalPrice: String = "",
+
+        @SerializedName("child_items")
+        val suggestionChildItems: List<SuggestionChildItem> = listOf()
 )

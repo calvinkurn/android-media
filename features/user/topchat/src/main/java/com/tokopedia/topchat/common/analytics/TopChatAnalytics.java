@@ -137,7 +137,6 @@ public class TopChatAnalytics {
         public static final String CLICK_PRODUCT_IMAGE = "click on product thumbnail";
         public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
-        public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
         public static final String CLICK_ATC_PRODUCT_THUMBNAIL = "click atc on product thumbnail";
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL = "click buy on product thumbnail";
@@ -290,16 +289,6 @@ public class TopChatAnalytics {
                 String.valueOf(shopId)));
     }
 
-    //#AV4
-    public void eventVoucherCopyClicked(@NotNull String voucherCode) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                Name.CHAT_DETAIL,
-                Category.CHAT_DETAIL,
-                Action.CLICK_COPY_VOUCHER_THUMBNAIL,
-                voucherCode
-        );
-    }
-
     //#AV5
     public void eventVoucherThumbnailClicked() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -404,46 +393,6 @@ public class TopChatAnalytics {
                 BusinessUnit.Communication,
                 null,
                 additionalData
-        );
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListImpressionBundler.KEY, bundle
-        );
-    }
-
-    // #AP5
-    public void eventSeenProductAttachmentBeta(
-            Context context,
-            @NotNull ProductAttachmentViewModel product,
-            @NotNull UserSessionInterface user
-    ) {
-        String devConst = "-dev";
-
-        ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
-        ProductListImpressionProduct product1 = new ProductListImpressionProduct(
-                product.getIdString(),
-                product.getProductName(),
-                null,
-                product.getCategory(),
-                product.getVariants().toString(),
-                product.getPriceInt() + 0.0,
-                null,
-                PRODUCT_INDEX,
-                getFrom(product),
-                getFrom(product),
-                null,
-                null
-        );
-        products.add(product1);
-
-        Bundle bundle = ProductListImpressionBundler.getBundle(
-                getFrom(product),
-                products,
-                null,
-                ProductListImpressionBundler.KEY,
-                Category.CHAT_DETAIL + devConst,
-                Action.VIEW_PRODUCT_PREVIEW + devConst,
-                null,
-                null
         );
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 ProductListImpressionBundler.KEY, bundle

@@ -110,4 +110,14 @@ public interface ShipmentAdapterActionListener {
     void onSwapInUserAddress();
 
     FragmentManager getCurrentFragmentManager();
+
+    void scrollToPositionWithOffset(int position, float dy);
+
+    void onClickLihatOnTickerOrderError(String shopId, String errorMessage);
+
+    void onClickRefreshErrorLoadCourier();
+
+    void onViewErrorInCourierSection(String errorMessage);
+
+    void onClickSetPinpoint(int position);
 }

@@ -17,12 +17,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
@@ -32,6 +30,7 @@ import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.hotel.common.util.HotelGqlQuery
+import com.tokopedia.hotel.databinding.FragmentHotelRoomListBinding
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.fragment.HotelRoomDetailFragment
@@ -54,8 +53,11 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
-import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -75,6 +77,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var roomListViewModel: HotelRoomListViewModel
+
+    private var binding by autoClearedNullable<FragmentHotelRoomListBinding>()
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -107,10 +111,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             hotelRoomListPageModel.adult = it.getInt(ARG_TOTAL_ADULT, 0)
             hotelRoomListPageModel.child = it.getInt(ARG_TOTAL_CHILDREN, 0)
             hotelRoomListPageModel.room = it.getInt(ARG_TOTAL_ROOM, 0)
-            hotelRoomListPageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                    TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn))
-            hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                    TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
+            hotelRoomListPageModel.checkInDateFmt = hotelRoomListPageModel.checkIn.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
+            hotelRoomListPageModel.checkOutDateFmt = hotelRoomListPageModel.checkOut.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
             hotelRoomListPageModel.destinationType = it.getString(ARG_DESTINATION_TYPE, "")
         }
@@ -182,8 +184,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hotel_room_list, container, false)
-        return view
+        binding = FragmentHotelRoomListBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
@@ -220,27 +222,29 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     fun initView() {
-        filter_recycler_view.listener = this
-        filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
+        binding?.let {
+            it.filterRecyclerView.listener = this
+            it.filterRecyclerView.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
                 com.tokopedia.unifyprinciples.R.color.Unify_G300)
 
-        recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                super.getItemOffsets(outRect, view, parent, state)
+            it.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                    super.getItemOffsets(outRect, view, parent, state)
 
-                val itemPosition = parent.getChildLayoutPosition(view)
-                val itemCount = state.getItemCount()
-                outRect.bottom = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
-            }
-        })
+                    val itemPosition = parent.getChildLayoutPosition(view)
+                    val itemCount = state.getItemCount()
+                    outRect.bottom = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
+                }
+            })
 
-        hotel_room_and_guest_layout.setOnClickListener { onGuestInfoClicked() }
-        hotel_date_layout.setOnClickListener { onDateClicked() }
+            it.hotelDateAndGuest.hotelRoomAndGuestLayout.setOnClickListener { onGuestInfoClicked() }
+            it.hotelDateAndGuest.hotelDateLayout.setOnClickListener { onDateClicked() }
+        }
     }
 
     private fun showFilterRecyclerView(show: Boolean) {
-        filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
+        binding?.filterRecyclerView?.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun onGuestInfoClicked() {
@@ -262,26 +266,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
-        hotelRoomListPageModel.checkIn = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
-        hotelRoomListPageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+        hotelRoomListPageModel.checkIn = newCheckInDate.toString(DateUtil.YYYY_MM_DD)
+        hotelRoomListPageModel.checkInDateFmt = newCheckInDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
-        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut)) {
-            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
-                    Calendar.DATE, 1)
-            hotelRoomListPageModel.checkOut = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+        if (newCheckInDate >= hotelRoomListPageModel.checkOut.toDate(DateUtil.YYYY_MM_DD)) {
+            val tomorrow = newCheckInDate.addTimeToSpesificDate(Calendar.DATE, 1)
+            hotelRoomListPageModel.checkOut = tomorrow.toString(DateUtil.YYYY_MM_DD)
+            hotelRoomListPageModel.checkOutDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         }
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        hotelRoomListPageModel.checkOut = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
-        hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelRoomListPageModel.checkOut = newCheckOutDate.toString(DateUtil.YYYY_MM_DD)
+        hotelRoomListPageModel.checkOutDateFmt = newCheckOutDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         renderDate()
         loadInitialData()
     }
@@ -378,12 +375,14 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     fun renderRoomAndGuestView() {
-        total_room_text_view.text = hotelRoomListPageModel.room.toString()
-        total_guest_text_view.text = hotelRoomListPageModel.adult.toString()
+        binding?.let {
+            it.hotelDateAndGuest.totalRoomTextView.text = hotelRoomListPageModel.room.toString()
+            it.hotelDateAndGuest.totalGuestTextView.text = hotelRoomListPageModel.adult.toString()
+        }
     }
 
     fun renderDate() {
-        date_text_view.text = getString(R.string.hotel_room_list_check_in_check_out_date,
+        binding?.hotelDateAndGuest?.dateTextView?.text = getString(R.string.hotel_room_list_check_in_check_out_date,
                 hotelRoomListPageModel.checkInDateFmt, hotelRoomListPageModel.checkOutDateFmt)
     }
 
@@ -405,7 +404,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onEmptyButtonClicked() {
         //DELETE FILTER
-        filter_recycler_view.onResetChip()
+        binding?.filterRecyclerView?.onResetChip()
         roomListViewModel.clearFilter()
     }
 
