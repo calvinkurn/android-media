@@ -89,8 +89,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val interactiveView by viewComponent {
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
-                interactiveSetupView.setAvailableStartTimes(parentViewModel.suitableInteractiveStartTimes)
-                interactiveSetupView.show()
+                if (allowSetupInteractive()) {
+                    interactiveSetupView.setActiveTitle(parentViewModel.interactiveTitle)
+                    interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
+                    interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
+                    interactiveSetupView.show()
+                }
             }
 
             override fun onSeeWinnerClicked(view: BroadcastInteractiveViewComponent) {
@@ -98,8 +102,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
     private val interactiveSetupView by viewComponent {
         BroadcastInteractiveSetupViewComponent(it, object : BroadcastInteractiveSetupViewComponent.Listener {
+            override fun onTitleInputChanged(
+                view: BroadcastInteractiveSetupViewComponent,
+                title: String
+            ) {
+                parentViewModel.setInteractiveTitle(title)
+            }
+
+            override fun onPickerValueChanged(
+                view: BroadcastInteractiveSetupViewComponent,
+                durationInMs: Long
+            ) {
+                parentViewModel.setSelectedInteractiveDuration(durationInMs)
+            }
+
             override fun onApplyButtonClicked(
                 view: BroadcastInteractiveSetupViewComponent,
                 title: String,
@@ -542,7 +561,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
                     interactiveSetupView.setLoading(false)
-                    interactiveSetupView.hide()
+                    interactiveSetupView.reset()
                 }
                 is NetworkResult.Fail -> {
                     interactiveSetupView.setLoading(false)
@@ -556,6 +575,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
     //endregion
+
+    private fun allowSetupInteractive(): Boolean {
+        return parentViewModel.interactiveDurations.isNotEmpty()
+    }
 
     private fun handleHasInteractiveState(state: BroadcastInteractiveState.Allowed) {
 

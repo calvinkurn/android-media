@@ -1,7 +1,9 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.content.Context
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -25,7 +27,6 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.picker.PickerUnify
 import com.tokopedia.unifyprinciples.Typography
-import java.util.concurrent.TimeUnit
 import com.tokopedia.play_common.R as commonR
 
 
@@ -48,8 +49,6 @@ class BroadcastInteractiveSetupViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(containerTimePicker)
 
-    private val defaultSelectedDuration = TimeUnit.MINUTES.toMillis(DEFAULT_DURATION_IN_MINUTE)
-
     private lateinit var mConfig: InteractiveConfigUiModel
 
     private val title: String
@@ -57,26 +56,17 @@ class BroadcastInteractiveSetupViewComponent(
 
     init {
         initView()
+        setupInset()
         showPickerSheet(false)
-
-        /**
-         * Default value
-         */
-        setActiveTitle("${getString(R.string.play_interactive_title_default)} ")
         setFocusOnEditTextTitle()
-
-        containerSetup.doOnApplyWindowInsets { v, insets, padding, _ ->
-            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
-        }
-
-        btnApply.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLp = v.marginLp
-            marginLp.bottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            v.layoutParams = marginLp
-        }
     }
 
     private fun initView() {
+        setupView()
+        setupTimePickerView()
+    }
+
+    private fun setupView() {
         rootView.setOnClickListener {
             showKeyboard(false)
             hide()
@@ -96,14 +86,25 @@ class BroadcastInteractiveSetupViewComponent(
             })
             filters = arrayOf(InputFilter.LengthFilter(MAX_LENGTH_CHAR))
             setSelection(title.length)
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s != null) listener.onTitleInputChanged(this@BroadcastInteractiveSetupViewComponent, s.toString())
+                }
+            })
         }
+
         activeTimerLbl.setOnClickListener {
             showSetupDurationLayout()
         }
-        initTimePicker()
     }
 
-    private fun initTimePicker() {
+    private fun setupTimePickerView() {
         findViewById<TextView>(commonR.id.tv_sheet_title)
             .setText(R.string.play_interactive_time_picker_title)
 
@@ -123,6 +124,19 @@ class BroadcastInteractiveSetupViewComponent(
         timePicker.onValueChanged = { _, index ->
             val selectedDuration = mConfig.availableStartTimeInMs[index]
             setLabelSelectedDuration(selectedDuration)
+            listener.onPickerValueChanged(this@BroadcastInteractiveSetupViewComponent, selectedDuration)
+        }
+    }
+
+    private fun setupInset() {
+        containerSetup.doOnApplyWindowInsets { v, insets, padding, _ ->
+            v.updatePadding(top = padding.top + insets.systemWindowInsetTop)
+        }
+
+        btnApply.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLp = v.marginLp
+            marginLp.bottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            v.layoutParams = marginLp
         }
     }
 
@@ -135,13 +149,23 @@ class BroadcastInteractiveSetupViewComponent(
         setupLabelGuideline(false)
     }
 
-    fun setAvailableStartTimes(durationInMs: List<Long>) {
-        if (!durationInMs.isNullOrEmpty()) mConfig = mConfig.copy(availableStartTimeInMs = durationInMs)
-        timePicker.stringData = mConfig.availableStartTimeInMs.map { formatTime(it) }.toMutableList()
+    fun setActiveTitle(title: String) {
+        editTextTitle.setText(title)
+    }
 
-        if (mConfig.availableStartTimeInMs.contains(defaultSelectedDuration)) {
-            setSelectedDuration(defaultSelectedDuration)
-        } else setSelectedDuration(mConfig.availableStartTimeInMs.first())
+    fun setSelectedDuration(durationInMs: Long) {
+        val activePosition = mConfig.availableStartTimeInMs.indexOf(durationInMs)
+        if (activePosition in 0 until timePicker.stringData.size) {
+            timePicker.goToPosition(activePosition)
+        } else {
+            if (timePicker.stringData.size > 0) timePicker.goToPosition(0)
+        }
+        if (!isPickerSheetVisible()) setLabelSelectedDuration(durationInMs)
+    }
+
+    fun setAvailableDurations(durations: List<Long>) {
+        if (!durations.isNullOrEmpty()) mConfig = mConfig.copy(availableStartTimeInMs = durations)
+        timePicker.stringData = mConfig.availableStartTimeInMs.map { formatTime(it) }.toMutableList()
     }
 
     fun interceptBackPressed(): Boolean {
@@ -163,10 +187,6 @@ class BroadcastInteractiveSetupViewComponent(
         if (!isPickerSheetVisible()) setFocusOnEditTextTitle()
     }
 
-    private fun setActiveTitle(title: String) {
-        editTextTitle.setText(title)
-    }
-
     private fun setupLabelGuideline(showPickerSheet: Boolean) {
         if (showPickerSheet) {
             titleLbl.text = mConfig.timeGuidelineHeader
@@ -175,16 +195,6 @@ class BroadcastInteractiveSetupViewComponent(
             titleLbl.text = mConfig.nameGuidelineHeader
             descLbl.text = mConfig.nameGuidelineDetail
         }
-    }
-
-    private fun setSelectedDuration(durationInMs: Long) {
-        val activePosition = mConfig.availableStartTimeInMs.indexOf(durationInMs)
-        if (activePosition in 0 until timePicker.stringData.size) {
-            timePicker.goToPosition(activePosition)
-        } else {
-            if (timePicker.stringData.size > 0) timePicker.goToPosition(0)
-        }
-        if (!isPickerSheetVisible()) setLabelSelectedDuration(durationInMs)
     }
 
     private fun setLabelSelectedDuration(durationInMs: Long) {
@@ -241,20 +251,25 @@ class BroadcastInteractiveSetupViewComponent(
         bottomSheetBehavior.state = if (shouldShow) BottomSheetBehavior.STATE_EXPANDED else BottomSheetBehavior.STATE_HIDDEN
     }
 
+    fun reset() {
+        showPickerSheet(false)
+        hide()
+    }
+
     interface Listener {
+        fun onTitleInputChanged(view: BroadcastInteractiveSetupViewComponent, title: String)
+        fun onPickerValueChanged(view: BroadcastInteractiveSetupViewComponent, durationInMs: Long)
         fun onApplyButtonClicked(view: BroadcastInteractiveSetupViewComponent, title: String, durationInMs: Long)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, null)
+        ViewCompat.setOnApplyWindowInsetsListener(containerSetup, null)
         ViewCompat.setOnApplyWindowInsetsListener(btnApply, null)
     }
 
     companion object {
         private const val MIN_LENGTH_CHAR = 3
         private const val MAX_LENGTH_CHAR = 25
-
-        private const val DEFAULT_DURATION_IN_MINUTE: Long = 3
     }
 }
