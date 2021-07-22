@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationTroubleshoot
 import kotlinx.coroutines.CoroutineDispatcher
 
-open class TroubleshootStatusUseCase constructor(
+open class GetTroubleshootStatusUseCase constructor(
         private val repository: GraphqlRepository,
         private val graphQuery: String,
         dispatcher: CoroutineDispatcher
@@ -15,7 +15,7 @@ open class TroubleshootStatusUseCase constructor(
         return graphQuery
     }
 
-    override suspend fun execute(params: Map<String, String>): NotificationTroubleshoot {
+    override suspend fun execute(params: Map<String, String>?): NotificationTroubleshoot {
         return repository.request(params)
     }
 
