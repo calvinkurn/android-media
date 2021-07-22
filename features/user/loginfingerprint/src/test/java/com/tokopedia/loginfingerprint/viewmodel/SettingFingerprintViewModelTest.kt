@@ -36,7 +36,7 @@ class SettingFingerprintViewModelTest {
     private var registerFingerprintObserver = mockk<Observer<Result<RegisterFingerprintResult>>>(relaxed = true)
     private var removeFingerprintObserver = mockk<Observer<Result<RemoveFingerprintData>>>(relaxed = true)
 
-    private val throwable = Throwable("Error")
+    private val throwable = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -99,7 +99,10 @@ class SettingFingerprintViewModelTest {
         viewModel.registerFingerprint()
 
         /* Then */
-        verify { registerFingerprintObserver.onChanged(Success(response.data)) }
+        verify {
+            cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
+            registerFingerprintObserver.onChanged(Success(response.data))
+        }
     }
 
     @Test
@@ -116,6 +119,61 @@ class SettingFingerprintViewModelTest {
 
         /* Then */
         verify { registerFingerprintObserver.onChanged(Fail(throwable)) }
+    }
+
+    @Test
+    fun `on Error Register Fingerprint - public key empty`() {
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns ""
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        assert(viewModel.registerFingerprintResult.value is Fail)
+    }
+
+    @Test
+    fun `on Success Remove Fingerprint`() {
+        /* When */
+        val data = RemoveFingerprintData(isSuccess = true)
+        val response = RemoveFingerprintPojo(data)
+
+        every { removeFingerprintUseCase.removeFingerprint(any(), any()) } answers {
+            firstArg<(RemoveFingerprintPojo) -> Unit>().invoke(response)
+        }
+
+        viewModel.removeFingerprint()
+
+        /* Then */
+        verify { removeFingerprintObserver.onChanged(Success(response.data)) }
+    }
+
+    @Test
+    fun `on Has Errors Remove Fingerprint`() {
+        /* When */
+        val data = RemoveFingerprintData(isSuccess = false, error = "error")
+        val response = RemoveFingerprintPojo(data)
+
+        every { removeFingerprintUseCase.removeFingerprint(any(), any()) } answers {
+            firstArg<(RemoveFingerprintPojo) -> Unit>().invoke(response)
+        }
+
+        viewModel.removeFingerprint()
+
+        /* Then */
+        assert(viewModel.removeFingerprintResult.value is Fail)
+    }
+
+    @Test
+    fun `on Error thrown Remove Fingerprint`() {
+        every { removeFingerprintUseCase.removeFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        viewModel.removeFingerprint()
+
+        /* Then */
+        assert(viewModel.removeFingerprintResult.value is Fail)
     }
 
 }

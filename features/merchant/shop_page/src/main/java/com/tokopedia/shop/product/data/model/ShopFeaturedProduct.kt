@@ -59,6 +59,10 @@ data class ShopFeaturedProduct(
         @Expose
         val rating: String = "",
 
+        @SerializedName("rating_average")
+        @Expose
+        val ratingAverage: String = "",
+
         @SerializedName("returnable")
         @Expose
         val returnable: Boolean = false,

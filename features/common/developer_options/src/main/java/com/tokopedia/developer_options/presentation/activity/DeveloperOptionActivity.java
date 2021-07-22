@@ -61,7 +61,7 @@ import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -72,6 +72,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
 public class DeveloperOptionActivity extends BaseActivity {
 
@@ -103,8 +106,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
-    String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
-    String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+    String EXP_TOP_NAV = NAVIGATION_EXP_TOP_NAV;
+    String VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP;
 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
@@ -375,17 +378,17 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
-        String VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD;
-        String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+        String EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV;
+        String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
+        String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-        String EXP_HOME = AbTestPlatform.HOME_EXP;
-        String HOME_VARIANT_OLD = AbTestPlatform.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = AbTestPlatform.HOME_VARIANT_REVAMP;
+        String EXP_HOME = RollenceKey.HOME_EXP;
+        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
+        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
 
-        String EXP_BALANCE_WIDGET = AbTestPlatform.BALANCE_EXP;
-        String BALANCE_WIDGET_VARIANT_OLD = AbTestPlatform.BALANCE_VARIANT_OLD;
-        String BALANCE_WIDGET_VARIANT_REVAMP = AbTestPlatform.BALANCE_VARIANT_NEW;
+        String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
+        String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
+        String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
 
         alwaysOldButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -458,8 +461,8 @@ public class DeveloperOptionActivity extends BaseActivity {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
-                            AbTestPlatform.VARIANT_OLD_INBOX
+                            RollenceKey.KEY_AB_INBOX_REVAMP,
+                            RollenceKey.VARIANT_OLD_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: Old", Toast.LENGTH_SHORT).show();
         });
@@ -467,8 +470,8 @@ public class DeveloperOptionActivity extends BaseActivity {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
-                            AbTestPlatform.VARIANT_NEW_INBOX
+                            RollenceKey.KEY_AB_INBOX_REVAMP,
+                            RollenceKey.VARIANT_NEW_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
         });
@@ -482,8 +485,8 @@ public class DeveloperOptionActivity extends BaseActivity {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_NEW_NOTFICENTER,
-                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_OLD_NOTFICENTER
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
         });
@@ -491,8 +494,8 @@ public class DeveloperOptionActivity extends BaseActivity {
             RemoteConfigInstance.getInstance()
                     .getABTestPlatform()
                     .setString(
-                            AbTestPlatform.KEY_NEW_NOTFICENTER,
-                            AbTestPlatform.VARIANT_NEW_NOTFICENTER
+                            RollenceKey.KEY_NEW_NOTFICENTER,
+                            RollenceKey.VARIANT_NEW_NOTFICENTER
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });

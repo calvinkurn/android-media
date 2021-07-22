@@ -6,19 +6,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
-import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
  * Created by yfsx on 3/1/21.
@@ -31,7 +27,10 @@ class BalanceWidgetView: FrameLayout {
     private var rvBalance: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
-    private lateinit var containerWidget: LinearLayout
+    private lateinit var containerWidget: FrameLayout
+
+    private var tokopointsView: View? = null
+    private var gopayView: View? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -60,22 +59,7 @@ class BalanceWidgetView: FrameLayout {
     private fun renderWidget(element: HomeBalanceModel) {
         containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
-        balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
-            override fun areItemsTheSame(
-                oldItem: BalanceDrawerItemModel,
-                newItem: BalanceDrawerItemModel
-            ): Boolean {
-                return oldItem.state == newItem.state
-            }
-
-            override fun areContentsTheSame(
-                oldItem: BalanceDrawerItemModel,
-                newItem: BalanceDrawerItemModel
-            ): Boolean {
-                return oldItem == newItem
-            }
-
-        })
+        balanceAdapter = BalanceAdapter(listener)
         rvBalance?.layoutManager = layoutManager
         rvBalance?.adapter = balanceAdapter
         balanceAdapter?.setItemMap(element)
@@ -94,10 +78,12 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getTokopointsView(): View? {
-        val tokopointsPos = balanceAdapter?.getTokopointsDataPosition() ?: -1
-        if (tokopointsPos != -1) {
-            return balanceAdapter?.attachedRecyclerView?.findViewHolderForAdapterPosition(tokopointsPos)?.itemView
-        }
-        return null
+        tokopointsView = findViewById(R.id.home_coachmark_item_tokopoints)
+        return tokopointsView
+    }
+
+    fun getGopayView(): View? {
+        gopayView = findViewById(R.id.home_coachmark_item_gopay)
+        return gopayView
     }
 }

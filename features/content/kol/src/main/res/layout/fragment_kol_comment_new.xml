@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/view_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/Unify_N0"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/avatar_shop"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_16"
+            app:unify_image_type="circle" />
+
+        <com.tokopedia.feedcomponent.view.custom.MentionEditText
+            android:id="@+id/new_comment"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_36"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_weight="1"
+            android:background="@drawable/bg_round_corner_comment"
+            android:fontFamily="sans-serif"
+            android:hint="@string/write_comment"
+            android:inputType="textVisiblePassword|textMultiLine"
+            android:maxLines="5"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_4"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal" />
+
+        <ImageView
+            android:id="@+id/send_but"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="null"
+            android:padding="@dimen/dp_10"
+            app:srcCompat="@drawable/kol_comment_send" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/view_comment"
+        android:background="@color/Unify_N100" />
+
+    <include
+        android:id="@+id/kol_comment_product"
+        layout="@layout/kol_comment_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/separator" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/comment_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/view_comment" />
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/Unify_N0"
+        android:indeterminate="true"
+        android:visibility="invisible" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+</RelativeLayout>
+
