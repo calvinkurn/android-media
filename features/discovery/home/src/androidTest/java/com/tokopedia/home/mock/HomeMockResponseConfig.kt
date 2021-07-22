@@ -29,13 +29,14 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_UNIVERSE_PLACEHOLDER = "universe_placeholder"
         const val KEY_QUERY_FLOATING_EGG = "gamiFloating"
         const val KEY_CONTAINS_TOKOPOINTS_LIST = "tokopointsDrawerList"
-        const val KEY_CONTAINS_WALLET = "wallet"
+        const val KEY_CONTAINS_WALLET = "isGetTopup:true"
         const val KEY_CONTAINS_FLAG = "homeData"
         const val KEY_CONTAINS_PRODUCT_REVIEW = "suggestedProductReview"
         const val KEY_CONTAINS_PRODUCT_RECOMMENDATION = "productRecommendation"
         const val KEY_CONTAINS_HEADLINE_ADS = "DisplayHeadlineAds"
         const val KEY_CONTAINS_NOTIFICATION = "Notification"
         const val KEY_CONTAINS_CHIPS = "RecommendationFilterChipsQuery"
+        const val KEY_CONTAINS_WALLETAPP_GETBALANCES = "walletAppGetBalance"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -207,6 +208,14 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
             FIND_BY_CONTAINS
         )
 
+        addMockResponse(
+            KEY_CONTAINS_WALLETAPP_GETBALANCES,
+            getRawString(context, R.raw.response_mock_data_walletapp),
+            FIND_BY_CONTAINS
+        )
+        updateMock(context)
         return this
     }
+
+    open fun updateMock(context: Context) {}
 }

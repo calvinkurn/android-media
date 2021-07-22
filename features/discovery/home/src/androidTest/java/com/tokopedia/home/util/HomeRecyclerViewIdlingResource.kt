@@ -10,7 +10,8 @@ private const val NAME = "Recycler view has item idling resource"
 
 internal class HomeRecyclerViewIdlingResource(
     private val recyclerView: RecyclerView?,
-    private val name: String? = NAME
+    private val name: String? = NAME,
+    private val limitCountToIdle: Int = 0
 ) : IdlingResource {
 
     private var resourceCallback: IdlingResource.ResourceCallback? = null
@@ -27,7 +28,7 @@ internal class HomeRecyclerViewIdlingResource(
     }
 
     private fun HomeRecycleAdapter?.isNonCacheData(): Boolean {
-        return this != null && (
+        return this != null && itemCount >= limitCountToIdle && (
                 this.currentList.find { it is HomeRecommendationFeedDataModel } != null ||
                         this.currentList.find { it is HomeRetryModel } != null
                 )

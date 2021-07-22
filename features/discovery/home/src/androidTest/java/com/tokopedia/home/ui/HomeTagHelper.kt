@@ -6,6 +6,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 
 object HomeTagHelper {
+    fun getGopayBalanceWidgetTag(context: Context): String {
+        return String.format(
+            context.getString(R.string.tag_balance_widget),
+            BalanceDrawerItemModel.TYPE_WALLET_APP_LINKED.toString()
+        )
+    }
+
     fun getOvoBalanceWidgetTag(context: Context): String {
         return String.format(
             context.getString(R.string.tag_balance_widget),

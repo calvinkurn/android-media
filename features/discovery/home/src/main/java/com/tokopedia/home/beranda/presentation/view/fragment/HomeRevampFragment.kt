@@ -801,7 +801,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(skipBalanceWidget: Boolean = false) {
-        if (checkNavigationOnboardingFinished() && !bottomSheetIsShowing) {
+        if (!bottomSheetIsShowing) {
             context?.let {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachmark = CoachMark2(it)
@@ -1501,9 +1501,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
                 if (!isTokopointsOrOvoFailed) {
                     showCoachMark()
+                } else {
+                    showCoachMark(skipBalanceWidget = true)
                 }
-            } else {
-                showCoachMark(skipBalanceWidget = true)
             }
         }
     }
