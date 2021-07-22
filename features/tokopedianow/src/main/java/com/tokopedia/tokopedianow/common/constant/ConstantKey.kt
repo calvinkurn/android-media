@@ -19,5 +19,5 @@ object ConstantKey {
 
     //default value
     const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
-    const val NO_VARIANT_PARENT_PRODUCT_ID = "0"
+    const val DEFAULT_QUANTITY = 0
 }

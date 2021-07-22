@@ -15,7 +15,6 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -24,7 +23,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.NO_VARIANT_PARENT_PRODUCT_ID
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
@@ -323,29 +322,31 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun updateProductCard(item: MiniCartSimplifiedData, needToObserve: Boolean) {
-        val productRecomUiModel = homeLayoutItemList.find { it.layout is HomeProductRecomUiModel }?.layout as HomeProductRecomUiModel
-        val recom = productRecomUiModel.recomWidget.copy()
-
-        val groupVariant = item.miniCartItems.groupBy { it.productParentId }
-        item.miniCartItems.map { miniCartItem ->
+        val homeLayoutItemUiModel = homeLayoutItemList.firstOrNull { it.layout is HomeProductRecomUiModel }
+        val productRecomUiModel = homeLayoutItemUiModel?.layout as? HomeProductRecomUiModel
+        productRecomUiModel?.let { uiModel ->
+            val recom = uiModel.recomWidget.copy()
+            // reset all product recom quantity to zero
             recom.recommendationItemList.forEach { recommendationItem ->
-                if (miniCartItem.productParentId == recommendationItem.parentID.toString() && miniCartItem.productParentId != NO_VARIANT_PARENT_PRODUCT_ID) {
-                    recommendationItem.quantity = groupVariant[miniCartItem.productParentId]?.sumBy { it.quantity }.orZero()
-                } else {
+                recommendationItem.quantity = DEFAULT_QUANTITY
+            }
+            // replace product recom quantity with minicart quantity
+            item.miniCartItems.map { miniCartItem ->
+                recom.recommendationItemList.forEach { recommendationItem ->
                     if (recommendationItem.productId.toString() == miniCartItem.productId) {
                         recommendationItem.quantity = miniCartItem.quantity
                     }
                 }
             }
-        }
-        homeLayoutItemList.mapProductRecomData(productRecomUiModel, recom)
-
-        if (needToObserve) {
-            val data = HomeLayoutListUiModel(
-                result = homeLayoutItemList,
-                state = TokoNowLayoutState.SHOW
-            )
-            _homeLayoutList.postValue(Success(data))
+            // update data on homeLayoutItemList
+            homeLayoutItemList.mapProductRecomData(uiModel, recom)
+            if (needToObserve) {
+                val data = HomeLayoutListUiModel(
+                    result = homeLayoutItemList,
+                    state = TokoNowLayoutState.SHOW
+                )
+                _homeLayoutList.postValue(Success(data))
+            }
         }
     }
 

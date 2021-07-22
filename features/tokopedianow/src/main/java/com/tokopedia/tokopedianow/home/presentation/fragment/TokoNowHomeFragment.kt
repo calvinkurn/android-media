@@ -31,6 +31,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -140,6 +141,7 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
+    private var isVariantAdded = false
     private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
@@ -209,9 +211,8 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
-        } else {
-            updateProductRecom(miniCartSimplifiedData)
         }
+        updateProductRecom(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData)
     }
 
@@ -276,6 +277,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            isVariantAdded = true
+        }
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
@@ -498,6 +502,10 @@ class TokoNowHomeFragment: Fragment(),
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data)
+                if (isVariantAdded) {
+                    updateProductRecom(it.data)
+                    isVariantAdded = false
+                }
             }
         }
 
