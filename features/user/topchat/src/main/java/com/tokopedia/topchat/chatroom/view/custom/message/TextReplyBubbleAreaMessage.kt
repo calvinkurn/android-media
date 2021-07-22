@@ -3,14 +3,14 @@ package com.tokopedia.topchat.chatroom.view.custom.message
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.topchat.R
-import com.tokopedia.unifyprinciples.Typography
 
 class TextReplyBubbleAreaMessage : ReplyBubbleAreaMessage {
 
-    private var title: Typography? = null
-    private var desc: Typography? = null
+    private var title: TextView? = null
+    private var desc: TextView? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
