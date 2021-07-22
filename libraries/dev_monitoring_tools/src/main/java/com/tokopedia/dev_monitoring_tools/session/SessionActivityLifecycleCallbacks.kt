@@ -24,16 +24,16 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (logger.returnFromOtherActivity) {
-            logger.addJourney(activity)
-        }
-        if (logger.running) {
-            return
-        }
+        if (logger.returnFromOtherActivity) logger.addJourney(activity)
+        if (logger.running) return
+
         logger.running = true
-        val connectionType = getConnectionType(activity)
+
         Thread {
-            logger.checkSession(activity.javaClass.simpleName, connectionType)
+            logger.checkSession(
+                activityName = activity.javaClass.simpleName,
+                connectionType = getConnectionType(activity)
+            )
         }.start()
     }
 
