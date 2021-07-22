@@ -205,9 +205,9 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         } else {
-            setupPadding(miniCartSimplifiedData)
             updateProductRecom(miniCartSimplifiedData)
         }
+        setupPadding(miniCartSimplifiedData)
     }
 
     private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
