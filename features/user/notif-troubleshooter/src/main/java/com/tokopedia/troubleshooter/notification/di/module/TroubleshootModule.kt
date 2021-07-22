@@ -8,7 +8,7 @@ import com.tokopedia.settingnotif.usersetting.base.BaseSettingRepository
 import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.R
-import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
+import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
@@ -101,12 +101,12 @@ import javax.inject.Named
     fun provideTroubleshootUseCase(
             repository: GraphqlRepository,
             @TroubleshootContext context: Context
-    ): TroubleshootStatusUseCase {
+    ): GetTroubleshootStatusUseCase {
         val query = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.query_send_notif_troubleshooter
         )
-        return TroubleshootStatusUseCase(repository, query, Dispatchers.IO)
+        return GetTroubleshootStatusUseCase(repository, query, Dispatchers.IO)
     }
 
     private fun getUseSettingUseCase(
