@@ -1,20 +1,15 @@
 package com.tokopedia.common.topupbills.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
-import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperator
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
-import kotlin.properties.Delegates
 
 class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<CommonTopupBillsComponent> {
 
