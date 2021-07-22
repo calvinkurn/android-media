@@ -3,10 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.constant.LoggerConstant
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 
 object PromoCheckoutLogger {
 
@@ -45,11 +42,7 @@ object PromoCheckoutLogger {
     }
 
     private fun shouldTriggerLog(throwable: Throwable): Boolean {
-        return throwable is MessageErrorException ||
-                throwable is ResponseErrorException ||
-                throwable is CartResponseErrorException ||
-                throwable is AkamaiErrorException ||
-                throwable is PromoErrorException
+        return throwable is PromoErrorException || throwable is AkamaiErrorException
     }
 
 }
