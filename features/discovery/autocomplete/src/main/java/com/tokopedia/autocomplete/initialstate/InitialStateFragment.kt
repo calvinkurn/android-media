@@ -298,4 +298,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun trackEventClickTokoNowDynamicSectionItem(label: String) {
         AutocompleteTracking.eventClickTokoNowPopularSearch(label)
     }
+
+    override fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String) {
+        AutocompleteTracking.eventClickDynamicSection(userId, label, type, pageSource)
+    }
+
+    override fun onChipClicked(item: BaseItemInitialStateSearch) {
+        presenter.onChipClicked(item)
+    }
 }
