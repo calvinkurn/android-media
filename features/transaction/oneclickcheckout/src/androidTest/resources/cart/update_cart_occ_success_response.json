@@ -1,12 +1,16 @@
 [
   {
     "data": {
-      "update_cart_occ": {
+      "update_cart_occ_multi": {
         "error_message": [],
         "status": "OK",
         "data": {
           "messages": [],
           "success": 1,
+          "toaster_action": {
+            "text": "",
+            "show_cta": false
+          },
           "prompt": {
             "type": "",
             "title": "",

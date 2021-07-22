@@ -105,7 +105,7 @@ class OrderSummaryPageActivityTrackingTest {
 
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
             pay()
-            closeBottomSheet()
+//            closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()
@@ -128,7 +128,7 @@ class OrderSummaryPageActivityTrackingTest {
             pay()
             clickButtonContinueWithRedPromo()
             closeBottomSheet()
-            closeBottomSheet()
+//            closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()

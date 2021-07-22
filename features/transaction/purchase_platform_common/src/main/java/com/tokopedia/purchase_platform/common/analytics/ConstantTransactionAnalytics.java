@@ -426,7 +426,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar";
         String CLICK_SIMPAN_ON_SUMMARY_PURCHASE_SETTING = "click simpan on summary purchase setting";
 
-        String EDIT_QUANTITY_INCRESE = "product - click button plus";
+        String EDIT_QUANTITY_INCREASE = "product - click button plus";
         String EDIT_QUANTITY_DECREASE = "product - click button minus";
         String EDIT_SELLER_NOTES = "product - click tulis catatan";
         String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";

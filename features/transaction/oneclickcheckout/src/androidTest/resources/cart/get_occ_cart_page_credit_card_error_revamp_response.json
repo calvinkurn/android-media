@@ -202,23 +202,23 @@
                 "shop_status": 1,
                 "is_gold": 1,
                 "is_gold_badge": true,
-                "is_official": 1,
+                "is_official": 0,
                 "is_free_returns": 0,
                 "gold_merchant": {
-                  "is_gold": 0,
-                  "is_gold_badge": false,
-                  "gold_merchant_logo_url": ""
+                  "is_gold": 1,
+                  "is_gold_badge": true,
+                  "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
                 },
                 "official_store": {
-                  "is_official": 1,
-                  "os_logo_url": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png"
+                  "is_official": 0,
+                  "os_logo_url": ""
                 },
                 "shop_type_info": {
-                  "shop_tier": 2,
+                  "shop_tier": 1,
                   "shop_grade": 0,
-                  "badge": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-                  "badge_svg": "https://ecs7.tokopedia.net/img/official_store/badge_os128.png",
-                  "title": "Official Store"
+                  "badge": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "badge_svg": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png",
+                  "title": "Power Merchant"
                 },
                 "address_id": 3608,
                 "postal_code": "55212",

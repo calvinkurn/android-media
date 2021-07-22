@@ -32,7 +32,8 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
             return prompt
         }
         if (response.response.data.toasterAction.showCta) {
-            return OccToasterAction(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE, response.response.data.toasterAction.text)
+            return OccToasterAction(response.getErrorMessage()
+                    ?: DEFAULT_ERROR_MESSAGE, response.response.data.toasterAction.text)
         }
         throw MessageErrorException(response.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
@@ -52,16 +53,20 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
     }
 
     companion object {
-        const val PARAM_KEY = "update"
+        const val PARAM_KEY = "param"
 
         val QUERY = """
-        mutation update_cart_occ_multi(${"$"}update: OneClickCheckoutMultiUpdateCartParam) {
-            update_cart_occ_multi(param: ${"$"}update) {
+        mutation update_cart_occ_multi(${"$"}param: OneClickCheckoutMultiUpdateCartParam) {
+            update_cart_occ_multi(param: ${"$"}param) {
                 error_message
                 status
                 data {
                     messages
                     success
+                    toaster_action {
+                        text
+                        show_cta
+                    }
                     prompt {
                         type
                         title

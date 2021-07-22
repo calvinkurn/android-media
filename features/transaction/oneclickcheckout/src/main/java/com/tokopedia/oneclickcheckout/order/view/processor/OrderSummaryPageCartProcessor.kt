@@ -116,7 +116,6 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
             }
             val realServiceId = orderShipment.getRealServiceId()
             val profile = UpdateCartOccProfileRequest(
-                    orderProfile.profileId.toString(),
                     orderProfile.payment.gatewayCode,
                     metadata,
                     orderProfile.address.addressId.toString(),

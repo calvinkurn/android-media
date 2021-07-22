@@ -5,7 +5,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 import com.tokopedia.oneclickcheckout.order.data.get.OccPromptResponse
 
 data class UpdateCartOccGqlResponse(
-        @SerializedName("update_cart_occ")
+        @SerializedName("update_cart_occ_multi")
         var response: UpdateCartOccResponse
 ) {
         fun getErrorMessage(): String? {
