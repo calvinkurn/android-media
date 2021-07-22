@@ -17,16 +17,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
+import com.tokopedia.hotel.databinding.FragmentHotelContactDataBinding
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.passenger.R
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
-import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
@@ -34,6 +36,8 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var bookingViewModel: HotelBookingViewModel
+
+    private var binding by autoClearedNullable<FragmentHotelContactDataBinding>()
 
     lateinit var contactData: TravelContactData
     var selectedContact = TravelContactListModel.Contact()
@@ -57,8 +61,10 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(com.tokopedia.travel.passenger.R.layout.fragment_travel_contact_data, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelContactDataBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,25 +102,25 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     }
 
     fun initView() {
-        til_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
-        til_contact_name.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_hint))
+        binding?.tilContactName?.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
+        binding?.tilContactName?.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_hint))
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
-            (til_contact_name.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+            (binding?.tilContactName?.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_contact_name.getAutoCompleteTextView() as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
+            (binding?.tilContactName?.getAutoCompleteTextView() as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
         }
 
-        til_contact_name.setEditableText(contactData.name)
+        binding?.tilContactName?.setEditableText(contactData.name)
 
-        til_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
-        til_contact_email.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_hint))
-        til_contact_email.setEditableText(contactData.email)
+        binding?.tilContactEmail?.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
+        binding?.tilContactEmail?.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_hint))
+        binding?.tilContactEmail?.setEditableText(contactData.email)
 
-        til_contact_phone_number.setInputType(InputType.TYPE_CLASS_NUMBER)
-        til_contact_phone_number.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_hint))
-        til_contact_phone_number.setEditableText(contactData.phone)
+        binding?.tilContactPhoneNumber?.setInputType(InputType.TYPE_CLASS_NUMBER)
+        binding?.tilContactPhoneNumber?.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_hint))
+        binding?.tilContactPhoneNumber?.setEditableText(contactData.phone)
 
         val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
@@ -122,9 +128,9 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
-        sp_contact_phone_code.adapter = spinnerAdapter
-        sp_contact_phone_code.setSelection(0)
-        sp_contact_phone_code.setOnTouchListener {v, event ->
+        binding?.spContactPhoneCode?.adapter = spinnerAdapter
+        binding?.spContactPhoneCode?.setSelection(0)
+        binding?.spContactPhoneCode?.setOnTouchListener {v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 v.performClick()
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
@@ -132,15 +138,15 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             true
         }
 
-        contact_data_button.setOnClickListener { onSaveButtonClicked() }
+        binding?.spContactPhoneCode?.setOnClickListener { onSaveButtonClicked() }
     }
 
     private fun autofillView(contact: TravelContactListModel.Contact?) {
         if (contact != null) {
             selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
 
-            til_contact_email.setEditableText(contact.email)
-            til_contact_phone_number.setEditableText(contact.phoneNumber)
+            binding?.tilContactEmail?.setEditableText(contact.email)
+            binding?.tilContactPhoneNumber?.setEditableText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
@@ -151,10 +157,10 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
     private fun onSaveButtonClicked() {
         if (validateData()) {
-            contactData.name = til_contact_name.getEditableValue()
-            contactData.email = til_contact_email.getEditableValue()
-            contactData.phone = til_contact_phone_number.getEditableValue()
-            contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
+            contactData.name = binding?.tilContactName?.getEditableValue() ?: ""
+            contactData.email = binding?.tilContactEmail?.getEditableValue() ?: ""
+            contactData.phone = binding?.tilContactPhoneNumber?.getEditableValue() ?: ""
+            contactData.phoneCode = (binding?.spContactPhoneCode?.selectedItem as String).toInt()
 
             bookingViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT,
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
@@ -171,16 +177,16 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
     private fun validateData(): Boolean {
         var isValid = true
-        if (til_contact_name.getEditableValue().isNullOrBlank()) {
-            til_contact_name.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_error))
+        if (binding?.tilContactName?.getEditableValue().isNullOrBlank()) {
+            binding?.tilContactName?.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_error))
             isValid = false
         }
-        if (!isValidEmail(til_contact_email.getEditableValue())) {
-            til_contact_email.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_error))
+        if (!isValidEmail(binding?.tilContactEmail?.getEditableValue() ?: "")) {
+            binding?.tilContactEmail?.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_error))
             isValid = false
         }
-        if (til_contact_phone_number.getEditableValue().length < MIN_PHONE_NUMBER_DIGIT) {
-            til_contact_phone_number.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_error))
+        if (binding?.tilContactPhoneNumber?.getEditableValue()?.length ?: 0 < MIN_PHONE_NUMBER_DIGIT) {
+            binding?.tilContactPhoneNumber?.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_error))
             isValid = false
         }
         return isValid
@@ -197,7 +203,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     }
 
     override fun getFilterText(): String {
-        return til_contact_name.getEditableValue()
+        return binding?.tilContactName?.getEditableValue() ?: ""
     }
 
     companion object {
