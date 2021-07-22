@@ -266,7 +266,6 @@ data class ProductCardModel (
     }
 
     private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
-        val sizeVariantLimit = 18
         var sizeVariantCount = 0
         var hiddenSizeVariant = 0
 
@@ -280,9 +279,11 @@ data class ProductCardModel (
                     colorVariant.add(element)
                 }
                 element.isSize() -> {
-                    val additionalSize = element.title.length + 2
+                    val additionalSize = element.title.length + EXTRA_CHAR_SPACE
+                    val isWithinCharLimit =
+                            (sizeVariantCount + additionalSize) <= LABEL_VARIANT_CHAR_LIMIT
 
-                    if ((sizeVariantCount + additionalSize) <= sizeVariantLimit) {
+                    if (isWithinCharLimit) {
                         sizeVariant.add(element)
                         sizeVariantCount += additionalSize
                     }
