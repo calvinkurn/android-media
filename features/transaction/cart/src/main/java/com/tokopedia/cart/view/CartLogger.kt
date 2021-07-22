@@ -15,14 +15,15 @@ object CartLogger {
         if (shouldTriggerLog(throwable)) {
             val errorMessage = throwable.message
                     ?: if (throwable is ResponseErrorException) "response is null or response is error but empty message" else "unknown exception"
+            val mapData = mapOf(
+                    LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
+                    LoggerConstant.Key.MESSAGE to errorMessage,
+                    LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
+            )
             ServerLogger.log(
                     Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                    mapOf(
-                            LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
-                            LoggerConstant.Key.MESSAGE to errorMessage,
-                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString()
-                    )
+                    mapData
             )
         }
     }
@@ -31,18 +32,19 @@ object CartLogger {
         if (shouldTriggerLog(throwable)) {
             val productIdList = mutableListOf<String>()
             cartItemDataList.forEach { cartItemData ->
-                productIdList.add(cartItemData.originData?.productId ?: "")
+                productIdList.add(cartItemData.originData.productId)
             }
             val errorMessage = throwable.message ?: "unknown exception"
+            val mapData = mapOf(
+                    LoggerConstant.Key.TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
+                    LoggerConstant.Key.MESSAGE to errorMessage,
+                    LoggerConstant.Key.PRODUCT_ID_LIST to productIdList.joinToString(","),
+                    LoggerConstant.Key.STACK_TRACE to throwable.stackTraceToString()
+            )
             ServerLogger.log(
                     Priority.P2,
                     LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                    mapOf(
-                            LoggerConstant.Key.TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
-                            LoggerConstant.Key.MESSAGE to errorMessage,
-                            LoggerConstant.Key.PRODUCT_ID_LIST to productIdList.joinToString(","),
-                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString()
-                    )
+                    mapData
             )
         }
     }
