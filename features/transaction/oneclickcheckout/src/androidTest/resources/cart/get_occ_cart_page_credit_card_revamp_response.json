@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "get_occ_cart_page": {
+      "get_occ_multi": {
         "error_message": [],
         "status": "OK",
         "data": {
@@ -15,19 +15,6 @@
           ],
           "max_quantity": 32767,
           "max_char_note": 144,
-          "messages": {
-            "ErrorFieldBetween": "Jumlah harus diisi antara 1 - {{value}}",
-            "ErrorFieldMaxChar": "Catatan terlalu panjang, maks. {{value}} karakter.",
-            "ErrorFieldRequired": "Jumlah harus diisi",
-            "ErrorProductAvailableStock": "Stok tersedia:{{value}}",
-            "ErrorProductAvailableStockDetail": "Harap kurangi jumlah barang",
-            "ErrorProductMaxQuantity": "Maks. beli {{value}} barang",
-            "ErrorProductMinQuantity": "Min. beli {{value}} barang"
-          },
-          "ticker_message": {
-            "message": "",
-            "replacement": []
-          },
           "occ_main_onboarding": {
             "force_show_coachmark": false,
             "show_onboarding_ticker": true,
@@ -68,135 +55,24 @@
           "kero_unix_time": 1596441164,
           "kero_discom_token": "Tokopedia+Kero:4jkXo613lzxOb0PAe2GjlRGKfIs\u003d",
           "errors": [],
-          "cart_list": [
+          "group_shop_occ": [
             {
               "errors": [],
-              "cart_id": 33442037,
-              "product": {
-                "product_tracker_data": {
-                  "attribution": "none/other",
-                  "tracker_list_name": "none/other"
-                },
-                "isWishlist": false,
-                "product_id": 15147773,
-                "product_name": "Product1",
-                "product_price_fmt": "Rp100.000",
-                "product_price": 100000,
-                "parent_id": 0,
-                "category_id": 580,
-                "category": "Kamera, Foto \u0026 Video / Lensa \u0026 Aksesoris / Lensa",
-                "catalog_id": 0,
-                "wholesale_price": [],
-                "product_weight_fmt": "10gr",
-                "product_weight": 10,
-                "product_condition": 1,
-                "product_status": 1,
-                "product_url": "https://staging.tokopedia.com/tokocgk/cpl-konven",
-                "product_returnable": 0,
-                "is_freereturns": 0,
-                "is_preorder": 0,
-                "product_cashback": "",
-                "product_min_order": 1,
-                "product_max_order": 32767,
-                "product_rating": "0.000000",
-                "product_invenage_value": 32766,
-                "product_switch_invenage": 1,
-                "product_invenage_total": {
-                  "by_user": {
-                    "in_cart": 0,
-                    "last_stock_less_than": 0
-                  },
-                  "by_user_text": {
-                    "in_cart": "",
-                    "last_stock_less_than": "",
-                    "complete": ""
-                  },
-                  "is_counted_by_user": false,
-                  "by_product": {
-                    "in_cart": 0,
-                    "last_stock_less_than": 0
-                  },
-                  "by_product_text": {
-                    "in_cart": "",
-                    "last_stock_less_than": "",
-                    "complete": ""
-                  },
-                  "is_counted_by_product": false
-                },
-                "price_changes": {
-                  "changes_state": 0,
-                  "amount_difference": 0,
-                  "original_amount": 100000,
-                  "description": "Harga Normal"
-                },
-                "product_price_currency": 1,
-                "product_image": {
-                  "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
-                  "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
-                  "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
-                  "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg"
-                },
-                "product_all_images": "[{\"file_name\":\"5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg\",\"file_path\":\"product-1/2017/11/30/5513284\",\"status\":2}]",
-                "product_notes": "",
-                "product_quantity": 1,
-                "product_weight_unit_code": 1,
-                "product_weight_unit_text": "gr",
-                "last_update_price": "1512021695",
-                "is_update_price": false,
-                "product_preorder": {
-                  "duration_text": "",
-                  "duration_day": "0",
-                  "duration_unit_code": "0",
-                  "duration_unit_text": "",
-                  "duration_value": "0"
-                },
-                "product_showcase": {
-                  "name": "mainan",
-                  "id": 1403015
-                },
-                "product_alias": "cpl-konven",
-                "sku": "",
-                "campaign_id": 0,
-                "product_original_price": 0,
-                "product_price_original_fmt": "",
-                "is_slash_price": false,
-                "free_returns": {
-                  "free_returns_logo": ""
-                },
-                "product_finsurance": 1,
-                "is_wishlisted": true,
-                "is_ppp": false,
-                "is_cod": true,
-                "warehouse_id": 2034,
-                "is_parent": false,
-                "is_campaign_error": false,
-                "is_blacklisted": false,
+              "cart_string": "480176-0-2034-4678943",
+              "shipment_information": {
+                "shop_location": "Kota Yogyakarta",
                 "free_shipping": {
                   "eligible": true,
                   "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
-                "booking_stock": 0,
-                "product_variant": {
-                  "parent_id": 0,
-                  "default_child": 0,
-                  "variant": [],
-                  "children": []
+                "free_shipping_extra": {
+                  "eligible": true,
+                  "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "preorder": {
+                  "is_preorder": false,
+                  "duration": ""
                 }
-              },
-              "cart_string": "480176-0-2034-4678943",
-              "payment_profile": "",
-              "purchase_protection_plan_data": {
-                "protection_available": false,
-                "protection_type_id": 0,
-                "protection_price_per_product": 0,
-                "protection_price": 0,
-                "protection_title": "",
-                "protection_subtitle": "",
-                "protection_link_text": "",
-                "protection_link_url": "",
-                "protection_opt_in": false,
-                "protection_checkbox_disabled": false,
-                "unit": ""
               },
               "shop": {
                 "shop_id": 480176,
@@ -467,11 +343,127 @@
                 "address_detail": "kecamatan danurejan 55212",
                 "country_name": "Indonesia",
                 "is_fulfillment": false
-              }
+              },
+              "cart_details": [
+                {
+                  "products": [
+                    {
+                      "cart_id": 33442037,
+                      "product_tracker_data": {
+                        "attribution": "none/other",
+                        "tracker_list_name": "none/other"
+                      },
+                      "isWishlist": false,
+                      "product_id": 15147773,
+                      "product_name": "Product1",
+                      "product_price_fmt": "Rp100.000",
+                      "product_price": 100000,
+                      "parent_id": 0,
+                      "category_id": 580,
+                      "category": "Kamera, Foto \u0026 Video / Lensa \u0026 Aksesoris / Lensa",
+                      "catalog_id": 0,
+                      "wholesale_price": [],
+                      "product_weight_fmt": "10gr",
+                      "product_weight": 10,
+                      "product_condition": 1,
+                      "product_status": 1,
+                      "product_url": "https://staging.tokopedia.com/tokocgk/cpl-konven",
+                      "product_returnable": 0,
+                      "is_freereturns": 0,
+                      "is_preorder": 0,
+                      "product_cashback": "",
+                      "product_min_order": 1,
+                      "product_max_order": 32767,
+                      "product_rating": "0.000000",
+                      "product_invenage_value": 32766,
+                      "product_switch_invenage": 1,
+                      "product_invenage_total": {
+                        "by_user": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_user_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_user": false,
+                        "by_product": {
+                          "in_cart": 0,
+                          "last_stock_less_than": 0
+                        },
+                        "by_product_text": {
+                          "in_cart": "",
+                          "last_stock_less_than": "",
+                          "complete": ""
+                        },
+                        "is_counted_by_product": false
+                      },
+                      "price_changes": {
+                        "changes_state": 0,
+                        "amount_difference": 0,
+                        "original_amount": 100000,
+                        "description": "Harga Normal"
+                      },
+                      "product_price_currency": 1,
+                      "product_image": {
+                        "image_src": "https://cdn-staging.tokopedia.com/img/cache/700/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
+                        "image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/12/70588522/70588522_35c0cf04-4c5e-43ba-a275-3585d852c155_800_800",
+                        "image_src_300": "https://cdn-staging.tokopedia.com/img/cache/300/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg",
+                        "image_src_square": "https://cdn-staging.tokopedia.com/img/cache/500-square/product-1/2017/11/30/5513284/5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg"
+                      },
+                      "product_all_images": "[{\"file_name\":\"5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg\",\"file_path\":\"product-1/2017/11/30/5513284\",\"status\":2}]",
+                      "product_notes": "",
+                      "product_quantity": 1,
+                      "product_weight_unit_code": 1,
+                      "product_weight_unit_text": "gr",
+                      "last_update_price": "1512021695",
+                      "is_update_price": false,
+                      "product_preorder": {
+                        "duration_text": "",
+                        "duration_day": "0",
+                        "duration_unit_code": "0",
+                        "duration_unit_text": "",
+                        "duration_value": "0"
+                      },
+                      "product_showcase": {
+                        "name": "mainan",
+                        "id": 1403015
+                      },
+                      "product_alias": "cpl-konven",
+                      "sku": "",
+                      "campaign_id": 0,
+                      "product_original_price": 0,
+                      "product_price_original_fmt": "",
+                      "is_slash_price": false,
+                      "free_returns": {
+                        "free_returns_logo": ""
+                      },
+                      "product_finsurance": 1,
+                      "is_wishlisted": true,
+                      "is_ppp": false,
+                      "is_cod": true,
+                      "warehouse_id": 2034,
+                      "is_parent": false,
+                      "is_campaign_error": false,
+                      "is_blacklisted": false,
+                      "free_shipping": {
+                        "eligible": true,
+                        "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                      },
+                      "booking_stock": 0,
+                      "product_variant": {
+                        "parent_id": 0,
+                        "default_child": 0,
+                        "variant": [],
+                        "children": []
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ],
-          "profile_index_wording": "Pilihan 1",
-          "profile_recommendation_wording": "",
           "profile": {
             "has_preference": true,
             "is_changed_profile": false,
@@ -686,19 +678,6 @@
             "description": "",
             "image_url": "",
             "buttons": []
-          },
-          "occ_revamp": {
-            "enable": true,
-            "total_profile": 2,
-            "change_template_text": "Pilih template lain"
-          },
-          "occ_remove_profile": {
-            "enable": true,
-            "ui_type": 2,
-            "message": {
-              "title": "",
-              "description": ""
-            }
           }
         }
       }

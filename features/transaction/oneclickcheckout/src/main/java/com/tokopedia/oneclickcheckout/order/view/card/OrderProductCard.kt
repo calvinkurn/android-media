@@ -260,6 +260,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 qtyEditorProduct.editText.removeTextChangedListener(quantityTextWatcher)
                 qtyEditorProduct.setValueChangedListener { _, _, _ -> }
             }
+            qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             qtyEditorProduct.autoHideKeyboard = true
             qtyEditorProduct.minValue = product.quantity.minOrderQuantity
             qtyEditorProduct.maxValue = product.quantity.maxOrderStock

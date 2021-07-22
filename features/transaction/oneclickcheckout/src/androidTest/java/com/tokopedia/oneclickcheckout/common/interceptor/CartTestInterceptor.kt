@@ -44,8 +44,8 @@ class CartTestInterceptor : BaseOccInterceptor() {
     }
 }
 
-const val GET_OCC_CART_QUERY = "get_occ_cart_page"
-const val UPDATE_CART_OCC_QUERY = "update_cart_occ"
+const val GET_OCC_CART_QUERY = "get_occ_multi"
+const val UPDATE_CART_OCC_QUERY = "update_cart_occ_multi"
 
 const val GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_revamp_response.json"
 const val GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_expired_revamp_response.json"
