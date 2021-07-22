@@ -4,13 +4,15 @@ import android.media.RingtoneManager.TYPE_NOTIFICATION
 import android.net.Uri
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
-import com.tokopedia.troubleshooter.notification.data.domain.TroubleshootStatusUseCase
+import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
+import com.tokopedia.troubleshooter.notification.data.mapper.mapToSendTroubleshoot
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
@@ -22,12 +24,11 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -48,16 +49,16 @@ interface TroubleshootContract {
 }
 
 class TroubleshootViewModel @Inject constructor(
-        @Named(KEY_SELLER_SETTING) private val sellerSettingUseCase: GetUserSettingUseCase,
-        @Named(KEY_USER_SETTING) private val userSettingUseCase: GetUserSettingUseCase,
-        private val troubleshootUseCase: TroubleshootStatusUseCase,
-        private val notificationChannel: NotificationChannelManager,
-        private val notificationCompat: NotificationCompatManager,
-        private val messagingManager: FirebaseMessagingManager,
-        private val instanceManager: FirebaseInstanceManager,
-        private val ringtoneMode: RingtoneModeService,
-        private val userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatchers
+    @Named(KEY_SELLER_SETTING) private val sellerSettingUseCase: GetUserSettingUseCase,
+    @Named(KEY_USER_SETTING) private val userSettingUseCase: GetUserSettingUseCase,
+    private val troubleshootStatus: GetTroubleshootStatusUseCase,
+    private val notificationChannel: NotificationChannelManager,
+    private val notificationCompat: NotificationCompatManager,
+    private val messagingManager: FirebaseMessagingManager,
+    private val instanceManager: FirebaseInstanceManager,
+    private val ringtoneMode: RingtoneModeService,
+    private val userSession: UserSessionInterface,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io), TroubleshootContract, LifecycleObserver {
 
     private val _notificationStatus = MutableLiveData<Boolean>()
@@ -72,8 +73,11 @@ class TroubleshootViewModel @Inject constructor(
     private val _notificationRingtoneUri = MutableLiveData<Pair<Uri?, RingtoneState>>()
     val notificationRingtoneUri: LiveData<Pair<Uri?, RingtoneState>> get() = _notificationRingtoneUri
 
-    private val _troubleshoot = MutableLiveData<Result<NotificationSendTroubleshoot>>()
-    val troubleshoot: LiveData<Result<NotificationSendTroubleshoot>> get() = _troubleshoot
+    private val _troubleshoot = MutableLiveData<NotificationSendTroubleshoot>()
+    val troubleshootSuccess: LiveData<NotificationSendTroubleshoot> get() = _troubleshoot
+
+    private val _troubleshootError = MutableLiveData<Throwable>()
+    val troubleshootError: LiveData<Throwable> get() = _troubleshootError
 
     private val _token = MediatorLiveData<Result<String>>()
     val token: LiveData<Result<String>> get() = _token
@@ -116,14 +120,16 @@ class TroubleshootViewModel @Inject constructor(
     }
 
     override fun troubleshoot() {
-        launchCatchError(block = {
-            val result = troubleshootUseCase(RequestParams.EMPTY)
+        launch {
+            val result = troubleshootStatus()
+
             withContext(dispatcher.main) {
-                _troubleshoot.value = Success(result.notificationSendTroubleshoot)
+                when (result) {
+                    is Success -> _troubleshoot.value = result.data.mapToSendTroubleshoot()
+                    is Fail -> _troubleshootError.value = result.throwable // fail from backend response
+                }
             }
-        }, onError = {
-            _troubleshoot.postValue(Fail(it))
-        })
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
