@@ -25,6 +25,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.databinding.FragmentHotelRecommendationBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
@@ -41,8 +42,8 @@ import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
 import javax.inject.Inject
 
 /**
@@ -54,6 +55,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
+    private var binding by autoClearedNullable<FragmentHotelRecommendationBinding>()
 
     lateinit var currentLocationTextView: TextView
     lateinit var currentLocationLayout: View
@@ -88,24 +90,24 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_hotel_recommendation, container, false)
-        initView(view)
-        return view
+        binding = FragmentHotelRecommendationBinding.inflate(inflater, container, false)
+        initView()
+        return binding?.root
     }
 
-    fun initView(view: View) {
-        initCurrentLocationTextView(view)
-        initRecentSearch(view)
+    fun initView() {
+        initCurrentLocationTextView()
+        initRecentSearch()
     }
 
-    fun initRecentSearch(view: View) {
+    fun initRecentSearch() {
         //init recyclerview
         val layoutManager = ChipsLayoutManager.newBuilder(context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
         val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-        val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
+        val recentSearchRecyclerView = binding?.recentSearchRecyclerView as RecyclerView
         recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp
                 ?: 0, staticDimen8dp ?: 0))
         recentSearchRecyclerView.layoutManager = layoutManager
@@ -114,10 +116,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         recentSearchRecyclerView.adapter = recentSearchAdapter
 
         //init titleBar
-        recentSearchLayout = view.findViewById(R.id.recent_search_layout)
-        deleteSearchTextView = view.findViewById(R.id.delete_text_view)
-        deleteSearchTextView.setOnClickListener {
-            recentSearchAdapter.deleteAllRecentSearch()
+        binding?.let {
+            recentSearchLayout = it.recentSearchLayout
+            deleteSearchTextView = it.deleteTextView
+            deleteSearchTextView.setOnClickListener {
+                recentSearchAdapter.deleteAllRecentSearch()
+            }
         }
     }
 
@@ -125,13 +129,13 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun getRecyclerViewResourceId() = com.tokopedia.hotel.R.id.recycler_view
 
-    fun initCurrentLocationTextView(view: View) {
-
-        currentLocationTextView = view.findViewById(R.id.current_location_tv)
-
-        currentLocationLayout = view.findViewById(R.id.current_location_layout)
-        currentLocationLayout.setOnClickListener {
-           getCurrentLocation()
+    fun initCurrentLocationTextView() {
+        binding?.let {
+            currentLocationTextView = it.currentLocationTv
+            currentLocationLayout = it.currentLocationLayout
+            currentLocationLayout.setOnClickListener {
+                getCurrentLocation()
+            }
         }
     }
 
@@ -214,9 +218,9 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     private fun showOnlyList(showListOnly: Boolean) {
-        current_location_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
-        recent_search_layout.visibility = if (showListOnly) View.GONE else View.VISIBLE
-        popular_search_title.visibility = if (showListOnly) View.GONE else View.VISIBLE
+        binding?.currentLocationLayout?.visibility = if (showListOnly) View.GONE else View.VISIBLE
+        binding?.recentSearchLayout?.visibility = if (showListOnly) View.GONE else View.VISIBLE
+        binding?.popularSearchTitle?.visibility = if (showListOnly) View.GONE else View.VISIBLE
     }
 
     override fun onDeleteRecentSearchItem(uuid: String) {
