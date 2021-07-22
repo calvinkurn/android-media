@@ -100,7 +100,7 @@ class SomListBulkRequestPickupDialog(context: Context) {
     fun showSuccess() {
         loaderBulkAccept?.hide()
         ivBulkAcceptDialog?.apply {
-            loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_request_pick_up_success)
+            loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_success)
             show()
         }
     }
@@ -108,7 +108,7 @@ class SomListBulkRequestPickupDialog(context: Context) {
     fun showFailed() {
         loaderBulkAccept?.hide()
         ivBulkAcceptDialog?.apply {
-            loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_request_pick_up_fail)
+            loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_fail)
             show()
         }
     }

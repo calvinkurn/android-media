@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -53,7 +54,7 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
         childViews?.apply {
             findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.gone()
             findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.apply {
-                loadImageDrawable(com.tokopedia.sellerorder.R.drawable.ic_som_list_success_bulk_accept)
+                loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_success)
                 show()
             }
         }
@@ -63,7 +64,7 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
         childViews?.apply {
             findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.gone()
             findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.apply {
-                loadImageDrawable(com.tokopedia.sellerorder.R.drawable.ic_som_list_failed_bulk_accept)
+                loadImage(com.tokopedia.sellerorder.R.drawable.ic_som_bulk_fail)
                 show()
             }
         }
@@ -74,7 +75,9 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
             setText(text)
             showWithCondition(text.isNotBlank())
             setOnClickListener {
+                isLoading = true
                 onPrimaryButtomClicked.invoke()
+                isLoading = false
             }
         }
     }

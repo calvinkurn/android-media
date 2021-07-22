@@ -1244,7 +1244,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     showAllFailEligibleBulkRequestPickup(it.orderIdListFail)
                 }
                 is AllNotEligible -> {
-                    showErrorBulkRequestPickupStatus(true)
+                    showErrorBulkRequestPickupStatus()
                 }
                 is ServerFail -> {
                     bulkRequestPickupDialog?.dismiss()
@@ -1412,12 +1412,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
         }
     }
 
-    private fun showErrorBulkRequestPickupStatus(isAllNotEligible: Boolean = false) {
+    private fun showErrorBulkRequestPickupStatus() {
         bulkRequestPickupDialog?.run {
             setTitle(getString(R.string.som_list_bulk_request_pickup_title_fail))
             setDescription(getString(R.string.som_list_bulk_request_pickup_desc_fail_all_validation))
             setPrimaryButton(getString(R.string.understand)) {
-                if (isAllNotEligible) dismissAndRunAction() else dismiss()
+                dismissAndRunAction()
             }
             hideSecondaryButton()
             showFailed()
