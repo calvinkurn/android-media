@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_A
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_BANNER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_DELETE_ITEM_FROM_CART
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_PRODUCT
@@ -74,6 +75,7 @@ object SearchTracking {
         const val CLICK_BANNER = "click - banner"
         const val CLICK_APPLY_CATEGORY_FILTER = "click - apply category filter"
         const val EVENT_ACTION_CLICK_SEARCH_BAR_VALUE = "click - search - search bar"
+        const val CLICK_DELETE_ITEM_FROM_CART = "click - delete all items from cart"
     }
 
     object Category {
@@ -428,6 +430,21 @@ object SearchTracking {
                         PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams)
                     ),
                 )
+            )
+        )
+    }
+
+    fun sendDeleteCartEvent(
+            productId: String,
+    ) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_DELETE_ITEM_FROM_CART,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, productId,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
             )
         )
     }

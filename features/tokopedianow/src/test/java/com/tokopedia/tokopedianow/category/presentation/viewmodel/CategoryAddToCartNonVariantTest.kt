@@ -20,6 +20,7 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
                 tokoNowCategoryViewModel,
                 addToCartUseCase,
                 updateCartUseCase,
+                deleteCartUseCase,
                 getMiniCartListSimplifiedUseCase,
                 userSession,
                 this,
@@ -63,5 +64,15 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
     @Test
     fun `test ATC non login should redirect to cart page`() {
         addToCartTestHelper.`test ATC non login should redirect to login page`()
+    }
+
+    @Test
+    fun `delete cart success`() {
+        addToCartTestHelper.`test delete cart success`()
+    }
+
+    @Test
+    fun `delete cart failed`() {
+        addToCartTestHelper.`delete cart failed`()
     }
 }
