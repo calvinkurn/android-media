@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -37,7 +38,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GridItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_grid, parent, false)
-        return GridItemViewHolder(view, gridPostViewModel.positionInFeed, contentPosition, listener)
+        return GridItemViewHolder(view, gridPostViewModel.positionInFeed, contentPosition, listener, gridPostViewModel)
     }
 
     override fun getItemCount(): Int {
@@ -63,7 +64,10 @@ class GridPostAdapter(private val contentPosition: Int,
                     extraProduct,
                     gridPostViewModel.actionText,
                     gridPostViewModel.actionLink,
-                    gridPostViewModel.postId
+                    gridPostViewModel.postId,
+                    gridPostViewModel.postType,
+                    gridPostViewModel.isFollowed,
+                    gridPostViewModel.shopId
             )
 
         } else if (gridPostViewModel.showGridButton
@@ -72,27 +76,34 @@ class GridPostAdapter(private val contentPosition: Int,
                 && position == LAST_FEED_POSITION_SMALL) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION_SMALL
             holder.bindOthers(
-                    extraProduct,
-                    gridPostViewModel.actionText,
-                    gridPostViewModel.actionLink,
-                    gridPostViewModel.postId
+                extraProduct,
+                gridPostViewModel.actionText,
+                gridPostViewModel.actionLink,
+                gridPostViewModel.postId,
+                gridPostViewModel.postType,
+                gridPostViewModel.isFollowed,
+                gridPostViewModel.shopId
             )
 
         } else {
-            holder.bindProduct(gridPostViewModel.itemList[position])
+            holder.bindProduct(gridPostViewModel.postId,
+                gridPostViewModel.itemList[position],
+                gridPostViewModel.postType,
+                gridPostViewModel.isFollowed,
+                gridPostViewModel.shopId)
         }
     }
 
     class GridItemViewHolder(val v: View,
                              private val positionInFeed: Int,
                              private val contentPosition: Int,
-                             private val listener: GridItemListener) : RecyclerView.ViewHolder(v) {
+                             private val listener: GridItemListener, private val gridPostViewModel: GridPostViewModel) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String, listSize: Int) {
             itemView.productImage.loadImageRounded(image, RAD_10f)
             setImageMargins(listSize)
         }
 
-        fun bindProduct(item: GridItemViewModel) {
+        fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean, shopId: String) {
             itemView.extraProduct.background = null
             itemView.extraProduct.hide()
 
@@ -116,7 +127,14 @@ class GridPostAdapter(private val contentPosition: Int,
             }
 
             itemView.setOnClickListener {
-                listener.onGridItemClick(positionInFeed, contentPosition, adapterPosition, item.redirectLink)
+                listener.onGridItemClick(positionInFeed,
+                    postId,
+                    item.id.toInt(),
+                    item.redirectLink,
+                    type,
+                    isFollowed,
+                    shopId,
+                    gridPostViewModel.itemListFeedXProduct[item.index])
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -152,7 +170,7 @@ class GridPostAdapter(private val contentPosition: Int,
         }
 
         fun bindOthers(numberOfExtraProduct: Int, actionText: String,
-                       actionLink: String, postId: Int) {
+                       actionLink: String, postId: Int, type: String, isFollowed: Boolean, shopId: String) {
             val extra = "+$numberOfExtraProduct $actionText"
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
@@ -164,11 +182,15 @@ class GridPostAdapter(private val contentPosition: Int,
 
             itemView.setOnClickListener {
                 listener.onGridItemClick(
-                        positionInFeed,
-                        contentPosition,
-                        adapterPosition,
-                        if (!TextUtils.isEmpty(actionLink)) actionLink
-                        else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
+                    positionInFeed,
+                    postId,
+                    0,
+                    if (!TextUtils.isEmpty(actionLink)) actionLink
+                    else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
+                    type,
+                    isFollowed,
+                    shopId,
+                    gridPostViewModel.itemListFeedXProduct[0]
                 )
             }
         }
@@ -187,8 +209,12 @@ class GridPostAdapter(private val contentPosition: Int,
     }
 
     interface GridItemListener {
-        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
-                            redirectLink: String)
+        fun onGridItemClick(
+            positionInFeed: Int, activityId: Int, productId: Int,
+            redirectLink: String, type: String, isFollowed: Boolean,
+            shopId: String,
+            feedXProduct: FeedXProduct
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }

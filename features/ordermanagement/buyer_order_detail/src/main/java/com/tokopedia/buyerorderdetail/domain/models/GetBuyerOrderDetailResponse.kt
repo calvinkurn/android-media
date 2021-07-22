@@ -119,7 +119,7 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("id")
                     val id: String = "0",
                     @SerializedName("indicator_color")
-                    val indicatorColor: String = "#FFC400",
+                    val indicatorColor: String = "",
                     @SerializedName("status_name")
                     val statusName: String = ""
             )
