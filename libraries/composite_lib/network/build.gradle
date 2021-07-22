@@ -14,7 +14,7 @@ buildscript {
 project.ext {
     artifactId = 'network'
     groupId = 'com.tokopedia.network'
-    versionName = "1.1.20"
+    versionName = "1.1.21"
     artifactName = "network-debug"
 }
 
@@ -26,6 +26,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
+    implementation rootProject.ext.tkpdInternalLibDependencies.logger
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 }
