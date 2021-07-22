@@ -96,8 +96,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun onImageSwiped(previousIndex: Int, index: Int) {
-        ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
-        reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+        if(index != RecyclerView.NO_POSITION) {
+            ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
+            reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

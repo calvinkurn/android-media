@@ -119,7 +119,6 @@ ext {
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
     unifyTotalAmountVersion = '1.0.3'
     unifyExplorePromoVersion = '1.0.2'
-    unifyImageGalleryVersion = '1.0.0'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -365,7 +364,6 @@ ext {
             accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
             total_amount    : "com.tokopedia.unify.compositions:total_amount:${unifyTotalAmountVersion}@aar",
             explore_promo   : "com.tokopedia.unify.compositions:explore_promo:${unifyExplorePromoVersion}@aar",
-            icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar",
-            imageGallery    : "com.tokopedia.unify.compositions:image_gallery:${unifyImageGalleryVersion}@aar"
+            icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }
