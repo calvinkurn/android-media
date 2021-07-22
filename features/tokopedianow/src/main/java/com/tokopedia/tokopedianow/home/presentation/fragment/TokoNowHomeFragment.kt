@@ -281,6 +281,11 @@ class TokoNowHomeFragment: Fragment(),
             isVariantAdded = true
         }
         super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                stickyLoginLoadContent()
+            }
+        }
     }
 
     private fun initInjector() {
