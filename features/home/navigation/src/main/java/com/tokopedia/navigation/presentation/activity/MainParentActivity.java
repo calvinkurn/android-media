@@ -257,7 +257,7 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
-        installDFonBackground();
+//        installDFonBackground();
         runRiskWorker();
     }
 
