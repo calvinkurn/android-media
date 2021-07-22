@@ -59,11 +59,11 @@
 
     <string name="category_back_menu">Kembali</string>
 
-    <string name="onboarding_login_p1_s1_title">Halo, sekarang Akunmu di sini~</string>
-    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun, atau cek TokoPoints &#38; saldo lainnya. Buat kamu yang punya toko bisa akses di sini.</string>
+    <string name="onboarding_login_p1_s1_title">Akunmu ada di sini~ 😎️</string>
+    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun & cek semua danamu, kayak GoPay, Saldo Tokopedia, TokoPoints, &#38; lainnya!</string>
 
-    <string name="onboarding_login_p1_s2_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
-    <string name="onboarding_login_p1_s2_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
+    <string name="onboarding_login_p1_s2_title">Banyak aktivitas yang bisa kamu lakukan 💪</string>
+    <string name="onboarding_login_p1_s2_description">Kamu bisa bayar tagihan 38 cek transaksi di sini. Kalau transaksi selesai, jangan lupa tulis Ulasan, ya!</string>
 
     <string name="onboarding_login_p1_s3_title">Ada yang mau kamu tanyakan?</string>
     <string name="onboarding_login_p1_s3_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>

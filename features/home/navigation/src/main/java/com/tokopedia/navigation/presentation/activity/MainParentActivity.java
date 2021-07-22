@@ -63,7 +63,6 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
-import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
@@ -518,7 +517,6 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private int getPositionFragmentByMenu(int i) {
-        //new menu with wishlist and uoh
         int position = HOME_MENU;
         if (i == FEED_MENU) {
             position = FEED_MENU;

@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.home_wishlist.di.WishlistModule;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.fragment.NotificationFragment;

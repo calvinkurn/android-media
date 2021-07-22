@@ -497,9 +497,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         addEndlessScrollListener()
     }
 
-    private fun resetFocusEditText() {
-        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
-    }
+//    private fun resetFocusEditText() {
+//        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
+//    }
 
     private fun getLimitDate(): GregorianCalendar {
         var returnDate = GregorianCalendar()
