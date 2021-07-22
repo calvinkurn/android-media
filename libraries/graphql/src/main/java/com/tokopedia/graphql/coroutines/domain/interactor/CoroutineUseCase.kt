@@ -15,6 +15,11 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
 ) {
 
     /*
+    * override this to set the graphql query
+    * */
+    protected abstract fun graphqlQuery(): String
+
+    /*
     * override this to set the code to be executed
     * */
     @Throws(RuntimeException::class)
@@ -38,10 +43,9 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
     }
 
     protected suspend inline fun <reified T> GraphqlRepository.request(
-        graphqlQuery: String,
         params: Map<String, Any>
     ): T {
-        val request = GraphqlRequest(graphqlQuery, T::class.java, params)
+        val request = GraphqlRequest(graphqlQuery(), T::class.java, params)
         val response = getReseponse(listOf(request))
         return response.getSuccessData()
     }
