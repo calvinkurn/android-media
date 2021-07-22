@@ -104,7 +104,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private var currentCategoryName = ""
     private var number: String = ""
-    private var isNeedShowCoachmark = true
+    private var isHideCoachmark = false
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
 
     private var binding: FragmentFavoriteNumberBinding? = null
@@ -151,7 +151,7 @@ class TopupBillsFavoriteNumberFragment :
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
-        isNeedShowCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
+        isHideCoachmark = getLocalCache(CACHE_SHOW_COACH_MARK_KEY)
     }
 
     fun initView() {
@@ -265,7 +265,7 @@ class TopupBillsFavoriteNumberFragment :
             }
         }
 
-        if (isNeedShowCoachmark && numberListAdapter.visitables.isNotEmpty()) {
+        if (!isHideCoachmark && numberListAdapter.visitables.isNotEmpty()) {
             if (numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
                 showCoachmark()
             }
@@ -571,8 +571,9 @@ class TopupBillsFavoriteNumberFragment :
                     }
                     coachMark.showCoachMark(coachMarkItem)
                 }
+                isHideCoachmark = true
                 localCacheHandler.apply {
-                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, false)
+                    putBoolean(CACHE_SHOW_COACH_MARK_KEY, true)
                     applyEditor()
                 }
             }, COACH_MARK_START_DELAY)

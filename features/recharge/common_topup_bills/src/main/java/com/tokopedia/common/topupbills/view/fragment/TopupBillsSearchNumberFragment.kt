@@ -50,7 +50,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     }
 
     private fun setupArguments(arguments: Bundle?) {
-        arguments?.run {ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE
+        arguments?.run {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, "")
             number = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
@@ -225,8 +225,8 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     companion object {
 
         const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
-        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
-        const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE"
 
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsFavNumberItem>): Fragment {

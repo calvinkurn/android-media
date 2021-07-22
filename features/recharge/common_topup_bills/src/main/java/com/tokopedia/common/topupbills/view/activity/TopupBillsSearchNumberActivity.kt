@@ -61,7 +61,6 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
     }
 
     companion object {
-
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
         const val EXTRA_CLIENT_NUMBER_TYPE = "EXTRA_CLIENT_NUMBER_TYPE"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
