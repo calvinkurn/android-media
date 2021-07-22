@@ -126,6 +126,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
+        cartExtension.clear()
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {
