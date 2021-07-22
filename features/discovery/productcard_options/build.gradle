@@ -56,7 +56,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)

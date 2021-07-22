@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -22,13 +24,23 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
-class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
+class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) : ShareBottomsheetListener {
 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
     private var cancelShare: Boolean = false
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private lateinit var productData: ProductData
+    private lateinit var preBuildImage: () -> Unit
+    private lateinit var postBuildImage: () -> Unit
+    //View is the Fragment View
+    private lateinit var parentView: View
 
     fun cancelShare(cancelShare: Boolean) {
         this.cancelShare = cancelShare
@@ -225,6 +237,97 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
         const val log_tag = "BRANCH_GENERATE"
         const val TIMEOUT_LOG = 5_000L // seconds
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        if (isBranchUrlActive()) {
+            val branchStart = System.currentTimeMillis()
+
+            var linkerShareData = productData.let { productDataToLinkerDataMapper(it) }
+            linkerShareData.linkerData?.apply {
+                feature = shareModel.feature
+                channel = shareModel.channel
+                campaign = shareModel.campaign
+                ogTitle = "{set_og_title}"
+                ogDescription = "{set_og_description}"
+                if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                    ogImageUrl = shareModel.ogImgUrl
+                }
+            }
+
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                linkerShareData, object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult) {
+                        val branchEnd = System.currentTimeMillis()
+                        branchTime = (branchEnd - branchStart)
+                        postBuildImage?.invoke()
+                        var shareString = productData.getShareContent(linkerShareData.url)
+                        shareModel.subjectName = "{set_subject_name_for_email}"
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
+                        if (isLog) {
+                            log(mode, resourceReady, imageProcess, branchTime, err, null)
+                        }
+                        universalShareBottomSheet?.dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError) {
+                        postBuildImage.invoke()
+                        productData.let { openIntentShareDefault(null, it) }
+                        if (isLog) {
+                            log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
+                        }
+                        universalShareBottomSheet?.dismiss()
+                    }
+                }))
+        } else {
+            postBuildImage.invoke()
+            productData.let { openIntentShareDefault(null, it) }
+            if (isLog) {
+                log(mode, resourceReady, imageProcess, branchTime, err, null)
+            }
+        }
+    }
+
+    override fun onCloseOptionClicked() {
+        TODO("Not yet implemented")
+    }
+
+
+    fun showUniversalShareBottomSheet(fragmentManager:FragmentManager?,
+                                      data: ProductData, preBuildImg: () -> Unit,
+                                      postBuildImg: () -> Unit,
+                                      isLog: Boolean = false,
+                                      view: View? = null,
+                                      productImgList:ArrayList<String>? = null) {
+        cancelShare = false
+        resetLog()
+        this.isLog = isLog
+        timeStartShare = System.currentTimeMillis()
+
+        productData = data
+        postBuildImage = postBuildImg
+        preBuildImage = preBuildImg
+        if (view != null) {
+            parentView = view
+        }
+
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@ProductShare)
+            //Example Integration
+            //Please replace userId and productId with actual values
+            setUtmCampaignData("PDP", "userId", "productId", "Share")
+            //example integration
+            var productImagesList: ArrayList<String> = ArrayList()
+            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/7736c4fc-d951-48ba-a74a-8d22557731d7.jpg")
+            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/80e43157-2eb1-4f6d-8697-b5ec12e867a1.jpg")
+            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/b289820f-a568-40a7-8dc9-967440e5088f.jpg")
+            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/76ff5584-31cc-44bb-833e-121e3d937598.jpg")
+            productImagesList.add("https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/7/12e9194a-6456-4cd2-b250-c366153cac20.jpg")
+            setMetaData(productData.productName ?: "",
+                            productData.productImageUrl ?: "",
+                            "", productImagesList)
+        }
+        universalShareBottomSheet?.show(fragmentManager)
     }
 }
 
