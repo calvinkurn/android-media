@@ -11,11 +11,11 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.DeleteCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -23,6 +23,7 @@ import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
@@ -223,7 +224,7 @@ class TokoNowHomeViewModel @Inject constructor(
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
-                    miniCartSimplifiedData = it
+                    setMiniCartSimplifiedData(it)
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -315,13 +316,19 @@ class TokoNowHomeViewModel @Inject constructor(
         })
     }
 
-    fun updateProductCard(items: List<MiniCartItem>, needToObserve: Boolean) {
+    fun updateProductCard(item: MiniCartSimplifiedData, needToObserve: Boolean) {
         val productRecomUiModel = homeLayoutItemList.find { it.layout is HomeProductRecomUiModel }?.layout as HomeProductRecomUiModel
         val recom = productRecomUiModel.recomWidget.copy()
-        items.map { miniCartItem ->
+
+        val groupVariant = item.miniCartItems.groupBy { it.productParentId }
+        item.miniCartItems.map { miniCartItem ->
             recom.recommendationItemList.forEach { recommendationItem ->
-                if (recommendationItem.productId.toString() == miniCartItem.productId) {
-                    recommendationItem.quantity = miniCartItem.quantity
+                if (miniCartItem.productParentId == recommendationItem.parentID.toString() && miniCartItem.productParentId != NO_VARIANT_PARENT_PRODUCT_ID) {
+                    recommendationItem.quantity = groupVariant[miniCartItem.productParentId]?.sumBy { it.quantity }.orZero()
+                } else {
+                    if (recommendationItem.productId.toString() == miniCartItem.productId) {
+                        recommendationItem.quantity = miniCartItem.quantity
+                    }
                 }
             }
         }
@@ -334,6 +341,10 @@ class TokoNowHomeViewModel @Inject constructor(
             )
             _homeLayoutList.postValue(Success(data))
         }
+    }
+
+    fun setMiniCartSimplifiedData(data: MiniCartSimplifiedData) {
+        miniCartSimplifiedData = data
     }
 
     fun removeTickerWidget(id: String) {
@@ -415,7 +426,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val channelId = item.visitableId
             val response = getHomeLayoutDataUseCase.execute(channelId)
             homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
-            miniCartSimplifiedData?.miniCartItems?.let {
+            miniCartSimplifiedData?.let {
                 updateProductCard(it, false)
             }
         }) {

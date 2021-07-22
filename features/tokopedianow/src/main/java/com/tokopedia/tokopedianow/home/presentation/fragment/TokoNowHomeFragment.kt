@@ -211,7 +211,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModelTokoNow.updateProductCard(miniCartSimplifiedData.miniCartItems, true)
+        viewModelTokoNow.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModelTokoNow.updateProductCard(miniCartSimplifiedData, true)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
