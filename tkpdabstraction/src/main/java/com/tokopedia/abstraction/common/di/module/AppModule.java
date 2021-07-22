@@ -21,7 +21,7 @@ import dagger.Provides;
 /**
  * @author kulomady on 1/9/17.
  */
-@Module(includes = {NetModule.class, CoroutinesModule.class})
+@Module(includes = {NetModule.class})
 public class AppModule {
 
     private final Context context;
