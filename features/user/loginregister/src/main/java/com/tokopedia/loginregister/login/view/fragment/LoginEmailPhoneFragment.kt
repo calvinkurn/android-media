@@ -1226,9 +1226,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return remoteConfigInstance.abTestPlatform
     }
 
-    fun isEnableFingerprintRollout(): Boolean =
-        getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT).isNotEmpty()
-
+    fun isEnableFingerprintRollout(): Boolean {
+        val variant = getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT)
+        return variant.isNotEmpty()
+    }
 
     fun isEnableEncryptRollout(): Boolean {
         val rolloutKey = if(GlobalConfig.isSellerApp()) {
