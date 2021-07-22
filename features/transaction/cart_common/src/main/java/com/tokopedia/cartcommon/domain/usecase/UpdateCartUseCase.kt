@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.domain.usecase
+package com.tokopedia.cartcommon.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -6,11 +6,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartGqlResponse
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -19,43 +17,8 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
     private var params: Map<String, Any?>? = null
-    private var isFromMiniCartWidget: Boolean = false
 
-    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false, source: String = "") {
-        val updateCartRequestList = mutableListOf<UpdateCartRequest>()
-
-        miniCartItemList.forEach {
-            updateCartRequestList.add(
-                    UpdateCartRequest().apply {
-                        cartId = it.cartId
-                        quantity = it.quantity
-                        notes = it.notes
-                    }
-            )
-        }
-
-        mapParams(updateCartRequestList, source)
-        this.isFromMiniCartWidget = isFromMiniCartWidget
-    }
-
-    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>, source: String = "") {
-        val updateCartRequestList = mutableListOf<UpdateCartRequest>()
-
-        miniCartItemList.forEach {
-            updateCartRequestList.add(
-                    UpdateCartRequest().apply {
-                        cartId = it.cartId
-                        quantity = it.productQty
-                        notes = it.productNotes
-                    }
-            )
-        }
-
-        mapParams(updateCartRequestList, source)
-        isFromMiniCartWidget = true
-    }
-
-    private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>, source: String = "") {
+    fun setParams(updateCartRequestList: List<UpdateCartRequest>, source: String = "") {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_CARTS to updateCartRequestList,
@@ -72,16 +35,8 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
         val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
-        return if (response.updateCartData.status == "OK") {
-            if (isFromMiniCartWidget) {
-                response.updateCartData
-            } else {
-                if (response.updateCartData.data.status) {
-                    response.updateCartData
-                } else {
-                    throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
-                }
-            }
+        return if (response.updateCartData.status == "OK" && response.updateCartData.data.status) {
+            response.updateCartData
         } else {
             throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
         }
