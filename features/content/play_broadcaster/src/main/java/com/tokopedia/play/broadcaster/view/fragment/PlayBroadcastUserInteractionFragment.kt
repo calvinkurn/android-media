@@ -94,6 +94,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
                     interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
                     interactiveSetupView.show()
+                } else {
+                    showToaster(
+                        message = getString(R.string.play_interactive_broadcast_not_allowed),
+                        duration = Toaster.LENGTH_SHORT
+                    )
                 }
             }
 
