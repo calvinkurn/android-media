@@ -156,6 +156,12 @@ public interface ShipmentContract {
         void resetAllCourier();
 
         void setStateLoadingCourierStateAtIndex(int index, boolean isLoading);
+
+        void logOnErrorLoadCheckoutPage(Throwable throwable);
+
+        void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
+
+        void logOnErrorCheckout(Throwable throwable, String request);
     }
 
     interface AnalyticsActionListener {

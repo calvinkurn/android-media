@@ -2,6 +2,8 @@ package com.tokopedia.autocomplete.initialstate
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetDataView
+import com.tokopedia.autocomplete.initialstate.chips.InitialStateChipWidgetTitleDataView
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleDataView
@@ -42,4 +44,8 @@ interface InitialStateTypeFactory {
     fun type(initialStateProductLineTitleDataView: InitialStateProductLineTitleDataView): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+
+    fun type(initialStateChipWidgetDataView: InitialStateChipWidgetDataView): Int
+
+    fun type(initialStateChipWidgetTitleDataView: InitialStateChipWidgetTitleDataView): Int
 }

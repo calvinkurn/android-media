@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
+import com.tokopedia.hotel.databinding.ItemHotelRoomListBinding
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
@@ -13,98 +14,97 @@ import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
-import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
-import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
 import kotlin.math.min
+import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
 
 /**
  * @author by jessica on 25/03/19
  */
 
-class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : AbstractViewHolder<HotelRoom>(view) {
+class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: OnClickBookListener) : AbstractViewHolder<HotelRoom>(binding.root) {
 
     override fun bind(hotelRoom: HotelRoom) {
-        with(itemView) {
+        with(binding) {
             val roomListModel = mapToRoomListModel(hotelRoom)
 
             if (roomListModel.available) {
 
-                room_description_layout.visibility = View.VISIBLE
-                room_full_layout.visibility = View.GONE
+                roomDescriptionLayout.visibility = View.VISIBLE
+                roomFullLayout.root.visibility = View.GONE
 
                 setImageViewPager(roomListModel.images, hotelRoom)
-                room_name_text_view.text = roomListModel.roomName
-                max_occupancy_text_view.text = roomListModel.occupancyText
-                bed_info_text_view.text = context.getString(R.string.hotel_room_list_room_description,
+                roomNameTextView.text = roomListModel.roomName
+                maxOccupancyTextView.text = roomListModel.occupancyText
+                bedInfoTextView.text = itemView.context.getString(R.string.hotel_room_list_room_description,
                         roomListModel.roomSize,
                         roomListModel.bedInfo)
-                room_price_text_view.text = roomListModel.price
-                pay_hotel_layout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
-                pay_hotel_text_view.text = roomListModel.payInHotelString
-                room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
-                room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
-                cc_not_required_text_view.text = roomListModel.creditCardHeader
+                roomPriceTextView.text = roomListModel.price
+                payHotelLayout.visibility = if (roomListModel.payInHotel) View.VISIBLE else View.GONE
+                payHotelTextView.text = roomListModel.payInHotelString
+                roomLeftTextView.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
+                roomLeftTextView.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
+                ccNotRequiredTextView.text = roomListModel.creditCardHeader
                 initRoomFacility(roomListModel.breakfastInfo, roomListModel.refundInfo, roomListModel.roomFacility)
 
-                choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
-                choose_room_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
+                chooseRoomButton.setOnClickListener { listener.onClickBookListener(hotelRoom) }
+                chooseRoomButton.text = getString(R.string.hotel_room_list_choose_room_button, "")
+
 
                 if (roomListModel.slashPrice.isNotEmpty()) {
-                    room_list_slash_price_tv.show()
-                    room_list_slash_price_tv.paintFlags = room_list_slash_price_tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    room_list_slash_price_tv.text = roomListModel.slashPrice
-                } else room_list_slash_price_tv.hide()
+                    roomListSlashPriceTv.show()
+                    roomListSlashPriceTv.paintFlags = roomListSlashPriceTv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    roomListSlashPriceTv.text = roomListModel.slashPrice
+                } else roomListSlashPriceTv.hide()
 
                 if (roomListModel.tagging.isNotEmpty()) {
-                    room_list_tagging_tv.show()
-                    room_list_tagging_tv.text = roomListModel.tagging
-                } else room_list_tagging_tv.hide()
+                    roomListTaggingTv.show()
+                    roomListTaggingTv.text = roomListModel.tagging
+                } else roomListTaggingTv.hide()
 
             } else {
-                room_description_layout.visibility = View.GONE
-                room_full_layout.visibility = View.VISIBLE
-                if (roomListModel.images.isNotEmpty()) room_list_room_full_image_view.loadImage(roomListModel.images.first())
-                room_full_room_name_text_view.text = roomListModel.roomName
+                roomDescriptionLayout.visibility = View.GONE
+                roomFullLayout.root.visibility = View.VISIBLE
+                if (roomListModel.images.isNotEmpty()) roomFullLayout.roomListRoomFullImageView.loadImage(roomListModel.images.first())
+                roomFullLayout.roomFullRoomNameTextView.text = roomListModel.roomName
             }
         }
     }
 
     private fun initRoomFacility(breakfastInfo: HotelRoom.RoomBreakfastInfo, refundInfo: HotelRoom.RefundInfo, roomFacility: List<HotelRoomInfo.Facility>) {
-        with(itemView) {
-            room_facility_recycler_view.removeAllViews()
+        with(binding) {
+            roomFacilityRecyclerView.removeAllViews()
 
             if (breakfastInfo.breakFast.isNotEmpty()) {
-                val breakfastTextView = FacilityTextView(context)
+                val breakfastTextView = FacilityTextView(itemView.context)
                 breakfastTextView.setIconAndText(breakfastInfo.iconUrl, breakfastInfo.breakFast)
-                room_facility_recycler_view.addView(breakfastTextView)
+                roomFacilityRecyclerView.addView(breakfastTextView)
             }
 
             if (refundInfo.refundStatus.isNotEmpty()) {
-                val refundableTextView = FacilityTextView(context)
+                val refundableTextView = FacilityTextView(itemView.context)
                 refundableTextView.setIconAndText(refundInfo.iconUrl, refundInfo.refundStatus)
-                room_facility_recycler_view.addView(refundableTextView)
+                roomFacilityRecyclerView.addView(refundableTextView)
             }
 
             for (i in 0 until min(roomFacility.size, 2)) {
-                var textView = FacilityTextView(context)
+                var textView = FacilityTextView(itemView.context)
                 textView.setIconAndText(roomFacility[i].iconUrl, roomFacility[i].name)
-                room_facility_recycler_view.addView(textView)
+                roomFacilityRecyclerView.addView(textView)
             }
         }
     }
 
     private fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
-        with(itemView) {
-            if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0, 5))
-            else room_image_view_pager.setImages(imageUrls)
-            room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
+        with(binding) {
+            if (imageUrls.size >= 5) roomImageViewPager.setImages(imageUrls.subList(0, 5))
+            else roomImageViewPager.setImages(imageUrls)
+            roomImageViewPager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
-                    ImagePreviewSlider.instance.start(context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
+                    ImagePreviewSlider.instance.start(itemView.context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
                 }
             }
-            room_image_view_pager.buildView()
+            roomImageViewPager.buildView()
         }
     }
 
