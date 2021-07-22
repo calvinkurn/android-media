@@ -1,12 +1,8 @@
 package com.tokopedia.recharge_pdp_emoney.utils
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
-import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Event.OPEN_SCREEN
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.BUSINESS_UNIT
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.CURRENTSITE
-import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.IS_LOGGEDIN_STATUS
-import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.SCREEN_NAME
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Label.USER_ID
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.RECHARGE_BU
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.RECHARGE_SITE
