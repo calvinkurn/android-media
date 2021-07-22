@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sob_dimen_home_image_width">210dp</dimen>
+    <dimen name="sob_dimen_message_image_1_width">140dp</dimen>
+    <dimen name="sob_dimen_message_image_2_width">168dp</dimen>
+    <dimen name="sob_dimen_message_image_3_width">190dp</dimen>
+    <dimen name="sob_dimen_message_image_1_height">96dp</dimen>
+    <dimen name="sob_dimen_message_image_2_height">88dp</dimen>
+    <dimen name="sob_dimen_message_image_3_height">80dp</dimen>
+    <dimen name="sob_dimen_manage_image_1_width">168dp</dimen>
+    <dimen name="sob_dimen_manage_image_2_width">190dp</dimen>
+    <dimen name="sob_dimen_manage_image_1_height">80dp</dimen>
+    <dimen name="sob_dimen_manage_image_2_height">120dp</dimen>
+    <dimen name="sob_dimen_promo_image_1_width">220dp</dimen>
+    <dimen name="sob_dimen_statistic_image_1_width">184dp</dimen>
+</resources>

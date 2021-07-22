@@ -34,8 +34,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage1"
-        android:layout_width="160dp"
-        android:layout_height="120dp"
+        android:layout_width="@dimen/sob_dimen_message_image_1_width"
+        android:layout_height="@dimen/sob_dimen_message_image_1_height"
         android:layout_marginStart="72dp"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage2"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,8 +45,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage2"
-        android:layout_width="190dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/sob_dimen_message_image_2_width"
+        android:layout_height="@dimen/sob_dimen_message_image_2_height"
         android:layout_marginTop="88dp"
         android:layout_marginEnd="80dp"
         app:layout_constraintBottom_toTopOf="@+id/imgSobMessage3"
@@ -56,8 +56,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobMessage3"
-        android:layout_width="210dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/sob_dimen_message_image_3_width"
+        android:layout_height="@dimen/sob_dimen_message_image_3_height"
         android:layout_marginStart="88dp"
         android:layout_marginTop="80dp"
         app:layout_constraintBottom_toBottomOf="parent"

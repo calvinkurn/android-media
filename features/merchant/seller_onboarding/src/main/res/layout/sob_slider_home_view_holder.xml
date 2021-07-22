@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl7"
         android:gravity="center"
-        android:text="Akses cepat semua aktivitas \ntokomu di 1 halaman"
+        android:text="@string/sob_slider_title_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobHome"
-        android:layout_width="230dp"
+        android:layout_width="@dimen/sob_dimen_home_image_width"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/layout_lvl4"
         android:layout_marginBottom="@dimen/layout_lvl4"

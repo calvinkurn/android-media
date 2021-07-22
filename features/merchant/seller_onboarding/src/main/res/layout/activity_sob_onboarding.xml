@@ -52,7 +52,7 @@
         android:id="@+id/pageIndicatorSob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_4"
         app:layout_constraintBottom_toBottomOf="@+id/btnSobNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

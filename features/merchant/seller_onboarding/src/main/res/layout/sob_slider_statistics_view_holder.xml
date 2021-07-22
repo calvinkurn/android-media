@@ -21,7 +21,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgSobStatistic"
-        android:layout_width="205dp"
+        android:layout_width="@dimen/sob_dimen_statistic_image_1_width"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/layout_lvl6"
         android:layout_marginBottom="@dimen/layout_lvl6"
