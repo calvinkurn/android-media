@@ -962,4 +962,35 @@ class ShopPageTrackingBuyer(
                 customDimensionShopPage
         )
     }
+
+    fun clickShareButtonNewBottomSheet(
+            customDimensionShopPage: CustomDimensionShopPage,
+            userId: String
+    ) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BUTTON,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun clickCloseNewShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_CLOSE_SHARE_BOTTOM_SHEET,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_LABEL to "",
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.USER_ID to userId
+        )
+        sendDataLayerEvent(eventMap)
+    }
 }

@@ -108,6 +108,8 @@ object ShopPageTrackingConstant {
     const val SEE_ENTRY_POINT = "see entry point"
     const val ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header"
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
+    const val CLICK_SHARE_BUTTON = "click - share button"
+    const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - share button"
 
     //label
     const val CLICK_TAB = "click tab"
@@ -138,6 +140,7 @@ object ShopPageTrackingConstant {
     const val BUSINESS_UNIT = "businessUnit"
     const val PHYSICAL_GOODS = "physical goods"
     const val HOME_AND_BROWSE = "home & browse"
+    const val SHARING_EXPERIENCE = "sharingexperience"
     const val CURRENT_SITE = "currentSite"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
     const val SEE_ALL = "see all"

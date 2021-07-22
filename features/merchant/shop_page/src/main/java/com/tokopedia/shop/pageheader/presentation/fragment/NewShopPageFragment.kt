@@ -108,6 +108,7 @@ import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpa
 import com.tokopedia.shop.common.constant.ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
@@ -545,7 +546,7 @@ class NewShopPageFragment :
         shopViewModel?.shopImagePath?.observe(owner, Observer {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
-                if(UniversalShareBottomSheet.isCustomSharingEnabled(context, ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET)){
+                if(isUsingNewShareBottomSheet(requireContext())){
                     showUniversalShareBottomSheet()
                 } else {
                     shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
@@ -1172,10 +1173,14 @@ class NewShopPageFragment :
     }
 
     private fun clickShopShare() {
-        if (isMyShop) {
-            shopPageTracking?.clickShareButtonSellerView(customDimensionShopPage)
+        if(isUsingNewShareBottomSheet(requireContext())){
+            shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
         } else {
-            shopPageTracking?.clickShareButton(customDimensionShopPage)
+            if (isMyShop) {
+                shopPageTracking?.clickShareButtonSellerView(customDimensionShopPage)
+            } else {
+                shopPageTracking?.clickShareButton(customDimensionShopPage)
+            }
         }
         removeTemporaryShopImage(shopImageFilePath)
         saveShopImage()
@@ -2352,7 +2357,11 @@ class NewShopPageFragment :
     }
 
     override fun onCloseOptionClicked() {
-        shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
+        if (isUsingNewShareBottomSheet(requireContext())) {
+            shopPageTracking?.clickCloseNewShareBottomSheet(customDimensionShopPage, userId)
+        } else {
+            shopPageTracking?.clickCancelShareBottomsheet(customDimensionShopPage, isMyShop)
+        }
     }
 
     private fun showUniversalShareBottomSheet() {
