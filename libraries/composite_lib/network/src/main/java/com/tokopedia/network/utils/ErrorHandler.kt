@@ -48,7 +48,7 @@ open class ErrorHandler {
                 "e" to Log.getStackTraceString(e)
             )
             if (builder.sendToScalyr) {
-                LogManager.log(Priority.P2, ERROR_HANDLER, mapParam as Map<String, String>)
+                LogManager.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
             }
             return "$errorMessageString <$errorCode-$errorIdentifier>"
         }
