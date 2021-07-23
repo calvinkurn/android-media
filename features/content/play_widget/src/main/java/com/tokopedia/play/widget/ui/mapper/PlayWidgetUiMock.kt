@@ -46,8 +46,7 @@ object PlayWidgetUiMock {
                     1 -> PlayWidgetChannelType.Vod
                     else -> PlayWidgetChannelType.Live
                 }
-                val hasGiveaway = cardItemTypeRandom.nextInt(0, 1) == 1
-                getSampleSmallChannelCardBanner(channelType, hasGiveaway)
+                getSampleSmallChannelCardBanner(channelType)
             }
         }
     }
@@ -63,8 +62,7 @@ object PlayWidgetUiMock {
                         1 -> PlayWidgetChannelType.Vod
                         else -> PlayWidgetChannelType.Live
                     }
-                    val hasGiveaway = cardItemTypeRandom.nextInt(0, 1) == 1
-                    getSampleMediumChannelCardBanner(channelType, hasGiveaway)
+                    getSampleMediumChannelCardBanner(channelType)
                 }
             }
         }
@@ -76,7 +74,7 @@ object PlayWidgetUiMock {
             webLink = ""
     )
 
-    private fun getSampleSmallChannelCardBanner(channelType: PlayWidgetChannelType, hasGiveaway: Boolean) = PlayWidgetSmallChannelUiModel(
+    private fun getSampleSmallChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetSmallChannelUiModel(
             channelId = "123",
             title = "Google Assistant review with me",
             channelType = channelType,
@@ -87,7 +85,7 @@ object PlayWidgetUiMock {
             totalViewVisible = true,
             promoType = PlayWidgetPromoType.NoPromo,
             video = getVideoUiModel(channelType),
-            hasGiveaway = hasGiveaway
+            hasGiveaway = true
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
@@ -103,7 +101,7 @@ object PlayWidgetUiMock {
             partner = PlayWidgetPartnerUiModel("123", "Google")
     )
 
-    private fun getSampleMediumChannelCardBanner(channelType: PlayWidgetChannelType, hasGiveaway: Boolean) = PlayWidgetMediumChannelUiModel(
+    private fun getSampleMediumChannelCardBanner(channelType: PlayWidgetChannelType) = PlayWidgetMediumChannelUiModel(
             channelId = "123",
             title = "Google Assistant review with me",
             channelType = channelType,
@@ -123,7 +121,7 @@ object PlayWidgetUiMock {
                     isShow = true
             ),
             performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
-            hasGiveaway = hasGiveaway
+            hasGiveaway = true
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
