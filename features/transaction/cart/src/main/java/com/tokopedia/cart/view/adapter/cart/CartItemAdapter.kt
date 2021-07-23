@@ -10,10 +10,8 @@ import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.ViewHolderListener
-import rx.subscriptions.CompositeSubscription
 
 class CartItemAdapter(private val actionListener: ActionListener,
-                      private val compositeSubscription: CompositeSubscription,
                       private val parentPosition: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
 
     private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
@@ -24,7 +22,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = HolderItemCartNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartItemViewHolder(binding, compositeSubscription, actionListener)
+        return CartItemViewHolder(binding, actionListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

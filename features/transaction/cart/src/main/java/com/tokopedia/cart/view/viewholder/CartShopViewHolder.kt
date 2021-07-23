@@ -137,7 +137,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderExpandedCartItems(cartShopHolderData: CartShopHolderData) {
-        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener, compositeSubscription, adapterPosition)
+        val cartItemAdapter = CartItemAdapter(cartItemAdapterListener, adapterPosition)
         cartItemAdapter.addDataList(cartShopHolderData.shopGroupAvailableData?.cartItemDataList)
         val linearLayoutManager = LinearLayoutManager(binding.rvCartItem.context)
         binding.rvCartItem.layoutManager = linearLayoutManager

@@ -26,8 +26,6 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
-import rx.Subscription
-import rx.subscriptions.CompositeSubscription
 import java.util.*
 
 /**
@@ -35,7 +33,6 @@ import java.util.*
  */
 @SuppressLint("ClickableViewAccessibility")
 class CartItemViewHolder constructor(private val binding: HolderItemCartNewBinding,
-                                     private val compositeSubscription: CompositeSubscription,
                                      private var actionListener: CartItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     private var context: Context? = null
@@ -44,8 +41,6 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private var cartItemHolderData: CartItemHolderData? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
-    private var quantityDebounceSubscription: Subscription? = null
-    private var noteDebounceSubscription: Subscription? = null
     private var delayChangeCheckboxState: Job? = null
     private var delayChangeQty: Job? = null
     private var informationLabel: MutableList<String> = mutableListOf()
@@ -73,8 +68,9 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         context = null
         actionListener = null
         viewHolderListener = null
-        compositeSubscription.remove(quantityDebounceSubscription)
-        compositeSubscription.remove(noteDebounceSubscription)
+        delayChangeCheckboxState?.cancel()
+        delayChangeQty?.cancel()
+        qtyTextWatcher = null
     }
 
     fun bindData(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener, dataSize: Int) {
