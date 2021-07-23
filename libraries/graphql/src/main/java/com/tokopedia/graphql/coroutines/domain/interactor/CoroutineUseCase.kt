@@ -1,23 +1,15 @@
 package com.tokopedia.graphql.coroutines.domain.interactor
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorNetwork
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorNetwork as logGqlErrorNetwork
 
 abstract class CoroutineUseCase<P, out R: Any> constructor(
     private val dispatcher: CoroutineDispatcher
-) {
-
-    /*
-    * override this to set the graphql query
-    * */
-    protected abstract fun graphqlQuery(): String
+) : UseCase() {
 
     /*
     * override this to set the code to be executed
@@ -40,14 +32,6 @@ abstract class CoroutineUseCase<P, out R: Any> constructor(
             logGqlErrorNetwork("CoroutineUseCase", "", e)
             Fail(e)
         }
-    }
-
-    protected suspend inline fun <reified T> GraphqlRepository.request(
-        params: Map<String, Any>?
-    ): T {
-        val request = GraphqlRequest(graphqlQuery(), T::class.java, params?: mapOf())
-        val response = getReseponse(listOf(request))
-        return response.getSuccessData()
     }
 
 }
