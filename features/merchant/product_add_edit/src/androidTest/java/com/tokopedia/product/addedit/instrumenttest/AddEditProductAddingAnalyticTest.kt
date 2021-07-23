@@ -126,6 +126,7 @@ class AddEditProductAddingAnalyticTest {
         performScrollAndClick(R.id.tv_start_add_edit_product_photo)
         performClickNextOnImagePicker()
         performClickNextOnImagePicker()
+        Thread.sleep(500)
     }
 
     private fun testDetailProduct() {
