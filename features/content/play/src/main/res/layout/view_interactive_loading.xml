@@ -24,6 +24,7 @@
         >
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:id="@+id/fl_placeholder_1"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl2"
             android:background="@color/play_dms_interactive_loader_bg"
@@ -31,6 +32,7 @@
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:id="@+id/fl_placeholder_2"
             android:layout_width="@dimen/play_interactive_loader_2_width"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -39,6 +41,7 @@
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:id="@+id/fl_placeholder_3"
             android:layout_width="@dimen/play_interactive_loader_3_width"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
@@ -47,6 +50,7 @@
             />
 
         <com.tokopedia.play_common.view.RoundedFrameLayout
+            android:id="@+id/fl_placeholder_4"
             android:layout_width="@dimen/play_interactive_loader_4_width"
             android:layout_height="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"

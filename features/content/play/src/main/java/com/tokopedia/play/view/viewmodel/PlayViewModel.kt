@@ -1298,6 +1298,15 @@ class PlayViewModel @Inject constructor(
             )
         }
 
+        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
+            _uiEvent.emit(
+                    ShowCoachMarkWinnerEvent(
+                            leaderboard.config.loserMessage,
+                            leaderboard.config.loserDetail
+                    )
+            )
+        }
+
         suspend fun fetchLeaderboard(channelId: String) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
                     info = R.string.play_interactive_finish_loading_winner_text,
@@ -1315,24 +1324,19 @@ class PlayViewModel @Inject constructor(
             _interactive.value = PlayInteractiveUiState.NoInteractive
             _leaderboardInfo.value = interactiveLeaderboard
 
-            if (userInLeaderboard != null && userInLeaderboard.id == userId) {
-                _uiEvent.emit(
-                        ShowWinningDialogEvent(
-                                userInLeaderboard.imageUrl,
-                                interactiveLeaderboard.config.winnerMessage,
-                                interactiveLeaderboard.config.winnerDetail
-                        )
-                )
-            }
-        }
+            if (userInLeaderboard != null) {
+                showCoachMark(interactiveLeaderboard)
 
-        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
-            _uiEvent.emit(
-                    ShowCoachMarkWinnerEvent(
-                            leaderboard.config.loserMessage,
-                            leaderboard.config.loserDetail
+                if (userInLeaderboard.id == userId) {
+                    _uiEvent.emit(
+                            ShowWinningDialogEvent(
+                                    userInLeaderboard.imageUrl,
+                                    interactiveLeaderboard.config.winnerMessage,
+                                    interactiveLeaderboard.config.winnerDetail
+                            )
                     )
-            )
+                }
+            }
         }
 
         viewModelScope.launchCatchError(block = {
@@ -1344,7 +1348,6 @@ class PlayViewModel @Inject constructor(
 
             try {
                 fetchLeaderboard(channelId)
-                showCoachMark(_leaderboardInfo.value)
             } catch (e: Throwable) {
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             }

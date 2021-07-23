@@ -79,6 +79,10 @@ class InteractivePreStartView : RoundedConstraintLayout {
     }
 
     private fun setupView(view: View) {
+        setCornerRadius(
+                resources.getDimension(com.tokopedia.play_common.R.dimen.play_interactive_common_radius)
+        )
+
         btnInteractiveFollow.setOnClickListener {
             mListener?.onFollowButtonClicked(this)
         }
