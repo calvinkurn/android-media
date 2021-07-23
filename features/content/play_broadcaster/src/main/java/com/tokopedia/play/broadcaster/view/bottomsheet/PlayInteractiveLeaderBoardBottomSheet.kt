@@ -71,7 +71,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            R.layout.view_play_interactive_leaderboard,
+            commonR.layout.view_play_interactive_leaderboard,
             container,
             false
         )
