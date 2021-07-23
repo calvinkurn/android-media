@@ -2,9 +2,9 @@
 <resources>
     <dimen name="sob_360dp">360dp</dimen>
     <dimen name="sob_dimen_home_image_width">196dp</dimen>
-    <dimen name="sob_dimen_message_image_1_width">116dp</dimen>
-    <dimen name="sob_dimen_message_image_2_width">156dp</dimen>
-    <dimen name="sob_dimen_message_image_3_width">168dp</dimen>
+    <dimen name="sob_dimen_message_image_1_width">108dp</dimen>
+    <dimen name="sob_dimen_message_image_2_width">150dp</dimen>
+    <dimen name="sob_dimen_message_image_3_width">160dp</dimen>
     <dimen name="sob_dimen_message_image_1_height">88dp</dimen>
     <dimen name="sob_dimen_message_image_2_height">88dp</dimen>
     <dimen name="sob_dimen_message_image_3_height">80dp</dimen>
