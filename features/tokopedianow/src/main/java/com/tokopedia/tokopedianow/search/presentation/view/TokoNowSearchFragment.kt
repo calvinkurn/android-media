@@ -133,8 +133,8 @@ class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         RouteManager.route(context, applink)
     }
 
-    override fun onGoToGlobalSearch() {
-        super.onGoToGlobalSearch()
+    override fun onFindInTokopediaClick() {
+        super.onFindInTokopediaClick()
 
         val queryParams = "${SearchApiConst.Q}=${tokoNowSearchViewModel.query}"
         val applinkToSearchResult = "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?$queryParams"
