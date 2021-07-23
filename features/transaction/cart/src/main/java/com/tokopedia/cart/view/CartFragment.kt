@@ -1739,6 +1739,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         onNeedToUpdateViewItem(parentPosition)
     }
 
+    override fun onNeedToRefreshWeight(parentPosition: Int) {
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
+        cartShopHolderData?.isNeedToRefreshWeight = true
+        onNeedToUpdateViewItem(parentPosition)
+    }
+
     override fun onNeedToRefreshMultipleShop() {
         val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCount()
         onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)

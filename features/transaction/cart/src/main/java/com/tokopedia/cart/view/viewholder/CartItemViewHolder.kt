@@ -21,23 +21,14 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
-import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
-import rx.Observable
-import rx.Subscriber
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -51,21 +42,17 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private var viewHolderListener: ViewHolderListener? = null
 
     private var cartItemHolderData: CartItemHolderData? = null
-    private var quantityTextWatcher: QuantityTextWatcher? = null
-    private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
     private var quantityDebounceSubscription: Subscription? = null
     private var noteDebounceSubscription: Subscription? = null
-    private var cbChangeJob: Job? = null
+    private var delayChangeCheckboxState: Job? = null
+    private var delayChangeQty: Job? = null
     private var informationLabel: MutableList<String> = mutableListOf()
 
     init {
         context = itemView.context
-
         setNoteTouchListener()
-
-        initTextWatcherDebouncer(compositeSubscription)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -87,30 +74,6 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         viewHolderListener = null
         compositeSubscription.remove(quantityDebounceSubscription)
         compositeSubscription.remove(noteDebounceSubscription)
-    }
-
-    private fun initTextWatcherDebouncer(compositeSubscription: CompositeSubscription) {
-        quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber ->
-            quantityTextwatcherListener = QuantityTextWatcher.QuantityTextwatcherListener { quantity -> subscriber.onNext(quantity) }
-        })
-                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<QuantityWrapper>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Timber.d(e)
-                    }
-
-                    override fun onNext(quantity: QuantityWrapper) {
-                        itemQuantityTextWatcherAction(quantity)
-                    }
-                })
-
-        compositeSubscription.add(quantityDebounceSubscription)
     }
 
     fun bindData(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener, dataSize: Int) {
@@ -172,8 +135,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
-                cbChangeJob?.cancel()
-                cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
+                delayChangeCheckboxState?.cancel()
+                delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
                     delay(500L)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.cartItemData.isError) {
@@ -472,10 +435,6 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun renderQuantity(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
         val qtyEditorCart = binding.qtyEditorCart
-        if (quantityTextWatcher != null) {
-            // remove previous listener
-            qtyEditorCart.editText.removeTextChangedListener(quantityTextWatcher)
-        }
 
         qtyEditorCart.autoHideKeyboard = true
         qtyEditorCart.minValue = data.cartItemData.originData.minOrder
@@ -484,9 +443,13 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
         qtyEditorCart.setValue(data.cartItemData.updatedData.quantity)
         qtyEditorCart.setValueChangedListener { newValue, _, _ ->
-            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
-            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
-            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+            delayChangeQty?.cancel()
+            delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                delay(500L)
+                cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
+                actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
+                cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+            }
         }
         qtyEditorCart.setSubstractListener {
             if (!data.cartItemData.isError && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
@@ -512,8 +475,6 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 true
             } else false
         }
-        quantityTextWatcher = QuantityTextWatcher(quantityTextwatcherListener)
-        qtyEditorCart.editText.addTextChangedListener(quantityTextWatcher)
         qtyEditorCart.editText.isEnabled = data.cartItemData.isError == false
     }
 
@@ -525,7 +486,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
             }
         } else if (data.cartItemData.shouldValidateWeight) {
-            viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
+            viewHolderListener?.onNeedToRefreshWeight(parentPosition)
+            viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
         }
@@ -562,24 +524,13 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
     }
 
-    private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
-        if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-            val qty = quantity.editable.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
-            val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
-            if (needToUpdateView) {
-                if (qty <= 0) {
-                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition)
-                }
-                binding.qtyEditorCart.setValue(qty)
-            }
-        }
-    }
-
     interface ViewHolderListener {
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
 
         fun onNeedToRefreshSingleShop(parentPosition: Int)
+
+        fun onNeedToRefreshWeight(parentPosition: Int)
 
         fun onNeedToRefreshAllShop()
 

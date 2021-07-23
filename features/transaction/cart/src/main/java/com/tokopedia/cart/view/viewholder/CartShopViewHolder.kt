@@ -40,6 +40,11 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     fun bindData(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.isNeedToRefreshWeight) {
+            renderMaximumWeight(cartShopHolderData)
+            cartShopHolderData.isNeedToRefreshWeight = false
+            return
+        }
         renderWarningAndError(cartShopHolderData)
         renderWarningItemHeader(cartShopHolderData)
         renderShopName(cartShopHolderData)

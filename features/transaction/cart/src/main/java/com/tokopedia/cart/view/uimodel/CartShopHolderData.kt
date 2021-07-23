@@ -14,6 +14,7 @@ class CartShopHolderData : Parcelable {
     var isCollapsible: Boolean = false
     var isCollapsed: Boolean = false
     var clickedCollapsedProductIndex: Int = RecyclerView.NO_POSITION
+    var isNeedToRefreshWeight: Boolean = false
 
     fun setAllItemSelected(allSelected: Boolean) {
         this.isAllSelected = allSelected

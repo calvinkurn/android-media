@@ -58,6 +58,11 @@ class CartItemAdapter(private val actionListener: ActionListener,
         actionListener.onNeedToRefreshSingleShop(parentPosition)
     }
 
+    override fun onNeedToRefreshWeight(parentPosition: Int) {
+        actionListener.onNeedToRecalculate()
+        actionListener.onNeedToRefreshWeight(parentPosition)
+    }
+
     override fun onNeedToRefreshAllShop() {
         actionListener.onNeedToRefreshMultipleShop()
         actionListener.onNeedToRecalculate()
@@ -74,6 +79,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
         fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean)
         fun onWishlistCheckChanged(productId: String?, cartId: Long?, imageView: ImageView?)
         fun onNeedToRefreshSingleShop(parentPosition: Int)
+        fun onNeedToRefreshWeight(parentPosition: Int)
         fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
         fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean?)
