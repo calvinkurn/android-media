@@ -298,6 +298,12 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
     val iconAnimatedImage = view.nav_icon_view
     val context = itemView.context
 
+    companion object {
+        private const val ICON_PERCENTAGE_X_POSITION = 1f
+        private const val ICON_PERCENTAGE_Y_POSITION = -0.8f
+        private const val ANIMATION_DELAY = 1000L
+    }
+
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconAnimatedImage.tag = iconToolbar.id.toString()
 
@@ -340,7 +346,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
             iconImage.notificationRef.visible()
         }
-        iconImage.setNotifXY(1f, -0.8f)
+        iconImage.setNotifXY(ICON_PERCENTAGE_X_POSITION, ICON_PERCENTAGE_Y_POSITION)
 
         if (iconToolbar.paddingEndRes != 0) {
             iconAnimatedImage.setPadding(0, 0, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
@@ -381,7 +387,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
                 Handler().postDelayed({
                     iconAnimatedImage.gone()
                     iconImage.show()
-                }, 1000)
+                }, ANIMATION_DELAY)
             } else {
                 iconAnimatedImage.gone()
                 iconImage.show()
