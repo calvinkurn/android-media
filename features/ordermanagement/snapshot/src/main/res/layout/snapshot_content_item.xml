@@ -9,20 +9,20 @@
     <RelativeLayout
         android:id="@+id/snapshot_rl_header"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/snapshot_dimen_360dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/snapshot_main_img"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/snapshot_dimen_360dp"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/snapshot_img" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/snapshot_header_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/snapshot_dimen_360dp"/>
+            android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifycomponents.PageControl
             android:id="@+id/snapshot_page_indicator"
