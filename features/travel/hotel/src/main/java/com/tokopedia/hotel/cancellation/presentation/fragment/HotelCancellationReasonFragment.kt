@@ -26,11 +26,12 @@ import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellation
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
+import com.tokopedia.hotel.databinding.FragmentHotelCancellationReasonBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_cancellation_reason.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -42,6 +43,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var cancellationViewModel: HotelCancellationViewModel
+    private var binding by autoClearedNullable<FragmentHotelCancellationReasonBinding>()
 
     lateinit var reasonAdapter: HotelCancellationReasonAdapter
 
@@ -81,9 +83,9 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
             val r = Rect()
             getWindowVisibleDisplayFrame(r)
             if (rootView.height - (r.bottom - r.top) > SOFT_KEYBOARD_HEIGHT) {
-                hotel_cancellation_page_footer.hide()
+                binding?.hotelCancellationPageFooter?.hide()
             } else {
-                hotel_cancellation_page_footer.show()
+                binding?.hotelCancellationPageFooter?.show()
             }
         }
     }
@@ -111,7 +113,7 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        cancellationViewModel.cancellationData.observe(this, androidx.lifecycle.Observer {
+        cancellationViewModel.cancellationData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     initView(it.data)
@@ -125,32 +127,32 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
 
     fun initView(hotelCancellationModel: HotelCancellationModel) {
         //When page loaded, initially the button is disabled first until user choose reason
-        hotel_cancellation_button_next.isEnabled = false
+        binding?.hotelCancellationButtonNext?.isEnabled = false
 
-        hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
-        hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
-        hotel_cancellation_page_footer.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+        binding?.hotelCancellationPageFooter?.highlightColor = Color.TRANSPARENT
+        binding?.hotelCancellationPageFooter?.movementMethod = LinkMovementMethod.getInstance()
+        binding?.hotelCancellationPageFooter?.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
                 hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
 
-        hotel_cancellation_reason_rv.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        hotel_cancellation_reason_rv.setHasFixedSize(true)
-        hotel_cancellation_reason_rv.isNestedScrollingEnabled = false
+        binding?.hotelCancellationReasonRv?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding?.hotelCancellationReasonRv?.setHasFixedSize(true)
+        binding?.hotelCancellationReasonRv?.isNestedScrollingEnabled = false
         reasonAdapter = HotelCancellationReasonAdapter()
         reasonAdapter.onClickItemListener = object : HotelCancellationReasonAdapter.OnClickItemListener {
             override fun onClick(selectedId: String, valid: Boolean) {
-                hotel_cancellation_button_next.isEnabled = valid
+                binding?.hotelCancellationButtonNext?.isEnabled = valid
                 reasonAdapter.onClickItem(selectedId)
             }
 
             override fun onTypeFreeTextAndMoreThan10Words(valid: Boolean, content: String) {
                 reasonAdapter.freeText = content
-                hotel_cancellation_button_next.isEnabled = valid
+                binding?.hotelCancellationButtonNext?.isEnabled = valid
             }
         }
         reasonAdapter.updateItems(hotelCancellationModel.reasons)
-        hotel_cancellation_reason_rv.adapter = reasonAdapter
+        binding?.hotelCancellationReasonRv?.adapter = reasonAdapter
 
-        hotel_cancellation_button_next.setOnClickListener {
+        binding?.hotelCancellationButtonNext?.setOnClickListener {
             showConfirmationDialog(hotelCancellationModel.cancelCartId, hotelCancellationModel.confirmationButton, hotelCancellationModel)
         }
     }
@@ -182,8 +184,10 @@ class HotelCancellationReasonFragment : HotelBaseFragment() {
         getComponent(HotelCancellationComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_cancellation_reason, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelCancellationReasonBinding.inflate(inflater,container,false)
+        return binding?.root
+    }
 
     companion object {
         const val HOTEL_DEFAULT_AMOUNT_ZERO = "0"
