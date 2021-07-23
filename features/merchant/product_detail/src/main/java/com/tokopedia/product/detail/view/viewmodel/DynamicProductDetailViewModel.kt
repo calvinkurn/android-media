@@ -1040,7 +1040,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 if (result.error.isNotEmpty()) {
                     onFailedATCRecomTokonow(Throwable(result.error.firstOrNull() ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow("")
+                    updateMiniCartAfterATCRecomTokonow(result.data.message)
                 }
             }
             }) {

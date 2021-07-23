@@ -46,7 +46,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         position = index,
                         shopId = recommendation.shop.id,
                         shopName = recommendation.shop.name,
-                        quantity = 1,
+                        quantity = getItemQuantityBasedOnLayoutType(),
                         header = title,
                         pageName = pageName,
                         minOrder = recommendation.minOrder,
@@ -143,6 +143,11 @@ var LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC
 }
+
+private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {
+    return if (this.isRecomCardShouldShowVariantOrCart()) 0 else 1
+}
+
 fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
     return this.any { it.position == LABEL_FULFILLMENT }
 }

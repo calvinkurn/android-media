@@ -699,20 +699,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 productRecom.recomWidgetData?.let { recomData ->
                     val recomWidget = recomData.copy()
                     if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
-                        var successChangeData = false
                         val dataList = recomWidget.copyRecomItemList()
                         dataList.forEach { recomItem ->
-                            if (cartData.containsKey(recomItem.productId.toString())
-                                    && recomItem.isRecomProductShowVariantAndCart
-                                    && recomItem.quantity != cartData[recomItem.productId.toString()]?.quantity) {
-                                recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity ?: 0)
-                                successChangeData = true
+                            //update data based on tokonow cart
+                            if (recomItem.isRecomProductShowVariantAndCart) {
+                                recomItem.updateItemCurrentStock(0)
+                                if (cartData.containsKey(recomItem.productId.toString())) {
+                                    recomItem.updateItemCurrentStock(cartData[recomItem.productId.toString()]?.quantity ?: 0)
+                                }
                             }
                         }
-                        if (successChangeData) {
-                            updateData(key) {
-                                updateRecomDataByKey(key, dataList)
-                            }
+                        updateData(key) {
+                            updateRecomDataByKey(key, dataList)
                         }
                     }
                 }
