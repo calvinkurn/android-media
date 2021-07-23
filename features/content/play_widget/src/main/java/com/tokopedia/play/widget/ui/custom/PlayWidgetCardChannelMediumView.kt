@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.TouchDelegate
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -54,6 +55,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val tvTotalView: TextView
     private val llLoadingContainer: LinearLayout
     private val loaderLoading: LoaderUnify
+    private val ivGiveaway: ImageView
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
@@ -80,6 +82,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvTotalView = view.findViewById(R.id.viewer)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
+        ivGiveaway = view.findViewById(R.id.iv_giveaway)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
@@ -118,6 +121,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvTitle.text = model.title
         tvStartTime.text = model.startTime
         tvTotalView.text = model.totalView
+        ivGiveaway.visibility = if(model.hasGiveaway) View.VISIBLE else View.GONE
 
         setIconToggleReminder(model.reminderType)
         reminderBadge.setOnClickListener {
