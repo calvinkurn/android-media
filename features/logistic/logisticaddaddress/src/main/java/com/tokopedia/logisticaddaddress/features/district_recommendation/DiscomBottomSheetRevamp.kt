@@ -2,7 +2,6 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -14,10 +13,8 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
@@ -31,12 +28,10 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import rx.Emitter
 import rx.Observable
-import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
@@ -67,7 +62,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
     private var staticDimen8dp: Int? = 0
-    private val handler = Handler()
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -85,10 +79,11 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     init {
-        isDragable = true
-        isHideable = true
+        isDragable = false
+        isHideable = false
         showCloseIcon = true
         isFullpage = true
+        isKeyboardOverlap = false
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -119,8 +114,17 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
         viewBinding = BottomsheetDistcrictReccomendationRevampBinding.inflate(LayoutInflater.from(context), null, false)
         setupDiscomBottomsheet(viewBinding)
         setChild(viewBinding.root)
+        setTitle(getString(R.string.kota_kecamatan))
         setCloseClickListener {
-            dismiss()
+            if (isKodePosShown) {
+                AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                setTitle(getString(R.string.kota_kecamatan))
+                hideZipCode()
+                setViewListener()
+            } else {
+                AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                dismiss()
+            }
         }
         setOnDismissListener {
             dismiss()
@@ -146,7 +150,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
         viewBinding.run {
             rvListDistrict.visibility = View.GONE
             llZipCode.visibility = View.GONE
-            bottomChoooseZipcode.visibility = View.GONE
+            btnChooseZipcode.visibility = View.GONE
 
             rvChips.apply {
                 val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
@@ -163,13 +167,48 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     private fun setViewListener() {
-        viewBinding.searchPageInput.searchBarTextField.apply {
+        viewBinding.searchPageInput.searchBarTextField.run {
+
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+            }
             setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
             }
+
+            addTextChangedListener(object: TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    //no-op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (viewBinding.searchPageInput.searchBarTextField.text.toString().isEmpty()) {
+                        viewBinding.tvDescInputDistrict.visibility = View.GONE
+                        viewBinding.llPopularCity.visibility = View.VISIBLE
+                        viewBinding.rvListDistrict.visibility = View.GONE
+                        popularCityAdapter.notifyDataSetChanged()
+                    } else {
+                        input = viewBinding.searchPageInput.searchBarTextField.text.toString()
+                        mIsInitialLoading = true
+                        handler.postDelayed({
+                            presenter.loadData(input, 1)
+                        }, 200)
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    //no-op
+                }
+
+            })
         }
 
-        watchTextRx(viewBinding.searchPageInput.searchBarTextField)
+/*        watchTextRx(viewBinding.searchPageInput.searchBarTextField)
                 .subscribe { s ->
                     if (s.isNotEmpty()) {
                         input = s
@@ -182,7 +221,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                         viewBinding.llPopularCity.visibility = View.VISIBLE
                         viewBinding.rvListDistrict.visibility = View.GONE
                     }
-                }.toCompositeSubs()
+                }.toCompositeSubs()*/
 
         viewBinding.rvListDistrict.addOnScrollListener(mEndlessListener)
 
@@ -190,36 +229,13 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
             if (viewBinding.etKodepos.textFieldInput.text.toString().length < 4) {
                 AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
-                Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
                 districtAddressData?.let { data -> discomRevampListener?.onChooseZipcode(data, postalCode, isPinpoint) }
                 dismiss()
             }
         }
-    }
-
-    private fun watchTextRx(view: EditText): Observable<String> {
-        return Observable
-                .create({ emitter: Emitter<String> ->
-                    view.addTextChangedListener(object : TextWatcher {
-                        override fun afterTextChanged(editable: Editable?) {
-                            emitter.onNext(editable.toString())
-                        }
-
-                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    })
-                }, Emitter.BackpressureMode.NONE)
-                .filter { t -> t.isEmpty() || t.length > 2 }
-                .debounce(700, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    private fun Subscription.toCompositeSubs() {
-        mCompositeSubs.add(this)
     }
 
     fun show(fm: FragmentManager?) {
@@ -234,11 +250,19 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     override fun onZipCodeClicked(zipCode: String) {
-        TODO("Not yet implemented")
+        this.postalCode = zipCode
+        viewBinding.rvKodeposChips.visibility = View.GONE
+        viewBinding.etKodepos.textFieldInput.run {
+            setText(zipCode)
+        }
     }
 
     override fun onCityChipClicked(city: String) {
-        TODO("Not yet implemented")
+        AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
+        viewBinding.searchPageInput.run {
+            searchBarTextField.setText(city)
+            searchBarTextField.setSelection(city.length)
+        }
     }
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
@@ -249,11 +273,11 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
             tvDescInputDistrict.setText(R.string.hint_advice_search_address)
 
             if (mIsInitialLoading) {
-                listDistrictAdapter.setData(list)
+                listDistrictAdapter.setData(list, viewBinding.searchPageInput.searchBarTextField.text.toString())
                 mEndlessListener.resetState()
                 mIsInitialLoading = false
             } else {
-                listDistrictAdapter.appendData(list)
+                listDistrictAdapter.appendData(list, viewBinding.searchPageInput.searchBarTextField.text.toString())
                 mEndlessListener.updateStateAfterGetData()
             }
             mEndlessListener.setHasNextPage(hasNextPage)
@@ -266,13 +290,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     override fun setLoadingState(active: Boolean) {
-        viewBinding.run {
-            searchPageInput.searchBarIcon.setOnClickListener {
-                rvListDistrict.visibility = View.GONE
-                llPopularCity.visibility = View.VISIBLE
-                popularCityAdapter.notifyDataSetChanged()
-            }
-        }
+        //no-op
     }
 
     override fun showEmpty() {
@@ -294,6 +312,8 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
     override fun onDistrictItemRevampClicked(districtModel: Address) {
         context?.let {
+            setTitle("Kode Pos")
+            isKodePosShown = true
             districtModel.run {
                 discomRevampListener?.onGetDistrict(districtModel)
                 setupRvZipCodeChips()
@@ -304,6 +324,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
     private fun setupRvZipCodeChips() {
         viewBinding.rvKodeposChips.apply {
+            visibility = View.GONE
             staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = chipsLayoutManagerZipCode
             adapter = zipCodeChipsAdapter
@@ -314,13 +335,13 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
         districtAddressData = data
         viewBinding.run {
             llZipCode.visibility = View.VISIBLE
-            bottomChoooseZipcode.visibility = View.VISIBLE
+            btnChooseZipcode.visibility = View.VISIBLE
             searchPageInput.visibility = View.GONE
             tvDescInputDistrict.visibility = View.GONE
             rvListDistrict.visibility = View.GONE
             llPopularCity.visibility = View.GONE
 
-            cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
+            cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
              etKodepos.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
@@ -345,12 +366,23 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     private fun showZipCodes(data: Address) {
-        isKodePosShown = true
         ViewCompat.setLayoutDirection(viewBinding.rvKodeposChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         data.zipCodes?.let {
             viewBinding.rvKodeposChips.visibility = View.VISIBLE
             zipCodeChipsAdapter.zipCodes = it.toMutableList()
             zipCodeChipsAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun hideZipCode() {
+        viewBinding.run {
+            llZipCode.visibility = View.GONE
+            btnChooseZipcode.visibility = View.GONE
+            searchPageInput.visibility = View.VISIBLE
+            tvDescInputDistrict.visibility = View.VISIBLE
+            rvListDistrict.visibility = View.VISIBLE
+            llPopularCity.visibility = View.VISIBLE
+            isKodePosShown = false
         }
     }
 

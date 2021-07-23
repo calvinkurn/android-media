@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -296,6 +298,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
                 formAddressNegative.etKotaKecamatan.textFieldInput.apply {
+                    inputType = InputType.TYPE_NULL
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
