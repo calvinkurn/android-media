@@ -119,7 +119,7 @@ import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounc
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -244,8 +244,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
-        const val TOOLBAR_VARIANT_BASIC = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        const val TOOLBAR_VARIANT_NAVIGATION = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        const val TOOLBAR_VARIANT_BASIC = RollenceKey.NAVIGATION_VARIANT_OLD
+        const val TOOLBAR_VARIANT_NAVIGATION = RollenceKey.NAVIGATION_VARIANT_REVAMP
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -473,7 +473,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun isNavRevamp(): Boolean {
-        val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
+        val EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
         val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false) ?: false
         if (fromActivity) {
             return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION

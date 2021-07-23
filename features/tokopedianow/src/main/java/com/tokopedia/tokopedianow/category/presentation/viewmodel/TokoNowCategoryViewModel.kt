@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -47,6 +48,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         addToCartUseCase: AddToCartUseCase,
         updateCartUseCase: UpdateCartUseCase,
+        deleteCartUseCase: DeleteCartUseCase,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
@@ -59,6 +61,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase,
         addToCartUseCase,
         updateCartUseCase,
+        deleteCartUseCase,
         getWarehouseUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,

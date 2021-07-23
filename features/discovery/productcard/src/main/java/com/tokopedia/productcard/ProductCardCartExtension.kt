@@ -18,6 +18,7 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import rx.Subscription
 
 internal class ProductCardCartExtension(private val productCardView: View) {
 
@@ -38,6 +39,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private val context = productCardView.context
     private var quantityEditorDebounce: QuantityEditorDebounce? = null
+    private var quantityEditorDebounceSubscription: Subscription? = null
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderButtonAddToCart(productCardModel)
@@ -87,7 +89,9 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderCartEditorNonVariant(productCardModel: ProductCardModel) {
-        val shouldShowCartEditorComponent = productCardModel.shouldCartEditorComponent()
+        if (!productCardModel.canShowQuantityEditor()) return
+
+        val shouldShowCartEditorComponent = productCardModel.shouldShowCartEditorComponent()
 
         configureButtonDeleteCart(shouldShowCartEditorComponent, productCardModel)
         configureQuantityEditor(shouldShowCartEditorComponent, productCardModel)
@@ -142,12 +146,13 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             }
         }
 
-        Observable.unsafeCreate(onSubscribe)
-                .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(quantityEditorSubscriber)
+        quantityEditorDebounceSubscription =
+                Observable.unsafeCreate(onSubscribe)
+                        .debounce(QUANTITY_EDITOR_DEBOUNCE_IN_MS, TimeUnit.MILLISECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(quantityEditorSubscriber)
     }
 
     private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
@@ -216,6 +221,14 @@ internal class ProductCardCartExtension(private val productCardView: View) {
                     context?.getString(R.string.product_card_text_variant_quantity_grid)
         else
             textVariantQuantity?.text = "$quantity pcs"
+    }
+
+    fun clear() {
+        if (quantityEditorDebounceSubscription?.isUnsubscribed == false)
+            quantityEditorDebounceSubscription?.unsubscribe()
+
+        quantityEditorDebounce = null
+        quantityEditorDebounceSubscription = null
     }
 
     private interface QuantityEditorDebounce {
