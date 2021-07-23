@@ -33,7 +33,7 @@ object DigitalCheckoutMapper {
 
         cartInfo.attributes.autoApplyVoucher.let {
             if (!isEnableVoucher) {
-                promoData = PromoData(description = it.discountedAmountLabel,
+                promoData = PromoData(description = it.discountAmountLabel,
                         amount = it.discountAmount.toInt(),
                         state = TickerCheckoutView.State.INACTIVE)
             } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == 0 && it.isCoupon == 1)) {
@@ -99,7 +99,7 @@ object DigitalCheckoutMapper {
                 applyVoucher.code = entity.code
                 applyVoucher.isSuccess = entity.success
                 applyVoucher.discountAmount = entity.discountAmount
-                applyVoucher.discountedAmountLabel = entity.discountedAmountLabel
+                applyVoucher.discountAmountLabel = entity.discountAmountLabel
                 applyVoucher.isCoupon = entity.isCoupon
                 applyVoucher.promoId = entity.promoId.toLongOrZero()
                 applyVoucher.title = entity.titleDescription

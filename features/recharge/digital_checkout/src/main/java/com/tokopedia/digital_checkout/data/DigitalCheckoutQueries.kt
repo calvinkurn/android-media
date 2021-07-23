@@ -55,9 +55,9 @@ object DigitalCheckoutQueries {
                 code
               is_coupon
               discount_amount
+              discount_amount_label
               discount_price
               discounted_amount
-              discounted_amount_label
               discounted_price
               title_description
               promo_code_id

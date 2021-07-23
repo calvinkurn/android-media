@@ -101,7 +101,7 @@ object DigitalCartDummyData {
         val autoApplyVoucher = AutoApplyVoucher(
                 discountAmount = 5000.0,
                 discountedPrice = "Rp 5.000",
-                discountedAmountLabel = "PROMOO"
+                discountAmountLabel = "PROMOO"
         )
 
         val crossSellingConfig = CrossSellingConfig(

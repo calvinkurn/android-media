@@ -95,7 +95,7 @@
           "discounted_amount": 12500,
           "discounted_price": "Rp 12.500",
           "title_description": "",
-          "discounted_amount_label": "PROMOO",
+          "discount_amount_label": "PROMOO",
           "promo_code_id": 0,
           "promo_id": 0,
           "message_success": ""
