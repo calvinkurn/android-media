@@ -20,34 +20,14 @@ open class ErrorHandler {
     companion object {
         const val ERROR_HANDLER = "ERROR_HANDLER"
 
-        class Builder {
-            var sendToScalyr = true
-            var errorCode = true
-
-            fun sendToScalyr(value: Boolean): Builder {
-                sendToScalyr = value
-                return this
-            }
-
-            fun withErrorCode(value: Boolean): Builder {
-                errorCode = value
-                return this
-            }
-
-            fun build(): Builder {
-                return this
-            }
-
-        }
-
         @JvmStatic
-        fun getErrorMessage(context: Context, e: Throwable): String {
+        fun getErrorMessage(context: Context?, e: Throwable): String {
             return getErrorMessage(context, e, Builder())
         }
 
         @JvmStatic
         fun getErrorMessage(
-            context: Context,
+            context: Context?,
             e: Throwable,
             builder: Builder
         ): String {
@@ -63,14 +43,12 @@ open class ErrorHandler {
             val errorIdentifier = getRandomString(4)
             val mapParam = mapOf(
                 "identifier" to errorIdentifier,
-                "class" to context.javaClass.name,
+                "class" to builder.className,
+                "error_code" to if(builder.errorCode) errorCode else "",
                 "e" to Log.getStackTraceString(e)
             )
-            if (builder.errorCode) {
-                mapParam.plus("error_code" to errorCode)
-            }
             if (builder.sendToScalyr) {
-                LogManager.log(Priority.P2, ERROR_HANDLER, mapParam)
+                LogManager.log(Priority.P2, ERROR_HANDLER, mapParam as Map<String, String>)
             }
             return "$errorMessageString <$errorCode-$errorIdentifier>"
         }
@@ -120,5 +98,32 @@ open class ErrorHandler {
             }
         }
     }
+
+    class Builder {
+        var sendToScalyr = true
+        var errorCode = true
+        var className = ""
+
+        fun sendToScalyr(value: Boolean): Builder {
+            sendToScalyr = value
+            return this
+        }
+
+        fun withErrorCode(value: Boolean): Builder {
+            errorCode = value
+            return this
+        }
+
+        fun className(value: String): Builder {
+            className = value
+            return this
+        }
+
+        fun build(): Builder {
+            return this
+        }
+
+    }
+
 
 }
