@@ -49,6 +49,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private var delayChangeCheckboxState: Job? = null
     private var delayChangeQty: Job? = null
     private var informationLabel: MutableList<String> = mutableListOf()
+    private var qtyTextWatcher: TextWatcher? = null
 
     init {
         context = itemView.context
@@ -237,7 +238,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun renderPrice(data: CartItemHolderData) {
         if (data.cartItemData.originData.wholesalePriceFormatted != null) {
-            binding.textProductPrice.text = data.cartItemData.originData.wholesalePriceFormatted ?: ""
+            binding.textProductPrice.text = data.cartItemData.originData.wholesalePriceFormatted
+                    ?: ""
         } else {
             binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     data.cartItemData.originData.pricePlan, false).removeDecimalSuffix()
@@ -439,18 +441,37 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         qtyEditorCart.autoHideKeyboard = true
         qtyEditorCart.minValue = data.cartItemData.originData.minOrder
         qtyEditorCart.maxValue = data.cartItemData.originData.maxOrder
-        // reset listener
-        qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
         qtyEditorCart.setValue(data.cartItemData.updatedData.quantity)
-        qtyEditorCart.setValueChangedListener { newValue, _, _ ->
-            delayChangeQty?.cancel()
-            delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                delay(500L)
-                cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
-                actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
-                cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+        if (qtyTextWatcher != null) {
+            // reset listener
+            qtyEditorCart.editText.removeTextChangedListener(qtyTextWatcher)
+        }
+        qtyTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                delayChangeQty?.cancel()
+                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500)
+                    val newValue = s.toString().replace(".", "").toIntOrZero()
+                    if (data.cartItemData.updatedData.quantity != newValue) {
+                        validateQty(newValue, data)
+                        if (newValue != 0) {
+                            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
+                            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
+                            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+                        }
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
             }
         }
+        qtyEditorCart.editText.addTextChangedListener(qtyTextWatcher)
         qtyEditorCart.setSubstractListener {
             if (!data.cartItemData.isError && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -476,6 +497,25 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             } else false
         }
         qtyEditorCart.editText.isEnabled = data.cartItemData.isError == false
+    }
+
+    private fun validateQty(newValue: Int, element: CartItemHolderData) {
+        val qtyEditorCart = binding.qtyEditorCart
+        if (newValue == element.cartItemData.originData.minOrder && newValue == element.cartItemData.originData.maxOrder) {
+            qtyEditorCart.addButton.isEnabled = false
+            qtyEditorCart.subtractButton.isEnabled = false
+        } else if (newValue >= element.cartItemData.originData.maxOrder) {
+            qtyEditorCart.setValue(element.cartItemData.originData.maxOrder)
+            qtyEditorCart.addButton.isEnabled = false
+            qtyEditorCart.subtractButton.isEnabled = true
+        } else if (newValue <= element.cartItemData.originData.minOrder) {
+            qtyEditorCart.setValue(element.cartItemData.originData.minOrder)
+            qtyEditorCart.addButton.isEnabled = true
+            qtyEditorCart.subtractButton.isEnabled = false
+        } else {
+            qtyEditorCart.addButton.isEnabled = true
+            qtyEditorCart.subtractButton.isEnabled = true
+        }
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
