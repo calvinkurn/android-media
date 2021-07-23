@@ -323,7 +323,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun getReplyTimeStampFrom(lastItem: ReplyParcelableModel): String {
-        return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
+        return (lastItem.replyTime.toLongOrZero() / ONE_MILLION).toString()
     }
 
     fun loadTopBotWhiteList() {
@@ -349,7 +349,7 @@ class ChatItemListViewModel @Inject constructor(
                 context.getString(R.string.filter_chat_unread),
                 context.getString(R.string.filter_chat_unreplied)
         )
-        if (arrayFilterParam.size > 3 && isTabSeller) {
+        if (arrayFilterParam.size > SELLER_FILTER_THRESHOLD && isTabSeller) {
             filters.add(context.getString(R.string.filter_chat_smart_reply))
         }
         return filters
@@ -369,6 +369,8 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     companion object {
+        private const val SELLER_FILTER_THRESHOLD = 3
+        private const val ONE_MILLION = 1_000_000L
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,
