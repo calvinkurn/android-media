@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:maxEms="12"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/fontSize_lvl4"
             android:lines="1"
             android:ellipsize="end"
             android:gravity="center_vertical"

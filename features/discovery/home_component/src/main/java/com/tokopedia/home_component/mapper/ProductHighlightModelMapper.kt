@@ -14,11 +14,7 @@ object ProductHighlightModelMapper {
                 stockBarLabel = channelGrid.label,
                 stockBarPercentage = channelGrid.soldPercentage,
                 pdpViewCount = channelGrid.productViewCountFormatted,
-                isOutOfStock = channelGrid.isOutOfStock,
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    channelGrid.isFreeOngkirActive,
-                    channelGrid.freeOngkirImageUrl
-                ),
+                isOutOfStock = channelGrid.isOutOfStock
             )
         }
 }

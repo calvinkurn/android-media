@@ -124,8 +124,8 @@ class ProductHighlightComponentViewHolder(
     private fun setDealsProductGrid(channel: ChannelModel) {
         val grid = channel.channelGrids.firstOrNull()
         val channelDataModel = grid?.let { ProductHighlightModelMapper.mapToProductCardModel(it) }
-        if (channelDataModel != null) {
-            masterProductCardListView?.setProductModel(channelDataModel)
+        channelDataModel?.let {
+            masterProductCardListView?.setProductModel(it)
         }
         grid?.let { setDealsProductCard(channel, it) }
     }
