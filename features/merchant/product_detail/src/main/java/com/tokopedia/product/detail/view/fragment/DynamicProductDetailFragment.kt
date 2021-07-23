@@ -167,6 +167,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -2298,13 +2299,28 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun executeProductShare(productData: ProductData) {
         activity?.let {
-            shareProductInstance?.share(productData, {
-                showProgressDialog {
-                    shareProductInstance?.cancelShare(true)
-                }
-            }, {
-                hideProgressDialog()
-            }, true)
+            if(UniversalShareBottomSheet.isCustomSharingEnabled(context)){
+                shareProductInstance?.showUniversalShareBottomSheet(
+                    fragmentManager,
+                    productData,
+                    {
+                        showProgressDialog {
+                            shareProductInstance?.cancelShare(true)
+                        }
+                    }, {
+                        hideProgressDialog()
+                    }, true,
+                    view)
+
+            }else {
+                shareProductInstance?.share(productData, {
+                    showProgressDialog {
+                        shareProductInstance?.cancelShare(true)
+                    }
+                }, {
+                    hideProgressDialog()
+                }, true)
+            }
         }
     }
 

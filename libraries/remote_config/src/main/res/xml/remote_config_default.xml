@@ -578,6 +578,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_enable_custom_sharing</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_branch_callback_timeout_key</key>
         <value>5000</value>
     </entry>

@@ -1,0 +1,32 @@
+<resources>
+
+    <string name="shop_info_title_tab_feed">Feed</string>
+
+    <string name="label_chat">Chat</string>
+
+
+
+    <string name="shop_page_product_action_no_upload_product">Oke</string>
+    <!-- support -->
+    <string name="shop_string_ok">OK</string>
+    <!-- shop share -->
+    <string name="label_to_social_media_text">Bagikan ke teman kamu</string>
+    <string name="label_bhasha_copy_link">Salin link</string>
+    <string name="label_copy_link">Copy Link</string>
+    <string name="label_instagram">IG Feed</string>
+    <string name="label_instagram_story">IG Story</string>
+    <string name="label_facebook">FB Feed</string>
+    <string name="label_facebook_story">FB Story</string>
+    <string name="label_whatsapp">WhatsApp</string>
+    <string name="label_line">Line</string>
+    <string name="label_twitter">Twitter</string>
+    <string name="label_telegram">Telegram</string>
+    <string name="label_action_more">Lainnya</string>
+    <string name="share_sms">SMS</string>
+    <string name="share_email">E-mail</string>
+    <string name="label_action_copy_success">Sip, link berhasil disalin!</string>
+    <string name="label_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="label_close">Tutup</string>
+    <string name="screen_shot_thumbnail_title">Yay, screenshot &amp; link tersimpan</string>
+
+</resources>
