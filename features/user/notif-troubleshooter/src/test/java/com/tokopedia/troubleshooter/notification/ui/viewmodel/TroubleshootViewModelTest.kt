@@ -119,7 +119,7 @@ class TroubleshootViewModelTest {
         val expectedValue = Throwable()
         val expectedReturn = Fail(expectedValue)
 
-        coEvery { troubleshootUseCase(mapOf()) } returns expectedReturn
+        coEvery { troubleshootUseCase() } returns expectedReturn
 
         viewModel.troubleshoot()
 
