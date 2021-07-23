@@ -1313,7 +1313,7 @@ class ProductListPresenter @Inject constructor(
                                 shopName = product.shopName,
                                 position = index + 1,
                                 alternativeKeyword = option.title,
-                                carouselProductType = determineInspirationCarouselProductType(type, option),
+                                carouselProductType = determineInspirationCarouselProductType(type, option, product),
                                 freeOngkirDataView = product.freeOngkirDataView,
                                 isOrganicAds = product.isOrganicAds,
                                 topAdsViewUrl = product.topAdsViewUrl,
@@ -1327,10 +1327,11 @@ class ProductListPresenter @Inject constructor(
 
     private fun determineInspirationCarouselProductType(
             type: String,
-            option: InspirationCarouselDataView.Option
+            option: InspirationCarouselDataView.Option,
+            product: InspirationCarouselDataView.Option.Product,
     ): CarouselProductType {
         return if (type == TYPE_INSPIRATION_CAROUSEL_KEYWORD)
-            BroadMatchProduct(isOrganicAds = false, hasThreeDots = false)
+            BroadMatchProduct(isOrganicAds = product.isOrganicAds, hasThreeDots = false)
         else
             DynamicCarouselProduct(option.inspirationCarouselType)
     }

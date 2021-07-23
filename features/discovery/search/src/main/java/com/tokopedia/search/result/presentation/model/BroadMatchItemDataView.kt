@@ -36,7 +36,7 @@ data class BroadMatchItemDataView(
                 "brand", "none / other",
                 "category", "none / other",
                 "variant", "none / other",
-                "list", carouselProductType.dataLayerList,
+                "list", carouselProductType.getDataLayerList(isOrganicAds),
                 "position", position,
                 "dimension90", dimension90,
         )
@@ -50,7 +50,7 @@ data class BroadMatchItemDataView(
                 "brand", "none / other",
                 "category", "none / other",
                 "variant", "none / other",
-                "list", carouselProductType.dataLayerList,
+                "list", carouselProductType.getDataLayerList(isOrganicAds),
                 "position", position,
                 "attribution", "none / other",
                 "dimension90", dimension90,
