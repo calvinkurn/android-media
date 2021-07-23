@@ -5,6 +5,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,6 +17,8 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveLeaderboardAdapter
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayInteractiveLeaderboardViewHolder
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -51,6 +56,11 @@ class PlayInteractiveLeaderboardViewComponent(
         findViewById<UnifyButton>(R.id.btn_action_leaderboard_error).setOnClickListener {
             listener.onRefreshButtonClicked(this)
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+            v.updatePadding(bottom = insets.systemWindowInsetBottom)
+            insets
+        }
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
@@ -83,6 +93,19 @@ class PlayInteractiveLeaderboardViewComponent(
             errorView.hide()
             rvLeaderboard.show()
         }
+    }
+
+    /**
+     * Lifecycle Event
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        rootView.requestApplyInsetsWhenAttached()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, null)
     }
 
     interface Listener {
