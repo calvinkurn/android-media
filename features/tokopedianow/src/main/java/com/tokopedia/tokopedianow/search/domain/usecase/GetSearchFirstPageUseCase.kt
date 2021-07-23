@@ -46,7 +46,7 @@ class GetSearchFirstPageUseCase(
                 categoryFilter = getCategoryFilter(graphqlResponse),
                 quickFilter = getQuickFilter(graphqlResponse),
                 bannerChannel = getBanner(graphqlResponse),
-                searchCategoryJumper = getSearchCategoryJumper(graphqlResponse)
+                searchCategoryJumper = getSearchCategoryJumper(graphqlResponse),
         )
     }
 
@@ -70,7 +70,7 @@ class GetSearchFirstPageUseCase(
             mapOf(KEY_PARAMS to generateUrlParamString(params))
     )
 
-    internal fun getSearchCategoryJumper(
+    private fun getSearchCategoryJumper(
             graphqlResponse: GraphqlResponse
     ): SearchCategoryJumperData {
 

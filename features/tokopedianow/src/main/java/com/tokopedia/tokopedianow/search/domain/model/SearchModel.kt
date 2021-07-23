@@ -26,5 +26,5 @@ data class SearchModel(
 
         @SerializedName("searchJumper")
         @Expose
-        val searchCategoryJumper: SearchCategoryJumperData = SearchCategoryJumperData()
+        val searchCategoryJumper: SearchCategoryJumperData = SearchCategoryJumperData(),
 )
