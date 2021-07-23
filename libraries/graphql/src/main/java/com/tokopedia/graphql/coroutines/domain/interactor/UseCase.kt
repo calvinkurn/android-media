@@ -11,11 +11,13 @@ abstract class UseCase {
     * */
     protected abstract fun graphqlQuery(): String
 
-    protected suspend inline fun <reified T> GraphqlRepository.request(
-        params: Map<String, Any>?
-    ): T {
-        val request = GraphqlRequest(graphqlQuery(), T::class.java, params?: mapOf())
+    @Suppress("UNCHECKED_CAST")
+    protected suspend inline fun <reified T, reified P> GraphqlRepository.request(params: P): T {
+        val parameters = if (params is Map<*, *>) params as Map<String, Any> else mapOf()
+
+        val request = GraphqlRequest(graphqlQuery(), T::class.java, parameters)
         val response = getReseponse(listOf(request))
+
         return response.getSuccessData()
     }
 
