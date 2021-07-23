@@ -72,7 +72,9 @@ object ChannelMapper {
                 ChannelGrid(
                     id = it.id,
                     warehouseId = it.warehouseId,
+                    parentProductId = it.parentProductId,
                     minOrder = it.minOrder,
+                    stock = it.stock,
                     price = it.price,
                     imageUrl = it.imageUrl,
                     name = it.name,

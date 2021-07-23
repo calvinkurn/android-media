@@ -151,6 +151,7 @@
 /features/transaction/buyerorder/                       @tokopedia/android-minionbob-dev
 /features/transaction/purchase_platform_common/ 		@tokopedia/android-minionbob-dev
 /features/transaction/cart/        		                @tokopedia/android-minionbob-dev
+/features/transaction/cart_common/        		        @tokopedia/android-minionbob-dev
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
