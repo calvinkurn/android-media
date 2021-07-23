@@ -153,6 +153,14 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
     val iconImage = view.nav_icon_image
     val context = itemView.context
 
+    companion object {
+        private const val ICON_NONE_COUNTER_PERCENTAGE_X_POSITION = 0.85f
+        private const val ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION = -0.25f
+
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.85f
+    }
+
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.name
 
@@ -223,7 +231,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 iconImage.notificationRef.gone()
             }
             iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
-                iconImage.setNotifXY(0.85f, -0.25f)
+                iconImage.setNotifXY(ICON_NONE_COUNTER_PERCENTAGE_X_POSITION, ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION)
                 iconImage.notificationRef.setNotification(
                         notif = iconToolbar.badgeCounter.toString(),
                         notificationType = NotificationUnify.NONE_TYPE,
@@ -233,7 +241,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 iconImage.notificationRef.visible()
             }
             else -> {
-                iconImage.setNotifXY(1f, -0.85f)
+                iconImage.setNotifXY(ICON_DEFAULT_PERCENTAGE_X_POSITION, ICON_DEFAULT_PERCENTAGE_Y_POSITION)
                 iconImage.notificationRef.setNotification(
                         notif = iconToolbar.badgeCounter.toString(),
                         notificationType = NotificationUnify.COUNTER_TYPE,
@@ -255,10 +263,15 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
     val iconBadge = view.nav_icon_badge_lottieav
     val context = itemView.context
 
+    companion object {
+        private const val INITIAL_LOTTIE_PROGRESS = 0f
+        private const val PADDING_ZERO = 0
+    }
+
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconImage.tag = iconToolbar.name
         iconImage.cancelAnimation()
-        iconImage.progress = 0f
+        iconImage.progress = INITIAL_LOTTIE_PROGRESS
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
@@ -284,8 +297,8 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
             iconBadge.text = iconToolbar.badgeCounter.toString()
         }
 
-        if (iconToolbar.paddingEndRes != 0) {
-            iconImage.setPadding(0, 0, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
+        if (iconToolbar.paddingEndRes != PADDING_ZERO) {
+            iconImage.setPadding(PADDING_ZERO, PADDING_ZERO, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
         }
     }
 
@@ -302,6 +315,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
         private const val ICON_PERCENTAGE_X_POSITION = 1f
         private const val ICON_PERCENTAGE_Y_POSITION = -0.8f
         private const val ANIMATION_DELAY = 1000L
+        private const val PADDING_ZERO = 0
     }
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
@@ -348,8 +362,8 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
         }
         iconImage.setNotifXY(ICON_PERCENTAGE_X_POSITION, ICON_PERCENTAGE_Y_POSITION)
 
-        if (iconToolbar.paddingEndRes != 0) {
-            iconAnimatedImage.setPadding(0, 0, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
+        if (iconToolbar.paddingEndRes != PADDING_ZERO) {
+            iconAnimatedImage.setPadding(PADDING_ZERO, PADDING_ZERO, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
         }
 
         iconAnimatedImage.gone()
