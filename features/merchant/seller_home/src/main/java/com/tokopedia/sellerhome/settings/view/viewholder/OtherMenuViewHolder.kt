@@ -650,15 +650,13 @@ class OtherMenuViewHolder(private val itemView: View,
             }
         }
 
-        val thresholdTransaction  = 110
-        val maxTransaction = 100
         val totalTransaction = userShopInfo?.totalTransaction ?: 0
-        if (totalTransaction >= thresholdTransaction) {
+        if (totalTransaction >= Constant.ShopStatus.THRESHOLD_TRANSACTION) {
             hideTransactionSection()
         } else {
             if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
                 showTransactionSection()
-                if (totalTransaction > maxTransaction) {
+                if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                     txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
@@ -711,10 +709,9 @@ class OtherMenuViewHolder(private val itemView: View,
                 powerMerchantProStatusText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
             }
         }
-        val roundedRadius = 16F
         ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
                 .toBuilder()
-                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, Constant.ShopStatus.ROUNDED_RADIUS)
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
