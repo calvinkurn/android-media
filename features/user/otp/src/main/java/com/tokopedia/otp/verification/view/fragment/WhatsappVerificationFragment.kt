@@ -5,6 +5,9 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
 import com.tokopedia.otp.R
+import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.data.OtpRequestData
+import com.tokopedia.otp.verification.view.activity.VerificationActivity
 
 open class WhatsappVerificationFragment : VerificationFragment() {
 
@@ -27,6 +30,16 @@ open class WhatsappVerificationFragment : VerificationFragment() {
                 setResendOtpFooterSpan(message, spannableChild)
             }
             super.setFooterText(spannableChild)
+        }
+    }
+
+    override fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
+        if (otpRequestData.success &&
+                modeListData.modeText == OtpConstant.OtpMode.WA &&
+                otpRequestData.isWaNotRegistered) {
+            (activity as VerificationActivity).goToWhatsappNotRegistered()
+        } else {
+            super.onSuccessSendOtp(otpRequestData)
         }
     }
 
