@@ -16,7 +16,7 @@ import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -1135,9 +1135,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         // When
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
             )
-        } returns AbTestPlatform.VARIANT_OLD_NOTFICENTER
+        } returns RollenceKey.VARIANT_OLD_NOTFICENTER
 
         // Then
         assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION, expectedDeepLink)
