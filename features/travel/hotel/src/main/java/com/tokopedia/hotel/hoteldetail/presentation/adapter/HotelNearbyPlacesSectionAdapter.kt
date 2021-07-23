@@ -3,6 +3,7 @@ package com.tokopedia.hotel.hoteldetail.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.hotel.databinding.ItemHotelSectionNearbyLandmarkBinding
 import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyPlaces
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder.HotelNearbyLandmarkViewHolder
 
@@ -12,7 +13,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder.HotelNear
 class HotelNearbyPlacesSectionAdapter(private var dataList: List<HotelNearbyPlaces>) : RecyclerView.Adapter<HotelNearbyLandmarkViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelNearbyLandmarkViewHolder = HotelNearbyLandmarkViewHolder(
-            LayoutInflater.from(parent.context).inflate(HotelNearbyLandmarkViewHolder.LAYOUT, parent, false))
+            ItemHotelSectionNearbyLandmarkBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = dataList.size
 
