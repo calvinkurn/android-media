@@ -25,11 +25,12 @@ import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationC
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.databinding.FragmentHotelCancellationConfirmationBinding
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_cancellation_confirmation.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -41,6 +42,8 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var cancellationViewModel: HotelCancellationViewModel
+
+    private var binding by autoClearedNullable<FragmentHotelCancellationConfirmationBinding>()
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
