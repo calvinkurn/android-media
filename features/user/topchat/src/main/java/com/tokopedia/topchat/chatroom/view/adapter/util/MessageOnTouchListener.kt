@@ -1,18 +1,18 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
-import android.text.Selection
+import android.annotation.SuppressLint
 import android.text.Spannable
 import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 
 class MessageOnTouchListener(
     private val viewListener: ChatLinkHandlerListener
 ) : View.OnTouchListener {
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (v == null || event == null) return false
         val widget = v as? TextView ?: return false
@@ -37,30 +37,22 @@ class MessageOnTouchListener(
                     when {
                         viewListener.shouldHandleUrlManually(clickedUrl) -> {
                             viewListener.onGoToWebView(clickedUrl, clickedUrl)
-                            notifyLinkHit(widget)
                             return true
                         }
                         viewListener.isBranchIOLink(clickedUrl) -> {
                             viewListener.handleBranchIOLinkClick(clickedUrl)
-                            notifyLinkHit(widget)
+                            return true
+                        }
+                        else -> {
+                            link[0].onClick(widget)
                             return true
                         }
                     }
-                } else {
-                    Selection.setSelection(
-                        buffer,
-                        buffer.getSpanStart(link[0]),
-                        buffer.getSpanEnd(link[0])
-                    )
-                    notifyLinkHit(widget)
-                    return true
                 }
+                return true
             }
         }
         return false
     }
 
-    private fun notifyLinkHit(widget: TextView) {
-        Toast.makeText(widget.context, "LInk Hit True", Toast.LENGTH_SHORT).show()
-    }
 }
