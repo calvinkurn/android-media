@@ -213,6 +213,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         onFragmentResult()
 
         observeShopBadgeData()
+        observeShopOperationalHourStatusData()
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
@@ -227,6 +228,24 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     iv_logo_power_merchant.loadImage(shopBadge)
                 } else if (tv_official_store.text.isNotEmpty()) {
                     iv_logo_official_store.loadImage(shopBadge)
+                }
+            }
+        })
+    }
+
+    private fun observeShopOperationalHourStatusData() {
+        shopSettingsInfoViewModel.shopOperationalHourStatus.observe(viewLifecycleOwner, Observer {
+            if (it is Success) {
+                val operationalHourStatus = it.data
+                shopBasicDataModel?.let { shopBasicData ->
+                    val isShopClosed = shopBasicData.isClosed
+                    val isShopActive = operationalHourStatus.statusActive
+                    val status = when {
+                        isShopActive -> getString(R.string.label_open)
+                        isShopClosed -> getString(R.string.shop_operational_hour_holiday)
+                        else -> getString(R.string.label_close)
+                    }
+                    tvShopStatus.text = status
                 }
             }
         })
@@ -465,8 +484,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopDescription.visibility = View.VISIBLE
                 tvShopDescription.text = shopBasicData.description
             }
-
-            tvShopStatus.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
         }
     }
 
