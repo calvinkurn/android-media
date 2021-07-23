@@ -83,14 +83,14 @@ class DigitalCheckoutBottomViewWidget @JvmOverloads constructor(@NotNull context
 
     fun disableVoucherView() {
         digitalPromoBtnView.state = ButtonPromoCheckoutView.State.INACTIVE
-        val chevronImageView = digitalPromoBtnView.findViewById<ImageView>(R.id.iv_promo_checkout_right)
+        val chevronImageView = digitalPromoBtnView.findViewById<ImageView>(com.tokopedia.promocheckout.common.R.id.iv_promo_checkout_right)
         chevronImageView.setImageDrawable(null)
 
-        val titleTextView = digitalPromoBtnView.findViewById<TextView>(R.id.tv_promo_checkout_title)
+        val titleTextView = digitalPromoBtnView.findViewById<TextView>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_title)
         titleTextView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         titleTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_title)
 
-        val descTextView = digitalPromoBtnView.findViewById<TextView>(R.id.tv_promo_checkout_desc)
+        val descTextView = digitalPromoBtnView.findViewById<TextView>(com.tokopedia.promocheckout.common.R.id.tv_promo_checkout_desc)
         descTextView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         descTextView.text = resources.getString(R.string.digital_checkout_promo_disabled_description)
 
