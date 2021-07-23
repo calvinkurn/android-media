@@ -127,6 +127,7 @@ class HotelSearchMapViewModel @Inject constructor(
             HotelSortEnum.RANKING.value -> ParamSort(ranking = true, sortDir = HotelSortEnum.RANKING.order)
             HotelSortEnum.STAR.value -> ParamSort(star = true, sortDir = HotelSortEnum.STAR.order)
             HotelSortEnum.REVIEWSCORE.value -> ParamSort(reviewScore = true, sortDir = HotelSortEnum.REVIEWSCORE.order)
+            HotelSortEnum.DISTANCE.value -> ParamSort(popularity = false, distance = true, sortDir = HotelSortEnum.DISTANCE.order)
             else -> ParamSort()
         }
     }
