@@ -207,11 +207,4 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         CategoryTracking.sendDecreaseQtyEvent(getViewModel().categoryL1)
     }
-
-    override fun onBindRecommendationCarousel(
-            element: RecommendationCarouselDataView,
-            adapterPosition: Int,
-    ) {
-        getViewModel().onBindRecommendationCarousel(element, adapterPosition)
-    }
 }

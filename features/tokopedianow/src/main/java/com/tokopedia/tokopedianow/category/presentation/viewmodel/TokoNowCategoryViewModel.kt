@@ -8,15 +8,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -32,9 +26,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSear
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams

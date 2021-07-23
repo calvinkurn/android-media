@@ -765,7 +765,7 @@ abstract class BaseSearchCategoryFragment:
     override fun onDismissChooseAddressBottomSheet() { }
 
     override fun onBindRecommendationCarousel(element: RecommendationCarouselDataView, adapterPosition: Int) {
-
+        getViewModel().onBindRecommendationCarousel(element, adapterPosition)
     }
 
     override fun onImpressed() {

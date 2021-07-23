@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -14,19 +15,18 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilt
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
-import org.hamcrest.core.Is
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -211,8 +211,9 @@ fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState() {
 fun assertTokonowRecommendationCarouselRequestParams(
         getRecommendationRequestParam: GetRecommendationRequestParam
 ) {
-    assertThat(getRecommendationRequestParam.xSource, Is.`is`(RECOM_WIDGET))
-    assertThat(getRecommendationRequestParam.pageName, Is.`is`(TOKONOW_CLP))
+    assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.pageName, shouldBe(TOKONOW_CLP))
 //        assertThat(getRecommendationParams.isTokonow, shouldBe(true))
-    assertThat(getRecommendationRequestParam.pageNumber, Is.`is`(PAGE_NUMBER_RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
 }
