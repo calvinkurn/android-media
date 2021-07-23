@@ -444,11 +444,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         if (resultCode == RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST) {
             val resultMessage = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_MSG_INSTANT_CANCEL).orEmpty()
             val result = data?.getIntExtra(BuyerOrderDetailMiscConstant.RESULT_CODE_INSTANT_CANCEL, 1) ?: 1
-            if (result == 1) {
+            if (result == BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_TOASTER) {
                 if (resultMessage.isNotBlank()) {
                     showCommonToaster(resultMessage)
                 }
-            } else if (result == 3) {
+            } else if (result == BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_DIALOG) {
                 val popupTitle = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_TITLE_INSTANT_CANCEL).orEmpty()
                 val popupBody = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_BODY_INSTANT_CANCEL).orEmpty()
                 if (popupTitle.isNotBlank() && popupBody.isNotBlank()) {
@@ -461,7 +461,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                     }
                 }
             }
-            if (result != 0) {
+            if (result != BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED) {
                 loadBuyerOrderDetail()
             }
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
