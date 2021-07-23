@@ -3,7 +3,7 @@ package com.tokopedia.network.utils
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import com.tokopedia.logger.LogManager
+import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.R
 import com.tokopedia.network.constant.ResponseStatus
@@ -48,7 +48,7 @@ open class ErrorHandler {
                 "e" to Log.getStackTraceString(e)
             )
             if (builder.sendToScalyr) {
-                LogManager.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
+                ServerLogger.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
             }
             return "$errorMessageString <$errorCode-$errorIdentifier>"
         }
