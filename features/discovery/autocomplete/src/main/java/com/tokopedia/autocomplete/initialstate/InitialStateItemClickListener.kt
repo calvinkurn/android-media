@@ -22,4 +22,6 @@ interface InitialStateItemClickListener {
     fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
 
     fun onRecentViewClicked(item: BaseItemInitialStateSearch)
+
+    fun onChipClicked(item: BaseItemInitialStateSearch)
 }
