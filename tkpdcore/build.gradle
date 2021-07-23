@@ -68,7 +68,6 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location

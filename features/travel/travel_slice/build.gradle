@@ -40,7 +40,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.slice
-    implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.networkDependencies.glide
     annotationProcessor rootProject.ext.networkDependencies.glideProcessor
 }
