@@ -134,14 +134,32 @@ class ProductViewHolder(
                 if (product.multiSelectActive) {
                     toggleCheckBox()
                     onClickCheckBox()
-                } else {
-                    onClickProductItem(product)
                 }
             }
+            setComponentsOnItemClickListener(product, !product.multiSelectActive)
         } else {
             itemView.setOnClickListener(null)
+            setComponentsOnItemClickListener(product, false)
         }
     }
+
+    private fun setComponentsOnItemClickListener(product: ProductUiModel, isEnabled: Boolean) {
+        with(itemView) {
+            val clickAction =
+                    if (isEnabled) {
+                        getComponentOnClickAction(product)
+                    } else {
+                        null
+                    }
+            imageProduct?.setOnClickListener(clickAction)
+            textTitle?.setOnClickListener(clickAction)
+        }
+    }
+
+    private fun getComponentOnClickAction(product: ProductUiModel) =
+            View.OnClickListener {
+                onClickProductItem(product)
+            }
 
     private fun showProductCheckBox(product: ProductUiModel) {
         itemView.checkBoxSelect.isChecked = product.isChecked
