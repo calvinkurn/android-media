@@ -22,6 +22,7 @@ import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFact
 import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ATC_VARIANT
+import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -32,7 +33,8 @@ import javax.inject.Inject
 class TokoNowSearchFragment:
         BaseSearchCategoryFragment(),
         SuggestionListener,
-        CategoryJumperListener {
+        CategoryJumperListener,
+        CTATokoNowHomeListener {
 
     companion object {
 
@@ -122,6 +124,7 @@ class TokoNowSearchFragment:
             suggestionListener = this,
             outOfCoverageListener = this,
             categoryJumperListener = this,
+            ctaTokoNowHomeListener = this,
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -261,5 +264,10 @@ class TokoNowSearchFragment:
 
         SearchTracking.sendClickCategoryJumperEvent(item.title)
         RouteManager.route(context, item.applink)
+    }
+
+    override fun onCTAToTokopediaNowHomeClick() {
+        SearchTracking.sendClickCTAToHome()
+        goToTokopediaNowHome()
     }
 }

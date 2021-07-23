@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_A
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_BANNER
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CARI_BARANG_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CATEGORY_JUMPER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
@@ -79,6 +80,7 @@ object SearchTracking {
         const val EVENT_ACTION_CLICK_SEARCH_BAR_VALUE = "click - search - search bar"
         const val CLICK_DELETE_ITEM_FROM_CART = "click - delete all items from cart"
         const val CLICK_CATEGORY_JUMPER = "click - category jumper"
+        const val CLICK_CARI_BARANG_DI_TOKONOW = "click - cari barang di tokonow"
     }
 
     object Category {
@@ -463,6 +465,19 @@ object SearchTracking {
                     KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                     KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
             )
+        )
+    }
+
+    fun sendClickCTAToHome() {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_TOKONOW,
+                        EVENT_ACTION, CLICK_CARI_BARANG_DI_TOKONOW,
+                        EVENT_CATEGORY, TOKONOW_NO_SEARCH_RESULT,
+                        EVENT_LABEL, "",
+                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                )
         )
     }
 }

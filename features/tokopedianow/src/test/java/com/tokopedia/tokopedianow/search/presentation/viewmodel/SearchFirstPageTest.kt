@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKON
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
+import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
@@ -91,6 +92,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val footerList = visitableList.subList(footerStartIndex, visitableList.size)
 
         footerList.first().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
+        footerList.last().assertCTATokopediaNowHomeDataView()
     }
 
     private fun Visitable<*>.assertCategoryJumperDataView(
@@ -110,6 +112,10 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
             assertThat(actualItem.title, shouldBe(expectedItem.title))
             assertThat(actualItem.applink, shouldBe(expectedItem.applink))
         }
+    }
+
+    private fun Visitable<*>.assertCTATokopediaNowHomeDataView() {
+        assertThat(this, instanceOf(CTATokopediaNowHomeDataView::class.java))
     }
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
