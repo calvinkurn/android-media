@@ -522,7 +522,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             hideFullPageLoading()
             when (it) {
                 is Success -> onSuccessGetRatingAndTopic(it.data)
-                is Fail -> onFailGetRatingAndTopic()
+                is Fail -> onFailGetRatingAndTopic(it.throwable)
             }
         })
     }
@@ -532,7 +532,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             hideListOnlyLoading()
             when (it) {
                 is Success -> onSuccessGetProductReviews(it.data)
-                is Fail -> onFailGetProductReviews()
+                is Fail -> onFailGetProductReviews(it.throwable)
             }
         })
     }
@@ -576,7 +576,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    private fun onFailGetRatingAndTopic() {
+    private fun onFailGetRatingAndTopic(throwable: Throwable) {
+        logToCrashlytics(throwable)
         showError()
     }
 
@@ -602,7 +603,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    private fun onFailGetProductReviews() {
+    private fun onFailGetProductReviews(throwable: Throwable) {
+        logToCrashlytics(throwable)
         if (currentPage == 0) {
             showError()
         } else {

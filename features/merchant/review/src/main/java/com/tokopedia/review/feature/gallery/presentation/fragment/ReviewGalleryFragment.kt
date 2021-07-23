@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -18,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.ToggleProductReviewLike
@@ -228,7 +230,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessLikeReview(it.data)
-                is Fail -> onFailLikeReview()
+                is Fail -> onFailLikeReview(it.throwable)
             }
         })
     }
@@ -242,8 +244,8 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
-    private fun onFailLikeReview() {
-        // No Op
+    private fun onFailLikeReview(throwable: Throwable) {
+        logToCrashlytics(throwable)
     }
 
     private fun setThreeDotsVisibility(isReportable: Boolean) {
@@ -327,5 +329,13 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     private fun isLiked(likeStatus: Int): Boolean {
         return likeStatus == LikeDislike.LIKED
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 }
