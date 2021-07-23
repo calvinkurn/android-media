@@ -63,7 +63,7 @@ open class NotifcenterDetailUseCase @Inject constructor(
             filter: Long,
             @RoleType
             role: Int,
-            onSuccess: (Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) -> Unit,
+            onSuccess: (Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         val fields = if (!hasFilter(filter)) {
@@ -79,7 +79,7 @@ open class NotifcenterDetailUseCase @Inject constructor(
         chainGetNotifications(
                 params, onSuccess, onError,
                 { response ->
-                    mapper.mapFirstPage(response, needSectionTitle, false)
+                    mapper.mapFirstPage(response, needSectionTitle, needLoadMoreButton)
                 },
                 { response ->
                     mapper.mapEarlierSection(response, false, needLoadMoreButton)
@@ -170,7 +170,7 @@ open class NotifcenterDetailUseCase @Inject constructor(
 
     fun chainGetNotifications(
             params: Map<String, Any?>,
-            onSuccess: (Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) -> Unit,
+            onSuccess: (Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>) -> Unit,
             onError: (Throwable) -> Unit,
             firstMapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
             secondMapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
@@ -179,29 +179,38 @@ open class NotifcenterDetailUseCase @Inject constructor(
         launchCatchError(
                 dispatchers.io,
                 {
-                    val response = gqlUseCase.apply {
+                    val responseFirstPage = gqlUseCase.apply {
                         setTypeClass(NotifcenterDetailResponse::class.java)
                         setRequestParams(params)
                         setGraphqlQuery(query)
                     }.executeOnBackground()
-                    val secondParams = mapOf(
-                            PARAM_TYPE_ID to params.get(PARAM_TYPE_ID),
-                            PARAM_TAG_ID to params.get(PARAM_TAG_ID),
-                            PARAM_TIMEZONE to timeZone,
-                            PARAM_LAST_NOTIF_ID to response.notifcenterDetail.list.last().notifId,
-                            PARAM_FIELDS to emptyArray<String>()
-                    )
-                    val response2 = gqlUseCase.apply {
-                        setTypeClass(NotifcenterDetailResponse::class.java)
-                        setRequestParams(secondParams)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground();
-                    val items = firstMapping(response)
-                    val items2 = secondMapping(response2)
-                    withContext(dispatchers.main) {
-                        onResponseReady(response2)
-                        onSuccess(items to items2)
+                    val itemsFirstPage = firstMapping(responseFirstPage)
+                    if (itemsFirstPage.hasNext) {
+                        val secondParams = mapOf(
+                                PARAM_TYPE_ID to params.get(PARAM_TYPE_ID),
+                                PARAM_TAG_ID to params.get(PARAM_TAG_ID),
+                                PARAM_TIMEZONE to timeZone,
+                                PARAM_LAST_NOTIF_ID to responseFirstPage.notifcenterDetail.list.last().notifId,
+                                PARAM_FIELDS to emptyArray<String>()
+                        )
+                        val responseSecondPage = gqlUseCase.apply {
+                            setTypeClass(NotifcenterDetailResponse::class.java)
+                            setRequestParams(secondParams)
+                            setGraphqlQuery(query)
+                        }.executeOnBackground()
+                        val itemsSecondPage = secondMapping(responseSecondPage)
+
+                        withContext(dispatchers.main) {
+                            onResponseReady(responseSecondPage)
+                            onSuccess(itemsFirstPage to itemsSecondPage)
+                        }
+                    } else {
+                        withContext(dispatchers.main) {
+                            onResponseReady(responseFirstPage)
+                            onSuccess(itemsFirstPage to null)
+                        }
                     }
+
                 },
                 {
                     withContext(dispatchers.main) {

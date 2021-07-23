@@ -74,8 +74,8 @@ class NotificationViewModel @Inject constructor(
     val notificationItems: LiveData<Result<NotificationDetailResponseModel>>
         get() = _mutateNotificationItems
 
-    private val _mutateNotificationSellerItems = MutableLiveData<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>>>()
-    val notificationItemsSeller: LiveData<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>>>
+    private val _mutateNotificationSellerItems = MutableLiveData<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>>>()
+    val notificationItemsSeller: LiveData<Result<Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>>>
         get() = _mutateNotificationSellerItems
     private val _topAdsBanner = MutableLiveData<NotificationTopAdsBannerUiModel>()
     val topAdsBanner: LiveData<NotificationTopAdsBannerUiModel>
@@ -157,7 +157,7 @@ class NotificationViewModel @Inject constructor(
                         _mutateNotificationSellerItems.value = Success(it)
                     },
                     {
-                        _mutateNotificationItems.value = Fail(it)
+                        _mutateNotificationSellerItems.value = Fail(it)
                     }
             )
     }

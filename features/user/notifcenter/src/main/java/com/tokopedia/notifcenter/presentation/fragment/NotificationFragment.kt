@@ -401,9 +401,13 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         }
     }
 
-    private fun renderNotificationsSeller(data: Pair<NotificationDetailResponseModel, NotificationDetailResponseModel>) {
-        val hasNext = isInfiniteNotificationScroll(data.second)
-        renderList((data.first.items + data.second.items), hasNext)
+    private fun renderNotificationsSeller(data: Pair<NotificationDetailResponseModel, NotificationDetailResponseModel?>) {
+        var hasNext = false
+        if (data.second != null)
+            hasNext = isInfiniteNotificationScroll(data.second!!)
+        else
+            hasNext = isInfiniteNotificationScroll(data.first)
+        renderList((data.first.items + (data.second?.items ?: emptyList())), hasNext)
         if (hasNext) {
             showLoading()
         }
