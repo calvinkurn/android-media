@@ -190,7 +190,7 @@
 /features/user/logout/                          		@tokopedia/android-minionkevin-dev
 /features/user/loginregister/                   		@tokopedia/android-minionkevin-dev
 /features/user/sessioncommon/                   		@tokopedia/android-minionkevin-dev
-/features/user/loginphone/                      		@tokopedia/android-minionkevin-dev
+/features/user/chooseaccount/                      		@tokopedia/android-minionkevin-dev
 /features/user/managename/                      		@tokopedia/android-minionkevin-dev
 /features/user/managepassword/                          @tokopedia/android-minionkevin-dev
 /features/user/notif-troubleshooter/                    @tokopedia/android-minionkevin-dev
