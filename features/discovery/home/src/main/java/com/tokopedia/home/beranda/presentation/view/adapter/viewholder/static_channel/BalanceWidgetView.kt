@@ -29,7 +29,10 @@ class BalanceWidgetView: FrameLayout {
     private var rvBalance: RecyclerView? = null
     private var layoutManager: GridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
-    private lateinit var containerWidget: LinearLayout
+    private lateinit var containerWidget: FrameLayout
+
+    private var tokopointsView: View? = null
+    private var gopayView: View? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -77,12 +80,12 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getTokopointsView(): View? {
-        val tokopointsPos = balanceAdapter?.getTokopointsDataPosition() ?: -1
-        if (tokopointsPos != -1) {
-            layoutManager?.let {
-                return it.getChildAt(tokopointsPos)
-            }
-        }
-        return null
+        tokopointsView = findViewById(R.id.home_coachmark_item_tokopoints)
+        return tokopointsView
+    }
+
+    fun getGopayView(): View? {
+        gopayView = findViewById(R.id.home_coachmark_item_gopay)
+        return gopayView
     }
 }

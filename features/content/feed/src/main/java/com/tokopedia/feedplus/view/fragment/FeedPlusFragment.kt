@@ -203,6 +203,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isUserEventTrackerDoneTrack = false
 
     private lateinit var shareData: LinkerData
+    private  lateinit var reportBottomSheet: ReportBottomSheet
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -360,7 +361,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 finishLoading()
                 when (it) {
                     is Success -> onSuccessGetFirstFeed(it.data)
-                    is Fail -> onErrorGetFirstFeed(it.throwable)
+                    is Fail -> {
+                        when (it.throwable) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                onErrorGetFirstFeed(it.throwable)
+                            }
+                        }
+                    }
                 }
             })
 
@@ -589,11 +601,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
             reportResponse.observe(lifecycleOwner, Observer {
                 when (it) {
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
-                        showToast(message, Toaster.TYPE_ERROR)
+                        when (it.throwable) {
+                            is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                                view?.let {
+                                    reportBottomSheet.dismiss()
+                                    showNoInterNetDialog(it.context)
+                                }
+                            }
+                            else -> {
+                                val message = it.throwable.localizedMessage ?: ""
+                                showToast(message, Toaster.TYPE_ERROR)
+                            }
+                        }
 
                     }
                     is Success -> {
+                        reportBottomSheet.setFinalView()
                         onSuccessDeletePost(it.data.rowNumber)
                     }
                 }
@@ -1468,7 +1491,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
-                        ReportBottomSheet.newInstance(
+                        reportBottomSheet = ReportBottomSheet.newInstance(
                             postId,
                             context = object : ReportBottomSheet.OnReportOptionsClick {
                                 override fun onReportAction(
@@ -1483,7 +1506,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         "content"
                                     )
                                 }
-                            }).show((context as FragmentActivity).supportFragmentManager, "")
+                            })
+                        reportBottomSheet.show((context as FragmentActivity).supportFragmentManager, "")
                     }
                 } else {
                     onGoToLogin()
