@@ -1036,18 +1036,18 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun shareHomeTokonow(){
         shareHomeTokonow = ShareHomeTokonow(
-                "{sharing_text}",
-                "{sharing_url}",
+                "Sharing Text Here",
+                "tokopedia.com/sharing_url",
                 userSession.userId,
-                "{page_id}",
-                "{thumbnail_title}",
-                "{thumbnail_image}",
-                "{og_image_url}",
-                "{spesific_page_id}",
-                "{spesific_page_name}",
-                "{complete_page_url}",
-                "{spesific_page_desc}",
-                "{share_string}"
+                "pageId001",
+                "Thumbnail Title Here",
+                "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_5ecb2ca6-481d-4b9b-9d17-f0e14a1d618e.jpg",
+                "https://images.tokopedia.net/img/cache/750/coCfvv/2021/7/22/6734d6aa-19a8-429a-8b43-00004c350198.jpg",
+                "specPageId001",
+                "Spesific page name",
+                "tokopedia.com/complete_share_url",
+                "This is Spesific page desc",
+                "This is Share String"
         )
     }
 
