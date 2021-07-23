@@ -5,24 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="16dp">
+    tools:ignore="RtlSymmetry">
+
+    <View
+        android:id="@+id/product_category_top_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_category_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_category_top_separator"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        android:layout_marginStart="16dp"
         tools:text="Kategori lain di Tokopedia NOW!" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_category_link"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/product_category_title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,14 +44,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_category_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height=  "wrap_content"
         android:layout_marginTop="12dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="horizontal"
         android:clipToPadding="true"
-        tools:listitem="@layout/item_category_image_view_holder"
-        app:layout_constraintTop_toBottomOf="@+id/product_category_title"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/product_category_title"
+        tools:listitem="@layout/item_category_image_view_holder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

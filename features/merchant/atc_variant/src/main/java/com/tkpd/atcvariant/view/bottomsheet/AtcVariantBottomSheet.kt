@@ -543,12 +543,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             val pageSource = sharedData?.pageSource ?: ""
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
+                val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
                 ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId
                         ?: "", pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
-                //Use product id from params because we dont have selected id yet here
-                viewModel.addWishlist(sharedData?.productId
-                        ?: "", userSessionInterface.userId)
+                viewModel.addWishlist(productId, userSessionInterface.userId)
                 return@let
             }
 
