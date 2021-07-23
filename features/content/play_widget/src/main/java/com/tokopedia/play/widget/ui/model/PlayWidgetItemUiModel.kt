@@ -31,7 +31,8 @@ data class PlayWidgetSmallChannelUiModel(
         val totalViewVisible: Boolean,
         val promoType: PlayWidgetPromoType,
         val video: PlayWidgetVideoUiModel,
-        val channelType: PlayWidgetChannelType
+        val channelType: PlayWidgetChannelType,
+        val hasGiveaway: Boolean
 ): PlayWidgetSmallItemUiModel(), ImpressionableModel {
 
     override val impressHolder = ImpressHolder()

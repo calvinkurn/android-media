@@ -84,7 +84,8 @@ object PlayWidgetUiMock {
             totalView = "10,0 rb",
             totalViewVisible = true,
             promoType = PlayWidgetPromoType.NoPromo,
-            video = getVideoUiModel(channelType)
+            video = getVideoUiModel(channelType),
+            hasGiveaway = true
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
