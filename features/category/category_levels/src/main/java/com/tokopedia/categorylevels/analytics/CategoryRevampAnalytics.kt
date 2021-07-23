@@ -54,11 +54,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     override fun trackSearchClick() {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE - $pageIdentifier", eventAction = EVENT_CLICK_SEARCH))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE", eventAction = EVENT_CLICK_SEARCH))
     }
 
     override fun trackGlobalNavBarClick(buttonName: String, userID: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE - $pageIdentifier", eventAction = "click $buttonName nav"))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE", eventAction = "click $buttonName nav"))
     }
 
     override fun trackShareClick() {
