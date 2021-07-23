@@ -241,14 +241,14 @@ class PMShopScoreInterruptHelper @Inject constructor(
 
         val titleEndGameInterrupt = context.getString(R.string.title_end_game_period_information_interrupt, endPeriodStartDate)
         val titleCardEndGameInterrupt = if (isPMPro) {
-            context.getString(R.string.title_card_pm_end_game_bottom_sheet)
-        } else {
             context.getString(R.string.title_card_pm_pro_end_game_bottom_sheet)
+        } else {
+            context.getString(R.string.title_card_pm_end_game_bottom_sheet)
         }
         val descCardEndGameInterrupt = if (isPMPro) {
-            context.getString(R.string.desc_card_pm_end_game_bottom_sheet)
-        } else {
             context.getString(R.string.desc_card_pm_pro_end_game_bottom_sheet)
+        } else {
+            context.getString(R.string.desc_card_pm_end_game_bottom_sheet)
         }
         val bottomSheet = EndGameInterruptBottomSheet.createInstance(titleEndGameInterrupt, titleCardEndGameInterrupt, descCardEndGameInterrupt)
         val isHasOpenedInterruptEndGame = pmCommonPreferenceManager.getBoolean(KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE, false)
@@ -256,11 +256,8 @@ class PMShopScoreInterruptHelper @Inject constructor(
         bottomSheet.setOnDismissListener {
             if (!isHasOpenedInterruptEndGame) {
                 pmCommonPreferenceManager.putBoolean(KEY_HAS_OPENED_END_PERIOD_INTERRUPT_PAGE, true)
+                pmCommonPreferenceManager.apply()
             }
-        }
-
-        bottomSheet.clickGotoShopScore {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
         }
 
         if (!isHasOpenedInterruptEndGame) {
