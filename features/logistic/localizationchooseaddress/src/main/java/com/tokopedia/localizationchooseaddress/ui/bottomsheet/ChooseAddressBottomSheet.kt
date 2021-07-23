@@ -103,6 +103,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private var isAddressListFlow: Boolean = false
     //flag variable to support warehous location, ex: for tokonow
     private var isSupportWarehouseLoc: Boolean = true
+    //flag variable to differentiate state from tokonow or not
+    private var isTokonow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -276,7 +278,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
         isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
-        viewModel.getChosenAddressList(source)
+        isTokonow = source.contains("tokonow", ignoreCase = true)
+        viewModel.getChosenAddressList(source, isTokonow)
     }
 
     private fun initObserver() {
