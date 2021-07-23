@@ -911,7 +911,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (TextUtils.isEmpty(password)) {
                 showErrorPassword(R.string.error_field_password_required)
                 isValid = false
-            } else if (password.length < 4) {
+            } else if (password.length < PASSWORD_MIN_LENGTH) {
                 showErrorPassword(R.string.error_incorrect_password)
                 isValid = false
             }
@@ -1973,6 +1973,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
         const val REQUEST_VERIFY_BIOMETRIC = 124
+
+        private const val PASSWORD_MIN_LENGTH = 4
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"

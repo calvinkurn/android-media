@@ -350,7 +350,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 registerButton.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             registerButton.setBorderColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            registerButton.setRoundCorner(10)
+            registerButton.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
             registerButton.setImageResource(R.drawable.ic_email)
             registerButton.setOnClickListener {
                 TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL)
@@ -562,7 +562,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 resources.getDimensionPixelSize(R.dimen.dp_52))
-        layoutParams.setMargins(0, 10, 0, 10)
+        layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
 
         socmedButtonsContainer?.removeAllViews()
 
@@ -1425,10 +1425,10 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun initTermPrivacyView() {
         context?.let {
             val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
-            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
-            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 61, 78, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), TERM_AND_COND_START_SIZE, TERM_AND_COND_END_SIZE, 0)
+            termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), PRIVACY_POLICY_START_SIZE, PRIVACY_POLICY_END_SIZE, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), TERM_AND_COND_START_SIZE, TERM_AND_COND_END_SIZE, 0)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), PRIVACY_POLICY_START_SIZE, PRIVACY_POLICY_END_SIZE, 0)
 
             textTermAndCondition?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             textTermAndCondition?.movementMethod = LinkMovementMethod.getInstance()
@@ -1478,6 +1478,13 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val OTP_SECURITY_QUESTION = 134
         private const val OTP_LOGIN_PHONE_NUMBER = 112
         private const val OTP_REGISTER_PHONE_NUMBER = 116
+
+        private const val REGISTER_BUTTON_CORNER_SIZE = 10
+        private const val SOCMED_BUTTON_MARGIN_SIZE = 10
+        private const val TERM_AND_COND_START_SIZE = 34
+        private const val TERM_AND_COND_END_SIZE = 54
+        private const val PRIVACY_POLICY_START_SIZE = 61
+        private const val PRIVACY_POLICY_END_SIZE = 78
 
         private const val FACEBOOK = "facebook"
         private const val GPLUS = "gplus"
