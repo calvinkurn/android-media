@@ -107,6 +107,8 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.view.listener.InterfaceShopPageFloatingActionButtonFragment
+import com.tokopedia.shop.common.view.model.ShopPageBottomEndFabConfig
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -234,6 +236,7 @@ class NewShopPageFragment :
     private var viewPagerAdapter: ShopPageFragmentPagerAdapter? = null
     private var errorTextView: TextView? = null
     private var errorButton: View? = null
+    private var fabBottomEnd: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
         get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
@@ -357,6 +360,7 @@ class NewShopPageFragment :
     private fun initViews(view: View) {
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
+        fabBottomEnd = view.findViewById(R.id.fab_bottom_end)
         setupBottomSheetSellerMigration(view)
         shopPageFragmentHeaderViewHolder = NewShopPageFragmentHeaderViewHolder(
                 view,
@@ -394,6 +398,7 @@ class NewShopPageFragment :
                 }
             }
         }
+        hideBottomEndFloatingActionButton()
     }
 
     private fun initViewPager() {
@@ -1079,6 +1084,7 @@ class NewShopPageFragment :
                 appBarLayout.visibility = View.INVISIBLE
                 viewPager.visibility = View.INVISIBLE
                 scrollToTopButton?.gone()
+                hideBottomEndFloatingActionButton()
             }
             VIEW_ERROR -> {
                 newShopPageLoadingState.visibility = View.GONE
@@ -1369,6 +1375,7 @@ class NewShopPageFragment :
                 }
                 viewPager?.post {
                     checkIfShouldShowOrHideScrollToTopButton(position)
+                    checkIfShouldShowOrHideBottomEndFab(position)
                 }
                 isTabClickByUser = false
             }
@@ -1385,6 +1392,21 @@ class NewShopPageFragment :
             }
         } else {
             hideScrollToTopButton()
+        }
+    }
+
+    private fun checkIfShouldShowOrHideBottomEndFab(position: Int) {
+        val selectedFragment = viewPagerAdapter?.getRegisteredFragment(position)
+        if (selectedFragment is InterfaceShopPageFloatingActionButtonFragment) {
+            val config = selectedFragment.getBottomEndFabConfig()
+            if (selectedFragment.shouldShowBottomEndFab() && config != null) {
+                setupBottomEndFloatingActionButton(config)
+                showBottomEndFloatingActionButton()
+            } else {
+                hideBottomEndFloatingActionButton()
+            }
+        } else {
+            hideBottomEndFloatingActionButton()
         }
     }
 
@@ -1585,6 +1607,7 @@ class NewShopPageFragment :
     }
 
     override fun refreshData() {
+        hideBottomEndFloatingActionButton()
         val shopProductListFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
@@ -2246,5 +2269,24 @@ class NewShopPageFragment :
             scrollToTopButton?.hide()
             scrollToTopButton?.gone()
         }
+    }
+
+    fun setupBottomEndFloatingActionButton(config: ShopPageBottomEndFabConfig) {
+        fabBottomEnd?.let { fab ->
+            fab.color = config.color
+            fab.type = config.type
+            fab.addItem(config.items)
+            config.onMainCircleButtonClicked?.let {
+                fab.circleMainMenu.setOnClickListener(it)
+            }
+        }
+    }
+
+    fun showBottomEndFloatingActionButton() {
+        fabBottomEnd?.show()
+    }
+
+    fun hideBottomEndFloatingActionButton() {
+        fabBottomEnd?.hide()
     }
 }
