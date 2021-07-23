@@ -246,7 +246,7 @@ includeIfEnabled("features:user:inbox")
 includeIfEnabled("features:user:inbox_common")
 
 includeIfEnabled("features:user:vote")
-
+includeIfEnabled("features:user:telephony_masking")
 includeIfEnabled("features:user:fcm_common")
 
 includeIfEnabled("tkpdcore")
