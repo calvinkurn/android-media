@@ -145,17 +145,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        observeBuyerOrderDetail()
-        observeReceiveConfirmation()
-        observeAddSingleToCart()
-        observeAddMultipleToCart()
+        buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
+        if (savedInstanceState == null) {
+            loadInitialData()
+        } else {
+            restoreFragmentState(savedInstanceState)
+        }
         contentVisibilityAnimator.initPage {
-            buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
-            if (savedInstanceState == null) {
-                loadInitialData()
-            } else {
-                restoreFragmentState(savedInstanceState)
-            }
+            observeBuyerOrderDetail()
+            observeReceiveConfirmation()
+            observeAddSingleToCart()
+            observeAddMultipleToCart()
         }
     }
 
