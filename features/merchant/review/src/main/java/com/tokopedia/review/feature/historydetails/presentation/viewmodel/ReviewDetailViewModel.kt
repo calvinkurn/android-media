@@ -68,7 +68,7 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
         return userSession.userId
     }
 
-    fun submitReputation(reputationId: Long, reputationScore: Int) {
+    fun submitReputation(reputationId: String, reputationScore: Int) {
         _submitReputationResult.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
