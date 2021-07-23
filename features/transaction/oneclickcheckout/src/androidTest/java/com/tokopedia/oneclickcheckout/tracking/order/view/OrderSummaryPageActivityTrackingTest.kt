@@ -96,6 +96,8 @@ class OrderSummaryPageActivityTrackingTest {
                 chooseCourierWithText("AnterAja")
             }
 
+            // wait for bottom sheet to fully close
+            Thread.sleep(2000)
             clickButtonPromo()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE

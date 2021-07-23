@@ -122,6 +122,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
                     tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tvProductSlashPrice.visible()
+                } else if (product.initialPrice > 0 && product.initialPrice < product.productPrice) {
+                    tvProductSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.initialPrice, false).removeDecimalSuffix()
+                    tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tvProductSlashPrice.visible()
                 } else {
                     tvProductSlashPrice.gone()
                 }
