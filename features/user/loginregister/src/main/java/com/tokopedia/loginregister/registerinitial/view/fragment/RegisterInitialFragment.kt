@@ -573,7 +573,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                     val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     loginTextView.setText(item.name)
                     loginTextView.setImage(item.image)
-                    loginTextView.setRoundCorner(10)
+                    loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
 
                     setDiscoverOnClickListener(item, loginTextView)
 
@@ -1481,6 +1481,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         private const val REGISTER_BUTTON_CORNER_SIZE = 10
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
+        private const val SOCMED_BUTTON_CORNER_SIZE = 10
         private const val TERM_AND_COND_START_SIZE = 34
         private const val TERM_AND_COND_END_SIZE = 54
         private const val PRIVACY_POLICY_START_SIZE = 61

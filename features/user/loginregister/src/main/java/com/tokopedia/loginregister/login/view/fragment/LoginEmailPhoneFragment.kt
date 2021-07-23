@@ -801,7 +801,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-            layoutParams.setMargins(0, 10, 0, 10)
+            layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
             socmedButtonsContainer?.removeAllViews()
             providers.forEach { discoverItemDataModel ->
                 context?.let { context ->
@@ -822,7 +822,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     } else if (discoverItemDataModel.imageResource != 0) {
                         tv.setImageResource(discoverItemDataModel.imageResource)
                     }
-                    tv.setRoundCorner(10)
+                    tv.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
 
                     setDiscoverListener(discoverItemDataModel, tv)
 
@@ -1973,6 +1973,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
         const val REQUEST_VERIFY_BIOMETRIC = 124
+
+        private const val SOCMED_BUTTON_MARGIN_SIZE = 10
+        private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val PASSWORD_MIN_LENGTH = 4
 

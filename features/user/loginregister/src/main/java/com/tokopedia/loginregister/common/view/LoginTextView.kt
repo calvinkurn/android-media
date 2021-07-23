@@ -72,8 +72,8 @@ class LoginTextView : LinearLayout {
             customText = a.getString(R.styleable.LoginTextView_customText)
             textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             borderColorCustom = a.getInt(R.styleable.LoginTextView_borderColor, 0)
-            cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, 3)
-            borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1)
+            cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, CORNER_SIZE)
+            borderSize = a.getInt(R.styleable.LoginTextView_borderSize, BORDER_SIZE)
             imageEnabled = a.getBoolean(R.styleable.LoginTextView_imageEnabled, true)
             resourceId = a.getResourceId(R.styleable.LoginTextView_iconButton, 0)
         } finally {
@@ -102,7 +102,7 @@ class LoginTextView : LinearLayout {
 
     private fun setDefaultShape(context: Context) {
         shape?.shape = GradientDrawable.RECTANGLE
-        shape?.cornerRadii = floatArrayOf(3f, 3f, 3f, 3f, 3f, 3f, 3f, 3f)
+        shape?.cornerRadii = floatArrayOf(CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII)
         shape?.setColor(backgroundColorCustom)
         if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape?.setStroke(1,
                 MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
@@ -140,5 +140,11 @@ class LoginTextView : LinearLayout {
     fun setImageResource(imageResource: Int) {
         val imageUnify: ImageUnify = findViewById(R.id.provider_image)
         ImageHandler.loadImageWithIdWithoutPlaceholder(imageUnify, imageResource)
+    }
+
+    companion object {
+        private const val CORNER_SIZE = 3
+        private const val BORDER_SIZE = 1
+        private const val CORNER_RADII = 3f
     }
 }
