@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.util
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -317,7 +316,7 @@ object DynamicProductDetailTracking {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
-            val productPrice = productInfo?.finalPrice?.getNumberFormatted()
+            val productPrice = productInfo?.finalPrice?.toString()
             val shopType = productInfo?.shopTypeString ?: ""
             val shopName = productInfo?.basic?.shopName ?: ""
 
