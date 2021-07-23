@@ -42,6 +42,7 @@ class HotelSearchMapViewModel @Inject constructor(
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
     var defaultSort = ""
+    var sortBy = ""
     var filter: Filter = Filter()
 
     val liveSearchResult = MutableLiveData<Result<PropertySearch>>()
@@ -89,11 +90,11 @@ class HotelSearchMapViewModel @Inject constructor(
                 location.longitude = hotelSearchModel.long
                 location.radius = hotelSearchModel.radius
                 sort.distance = true
-                defaultSort = HotelSortEnum.DISTANCE.value
+                sortBy = HotelSortEnum.DISTANCE.value
             }else {
                 //Default param
                 sort.popularity = true
-                defaultSort = HotelSortEnum.POPULARITY.value
+                sortBy = HotelSortEnum.POPULARITY.value
                 location.radius = DEFAULT_RADIUS
             }
 
@@ -104,7 +105,7 @@ class HotelSearchMapViewModel @Inject constructor(
             location.searchType = hotelSearchModel.searchType
             location.searchId = hotelSearchModel.searchId
 
-            addSort(Sort(defaultSort))
+            addSort(Sort(sortBy))
         }
     }
 
