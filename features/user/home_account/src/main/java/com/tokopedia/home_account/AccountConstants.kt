@@ -79,6 +79,7 @@ object AccountConstants {
             const val ACTION_CLICK_REWARD_SECTION = "click reward section"
             const val ACTION_CLICK_ACCOUNT_SETTING_SECTION = "click account settings section"
             const val ACTION_CLICK_APP_SETTING_SECTION = "click on application setting section"
+            const val ACTION_CLICK_SCREEN_RECORDER = "click on screen recorder"
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
             const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
@@ -105,7 +106,6 @@ object AccountConstants {
             const val LABEL_STICKER_TOKOPEDIA = "Sticker Tokopedia"
             const val LABEL_IMAGE_QUALITY = "Kualitas Gambar"
             const val LABEL_CLEAN_CACHE = "Bersihkan Cache"
-            const val LABEL_SCREEN_RECORD = "Perekam Layar"
             const val LABEL_VIEW_MODE = "Mode Tampilan"
             const val LABEL_ABOUT_TOKOPEDIA = "Seputar Tokopedia"
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"
@@ -117,6 +117,7 @@ object AccountConstants {
 
         object BusinessUnit {
             const val USER_PLATFORM_UNIT = "user platform"
+            const val HOME_AND_BROWSE = "home & browse"
         }
 
         object CurrentSite {

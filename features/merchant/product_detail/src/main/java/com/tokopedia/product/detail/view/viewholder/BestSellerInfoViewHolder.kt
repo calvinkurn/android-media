@@ -46,7 +46,7 @@ class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProd
 
         view.setOnClickListener {
             element.bestSellerInfoContent?.applink?.let {
-                listener.goToApplink(it)
+                listener.onClickBestSeller(getComponentTrackData(element), it)
             }
         }
     }
