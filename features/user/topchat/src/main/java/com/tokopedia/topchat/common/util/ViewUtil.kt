@@ -125,7 +125,6 @@ object ViewUtil {
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
         val stateDrawable = StateListDrawable()
-        stateDrawable.addState(intArrayOf(android.R.attr.state_pressed), ContextCompat.getDrawable(view.context, R.drawable.bg_red_dot_unread))
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
         return stateDrawable
