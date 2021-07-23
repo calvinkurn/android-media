@@ -11,6 +11,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -90,5 +91,11 @@ class SmartBillsModule {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
+    }
+
+    @Provides
+    @SmartBillsScope
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

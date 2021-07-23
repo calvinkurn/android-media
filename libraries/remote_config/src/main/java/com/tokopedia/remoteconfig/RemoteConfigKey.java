@@ -250,4 +250,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
+    public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
+
 }

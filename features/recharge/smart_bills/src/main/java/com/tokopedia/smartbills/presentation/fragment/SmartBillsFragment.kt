@@ -32,6 +32,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.*
@@ -41,6 +43,7 @@ import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivi
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsAccordionViewHolder
+import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsEmptyStateViewHolder
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
@@ -70,7 +73,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         TopupBillsCheckoutWidget.ActionListener,
         SmartBillsActivity.SbmActivityListener,
         SmartBillsToolTipBottomSheet.Listener,
-        SmartBillsAccordionViewHolder.SBMAccordionListener{
+        SmartBillsAccordionViewHolder.SBMAccordionListener,
+        SmartBillsEmptyStateViewHolder.EmptyStateSBMListener
+{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -85,6 +90,9 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var source: String = ""
 
@@ -382,7 +390,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
-        return SmartBillsAdapterFactory(this, this, this)
+        return SmartBillsAdapterFactory(this, this,
+                this, this)
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -416,6 +425,17 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
         updateCheckoutView()
         updateCheckAll()
+    }
+
+    override fun clickEmptyButton() {
+        if(getRemoteConfigAddBillsEnabler()){
+            view?.let {
+                Toaster.build(it,"Check Remote Config",Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
+        }
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -600,6 +620,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun getErrorHandling(throwable: Throwable): String{
         return ErrorHandler.getErrorMessage(context, throwable)
+    }
+
+    private fun getRemoteConfigAddBillsEnabler(): Boolean {
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true))
     }
 
     companion object {

@@ -18,9 +18,9 @@
     <string name="smart_bills_item_detail_label_1">Nomor Pelanggan</string>
     <string name="smart_bills_item_detail_label_2">Nama Tagihan</string>
     <string name="smart_bills_item_detail_label_3">Total Tagihan</string>
-    <string name="smart_bills_empty_state_title">Belum ada transaksi yang ditemukan</string>
-    <string name="smart_bills_empty_state_description">Tagihan yang pernah dibayar akan muncul di sini dan kamu bisa bayar lagi sekaligus.</string>
-    <string name="smart_bills_empty_state_button_label">Mulai Bayar Tagihan</string>
+    <string name="smart_bills_empty_state_title">Sekali bayar, semuanya lunas!</string>
+    <string name="smart_bills_empty_state_description">Biar makin gampang, kamu bisa bayar berbagai tagihan bersamaan di sini.</string>
+    <string name="smart_bills_empty_state_button_label">Tambah Tagihan</string>
     <string name="smart_bills_data_error">Terdapat kesalahan pada pengambilan data</string>
     <string name="smart_bills_checkout_view_button_label">Bayar</string>
     <string name="smart_bills_no_item_price">Rp -</string>
