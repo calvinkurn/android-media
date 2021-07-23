@@ -75,9 +75,7 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
             setText(text)
             showWithCondition(text.isNotBlank())
             setOnClickListener {
-                isLoading = true
                 onPrimaryButtomClicked.invoke()
-                isLoading = false
             }
         }
     }

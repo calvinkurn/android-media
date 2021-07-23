@@ -41,6 +41,7 @@
         android:id="@+id/btnSomListBulkActionDialogPrimaryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text=""
         android:layout_marginTop="@dimen/spacing_lvl6" />
 
     <com.tokopedia.unifycomponents.UnifyButton
