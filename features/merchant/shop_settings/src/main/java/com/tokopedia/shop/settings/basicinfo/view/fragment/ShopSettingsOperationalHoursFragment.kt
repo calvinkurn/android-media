@@ -702,8 +702,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                             isEnabled = true
                             text.clear()
                             requestFocus()
-                            setText(OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate))
                         }
+                        endDateTextField?.textFieldInput?.text?.clear()
                         endDateTextField?.textFieldInput?.isEnabled = false
                     }
                 }
