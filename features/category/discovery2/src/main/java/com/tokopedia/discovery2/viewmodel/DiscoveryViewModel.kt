@@ -50,6 +50,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 private const val IS_ADULT = 1
+private const val SCROLL_DEPTH = 100
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
                                              private val userSession: UserSessionInterface,
@@ -272,6 +273,6 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
-        return 100 * (offset + extent) / range
+        return SCROLL_DEPTH * (offset + extent) / range
     }
 }
