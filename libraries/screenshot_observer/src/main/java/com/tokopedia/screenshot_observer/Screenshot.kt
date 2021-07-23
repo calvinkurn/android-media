@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
-open class Screenshot(contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
+open class Screenshot @JvmOverloads constructor(contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
                       protected open val toasterSellerListener: ToasterSellerListener? = null) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler

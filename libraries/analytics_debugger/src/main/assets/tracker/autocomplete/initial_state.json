@@ -4,14 +4,15 @@
   "query" : [
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - /",
+      "eventCategory": "top nav",
       "eventAction": "click - shop - recent search",
       "eventLabel": ".* - keyword: .*",
       "screenName": "/",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*"
     },
     {
       "event": "clickTopNav",
@@ -63,19 +64,7 @@
     },
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - /",
-      "eventAction": "click - shop - recent search",
-      "eventLabel": ".* - keyword: .*",
-      "screenName": "/",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".+",
-      "businessUnit": "search",
-      "sessionIris": ".*",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav - /",
+      "eventCategory": "top nav",
       "eventAction": "click - popular search - .*",
       "eventLabel": "value: .* - title: .* - po: .*",
       "businessUnit": "search",

@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
@@ -30,6 +31,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -69,8 +72,14 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFacto
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
@@ -84,7 +93,8 @@ class TokoNowHomeFragment: Fragment(),
         HomeTickerViewHolder.HomeTickerListener,
         TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         MiniCartWidgetListener,
-        BannerComponentListener
+        BannerComponentListener,
+        HomeProductRecomViewHolder.HomeProductRecomListener
 {
 
     companion object {
@@ -113,8 +123,9 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowListener = this,
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
-                tokoNowCategoryGridlistener = this,
-                bannerComponentListener = this
+                tokoNowCategoryGridListener = this,
+                bannerComponentListener = this,
+                homeProductRecomListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -130,6 +141,7 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
+    private var isVariantAdded = false
     private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
@@ -200,7 +212,13 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
+        updateProductRecom(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData)
+    }
+
+    private fun updateProductRecom(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModelTokoNow.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModelTokoNow.updateProductCard(miniCartSimplifiedData, true)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -231,6 +249,14 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickCategory(position, userSession.userId, categoryId)
     }
 
+    override fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int) {
+        if (userSession.isLoggedIn) {
+            viewModelTokoNow.addProductToCart(recomItem, quantity)
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
     override fun isMainViewVisible(): Boolean = true
 
     override fun isBannerImpressed(id: String): Boolean = true
@@ -247,6 +273,18 @@ class TokoNowHomeFragment: Fragment(),
         } else {
             analytics.onImpressBannerPromo(userSession.userId, channelModel)
             isFirstImpressionOnBanner = false
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        AtcVariantHelper.onActivityResultAtcVariant(requireContext(), requestCode, data) {
+            isVariantAdded = true
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
+                stickyLoginLoadContent()
+            }
         }
     }
 
@@ -464,6 +502,10 @@ class TokoNowHomeFragment: Fragment(),
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data)
+                if (isVariantAdded) {
+                    updateProductRecom(it.data)
+                    isVariantAdded = false
+                }
             }
         }
 
@@ -490,6 +532,70 @@ class TokoNowHomeFragment: Fragment(),
             } else {
                 showEmptyStateNoAddress()
             }
+        }
+
+        observe(viewModelTokoNow.miniCartWidgetDataUpdated) {
+            miniCartWidget?.updateData(it)
+        }
+
+        observe(viewModelTokoNow.miniCartAdd) {
+            when(it) {
+                is Success -> {
+                    showToaster(
+                        message = it.data.errorMessage.joinToString(separator = ", "),
+                        type = TYPE_NORMAL
+                    )
+                    adapter.updateProductRecom(it.data.data.productId, it.data.data.quantity)
+                    getMiniCart()
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = TYPE_ERROR
+                    )
+                }
+            }
+        }
+
+        observe(viewModelTokoNow.miniCartUpdate) {
+            when(it) {
+                is Success -> {
+                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+                    miniCartWidget?.updateData(shopIds)
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = TYPE_ERROR
+                    )
+                }
+            }
+        }
+
+        observe(viewModelTokoNow.miniCartRemove) {
+            when(it) {
+                is Success -> {
+                    adapter.updateProductRecom(it.data.toLong(), 0)
+                    getMiniCart()
+                }
+                is Fail -> {
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = TYPE_ERROR
+                    )
+                }
+            }
+        }
+    }
+
+    private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
+        view?.let { view ->
+            Toaster.build(
+                view = view,
+                text = message,
+                duration = duration,
+                type = type
+            ).show()
         }
     }
 

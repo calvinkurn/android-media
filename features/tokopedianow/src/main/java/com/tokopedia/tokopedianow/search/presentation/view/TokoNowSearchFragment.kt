@@ -99,6 +99,10 @@ class TokoNowSearchFragment:
         )
     }
 
+    override fun sendDeleteCartTrackingEvent(productId: String) {
+        SearchTracking.sendDeleteCartEvent(productId)
+    }
+
     override fun sendIncreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendIncreaseQtyEvent(tokoNowSearchViewModel.query, productId)
     }
@@ -134,8 +138,8 @@ class TokoNowSearchFragment:
         RouteManager.route(context, applink)
     }
 
-    override fun onGoToGlobalSearch() {
-        super.onGoToGlobalSearch()
+    override fun onFindInTokopediaClick() {
+        super.onFindInTokopediaClick()
 
         val queryParams = "${SearchApiConst.Q}=${tokoNowSearchViewModel.query}"
         val applinkToSearchResult = "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?$queryParams"

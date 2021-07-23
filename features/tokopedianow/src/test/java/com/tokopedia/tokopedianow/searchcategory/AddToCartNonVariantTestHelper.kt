@@ -7,8 +7,10 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -30,6 +32,7 @@ class AddToCartNonVariantTestHelper(
         private val baseViewModel: BaseSearchCategoryViewModel,
         private val addToCartUseCase: AddToCartUseCase,
         private val updateCartUseCase: UpdateCartUseCase,
+        private val deleteCartUseCase: DeleteCartUseCase,
         private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         private val userSession: UserSessionInterface,
         private val callback: Callback,
@@ -63,7 +66,7 @@ class AddToCartNonVariantTestHelper(
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productItemDataViewToATC = productItemList[0]
 
-        `When add to cart a product`(productItemDataViewToATC, addToCartQty)
+        `When handle cart event product non variant`(productItemDataViewToATC, addToCartQty)
 
         `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
         `Then assert cart message event`(
@@ -89,7 +92,7 @@ class AddToCartNonVariantTestHelper(
 
     private fun List<Visitable<*>>.getProductItemList() = filterIsInstance<ProductItemDataView>()
 
-    private fun `When add to cart a product`(productItemToATC: ProductItemDataView, addToCartQty: Int) {
+    private fun `When handle cart event product non variant`(productItemToATC: ProductItemDataView, addToCartQty: Int) {
         baseViewModel.onViewATCProductNonVariant(productItemToATC, addToCartQty)
     }
 
@@ -158,7 +161,7 @@ class AddToCartNonVariantTestHelper(
         val productItemDataViewToATC = productItemList[0]
         val addToCartQty = 15
 
-        `When add to cart a product`(productItemDataViewToATC, addToCartQty)
+        `When handle cart event product non variant`(productItemDataViewToATC, addToCartQty)
 
         `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
@@ -182,7 +185,7 @@ class AddToCartNonVariantTestHelper(
         `Given view resumed to update mini cart`()
 
         val (currentQty, productInVisitable) = getAvailableProductAndQuantity()
-        `When add to cart a product`(productInVisitable, currentQty)
+        `When handle cart event product non variant`(productInVisitable, currentQty)
 
         `Then assert add to cart use case is not called`()
         `Then assert route to login page event is null`()
@@ -230,7 +233,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = productInMiniCart.quantity - 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update quantity`(
                 productUpdatedQuantity,
@@ -312,7 +315,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = productInMiniCart.quantity + 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update quantity`(
                 productUpdatedQuantity,
@@ -345,7 +348,7 @@ class AddToCartNonVariantTestHelper(
         val productUpdatedQuantity = productInMiniCart.quantity - 3
         val productInVisitable = productItemList.find { it.id == productIdToATC }!!
 
-        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
@@ -371,7 +374,7 @@ class AddToCartNonVariantTestHelper(
         val visitableList = baseViewModel.visitableListLiveData.value!!
         val productItemList = visitableList.getProductItemList()
         val productItemDataViewToATC = productItemList[0]
-        `When add to cart a product`(productItemDataViewToATC, 3)
+        `When handle cart event product non variant`(productItemDataViewToATC, 3)
 
         `Then assert route to login page event`()
         `Then assert add to cart and update cart not called`()
@@ -402,6 +405,127 @@ class AddToCartNonVariantTestHelper(
                 baseViewModel.updatedVisitableIndicesLiveData.value,
                 shouldBe(listOf(visitableIndex))
         )
+    }
+
+    fun `test delete cart success`() {
+        val deleteCartMessage = "1 barang telah dihapus."
+        `Given view setup to delete`(deleteCartMessage)
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productId = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productId }!!
+
+        val productUpdatedQuantity = 0
+        val productInVisitable = productItemList.find { it.id == productId }!!
+
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
+
+        `Then assert delete cart`(
+            productUpdatedQuantity,
+            productInMiniCart,
+            productInVisitable,
+            deleteCartMessage,
+        )
+        `Then verify delete cart tracking is called`(productId)
+        `Then assert route to login page event is null`()
+    }
+
+    private fun `Given view setup to delete`(deleteCartMessage: String) {
+        val deleteCartResponse = RemoveFromCartData(
+            status = "OK",
+            errorMessage = listOf(deleteCartMessage),
+            data = com.tokopedia.cartcommon.data.response.deletecart.Data(success = 1, message = listOf(deleteCartMessage))
+        )
+
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given delete cart use case will be successful`(deleteCartResponse)
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+    }
+
+    private fun `Given delete cart use case will be successful`(
+        successUpdateCartResponse: RemoveFromCartData
+    ) {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(successUpdateCartResponse)
+        }
+    }
+
+    private fun `Then assert delete cart`(
+        productUpdatedQuantity: Int,
+        productInMiniCart: MiniCartItem,
+        productInVisitable: ProductItemDataView,
+        deleteCartMessage: String,
+    ) {
+        `Then assert delete cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(expectedSuccessMessage = deleteCartMessage)
+        `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
+        `Then assert add to cart use case is not called`()
+        `Then assert update cart use case is not called`()
+        `Then verify mini cart is refreshed`(2)
+    }
+
+    private fun `Then assert delete cart params`(
+            productUpdatedQuantity: Int,
+            productInMiniCart: MiniCartItem,
+    ) {
+        val deleteCartIdParamSlot = slot<List<String>>()
+        val listDeleteCartId by lazy { deleteCartIdParamSlot.captured }
+
+        verify {
+            deleteCartUseCase.setParams(
+                    cartIdList = capture(deleteCartIdParamSlot)
+            )
+        }
+        val deleteCartId = listDeleteCartId[0]
+        assertThat(deleteCartId, shouldBe(productInMiniCart.cartId))
+    }
+
+    private fun `Then assert update cart use case is not called`() {
+        verify(exactly = 0) {
+            updateCartUseCase.execute(any(), any())
+        }
+    }
+
+    private fun `Then verify delete cart tracking is called`(productId: String) {
+        val increaseQtyTracking = baseViewModel.deleteCartTrackingLiveData.value!!
+        assertThat(increaseQtyTracking, shouldBe(productId))
+    }
+
+    fun `delete cart failed`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given delete cart use case will fail`()
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+
+        val productUpdatedQuantity = 0
+        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+
+        `When handle cart event product non variant`(productInVisitable, productUpdatedQuantity)
+
+        `Then assert delete cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert product item quantity`(productInVisitable, productInMiniCart.quantity)
+        `Then assert add to cart use case is not called`()
+        `Then assert update cart use case is not called`()
+        `Then verify mini cart is refreshed`(1)
+        `Then assert route to login page event is null`()
+    }
+
+    private fun `Given delete cart use case will fail`() {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(responseErrorException)
+        }
     }
 
     companion object {
