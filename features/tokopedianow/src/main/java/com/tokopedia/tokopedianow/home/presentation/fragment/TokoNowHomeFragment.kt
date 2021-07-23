@@ -1037,7 +1037,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun shareHomeTokonow(){
         shareHomeTokonow = ShareHomeTokonow(
                 "Sharing Text Here",
-                "tokopedia.com/sharing_url",
+                "https://www.tokopedia.com/now",
                 userSession.userId,
                 "pageId001",
                 "Thumbnail Title Here",
@@ -1045,7 +1045,7 @@ class TokoNowHomeFragment: Fragment(),
                 "https://images.tokopedia.net/img/cache/750/coCfvv/2021/7/22/6734d6aa-19a8-429a-8b43-00004c350198.jpg",
                 "specPageId001",
                 "Spesific page name",
-                "tokopedia.com/complete_share_url",
+                "https://www.tokopedia.com/now",
                 "This is Spesific page desc",
                 "This is Share String"
         )
@@ -1064,7 +1064,7 @@ class TokoNowHomeFragment: Fragment(),
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = shareHomeTokonow?.shareString ?: ""
+                    val shareString = shareHomeTokonow?.shareString + " " + linkerShareData?.shareUri
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     universalShareBottomSheet?.dismiss()
                 }
