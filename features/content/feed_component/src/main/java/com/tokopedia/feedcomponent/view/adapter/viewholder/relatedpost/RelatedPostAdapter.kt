@@ -1,9 +1,9 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated

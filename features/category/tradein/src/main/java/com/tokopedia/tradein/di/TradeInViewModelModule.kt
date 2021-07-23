@@ -31,12 +31,6 @@ abstract class TradeInViewModelModule {
     @Binds
     @IntoMap
     @TradeInScope
-    @ViewModelKey(MoneyInCheckoutViewModel::class)
-    internal abstract fun moneyInCheckoutViewModel(viewModel: MoneyInCheckoutViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @TradeInScope
     @ViewModelKey(TradeInAddressViewModel::class)
     internal abstract fun tradeInAddressViewModel(viewModel: TradeInAddressViewModel): ViewModel
 

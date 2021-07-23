@@ -1,14 +1,12 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.tradein.model.AddressResult
-import com.tokopedia.tradein.model.DeviceDataResponse
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
-import com.tokopedia.tradein.usecase.DiagnosticDataUseCase
-import com.tokopedia.tradein.usecase.GetAddressUseCase
+import com.tokopedia.common_tradein.model.AddressResult
+import com.tokopedia.common_tradein.model.DeviceDataResponse
+import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse
+import com.tokopedia.common_tradein.usecase.DiagnosticDataUseCase
+import com.tokopedia.common_tradein.usecase.GetAddressUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -62,7 +60,6 @@ class FinalPriceViewModelTest {
     fun getDiagnosticDataException() {
         val exception = "Diagnostic Data Exception"
         coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any()) } throws Exception(exception)
-        coEvery { finalPriceViewModel.getResource()?.getString(any()) } returns exception
 
         finalPriceViewModel.getDiagnosticData()
 

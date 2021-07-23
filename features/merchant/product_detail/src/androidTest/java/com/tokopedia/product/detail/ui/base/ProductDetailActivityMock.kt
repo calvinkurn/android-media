@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.ui.base
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.ui.di.ProductDetailTestComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -27,6 +28,11 @@ class ProductDetailActivityMock : ProductDetailActivity() {
 
     override fun inflateFragment() {
         // Don't inflate fragment immediately
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportFragmentManager.executePendingTransactions()
     }
 
     override fun getComponent(): ProductDetailComponent {

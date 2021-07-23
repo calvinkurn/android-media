@@ -47,6 +47,13 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
 
+    // AtcVariantActivity
+    @JvmField
+    val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
+            "?pageSource={pageSource}&" +
+            "isTokoNow={isTokoNow}&" +
+            "cdListName={cdListName}"
+
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
 

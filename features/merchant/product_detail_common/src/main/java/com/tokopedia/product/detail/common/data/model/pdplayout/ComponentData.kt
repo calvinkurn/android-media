@@ -4,6 +4,8 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
         //region General data
@@ -50,7 +52,7 @@ data class ComponentData(
         @SerializedName("stock")
         val stock: Stock = Stock(),
         @SerializedName("variant")
-        val variant: Variant = Variant(),
+        val variant: VariantBasic = VariantBasic(),
         @SerializedName("videos")
         val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
@@ -70,9 +72,9 @@ data class ComponentData(
         @SerializedName("defaultChild")
         val defaultChild: String = "",
         @SerializedName("variants")
-        val variants: List<ProductP1Variant> = listOf(),
+        val variants: List<Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf(),
+        val children : List<VariantChild> = listOf(),
         //endregioncopy
 
         //region best seller data

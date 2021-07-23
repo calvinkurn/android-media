@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
@@ -17,6 +18,7 @@ import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS_OS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -266,6 +268,22 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
 
             this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
+        }
+    }
+
+    fun updateProductPhotos(imageUrlOrPathList: List<String>, pictureList: List<PictureInputModel>) {
+        try {
+            mImageUrlOrPathList.value = imageUrlOrPathList.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+                    pictureList.first {
+                        it.urlThumbnail == urlOrPath || it.urlOriginal == urlOrPath
+                    }.urlThumbnail
+                } else {
+                    urlOrPath
+                }
+            }.toMutableList()
+        } catch (e: Exception) {
+            mImageUrlOrPathList.value = mutableListOf()
         }
     }
 

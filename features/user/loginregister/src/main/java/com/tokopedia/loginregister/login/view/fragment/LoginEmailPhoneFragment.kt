@@ -636,7 +636,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
         }
 
-        viewModel.registerCheckFingerprint()
+        checkFingerprintAvailability()
 
         partialActionButton?.text = getString(R.string.next)
         partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
@@ -690,11 +690,17 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    fun disableFingerprint() {
+    private fun checkFingerprintAvailability() {
+        if(!GlobalConfig.isSellerApp()) {
+            viewModel.registerCheckFingerprint()
+        }
+    }
+
+    private fun disableFingerprint() {
         fingerprint_btn.hide()
     }
 
-    fun enableFingerprint() {
+    private fun enableFingerprint() {
         fingerprint_btn?.apply {
             setLeftDrawableForFingerprint()
             show()
@@ -1533,7 +1539,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == REQUEST_LOGIN_PHONE) {
+            } else if (requestCode == REQUEST_LOGIN_PHONE &&
+                    resultCode == Activity.RESULT_OK &&
+                    data != null &&
+                    data.extras != null) {
                 data?.extras?.run {
                     val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")

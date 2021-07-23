@@ -30,10 +30,12 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BUSINESS_UNIT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_NOTIF_CENTER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_SETTING_PAGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_SETTING;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENCY_CODE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CURRENT_SITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DATA_ATTRIBUTION;
@@ -51,6 +53,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_CLICK_SCREEN_RECORDER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_DALAM_PROSES;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_ETICKET_EVOUCHER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION;
@@ -73,6 +76,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_SHOP_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.HOME_AND_BROWSE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
@@ -203,6 +207,20 @@ public class AccountAnalytics {
                 ""
         ));
 
+    }
+
+    public void eventClickScreenRecorder() {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(EVENT, CLICK_SETTING);
+        eventTracking.put(EVENT_CATEGORY, CATEGORY_SETTING_PAGE);
+        eventTracking.put(EVENT_ACTION, EVENT_ACTION_CLICK_SCREEN_RECORDER);
+        eventTracking.put(EVENT_LABEL, "");
+        eventTracking.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        eventTracking.put(BUSINESS_UNIT, HOME_AND_BROWSE);
+
+        analytics.sendGeneralEvent(eventTracking);
     }
 
     public void eventClickAccountSetting(String item) {

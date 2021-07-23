@@ -135,17 +135,15 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.RollenceKey.HOME_WALLETAPP
+import com.tokopedia.remoteconfig.RollenceKey.HOME_PAYMENT_ABC
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -235,17 +233,50 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
-        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+        private const val EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV
+        private const val VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
+        private const val VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
         private const val BASE_URL = "https://ecs7.tokopedia.net/img/android/"
-        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light.png"
+        private const val BACKGROUND_LIGHT_1 = BASE_URL + "home/homepage/home_header_light_2.png"
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
+        private const val TIME_TO_WAIT = 500L
+        private const val ITEM_MOVE_DURATION = 150L
+        private const val ITEM_VIEW_CACHE_SIZE = 20
+        private const val MAX_OFFSET_ALPHA = 255f
+        private const val EMPTY_OFFSET_ALPHA = 0f
+        private const val OFFSET_ALPHA_TRESHOLD = 150
+        private const val EMPTY_TIME_MILLIS = 0L
+        private const val MONTH_DAY_COUNT = 30
+        private const val TIME_MILLIS_MINUTE = 60000
+        private const val PAGE_NAME_FPI_HOME = "home"
+        private const val ONBOARDING_NAVIGATION_TAG = "onboarding navigation"
+        private const val COACHMARK_FIRST_INDEX = 0
+        private const val HOME_HEADER_POSITION = 0
+        private const val VIEW_DEFAULT_HEIGHT = 0f
+        private const val SEARCHBAR_DEFAULT_OFFSET = 0
+        private const val STATUS_BAR_DEFAULT_ALPHA = 0f
+        private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
+        private const val RV_DIRECTION_TOP = 1
+        private const val NOTIFICATION_NUMBER_DEFAULT = 0
+        private const val DEFAULT_CART_QUANTITY = "0"
+        private const val EGG_MINIMUM_DY = 0
+        private const val INVALID_SERVER_TIME = 0L
+        private const val NO_SHOP_VALUE = "0"
+        private const val PROMO_LIST_ACTIVITY_TAG = "PromoListActivity"
+        private const val RV_EMPTY_TRESHOLD = 0
+        private const val UTF8_ENCODER = "UTF-8"
+        private const val SPACE_CHAR = "%20"
+        private const val QUERY_CHAR_1 = "?"
+        private const val QUERY_CHAR_2 = "%3F"
+        private const val SCHEME_PACKAGE = "package"
+        private const val POSITION_ARRAY_CONTAINER_SIZE = 2
+        private const val DEFAULT_MARGIN_VALUE = 0
+        private const val POSITION_ARRAY_Y = 1
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -339,6 +370,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
+    private val coachmarkHandler = Handler()
+
     @Suppress("TooGenericExceptionCaught")
     private fun isNavRevamp(): Boolean {
         return try {
@@ -350,12 +383,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun isNavOld(): Boolean {
+    private fun isUsingWalletApp(): Boolean {
+        return isEligibleForWalletApp() && isEligibleForPaymentABC()
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun isEligibleForWalletApp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
+            getAbTestPlatform().getString(HOME_WALLETAPP, "") == HOME_WALLETAPP
         } catch (e: Exception) {
             e.printStackTrace()
-            true
+            false
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun isEligibleForPaymentABC(): Boolean {
+        return try {
+            getAbTestPlatform().getString(HOME_PAYMENT_ABC, "") == HOME_PAYMENT_ABC
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 
@@ -522,7 +570,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val view = inflater.inflate(R.layout.fragment_home_revamp, container, false)
         BenchmarkHelper.endSystraceSection()
         fragmentFramePerformanceIndexMonitoring.init(
-                "home", this, object : OnFrameListener {
+            PAGE_NAME_FPI_HOME, this, object : OnFrameListener {
             override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
         }
         )
@@ -537,7 +585,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         backgroundViewImage = view.findViewById<ImageView>(R.id.view_background_image)
         homeRecyclerView?.setHasFixedSize(true)
-        homeRecyclerView?.itemAnimator?.moveDuration = 150
+        homeRecyclerView?.itemAnimator?.moveDuration = ITEM_MOVE_DURATION
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
         navAbTestCondition(
@@ -617,8 +665,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun initInboxAbTest() {
         useNewInbox = getAbTestPlatform().getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX && isNavRevamp()
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
     }
 
     private fun getInboxIcon(): Int {
@@ -636,11 +684,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
                 onboardingView.onboarding_button.setOnClickListener {
                     bottomSheet.dismiss()
-                    if (!coachMarkIsShowing) showCoachMark()
+                    adapter?.currentList?.let {
+                        showCoachmarkWithDataValidation(it)
+                    }
                 }
 
                 bottomSheet.setOnDismissListener {
-                    if (!coachMarkIsShowing) showCoachMark()
+                    bottomSheetIsShowing = false
+                    adapter?.currentList?.let {
+                        showCoachmarkWithDataValidation(it)
+                    }
                 }
 
                 bottomSheet.setTitle("")
@@ -650,7 +703,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     bottomSheet.dismiss()
                 }
                 childFragmentManager.run {
-                    bottomSheet.show(this, "onboarding navigation")
+                    bottomSheet.show(this, ONBOARDING_NAVIGATION_TAG)
                     bottomSheetIsShowing = true
                 }
                 saveFirstViewNavigationFalse()
@@ -658,21 +711,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark() {
-        //add navigation
-        if (!isNavigationCoachmarkShown(requireContext())) {
-            val globalNavIcon = navToolbar?.getGlobalNavIconView()
-            globalNavIcon?.let {
-                this.add(
-                        CoachMark2Item(
-                                globalNavIcon,
-                                getString(R.string.onboarding_coachmark_title),
-                                getString(R.string.onboarding_coachmark_description)
-                        )
-                )
-            }
-        }
-
+    private fun ArrayList<CoachMark2Item>.buildHomeCoachmark(skipBalanceWidget: Boolean) {
         //inbox
         if (!isInboxCoachmarkShown(requireContext())) {
             val inboxIcon = navToolbar?.getInboxIconView()
@@ -701,8 +740,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         //add balance widget
         //uncomment this to activate balance widget coachmark
 
-        if (!isBalanceWidgetCoachmarkShown(requireContext())) {
-            val balanceWidget = getBalanceWidgetView()
+        if (!skipBalanceWidget && !isBalanceWidgetCoachmarkShown(requireContext())) {
+            val balanceWidget = getTokopointsBalanceWidgetView()
             balanceWidget?.let {
                 this.add(
                         CoachMark2Item(
@@ -713,30 +752,75 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 )
             }
         }
+
+        if (isUsingWalletApp()) {
+            if (!skipBalanceWidget && !isWalletAppCoachmarkShown(requireContext())) {
+                val gopayWidget = getGopayBalanceWidgetView()
+                gopayWidget?.let {
+                    this.add(
+                        CoachMark2Item(
+                            gopayWidget,
+                            getString(R.string.home_gopay_coachmark_title),
+                            getString(R.string.home_gopay_coachmark_description)
+                        )
+                    )
+                }
+            }
+
+            if (!skipBalanceWidget && !isWalletApp2CoachmarkShown(requireContext())) {
+                val balanceWidget = getBalanceWidgetView()
+                balanceWidget?.let {
+                    this.add(
+                        CoachMark2Item(
+                            balanceWidget,
+                            getString(R.string.home_gopay2_coachmark_title),
+                            getString(R.string.home_gopay2_coachmark_description)
+                        )
+                    )
+                }
+            }
+        }
+
+        //add navigation
+        if (!isNavigationCoachmarkShown(requireContext())) {
+            val globalNavIcon = navToolbar?.getGlobalNavIconView()
+            globalNavIcon?.let {
+                this.add(
+                    CoachMark2Item(
+                        globalNavIcon,
+                        getString(R.string.onboarding_coachmark_title),
+                        getString(R.string.onboarding_coachmark_description)
+                    )
+                )
+            }
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun showCoachMark() {
-        context?.let {
-            coachMarkIsShowing = true
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            coachmark = CoachMark2(it)
-            coachMarkItem.buildHomeCoachmark()
-            coachmark?.let {
-                it.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        coachMarkItem.setCoachmarkShownPref()
+    private fun showCoachMark(skipBalanceWidget: Boolean = false) {
+        if (checkNavigationOnboardingFinished() && !bottomSheetIsShowing) {
+            context?.let {
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                coachmark = CoachMark2(it)
+                coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
+                coachmark?.let {
+                    it.setStepListener(object : CoachMark2.OnStepListener {
+                        override fun onStep(currentIndex: Int, coachMark2Item: CoachMark2Item) {
+                            coachMark2Item.setCoachmarkShownPref()
+                        }
+                    })
+                    //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                    //will be removed along the coachmark removal in the future
+                    try {
+                        if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !coachMarkIsShowing) {
+                            coachMarkIsShowing = true
+                            it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                            coachMarkItem[COACHMARK_FIRST_INDEX].setCoachmarkShownPref()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        coachMarkIsShowing = false
                     }
-                })
-                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-                //will be removed along the coachmark removal in the future
-                try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                        it.showCoachMark(step = coachMarkItem, index = 0)
-                        coachMarkItem[0].setCoachmarkShownPref()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
             }
         }
@@ -756,11 +840,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
                 setBalanceWidgetCoachmarkShown(requireContext())
             }
+            this.title.toString().equals(getString(R.string.home_gopay_coachmark_title), ignoreCase = true) -> {
+                setWalletAppCoachmarkShown(requireContext())
+            }
+            this.title.toString().equals(getString(R.string.home_gopay2_coachmark_title), ignoreCase = true) -> {
+                setWalletApp2CoachmarkShown(requireContext())
+            }
         }
     }
 
     private fun getLocationWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
             val locationView = it.itemView.widget_choose_address
             if (locationView.isVisible)
@@ -769,17 +859,43 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return null
     }
 
-    private fun getBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(0)
+    private fun getTokopointsBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            if (it.itemView.view_balance_widget.isVisible)
-                return getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
+            val balanceWidgetTokopointsView = getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
+            if (it.itemView.view_balance_widget.isShown && balanceWidgetTokopointsView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+                return balanceWidgetTokopointsView
+        }
+        return null
+    }
+
+    private fun getGopayBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.view_balance_widget)
+            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+                return gopayView
+        }
+        return null
+    }
+
+    private fun getBalanceWidgetView(): View? {
+        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
+        (view as? HomeHeaderOvoViewHolder)?.let {
+            val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
+            if (balanceWidgetView.isShown && balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
+                return balanceWidgetView
+            }
         }
         return null
     }
 
     private fun getBalanceWidgetViewTokoPointsOnly(balanceWidgetView: BalanceWidgetView): View? {
         return balanceWidgetView.getTokopointsView()
+    }
+
+    private fun getBalanceWidgetViewGopayOnly(balanceWidgetView: BalanceWidgetView): View? {
+        return balanceWidgetView.getGopayView()
     }
 
     private fun isValidToShowCoachMark(): Boolean {
@@ -791,13 +907,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private val afterInflationCallable: Callable<Any?>
         get() = Callable {
-            calculateSearchbarView(0)
+            calculateSearchbarView(SEARCHBAR_DEFAULT_OFFSET)
             observeSearchHint()
             null
         }
 
     private fun setupHomeRecyclerView() {
-        homeRecyclerView?.setItemViewCacheSize(20)
+        homeRecyclerView?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -829,19 +945,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         } else
             statusBarBackground.visibility = View.VISIBLE
         //initial condition for status and searchbar
-        setStatusBarAlpha(0f)
+        setStatusBarAlpha(STATUS_BAR_DEFAULT_ALPHA)
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView) { //set refresh layout to only enabled when reach 0 offset
 //because later we will disable scroll up for this parent recyclerview
 //and makes refresh layout think we can't scroll up (which actually can! we only disable
 //scroll so that feed recommendation section can scroll its content)
-        if (recyclerView.computeVerticalScrollOffset() == 0) {
+        if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
             refreshLayout.setCanChildScrollUp(false)
         } else {
             refreshLayout.setCanChildScrollUp(true)
         }
-        if (recyclerView.canScrollVertically(1)) {
+        if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
             navAbTestCondition(
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
@@ -895,14 +1011,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
         getHomeViewModel().setRollanceNavigationType(
                 if (isNavRevamp()) {
-                    AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                    RollenceKey.NAVIGATION_VARIANT_REVAMP
                 } else {
-                    AbTestPlatform.NAVIGATION_VARIANT_OLD
+                    RollenceKey.NAVIGATION_VARIANT_OLD
                 }
         )
 
-        //TODO: Register remote config to turn off and on new balance widget
         getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
+        getHomeViewModel().setWalletAppRollence(isUsingWalletApp())
 
         if (isSuccessReset()) showSuccessResetPasswordDialog()
     }
@@ -1011,7 +1127,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     if (homeRecyclerView != null) {
                         calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
                     } else {
-                        calculateSearchbarView(0)
+                        calculateSearchbarView(SEARCHBAR_DEFAULT_OFFSET)
                     }
                 }
         )
@@ -1073,12 +1189,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             navAbTestCondition(
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                            oldToolbar?.setNotificationNumber(0)
+                            oldToolbar?.setNotificationNumber(NOTIFICATION_NUMBER_DEFAULT)
                         }
                     },
                     ifNavRevamp = {
                         if (!useNewInbox) {
-                            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+                            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
                         }
                     }
             )
@@ -1121,7 +1237,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 bannerCarouselCallback?.resetImpression()
             }
         })
-        getHomeViewModel().setRollanceNavigationType(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+        getHomeViewModel().setRollanceNavigationType(RollenceKey.NAVIGATION_VARIANT_REVAMP)
     }
 
     private fun observeHomeRequestNetwork() {
@@ -1229,7 +1345,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         (dataMap[HomeRevampViewModel.GRID] as DynamicHomeChannel.Grid?)!!,
                         dataMap[HomeRevampViewModel.POSITION] as Int,
                         (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        "0",
+                        DEFAULT_CART_QUANTITY,
                         viewModel.get().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -1247,7 +1363,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
                         dataMap[HomeRevampViewModel.POSITION] as Int,
                         (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
-                        "0",
+                        DEFAULT_CART_QUANTITY,
                         getHomeViewModel().getUserId()
                 ) as HashMap<String, Any>)
                 RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
@@ -1368,22 +1484,34 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter?.submitList(data)
-            (data.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
-                val isBalanceWidgetNotEmpty = it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
-                        ?: false
-                if (isBalanceWidgetNotEmpty) {
-                    val isTokopointsOrOvoFailed = it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
-                    if (!isTokopointsOrOvoFailed) {
-                        Handler().postDelayed({
-                            if (!coachMarkIsShowing && !bottomSheetIsShowing)
-                                showCoachMark()
-                        }, 3000)
-                    }
+            showCoachmarkWithDataValidation(data)
+        }
+    }
+
+    private fun showCoachmarkWithDataValidation(data: List<Visitable<*>>? = null) {
+        (data?.firstOrNull { it is HomeHeaderOvoDataModel } as? HomeHeaderOvoDataModel)?.let {
+            val isBalanceWidgetNotEmpty =
+                it.headerDataModel?.homeBalanceModel?.balanceDrawerItemModels?.isNotEmpty()
+                    ?: false
+            if (isBalanceWidgetNotEmpty) {
+                val isTokopointsOrOvoFailed =
+                    it.headerDataModel?.homeBalanceModel?.isTokopointsOrOvoFailed ?: false
+                if (!isTokopointsOrOvoFailed) {
+                    showCoachMark()
                 }
+            } else {
+                showCoachMark(skipBalanceWidget = true)
             }
         }
     }
 
+    private fun checkNavigationOnboardingFinished(): Boolean {
+        return if (isNewNavigation() && remoteConfigIsShowOnboarding()) {
+            !isFirstViewNavigation()
+        } else {
+            true
+        }
+    }
 
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
@@ -1402,13 +1530,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
         val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
         //mapping alpha to be rendered per pixel for x height
-        var offsetAlpha = 255f / maxTransitionOffset * (offset - startToTransitionOffset)
+        var offsetAlpha = MAX_OFFSET_ALPHA / maxTransitionOffset * (offset - startToTransitionOffset)
         //2.5 is maximum
-        if (offsetAlpha < 0) {
-            offsetAlpha = 0f
+        if (offsetAlpha < EMPTY_OFFSET_ALPHA) {
+            offsetAlpha = EMPTY_OFFSET_ALPHA
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= 150) {
+            if (offsetAlpha >= OFFSET_ALPHA_TRESHOLD) {
                 oldToolbar?.switchToDarkToolbar()
                 if (isLightThemeStatusBar) requestStatusBarDark()
             } else {
@@ -1416,17 +1544,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (!isLightThemeStatusBar) requestStatusBarLight()
             }
         }
-//        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-//            when (fixedIconColor) {
-//                FixedTheme.TOOLBAR_DARK_TYPE -> oldToolbar?.switchToDarkToolbar()
-//                FixedTheme.TOOLBAR_LIGHT_TYPE -> oldToolbar?.switchToLightToolbar()
-//            }
-//        }
-        if (offsetAlpha >= 255) {
-            offsetAlpha = 255f
+        if (offsetAlpha >= MAX_OFFSET_ALPHA) {
+            offsetAlpha = MAX_OFFSET_ALPHA
         }
         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+            if (offsetAlpha >= EMPTY_OFFSET_ALPHA && offsetAlpha <= MAX_OFFSET_ALPHA) {
                 oldToolbar?.setBackgroundAlpha(offsetAlpha)
                 setStatusBarAlpha(offsetAlpha)
             }
@@ -1467,7 +1589,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         onEggScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy == 0) {
+                if (dy == EGG_MINIMUM_DY) {
                     return
                 }
                 val floatingEggButtonFragment = floatingEggButtonFragment
@@ -1544,7 +1666,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun isEnableToAutoRefresh(homeFlag: HomeFlag): Boolean {
         return homeFlag.getFlag(HomeFlag.TYPE.IS_AUTO_REFRESH)
-                && homeFlag.serverTime != 0L
+                && homeFlag.serverTime != INVALID_SERVER_TIME
                 && homeFlag.eventTime.isNotEmpty()
     }
 
@@ -1572,7 +1694,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onGoToSell() {
         if (isUserLoggedIn) {
             val shopId = userShopId
-            if (shopId != "0") {
+            if (shopId != NO_SHOP_VALUE) {
                 onGoToShop(shopId)
             } else {
                 onGoToCreateShop()
@@ -1676,7 +1798,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onPromoAllClick() {
         HomePageTracking.eventClickViewAllPromo()
-        HomeTrackingUtils.homeViewAllPromotions(activity, "PromoListActivity")
+        HomeTrackingUtils.homeViewAllPromotions(activity, PROMO_LIST_ACTIVITY_TAG)
         val remoteConfigEnable: Boolean
         val remoteConfig = FirebaseRemoteConfigImpl(activity)
         remoteConfigEnable = remoteConfig.getBoolean(
@@ -1762,6 +1884,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onRefresh() { //on refresh most likely we already lay out many view, then we can reduce
 //animation to keep our performance
+        coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
         removeNetworkError()
@@ -1943,8 +2066,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
                 var firstInstallCacheValue = sharedPrefs.getLong(
                         ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0)
-                if (firstInstallCacheValue == 0L) return false
-                firstInstallCacheValue += (30 * 60000).toLong()
+
+                if (firstInstallCacheValue == EMPTY_TIME_MILLIS) return false
+                firstInstallCacheValue += (MONTH_DAY_COUNT * TIME_MILLIS_MINUTE).toLong()
                 val now = Date()
                 val firstInstallTime = Date(firstInstallCacheValue)
                 if (now.compareTo(firstInstallTime) <= 0) {
@@ -2034,7 +2158,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun showNetworkError(message: String) {
         if (isAdded && activity != null && adapter != null) {
-            if (adapter?.itemCount ?: 0 > 0) {
+            if (adapter?.itemCount ?: RV_EMPTY_TRESHOLD > RV_EMPTY_TRESHOLD) {
                 showToaster(message, TYPE_ERROR)
             } else {
                 NetworkErrorHelper.showEmptyState(activity, root, message) { onRefresh() }
@@ -2126,12 +2250,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             return applink
         }
         val newTrackingAttribution = try {
-            URLEncoder.encode(trackingAttribution, "UTF-8")
+            URLEncoder.encode(trackingAttribution, UTF8_ENCODER)
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
-            trackingAttribution.replace(" ".toRegex(), "%20")
+            trackingAttribution.replace(" ".toRegex(), SPACE_CHAR)
         }
-        return if (applink.contains("?") || applink.contains("%3F") || applink.contains("%3f")) {
+        return if (applink.contains(QUERY_CHAR_1) || applink.contains(QUERY_CHAR_2) || applink.contains(QUERY_CHAR_2)) {
             "$applink&tracker_attribution=$newTrackingAttribution"
         } else {
             "$applink?tracker_attribution=$newTrackingAttribution"
@@ -2440,23 +2564,26 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         get() {
             var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             context?.let {
-                if (isNavOld()) {
-                    if (oldToolbar != null) {
-                        height = oldToolbar?.height
+                navAbTestCondition(
+                    ifNavOld = {
+                        if (oldToolbar != null) {
+                            height = oldToolbar?.height
                                 ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                        oldToolbar?.let {
-                            if (!it.isShadowApplied()) {
-                                height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                            oldToolbar?.let {
+                                if (!it.isShadowApplied()) {
+                                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                                }
                             }
                         }
-                    }
-                } else if (isNavRevamp()) {
-                    navToolbar?.let {
-                        height = navToolbar?.height
+                    },
+                    ifNavRevamp = {
+                        navToolbar?.let {
+                            height = navToolbar?.height
                                 ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                        }
                     }
-                }
+                )
             }
             return height
         }
@@ -2510,7 +2637,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun goToApplicationDetailActivity() {
         val intent = Intent()
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts("package", requireActivity().packageName, null)
+        val uri = Uri.fromParts(SCHEME_PACKAGE, requireActivity().packageName, null)
         intent.data = uri
         activity?.startActivity(intent)
     }
@@ -2550,16 +2677,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun updateEggBottomMargin(floatingEggButtonFragment: FloatingEggButtonFragment) {
         val params = floatingEggButtonFragment.view?.layoutParams as FrameLayout.LayoutParams
         if (stickyLoginView?.isShowing() == true) {
-            stickyLoginView?.height?.let { params.setMargins(0, 0, 0, it) }
-            val positionEgg = IntArray(2)
+            stickyLoginView?.height?.let { params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, it) }
+            val positionEgg = IntArray(POSITION_ARRAY_CONTAINER_SIZE)
             val eggHeight = floatingEggButtonFragment.egg.height
-            val stickyTopLocation = stickyLoginView?.getLocation()?.get(1) ?: 0
+            val stickyTopLocation = stickyLoginView?.getLocation()?.get(POSITION_ARRAY_Y) ?: DEFAULT_MARGIN_VALUE
             floatingEggButtonFragment.egg.getLocationOnScreen(positionEgg)
-            if (positionEgg[1] + eggHeight > stickyTopLocation) {
+            if (positionEgg[POSITION_ARRAY_Y] + eggHeight > stickyTopLocation) {
                 floatingEggButtonFragment.moveEgg(stickyTopLocation - eggHeight)
             }
         } else {
-            params.setMargins(0, 0, 0, 0)
+            params.setMargins(DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE, DEFAULT_MARGIN_VALUE)
         }
     }
 
