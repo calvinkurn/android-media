@@ -10,12 +10,12 @@ import com.google.gson.annotations.SerializedName
 
 data class ProfileDataModel(
         @Expose
-        @SerializedName("userProfileCompletion")
+        @SerializedName("user")
         var profileData: Profile = Profile()
 ) {
     data class Profile(
             @Expose
-            @SerializedName("isCreatedPassword")
+            @SerializedName("createdPassword")
             var isCreatedPassword: Boolean = false
     )
 }
