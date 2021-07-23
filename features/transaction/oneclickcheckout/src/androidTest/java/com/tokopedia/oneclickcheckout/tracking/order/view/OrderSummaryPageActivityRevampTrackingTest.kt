@@ -9,7 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
@@ -18,8 +18,8 @@ import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.TestOrderSummaryPageActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +35,9 @@ class OrderSummaryPageActivityRevampTrackingTest {
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
+
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
@@ -74,20 +77,6 @@ class OrderSummaryPageActivityRevampTrackingTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-        //    Deprecated Test (will delete in next iteration)
-//            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
-//            clickAddPreferenceForNewBuyer()
-//
-//            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
-//            clickAddOrChangePreferenceRevamp(null)
-//
-//            clickAddOrChangePreferenceRevamp {
-//                clickEditPreference(1)
-//            }
-//
-//            clickAddOrChangePreferenceRevamp {
-//                clickUsePreferenceRevamp(1)
-//            }
 
             clickChangeAddressRevamp()
             closeBottomSheet()
@@ -99,6 +88,6 @@ class OrderSummaryPageActivityRevampTrackingTest {
             clickChangePaymentRevamp()
         }
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
     }
 }

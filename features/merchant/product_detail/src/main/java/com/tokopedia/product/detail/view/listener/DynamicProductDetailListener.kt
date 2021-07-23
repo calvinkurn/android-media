@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifyprinciples.Typography
 
@@ -23,6 +22,7 @@ interface DynamicProductDetailListener {
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
+    fun getVariantString(): String
 
     /**
      * ProductMediaViewHolder
@@ -31,6 +31,7 @@ interface DynamicProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
+
     /**
      * ProductSnapshotViewHolder
      */
@@ -46,13 +47,16 @@ interface DynamicProductDetailListener {
     /**
      * ProductInfoViewHolder
      */
-    fun gotoVideoPlayer(youtubeVideos: List<YoutubeVideo>, index: Int)
-    fun gotoDescriptionTab(descriptionText: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onCategoryClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel)
     fun goToApplink(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * BestSellerViewHolder
+     */
+    fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
 
     /**
      * ProductDiscussionViewHolder
@@ -102,11 +106,6 @@ interface DynamicProductDetailListener {
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?)
-
-    /**
-     * PdpComparisonWidgetViewHolder
-     */
-    fun getStickyTitleView(): StickyTitleView?
 
     /**
      * ProductGeneralInfoViewHolder
@@ -166,7 +165,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductShippingViewHolder
      */
-    fun openShipmentClickedBottomSheet(title:String, labelShipping:String, isCod:Boolean, componentTrackDataModel:ComponentTrackDataModel?)
-    fun clickShippingComponentError(errorCode: Int, title:String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun showCoachmark(view: Typography?, isBoeType:Boolean)
+    fun openShipmentClickedBottomSheet(title: String, labelShipping: String, isCod: Boolean, componentTrackDataModel: ComponentTrackDataModel?)
+    fun clickShippingComponentError(errorCode: Int, title: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun showCoachmark(view: Typography?, isBoeType: Boolean)
 }

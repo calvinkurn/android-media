@@ -8,6 +8,7 @@ repositories {
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -35,20 +36,20 @@ android {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.commonPayment)
-    implementation project(rootProject.ext.features.commonTopupBills)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.features.commonPayment)
+    implementation projectOrAar(rootProject.ext.features.commonTopupBills)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
@@ -68,7 +69,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     implementation rootProject.ext.debugToolsDependencies.chuck
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -83,14 +84,14 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {

@@ -21,9 +21,6 @@ data class ProductRecomWidgetDataModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    val isRecomenDataEmpty: Boolean
-        get() = recomWidgetData?.recommendationItemList?.isEmpty() == true
-
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

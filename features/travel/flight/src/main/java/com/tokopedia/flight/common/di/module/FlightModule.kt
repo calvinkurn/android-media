@@ -20,7 +20,6 @@ import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier
 import com.tokopedia.flight.common.di.scope.FlightScope
 import com.tokopedia.flight.common.domain.FlightRepository
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase
@@ -161,10 +160,6 @@ class FlightModule {
     @Provides
     fun provideComboDao(flightSearchRoomDb: FlightSearchRoomDb): FlightComboDao =
             flightSearchRoomDb.flightComboDao()
-
-    @FlightScope
-    @Provides
-    fun provideFlightDateUtil(): FlightDateUtil = FlightDateUtil()
 
     @FlightScope
     @Provides

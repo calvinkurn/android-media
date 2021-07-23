@@ -27,6 +27,7 @@ object CreatePostImagePickerNavigation {
         /** Hide IG Since It's not working right now */
         val builder = ImagePickerBuilder.getSquareImageBuilder(context)
                 .withSimpleEditor()
+                .withWatermarkEditor()
                 .withSimpleMultipleSelection(imagePathList, maxImage)
                 .apply {
                     title = context.getString(R.string.cp_title_image_picker)

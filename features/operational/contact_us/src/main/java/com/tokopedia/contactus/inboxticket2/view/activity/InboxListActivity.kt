@@ -246,7 +246,9 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
 
 
     override fun onClickToolTipButton() {
-        val applink = (mPresenter as InboxListContract.Presenter).getChatbotApplink()
+        val presenter = mPresenter as? InboxListContract.Presenter
+        presenter?.sendGTMClickChatButton()
+        val applink = presenter?.getChatbotApplink()
         RouteManager.route(this, applink)
     }
 

@@ -10,12 +10,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS_OS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -243,27 +246,44 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
+        val cleanResult = ArrayList(cleanProductPhotoUrl(imagePickerResult, originalImageUrl))
         productInputModel.value?.let {
             val pictureList = it.detailInputModel.pictureList.filter { pictureInputModel ->
-                originalImageUrl.contains(pictureInputModel.urlOriginal)
-            }.filterIndexed { index, _ -> !editted[index] }
+                cleanResult.contains(pictureInputModel.urlOriginal)
+            }
 
-            val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+            val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
                 if (!editted[index]) {
-                    val picture = pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
+                    val picture = pictureList.find { pict -> pict.urlOriginal == cleanResult[index] }?.urlThumbnail.toString()
                     if(picture != "null" && picture.isNotBlank()) {
                         return@mapIndexed picture
                     }
                 }
                 urlOrPath
-            }.toMutableList()
+            }
 
             this.detailInputModel.value = it.detailInputModel.apply {
                 this.pictureList = pictureList
                 this.imageUrlOrPathList = imageUrlOrPathList
             }
 
-            this.mImageUrlOrPathList.value = imageUrlOrPathList
+            this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
+        }
+    }
+
+    fun updateProductPhotos(imageUrlOrPathList: List<String>, pictureList: List<PictureInputModel>) {
+        try {
+            mImageUrlOrPathList.value = imageUrlOrPathList.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+                    pictureList.first {
+                        it.urlThumbnail == urlOrPath || it.urlOriginal == urlOrPath
+                    }.urlThumbnail
+                } else {
+                    urlOrPath
+                }
+            }.toMutableList()
+        } catch (e: Exception) {
+            mImageUrlOrPathList.value = mutableListOf()
         }
     }
 
@@ -520,6 +540,24 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     mIsProductManageAuthorized.value = Fail(it)
                 }
         )
+    }
+
+    /**
+     * This method purpose is to cleanse imagePickerResult from cache url
+     * If we input web url link to imagePicker usually imagePicker will return a temporary URL with "*.0" extension in imagePickerResult array
+     * Therefore, we should cleanse URL by changing temporary URL to original web url
+     * @param imagePickerResult is the list of product photo paths that returned from imagePicker (it will have different value if the user do addition, removal or edit any images that are previously added)
+     * @param originalImageUrl is the list of original product photo paths that input to imagePicker (it doesn't contain image path of any added or edited image)
+     **/
+    private fun cleanProductPhotoUrl(imagePickerResult: ArrayList<String>,
+                                     originalImageUrl: ArrayList<String>): List<String> {
+        return imagePickerResult.mapIndexed { index, input ->
+            if (input.endsWith(TEMP_IMAGE_EXTENSION)) {
+                originalImageUrl[index]
+            } else {
+                imagePickerResult[index]
+            }
+        }
     }
 
 }

@@ -20,7 +20,7 @@ data class TextAndImage(
     override var imageDrawable: Int = imageDefault.imageDrawable,
     override var context: Context? = imageDefault.context,
     override var imageSize: Double = imageDefault.imageSize,
-    override var imageAlpha: Int = 100,
+    override var imageAlpha: Int = imageDefault.imageAlpha,
 
     // text properties
     override var text: String = textDefault.text,

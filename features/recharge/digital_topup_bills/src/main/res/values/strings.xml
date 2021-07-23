@@ -22,6 +22,7 @@
     <string name="telco_title_showcase_promo">Diskon spesial buat kamu</string>
     <string name="telco_label_showcase_promo">Mau beli pulsa dan paket data lebih hemat? Pilih sendiri kode promonya!</string>
     <string name="telco_number_error_not_found">Nomor tidak valid</string>
+    <string name="telco_number_invalid_empty_string">Oops, yang ini belum diisi.</string>
     <string name="telco_label_out_of_stock">Habis</string>
     <string name="telco_other_recommendation">Rekomendasi Lainnya</string>
     <string name="telco_title_filter_result">Hasil Filter</string>

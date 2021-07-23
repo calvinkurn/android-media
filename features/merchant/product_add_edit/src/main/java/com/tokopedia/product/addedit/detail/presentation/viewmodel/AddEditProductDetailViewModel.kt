@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
@@ -43,7 +44,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -492,16 +492,17 @@ class AddEditProductDetailViewModel @Inject constructor(
      * @param editted is the list of image edit status any image added and edited will have true value
      **/
     fun updateProductPhotos(imagePickerResult: MutableList<String>, originalImageUrl: MutableList<String>, editted: MutableList<Boolean>): DetailInputModel {
+        val cleanResult = ArrayList(cleanProductPhotoUrl(imagePickerResult, originalImageUrl))
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
-            originalImageUrl.contains(it.urlOriginal)
-        }.filterIndexed { index, _ -> !editted[index] }
+            cleanResult.contains(it.urlOriginal)
+        }
 
-        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail
+        val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
+            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == cleanResult[index] }?.urlThumbnail
                     ?: urlOrPath
-        }.toMutableList()
+        }
 
-        this.productPhotoPaths = imageUrlOrPathList
+        this.productPhotoPaths = imageUrlOrPathList.toMutableList()
 
         return DetailInputModel().apply {
             this.pictureList = pictureList
@@ -672,5 +673,23 @@ class AddEditProductDetailViewModel @Inject constructor(
             result = result.replace(it, "")
         }
         return result.trim().replace("\\s+".toRegex(), " ")
+    }
+
+    /**
+     * This method purpose is to cleanse imagePickerResult from cache url
+     * If we input web url link to imagePicker usually imagePicker will return a temporary URL with "*.0" extension in imagePickerResult array
+     * Therefore, we should cleanse URL by changing temporary URL to original web url
+     * @param imagePickerResult is the list of product photo paths that returned from imagePicker (it will have different value if the user do addition, removal or edit any images that are previously added)
+     * @param originalImageUrl is the list of original product photo paths that input to imagePicker (it doesn't contain image path of any added or edited image)
+     **/
+    private fun cleanProductPhotoUrl(imagePickerResult: MutableList<String>,
+                                     originalImageUrl: MutableList<String>): List<String> {
+        return imagePickerResult.mapIndexed { index, input ->
+            if (input.endsWith(TEMP_IMAGE_EXTENSION)) {
+                originalImageUrl[index]
+            } else {
+                imagePickerResult[index]
+            }
+        }
     }
 }

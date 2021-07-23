@@ -764,17 +764,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
 
-        if (!uri.getHost().contains(TOKOPEDIA_STRING)) {
-            if (isLinkAjaAppLink(url)) {
-                return redirectToExternalAppAndFinish(activity, uri);
-            } else {
-                Intent intent = WebViewHelper.externalAppIntentNotBrowser(activity, uri);
-                if (intent!= null) {
-                    hasMoveToNativePage = true;
-                    startActivity(intent);
-                    return true;
-                }
-            }
+        if (isLinkAjaAppLink(url)) {
+            return redirectToExternalAppAndFinish(activity, uri);
         }
 
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);

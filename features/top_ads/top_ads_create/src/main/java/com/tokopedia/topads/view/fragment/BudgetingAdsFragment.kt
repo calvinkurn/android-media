@@ -438,12 +438,6 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         })
         bidList.adapter = bidInfoAdapter
         bidList.layoutManager = LinearLayoutManager(context)
-        tipLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        bottomLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val heightButton = tipLayout.measuredHeight
-        val bottomHeight = bottomLayout.measuredHeight
-        val height = (heightButton + bottomHeight)
-        bidList.setPadding(0, 0, 0, height)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -164,7 +164,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             isEditMode = uri.getQueryParameter(ReviewConstants.PARAM_IS_EDIT_MODE)?.toBoolean()
                     ?: false
             feedbackId = uri.getQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID) ?: ""
-            utmSource = uri.getQueryParameter(ReviewConstants.PARAM_UTM_SOURCE) ?: ""
+            utmSource = uri.getQueryParameter(ReviewConstants.PARAM_SOURCE) ?: ""
         } else {
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""

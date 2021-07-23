@@ -145,7 +145,7 @@ class ShopHomeNplCampaignViewHolder(
                                 shopHomeProductViewModel = it
                         )
                     })
-                } catch (throwable: Throwable) {
+                } catch (throwable: Exception) {
                     throwable.printStackTrace()
                 }
             }
@@ -180,7 +180,7 @@ class ShopHomeNplCampaignViewHolder(
             try {
                 if(context.isValidGlideContext())
                     setImageUrl(bannerUrl, heightRatio = 1f)
-            } catch (e: Throwable) { }
+            } catch (e: Exception) { }
         }
     }
 
@@ -225,7 +225,7 @@ class ShopHomeNplCampaignViewHolder(
         val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
         textRemindMe?.apply {
             val colorText = if(isRemindMe){
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             }else{
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_68
             }
@@ -307,7 +307,8 @@ class ShopHomeNplCampaignViewHolder(
             (colonMinuteView as? Typography)?.setWeight(Typography.BOLD)
             (colonMinuteView as? Typography)?.setType(Typography.SMALL)
             onFinish = {
-                shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+                if(remainingMilliseconds >= 0)
+                    shopHomeCampaignNplWidgetListener.onTimerFinished(model)
             }
             show()
         }

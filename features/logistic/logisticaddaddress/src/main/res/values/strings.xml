@@ -208,4 +208,13 @@
     <string name="cb_jadikan_alamat_utama">Jadikan alamat utama</string>
     <string name="btn_simpan">Simpan</string>
     <string name="helper_nama_penerima">Ini akan jadi nama akunmu, bisa diubah nanti.</string>
+
+    <string name="txt_kota_kecamatan">Kota &amp; Kecamatan</string>
+    <string name="txt_alamat_lengkap">Alamat Lengkap</string>
+
+    <string name="field_label_alamat">label alamat</string>
+    <string name="field_alamat">alamat lengkap</string>
+    <string name="field_nama_penerima">nama penerima</string>
+    <string name="field_nomor_hp">nomor hp</string>
+    <string name="field_catatan_kurir">catatan untuk kurir</string>
 </resources>

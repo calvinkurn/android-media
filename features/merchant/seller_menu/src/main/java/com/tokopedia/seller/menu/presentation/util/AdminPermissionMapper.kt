@@ -10,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
@@ -127,11 +127,11 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
 
     private fun getReputationIntent(context: Context): Intent {
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX
         val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
         return if (useNewInbox && useNewNav) {
             RouteManager.getIntent(context,
                     Uri.parse(ApplinkConst.INBOX).buildUpon().apply {

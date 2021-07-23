@@ -13,12 +13,12 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory.OnFlightDetailListener
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
 import com.tokopedia.flight.search.presentation.util.FlightSearchCache
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.date.DateUtil
 
 /**
  * Created by furqan on 06/10/21.
@@ -58,13 +58,13 @@ class FlightDetailViewHolder(itemView: View,
         airlineName.text = route.airlineName
         airlineCode.text = String.format("%s - %s", route.airlineCode, route.flightNumber)
         setRefundableInfo(route)
-        departureTime.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_TIME_DETAIL, route.departureTimestamp)
-        departureDate.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.departureTimestamp)
+        departureTime.text = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.HH_MM, route.departureTimestamp)
+        departureDate.text = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.FORMAT_DATE, route.departureTimestamp)
         setColorCircle()
         setDepartureInfo(route)
         flightTime.text = route.duration
-        arrivalTime.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_TIME_DETAIL, route.arrivalTimestamp)
-        arrivalDate.text = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.arrivalTimestamp)
+        arrivalTime.text = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.HH_MM, route.arrivalTimestamp)
+        arrivalDate.text = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.FORMAT_DATE, route.arrivalTimestamp)
         setArrivalInfo(route)
         setPNR(route.pnr)
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.airlineLogo,
