@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -41,7 +40,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlam
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -79,7 +77,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-//    private lateinit var districtRecommendationBottomSheetFragment: DiscomBottomSheetFragment
     private var districtBottomSheet: DiscomBottomSheetRevamp? = null
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
@@ -503,11 +500,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        /*districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true, isPinpoint)
-        districtRecommendationBottomSheetFragment.setActionListener(this)
-        childFragmentManager?.run {
-            districtRecommendationBottomSheetFragment.show(this, "")
-        }*/
         districtBottomSheet = DiscomBottomSheetRevamp()
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
