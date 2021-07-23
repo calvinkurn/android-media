@@ -30,17 +30,20 @@ class MediaLoaderActivityLifecycle(
         get() = SupervisorJob() + Dispatchers.IO
 
     private val preferences by lazy { MediaSettingPreferences(context) }
+
     private val bitmapSize by lazy { MediaBitmapSize(context) }
 
-    private val logger = SessionDataUsageLogger(
-        priority = Priority.P2,
-        sessionName = "MEDIALOADER_ACTIVE_SESSION",
-        dataUsageName = "MEDIALOADER_DATA_USAGE",
-        intervalSession = INTERVAL_SESSION,
-        additionalData = mapOf(
-            "accumulative_size" to bitmapSize.size().toString()
+    private val logger by lazy {
+        SessionDataUsageLogger(
+            priority = Priority.P2,
+            sessionName = "MEDIALOADER_ACTIVE_SESSION",
+            dataUsageName = "MEDIALOADER_DATA_USAGE",
+            intervalSession = INTERVAL_SESSION,
+            additionalData = mapOf(
+                "accumulative_size" to bitmapSize.size().toString()
+            )
         )
-    )
+    }
 
     override fun onActivityStarted(activity: Activity) {
         if (!WHITELIST.singleOrNull {
