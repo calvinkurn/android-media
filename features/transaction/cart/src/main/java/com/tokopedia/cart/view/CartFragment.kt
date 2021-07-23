@@ -232,6 +232,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NAVIGATION_WISHLIST = 345
         const val NAVIGATION_PROMO = 456
         const val NAVIGATION_SHIPMENT = 567
+        const val NAVIGATION_TOKONOW_HOME_PAGE = 678
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -401,6 +402,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_PROMO -> onResultFromPromoPage(resultCode, data)
             NAVIGATION_SHOP_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
+            NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -550,6 +552,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.SHOP, shopId)
             startActivityForResult(intent, NAVIGATION_SHOP_PAGE)
+        }
+    }
+
+    private fun routeToTokoNowHomePage() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalTokopediaNow.HOME)
+            startActivityForResult(intent, NAVIGATION_TOKONOW_HOME_PAGE)
         }
     }
 
@@ -1595,7 +1604,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
             if (isTokoNow) {
-                routeToApplink(ApplinkConstInternalTokopediaNow.HOME)
+                routeToTokoNowHomePage()
             } else {
                 routeToShopPage(shopId)
             }
